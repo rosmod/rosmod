@@ -4,6 +4,11 @@ ROSCom/docs/ComponentModelOverview.md
 This file contains the design overview of the ROS component model.  This includes the goals and features of the design, as well as an overview of the design itself.
 
 
+Description:
+------------
+What is a component?
+
+
 Goals:
 ------
 * Modeling Language integration with basic component model and skeleton code generation
