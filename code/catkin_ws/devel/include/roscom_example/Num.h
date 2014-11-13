@@ -35,8 +35,8 @@
  */
 
 
-#ifndef BEGINNER_TUTORIALS_MESSAGE_NUM_H
-#define BEGINNER_TUTORIALS_MESSAGE_NUM_H
+#ifndef ROSCOM_EXAMPLE_MESSAGE_NUM_H
+#define ROSCOM_EXAMPLE_MESSAGE_NUM_H
 
 
 #include <string>
@@ -215,4 +215,4 @@ struct Printer< ::roscom_example::Num_<ContainerAllocator> >
 } // namespace message_operations
 } // namespace ros
 
-#endif // BEGINNER_TUTORIALS_MESSAGE_NUM_H
+#endif // ROSCOM_EXAMPLE_MESSAGE_NUM_H

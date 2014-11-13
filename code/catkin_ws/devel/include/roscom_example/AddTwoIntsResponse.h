@@ -35,8 +35,8 @@
  */
 
 
-#ifndef BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTSRESPONSE_H
-#define BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTSRESPONSE_H
+#ifndef ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTSRESPONSE_H
+#define ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTSRESPONSE_H
 
 
 #include <string>
@@ -216,4 +216,4 @@ struct Printer< ::roscom_example::AddTwoIntsResponse_<ContainerAllocator> >
 } // namespace message_operations
 } // namespace ros
 
-#endif // BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTSRESPONSE_H
+#endif // ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTSRESPONSE_H
