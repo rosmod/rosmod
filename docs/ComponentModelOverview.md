@@ -4,6 +4,11 @@ ROSCom/docs/ComponentModelOverview.md
 This file contains the design overview of the ROS component model.  This includes the goals and features of the design, as well as an overview of the design itself.
 
 
+Description:
+------------
+What is a component?
+
+
 Goals:
 ------
 * Modeling Language integration with basic component model and skeleton code generation
@@ -28,3 +33,11 @@ Design:
 -------
 * Component Implementation:
   * the component message queue will be implemented using a ROS CallbackQueue.  Every subscriber or service provider provides to ROS a callback that should be invoked when relevant data arrives (published message or service request).  These callbacks are managed in a global queue by default, but can optionally be split into different queues for the required granularity.  We will use one CallbackQueue for each component.  For each queue, a thread will run which waits on the queue and executes the relevant callbacks when data becomes available.  
+
+Questions:
+----------
+* How many sockets are managed by ROS / how many sockets are needed for multiple subscribers, etc.?
+* How many threads are created by ROS infrastructure? (seems to be 5)
+* Do the timers go through the callbackqueues like messages and services?
+* How can we implement priority in the callbackqueues?
+  * can we do it without touching ROS sourcecode?
