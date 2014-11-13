@@ -32,12 +32,13 @@ Features:
 Design:
 -------
 * Component Implementation:
-  * the component message queue will be implemented using a ROS CallbackQueue.  Every subscriber or service provider provides to ROS a callback that should be invoked when relevant data arrives (published message or service request).  These callbacks are managed in a global queue by default, but can optionally be split into different queues for the required granularity.  We will use one CallbackQueue for each component.  For each queue, a thread will run which waits on the queue and executes the relevant callbacks when data becomes available.  
+  * the component message queue will be implemented using a ROS CallbackQueue.  Every subscriber or service provider provides to ROS a callback that should be invoked when relevant data arrives (published message or service request).  These callbacks are managed in a global queue by default, but can optionally be split into different queues for the required granularity.  We will use one CallbackQueue for each component.  For each queue, a thread will run which waits on the queue and executes the relevant callbacks when data becomes available.
 
 Questions:
 ----------
 * How many sockets are managed by ROS / how many sockets are needed for multiple subscribers, etc.?
-* How many threads are created by ROS infrastructure? (seems to be 5)
-* Do the timers go through the callbackqueues like messages and services?
+  * subscribers each node appears to have one (maybe 2) sockets per topic, not per subscriber.
+* How many threads are created by ROS infrastructure : seems to be 5
+* Do the timers go through the callbackqueues like messages and services : yes ( http://wiki.ros.org/roscpp/Overview/Timers )
 * How can we implement priority in the callbackqueues?
   * can we do it without touching ROS sourcecode?
