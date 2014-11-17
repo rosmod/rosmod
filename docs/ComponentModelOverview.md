@@ -41,4 +41,11 @@ Questions:
 * How many threads are created by ROS infrastructure : seems to be 5
 * Do the timers go through the callbackqueues like messages and services : yes ( http://wiki.ros.org/roscpp/Overview/Timers )
 * How can we implement priority in the callbackqueues?
+  * Who defines priorities and where? 
   * can we do it without touching ROS sourcecode?
+  * might be able to do it:
+    * app developer specifies priority of service request or published data
+    * directly modifies the "type" of the service (i.e. topic or service name)
+    * each priority is implemented as a separate queue on the subscriber/server side
+      * all HIGH_PRIO requests (either published data or service requests) go through HIGH_PRIO queue, etc.
+    * code gen could give option to generate one callback for all priorities or a separate callback for each priority
