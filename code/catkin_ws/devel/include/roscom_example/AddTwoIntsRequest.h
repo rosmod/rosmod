@@ -35,8 +35,8 @@
  */
 
 
-#ifndef BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTSREQUEST_H
-#define BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTSREQUEST_H
+#ifndef ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTSREQUEST_H
+#define ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTSREQUEST_H
 
 
 #include <string>
@@ -224,4 +224,4 @@ struct Printer< ::roscom_example::AddTwoIntsRequest_<ContainerAllocator> >
 } // namespace message_operations
 } // namespace ros
 
-#endif // BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTSREQUEST_H
+#endif // ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTSREQUEST_H

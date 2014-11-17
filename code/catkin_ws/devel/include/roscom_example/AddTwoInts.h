@@ -35,8 +35,8 @@
  */
 
 
-#ifndef BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTS_H
-#define BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTS_H
+#ifndef ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTS_H
+#define ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTS_H
 
 #include <ros/service_traits.h>
 
@@ -153,4 +153,4 @@ struct DataType< ::roscom_example::AddTwoIntsResponse>
 } // namespace service_traits
 } // namespace ros
 
-#endif // BEGINNER_TUTORIALS_MESSAGE_ADDTWOINTS_H
+#endif // ROSCOM_EXAMPLE_MESSAGE_ADDTWOINTS_H
