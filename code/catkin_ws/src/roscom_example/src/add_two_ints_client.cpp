@@ -16,6 +16,9 @@ int main(int argc, char **argv)
   roscom_example::AddTwoInts srv;
   srv.request.a = atoll(argv[1]);
   srv.request.b = atoll(argv[2]);
+  while (!client.waitForExistence(ros::Duration(0.1))) { // -1 here means wait forever
+    ROS_INFO("Waiting for server to come up");  // unnecessary as the call prints info anyway
+  }
   if (client.call(srv))
     {
       ROS_INFO("Sum: %ld", (long int)srv.response.sum);
