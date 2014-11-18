@@ -7,6 +7,13 @@ This file contains the design overview of the ROS component model.  This include
 Description:
 ------------
 What is a component?
+A component is an encapsulated bit of code which may expose interfaces to other components (either anonymously (pub/sub) or through remote procedure calls (AMI/RMI)).  Components may use other components' interfaces or may be completely self contained.  Components do not run continuously, and instead must be triggered through an external event.  All component operations (triggered through such external events as data published (pub/sub), service request (ami/rmi), or timer expiry) must go through a component message queue which services the operations.  Each operation has an associated priority and deadline.  The priority governs its placement into the component message queue and the deadline of the operation begins counting down as soon as the operation is inserted into the queue.  Because of the externally triggered nature of component operations and because of the functionality of the component message queues, all component operations must be finite and terminate their execution for the component to be able to react to other triggers.
+
+Component deadlines:
+How do they work? How are they inheirited?  Where are they set?  In the modeling tools?  At run-time?  Both?  What happens when component operations exceed their deadlines?  Is the operation terminated?  Is the operation dropped completely?  Is it restarted?  Should the calling component (publisher/client) know?  Are these options specified in the modeling language per interface?  Are they specified by the application developer for each call?  How can a client/publisher know exactly which remote call they made exceeded its deadline?  Why would they want to know?  What would they do about it?
+
+Component Operation Scheduling:
+Is it just priority based & non preemtible?  Do operations which have passed their deadline get cancelled?  Do we allow preemption of operations?  Why or why not?
 
 
 Goals:
@@ -49,3 +56,18 @@ Questions:
     * each priority is implemented as a separate queue on the subscriber/server side
       * all HIGH_PRIO requests (either published data or service requests) go through HIGH_PRIO queue, etc.
     * code gen could give option to generate one callback for all priorities or a separate callback for each priority
+* How to implement deadline monitoring & violation callbacks for component operations?
+  * we will probably have to modify (extend) the ROS source code to affect this behavior
+  * messages will have to be extended to support a few more options:
+    * deadline
+    * priority
+    * timeout action (cancel, run-through, restart, drop, etc.)
+  * callback queues will need to be modified (extended):
+    * support priority messages
+    * insert into the queue based on operation priority
+* Component will need these threads:
+  * Queue manager thread which pulls from the front of the queue & spawns these threads:
+    * Worker thread which executes the operation
+    * timer thread to handle the deadline monitoring for the thread (this should only be done if the queue was empty / there was no worker thread)
+* How to pass deadline expiry information back to caller?
+* How to set up build system properly with eclipse for the ROS source code?
