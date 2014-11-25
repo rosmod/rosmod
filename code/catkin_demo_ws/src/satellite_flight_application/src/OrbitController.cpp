@@ -20,6 +20,7 @@ void targetOrbitCallback(const satellite_flight_application::TargetOrbit::ConstP
   else
     {
       ROS_ERROR("Failed to activate satellite thrusters");
+      thrusterControlClient.waitForExistence(ros::Duration(-1));
     }
 }
 
@@ -51,8 +52,10 @@ int main(int argc, char **argv)
 
   ros::Subscriber targetOrbitSub = n.subscribe("TargetOrbit", 1000, targetOrbitCallback);
 
+  satStateClient.waitForExistence(ros::Duration(-1));
+  thrusterControlClient.waitForExistence(ros::Duration(-1));
   
-  ros::Rate loop_rate(3);
+  ros::Rate loop_rate(1);
 
   while (ros::ok())
     {
@@ -64,7 +67,7 @@ int main(int argc, char **argv)
       else
 	{
 	  ROS_ERROR("Failed to get satellite state vector.");
-	  return 1;
+	  satStateClient.waitForExistence(ros::Duration(-1));
 	}
 
       satellite_flight_application::SatelliteState satState;
