@@ -25,3 +25,6 @@ http://wiki.ros.org/ROS/Tutorials/CreatingPackage
 
 To create the definitions for the messages (pub/sub) and services (rmi):
 http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv
+
+To write the pub/sub code:
+http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29
