@@ -174,3 +174,7 @@ add_dependencies(GndActor satellite_flight_application_generate_messages_cpp)
 add_executable(BusActor src/SatelliteBusInterface.cpp)
 target_link_libraries(BusActor ${catkin_LIBRARIES})
 add_dependencies(BusActor satellite_flight_application_gencpp)
+
+add_executable(OrbitControllerActor src/OrbitController.cpp)
+target_link_libraries(OrbitControllerActor ${catkin_LIBRARIES})
+add_dependencies(OrbitControllerActor satellite_flight_application_gencpp)
