@@ -87,17 +87,17 @@ def main():
 
     print 'Managing actors on node {0}'.format(options.node)
 
-    actors = []
+    actorProcessMap = {}
 
     for actor in options.actors:
-        actors.append([actor[0],subprocess.Popen(actor)])
+        actorProcessMap[actor[0]] = subprocess.Popen(actor)
         print 'Started actor {0} on node {1}'.format(actor[0],options.node)
 
     time.sleep(10)
     
-    for actor  in actors:
-        actor[1].kill()
-        print 'Killed actor {0}, pid {1} on node {2}'.format(actor[0],actor[1].pid,options.node)
+    for actor,process  in actorProcessMap.iteritems():
+        process.kill()
+        print 'Killed actor {0}, pid {1} on node {2}'.format(actor,process.pid,options.node)
 
     return
   
