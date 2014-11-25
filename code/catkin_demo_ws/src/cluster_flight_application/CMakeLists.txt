@@ -164,3 +164,9 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+
+add_executable(TargetOrbitActor src/TargetOrbitPlanner.cpp)
+target_link_libraries(TargetOrbitActor ${catkin_LIBRARIES})
+add_dependencies(TargetOrbitActor cluster_flight_application_generate_messages_cpp)

@@ -30,9 +30,7 @@ int main(int argc, char **argv)
     {
       cluster_flight_application::TargetOrbit orbit;
 
-      ROS_INFO("%s", msg.data.c_str());
-
-      chatter_pub.publish(orbit);
+      targetOrbitPub.publish(orbit);
 
       ros::spinOnce();
 
