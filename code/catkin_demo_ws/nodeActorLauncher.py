@@ -76,33 +76,6 @@ class Options:
                 return -1
         return 0
 
-def get_app_node_map(nodes,apps):
-    app_node_map = {}
-    for node,nprofile in nodes.iteritems():
-        for app,aprofile in apps.iteritems():
-            if app.find(node) != -1:
-                if app_node_map.has_key(node):
-                    app_node_map[node].append(app)
-                else:
-                    app_node_map[node] = [app]
-    return app_node_map
-
-def get_nodeProfiles(folder):
-    profile_dir = os.getcwd()+os.sep+folder
-    nodes = {}
-    if os.path.isdir(profile_dir):
-        print 'Found ',profile_dir
-        for file in glob.glob(profile_dir+os.sep+'*config.csv'):
-            node_name = file.replace('_crm_config.csv','')
-            node_name = node_name.replace(profile_dir+os.sep,'')
-            if node_name != 'crm_config.csv':
-                with open(file,'r+') as f:
-                    content = f.read()
-                    nodes[node_name] = content
-    else:
-        print "ERROR: ",profile_dir," doesn't exist!"
-    return nodes
-
 def main():
     options = Options()
 
@@ -120,12 +93,7 @@ def main():
         actors.append([actor[0],subprocess.Popen(actor)])
         print 'Started actor {0} on node {1}'.format(actor[0],options.node)
 
-    #cmd = ['./devel/lib/satellite_flight_application/GndActor', 'Beta', '1']
-    #gndActor = subprocess.Popen(cmd)
-
     time.sleep(10)
-
-    #gndActor.kill()
     
     for actor  in actors:
         actor[1].kill()

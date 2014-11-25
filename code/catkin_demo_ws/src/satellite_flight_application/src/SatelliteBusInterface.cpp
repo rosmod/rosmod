@@ -38,6 +38,8 @@ int main(int argc, char **argv)
   ros::ServiceServer satStateVectorService = n.advertiseService(stateVectorServiceName, getSatStateVector);
   ros::ServiceServer satThrusterControlService = n.advertiseService(thrusterServiceName, activateSatelliteThruster);
 
+  ROS_INFO("Satellite Bus %s operational.",argv[1]);
+
   ros::spin();
 
   return 0;
