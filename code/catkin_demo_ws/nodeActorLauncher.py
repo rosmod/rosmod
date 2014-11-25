@@ -64,14 +64,14 @@ class Options:
                 print "Usage:\n\tpython ",args[0],"""
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
-                \t\t-r ((p)edirect program output to log file)
+                \t\t-r (to redirect program output to log file)
                 \t\t-A <actor executable with path and cmd line arguments>\n"""
                 return -1
             else:
                 print """Usage:\n\t""",args[0],"""
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
-                \t\t-r ((p)edirect program output to log file)
+                \t\t-r (to redirect program output to log file)
                 \t\t-A <actor executable with path and cmd line arguments>\n"""
                 return -1
         return 0
