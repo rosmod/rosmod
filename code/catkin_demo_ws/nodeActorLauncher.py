@@ -13,17 +13,19 @@ It performs the following actions:
   * starts every actor in the list of actors to start
 """ 
 
-import sys, os, copy, glob
+import sys, os, copy, glob, subprocess, datetime, time
 
 class Options:
     def __init__(self, 
         node = 'alpha',
         log = 'nodeActorLauncher.log',
-        redirect = False
+        redirect = False,
+        actors = []
         ):
         self.node = node
         self.log_filename = log
         self.redirect_to_file = redirect
+        self.actors = actors
         return
 
     def __repr__(self):
@@ -34,6 +36,8 @@ class Options:
         retStr += "\tNode:\t\t{0}\n".format(self.node)
         retStr += "\tLog file:\t{0}\n".format(self.log_filename)
         retStr += "\tRedirect?:\t{0}\n".format(self.redirect_to_file)
+        for actor in self.actors:
+            retStr += "\tActor:\t\t{0}\n".format(actor)
         return retStr
 
     def parse_args(self,args):
@@ -42,6 +46,14 @@ class Options:
             if args[argind] == "-N":
                 self.node = args[argind+1]
                 argind += 2
+            elif args[argind] == "-A":
+                tmpind = argind + 2
+                cmd = [args[argind+1]]
+                while tmpind < len(args) and args[tmpind][0] != '-':
+                    cmd.append(args[tmpind])
+                    tmpind += 1
+                self.actors.append(cmd)
+                argind = tmpind
             elif args[argind] == "-L":
                 self.log_filename = args[argind+1]
                 argind += 2
@@ -52,29 +64,17 @@ class Options:
                 print "Usage:\n\tpython ",args[0],"""
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
-                \t\t-r ((p)edirect program output to log file)\n"""
+                \t\t-r ((p)edirect program output to log file)
+                \t\t-A <actor executable with path and cmd line arguments>\n"""
                 return -1
             else:
                 print """Usage:\n\t""",args[0],"""
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
-                \t\t-r ((p)edirect program output to log file)\n"""
+                \t\t-r ((p)edirect program output to log file)
+                \t\t-A <actor executable with path and cmd line arguments>\n"""
                 return -1
         return 0
-
-def get_entry_from_line(line=None):
-    if line == None or len(line) == 0:
-        return None
-    fields = line.split(',')
-    if len(fields) == 0 or fields[0][0] == '%':
-        return None
-    entry = ProfileEntry()
-    entry.start = float(fields[0])
-    entry.bandwidth = float(fields[1])
-    entry.latency = float(fields[2])
-    if len(fields) == 4:
-        entry.interface = fields[3]
-    return entry
 
 def get_app_node_map(nodes,apps):
     app_node_map = {}
@@ -113,6 +113,23 @@ def main():
         sys.stdout = open(options.log_filename, "w")
 
     print 'Managing actors on node {0}'.format(options.node)
+
+    actors = []
+
+    for actor in options.actors:
+        actors.append([actor[0],subprocess.Popen(actor)])
+        print 'Started actor {0} on node {1}'.format(actor[0],options.node)
+
+    #cmd = ['./devel/lib/satellite_flight_application/GndActor', 'Beta', '1']
+    #gndActor = subprocess.Popen(cmd)
+
+    time.sleep(10)
+
+    #gndActor.kill()
+    
+    for actor  in actors:
+        actor[1].kill()
+        print 'Killed actor {0}, pid {1} on node {2}'.format(actor[0],actor[1].pid,options.node)
 
     return
   
