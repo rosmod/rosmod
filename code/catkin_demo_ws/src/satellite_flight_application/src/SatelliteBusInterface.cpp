@@ -5,12 +5,14 @@
 bool getSatStateVector(satellite_flight_application::SatelliteStateVector::Request  &req,
 		       satellite_flight_application::SatelliteStateVector::Response &res)
 {
+  ROS_INFO("Returning the current satellite state vector.");
   return true;
 }
 
 bool activateSatelliteThruster(satellite_flight_application::SatelliteThrusterControl::Request  &req,
 			       satellite_flight_application::SatelliteThrusterControl::Response &res)
 {
+  ROS_INFO("Activating the satellite thruster.");
   return true;
 }
 

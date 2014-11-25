@@ -5,9 +5,9 @@
 
 int main(int argc, char **argv)
 {
-  if ( argc != 2)
+  if ( argc != 3)
     {
-      ROS_INFO("usage: GndActor <satellite name>");
+      ROS_INFO("usage: GndActor <satellite name> <0,1 to disable/enable publishing>");
       return 1;
     }
   std::string nodeName = "GndActor";
@@ -18,13 +18,23 @@ int main(int argc, char **argv)
 
   ros::Publisher satCommandPub = n.advertise<satellite_flight_application::SatelliteCommand>("SatelliteCommand", 1000);
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(1);
+
+  bool publishCommands = atol(argv[2]);
+
+  if (publishCommands)
+    ROS_INFO("%s will publish commands",nodeName.c_str());
+  else
+    ROS_INFO("%s will not publish commands",nodeName.c_str());
 
   while (ros::ok())
     {
-      satellite_flight_application::SatelliteCommand satCommand;
-
-      satCommandPub.publish(satCommand);
+      if (publishCommands)
+	{
+	  satellite_flight_application::SatelliteCommand satCommand;
+	  satCommandPub.publish(satCommand);
+	  ROS_INFO("Published new satCommand");
+	}
 
       ros::spinOnce();
 
