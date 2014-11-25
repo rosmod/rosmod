@@ -27,8 +27,14 @@ int main(int argc, char **argv)
   ros::init(argc, argv, nodeName.c_str());
   ros::NodeHandle n;
 
-  ros::ServiceServer satStateVectorService = n.advertiseService("SatelliteStateVector", getSatStateVector);
-  ros::ServiceServer satThrusterControlService = n.advertiseService("SatelliteThrusterControl", activateSatelliteThruster);
+  std::string stateVectorServiceName = "SatelliteStateVector";
+  stateVectorServiceName += argv[1];
+
+  std::string thrusterServiceName = "SatelliteThrusterControl";
+  thrusterServiceName += argv[1];
+
+  ros::ServiceServer satStateVectorService = n.advertiseService(stateVectorServiceName, getSatStateVector);
+  ros::ServiceServer satThrusterControlService = n.advertiseService(thrusterServiceName, activateSatelliteThruster);
 
   ros::spin();
 

@@ -7,11 +7,15 @@
 
 ros::NodeHandle n;
 
+std::string satelliteName;
+
 void targetOrbitCallback(const satellite_flight_application::TargetOrbit::ConstPtr& orbit)
 {
   ROS_INFO("I got a new target orbit!");
   ROS_INFO("Activating the thrusters to achieve new orbit");
-  ros::ServiceClient thrusterControlClient = n.serviceClient<satellite_flight_application::SatelliteThrusterControl>("SatelliteThrusterControl");
+  std::string thrusterServiceName = "SatelliteThrusterControl";
+  thrusterServiceName += satelliteName;
+  ros::ServiceClient thrusterControlClient = n.serviceClient<satellite_flight_application::SatelliteThrusterControl>(thrusterServiceName.c_str());
 
   satellite_flight_application::SatelliteThrusterControl srv;
   if (thrusterControlClient.call(srv))
@@ -31,12 +35,16 @@ int main(int argc, char **argv)
       ROS_INFO("usage: BusActor <satellite name>");
       return 1;
     }
+  satelliteName = argv[1];
   std::string nodeName = "OrbitControllerActor";
   nodeName += argv[1];
 
   ros::init(argc, argv, nodeName.c_str());
 
-  ros::ServiceClient satStateClient = n.serviceClient<satellite_flight_application::SatelliteStateVector>("SatelliteStateVector");
+  std::string stateServiceName = "SatelliteStateVector";
+  stateServiceName += argv[1];
+
+  ros::ServiceClient satStateClient = n.serviceClient<satellite_flight_application::SatelliteStateVector>(stateServiceName.c_str());
 
   ros::Publisher satStatePub = n.advertise<satellite_flight_application::SatelliteState>("SatelliteState", 1000);
 
