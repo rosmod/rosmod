@@ -1,6 +1,5 @@
 ROS Orbiter Demo:
 =================
-
 This file describes the ROS version of the Orbiter demo: how it works and how to make it from scratch.  
 
 
@@ -11,7 +10,6 @@ The orbiter demo consists of many components/actors grouped into applications.  
 
 Steps:
 ------
-
 It is assumed the ROS is already installed on the system.  To create this demo (and set up the workspace) follow these instructions:
 
 (if you haven't done so, tell ROS what the editor you want to use is):
