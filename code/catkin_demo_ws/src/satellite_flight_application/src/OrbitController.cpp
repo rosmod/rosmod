@@ -26,7 +26,15 @@ void targetOrbitCallback(const satellite_flight_application::TargetOrbit::ConstP
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "OrbitControllerActor");
+  if ( argc != 2)
+    {
+      ROS_INFO("usage: BusActor <satellite name>");
+      return 1;
+    }
+  std::string nodeName = "OrbitControllerActor";
+  nodeName += argv[1];
+
+  ros::init(argc, argv, nodeName.c_str());
 
   ros::ServiceClient satStateClient = n.serviceClient<satellite_flight_application::SatelliteStateVector>("SatelliteStateVector");
 

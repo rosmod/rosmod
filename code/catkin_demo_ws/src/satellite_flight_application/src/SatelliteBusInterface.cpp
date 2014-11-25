@@ -16,7 +16,15 @@ bool activateSatelliteThruster(satellite_flight_application::SatelliteThrusterCo
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "BusActor");
+  if ( argc != 2)
+    {
+      ROS_INFO("usage: BusActor <satellite name>");
+      return 1;
+    }
+  std::string nodeName = "BusActor";
+  nodeName += argv[1];
+
+  ros::init(argc, argv, nodeName.c_str());
   ros::NodeHandle n;
 
   ros::ServiceServer satStateVectorService = n.advertiseService("SatelliteStateVector", getSatStateVector);

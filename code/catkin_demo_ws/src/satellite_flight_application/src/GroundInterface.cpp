@@ -5,7 +5,14 @@
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "talker");
+  if ( argc != 2)
+    {
+      ROS_INFO("usage: GndActor <satellite name>");
+      return 1;
+    }
+  std::string nodeName = "GndActor";
+  nodeName += argv[1];
+  ros::init(argc, argv, nodeName.c_str());
 
   ros::NodeHandle n;
 
