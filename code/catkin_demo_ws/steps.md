@@ -22,3 +22,6 @@ http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment
 
 To create the package (which is what we'll call the applications):
 http://wiki.ros.org/ROS/Tutorials/CreatingPackage
+
+To create the definitions for the messages (pub/sub) and services (rmi):
+http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv
