@@ -1,0 +1,9 @@
+int64 posX
+int64 posY
+int64 posZ
+int64 velX
+int64 velY
+int64 velZ
+int64 angX
+int64 angY
+int64 angZ

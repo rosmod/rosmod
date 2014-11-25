@@ -1,0 +1,6 @@
+float64 inclination
+float64 longitudeAN
+float64 argumentOfPeriapsis
+float64 eccentricity
+float64 semimajorAxis
+float64 meanAnomaly
