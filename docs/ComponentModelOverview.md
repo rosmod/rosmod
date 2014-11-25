@@ -45,7 +45,13 @@ Questions:
 ----------
 * How many sockets are managed by ROS / how many sockets are needed for multiple subscribers, etc.?
   * subscribers each node appears to have one (maybe 2) sockets per topic, not per subscriber.
-* How many threads are created by ROS infrastructure : seems to be 5
+* How many threads are created by ROS infrastructure : seems to be 4
+  * Thread 1 : poll_manager.cpp::PollManager::threadFunc() : 
+    * Task 0 : init.cpp::init::checkForShutdown() :
+    * Task 1 : topic_manager.cpp::TopicManager::processPublishQueues() : 
+    * Task 2 : connection_manager.cpp::ConnectionManager::removedDroppedConnections() : 
+  * Thread 2 : init.cpp::internalCallbackQueueThreadFunc() : 
+  * Thread 3 : xmlrpc_manager.cpp::XMLRPCManager::serverThreadFunc() : 
 * Do the timers go through the callbackqueues like messages and services : yes ( http://wiki.ros.org/roscpp/Overview/Timers )
 * How can we implement priority in the callbackqueues?
   * Who defines priorities and where? 
