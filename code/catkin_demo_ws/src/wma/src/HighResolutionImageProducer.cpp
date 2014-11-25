@@ -60,7 +60,7 @@ int main(int argc, char **argv)
        */
       wma::HRImage img;
 
-      img.HRImgVector = {1,2,3,4,5};
+      img.HRImgVector.push_back(500);
 
       //ROS_INFO("%s", msg.data.c_str());
 

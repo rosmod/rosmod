@@ -5,12 +5,12 @@
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
  */
-void HRImgCallback(const wma::HRImgVector::ConstPtr& img)
+void HRImgCallback(const wma::HRImage::ConstPtr& img)
 {
   ROS_INFO("Got high-resolution image.");
 }
 
-void LRImgCallback(const wma::LRImgVector::ConstPtr& img)
+void LRImgCallback(const wma::LRImage::ConstPtr& img)
 {
   ROS_INFO("Got low-resolution image.");
 }
