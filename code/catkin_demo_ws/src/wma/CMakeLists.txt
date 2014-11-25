@@ -163,3 +163,17 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+
+add_executable(HRActor src/HighResolutionImageProducer.cpp)
+target_link_libraries(HRActor ${catkin_LIBRARIES})
+add_dependencies(HRActor wma_generate_messages_cpp)
+
+add_executable(LRActor src/LowResolutionImageProducer.cpp)
+target_link_libraries(LRActor ${catkin_LIBRARIES})
+add_dependencies(LRActor wma_generate_messages_cpp)
+
+add_executable(ImageProcessor src/ImageProcessor.cpp)
+target_link_libraries(ImageProcessor ${catkin_LIBRARIES})
+add_dependencies(ImageProcessor wma_generate_messages_cpp)
