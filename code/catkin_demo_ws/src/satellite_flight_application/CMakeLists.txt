@@ -164,3 +164,13 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+
+add_executable(GndActor src/GroundInterface.cpp)
+target_link_libraries(GndActor ${catkin_LIBRARIES})
+add_dependencies(GndActor satellite_flight_application_generate_messages_cpp)
+
+add_executable(BusActor src/SatelliteBusInterface.cpp)
+target_link_libraries(BusActor ${catkin_LIBRARIES})
+add_dependencies(BusActor satellite_flight_application_gencpp)
