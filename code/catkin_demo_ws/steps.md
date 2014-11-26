@@ -36,5 +36,7 @@ To configure the VMs:
 * install ros-indigo-ros-base and edit your .bashrc ( http://wiki.ros.org/indigo/Installation/Ubuntu )
 * ensure each vm can ping the others
 * start roscore on one VM
+* ( http://wiki.ros.org/ROS/NetworkSetup )
+* ( http://wiki.ros.org/ROS/Tutorials/MultipleMachines )
 * on each VM, $ export ROS_MASTER_URI=http://<ROSCORE VM IP ADDR>:11311
 * on each VM, $ export ROS_IP=<THAT VM'S IP ADDR>
