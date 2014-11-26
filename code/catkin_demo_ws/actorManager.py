@@ -7,7 +7,7 @@ import socket
 class ActorManager:
     def __init__(self,
         a2pmap = {},
-        delimeters = " ,",
+        delimeters = ' ',
         port = 7777,
         ip = ""
         ):
@@ -66,7 +66,7 @@ class ActorManager:
     def loop(self):
         while True:
             commandString, addr = self.sock.recvfrom(1024)
-            print 'Received {0} from {1}'.format(commandString,addr)
+            print 'Received \"{0}\" from {1}'.format(commandString,addr)
             if self.parseCommandString(commandString) != 0:
                 break
         return
