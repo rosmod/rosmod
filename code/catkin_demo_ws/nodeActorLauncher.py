@@ -15,14 +15,18 @@ It performs the following actions:
 
 import sys, os, copy, glob, subprocess, datetime, time
 
+from actorManager import *
+
 class Options:
     def __init__(self, 
         node = 'alpha',
+        socketListen = False,
         log = 'nodeActorLauncher.log',
         redirect = False,
         actors = []
         ):
         self.node = node
+        self.socketListen = socketListen
         self.log_filename = log
         self.redirect_to_file = redirect
         self.actors = actors
@@ -34,6 +38,7 @@ class Options:
     def __str__(self):
         retStr = "Options():\n"
         retStr += "\tNode:\t\t{0}\n".format(self.node)
+        retStr += "\tListen on Socket?:\t{0}\n".format(self.socketListen)
         retStr += "\tLog file:\t{0}\n".format(self.log_filename)
         retStr += "\tRedirect?:\t{0}\n".format(self.redirect_to_file)
         for actor in self.actors:
@@ -57,11 +62,15 @@ class Options:
             elif args[argind] == "-L":
                 self.log_filename = args[argind+1]
                 argind += 2
+            elif args[argind] == "-l":
+                self.socketListen = True
+                argind += 1
             elif args[argind] == "-r":
                 self.redirect_to_file = True
                 argind += 1
             elif args[argind] == "-?" or args[argind] == "-h" or args[argind] == "--help":
                 print "Usage:\n\tpython ",args[0],"""
+                \t\t-l (to listen indefinitely on a socket)
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
                 \t\t-r (to redirect program output to log file)
@@ -69,6 +78,7 @@ class Options:
                 return -1
             else:
                 print """Usage:\n\t""",args[0],"""
+                \t\t-l (to listen indefinitely on a socket)
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
                 \t\t-r (to redirect program output to log file)
@@ -85,19 +95,23 @@ def main():
     if options.redirect_to_file == True:
         sys.stdout = open(options.log_filename, "w")
 
-    print 'Managing actors on node {0}'.format(options.node)
+    if options.socketListen == True:
+        actorManager = ActorManager()
+        actorManager.loop()
+    else:
+        print 'Managing actors on node {0}'.format(options.node)
 
-    actorProcessMap = {}
+        actorProcessMap = {}
 
-    for actor in options.actors:
-        actorProcessMap[actor[0]] = subprocess.Popen(actor)
-        print 'Started actor {0} on node {1}'.format(actor[0],options.node)
+        for actor in options.actors:
+            actorProcessMap[actor[0]] = subprocess.Popen(actor)
+            print 'Started actor {0} on node {1}'.format(actor[0],options.node)
 
-    time.sleep(10)
+        time.sleep(10)
     
-    for actor,process  in actorProcessMap.iteritems():
-        process.kill()
-        print 'Killed actor {0}, pid {1} on node {2}'.format(actor,process.pid,options.node)
+        for actor,process  in actorProcessMap.iteritems():
+            process.kill()
+            print 'Killed actor {0}, pid {1} on node {2}'.format(actor,process.pid,options.node)
 
     return
   
