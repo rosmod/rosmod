@@ -29,3 +29,12 @@ http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29
 
 To write the RMI code:
 http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29
+
+To configure the VMs:
+* copy binaries to all VMs
+* ensure virtualbox VMs are connected through host-only networking
+* install ros-indigo-ros-base and edit your .bashrc ( http://wiki.ros.org/indigo/Installation/Ubuntu )
+* ensure each vm can ping the others
+* start roscore on one VM
+* on each VM, $ export ROS_MASTER_URI=http://<ROSCORE VM IP ADDR>:11311
+* on each VM, $ export ROS_IP=<THAT VM'S IP ADDR>

@@ -31,6 +31,8 @@ int main(int argc, char **argv)
 
   targetOrbitPub = n.advertise<cluster_flight_application::TargetOrbit>("TargetOrbit", 1000);
 
+  ROS_INFO("Ready to receive commands and determine new orbits");
+
   ros::spin();
 
   return 0;
