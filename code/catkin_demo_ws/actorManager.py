@@ -69,7 +69,6 @@ class ActorManager:
             print 'Received \"{0}\" from {1}'.format(commandString,addr)
             if self.parseCommandString(commandString) != 0:
                 break
-        return
-
-    def shutDown(self):
+        for actor,process in self.actorToProcessMap.iteritems():
+            self.killActor(actor)                
         return
