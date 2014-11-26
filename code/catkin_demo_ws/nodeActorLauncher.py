@@ -95,23 +95,19 @@ def main():
     if options.redirect_to_file == True:
         sys.stdout = open(options.log_filename, "w")
 
+    actorManager = ActorManager()
+
     if options.socketListen == True:
-        actorManager = ActorManager()
         actorManager.loop()
     else:
         print 'Managing actors on node {0}'.format(options.node)
 
-        actorProcessMap = {}
-
         for actor in options.actors:
-            actorProcessMap[actor[0]] = subprocess.Popen(actor)
-            print 'Started actor {0} on node {1}'.format(actor[0],options.node)
+            actorManager.startActor(actor)
 
         time.sleep(10)
     
-        for actor,process  in actorProcessMap.iteritems():
-            process.kill()
-            print 'Killed actor {0}, pid {1} on node {2}'.format(actor,process.pid,options.node)
+        actorManager.shutDown()
 
     return
   
