@@ -5,6 +5,22 @@ I have updated the RMUb0 VM to have ROS (only ros-comm) installed and have the r
 
 There is a python program in the demo folder, nodeActorLauncher.py, which you can use to manage the execution of the actors in the demo.  Either you can pass the actors to the program as command line parameters and it will run them for 10 seconds before killing them, or you can tell it to listen on a UDP socket (default is 7777).
 
+The steps required to run the demo on multiple VMs are:
+
+    0. Make copies of the main VM
+    1. Ensure you have host-only networking between your VMs and they can all ping each other
+    2. Start roscore on one of the vm's
+
+       $ roscore
+
+    3. on every VM that you want to run actors:
+
+       $ export ROS_MASTER_URI=http://<roscore VM ip address>:11311
+       $ export ROS_IP=<this VM address>
+       $ ~/demo/nodeActorLauncher.py -l
+
+    4. Then from another VM or another terminal, you can use sendip (described below) to start/kill actors on each node.
+
 The command line options for the nodeActorLauncher are
 
     Usage:
@@ -14,6 +30,10 @@ The command line options for the nodeActorLauncher are
                 		-L <program (L)og filename>
                 		-r (to redirect program output to log file)
                 		-A <actor executable with path and cmd line arguments>
+
+For example, if you wanted to give it a list of arguments you might
+
+    ./nodeActorLauncher.py -N Beta -A ./satellite_flight_application/GndActor Beta 1 -A ./cluster_flight_application/TargetOrbitActor
 
 If you tell it to listen on a socket, it will run indefinitely until you send the SHUTDOWN command.  The avialable commands are:
 
