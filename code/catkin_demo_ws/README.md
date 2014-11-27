@@ -3,7 +3,7 @@ ROS Orbiter Demo:
 
 I have updated the RMUb0 VM to have ROS (only ros-comm) installed and have the ros demo binaries copied over into ~/demo/{satellite_flight_application,cluster_flight_application,wma}/
 
-There is a python program in the demo folder, nodeActorLauncher.py, which you can use to manage the execution of the actors in the demo.  Either you can pass the actors to the program as command line parameters and it will run them for 10 seconds before killing them, or you can tell it to listen on a UDP socket (default is 7777).
+There is a python program in the demo folder, nodeActorLauncher.py, which you can use to manage the execution of the actors in the demo.  Either you can pass the actors to the program as command line parameters and it will run them for the specified duration (default=10 seconds) before killing them, or you can tell it to listen on a UDP socket (default is 7777).
 
 The steps required to run the demo on multiple VMs are:
 
@@ -24,16 +24,17 @@ The steps required to run the demo on multiple VMs are:
 The command line options for the nodeActorLauncher are
 
     Usage:
-	python  ./nodeActorLauncher.py 
-                		-l (to listen indefinitely on a socket)
-                		-A <actor executable with path and cmd line arguments>
-                		-L <program (L)og filename>
-                		-r (to redirect program output to log file)
-				-?, -h, --help (to display this usage information)
+	 ./nodeActorLauncher.py
+        		-l (to (l)isten indefinitely on a socket)
+        		-A <(A)ctor executable with path and cmd line arguments>
+        		-D <(D)uration to run cli-provided actors>
+        		-L <program (L)og filename>
+        		-r (to (r)edirect program output to log file)
+        		-?, -h, --help (to display this help information)
 
 For example, if you wanted to give it a list of arguments you might
 
-    ./nodeActorLauncher.py -N Beta -A ./satellite_flight_application/GndActor Beta 1 -A ./cluster_flight_application/TargetOrbitActor
+    ./nodeActorLauncher.py -A ./satellite_flight_application/GndActor Beta 1 -A ./cluster_flight_application/TargetOrbitActor
 
 If you tell it to listen on a socket, it will run indefinitely until you send the SHUTDOWN command.  The avialable commands are:
 

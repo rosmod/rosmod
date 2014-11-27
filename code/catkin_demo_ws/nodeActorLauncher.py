@@ -47,12 +47,12 @@ class Options:
 
     def printUsage(self):
         print """Usage:\n\t ./nodeActorLauncher.py
-        \t\t-l (to listen indefinitely on a socket)
-        \t\t-A <actor executable with path and cmd line arguments>
-        \t\t-D <duration to run cli-provided actors>
+        \t\t-l (to (l)isten indefinitely on a socket)
+        \t\t-A <(A)ctor executable with path and cmd line arguments>
+        \t\t-D <(D)uration to run cli-provided actors>
         \t\t-L <program (L)og filename>
-        \t\t-r (to redirect program output to log file)
-        \t\t-?, -h, --help (to display this usage information)\n"""
+        \t\t-r (to (r)edirect program output to log file)
+        \t\t-?, -h, --help (to display this help information)\n"""
         return
 
     def parse_args(self,args):
@@ -72,6 +72,9 @@ class Options:
                     tmpind += 1
                 self.actors.append(cmd)
                 argind = tmpind
+            elif args[argind] == "-D":
+                self.duration = float(args[argind+1])
+                argind += 2
             elif args[argind] == "-L":
                 self.log_filename = args[argind+1]
                 argind += 2
@@ -101,10 +104,10 @@ def main():
         actorManager.loop()
     else:
         if len(options.actors) > 0:
-            print 'Managing {0} actors for 10 seconds'.format(len(options.actors))
+            print 'Managing {0} actors for {1} seconds'.format(len(options.actors),options.duration)
             for actor in options.actors:
                 actorManager.startActor(actor)
-            time.sleep(10)    
+            time.sleep(options.duration)    
             actorManager.shutDown()
         else:
             print 'No actors provided, shutting down.'            
