@@ -25,11 +25,11 @@ The command line options for the nodeActorLauncher are
 
     Usage:
 	python  ./nodeActorLauncher.py 
-                		-l (to listen indefinitely on a socket)
+                		-l (to (l)isten indefinitely on a socket)
                 		-N <(N)ode name>
                 		-L <program (L)og filename>
-                		-r (to redirect program output to log file)
-                		-A <actor executable with path and cmd line arguments>
+                		-r (to (r)edirect program output to log file)
+                		-A <(A)ctor executable with path and cmd line arguments>
 
 For example, if you wanted to give it a list of arguments you might
 

@@ -70,19 +70,19 @@ class Options:
                 argind += 1
             elif args[argind] == "-?" or args[argind] == "-h" or args[argind] == "--help":
                 print "Usage:\n\tpython ",args[0],"""
-                \t\t-l (to listen indefinitely on a socket)
+                \t\t-l (to (l)isten indefinitely on a socket)
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
-                \t\t-r (to redirect program output to log file)
-                \t\t-A <actor executable with path and cmd line arguments>\n"""
+                \t\t-r (to (r)edirect program output to log file)
+                \t\t-A <(A)ctor executable with path and cmd line arguments>\n"""
                 return -1
             else:
                 print """Usage:\n\t""",args[0],"""
-                \t\t-l (to listen indefinitely on a socket)
+                \t\t-l (to (l)isten indefinitely on a socket)
                 \t\t-N <(N)ode name>
                 \t\t-L <program (L)og filename>
-                \t\t-r (to redirect program output to log file)
-                \t\t-A <actor executable with path and cmd line arguments>\n"""
+                \t\t-r (to (r)edirect program output to log file)
+                \t\t-A <(A)ctor executable with path and cmd line arguments>\n"""
                 return -1
         return 0
 
