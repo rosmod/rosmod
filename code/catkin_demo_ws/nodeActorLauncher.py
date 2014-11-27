@@ -19,14 +19,14 @@ from actorManager import *
 
 class Options:
     def __init__(self, 
-        node = 'alpha',
         socketListen = False,
+        dur = 10,
         log = 'nodeActorLauncher.log',
         redirect = False,
         actors = []
         ):
-        self.node = node
         self.socketListen = socketListen
+        self.duration = dur
         self.log_filename = log
         self.redirect_to_file = redirect
         self.actors = actors
@@ -37,20 +37,33 @@ class Options:
 
     def __str__(self):
         retStr = "Options():\n"
-        retStr += "\tNode:\t\t{0}\n".format(self.node)
         retStr += "\tListen on Socket?:\t{0}\n".format(self.socketListen)
+        retStr += "\tDuration:\t{0}\n".format(self.duration)
         retStr += "\tLog file:\t{0}\n".format(self.log_filename)
         retStr += "\tRedirect?:\t{0}\n".format(self.redirect_to_file)
         for actor in self.actors:
             retStr += "\tActor:\t\t{0}\n".format(actor)
         return retStr
 
+    def printUsage(self):
+        print """Usage:\n\t ./nodeActorLauncher.py
+        \t\t-l (to listen indefinitely on a socket)
+        \t\t-A <actor executable with path and cmd line arguments>
+        \t\t-D <duration to run cli-provided actors>
+        \t\t-L <program (L)og filename>
+        \t\t-r (to redirect program output to log file)
+        \t\t-?, -h, --help (to display this usage information)\n"""
+        return
+
     def parse_args(self,args):
+        if len(args) == 1:
+            self.printUsage()
+            return -1
         argind = 1
         while argind < len(args):
-            if args[argind] == "-N":
-                self.node = args[argind+1]
-                argind += 2
+            if args[argind] == "-l":
+                self.socketListen = True
+                argind += 1
             elif args[argind] == "-A":
                 tmpind = argind + 2
                 cmd = [args[argind+1]]
@@ -62,27 +75,14 @@ class Options:
             elif args[argind] == "-L":
                 self.log_filename = args[argind+1]
                 argind += 2
-            elif args[argind] == "-l":
-                self.socketListen = True
-                argind += 1
             elif args[argind] == "-r":
                 self.redirect_to_file = True
                 argind += 1
             elif args[argind] == "-?" or args[argind] == "-h" or args[argind] == "--help":
-                print "Usage:\n\tpython ",args[0],"""
-                \t\t-l (to listen indefinitely on a socket)
-                \t\t-N <(N)ode name>
-                \t\t-L <program (L)og filename>
-                \t\t-r (to redirect program output to log file)
-                \t\t-A <actor executable with path and cmd line arguments>\n"""
+                self.printUsage()
                 return -1
             else:
-                print """Usage:\n\t""",args[0],"""
-                \t\t-l (to listen indefinitely on a socket)
-                \t\t-N <(N)ode name>
-                \t\t-L <program (L)og filename>
-                \t\t-r (to redirect program output to log file)
-                \t\t-A <actor executable with path and cmd line arguments>\n"""
+                self.printUsage()
                 return -1
         return 0
 
@@ -100,14 +100,14 @@ def main():
     if options.socketListen == True:
         actorManager.loop()
     else:
-        print 'Managing actors on node {0}'.format(options.node)
-
-        for actor in options.actors:
-            actorManager.startActor(actor)
-
-        time.sleep(10)
-    
-        actorManager.shutDown()
+        if len(options.actors) > 0:
+            print 'Managing {0} actors for 10 seconds'.format(len(options.actors))
+            for actor in options.actors:
+                actorManager.startActor(actor)
+            time.sleep(10)    
+            actorManager.shutDown()
+        else:
+            print 'No actors provided, shutting down.'            
 
     return
   
