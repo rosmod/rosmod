@@ -47,8 +47,8 @@ find_package(catkin REQUIRED COMPONENTS
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  SatelliteCommand.msg
-  SatelliteState.msg
+  GroundCommand.msg
+  SatState.msg
   TargetOrbit.msg
 )
 
@@ -167,6 +167,6 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(TargetOrbitActor src/TargetOrbitPlanner.cpp)
-target_link_libraries(TargetOrbitActor ${catkin_LIBRARIES})
-add_dependencies(TargetOrbitActor cluster_flight_application_generate_messages_cpp)
+add_executable(TrajectoryPlanner_a src/TrajectoryPlanner.cpp)
+target_link_libraries(TrajectoryPlanner_a ${catkin_LIBRARIES})
+add_dependencies(TrajectoryPlanner_a cluster_flight_application_generate_messages_cpp)

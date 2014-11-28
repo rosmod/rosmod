@@ -1,16 +1,16 @@
 #include "ros/ros.h"
-#include "satellite_flight_application/SatelliteStateVector.h"
-#include "satellite_flight_application/SatelliteThrusterControl.h"
+#include "satellite_flight_application/SatelliteState.h"
+#include "satellite_flight_application/ThrusterComm.h"
 
-bool getSatStateVector(satellite_flight_application::SatelliteStateVector::Request  &req,
-		       satellite_flight_application::SatelliteStateVector::Response &res)
+bool getSatStateVector(satellite_flight_application::SatelliteState::Request  &req,
+		       satellite_flight_application::SatelliteState::Response &res)
 {
   ROS_INFO("Returning the current satellite state vector.");
   return true;
 }
 
-bool activateSatelliteThruster(satellite_flight_application::SatelliteThrusterControl::Request  &req,
-			       satellite_flight_application::SatelliteThrusterControl::Response &res)
+bool activateSatelliteThruster(satellite_flight_application::ThrusterComm::Request  &req,
+			       satellite_flight_application::ThrusterComm::Response &res)
 {
   ROS_INFO("Activating the satellite thruster.");
   return true;
@@ -29,10 +29,10 @@ int main(int argc, char **argv)
   ros::init(argc, argv, nodeName.c_str());
   ros::NodeHandle n;
 
-  std::string stateVectorServiceName = "SatelliteStateVector";
+  std::string stateVectorServiceName = "SatelliteState";
   stateVectorServiceName += argv[1];
 
-  std::string thrusterServiceName = "SatelliteThrusterControl";
+  std::string thrusterServiceName = "ThrusterComm";
   thrusterServiceName += argv[1];
 
   ros::ServiceServer satStateVectorService = n.advertiseService(stateVectorServiceName, getSatStateVector);

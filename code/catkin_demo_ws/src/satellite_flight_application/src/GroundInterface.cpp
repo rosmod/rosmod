@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "satellite_flight_application/SatelliteCommand.h"
+#include "satellite_flight_application/GroundCommand.h"
 
 #include <sstream>
 
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Publisher satCommandPub = n.advertise<satellite_flight_application::SatelliteCommand>("SatelliteCommand", 1000);
+  ros::Publisher gndCommandPub = n.advertise<satellite_flight_application::GroundCommand>("GroundCommand", 1000);
 
   ros::Rate loop_rate(1);
 
@@ -31,9 +31,9 @@ int main(int argc, char **argv)
     {
       if (publishCommands)
 	{
-	  satellite_flight_application::SatelliteCommand satCommand;
-	  satCommandPub.publish(satCommand);
-	  ROS_INFO("Published new satCommand");
+	  satellite_flight_application::GroundCommand gndCommand;
+	  gndCommandPub.publish(gndCommand);
+	  ROS_INFO("Published new GroundCommand");
 	}
 
       ros::spinOnce();

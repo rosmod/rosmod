@@ -1,7 +1,7 @@
 #include "ros/ros.h"
+#include "satellite_flight_application/SatState.h"
 #include "satellite_flight_application/SatelliteState.h"
-#include "satellite_flight_application/SatelliteStateVector.h"
-#include "satellite_flight_application/SatelliteThrusterControl.h"
+#include "satellite_flight_application/ThrusterComm.h"
 #include "satellite_flight_application/TargetOrbit.h"
 #include <cstdlib>
 
@@ -12,7 +12,7 @@ void targetOrbitCallback(const satellite_flight_application::TargetOrbit::ConstP
   ROS_INFO("I got a new target orbit!");
   ROS_INFO("Activating the thrusters to achieve new orbit");
 
-  satellite_flight_application::SatelliteThrusterControl srv;
+  satellite_flight_application::ThrusterComm srv;
   if (thrusterControlClient.call(srv))
     {
       ROS_INFO("Successfully activated satellite thrusters");
@@ -38,17 +38,17 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  std::string stateServiceName = "SatelliteStateVector";
+  std::string stateServiceName = "SatelliteState";
   stateServiceName += argv[1];
 
-  ros::ServiceClient satStateClient = n.serviceClient<satellite_flight_application::SatelliteStateVector>(stateServiceName.c_str());
+  ros::ServiceClient satStateClient = n.serviceClient<satellite_flight_application::SatelliteState>(stateServiceName.c_str());
 
-  std::string thrusterServiceName = "SatelliteThrusterControl";
+  std::string thrusterServiceName = "ThrusterComm";
   thrusterServiceName += argv[1];
 
-  thrusterControlClient = n.serviceClient<satellite_flight_application::SatelliteThrusterControl>(thrusterServiceName.c_str());
+  thrusterControlClient = n.serviceClient<satellite_flight_application::ThrusterComm>(thrusterServiceName.c_str());
 
-  ros::Publisher satStatePub = n.advertise<satellite_flight_application::SatelliteState>("SatelliteState", 1000);
+  ros::Publisher satStatePub = n.advertise<satellite_flight_application::SatState>("SatState", 1000);
 
   ros::Subscriber targetOrbitSub = n.subscribe("TargetOrbit", 1000, targetOrbitCallback);
 
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
   while (ros::ok())
     {
-      satellite_flight_application::SatelliteStateVector srv;
+      satellite_flight_application::SatelliteState srv;
       if (satStateClient.call(srv))
 	{
 	  ROS_INFO("Got state vector from satellite bus.");
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	  satStateClient.waitForExistence(ros::Duration(-1));
 	}
 
-      satellite_flight_application::SatelliteState satState;
+      satellite_flight_application::SatState satState;
 
       satStatePub.publish(satState);
 
