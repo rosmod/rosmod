@@ -6,8 +6,6 @@
 ros::Publisher targetOrbitPub;
 std::string nodeName;
 
-std::vector<std::string> satNames;
-
 void satCommandCallback(const cluster_flight_application::GroundCommand::ConstPtr& command)
 {
   ROS_INFO("I got a satellite command!");
@@ -40,7 +38,7 @@ int main(int argc, char **argv)
 
   targetOrbitPub = n.advertise<cluster_flight_application::TargetOrbit>("TargetOrbit", 1000);
 
-  ROS_INFO("Ready to receive commands and determine new orbits");
+  ROS_INFO("Ready to receive commands and determine new orbits; running on satellite %s", nodeName.c_str());
 
   ros::spin();
 
