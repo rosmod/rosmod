@@ -5,6 +5,8 @@ I have updated the RMUb0 VM to have ROS (only ros-comm, following http://wiki.ro
 
 There is a python program in the demo folder, nodeActorLauncher.py, which you can use to manage the execution of the actors in the demo.  Either you can pass the actors to the program as command line parameters and it will run them for the specified duration (default=10 seconds) before killing them, or you can tell it to listen on a UDP socket (default is 7777).
 
+Additionally, there is a python program, cleanup.py, which you can use to kill any actor processes left behind if the nodeActorLauncher crashes (or if you just want to kill processes for fun...).
+
 The steps required to run the demo on multiple VMs are:
 
     0. Make copies of the main VM
