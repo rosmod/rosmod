@@ -1,6 +1,0 @@
-time anomalyImpact
-duration anomalyDuration
-float64 anomalyX
-float64 anomalyY
-float64 anomalyZ
-float64 anomalyRadius
