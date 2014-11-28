@@ -1,3 +1,4 @@
+int64 sat_id
 float64 inclination
 float64 longitudeAN
 float64 argumentOfPeriapsis

@@ -1,5 +1,5 @@
-float64 thrustPercent
-duration thrustTime
-time thrustStart
+int64 thruster_id
+float64 amount
+float64 duration
 ---
-int8 retVal
+int64 retVal
