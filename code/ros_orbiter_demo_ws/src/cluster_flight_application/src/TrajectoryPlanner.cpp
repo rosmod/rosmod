@@ -4,24 +4,33 @@
 #include "cluster_flight_application/TargetOrbit.h"
 
 ros::Publisher targetOrbitPub;
+std::string nodeName;
+
+std::vector<std::string> satNames;
 
 void satCommandCallback(const cluster_flight_application::GroundCommand::ConstPtr& command)
 {
   ROS_INFO("I got a satellite command!");
   ROS_INFO("Calculating new orbit");
-  ROS_INFO("Publishing new target orbit");
 
   cluster_flight_application::TargetOrbit orbit;
+  ROS_INFO("Publishing new target orbit");
   targetOrbitPub.publish(orbit);
 }
 
 void satStateCallback(const cluster_flight_application::SatState::ConstPtr& state)
 {
-  ROS_INFO("I got a satellite state!");
+  ROS_INFO("I got a satellite state from satellite %s",state.sat_id.c_str());
 }
 
 int main(int argc, char **argv)
 {
+  if ( argc != 2)
+    {
+      ROS_INFO("usage: TrajectoryPlanner_a <satellite name>");
+      return 1;
+    }
+  nodeName = argv[1];
   ros::init(argc, argv, "TrajectoryPlanner_a");
 
   ros::NodeHandle n;

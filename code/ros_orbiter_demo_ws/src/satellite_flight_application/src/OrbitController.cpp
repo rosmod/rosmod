@@ -6,11 +6,12 @@
 #include <cstdlib>
 
 ros::ServiceClient thrusterControlClient;
+std::string nodeName;
 
 void targetOrbitCallback(const satellite_flight_application::TargetOrbit::ConstPtr& orbit)
 {
   ROS_INFO("I got a new target orbit!");
-  ROS_INFO("Activating the thrusters to achieve new orbit");
+  ROS_INFO("Activating satellite %s thrusters to achieve new orbit", nodeName.c_str());
 
   satellite_flight_application::ThrusterComm srv;
   if (thrusterControlClient.call(srv))
@@ -31,10 +32,11 @@ int main(int argc, char **argv)
       ROS_INFO("usage: OrbitController_a <satellite name>");
       return 1;
     }
-  std::string nodeName = "OrbitController_a";
-  nodeName += argv[1];
+  std::string actorName = "OrbitController_a";
+  actorName += argv[1];
+  nodeName = argv[1];
 
-  ros::init(argc, argv, nodeName.c_str());
+  ros::init(argc, argv, actorName.c_str());
 
   ros::NodeHandle n;
 
@@ -62,16 +64,16 @@ int main(int argc, char **argv)
       satellite_flight_application::SatelliteState srv;
       if (satStateClient.call(srv))
 	{
-	  ROS_INFO("Got state vector from satellite bus.");
+	  ROS_INFO("Got state vector from satellite %s bus", nodeName.c_str());
 	}
       else
 	{
-	  ROS_ERROR("Failed to get satellite state vector.");
+	  ROS_ERROR("Failed to get satellite state vector for satellite %s.", nodeName.c_str());
 	  satStateClient.waitForExistence(ros::Duration(-1));
 	}
 
       satellite_flight_application::SatState satState;
-
+      satState.sat_id = nodeName;
       satStatePub.publish(satState);
 
       ros::spinOnce();

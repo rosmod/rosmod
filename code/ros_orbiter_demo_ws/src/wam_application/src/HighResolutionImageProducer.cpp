@@ -3,8 +3,16 @@
 
 #include <sstream>
 
+std::string nodeName;
+
 int main(int argc, char **argv)
 {
+  if ( argc != 2)
+    {
+      ROS_INFO("usage: HighResolution_a <satellite name>");
+      return 1;
+    }
+  nodeName = argv[1];
   ros::init(argc, argv, "HighResolution_a");
 
   ros::NodeHandle n;
@@ -21,7 +29,7 @@ int main(int argc, char **argv)
 
       hrImage_pub.publish(highResImgVec);
 
-      ROS_INFO("Published High Resolution Image");
+      ROS_INFO("Published High Resolution Image from satellite %s", nodeName.c_str());
 
       ros::spinOnce();
 
