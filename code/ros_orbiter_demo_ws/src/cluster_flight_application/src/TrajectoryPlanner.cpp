@@ -20,7 +20,7 @@ void satCommandCallback(const cluster_flight_application::GroundCommand::ConstPt
 
 void satStateCallback(const cluster_flight_application::SatState::ConstPtr& state)
 {
-  ROS_INFO("I got a satellite state from satellite %s",state.sat_id.c_str());
+  ROS_INFO("I got a satellite state from satellite %s",state->sat_id.c_str());
 }
 
 int main(int argc, char **argv)
