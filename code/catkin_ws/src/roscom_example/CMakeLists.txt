@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(roscom_example)
+project(rosmod_example)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -80,7 +80,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES roscom_example
+#  LIBRARIES rosmod_example
 #  CATKIN_DEPENDS roscpp rospy std_msgs
   CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
@@ -98,19 +98,19 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(roscom_example
-#   src/${PROJECT_NAME}/roscom_example.cpp
+# add_library(rosmod_example
+#   src/${PROJECT_NAME}/rosmod_example.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(roscom_example_node src/roscom_example_node.cpp)
+# add_executable(rosmod_example_node src/rosmod_example_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(roscom_example_node roscom_example_generate_messages_cpp)
+# add_dependencies(rosmod_example_node rosmod_example_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(roscom_example_node
+# target_link_libraries(rosmod_example_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -129,7 +129,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS roscom_example roscom_example_node
+# install(TARGETS rosmod_example rosmod_example_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -154,7 +154,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_roscom_example.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_rosmod_example.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
@@ -166,21 +166,21 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(talker src/talker.cpp)
 target_link_libraries(talker ${catkin_LIBRARIES})
-add_dependencies(talker beginner_tutorials_generate_messages_cpp)
+add_dependencies(talker rosmod_example_generate_messages_cpp)
 
 add_executable(listener src/listener.cpp)
 target_link_libraries(listener ${catkin_LIBRARIES})
-add_dependencies(listener beginner_tutorials_generate_messages_cpp)
+add_dependencies(listener rosmod_example_generate_messages_cpp)
 
 add_executable(add_two_ints_server src/add_two_ints_server.cpp)
 target_link_libraries(add_two_ints_server ${catkin_LIBRARIES})
-add_dependencies(add_two_ints_server beginner_tutorials_gencpp)
+add_dependencies(add_two_ints_server rosmod_example_gencpp)
 
 add_executable(add_two_ints_client src/add_two_ints_client.cpp)
 target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
-add_dependencies(add_two_ints_client beginner_tutorials_gencpp)
+add_dependencies(add_two_ints_client rosmod_example_gencpp)
 
 # this sample is used to test callbacks and callbackqueues
 add_executable(listener_QueueCallbacks src/listener_QueueCallbacks.cpp)
 target_link_libraries(listener_QueueCallbacks ${catkin_LIBRARIES})
-add_dependencies(listener_QueueCallbacks beginner_tutorials_generate_messages_cpp)
+add_dependencies(listener_QueueCallbacks rosmod_example_generate_messages_cpp)

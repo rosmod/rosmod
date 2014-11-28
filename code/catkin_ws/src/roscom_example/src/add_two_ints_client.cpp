@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "roscom_example/AddTwoInts.h"
+#include "rosmod_example/AddTwoInts.h"
 #include <cstdlib>
 
 int main(int argc, char **argv)
@@ -12,8 +12,8 @@ int main(int argc, char **argv)
     }
 
   ros::NodeHandle n;
-  ros::ServiceClient client = n.serviceClient<roscom_example::AddTwoInts>("add_two_ints");
-  roscom_example::AddTwoInts srv;
+  ros::ServiceClient client = n.serviceClient<rosmod_example::AddTwoInts>("add_two_ints");
+  rosmod_example::AddTwoInts srv;
   srv.request.a = atoll(argv[1]);
   srv.request.b = atoll(argv[2]);
   while (!client.waitForExistence(ros::Duration(0.1))) { // -1 here means wait forever

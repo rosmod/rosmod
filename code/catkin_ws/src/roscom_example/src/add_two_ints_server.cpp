@@ -1,8 +1,8 @@
 #include "ros/ros.h"
-#include "roscom_example/AddTwoInts.h"
+#include "rosmod_example/AddTwoInts.h"
 
-bool add(roscom_example::AddTwoInts::Request  &req,
-         roscom_example::AddTwoInts::Response &res)
+bool add(rosmod_example::AddTwoInts::Request  &req,
+         rosmod_example::AddTwoInts::Response &res)
 {
   res.sum = req.a + req.b;
   ROS_INFO("request: x=%ld, y=%ld", (long int)req.a, (long int)req.b);
