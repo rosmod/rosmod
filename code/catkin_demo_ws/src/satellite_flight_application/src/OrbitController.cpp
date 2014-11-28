@@ -28,10 +28,10 @@ int main(int argc, char **argv)
 {
   if ( argc != 2)
     {
-      ROS_INFO("usage: BusActor <satellite name>");
+      ROS_INFO("usage: OrbitController_a <satellite name>");
       return 1;
     }
-  std::string nodeName = "OrbitControllerActor";
+  std::string nodeName = "OrbitController_a";
   nodeName += argv[1];
 
   ros::init(argc, argv, nodeName.c_str());

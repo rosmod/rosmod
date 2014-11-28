@@ -22,7 +22,7 @@ void satStateCallback(const cluster_flight_application::SatState::ConstPtr& stat
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "TargetOrbitActor");
+  ros::init(argc, argv, "TrajectoryPlanner_a");
 
   ros::NodeHandle n;
 

@@ -7,10 +7,10 @@ int main(int argc, char **argv)
 {
   if ( argc != 3)
     {
-      ROS_INFO("usage: GndActor <satellite name> <0,1 to disable/enable publishing>");
+      ROS_INFO("usage: GroundInterface_a <satellite name> <0,1 to disable/enable publishing>");
       return 1;
     }
-  std::string nodeName = "GndActor";
+  std::string nodeName = "GroundInterface_a";
   nodeName += argv[1];
   ros::init(argc, argv, nodeName.c_str());
 

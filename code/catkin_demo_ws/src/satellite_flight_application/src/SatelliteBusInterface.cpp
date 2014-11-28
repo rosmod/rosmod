@@ -20,10 +20,10 @@ int main(int argc, char **argv)
 {
   if ( argc != 2)
     {
-      ROS_INFO("usage: BusActor <satellite name>");
+      ROS_INFO("usage: SatelliteBusInterface_a <satellite name>");
       return 1;
     }
-  std::string nodeName = "BusActor";
+  std::string nodeName = "SatelliteBusInterface_a";
   nodeName += argv[1];
 
   ros::init(argc, argv, nodeName.c_str());
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
   ros::ServiceServer satStateVectorService = n.advertiseService(stateVectorServiceName, getSatStateVector);
   ros::ServiceServer satThrusterControlService = n.advertiseService(thrusterServiceName, activateSatelliteThruster);
 
-  ROS_INFO("Satellite Bus %s operational.",argv[1]);
+  ROS_INFO("SatelliteBusInterface %s operational.",argv[1]);
 
   ros::spin();
 
