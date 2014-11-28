@@ -54,10 +54,16 @@ Example commands:
 	sudo sendip -p ipv4 -is 192.168.1.74 -p udp -us 5070 -ud 7777 -d "START ./satellite_flight_application/GroundInterface_a Beta 1" -v 192.168.1.77
 	sudo sendip -p ipv4 -is 192.168.1.74 -p udp -us 5070 -ud 7777 -d "SHUTDOWN" -v 192.168.1.77
 
-No actors require command line arguments except for the satellite_flight_application actors which have the following signatures:
+All actors require command line arguments:
 
    	  GroundInterface_a <satellite name> <0,1 to disable/enable publishing>
 	  SatelliteBusInterface_a <satellite name>
 	  OrbitController_a <satellite name>
+
+	  TrajectoryPlanner_a <satellite name>
+
+	  LowResolution_a <satellite name>
+	  HighResolution_a <satellite name>
+	  ImageProcessor_a <satellite name>
 
 Each of these actors requires the satellite name at minimum because they are the actors which are duplicated accross nodes, so they must create a globally unique actor name using their application actor name + their node name.  
