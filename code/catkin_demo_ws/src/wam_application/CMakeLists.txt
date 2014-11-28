@@ -47,8 +47,8 @@ find_package(catkin REQUIRED COMPONENTS
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  HRImage.msg
-  LRImage.msg
+  HRImageVector.msg
+  LRImageVector.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -166,13 +166,13 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(HRActor src/HighResolutionImageProducer.cpp)
-target_link_libraries(HRActor ${catkin_LIBRARIES})
-add_dependencies(HRActor wma_generate_messages_cpp)
+add_executable(HighResolution_a src/HighResolutionImageProducer.cpp)
+target_link_libraries(HighResolution_a ${catkin_LIBRARIES})
+add_dependencies(HighResolution_a wma_generate_messages_cpp)
 
-add_executable(LRActor src/LowResolutionImageProducer.cpp)
-target_link_libraries(LRActor ${catkin_LIBRARIES})
-add_dependencies(LRActor wma_generate_messages_cpp)
+add_executable(LowResolution_a src/LowResolutionImageProducer.cpp)
+target_link_libraries(LowResolution_a ${catkin_LIBRARIES})
+add_dependencies(LowResolution_a wma_generate_messages_cpp)
 
 add_executable(ImageProcessor src/ImageProcessor.cpp)
 target_link_libraries(ImageProcessor ${catkin_LIBRARIES})
