@@ -10,7 +10,10 @@ The orbiter demo consists of many components/actors grouped into applications.  
 
 Steps:
 ------
-It is assumed the ROS is already installed on the system.  To create this demo (and set up the workspace) follow these instructions:
+It is assumed the ROS is already installed on the system.  If it is not installed, you can install it by following:
+http://wiki.ros.org/indigo/Installation/Ubuntu
+
+To create this demo (and set up the workspace) follow these instructions:
 
 (if you haven't done so, tell ROS what the editor you want to use is):
 http://wiki.ros.org/ROS/Tutorials/UsingRosEd

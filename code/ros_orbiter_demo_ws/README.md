@@ -1,7 +1,7 @@
 ROS Orbiter Demo:
 -----------------
 
-I have updated the RMUb0 VM to have ROS (only ros-comm) installed and have the ros demo binaries copied over into ~/demo/{satellite_flight_application,cluster_flight_application,wam_application}/
+I have updated the RMUb0 VM to have ROS (only ros-comm, following http://wiki.ros.org/indigo/Installation/Ubuntu ) installed and have the ros demo binaries copied over into ~/demo/{satellite_flight_application,cluster_flight_application,wam_application}/
 
 There is a python program in the demo folder, nodeActorLauncher.py, which you can use to manage the execution of the actors in the demo.  Either you can pass the actors to the program as command line parameters and it will run them for the specified duration (default=10 seconds) before killing them, or you can tell it to listen on a UDP socket (default is 7777).
 
