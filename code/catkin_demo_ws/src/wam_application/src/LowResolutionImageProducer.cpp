@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "wma/LRImageVector.h"
+#include "wam_application/LRImageVector.h"
 
 #include <sstream>
 
@@ -9,13 +9,13 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Publisher lrImage_pub = n.advertise<wma::LRImageVector>("LRImageVector", 1000);
+  ros::Publisher lrImage_pub = n.advertise<wam_application::LRImageVector>("LRImageVector", 1000);
 
   ros::Rate loop_rate(10);
 
   while (ros::ok())
     {
-      wma::LRImageVector lowResImgVec;
+      wam_application::LRImageVector lowResImgVec;
 
       lowResImgVec.img[0] = 400;
 

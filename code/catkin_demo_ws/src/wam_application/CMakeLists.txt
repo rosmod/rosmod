@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(wma)
+project(wam_application)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -82,7 +82,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES wma
+#  LIBRARIES wam_application
 #  CATKIN_DEPENDS roscpp rospy std_msgs
   CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
@@ -100,19 +100,19 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(wma
-#   src/${PROJECT_NAME}/wma.cpp
+# add_library(wam_application
+#   src/${PROJECT_NAME}/wam_application.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(wma_node src/wma_node.cpp)
+# add_executable(wam_application_node src/wam_application_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(wma_node wma_generate_messages_cpp)
+# add_dependencies(wam_application_node wam_application_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(wma_node
+# target_link_libraries(wam_application_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -131,7 +131,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS wma wma_node
+# install(TARGETS wam_application wam_application_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -156,7 +156,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_wma.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_wam_application.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
@@ -168,12 +168,12 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(HighResolution_a src/HighResolutionImageProducer.cpp)
 target_link_libraries(HighResolution_a ${catkin_LIBRARIES})
-add_dependencies(HighResolution_a wma_generate_messages_cpp)
+add_dependencies(HighResolution_a wam_application_generate_messages_cpp)
 
 add_executable(LowResolution_a src/LowResolutionImageProducer.cpp)
 target_link_libraries(LowResolution_a ${catkin_LIBRARIES})
-add_dependencies(LowResolution_a wma_generate_messages_cpp)
+add_dependencies(LowResolution_a wam_application_generate_messages_cpp)
 
 add_executable(ImageProcessor src/ImageProcessor.cpp)
 target_link_libraries(ImageProcessor ${catkin_LIBRARIES})
-add_dependencies(ImageProcessor wma_generate_messages_cpp)
+add_dependencies(ImageProcessor wam_application_generate_messages_cpp)

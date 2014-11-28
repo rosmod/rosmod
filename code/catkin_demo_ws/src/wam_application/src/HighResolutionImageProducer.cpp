@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "wma/HRImageVector.h"
+#include "wam_application/HRImageVector.h"
 
 #include <sstream>
 
@@ -9,13 +9,13 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Publisher hrImage_pub = n.advertise<wma::HRImageVector>("HRImageVector", 1000);
+  ros::Publisher hrImage_pub = n.advertise<wam_application::HRImageVector>("HRImageVector", 1000);
 
   ros::Rate loop_rate(1);
 
   while (ros::ok())
     {
-      wma::HRImageVector highResImgVec;
+      wam_application::HRImageVector highResImgVec;
 
       highResImgVec.img[0] = 500;
 

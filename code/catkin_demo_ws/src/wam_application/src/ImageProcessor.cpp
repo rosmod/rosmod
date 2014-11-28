@@ -1,13 +1,13 @@
 #include "ros/ros.h"
-#include "wma/HRImageVector.h"
-#include "wma/LRImageVector.h"
+#include "wam_application/HRImageVector.h"
+#include "wam_application/LRImageVector.h"
 
-void HRImgCallback(const wma::HRImageVector::ConstPtr& img)
+void HRImgCallback(const wam_application::HRImageVector::ConstPtr& img)
 {
   ROS_INFO("Got high-resolution image.");
 }
 
-void LRImgCallback(const wma::LRImageVector::ConstPtr& img)
+void LRImgCallback(const wam_application::LRImageVector::ConstPtr& img)
 {
   ROS_INFO("Got low-resolution image.");
 }
