@@ -31,4 +31,6 @@ Components:
 -----------
 Component0 publishes once (in Init) on the ComponentName topic, and subscribes to the topic.  It also has a timer (Timer0) which does nothing but print to the console.  
 
-Component1 has a timer (Timer0) in which it publishes to the ComponentName topic.  
+Component1 has a timer (Timer0) in which it publishes to the ComponentName topic.  It also provides a service of ComponentService.  In this service it also publishes on the ComponentName topic.
+
+Component2 has a timer (Timer0) in which it invokes the ComponentService service.  
