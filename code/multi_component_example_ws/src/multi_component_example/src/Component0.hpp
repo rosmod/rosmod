@@ -33,6 +33,8 @@ namespace Node1
     void startUp();
     // queueThread processes queue actions
     void processQueue();
+
+    ~Component0();  // may need explicit destructor to cleanly destroy the members
   private:
     ros::Timer Timer0;            // generated if model has Timer0
     ros::Subscriber compNameSub;  // generated if model has compNameSub

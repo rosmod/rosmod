@@ -8,6 +8,7 @@ void Component0::Init(const ros::TimerEvent& event)
   compName.name = "Component0";
   ROS_INFO("Publishing component name %s",compName.name.c_str());
   compNamePub.publish(compName);
+  initOneShotTimer.stop();
 }
 
 void Component0::OnOneData(const multi_component_example::ComponentName::ConstPtr& compName)
@@ -73,4 +74,14 @@ void Component0::processQueue()
     {
       this->compQueue.callAvailable(ros::WallDuration(0.01));
     }
+}
+
+Component0::~Component0()
+{
+  compQueue.disable();
+  initOneShotTimer.stop();
+
+  Timer0.stop();
+  compNamePub.shutdown();
+  compNameSub.shutdown();
 }
