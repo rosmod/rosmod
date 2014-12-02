@@ -7,6 +7,10 @@ Component::~Component()
   initOneShotTimer.stop();
 }
 
+void Component::Init(const ros::TimerEvent& event)
+{
+}
+
 void Component::processQueue()
 {  
   ros::NodeHandle nh;

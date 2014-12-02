@@ -9,11 +9,11 @@
 class Component
 {
 public:
-  // These functions must be overridden
-  // Init will be generated with BL supplied by user
-  virtual void Init(const ros::TimerEvent& event) = 0;
   // StartUp will be completely generated
   virtual void startUp() = 0;
+
+  // Init will be generated with BL supplied by user
+  virtual void Init(const ros::TimerEvent& event);
 
   // queueThread processes queue actions
   void processQueue();
