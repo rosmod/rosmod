@@ -7,7 +7,9 @@ This example shows a way of running multiple components inside a node in an obje
 
 Messages:
 ---------
-ComponentName is the only type of message and contains only a string, name.
+ComponentName is the only type of message of the form
+
+	      string name
 
 Services:
 ---------
