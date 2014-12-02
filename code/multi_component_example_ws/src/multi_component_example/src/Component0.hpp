@@ -34,14 +34,16 @@ namespace Node1
     // queueThread processes queue actions
     void processQueue();
 
-    ~Component0();  // may need explicit destructor to cleanly destroy the members
+    // required for clean shutdown
+    ~Component0();
+
   private:
     ros::Timer Timer0;            // generated if model has Timer0
     ros::Subscriber compNameSub;  // generated if model has compNameSub
     ros::Publisher compNamePub;   // generated if model has compNamePub
 
-    ros::Timer initOneShotTimer;               // timer for calling init
-    ros::CallbackQueue compQueue;        // single callbackQueue for the component
+    ros::Timer initOneShotTimer;  // timer for calling init
+    ros::CallbackQueue compQueue; // single callbackQueue for the component
   };
 };
 
