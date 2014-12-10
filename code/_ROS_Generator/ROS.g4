@@ -20,7 +20,7 @@ compileUnit
  * A node consists of one or more components
  */
 ros_node
-	:	(ros_components)*
+	:	(ros_component)*
 	;
 
 /*
@@ -28,7 +28,7 @@ ros_node
  * (1) Starts with the keyword 'Component' followed by a component name
  * (2) Within curly braces, the component contains zero or more ports/timers
  */
-ros_components
+ros_component
 	:	'Component' ros_component_name '{'
 				(ros_ports | ros_timer)*
 		'}'
