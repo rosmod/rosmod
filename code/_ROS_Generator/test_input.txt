@@ -7,27 +7,20 @@
  */
 Component Component_1 {
 
-	Facet facet_name 
-	{
-		Service service_1;
-		Service service_2;
-	}
+	Provides Service service_1;
+	Provides Service service_2;
 
-	Receptacle receptacle_name 
-	{
-		Service service_3;
-		Service service_4;
-	}
+	Requires Service service_3;
+	Requires Service service_4;
 
 	Publisher publisher_name topic_name;
-
 	Subscriber subscriber_name topic_name;
 
 	Timer timer_name
 	{
 		one_shot_timer = true;
-		period = 50.0;
-		offset = 0.0;
+		period = 50.0 s;
+		offset = 0.0 s;
 	}
 	
 }
@@ -37,24 +30,17 @@ Component Component_1 {
  */
 Component Component_2 {
 
+	Provides Service service_3;
+	Provides Service service_4;
 
-	Facet facet_name
-	{
-		Service service_3;
-		Service service_4;
-	}
-
-	Receptacle receptacle_name
-	{
-		Service service_1;
-		Service service_2;
-	}
+	Requires Service service_1;
+	Requires Service service_2;
 
 	Timer timer_name
 	{
 		one_shot_timer = false;
-		period = 100.0;
-		offset = 20.0;
+		period = 100.0 s;
+		offset = 20.0 s;
 	}
 
 }

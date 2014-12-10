@@ -47,8 +47,8 @@ ros_component_name
  * (4) Subscriber - Subscribed to a topic
  */
 ros_ports
-	:	( 'Facet' port_name '{' (service)* '}'
-		| 'Receptacle' port_name '{' (service)* '}'
+	:	( 'Provides' (service)
+		| 'Requires' (service)
 		| 'Publisher' port_name topic ';'
 		| 'Subscriber' port_name topic ';'
 		)
@@ -92,8 +92,8 @@ timer_name
 // Timer Properties - specify the period and offset of the timer
 timer_properties
 	:	('one_shot_timer' '=' is_one_shot_timer ';')
-		('period' '=' timer_period ';')
-		('offset' '=' timer_offset ';')
+		('period' '=' timer_period unit ';')
+		('offset' '=' timer_offset unit ';')
 	;
 
 // Is the component timer a one-shot timer
@@ -109,6 +109,11 @@ timer_period
 // Timer Offset
 timer_offset
 	:	FLOAT
+	;
+
+// Unit
+unit
+	:	('s' | 'ms' | 'us' | 'ns')
 	;
 
 // An ID - One or more alphanumeric characters that must start with either an alphabet/underscore.
