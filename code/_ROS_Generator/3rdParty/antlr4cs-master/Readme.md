@@ -165,23 +165,3 @@ The following table describes the properties available for customizing the code 
 5. Save and close the project file
 6. Right click the project in **Solution Explorer** and select **Reload Project**
 
-## Grammars
-
-*TODO*
-
-## Custom Token Specifications (*.tokens)
-
-*TODO*
-
-## Generated Code
-
-*TODO*
-
-## Extra Features in the C# Target
-
-*TODO*
-
-## Example Grammars
-
-*TODO*
-
