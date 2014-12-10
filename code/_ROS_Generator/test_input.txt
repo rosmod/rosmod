@@ -19,7 +19,7 @@ Component Component_1 {
 	Timer timer_name
 	{
 		one_shot_timer = true;
-		period = 50.0 s;
+		period = 0.0 s;
 		offset = 0.0 s;
 	}
 	

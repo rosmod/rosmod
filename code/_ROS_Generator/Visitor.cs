@@ -69,10 +69,34 @@ namespace ROS_Generator
         // List of all components in ROS Node
         public List<Component> ros_components = new List<Component>();
 
-
+        // Visit component
         public override string VisitRos_component(ROSParser.Ros_componentContext context)
         {
             return base.VisitRos_component(context);
+        }
+
+        // Visit component name 
+        public override string VisitRos_component_name(ROSParser.Ros_component_nameContext context)
+        {
+            return base.VisitRos_component_name(context);
+        }
+
+        // Visit service name
+        public override string VisitService_name(ROSParser.Service_nameContext context)
+        {
+            return base.VisitService_name(context);
+        }
+
+        // Visit Publisher/Subscriber port name
+        public override string VisitPort_name(ROSParser.Port_nameContext context)
+        {
+            return base.VisitPort_name(context);
+        }
+
+        // Visit topic name
+        public override string VisitTopic_name(ROSParser.Topic_nameContext context)
+        {
+            return base.VisitTopic_name(context);
         }
 
     }
