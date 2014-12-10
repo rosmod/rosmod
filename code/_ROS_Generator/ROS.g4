@@ -81,12 +81,34 @@ topic_name
 
 // ROS Timer - more needed here (timer options)
 ros_timer
-	:	'Timer' timer_name ';'
+	:	'Timer' timer_name '{' (timer_properties) '}'
 	;
 
 // Name of ROS Timer - follows rules of an ID
 timer_name
 	:	ID
+	;
+
+// Timer Properties - specify the period and offset of the timer
+timer_properties
+	:	('one_shot_timer' '=' is_one_shot_timer ';')
+		('period' '=' timer_period ';')
+		('offset' '=' timer_offset ';')
+	;
+
+// Is the component timer a one-shot timer
+is_one_shot_timer
+	:	('true' | 'false')
+	;
+
+// Timer Period
+timer_period
+	:	FLOAT
+	;
+
+// Timer Offset
+timer_offset
+	:	FLOAT
 	;
 
 // An ID - One or more alphanumeric characters that must start with either an alphabet/underscore.
@@ -111,7 +133,7 @@ FLOAT
 
 // A boolean variable - must be either true or false
 BOOL
-	:	('true' | 'false')
+	:	( 'true' | 'false' )
 	;
 
 // White spaces and escape codes are ignored

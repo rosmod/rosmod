@@ -49,7 +49,10 @@ namespace ROS_Generator
         public class Timer
         {
             public string name;
-            // Add timer options here - will be specified in grammar and populated here
+            // TImer Properties
+            public bool one_shot_timer;
+            public float period;
+            public float offset;
         }
 
         // ROS Component

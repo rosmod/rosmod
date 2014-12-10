@@ -23,8 +23,13 @@ Component Component_1 {
 
 	Subscriber subscriber_name topic_name;
 
-	Timer timer_name;
-
+	Timer timer_name
+	{
+		one_shot_timer = true;
+		period = 50.0;
+		offset = 0.0;
+	}
+	
 }
 
 /*
@@ -45,6 +50,11 @@ Component Component_2 {
 		Service service_2;
 	}
 
-	Timer timer_name;
+	Timer timer_name
+	{
+		one_shot_timer = false;
+		period = 100.0;
+		offset = 20.0;
+	}
 
 }
