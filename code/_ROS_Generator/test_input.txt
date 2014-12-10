@@ -1,0 +1,50 @@
+/*
+ * ROS Node consists of one or more components
+ */
+
+/*
+ * Component 1
+ */
+Component Component_1 {
+
+	Facet facet_name 
+	{
+		Service service_1;
+		Service service_2;
+	}
+
+	Receptacle receptacle_name 
+	{
+		Service service_3;
+		Service service_4;
+	}
+
+	Publisher publisher_name topic_name;
+
+	Subscriber subscriber_name topic_name;
+
+	Timer timer_name;
+
+}
+
+/*
+ * Component 2
+ */
+Component Component_2 {
+
+
+	Facet facet_name
+	{
+		Service service_3;
+		Service service_4;
+	}
+
+	Receptacle receptacle_name
+	{
+		Service service_1;
+		Service service_2;
+	}
+
+	Timer timer_name;
+
+}
