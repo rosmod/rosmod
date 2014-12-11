@@ -33,6 +33,11 @@ namespace ROS_Generator
             // Visit nodes on the parsed tree            
             visitor.Visit(tree);
 
+            // Create a Printer Object 
+            Printer printer = new Printer();
+
+            // Print parsed information about ros node
+            printer.print_ros_node(visitor.ros_components);
 
             Console.ReadLine();
         }
