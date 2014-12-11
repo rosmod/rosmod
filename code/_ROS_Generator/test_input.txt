@@ -18,7 +18,6 @@ Component Component_1 {
 
 	Timer timer_name
 	{
-		one_shot_timer = true;
 		period = 0.0 s;
 		offset = 0.0 s;
 	}
@@ -38,7 +37,6 @@ Component Component_2 {
 
 	Timer timer_name
 	{
-		one_shot_timer = false;
 		period = 100.0 s;
 		offset = 20.0 s;
 	}

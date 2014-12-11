@@ -29,8 +29,12 @@ ros_node
  * (2) Within curly braces, the component contains zero or more ports/timers
  */
 ros_component
-	:	'Component' ros_component_name '{'
-				(ros_ports | ros_timer)*
+	:	'Component' ros_component_name 
+		'{'
+			 ( ros_service 
+			 | ros_pub_sub 
+			 | ros_timer 
+			 )*
 		'}'
 	;
 
@@ -40,32 +44,39 @@ ros_component_name
 	;
 
 /*
- * ROS Ports
- * (1) Facet - Provides an interface
- * (2) Receptacle - Requires an interface
- * (3) Publisher - Publishes on a topic
- * (4) Subscriber - Subscribed to a topic
+ * ROS Service specification. Can be either:
+ * (1) Provision - Name of the provided service
+ * (2) Requirement - Name of the required service
  */
-ros_ports
-	:	( 'Provides' (service)
-		| 'Requires' (service)
-		| 'Publisher' port_name topic ';'
-		| 'Subscriber' port_name topic ';'
+ros_service
+	:	( 'Provides' 'Service' service_name ';'
+		| 'Requires' 'Service' service_name ';'
 		)
-	; 
+	;
 
-// Port Name - follows rules of an ID
-port_name
+// Service Name - follows the rules of an ID
+service_name
 	:	ID
 	;
 
-// ROS Service - starts with the keyword 'Service' followed by a valid service name
-service
-	:	'Service' service_name ';'
+/*
+ * ROS Publish/Subscribe specification. Can be either:
+ * (1) Publisher - port name followed by topic
+ * (2) Subscriber - port name followed by topic
+ */
+ros_pub_sub
+	:	( 'Publisher' publisher topic ';'
+		| 'Subscriber' subscriber topic ';'
+		)
+	; 
+
+// Publisher Port Name - follows rules of an ID
+publisher
+	:	ID
 	;
 
-// Name of ROS Service - follows rules of an ID
-service_name
+// Subscriber Port Name - follows rules of an ID
+subscriber
 	:	ID
 	;
 
@@ -74,14 +85,20 @@ topic
 	:	ID
 	;
 
-// Name of ROS Topic - follows rules of an ID
-topic_name
-	:	ID
-	;
-
-// ROS Timer - more needed here (timer options)
+/*
+ * ROS Timer. Contains:
+ * (1) Keyword 'Timer'
+ * (2) Timer name
+ * (3) Timer Properties 
+ *     - Timer Period - if period is set to zero, it is a one-shot timer
+ *	   - Timer Offset - offset from start of component execution
+ */
 ros_timer
-	:	'Timer' timer_name '{' (timer_properties) '}'
+	:	'Timer' timer_name 
+		'{' 
+			('period' '=' timer_period period_unit ';')
+			('offset' '=' timer_offset offset_unit ';')
+		'}'
 	;
 
 // Name of ROS Timer - follows rules of an ID
@@ -89,30 +106,23 @@ timer_name
 	:	ID
 	;
 
-// Timer Properties - specify the period and offset of the timer
-timer_properties
-	:	('one_shot_timer' '=' is_one_shot_timer ';')
-		('period' '=' timer_period unit ';')
-		('offset' '=' timer_offset unit ';')
-	;
-
-// Is the component timer a one-shot timer
-is_one_shot_timer
-	:	('true' | 'false')
-	;
-
-// Timer Period
+// Timer Period - If 0.0, this is a one-shot timer
 timer_period
-	:	FLOAT
+	:	DOUBLE
+	;
+
+// Unit for Timer period
+period_unit
+	:	('s' | 'ms' | 'us' | 'ns')
 	;
 
 // Timer Offset
 timer_offset
-	:	FLOAT
+	:	DOUBLE
 	;
 
-// Unit
-unit
+// Unit for Timer offset
+offset_unit
 	:	('s' | 'ms' | 'us' | 'ns')
 	;
 
@@ -131,8 +141,8 @@ INT
 	:	DIGIT + 
 	;
 
-// A floating point number
-FLOAT
+// A Double-precision floating point number
+DOUBLE
 	:	(DIGIT)+ '.' (DIGIT)*
 	;
 
