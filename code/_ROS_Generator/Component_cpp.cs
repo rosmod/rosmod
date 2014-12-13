@@ -9,9 +9,6 @@
 // ------------------------------------------------------------------------------
 namespace ROS_Generator
 {
-    using System.Linq;
-    using System.Text;
-    using System.Collections.Generic;
     using System;
     
     /// <summary>
@@ -27,6 +24,276 @@ namespace ROS_Generator
         /// </summary>
         public virtual string TransformText()
         {
+            this.Write("#include \"");
+            
+            #line 1 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write(".hpp\"\r\n\r\nusing namespace ");
+            
+            #line 3 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.node_name);
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n\r\n// -------------------------------------------------------\r\n// BUSINESS LOGI" +
+                    "C OF THESE FUNCTIONS SUPPLIED BY DEVELOPER\r\n// ---------------------------------" +
+                    "----------------------\r\n\r\n// Init Function\r\nvoid ");
+            
+            #line 10 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write("::Init(const ros::TimerEvent& event)\r\n{\r\n");
+            
+            #line 12 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            this.Write("// Initialize Component\r\n\r\n");
+            
+            #line 14 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            this.Write("// Stop Init Timer\r\n");
+            
+            #line 15 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            this.Write("initOneShotTimer.stop();\r\n}");
+            
+            #line 16 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.subscribers.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 17 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var sub in hpp.subscribers) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n// OnOneData Subscription handler for ");
+            
+            #line 18 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(sub.name);
+            
+            #line default
+            #line hidden
+            this.Write(" subscriber \r\nvoid ");
+            
+            #line 19 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write("::OnOneData(const ");
+            
+            #line 19 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.project_name);
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 19 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(sub.topic);
+            
+            #line default
+            #line hidden
+            this.Write("::ConstPtr& received_data)\r\n{\r\n");
+            
+            #line 21 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            this.Write("// Business Logic for ");
+            
+            #line 21 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(sub.name);
+            
+            #line default
+            #line hidden
+            this.Write(" subscriber callback \r\n}");
+            
+            #line 22 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 23 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 23 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.provided_services.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 24 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var provided in hpp.provided_services) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n// Component Service Callback\r\nbool ");
+            
+            #line 26 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write("::ComponentServiceCallback(");
+            
+            #line 26 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.project_name);
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 26 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(provided.name);
+            
+            #line default
+            #line hidden
+            this.Write("::Request  &req,\r\n");
+            
+            #line 27 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ for (int i=0; i<=hpp.comp_name.Length; i++) 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 27 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(" ");
+            
+            #line default
+            #line hidden
+            
+            #line 28 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("                              ");
+            
+            #line default
+            #line hidden
+            
+            #line 28 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.project_name);
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 28 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(provided.name);
+            
+            #line default
+            #line hidden
+            this.Write("::Response &res);\r\n{\r\n");
+            
+            #line 30 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            this.Write("// Business Logic for ");
+            
+            #line 30 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(provided.name);
+            
+            #line default
+            #line hidden
+            this.Write(" Service\r\n}");
+            
+            #line 31 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 32 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n");
+            
+            #line 33 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.timers.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 34 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var timer in hpp.timers) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n// Callback for ");
+            
+            #line 35 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(timer.name);
+            
+            #line default
+            #line hidden
+            this.Write(" timer\r\nvoid ");
+            
+            #line 36 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write("::");
+            
+            #line 36 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(timer.name);
+            
+            #line default
+            #line hidden
+            this.Write("Callback(const ros::TimerEvent& event)\r\n{\r\n");
+            
+            #line 38 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            this.Write("// Business Logic for ");
+            
+            #line 38 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(timer.name);
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n}");
+            
+            #line 39 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 40 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
             return this.GenerationEnvironment.ToString();
         }
     }
