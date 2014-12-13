@@ -1,0 +1,52 @@
+// This ROS Node consists of three components
+
+// Component 1
+Component Component_1 
+{	
+	// compNamePub publisher
+	Publisher compNamePub ComponentName;
+
+	// compNameSub subscriber
+	Subscriber compNameSub ComponentName;
+
+	// 500 ms periodic timer
+	Timer Timer0 
+	{
+		period = 0.5s;
+		offset = 0.0s;
+	}
+} 
+
+
+// Component 2
+Component Component_2
+{
+	// Service provision
+	Provides ComponentService;
+
+	// compNamePub publisher
+	Publisher compNamePub ComponentName;
+
+	// 1s periodic timer
+	Timer Timer0
+	{
+		period = 1.0s;
+		offset = 0.0s;
+	}
+
+} 
+
+// Component 3
+Component Component_3
+{
+	// Service requirement
+	Requires ComponentService;
+
+	// 2s periodic timer
+	Timer Timer_0
+	{
+		period = 2.0s;
+		offset = 0.0s;
+	}
+
+}
