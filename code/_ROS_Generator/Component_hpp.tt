@@ -40,8 +40,9 @@ namespace <#Write(node_name);#>
 	<# foreach (var provided in provided_services) { #>
 
 <#Write("            ");#>// Component Service Callback
-<#Write("            ");#>bool ComponentServiceCallback(<#Write(project_name);#>::<#Write(provided.name);#>::Request  &req,
-<#Write("                                          ");#><#Write(project_name);#>::<#Write(provided.name);#>::Response &res); 
+<#Write("            ");#>bool <#Write(provided.name);#>Callback(<#Write(project_name);#>::<#Write(provided.name);#>::Request  &req,
+<# for (int i=0; i<=provided.name.Length + 12; i++) #> <#Write(" ");#>
+<#Write("            ");#><#Write(project_name);#>::<#Write(provided.name);#>::Response &res)
 	<# } #>
 <# } #>
 <# if (timers.Count > 0) { #>

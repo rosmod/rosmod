@@ -241,7 +241,14 @@ Write("            ");
             
             #line default
             #line hidden
-            this.Write("bool ComponentServiceCallback(");
+            this.Write("bool ");
+            
+            #line 43 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+Write(provided.name);
+            
+            #line default
+            #line hidden
+            this.Write("Callback(");
             
             #line 43 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(project_name);
@@ -258,30 +265,37 @@ Write(provided.name);
             this.Write("::Request  &req,\r\n");
             
             #line 44 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
-Write("                                          ");
+ for (int i=0; i<=provided.name.Length + 12; i++) 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 44 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+Write(" ");
             
             #line default
             #line hidden
             
-            #line 44 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 45 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+Write("            ");
+            
+            #line default
+            #line hidden
+            
+            #line 45 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(project_name);
             
             #line default
             #line hidden
             this.Write("::");
             
-            #line 44 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 45 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(provided.name);
             
             #line default
             #line hidden
-            this.Write("::Response &res); \r\n\t");
-            
-            #line 45 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
- } 
-            
-            #line default
-            #line hidden
+            this.Write("::Response &res)\r\n\t");
             
             #line 46 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
@@ -290,110 +304,116 @@ Write(provided.name);
             #line hidden
             
             #line 47 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 48 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  if (timers.Count > 0) { 
             
             #line default
             #line hidden
             this.Write("\t");
             
-            #line 48 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 49 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  foreach (var timer in timers) { 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 50 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 51 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// Callback for ");
             
-            #line 50 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 51 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(timer.name);
             
             #line default
             #line hidden
             this.Write(" timer\r\n");
             
-            #line 51 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 52 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("void ");
             
-            #line 51 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 52 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(timer.name);
             
             #line default
             #line hidden
             this.Write("Callback()(const ros::TimerEvent& event);\r\n\t");
             
-            #line 52 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 53 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             
-            #line 53 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 54 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             this.Write(" \r\n");
             
-            #line 54 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 55 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// these functions\' business logic will be auto-generated:\r\n\r\n");
             
-            #line 56 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 57 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// startUp() is used to configure timers, publishers, & service providers\r\n");
             
-            #line 57 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 58 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("void startUp();\r\n\r\n");
             
-            #line 59 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 60 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// required for clean shutdown\r\n");
             
-            #line 60 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 61 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("~");
             
-            #line 60 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 61 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(comp_name);
             
             #line default
             #line hidden
             this.Write("();\r\n\r\n");
             
-            #line 62 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 63 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("        ");
             
             #line default
             #line hidden
             this.Write("private:\r\n\t");
             
-            #line 63 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 64 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  foreach (var timer in timers)
 	{ 
             
@@ -401,42 +421,42 @@ Write("        ");
             #line hidden
             this.Write("\r\n");
             
-            #line 66 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 67 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// ROS Timer - ");
             
-            #line 66 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 67 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(timer.name);
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 68 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 69 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("ros::Timer ");
             
-            #line 68 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 69 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(timer.name);
             
             #line default
             #line hidden
             this.Write(";\r\n\t");
             
-            #line 69 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 70 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\t");
             
-            #line 70 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 71 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  foreach (var sub in subscribers)
 	{ 
             
@@ -444,42 +464,42 @@ Write(timer.name);
             #line hidden
             this.Write("\r\n");
             
-            #line 73 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 74 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// ROS Subscriber - ");
             
-            #line 73 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 74 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(sub.name);
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 75 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 76 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("ros::Subscriber ");
             
-            #line 75 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 76 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(sub.name);
             
             #line default
             #line hidden
             this.Write(";\r\n\t");
             
-            #line 76 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 77 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\t");
             
-            #line 77 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 78 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  foreach (var pub in publishers)
 	{ 
             
@@ -487,42 +507,42 @@ Write(sub.name);
             #line hidden
             this.Write("\r\n");
             
-            #line 80 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 81 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// ROS Publisher - ");
             
-            #line 80 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 81 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(pub.name);
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 82 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 83 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("ros::Publisher ");
             
-            #line 82 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 83 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(pub.name);
             
             #line default
             #line hidden
             this.Write(";\r\n\t");
             
-            #line 83 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 84 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\t");
             
-            #line 84 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 85 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  foreach (var provided in provided_services)
 	{ 
             
@@ -530,42 +550,42 @@ Write(pub.name);
             #line hidden
             this.Write("\r\n");
             
-            #line 87 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 88 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// ROS Service Server - ");
             
-            #line 87 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 88 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(provided.name);
             
             #line default
             #line hidden
             this.Write("_Server\r\n");
             
-            #line 88 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 89 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("ros::ServiceServer ");
             
-            #line 88 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 89 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(provided.name);
             
             #line default
             #line hidden
             this.Write("_Server;\r\n\t");
             
-            #line 89 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 90 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\t");
             
-            #line 90 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 91 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  foreach (var required in required_services)
 	{ 
             
@@ -573,42 +593,42 @@ Write(provided.name);
             #line hidden
             this.Write("\r\n");
             
-            #line 93 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 94 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("// ROS Service Client - ");
             
-            #line 93 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 94 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(required.name);
             
             #line default
             #line hidden
             this.Write("_Client\r\n");
             
-            #line 94 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 95 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("            ");
             
             #line default
             #line hidden
             this.Write("ros::ServiceClient ");
             
-            #line 94 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 95 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write(required.name);
             
             #line default
             #line hidden
             this.Write("_Client;\r\n\t");
             
-            #line 95 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 96 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 97 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
+            #line 98 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
 Write("    ");
             
             #line default
