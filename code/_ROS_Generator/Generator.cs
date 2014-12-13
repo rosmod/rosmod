@@ -6,10 +6,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Linq;
 
 namespace ROS_Generator
 {
-    // CMakeLists template variables
+    // Extending CMakeLists template class
     public partial class CMakeLists
     {
         public string project_name;
@@ -24,7 +25,7 @@ namespace ROS_Generator
         }
     }
 
-    // Package.xml template variables
+    // Extending Package.xml template class
     public partial class package_xml
     {
         public string project_name;
@@ -35,7 +36,7 @@ namespace ROS_Generator
         }
     }
 
-    // Component template variables
+    // Extending Component base class template
     public partial class Component_Base_cpp
     {
         public string project_name;
@@ -46,10 +47,38 @@ namespace ROS_Generator
         }
     }
 
+    // Extending Component hpp template
+    public partial class Component_hpp
+    {
+        public string project_name;
+        public string node_name;
+        public string comp_name;
+        public List<Visitor.Publisher> publishers;
+        public List<Visitor.Subscriber> subscribers;
+        public List<Visitor.Service> provided_services;
+        public List<Visitor.Service> required_services;
+        public List<Visitor.Timer> timers;
+        public List<String> topics;
+        public List<String> services;
+
+        public Component_hpp()
+        {
+            node_name = "";
+            comp_name = "";
+            publishers = new List<Visitor.Publisher>();
+            subscribers = new List<Visitor.Subscriber>();
+            provided_services = new List<Visitor.Service>();
+            required_services = new List<Visitor.Service>();
+            timers = new List<Visitor.Timer>();
+            topics = new List<String>();
+            services = new List<String>();
+        }
+    }
+
     class Generator
     {
 
-        public void create_directory_structure(string input_directory, List<ROS_Package> ros_packages)
+        public void generate(string input_directory, List<ROS_Package> ros_packages)
         {
             foreach (var package in ros_packages)
             {
@@ -144,6 +173,88 @@ namespace ROS_Generator
                 new_package.project_name = package.name;
                 generated_text = new_package.TransformText();
                 System.IO.File.WriteAllText(package_main + "\\package.xml", generated_text);
+
+
+                // Generating header file and cpp file for each component
+                foreach (var node in package.nodes)
+                {
+                    foreach (var component in node.components)
+                    {
+                        // HPP GENERATION
+                        Component_hpp new_hpp = new Component_hpp();
+                        new_hpp.project_name = package.name;
+                        char[] node_txt = { '.', 't', 'x', 't' };
+                        new_hpp.node_name = node.name.TrimEnd(node_txt);
+                        new_hpp.comp_name = component.name;
+
+                        if (component.timers.Count > 0)
+                        {
+                            foreach (var timer in component.timers)
+                            {
+                                new_hpp.timers.Add(timer);
+                            }
+                        }
+
+                        if (component.subscribers.Count > 0)
+                        {
+                            foreach (var subscriber in component.subscribers)
+                            {
+                                char[] msg = {'.', 'm', 's', 'g'};
+                                string topic_name = subscriber.topic.TrimEnd(msg);
+                                new_hpp.topics.Add(topic_name);
+                                new_hpp.subscribers.Add(new Visitor.Subscriber { name = subscriber.name, topic = topic_name });
+                            }
+                        }
+
+                        if (component.publishers.Count > 0)
+                        {
+                            foreach (var publisher in component.publishers)
+                            {
+                                char[] msg = { '.', 'm', 's', 'g' };
+                                string topic_name = publisher.topic.TrimEnd(msg);
+                                new_hpp.topics.Add(topic_name);
+                                new_hpp.publishers.Add(new Visitor.Publisher { name = publisher.name, topic = topic_name});
+                            }
+                        }
+
+                        // Find unique topics
+                        new_hpp.topics = new_hpp.topics.Select(x => x).Distinct().ToList();
+                        //Notes.Select(x => x.Author).Distinct();
+
+                        if (component.provided_services.Count > 0)
+                        {
+                            foreach (var provided in component.provided_services)
+                            {
+                                char[] srv = { '.', 's', 'r', 'v' };
+                                string srv_name = provided.name.TrimEnd(srv);
+                                new_hpp.services.Add(srv_name);
+                                new_hpp.provided_services.Add(provided);
+                            }
+                        }
+
+                        if (component.required_services.Count > 0)
+                        {
+                            foreach (var required in component.required_services)
+                            {
+                                char[] srv = { '.', 's', 'r', 'v' };
+                                string srv_name = required.name.TrimEnd(srv);
+                                new_hpp.services.Add(srv_name);
+                                new_hpp.required_services.Add(required);
+                            }
+                        }
+
+                        // Find unique services
+                        new_hpp.services = new_hpp.services.Select(x => x).Distinct().ToList();
+
+                        generated_text = new_hpp.TransformText();
+                        System.IO.File.WriteAllText(package_main + "\\include\\" + component.name + ".hpp", generated_text);
+
+                        // CPP
+
+                    }
+
+                }
+
             }
 
         }
