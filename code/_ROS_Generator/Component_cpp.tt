@@ -38,3 +38,27 @@ void <#Write(hpp.comp_name);#>::<#Write(timer.name);#>Callback(const ros::TimerE
 <#Write("    ");#>// Business Logic for <#Write(timer.name);#> 
 }<# } #>
 <# } #> 
+
+// ---------------------------------------------
+// EVERYTHING BELOW HERE IS COMPLETELY GENERATED
+// ---------------------------------------------
+
+// Destructor - required for clean shutdown when process is killed
+<#Write(hpp.comp_name);#>::~<#Write(hpp.comp_name);#>()
+{<# if (hpp.timers.Count > 0) { #>
+	<# foreach (var timer in hpp.timers) { #> 
+<#Write("    ");#><#Write(timer.name);#>.stop();<# } #>
+<# } #><# if (hpp.publishers.Count > 0) { #>
+	<# foreach (var pub in hpp.publishers) { #> 
+<#Write("    ");#><#Write(pub.name);#>.shutdown();<# } #>
+<# } #><# if (hpp.subscribers.Count > 0) { #>
+	<# foreach (var sub in hpp.subscribers) { #> 
+<#Write("    ");#><#Write(sub.name);#>.shutdown();<# } #>
+<# } #><# if (hpp.provided_services.Count > 0) { #>
+	<# foreach (var provided in hpp.provided_services) { #> 
+<#Write("    ");#><#Write(provided.name);#>_Server.shutdown();<# } #>
+<# } #><# if (hpp.required_services.Count > 0) { #>
+	<# foreach (var required in hpp.required_services) { #> 
+<#Write("    ");#><#Write(required.name);#>_Client.shutdown();<# } #>
+<# } #>  
+}

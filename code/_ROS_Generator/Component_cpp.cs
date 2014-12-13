@@ -293,7 +293,219 @@ Write(timer.name);
             
             #line default
             #line hidden
-            this.Write(" ");
+            this.Write(" \r\n\r\n// ---------------------------------------------\r\n// EVERYTHING BELOW HERE I" +
+                    "S COMPLETELY GENERATED\r\n// ---------------------------------------------\r\n\r\n// D" +
+                    "estructor - required for clean shutdown when process is killed\r\n");
+            
+            #line 47 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write("::~");
+            
+            #line 47 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write("()\r\n{");
+            
+            #line 48 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.timers.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 49 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var timer in hpp.timers) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n");
+            
+            #line 50 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            
+            #line 50 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(timer.name);
+            
+            #line default
+            #line hidden
+            this.Write(".stop();");
+            
+            #line 50 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 51 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 51 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.publishers.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 52 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var pub in hpp.publishers) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n");
+            
+            #line 53 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            
+            #line 53 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(pub.name);
+            
+            #line default
+            #line hidden
+            this.Write(".shutdown();");
+            
+            #line 53 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 54 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 54 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.subscribers.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 55 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var sub in hpp.subscribers) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n");
+            
+            #line 56 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            
+            #line 56 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(sub.name);
+            
+            #line default
+            #line hidden
+            this.Write(".shutdown();");
+            
+            #line 56 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 57 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 57 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.provided_services.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 58 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var provided in hpp.provided_services) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n");
+            
+            #line 59 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            
+            #line 59 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(provided.name);
+            
+            #line default
+            #line hidden
+            this.Write("_Server.shutdown();");
+            
+            #line 59 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 60 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 60 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ if (hpp.required_services.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write("\t");
+            
+            #line 61 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ foreach (var required in hpp.required_services) { 
+            
+            #line default
+            #line hidden
+            this.Write(" \r\n");
+            
+            #line 62 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write("    ");
+            
+            #line default
+            #line hidden
+            
+            #line 62 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(required.name);
+            
+            #line default
+            #line hidden
+            this.Write("_Client.shutdown();");
+            
+            #line 62 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 63 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("  \r\n}");
             return this.GenerationEnvironment.ToString();
         }
     }
