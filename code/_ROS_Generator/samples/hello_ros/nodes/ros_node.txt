@@ -43,7 +43,7 @@ Component Component_3
 	Requires ComponentService;
 
 	// 2s periodic timer
-	Timer Timer_0
+	Timer Timer0
 	{
 		period = 2.0s;
 		offset = 0.0s;
