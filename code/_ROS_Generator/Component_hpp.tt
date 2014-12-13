@@ -1,0 +1,66 @@
+﻿#ifndef COMPONENT_0_HPP
+#define COMPONENT_0_HPP
+
+#include "ros/ros.h"
+
+#include "Component.hpp"
+
+<# foreach (var topic in topics)
+{ #>
+#include "<#Write(project_name);#>/<#Write(topic);#>.h"
+<# } #>
+<# foreach (var srv in services)
+{ #>
+#include "<#Write(project_name);#>/<#Write(srv);#>.h"
+<# } #>
+
+// --------------------------------
+//      USER INCLUDES GO HERE
+// --------------------------------
+
+namespace <#Write(node_name);#>
+
+{
+  class <#Write(comp_name);#> : public Component
+  {
+  public:
+    // These functions' business logic will be filled in by the user:
+
+    // Init() is always generated
+    void Init(const ros::TimerEvent& event);
+
+	<# foreach (var sub in subscribers)
+	{ #>
+	// OnOneData Subscription handler for <#Write(sub.name);#> subscriber 
+	void OnOneData(const <#Write(project_name);#>::<#Write(sub.topic);#>::ConstPtr& <#Write(comp_name);#>);  
+	<# } #>
+
+	<# foreach (var timer in timers)
+	{ #>
+	// Callback for <#Write(timer.name);#> timer
+	void <#Write(timer.name);#>Callback()(const ros::TimerEvent& event);
+	<# } #>
+ 
+    // these functions' business logic will be auto-generated:
+
+    // startUp() is used to configure timers, publishers, & service providers
+    void startUp();
+
+    // required for clean shutdown
+    ~<#Write(comp_name);#>();
+
+  private:
+	<# foreach (var timer in timers)
+	{ #>
+	ros::Timer <#Write(timer.name);#>;
+	<# } #>
+	<# foreach (var sub in subscribers)
+	{ #>ros::Subscriber <#Write(sub.name);#>;
+	<# } #>
+	<# foreach (var pub in publishers)
+	{ #>ros::Publisher <#Write(pub.name);#>;
+	<# } #>
+  };
+};
+
+#endif
