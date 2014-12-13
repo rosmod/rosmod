@@ -76,6 +76,17 @@ namespace ROS_Generator
         }
     }
 
+    // Extending Component cpp template
+    public partial class Component_cpp
+    {
+        public Component_hpp hpp;
+
+        public Component_cpp()
+        {
+            hpp = new Component_hpp();
+        }
+    }
+
     class Generator
     {
 
@@ -253,7 +264,11 @@ namespace ROS_Generator
                         generated_text = new_hpp.TransformText();
                         System.IO.File.WriteAllText(package_main + "\\include\\" + component.name + ".hpp", generated_text);
 
-                        // CPP
+                        // CPP GENERATION
+                        Component_cpp new_cpp = new Component_cpp();
+                        new_cpp.hpp = new_hpp;
+                        generated_text = new_cpp.TransformText();
+                        System.IO.File.WriteAllText(package_main + "\\src\\" + component.name + ".cpp", generated_text);
 
                     }
 
