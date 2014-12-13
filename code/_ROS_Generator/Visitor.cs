@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ROS_Generator
 {
     // Derive from the generated base visitor class
-    class Visitor : ROSBaseVisitor<string>
+    public class Visitor : ROSBaseVisitor<string>
     {
 
         // Service
