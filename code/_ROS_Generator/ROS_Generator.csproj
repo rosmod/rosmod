@@ -57,6 +57,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Component_Base_hpp.tt</DependentUpon>
     </Compile>
+    <Compile Include="Component_cpp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Component_cpp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Component_hpp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Component_hpp.tt</DependentUpon>
+    </Compile>
     <Compile Include="dot_catkin_ws.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -97,6 +107,14 @@
     <None Include="Component_Base_hpp.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>Component_Base_hpp.cs</LastGenOutput>
+    </None>
+    <None Include="Component_cpp.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>Component_cpp.cs</LastGenOutput>
+    </None>
+    <None Include="Component_hpp.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>Component_hpp.cs</LastGenOutput>
     </None>
     <None Include="dot_catkin_ws.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>

@@ -120,7 +120,7 @@ namespace ROS_Generator
 
             // Generate all *.cpp, *.hpp and build system files
             Generator generator = new Generator();
-            generator.create_directory_structure(input_directory, ros_packages);
+            generator.generate(input_directory, ros_packages);
 
 
             Console.ReadLine();
