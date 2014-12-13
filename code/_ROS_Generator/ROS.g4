@@ -49,8 +49,8 @@ ros_component_name
  * (2) Requirement - Name of the required service
  */
 ros_service
-	:	( 'Provides' 'Service' service_name ';'
-		| 'Requires' 'Service' service_name ';'
+	:	( 'Provides' service_name ';'
+		| 'Requires' service_name ';'
 		)
 	;
 

@@ -42,6 +42,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CMakeLists.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CMakeLists.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Component_Base_cpp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Component_Base_cpp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Component_Base_hpp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Component_Base_hpp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="dot_catkin_ws.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dot_catkin_ws.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Generator.cs" />
+    <Compile Include="package_xml.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>package_xml.tt</DependentUpon>
+    </Compile>
     <Compile Include="Printer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -51,6 +77,7 @@
     <Compile Include="ROS.g4.parser.cs">
       <DependentUpon>ROS.g4</DependentUpon>
     </Compile>
+    <Compile Include="ROS_Package.cs" />
     <Compile Include="Visitor.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +86,26 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>ROS_Generator</CustomToolNamespace>
     </Antlr4>
+    <None Include="CMakeLists.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CMakeLists.cs</LastGenOutput>
+    </None>
+    <None Include="Component_Base_cpp.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>Component_Base_cpp.cs</LastGenOutput>
+    </None>
+    <None Include="Component_Base_hpp.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>Component_Base_hpp.cs</LastGenOutput>
+    </None>
+    <None Include="dot_catkin_ws.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>dot_catkin_ws.cs</LastGenOutput>
+    </None>
+    <None Include="package_xml.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>package_xml.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="3rdParty\antlr4cs-master\runtime\CSharp\Antlr4.Runtime\Antlr4.Runtime.v4.5.csproj">
@@ -72,6 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="test_input.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
