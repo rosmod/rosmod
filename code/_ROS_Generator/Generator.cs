@@ -50,6 +50,7 @@ namespace ROS_Generator
     // Extending Component hpp template
     public partial class Component_hpp
     {
+        public string define_guard;
         public string project_name;
         public string node_name;
         public string comp_name;
@@ -183,6 +184,9 @@ namespace ROS_Generator
                         // HPP GENERATION
                         Component_hpp new_hpp = new Component_hpp();
                         new_hpp.project_name = package.name;
+
+                        new_hpp.define_guard = component.name.ToUpper();
+
                         char[] node_txt = { '.', 't', 'x', 't' };
                         new_hpp.node_name = node.name.TrimEnd(node_txt);
                         new_hpp.comp_name = component.name;
