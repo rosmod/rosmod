@@ -33,7 +33,7 @@ namespace <#Write(node_name);#>
 	<# foreach (var sub in subscribers) { #>
 
 <#Write("            ");#>// OnOneData Subscription handler for <#Write(sub.name);#> subscriber 
-<#Write("            ");#>void OnOneData(const <#Write(project_name);#>::<#Write(sub.topic);#>::ConstPtr& <#Write(comp_name);#>);  
+<#Write("            ");#>void OnOneData(const <#Write(project_name);#>::<#Write(sub.topic);#>::ConstPtr& received_data);  
 	<# } #>
 <# } #>
 <# if (provided_services.Count > 0) { #>

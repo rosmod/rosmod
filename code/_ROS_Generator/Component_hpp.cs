@@ -201,14 +201,7 @@ Write(sub.topic);
             
             #line default
             #line hidden
-            this.Write("::ConstPtr& ");
-            
-            #line 36 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
-Write(comp_name);
-            
-            #line default
-            #line hidden
-            this.Write(");  \r\n\t");
+            this.Write("::ConstPtr& received_data);  \r\n\t");
             
             #line 37 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
