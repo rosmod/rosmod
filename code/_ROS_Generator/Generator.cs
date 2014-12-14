@@ -94,6 +94,7 @@ namespace ROS_Generator
     // Extending nodeMain cpp template
     public partial class nodeMain
     {
+        public string project_name;
         public string node_name;
         public List<Component_hpp> components;
 
@@ -131,10 +132,10 @@ namespace ROS_Generator
                 Directory.CreateDirectory(package_main);
 
                 // Create the include directory
-                Directory.CreateDirectory(package_main + "\\include");
+                Directory.CreateDirectory(package_main + "\\include\\" + package.name);
 
                 // Create the src directory
-                Directory.CreateDirectory(package_main + "\\src");
+                Directory.CreateDirectory(package_main + "\\src\\" + package.name);
 
                 // Create msg directory IF necessary
                 if (package.messages.Count > 0)
@@ -174,12 +175,12 @@ namespace ROS_Generator
                 Component_Base_cpp base_comp = new Component_Base_cpp();
                 base_comp.project_name = package.name;
                 generated_text = base_comp.TransformText();
-                System.IO.File.WriteAllText(package_main + "\\src\\Component.cpp", generated_text);
+                System.IO.File.WriteAllText(package_main + "\\src\\" + package.name + "\\" + "Component.cpp", generated_text);
 
                 // Create base Component.h
                 Component_Base_hpp base_comp_hpp = new Component_Base_hpp();
                 generated_text = base_comp_hpp.TransformText();
-                System.IO.File.WriteAllText(package_main + "\\include\\Component.hpp", generated_text);
+                System.IO.File.WriteAllText(package_main + "\\include\\" + package.name + "\\" + "Component.hpp", generated_text);
 
                 // Create CMakeLists file
                 CMakeLists cmake_lists = new CMakeLists();
@@ -209,6 +210,7 @@ namespace ROS_Generator
                     nodeMain new_node = new nodeMain();
                     char[] node_txt = { '.', 't', 'x', 't' };
                     new_node.node_name = node.name.TrimEnd(node_txt);
+                    new_node.project_name = package.name;
 
                     foreach (var component in node.components)
                     {
@@ -281,13 +283,13 @@ namespace ROS_Generator
                         new_hpp.services = new_hpp.services.Select(x => x).Distinct().ToList();
 
                         generated_text = new_hpp.TransformText();
-                        System.IO.File.WriteAllText(package_main + "\\include\\" + component.name + ".hpp", generated_text);
+                        System.IO.File.WriteAllText(package_main + "\\include\\" + package.name + "\\" + component.name + ".hpp", generated_text);
 
                         // CPP GENERATION
                         Component_cpp new_cpp = new Component_cpp();
                         new_cpp.hpp = new_hpp;
                         generated_text = new_cpp.TransformText();
-                        System.IO.File.WriteAllText(package_main + "\\src\\" + component.name + ".cpp", generated_text);
+                        System.IO.File.WriteAllText(package_main + "\\src\\" + package.name + "\\" + component.name + ".cpp", generated_text);
 
                         // Accumulate nodeMain headers
                         new_node.components.Add(new_hpp);
@@ -296,7 +298,7 @@ namespace ROS_Generator
                     // Accumulate node info in CMakeLists objects
                     cmake_lists.nodes.Add(new_node);
                     generated_text = new_node.TransformText();
-                    System.IO.File.WriteAllText(package_main + "\\src\\" + new_node.node_name + "_Main.cpp", generated_text);
+                    System.IO.File.WriteAllText(package_main + "\\src\\" + package.name + "\\" + new_node.node_name + "_Main.cpp", generated_text);
                 }
 
                 generated_text = cmake_lists.TransformText();
