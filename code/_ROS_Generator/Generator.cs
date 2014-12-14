@@ -17,11 +17,15 @@ namespace ROS_Generator
         public List<string> messages;
         public List<string> services;
 
+        public List<nodeMain> nodes;
+
         public CMakeLists()
         {
             project_name = "";
             messages = new List<string>();
             services = new List<string>();
+
+            nodes = new List<nodeMain>();
         }
     }
 
@@ -84,6 +88,19 @@ namespace ROS_Generator
         public Component_cpp()
         {
             hpp = new Component_hpp();
+        }
+    }
+
+    // Extending nodeMain cpp template
+    public partial class nodeMain
+    {
+        public string node_name;
+        public List<Component_hpp> components;
+
+        public nodeMain()
+        {
+            node_name = "";
+            components = new List<Component_hpp>();
         }
     }
 
@@ -168,7 +185,7 @@ namespace ROS_Generator
                 CMakeLists cmake_lists = new CMakeLists();
                 cmake_lists.project_name = package.name;
                 // Setup all messages
-                foreach(var msg in package.messages) 
+                foreach (var msg in package.messages)
                 {
                     cmake_lists.messages.Add(msg.name);
                 }
@@ -177,8 +194,6 @@ namespace ROS_Generator
                 {
                     cmake_lists.services.Add(srv.name);
                 }
-                generated_text = cmake_lists.TransformText();
-                System.IO.File.WriteAllText(package_main + "\\CMakeLists.txt", generated_text);   
              
                 // Create package.xml file
                 package_xml new_package = new package_xml();
@@ -190,6 +205,11 @@ namespace ROS_Generator
                 // Generating header file and cpp file for each component
                 foreach (var node in package.nodes)
                 {
+                    // NODE_MAIN GENERATION
+                    nodeMain new_node = new nodeMain();
+                    char[] node_txt = { '.', 't', 'x', 't' };
+                    new_node.node_name = node.name.TrimEnd(node_txt);
+
                     foreach (var component in node.components)
                     {
                         // HPP GENERATION
@@ -198,7 +218,6 @@ namespace ROS_Generator
 
                         new_hpp.define_guard = component.name.ToUpper();
 
-                        char[] node_txt = { '.', 't', 'x', 't' };
                         new_hpp.node_name = node.name.TrimEnd(node_txt);
                         new_hpp.comp_name = component.name;
 
@@ -270,9 +289,18 @@ namespace ROS_Generator
                         generated_text = new_cpp.TransformText();
                         System.IO.File.WriteAllText(package_main + "\\src\\" + component.name + ".cpp", generated_text);
 
+                        // Accumulate nodeMain headers
+                        new_node.components.Add(new_hpp);
                     }
 
+                    // Accumulate node info in CMakeLists objects
+                    cmake_lists.nodes.Add(new_node);
+                    generated_text = new_node.TransformText();
+                    System.IO.File.WriteAllText(package_main + "\\src\\" + new_node.node_name + "_Main.cpp", generated_text);
                 }
+
+                generated_text = cmake_lists.TransformText();
+                System.IO.File.WriteAllText(package_main + "\\CMakeLists.txt", generated_text);  
 
             }
 

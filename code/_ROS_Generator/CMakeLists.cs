@@ -265,27 +265,104 @@ Write(project_name);
             
             #line default
             #line hidden
-            this.Write(@".cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
-
-
-include_directories(include ${catkin_INCLUDE_DIRS})
-
-add_executable(nodeMain src/nodeMain.cpp src/Component2.cpp src/Component1.cpp src/Component0.cpp src/Component.cpp)
-target_link_libraries(nodeMain ${catkin_LIBRARIES})
-add_dependencies(nodeMain ");
+            this.Write(".cpp)\r\n# if(TARGET ${PROJECT_NAME}-test)\r\n#   target_link_libraries(${PROJECT_NAM" +
+                    "E}-test ${PROJECT_NAME})\r\n# endif()\r\n\r\n## Add folders to be run by python nosete" +
+                    "sts\r\n# catkin_add_nosetests(test)\r\n\r\n\r\ninclude_directories(include ${catkin_INCL" +
+                    "UDE_DIRS})\r\n\r\n");
+            
+            #line 175 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ if (nodes.Count > 0) { 
+            
+            #line default
+            #line hidden
+            
+            #line 175 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ foreach (var node in nodes) { 
+            
+            #line default
+            #line hidden
+            this.Write("add_executable( ");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(node.node_name);
+            
+            #line default
+            #line hidden
+            this.Write(" src/");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(node.node_name);
+            
+            #line default
+            #line hidden
+            this.Write("_Main.cpp src/Component.cpp ");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ if (node.components.Count > 0) { 
+            
+            #line default
+            #line hidden
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ foreach (var comp in node.components) { 
+            
+            #line default
+            #line hidden
+            this.Write("src/");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(comp.comp_name);
+            
+            #line default
+            #line hidden
+            this.Write(".cpp ");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(")\r\ntarget_link_libraries(");
             
             #line 177 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(node.node_name);
+            
+            #line default
+            #line hidden
+            this.Write(" ${catkin_LIBRARIES})\r\nadd_dependencies(");
+            
+            #line 178 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(node.node_name);
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 178 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
 Write(project_name);
             
             #line default
             #line hidden
             this.Write("_generate_messages_cpp)\r\n");
+            
+            #line 179 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 179 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+ } 
+            
+            #line default
+            #line hidden
             return this.GenerationEnvironment.ToString();
         }
     }
