@@ -73,6 +73,11 @@
       <DependentUpon>dot_catkin_ws.tt</DependentUpon>
     </Compile>
     <Compile Include="Generator.cs" />
+    <Compile Include="nodeMain.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>nodeMain.tt</DependentUpon>
+    </Compile>
     <Compile Include="package_xml.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -119,6 +124,10 @@
     <None Include="dot_catkin_ws.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>dot_catkin_ws.cs</LastGenOutput>
+    </None>
+    <None Include="nodeMain.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>nodeMain.cs</LastGenOutput>
     </None>
     <None Include="package_xml.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
