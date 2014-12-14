@@ -27,6 +27,13 @@ namespace ROS_Generator
             this.Write("#include \"");
             
             #line 1 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
+Write(hpp.project_name);
+            
+            #line default
+            #line hidden
+            this.Write("/");
+            
+            #line 1 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
 Write(hpp.comp_name);
             
             #line default
@@ -205,7 +212,7 @@ Write(provided.name);
             
             #line default
             #line hidden
-            this.Write("::Response &res);\r\n{\r\n");
+            this.Write("::Response &res)\r\n{\r\n");
             
             #line 30 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_cpp.tt"
 Write("    ");

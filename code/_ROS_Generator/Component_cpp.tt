@@ -1,4 +1,4 @@
-﻿#include "<#Write(hpp.comp_name);#>.hpp"
+﻿#include "<#Write(hpp.project_name);#>/<#Write(hpp.comp_name);#>.hpp"
 
 using namespace <#Write(hpp.node_name);#>;
 
@@ -25,7 +25,7 @@ void <#Write(hpp.comp_name);#>::OnOneData(const <#Write(hpp.project_name);#>::<#
 // Component Service Callback
 bool <#Write(hpp.comp_name);#>::<#Write(provided.name);#>Callback(<#Write(hpp.project_name);#>::<#Write(provided.name);#>::Request  &req,
 <# for (int i=0; i<=hpp.comp_name.Length + provided.name.Length + 14; i++) #> <#Write(" ");#>
-<#Write(hpp.project_name);#>::<#Write(provided.name);#>::Response &res);
+<#Write(hpp.project_name);#>::<#Write(provided.name);#>::Response &res)
 {
 <#Write("    ");#>// Business Logic for <#Write(provided.name);#> Service
 }<# } #>
