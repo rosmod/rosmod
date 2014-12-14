@@ -42,6 +42,13 @@ namespace ROS_Generator
             this.Write(" \r\n#include \"");
             
             #line 9 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\nodeMain.tt"
+Write(project_name);
+            
+            #line default
+            #line hidden
+            this.Write("/");
+            
+            #line 9 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\nodeMain.tt"
 Write(comp.comp_name);
             
             #line default
@@ -73,14 +80,14 @@ Write("    ");
             
             #line default
             #line hidden
-            this.Write("compPtr->processQueue();\r\n}\r\n\r\nint main()\r\n{\r\n");
+            this.Write("compPtr->processQueue();\r\n}\r\n\r\nint main(int argc, char **argv)\r\n{\r\n");
             
             #line 21 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\nodeMain.tt"
 Write("    ");
             
             #line default
             #line hidden
-            this.Write("string nodeName = \"");
+            this.Write("std::string nodeName = \"");
             
             #line 21 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\nodeMain.tt"
 Write(node_name);

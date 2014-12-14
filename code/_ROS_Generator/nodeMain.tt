@@ -6,7 +6,7 @@
 
 // Include all components this actor requires<# if (components.Count > 0) { #>
 	<# foreach (var comp in components) { #> 
-#include "<#Write(comp.comp_name);#>.hpp"<# } #><# } #>
+#include "<#Write(project_name);#>/<#Write(comp.comp_name);#>.hpp"<# } #><# } #>
 
 
 
@@ -16,9 +16,9 @@ void componentThread(Component* compPtr)
 <#Write("    ");#>compPtr->processQueue();
 }
 
-int main()
+int main(int argc, char **argv)
 {
-<#Write("    ");#>string nodeName = "<#Write(node_name);#>";
+<#Write("    ");#>std::string nodeName = "<#Write(node_name);#>";
 <#Write("    ");#>ros::init(argc, argv, nodeName.c_str());
 
 <#Write("    ");#>// Create Node Handle
