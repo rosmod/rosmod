@@ -295,7 +295,7 @@ Write(provided.name);
             
             #line default
             #line hidden
-            this.Write("::Response &res)\r\n\t");
+            this.Write("::Response &res);\r\n\t");
             
             #line 46 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 
@@ -349,7 +349,7 @@ Write(timer.name);
             
             #line default
             #line hidden
-            this.Write("Callback()(const ros::TimerEvent& event);\r\n\t");
+            this.Write("Callback(const ros::TimerEvent& event);\r\n\t");
             
             #line 53 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\Component_hpp.tt"
  } 

@@ -42,14 +42,14 @@ namespace <#Write(node_name);#>
 <#Write("            ");#>// Component Service Callback
 <#Write("            ");#>bool <#Write(provided.name);#>Callback(<#Write(project_name);#>::<#Write(provided.name);#>::Request  &req,
 <# for (int i=0; i<=provided.name.Length + 12; i++) #> <#Write(" ");#>
-<#Write("            ");#><#Write(project_name);#>::<#Write(provided.name);#>::Response &res)
+<#Write("            ");#><#Write(project_name);#>::<#Write(provided.name);#>::Response &res);
 	<# } #>
 <# } #>
 <# if (timers.Count > 0) { #>
 	<# foreach (var timer in timers) { #>
 
 <#Write("            ");#>// Callback for <#Write(timer.name);#> timer
-<#Write("            ");#>void <#Write(timer.name);#>Callback()(const ros::TimerEvent& event);
+<#Write("            ");#>void <#Write(timer.name);#>Callback(const ros::TimerEvent& event);
 	<# } #>
 <# } #> 
 <#Write("            ");#>// these functions' business logic will be auto-generated:
