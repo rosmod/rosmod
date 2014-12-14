@@ -291,11 +291,25 @@ Write(node.node_name);
             this.Write(" src/");
             
             #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(project_name);
+            
+            #line default
+            #line hidden
+            this.Write("/");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
 Write(node.node_name);
             
             #line default
             #line hidden
-            this.Write("_Main.cpp src/Component.cpp ");
+            this.Write("_Main.cpp src/");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(project_name);
+            
+            #line default
+            #line hidden
+            this.Write("/Component.cpp ");
             
             #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
  if (node.components.Count > 0) { 
@@ -309,6 +323,13 @@ Write(node.node_name);
             #line default
             #line hidden
             this.Write("src/");
+            
+            #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
+Write(project_name);
+            
+            #line default
+            #line hidden
+            this.Write("/");
             
             #line 176 "C:\Users\Pranav\Documents\GitHub\rosmod\code\_ROS_Generator\CMakeLists.tt"
 Write(comp.comp_name);
