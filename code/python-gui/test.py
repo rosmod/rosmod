@@ -35,6 +35,21 @@ import tkMessageBox
 
 root = Tk()
 
+class StatusBar(Frame):
+
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        self.label = Label(self, bd=1, relief=SUNKEN, anchor=W)
+        self.label.pack(fill=X)
+
+    def set(self, format, *args):
+        self.label.config(text=format % args)
+        self.label.update_idletasks()
+
+    def clear(self):
+        self.label.config(text="")
+        self.label.update_idletasks()
+
 def key(event):
     print "pressed", repr(event.char)
 
@@ -58,6 +73,19 @@ def close_callback():
     if tkMessageBox.askokcancel("Quit", "Do you really wish to quit?"):
         root.destroy()
 
+def toolbar_callback():
+    status.set("%s","you pressed a toolbar button")
+    print "pressed a toolbar button"
+
+toolbar = Frame(root)
+
+b = Button(toolbar, text="new", width=6, command=toolbar_callback)
+b.pack(side=LEFT, padx=2, pady=2)
+b = Button(toolbar, text="open", width=6, command=toolbar_callback)
+b.pack(side=LEFT, padx=2, pady=2)
+
+toolbar.pack(side=TOP, fill=X)
+
 frame = Frame(root, width=100,height=100)
 frame.bind("<Key>", key)
 frame.bind("<Button-1>", left_click_callback)
@@ -65,6 +93,9 @@ frame.bind("<Button-2>", middle_click_callback)
 frame.bind("<Button-3>", right_click_callback)
 frame.bind("<Configure>", configure_callback)
 frame.pack()
+
+status = StatusBar(root)
+status.pack(side=BOTTOM, fill=X)
 
 root.protocol("WM_DELETE_WINDOW", close_callback)
 
