@@ -53,16 +53,13 @@ class StatusBar(Frame):
         self.label.config(text="")
         self.label.update_idletasks()
 
-class ObjectList(Frame):
-    def __init__(self, master, height, width):
+class EditorFrame(Frame):
+    def __init__(self, master, height, width, maxHeight, maxWidth):
         Frame.__init__(self,master)
         Frame.config(self,bd=2, relief=SUNKEN)
 
         self.height=height
         self.width=width
-
-        self.objects = []
-        self.numObjects = 100
 
         self.VScrollBar = Scrollbar(self, orient=VERTICAL)
         self.VScrollBar.pack(fill='y', side=RIGHT)
@@ -73,7 +70,7 @@ class ObjectList(Frame):
             self,
             width=width, 
             height=height, 
-            scrollregion=(0,0,self.width,self.numObjects * self.width),
+            scrollregion=(0,0,maxWidth,maxHeight),
             xscrollcommand=self.HScrollBar.set,
             yscrollcommand=self.VScrollBar.set
         )
@@ -83,6 +80,12 @@ class ObjectList(Frame):
 
         self.canvas.pack()
 
+class ObjectList(EditorFrame):
+    def __init__(self, master, height, width, maxHeight, maxWidth):
+        EditorFrame.__init__(self,master,height,width,maxHeight,maxWidth)
+
+        self.objects = []
+        self.numObjects = 100
         self.selectedObject = { "object": None }
 
         # create a couple movable objects
@@ -105,32 +108,9 @@ class ObjectList(Frame):
         self.selectedObject["item"] = self.canvas.find_closest(event.x, event.y)[0]   
         print "Selected {0}".format(self.selectedObject["item"])
         
-class ModelViewer(Frame):
-    def __init__(self, master, height, width):
-        Frame.__init__(self,master)
-        Frame.config(self,bd=2, relief=SUNKEN)
-
-        self.VScrollBar = Scrollbar(self, orient=VERTICAL)
-        self.VScrollBar.pack(fill='y', side=RIGHT)
-        self.HScrollBar = Scrollbar(self, orient=HORIZONTAL)
-        self.HScrollBar.pack(side=BOTTOM)
-
-        self.height = height
-        self.width = width
-
-        self.canvas = Canvas(
-            self,
-            width=width, 
-            height=height, 
-            scrollregion=(0,0,self.width,self.height),
-            xscrollcommand=self.HScrollBar.set,
-            yscrollcommand=self.VScrollBar.set
-        )
-        self.canvas.pack()
-        
-        self.VScrollBar.config(command=self.canvas.yview)
-        self.HScrollBar.config(command=self.canvas.xview)
-
+class ModelViewer(EditorFrame):
+    def __init__(self, master, height, width, maxHeight, maxWidth):
+        EditorFrame.__init__(self,master,height,width,maxHeight,maxWidth)
 
 class App:
 
@@ -172,7 +152,7 @@ class App:
         self.toolbar = Toolbar(self.master,toolbarMap)
 
         ''' Set up the Object Browser ''' 
-        self.editorHeight = 400
+        self.editorHeight = 800
         self.editorWidth = 800
         self.objectWidth = 100
 
@@ -188,13 +168,17 @@ class App:
         self.objectList = ObjectList(
             self.master, 
             height=self.editorHeight, 
-            width=self.objectWidth
+            width=self.objectWidth,
+            maxHeight=self.editorHeight*2,
+            maxWidth=self.objectWidth
         )
         ''' Set up the Model View / Editor ''' 
         self.modelViewer = ModelViewer(
             self.master, 
             height=self.editorHeight, 
-            width=self.editorWidth-self.objectWidth
+            width=self.editorWidth-self.objectWidth,
+            maxHeight=self.editorHeight*2,
+            maxWidth=self.editorWidth*4
         )
         self.editorPane.add(self.objectList)
         self.editorPane.add(self.modelViewer)
