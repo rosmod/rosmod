@@ -78,8 +78,28 @@ class EditorFrame(Frame):
         self.VScrollBar.config(command=self.canvas.yview)
         self.HScrollBar.config(command=self.canvas.xview)
 
+        self.canvas.bind("<MouseWheel>", self._mouse_wheel)
+        self.canvas.bind("<Button-4>", self._mouse_wheel)
+        self.canvas.bind("<Button-5>", self._mouse_wheel)
+
         self.canvas.pack()
         self.pack()
+
+    def _create_object(self, coord, size, color, tagTuple):
+        (x,y) = coord
+        self.canvas.create_rectangle(
+            x-size/2, y-size/2, x+size/2, y+size/2, 
+            outline=color, fill=color, tags=tagTuple
+        )
+
+    def _mouse_wheel(self, event):
+        direction = 0
+        # respond to Linux or Windows wheel event
+        if event.num == 5 or event.delta == -120:
+            direction = 1
+        if event.num == 4 or event.delta == 120:
+            direction = -1
+        self.canvas.yview_scroll(direction, "units")
 
 class ObjectList(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth):
@@ -90,24 +110,25 @@ class ObjectList(EditorFrame):
         self.selectedObject = { "object": None }
 
         # create a couple movable objects
-        self._create_object((self.width/2, 100), self.width * 3/4, "white")
-        self._create_object((self.width/2, 200), self.width * 3/4, "black")
-        self._create_object((self.width/2, 1000), self.width * 3/4, "blue")
+        self._create_object((self.width/2, 100), self.width * 3/4, "white",("object","component"))
+        self._create_object((self.width/2, 200), self.width * 3/4, "black",("object","service"))
+        self._create_object((self.width/2, 1000), self.width * 3/4, "blue",("object","node"))
 
         # add bindings for clicking, dragging and releasing over
         # any object with the "token" tag
-        self.canvas.tag_bind("token", "<Button-1>", self.OnObjectButtonPress)
+        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectButtonPress)
         #self.canvas.tag_bind("token", "<ButtonRelease-1>", self.OnTokenButtonRelease)
         #self.canvas.tag_bind("token", "<B1-Motion>", self.OnTokenMotion)
 
-    def _create_object(self, coord, size,  color):
-        (x,y) = coord
-        self.canvas.create_rectangle(x-size/2, y-size/2, x+size/2, y+size/2, 
-                                outline=color, fill=color, tags="object")
-
     def OnObjectButtonPress(self, event):
-        self.selectedObject["item"] = self.canvas.find_closest(event.x, event.y)[0]   
-        print "Selected {0}".format(self.selectedObject["item"])
+        self.selectedObject["object"] = self.canvas.find_closest(
+            self.canvas.canvasx(event.x), 
+            self.canvas.canvasy(event.y)
+        )[0]
+        print "Selected object {0} with tags {1}".format(
+            self.selectedObject["object"],
+            self.canvas.gettags(self.selectedObject["object"])
+        )
         
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth):
