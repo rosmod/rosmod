@@ -40,7 +40,7 @@ class StatusBar(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
         self.label = Label(self, bd=1, relief=SUNKEN, anchor=W)
-        self.label.pack(fill=X)
+        self.label.grid()
 
     def set(self, format, *args):
         self.label.config(text=format % args)
@@ -50,11 +50,27 @@ class StatusBar(Frame):
         self.label.config(text="")
         self.label.update_idletasks()
 
+class PB:
+    # Create Progress Bar
+    def __init__(self, master, width, height):
+        self.__canvas = Canvas(master, width=width, height=height)
+        self.__canvas.grid()
+        self.__width = width
+        self.__height = height
+
+    # Update Progress Bar
+    def update(self, ratio):
+        self.__canvas.delete(ALL)
+        self.__canvas.create_rectangle(0, 0, self.__width * ratio, \
+                                       self.__height, fill='blue')
+
+
 def key(event):
     print "pressed", repr(event.char)
 
 def right_click_callback(event):
     frame.focus_set()
+    progress.update(event.x/100.0)
     print "right clicked at", event.x, event.y
 
 def middle_click_callback(event):
@@ -80,11 +96,14 @@ def toolbar_callback():
 toolbar = Frame(root)
 
 b = Button(toolbar, text="new", width=6, command=toolbar_callback)
-b.pack(side=LEFT, padx=2, pady=2)
+#b.pack(side=LEFT, padx=2, pady=2)
+b.grid()
 b = Button(toolbar, text="open", width=6, command=toolbar_callback)
-b.pack(side=LEFT, padx=2, pady=2)
+#b.pack(side=LEFT, padx=2, pady=2)
+b.grid()
 
-toolbar.pack(side=TOP, fill=X)
+#toolbar.pack(side=TOP, fill=X)
+toolbar.grid()
 
 frame = Frame(root, width=100,height=100)
 frame.bind("<Key>", key)
@@ -92,10 +111,14 @@ frame.bind("<Button-1>", left_click_callback)
 frame.bind("<Button-2>", middle_click_callback)
 frame.bind("<Button-3>", right_click_callback)
 frame.bind("<Configure>", configure_callback)
-frame.pack()
+frame.grid()
+#frame.pack()
+
+progress = PB(root,100,10)
 
 status = StatusBar(root)
-status.pack(side=BOTTOM, fill=X)
+#status.pack(side=BOTTOM, fill=X)
+status.grid()
 
 root.protocol("WM_DELETE_WINDOW", close_callback)
 
