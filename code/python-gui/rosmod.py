@@ -16,6 +16,7 @@ from collections import OrderedDict
 
 from rosmod_tools import *
 from rosmod_editor import *
+from rosmod_classes import *
 
 class App:
 
@@ -126,11 +127,11 @@ class App:
         )
         if file != None:
             data = file.read()
-            print "File {0} has {1} bytes".format(file,len(data))
+            self.statusBar.set("File {0} has {1} bytes".format(file,len(data)))
             file.close()
 
     def menubar_New_Callback(self):
-        print "you pressed New"
+        self.statusBar.set("Creating new model.")
 
     def menubar_Save_Callback(self):
         fileName = tkFileDialog.asksaveasfilename(
@@ -139,7 +140,7 @@ class App:
             title="Save the model as..."
         )
         if len(fileName) > 0:
-            print "Now saving model as {0}".format(fileName)
+            self.statusBar.set("Saving model as {0}".format(fileName))
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")
