@@ -115,8 +115,6 @@ class ObjectList(EditorFrame):
             ypos += self.width
 
         self.canvas.tag_bind("object", "<Button-1>", self.OnObjectButtonPress)
-        #self.canvas.tag_bind("token", "<ButtonRelease-1>", self.OnTokenButtonRelease)
-        #self.canvas.tag_bind("token", "<B1-Motion>", self.OnTokenMotion)
 
     def OnObjectButtonPress(self, event):
         self.selectedObject["object"] = self.canvas.find_closest(
@@ -171,6 +169,9 @@ class App:
         toolbarMap['BL Timing'] = self.toolbar_TimingAnalysis_Callback
         self.toolbar = Toolbar(self.master,toolbarMap)
 
+        self.statusBar = StatusBar(self.master)
+        self.statusBar.pack(side=BOTTOM, fill=BOTH,expand=1)
+
         ''' Set up the Object Browser ''' 
         self.editorHeight = 800
         self.editorWidth = 800
@@ -211,9 +212,6 @@ class App:
         self.editorPane.add(self.modelViewer)
 
         self.editorPane.pack(fill='both', expand=1)
-        
-        self.statusBar = StatusBar(self.master)
-        self.statusBar.pack(side=BOTTOM, fill=BOTH,expand=1)
 
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
 
@@ -271,17 +269,16 @@ class App:
     ---------------------------
     '''
     def toolbar_Interpret_Callback(self):
-        print "you pressed interpret!"
+        self.statusBar.set("Generating ROS package files!")
         
     def toolbar_NetworkAnalysis_Callback(self):
-        print "Analyzing the network characteristics!"
+        self.statusBar.set("Analyzing the network characteristics!")
 
     def toolbar_TimingAnalysis_Callback(self):
-        print "Analyzing the business logic timing characteristics!"
+        self.statusBar.set("Analyzing the business logic timing characteristics!")
 
 root = Tk()
 
 app = App(root)
 
 root.mainloop()
-#root.destroy()
