@@ -12,7 +12,7 @@ class Toolbar:
         self.nameToCallbackMap = nameToCallbackMap
         self.frame = Frame(self.master)
         for name,callback in self.nameToCallbackMap.iteritems():
-            newButton = Button(self.frame, text=name, width=6, command=callback)
+            newButton = Button(self.frame, text=name, width=len(name), command=callback)
             self.buttons.append(newButton)
             newButton.grid(row=0,column=(len(self.buttons)-1))
         self.frame.pack(side=TOP,fill=X)
@@ -37,13 +37,13 @@ class App:
 
         ''' Set up the program's menu '''
         menuDictDict = OrderedDict()
-        fileDict = {}
+        fileDict = OrderedDict()
         fileDict['New']=self.menubar_New_Callback
         fileDict['Open']=self.menubar_Open_Callback
         fileDict['Save']=self.menubar_Save_Callback
         fileDict['Quit']=self.menubar_Quit_Callback
-        optionsDict = {}
-        helpDict = {}
+        optionsDict = OrderedDict()
+        helpDict = OrderedDict()
         helpDict['Version']=self.menubar_Version_Callback
         helpDict['Author']=self.menubar_Author_Callback
         helpDict['Email']=self.menubar_Email_Callback
@@ -56,9 +56,10 @@ class App:
 
 
         ''' Set up the toolbar '''
-        toolbarMap = {}
+        toolbarMap = OrderedDict()
         toolbarMap['interpret'] = self.toolbar_Interpret_Callback
-        toolbarMap['analyze'] = self.toolbar_Analyze_Callback
+        toolbarMap['Network QoS'] = self.toolbar_NetworkAnalysis_Callback
+        toolbarMap['BL Timing'] = self.toolbar_TimingAnalysis_Callback
         self.toolbar = Toolbar(self.master,toolbarMap)
 
     def menubar_Open_Callback(self):
@@ -86,8 +87,11 @@ class App:
     def toolbar_Interpret_Callback(self):
         print "you pressed interpret!"
         
-    def toolbar_Analyze_Callback(self):
-        print "you pressed analyze!"
+    def toolbar_NetworkAnalysis_Callback(self):
+        print "Analyzing the network characteristics!"
+
+    def toolbar_TimingAnalysis_Callback(self):
+        print "Analyzing the business logic timing characteristics!"
 
 root = Tk()
 
