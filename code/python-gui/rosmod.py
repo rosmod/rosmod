@@ -14,7 +14,7 @@ import tkMessageBox
 
 from collections import OrderedDict
 
-class Toolbar:
+class ToolBar:
     def __init__(self, master,nameToCallbackMap):
         self.buttons=[]
         self.master=master
@@ -26,7 +26,7 @@ class Toolbar:
             newButton.grid(row=0,column=(len(self.buttons)-1))
         self.frame.pack(side=TOP,fill=X)
 
-class Menubar:
+class MenuBar:
     def __init__(self, master, menuDictDict):
         self.master = master
         self.menu = Menu(self.master)
@@ -159,7 +159,7 @@ class App:
         menuDictDict['Options'] = optionsDict
         menuDictDict['Help'] = helpDict
 
-        self.menubar = Menubar(self.master,menuDictDict)
+        self.menubar = MenuBar(self.master,menuDictDict)
 
 
         ''' Set up the toolbar '''
@@ -167,7 +167,7 @@ class App:
         toolbarMap['interpret'] = self.toolbar_Interpret_Callback
         toolbarMap['Network QoS'] = self.toolbar_NetworkAnalysis_Callback
         toolbarMap['BL Timing'] = self.toolbar_TimingAnalysis_Callback
-        self.toolbar = Toolbar(self.master,toolbarMap)
+        self.toolbar = ToolBar(self.master,toolbarMap)
 
         self.statusBar = StatusBar(self.master)
         self.statusBar.pack(side=BOTTOM, fill=BOTH,expand=1)
