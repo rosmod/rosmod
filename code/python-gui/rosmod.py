@@ -64,7 +64,7 @@ class EditorFrame(Frame):
         self.VScrollBar = Scrollbar(self, orient=VERTICAL)
         self.VScrollBar.pack(fill='y', side=RIGHT)
         self.HScrollBar = Scrollbar(self, orient=HORIZONTAL)
-        self.HScrollBar.pack(side=BOTTOM)
+        self.HScrollBar.pack(side=BOTTOM, fill=BOTH,expand=1)
 
         self.canvas = Canvas(
             self,
@@ -79,6 +79,7 @@ class EditorFrame(Frame):
         self.HScrollBar.config(command=self.canvas.xview)
 
         self.canvas.pack()
+        self.pack()
 
 class ObjectList(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth):
@@ -190,9 +191,12 @@ class App:
 
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
 
+    '''
+    Exit Handler
+    '''
     def close_Callback(self):
         if tkMessageBox.askokcancel("Quit", "Do you really wish to quit?"):
-            root.destroy()
+            self.master.quit()
 
     '''
     ------------------------
@@ -233,8 +237,7 @@ class App:
         print "emfinger@isis.vanderbilt.edu; pkumar@isis.vanderbilt.edu"
 
     def menubar_Quit_Callback(self):
-        print "you pressed Quit"
-        self.master.quit()
+        self.close_Callback()
 
     '''
     ---------------------------
