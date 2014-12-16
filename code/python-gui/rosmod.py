@@ -102,20 +102,18 @@ class EditorFrame(Frame):
         self.canvas.yview_scroll(direction, "units")
 
 class ObjectList(EditorFrame):
-    def __init__(self, master, height, width, maxHeight, maxWidth):
+    def __init__(self, master, objectDict, height, width, maxHeight, maxWidth):
         EditorFrame.__init__(self,master,height,width,maxHeight,maxWidth)
 
         self.objects = []
         self.numObjects = 100
         self.selectedObject = { "object": None }
 
-        # create a couple movable objects
-        self._create_object((self.width/2, 100), self.width * 3/4, "white",("object","component"))
-        self._create_object((self.width/2, 200), self.width * 3/4, "black",("object","service"))
-        self._create_object((self.width/2, 1000), self.width * 3/4, "blue",("object","node"))
+        ypos = self.width * 3 / 4
+        for name,attr in objectDict.iteritems():
+            self._create_object((self.width/2, ypos), self.width * 3/4, attr[0], attr[1])
+            ypos += self.width
 
-        # add bindings for clicking, dragging and releasing over
-        # any object with the "token" tag
         self.canvas.tag_bind("object", "<Button-1>", self.OnObjectButtonPress)
         #self.canvas.tag_bind("token", "<ButtonRelease-1>", self.OnTokenButtonRelease)
         #self.canvas.tag_bind("token", "<B1-Motion>", self.OnTokenMotion)
@@ -187,8 +185,15 @@ class App:
             width = self.editorWidth
         )
         ''' Set up the Object Browser ''' 
+        objectDict = OrderedDict()
+        objectDict['service'] = ["green",("object","service")]
+        objectDict['message'] = ["blue",("object","message")]
+        objectDict['timer'] = ["gray",("object","timer")]
+        objectDict['component'] = ["red",("object","component")]
+        objectDict['node'] = ["black",("object","node")]
         self.objectList = ObjectList(
             self.master, 
+            objectDict=objectDict,
             height=self.editorHeight, 
             width=self.objectWidth,
             maxHeight=self.editorHeight*2,
@@ -208,7 +213,7 @@ class App:
         self.editorPane.pack(fill='both', expand=1)
         
         self.statusBar = StatusBar(self.master)
-        self.statusBar.pack()
+        self.statusBar.pack(side=BOTTOM, fill=BOTH,expand=1)
 
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
 
@@ -249,13 +254,13 @@ class App:
             print "Now saving model as {0}".format(fileName)
 
     def menubar_Version_Callback(self):
-        print "ROSMOD GUI Version 0.0.1"
+        self.statusBar.set("ROSMOD GUI Version 0.0.1")
 
     def menubar_Author_Callback(self):
-        print "William Emfinger; Pranav Srinivas Kumar"
+        self.statusBar.set("William Emfinger; Pranav Srinivas Kumar")
 
     def menubar_Email_Callback(self):
-        print "emfinger@isis.vanderbilt.edu; pkumar@isis.vanderbilt.edu"
+        self.statusBar.set("emfinger@isis.vanderbilt.edu; pkumar@isis.vanderbilt.edu")
 
     def menubar_Quit_Callback(self):
         self.close_Callback()
