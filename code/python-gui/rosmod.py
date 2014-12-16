@@ -22,6 +22,44 @@ class App:
 
     def __init__(self, master):
 
+        '''
+        -----------------------------------------------------
+        -----------------------------------------------------
+        THIS CODE IS FOR DEBUGGING ONLY
+        -----------------------------------------------------
+        -----------------------------------------------------
+        '''
+
+        serv1 = Service("basicService1")
+        serv2 = Service("basicService2")
+        msg1 = Message("basicMessage1")
+        msg2 = Message("basicMessage2")
+        msg3 = Message("basicMessage3")
+        timer1 = Timer(1.0)
+        timer2 = Timer(0.0,True)
+        c1 = Component()
+        c1.addPub("pub0",msg1)
+        c1.addPub("pub1",msg2)
+        c1.addTimer("Timer0",timer1)
+        c1.addSub("sub0",msg1)
+        c1.addClient("client",serv1)
+        c1.addServer("server",serv1)
+        node1 = Node()
+        node1.addComponent("Comp0",c1)
+        node1.addComponent("Comp1",c1)
+        package1 = Package()
+        package1.addNode("sat0",node1)
+        self.Model = Model()
+        self.Model.addPackage("mainPackage",package1)
+
+        '''
+        -----------------------------------------------------
+        -----------------------------------------------------
+        END DEBUGGING CODE
+        -----------------------------------------------------
+        -----------------------------------------------------
+        '''        
+
         self.master = master
 
         self.fileFormats = [
