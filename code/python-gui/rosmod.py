@@ -77,6 +77,63 @@ class App:
         toolbarMap['BL Timing'] = self.toolbar_TimingAnalysis_Callback
         self.toolbar = Toolbar(self.master,toolbarMap)
 
+        '''
+        self.objectsScrollbar = Scrollbar(self.master)
+        self.objectsScrollbar.pack(side=RIGHT,fill=Y)
+        self.objectsBox = Listbox(self.master, yscrollcommand=self.objectsScrollbar.set)
+        for i in range(1000):
+            self.objectsBox.insert(END,str(i))
+
+        self.objectsBox.pack(side=LEFT, fill=BOTH)
+
+        self.objectsScrollbar.config(command=self.objectsBox.yview)
+        '''
+        
+        self.editorHeight = 400
+        self.editorWidth = 800
+        self.objectWidth = 300
+
+        self.editorPane = PanedWindow(
+            self.master, 
+            orient = HORIZONTAL, 
+            opaqueresize = True, 
+            height = self.editorHeight, 
+            width = self.editorWidth
+        )
+
+        self.objectsFrame = Frame(
+            self.master, 
+            bd=2, 
+            width = self.objectWidth,
+            height = self.editorHeight,
+            relief=SUNKEN
+        )
+        self.objectsVScrollBar = Scrollbar(self.objectsFrame, orient=VERTICAL)
+        self.objectsVScrollBar.pack(fill='y', side=RIGHT)
+        self.objectsHScrollBar = Scrollbar(self.objectsFrame, orient=HORIZONTAL)
+        self.objectsHScrollBar.pack(side=BOTTOM)
+        self.editorPane.add(self.objectsFrame)
+
+        self.viewFrame = Frame(
+            self.master, 
+            bd=2, 
+            width = self.editorWidth - self.objectWidth,
+            height = self.editorHeight,
+            relief=SUNKEN
+        )
+        self.viewVScrollBar = Scrollbar(self.viewFrame, orient=VERTICAL)
+        self.viewVScrollBar.pack(fill='y', side=RIGHT)
+        self.viewHScrollBar = Scrollbar(self.viewFrame, orient=HORIZONTAL)
+        self.viewHScrollBar.pack(side=BOTTOM)
+        self.editorPane.add(self.viewFrame)
+
+        self.editorPane.pack(fill='both', expand=1)
+
+    '''
+    ------------------------
+    Menu Callback Functions:
+    ------------------------
+    '''
     def menubar_Open_Callback(self):
         file = tkFileDialog.askopenfile(
             parent=self.master,
@@ -114,6 +171,11 @@ class App:
         print "you pressed Quit"
         self.master.quit()
 
+    '''
+    ---------------------------
+    Toolbar Callback Functions:
+    ---------------------------
+    '''
     def toolbar_Interpret_Callback(self):
         print "you pressed interpret!"
         
