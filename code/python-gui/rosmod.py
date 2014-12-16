@@ -38,6 +38,100 @@ class Menubar:
             self.menu.add_cascade(label=name,menu=self.menus[-1])
         self.master.config(menu=self.menu)
 
+class StatusBar(Frame):
+
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        self.label = Label(self, bd=1, relief=SUNKEN, anchor=S)
+        self.label.pack(side="left",fill=X)
+
+    def set(self, format, *args):
+        self.label.config(text=format % args)
+        self.label.update_idletasks()
+
+    def clear(self):
+        self.label.config(text="")
+        self.label.update_idletasks()
+
+class ObjectList(Frame):
+    def __init__(self, master, height, width):
+        Frame.__init__(self,master)
+        Frame.config(self,bd=2, relief=SUNKEN)
+
+        self.height=height
+        self.width=width
+
+        self.objects = []
+        self.numObjects = 100
+
+        self.VScrollBar = Scrollbar(self, orient=VERTICAL)
+        self.VScrollBar.pack(fill='y', side=RIGHT)
+        self.HScrollBar = Scrollbar(self, orient=HORIZONTAL)
+        self.HScrollBar.pack(side=BOTTOM)
+
+        self.canvas = Canvas(
+            self,
+            width=width, 
+            height=height, 
+            scrollregion=(0,0,self.width,self.numObjects * self.width),
+            xscrollcommand=self.HScrollBar.set,
+            yscrollcommand=self.VScrollBar.set
+        )
+        
+        self.VScrollBar.config(command=self.canvas.yview)
+        self.HScrollBar.config(command=self.canvas.xview)
+
+        self.canvas.pack()
+
+        self.selectedObject = { "object": None }
+
+        # create a couple movable objects
+        self._create_object((self.width/2, 100), self.width * 3/4, "white")
+        self._create_object((self.width/2, 200), self.width * 3/4, "black")
+        self._create_object((self.width/2, 1000), self.width * 3/4, "blue")
+
+        # add bindings for clicking, dragging and releasing over
+        # any object with the "token" tag
+        self.canvas.tag_bind("token", "<Button-1>", self.OnObjectButtonPress)
+        #self.canvas.tag_bind("token", "<ButtonRelease-1>", self.OnTokenButtonRelease)
+        #self.canvas.tag_bind("token", "<B1-Motion>", self.OnTokenMotion)
+
+    def _create_object(self, coord, size,  color):
+        (x,y) = coord
+        self.canvas.create_rectangle(x-size/2, y-size/2, x+size/2, y+size/2, 
+                                outline=color, fill=color, tags="object")
+
+    def OnObjectButtonPress(self, event):
+        self.selectedObject["item"] = self.canvas.find_closest(event.x, event.y)[0]   
+        print "Selected {0}".format(self.selectedObject["item"])
+        
+class ModelViewer(Frame):
+    def __init__(self, master, height, width):
+        Frame.__init__(self,master)
+        Frame.config(self,bd=2, relief=SUNKEN)
+
+        self.VScrollBar = Scrollbar(self, orient=VERTICAL)
+        self.VScrollBar.pack(fill='y', side=RIGHT)
+        self.HScrollBar = Scrollbar(self, orient=HORIZONTAL)
+        self.HScrollBar.pack(side=BOTTOM)
+
+        self.height = height
+        self.width = width
+
+        self.canvas = Canvas(
+            self,
+            width=width, 
+            height=height, 
+            scrollregion=(0,0,self.width,self.height),
+            xscrollcommand=self.HScrollBar.set,
+            yscrollcommand=self.VScrollBar.set
+        )
+        self.canvas.pack()
+        
+        self.VScrollBar.config(command=self.canvas.yview)
+        self.HScrollBar.config(command=self.canvas.xview)
+
+
 class App:
 
     def __init__(self, master):
@@ -77,22 +171,12 @@ class App:
         toolbarMap['BL Timing'] = self.toolbar_TimingAnalysis_Callback
         self.toolbar = Toolbar(self.master,toolbarMap)
 
-        '''
-        self.objectsScrollbar = Scrollbar(self.master)
-        self.objectsScrollbar.pack(side=RIGHT,fill=Y)
-        self.objectsBox = Listbox(self.master, yscrollcommand=self.objectsScrollbar.set)
-        for i in range(1000):
-            self.objectsBox.insert(END,str(i))
-
-        self.objectsBox.pack(side=LEFT, fill=BOTH)
-
-        self.objectsScrollbar.config(command=self.objectsBox.yview)
-        '''
-        
+        ''' Set up the Object Browser ''' 
         self.editorHeight = 400
         self.editorWidth = 800
-        self.objectWidth = 300
+        self.objectWidth = 100
 
+        ''' Set up the Editor Pane ''' 
         self.editorPane = PanedWindow(
             self.master, 
             orient = HORIZONTAL, 
@@ -100,34 +184,31 @@ class App:
             height = self.editorHeight, 
             width = self.editorWidth
         )
-
-        self.objectsFrame = Frame(
+        ''' Set up the Object Browser ''' 
+        self.objectList = ObjectList(
             self.master, 
-            bd=2, 
-            width = self.objectWidth,
-            height = self.editorHeight,
-            relief=SUNKEN
+            height=self.editorHeight, 
+            width=self.objectWidth
         )
-        self.objectsVScrollBar = Scrollbar(self.objectsFrame, orient=VERTICAL)
-        self.objectsVScrollBar.pack(fill='y', side=RIGHT)
-        self.objectsHScrollBar = Scrollbar(self.objectsFrame, orient=HORIZONTAL)
-        self.objectsHScrollBar.pack(side=BOTTOM)
-        self.editorPane.add(self.objectsFrame)
-
-        self.viewFrame = Frame(
+        ''' Set up the Model View / Editor ''' 
+        self.modelViewer = ModelViewer(
             self.master, 
-            bd=2, 
-            width = self.editorWidth - self.objectWidth,
-            height = self.editorHeight,
-            relief=SUNKEN
+            height=self.editorHeight, 
+            width=self.editorWidth-self.objectWidth
         )
-        self.viewVScrollBar = Scrollbar(self.viewFrame, orient=VERTICAL)
-        self.viewVScrollBar.pack(fill='y', side=RIGHT)
-        self.viewHScrollBar = Scrollbar(self.viewFrame, orient=HORIZONTAL)
-        self.viewHScrollBar.pack(side=BOTTOM)
-        self.editorPane.add(self.viewFrame)
+        self.editorPane.add(self.objectList)
+        self.editorPane.add(self.modelViewer)
 
         self.editorPane.pack(fill='both', expand=1)
+        
+        self.statusBar = StatusBar(self.master)
+        self.statusBar.pack()
+
+        self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
+
+    def close_Callback(self):
+        if tkMessageBox.askokcancel("Quit", "Do you really wish to quit?"):
+            root.destroy()
 
     '''
     ------------------------
