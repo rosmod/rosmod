@@ -1,9 +1,18 @@
 #!/usr/bin/python
+'''
+This Program is designed to be the user interface
+for the ROSMOD modeling language.  It has the ability
+to create, load, display, edit, and export ROSMOD models.
+
+Additionally, it supports the interaction with analysis
+tools through the use of toolbar buttons and subprocesses.
+'''
 
 from Tkinter import *
+import tkFileDialog
+import tkMessageBox
 
 from collections import OrderedDict
-import tkMessageBox
 
 class Toolbar:
     def __init__(self, master,nameToCallbackMap):
@@ -35,12 +44,18 @@ class App:
 
         self.master = master
 
+        self.fileFormats = [
+            ('ROSMOD Model','*.model'),
+            ('ROSMOD Component','*.comp'),
+            ('ROSMOD Node','*.node')
+        ]
+
         ''' Set up the program's menu '''
         menuDictDict = OrderedDict()
         fileDict = OrderedDict()
-        fileDict['New']=self.menubar_New_Callback
-        fileDict['Open']=self.menubar_Open_Callback
-        fileDict['Save']=self.menubar_Save_Callback
+        fileDict['New Model']=self.menubar_New_Callback
+        fileDict['Open Model']=self.menubar_Open_Callback
+        fileDict['Save Model']=self.menubar_Save_Callback
         fileDict['Quit']=self.menubar_Quit_Callback
         optionsDict = OrderedDict()
         helpDict = OrderedDict()
@@ -63,13 +78,28 @@ class App:
         self.toolbar = Toolbar(self.master,toolbarMap)
 
     def menubar_Open_Callback(self):
-        print "you pressed Open"
+        file = tkFileDialog.askopenfile(
+            parent=self.master,
+            mode='rb',
+            filetypes=self.fileFormats,
+            title="Select Model"
+        )
+        if file != None:
+            data = file.read()
+            print "File {0} has {1} bytes".format(file,len(data))
+            file.close()
 
     def menubar_New_Callback(self):
         print "you pressed New"
 
     def menubar_Save_Callback(self):
-        print "you pressed Save"
+        fileName = tkFileDialog.asksaveasfilename(
+            parent=self.master,
+            filetypes=self.fileFormats,
+            title="Save the model as..."
+        )
+        if len(fileName) > 0:
+            print "Now saving model as {0}".format(fileName)
 
     def menubar_Version_Callback(self):
         print "ROSMOD GUI Version 0.0.1"
