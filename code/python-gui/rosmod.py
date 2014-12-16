@@ -1,67 +1,97 @@
 #!/usr/bin/python
 
+from Tkinter import *
 
-'''
-Gotten as example for moving widgets around w/ mouse
-'''
+from collections import OrderedDict
+import tkMessageBox
 
-import Tkinter as tk
+class Toolbar:
+    def __init__(self, master,nameToCallbackMap):
+        self.buttons=[]
+        self.master=master
+        self.nameToCallbackMap = nameToCallbackMap
+        self.frame = Frame(self.master)
+        for name,callback in self.nameToCallbackMap.iteritems():
+            newButton = Button(self.frame, text=name, width=6, command=callback)
+            self.buttons.append(newButton)
+            newButton.grid(row=0,column=(len(self.buttons)-1))
+        self.frame.pack(side=TOP,fill=X)
 
-class SampleApp(tk.Tk):
-    '''Illustrate how to drag items on a Tkinter canvas'''
+class Menubar:
+    def __init__(self, master, menuDictDict):
+        self.master = master
+        self.menu = Menu(self.master)
+        self.menus = []
+        for name,menuDict in menuDictDict.iteritems():
+            self.menus.append(Menu(self.menu,tearoff=0))
+            for option,callback in menuDict.iteritems():
+                self.menus[-1].add_command(label=option,command=callback)
+            self.menu.add_cascade(label=name,menu=self.menus[-1])
+        self.master.config(menu=self.menu)
 
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+class App:
 
-        # create a canvas
-        self.canvas = tk.Canvas(width=400, height=400)
-        self.canvas.pack(fill="both", expand=True)
+    def __init__(self, master):
 
-        # this data is used to keep track of an 
-        # item being dragged
-        self._drag_data = {"x": 0, "y": 0, "item": None}
+        self.master = master
 
-        # create a couple movable objects
-        self._create_token((100, 100), "white")
-        self._create_token((200, 100), "black")
+        ''' Set up the program's menu '''
+        menuDictDict = OrderedDict()
+        fileDict = {}
+        fileDict['New']=self.menubar_New_Callback
+        fileDict['Open']=self.menubar_Open_Callback
+        fileDict['Save']=self.menubar_Save_Callback
+        fileDict['Quit']=self.menubar_Quit_Callback
+        optionsDict = {}
+        helpDict = {}
+        helpDict['Version']=self.menubar_Version_Callback
+        helpDict['Author']=self.menubar_Author_Callback
+        helpDict['Email']=self.menubar_Email_Callback
 
-        # add bindings for clicking, dragging and releasing over
-        # any object with the "token" tag
-        self.canvas.tag_bind("token", "<ButtonPress-1>", self.OnTokenButtonPress)
-        self.canvas.tag_bind("token", "<ButtonRelease-1>", self.OnTokenButtonRelease)
-        self.canvas.tag_bind("token", "<B1-Motion>", self.OnTokenMotion)
+        menuDictDict['File'] = fileDict
+        menuDictDict['Options'] = optionsDict
+        menuDictDict['Help'] = helpDict
 
-    def _create_token(self, coord, color):
-        '''Create a token at the given coordinate in the given color'''
-        (x,y) = coord
-        self.canvas.create_oval(x-25, y-25, x+25, y+25, 
-                                outline=color, fill=color, tags="token")
+        self.menubar = Menubar(self.master,menuDictDict)
 
-    def OnTokenButtonPress(self, event):
-        '''Being drag of an object'''
-        # record the item and its location
-        self._drag_data["item"] = self.canvas.find_closest(event.x, event.y)[0]
-        self._drag_data["x"] = event.x
-        self._drag_data["y"] = event.y
 
-    def OnTokenButtonRelease(self, event):
-        '''End drag of an object'''
-        # reset the drag information
-        self._drag_data["item"] = None
-        self._drag_data["x"] = 0
-        self._drag_data["y"] = 0
+        ''' Set up the toolbar '''
+        toolbarMap = {}
+        toolbarMap['interpret'] = self.toolbar_Interpret_Callback
+        toolbarMap['analyze'] = self.toolbar_Analyze_Callback
+        self.toolbar = Toolbar(self.master,toolbarMap)
 
-    def OnTokenMotion(self, event):
-        '''Handle dragging of an object'''
-        # compute how much this object has moved
-        delta_x = event.x - self._drag_data["x"]
-        delta_y = event.y - self._drag_data["y"]
-        # move the object the appropriate amount
-        self.canvas.move(self._drag_data["item"], delta_x, delta_y)
-        # record the new position
-        self._drag_data["x"] = event.x
-        self._drag_data["y"] = event.y
+    def menubar_Open_Callback(self):
+        print "you pressed Open"
 
-if __name__ == "__main__":
-    app = SampleApp()
-    app.mainloop()
+    def menubar_New_Callback(self):
+        print "you pressed New"
+
+    def menubar_Save_Callback(self):
+        print "you pressed Save"
+
+    def menubar_Version_Callback(self):
+        print "ROSMOD GUI Version 0.0.1"
+
+    def menubar_Author_Callback(self):
+        print "William Emfinger; Pranav Srinivas Kumar"
+
+    def menubar_Email_Callback(self):
+        print "emfinger@isis.vanderbilt.edu; pkumar@isis.vanderbilt.edu"
+
+    def menubar_Quit_Callback(self):
+        print "you pressed Quit"
+        self.master.quit()
+
+    def toolbar_Interpret_Callback(self):
+        print "you pressed interpret!"
+        
+    def toolbar_Analyze_Callback(self):
+        print "you pressed analyze!"
+
+root = Tk()
+
+app = App(root)
+
+root.mainloop()
+#root.destroy()
