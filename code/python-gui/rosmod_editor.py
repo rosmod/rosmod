@@ -94,52 +94,31 @@ class ModelViewer(EditorFrame):
         self.displayMapping = displayMapping
 
         self.displayLayout = {}
-        self.displayLayout['service'] = 50
-        self.displayLayout['message'] = 50
-        self.displayLayout['component'] = 150
-        self.displayLayout['node'] = 250
+        # value is [xpos, size]
+        self.displayLayout['service'] = [50,80]
+        self.displayLayout['message'] = [50,80]
+        self.displayLayout['component'] = [150,80]
+        self.displayLayout['node'] = [250,80]
 
         self.drawModel()
 
+    def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
+        ypos = initY
+        for name,object in drawDict.iteritems():
+            self._create_object(
+                (self.displayLayout[dictKey][0],ypos),
+                self.displayLayout[dictKey][1],
+                self.displayMapping[dictKey][0],
+                self.displayMapping[dictKey][1]
+            )
+            ypos += self.displayLayout[dictKey][1] + padY
+        return ypos
+
     def drawModel(self):
-        ypos = 50
-        for name,service in self.model.services.iteritems():
-            self._create_object(
-                (self.displayLayout['service'], ypos), 
-                80, 
-                self.displayMapping['service'][0], 
-                self.displayMapping['service'][1]
-            )
-            ypos += 100
-
-        for name,message in self.model.messages.iteritems():
-            self._create_object(
-                (self.displayLayout['message'], ypos), 
-                80, 
-                self.displayMapping['message'][0], 
-                self.displayMapping['message'][1]
-            )
-            ypos += 100
-
-        ypos = 50
-        for name,component in self.model.components.iteritems():
-            self._create_object(
-                (self.displayLayout['component'], ypos), 
-                80, 
-                self.displayMapping['component'][0], 
-                self.displayMapping['component'][1]
-            )
-            ypos += 100
-
-        ypos = 50
-        for name,node in self.model.nodes.iteritems():
-            self._create_object(
-                (self.displayLayout['node'], ypos), 
-                80, 
-                self.displayMapping['node'][0], 
-                self.displayMapping['node'][1]
-            )
-            ypos += 100
+        ypos = self.drawObjectsFromDict('service',self.model.services,50,20)
+        self.drawObjectsFromDict('message',self.model.messages,ypos,20)
+        self.drawObjectsFromDict('component',self.model.components,50,20)
+        self.drawObjectsFromDict('node',self.model.nodes,50,20)
 
     def addService(self, name, definition = ''):
         self.model.addService(name,definition)

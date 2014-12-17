@@ -100,7 +100,7 @@ class App:
 
         ''' Set up the Status Bar for messages '''
         self.statusBar = StatusBar(self.master)
-        self.statusBar.pack(side=BOTTOM, fill=BOTH,expand=1)
+        self.statusBar.pack(side=BOTTOM, fill=X)
 
         ''' Set up the Object Browser ''' 
         self.editorHeight = 800
