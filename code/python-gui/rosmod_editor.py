@@ -92,6 +92,17 @@ class EditorFrame(Frame):
     def _delete_callback(self,event):
         print "delete has been pressed"
 
+    def _connect_objects(self,objDict,x,y,nameAsKey=False):
+        for localName,obj in objDict.iteritems():
+            objKey = obj
+            if nameAsKey == True:
+                objKey = obj.name
+            self.canvas.create_line(
+                x,y,
+                self.objects[objKey][-2],self.objects[objKey][-1],
+                arrow=FIRST
+            )
+
     def _create_object(self, name, coord, size, color, tagTuple):
         (x,y) = coord
         objectID = self.canvas.create_rectangle(
@@ -109,47 +120,20 @@ class EditorFrame(Frame):
         if len(tagTuple) > 3:
             #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
             if tagTuple[1] == 'node':
-                print "NEED TO CONNECT COMPONENTS"
                 self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y]
                 # need to make small boxes for components
                 # need to draw text for component names
                 # need to connect small boxes to their actual components
-                for name,comp in tagTuple[3].components.iteritems():
-                    self.canvas.create_line(
-                        x,y,
-                        self.objects[comp][2],self.objects[comp][3],
-                        arrow=FIRST
-                    )
+                self._connect_objects(tagTuple[3].components,x,y)
             elif tagTuple[1] == 'component':
                 self.objects[tagTuple[3]] = [objectID,textID,x,y]
                 # need to make small boxes for pubs, subs, clients, servers, & timers
                 # need to draw text for names
                 # need to connect small boxes to their respective objects
-                print "NEED TO CONNECT MESSAGES & SERVICES"
-                for name,srv in tagTuple[3].clients.iteritems():
-                    self.canvas.create_line(
-                        x,y,
-                        self.objects[srv.name][3],self.objects[srv.name][4],
-                        arrow=FIRST
-                    )
-                for name,srv in tagTuple[3].servers.iteritems():
-                    self.canvas.create_line(
-                        x,y,
-                        self.objects[srv.name][3],self.objects[srv.name][4],
-                        arrow=FIRST
-                    )
-                for name,msg in tagTuple[3].subscribers.iteritems():
-                    self.canvas.create_line(
-                        x,y,
-                        self.objects[msg.name][3],self.objects[msg.name][4],
-                        arrow=FIRST
-                    )
-                for name,msg in tagTuple[3].publishers.iteritems():
-                    self.canvas.create_line(
-                        x,y,
-                        self.objects[msg.name][3],self.objects[msg.name][4],
-                        arrow=FIRST
-                    )
+                self._connect_objects(tagTuple[3].clients,x,y,nameAsKey=True)
+                self._connect_objects(tagTuple[3].servers,x,y,nameAsKey=True)
+                self._connect_objects(tagTuple[3].subscribers,x,y,nameAsKey=True)
+                self._connect_objects(tagTuple[3].publishers,x,y,nameAsKey=True)
             else:
                 self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y] 
 
