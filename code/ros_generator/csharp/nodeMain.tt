@@ -1,0 +1,47 @@
+﻿#include "ros/ros.h"
+#include <cstdlib>
+
+// Required for boost::thread
+#include <boost/thread.hpp>
+
+// Include all components this actor requires<# if (components.Count > 0) { #>
+	<# foreach (var comp in components) { #> 
+#include "<#Write(project_name);#>/<#Write(comp.comp_name);#>.hpp"<# } #><# } #>
+
+
+
+void componentThread(Component* compPtr)
+{
+<#Write("    ");#>compPtr->startUp();
+<#Write("    ");#>compPtr->processQueue();
+}
+
+int main(int argc, char **argv)
+{
+<#Write("    ");#>std::string nodeName = "<#Write(node_name);#>";
+<#Write("    ");#>ros::init(argc, argv, nodeName.c_str());
+
+<#Write("    ");#>// Create Node Handle
+<#Write("    ");#>ros::NodeHandle n;
+
+<#Write("    ");#>// Create Component Objects
+<# if (components.Count > 0) { #><# foreach (var comp in components) { #>
+<#Write("    ");#><#Write(node_name);#>::<#Write(comp.comp_name);#> <#Write(comp.comp_name.ToLower());#>;
+<# } #> <# } #>
+
+<#Write("    ");#>// Create Component Threads
+<# if (components.Count > 0) { #><# foreach (var comp in components) { #>
+<#Write("    ");#>boost::thread <#Write(comp.comp_name.ToLower());#>_Thread(componentThread, &<#Write(comp.comp_name.ToLower());#>);
+<#Write("    ");#>ROS_INFO("Node <#Write(node_name);#> has started <#Write(comp.comp_name);#>");
+
+<# } #> <# } #>
+
+<#Write("    ");#>ROS_INFO_STREAM("NodeMain thread id = " << boost::this_thread::get_id());
+
+<# if (components.Count > 0) { #><# foreach (var comp in components) { #>
+<#Write("    ");#><#Write(comp.comp_name.ToLower());#>_Thread.join();
+<# } #> <# } #>
+
+<#Write("    ");#>return 0; 
+}
+
