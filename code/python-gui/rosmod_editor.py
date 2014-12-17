@@ -10,6 +10,22 @@ from collections import OrderedDict
 
 from rosmod_classes import *
 
+class TextPopup(Text):
+    def __init__(self, master):
+        Text.__init__(self,master,width=50,height=50)
+        self.master = master
+        self.scrollbar = Scrollbar(self.master)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
+        self.pack(side=LEFT, fill=Y)
+        self.scrollbar.config(command=self.yview)
+        self.config(yscrollcommand=self.scrollbar.set)
+        self.button = Button(self,text="Close",command=self._close_Callback)
+        self.window_create(INSERT,window=self.button)
+
+    def _close_Callback(self):
+        self.scrollbar.destroy()
+        self.destroy()
+
 class EditorFrame(Frame):
     def __init__(self, master, height, width, maxHeight, maxWidth):
         Frame.__init__(self,master)
@@ -102,6 +118,25 @@ class ModelViewer(EditorFrame):
 
         self.drawModel()
 
+        # make tag so that right click on object can be used to inspect code
+        self.canvas.tag_bind("object", "<Button-3>", self.OnObjectButtonPress)
+
+    def OnObjectButtonPress(self, event):
+        selectedObject = self.canvas.find_closest(
+            self.canvas.canvasx(event.x), 
+            self.canvas.canvasy(event.y)
+        )[0]
+        tags = self.canvas.gettags(selectedObject)
+        print tags
+        if tags[1] == 'message':
+            msgDef = StringVar(tags[3])
+            self.entry = TextPopup(self.canvas)
+            self.entry.pack()
+            self.entry.insert(END,msgDef)
+            print "got a message"
+        elif tags[1] == 'service':
+            print "got a service"
+
     def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
         ypos = initY
         for name,object in drawDict.iteritems():
@@ -109,7 +144,7 @@ class ModelViewer(EditorFrame):
                 (self.displayLayout[dictKey][0],ypos),
                 self.displayLayout[dictKey][1],
                 self.displayMapping[dictKey][0],
-                self.displayMapping[dictKey][1]
+                self.displayMapping[dictKey][1] + (name,object)
             )
             ypos += self.displayLayout[dictKey][1] + padY
         return ypos
