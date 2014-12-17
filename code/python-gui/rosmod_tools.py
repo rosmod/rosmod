@@ -19,6 +19,10 @@ class ToolBar:
             self.buttons.append(newButton)
             newButton.grid(row=0,column=(len(self.buttons)-1))
         self.frame.pack(side=TOP,fill=X)
+        self.frame.bind("<Button-1>",self._button1_callback)
+
+    def _button1_callback(self,event):
+        self.frame.focus_set()
 
 class MenuBar:
     def __init__(self, master, menuDictDict):
@@ -32,12 +36,21 @@ class MenuBar:
             self.menu.add_cascade(label=name,menu=self.menus[-1])
         self.master.config(menu=self.menu)
 
+        self.menu.bind("<Button-1>",self._button1_callback)
+
+    def _button1_callback(self,event):
+        self.menu.focus_set()
+
 class StatusBar(Frame):
 
     def __init__(self, master):
         Frame.__init__(self, master)
         self.label = Label(self, bd=1, relief=SUNKEN, anchor=S)
         self.label.pack(side="left",fill=X)
+        self.bind("<Button-1>",self._button1_callback)
+
+    def _button1_callback(self,event):
+        self.focus_set()
 
     def set(self, format, *args):
         self.label.config(text=format % args)

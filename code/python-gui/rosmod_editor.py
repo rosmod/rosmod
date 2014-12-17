@@ -33,6 +33,7 @@ class TextPopup():
         self.button.pack(side=BOTTOM)
         self.text.pack()
         self.text.insert(END,objTextVar.get())
+        self.master.config(state=DISABLED)
 
     def _close_Callback(self):
         self.scrollbar.destroy()
@@ -76,19 +77,40 @@ class EditorFrame(Frame):
         self.canvas.bind("<Button-4>", self._mouse_wheel)
         self.canvas.bind("<Button-5>", self._mouse_wheel)
 
+        self.canvas.bind("<Button-1>", self._button1_callback)
+        self.canvas.bind("<Delete>",self._delete_callback)
+
         self.canvas.pack(fill=BOTH)
         self.pack(fill=BOTH)
 
+        self.objects = OrderedDict()
+
+    def _button1_callback(self,event):
+        self.focus_set()
+        self.canvas.focus_set()
+
+    def _delete_callback(self,event):
+        print "delete has been pressed"
+
     def _create_object(self, name, coord, size, color, tagTuple):
         (x,y) = coord
-        self.canvas.create_rectangle(
+        objectID = self.canvas.create_rectangle(
             x-size/2, y-size/2, x+size/2, y+size/2, 
-            outline=color, fill=color, tags=tagTuple
+            outline=color, fill=color, tags=tagTuple,
+            activeoutline="black",
+            activewidth=3.0
         )
         self.canvas.create_text(
             (x,y),
-            text=name
+            text=name,
+            state=DISABLED,
+            tags=tagTuple
         )
+        if len(tagTuple) > 3:
+            if tagTuple[1] == 'component':
+                print "component :\n\t{0}".format(tagTuple[3])
+            elif tagTuple[1] == 'node':
+                print "node :\n\t{0}".format(tagTuple[3])
 
     def _mouse_wheel(self, event):
         direction = 0
@@ -103,8 +125,6 @@ class ObjectList(EditorFrame):
     def __init__(self, master, objectDict, height, width, maxHeight, maxWidth):
         EditorFrame.__init__(self,master,"Object Browser",height,width,maxHeight,maxWidth)
 
-        self.objects = []
-        self.numObjects = 100
         self.selectedObjectType = None
 
         ypos = self.width * 3 / 4
@@ -112,14 +132,18 @@ class ObjectList(EditorFrame):
             self._create_object(name,(self.width/2, ypos), self.width * 3/4, attr[0], attr[1])
             ypos += self.width
 
-        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectButtonPress)
+        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
 
-    def OnObjectButtonPress(self, event):
+
+    def OnObjectLeftClick(self, event):
+        self.focus_set()
         selectedObject = self.canvas.find_closest(
             self.canvas.canvasx(event.x), 
             self.canvas.canvasy(event.y)
         )[0]
+        self.canvas.focus_set()
         self.selectedObjectType = self.canvas.gettags(selectedObject)[1]
+        
 
     def GetActiveObjectType(self):
         return self.selectedObjectType
@@ -143,8 +167,9 @@ class ModelViewer(EditorFrame):
 
         self.drawModel()
 
+        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
         # make tag so that right click on object can be used to inspect code
-        self.canvas.tag_bind("object", "<Button-3>", self.OnObjectButtonPress)
+        self.canvas.tag_bind("object", "<Button-3>", self.OnObjectRightClick)
 
         self.var = StringVar()
         self.var.trace("w", self.OnTextUpdate)
@@ -155,7 +180,18 @@ class ModelViewer(EditorFrame):
         if self.activeObject != None:
             self.activeObject[0][self.activeObject[1]] = self.var.get()
 
-    def OnObjectButtonPress(self, event):
+    def OnObjectLeftClick(self, event):
+        self.focus_set()
+        self.canvas.focus_set()
+        selectedObject = self.canvas.find_closest(
+            self.canvas.canvasx(event.x), 
+            self.canvas.canvasy(event.y)
+        )[0]
+        tags = self.canvas.gettags(selectedObject)
+
+    def OnObjectRightClick(self, event):
+        self.focus_set()
+        self.canvas.focus_set()
         selectedObject = self.canvas.find_closest(
             self.canvas.canvasx(event.x), 
             self.canvas.canvasy(event.y)
@@ -165,15 +201,12 @@ class ModelViewer(EditorFrame):
             self.activeObject = (self.model.messages,tags[2])
             self.var.set(self.model.messages[tags[2]])
             self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
-            self.canvas.config(state=DISABLED)
         elif tags[1] == 'service':
             self.activeObject = (self.model.services,tags[2])
             self.var.set(self.model.services[tags[2]])
             self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
-            self.canvas.config(state=DISABLED)
         else:
             self.activeObject = None
-            print tags
 
     def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
         ypos = initY
@@ -183,7 +216,7 @@ class ModelViewer(EditorFrame):
                 (self.displayLayout[dictKey][0],ypos),
                 self.displayLayout[dictKey][1],
                 self.displayMapping[dictKey][0],
-                self.displayMapping[dictKey][1] + (name,None)
+                self.displayMapping[dictKey][1] + (name,object)
             )
             ypos += self.displayLayout[dictKey][1] + padY
         return ypos
@@ -208,3 +241,38 @@ class ModelViewer(EditorFrame):
 
     def addPackage(self, name, package):
         self.model.addPackage(name,package)
+
+class Editor():
+    def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
+        self.master = master
+        self.height = height
+        self.width = width
+        self.editorDict = editorDict
+        self.model = model
+        self.editorPane = PanedWindow(
+            self.master,
+            orient = HORIZONTAL,
+            opaqueresize = True,
+            height = self.height,
+            width = self.width
+        )
+        self.objectList = ObjectList(
+            master = self.master,
+            objectDict = self.editorDict,
+            height = self.height,
+            width = splitWidth,
+            maxHeight = maxHeight,
+            maxWidth = splitWidth
+        )
+        self.modelViewer = ModelViewer(
+            master = self.master,
+            height = self.height,
+            width = self.width - splitWidth,
+            maxHeight = maxHeight,
+            maxWidth = maxWidth - splitWidth,
+            displayMapping = self.editorDict,
+            model=self.model
+        )
+        self.editorPane.add(self.objectList)
+        self.editorPane.add(self.modelViewer)
+        self.editorPane.pack(fill='both',expand=1)

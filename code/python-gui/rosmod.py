@@ -31,11 +31,9 @@ class App:
         '''
 
         serv1 = Service("basicService1",
-                        """
-string hello
+                        """string hello
 ---
-string retval
-                        """
+string retval"""
         )
         serv2 = Service("basicService2")
         msg1 = Message("basicMessage1")
@@ -110,53 +108,28 @@ string retval
         self.statusBar = StatusBar(self.master)
         self.statusBar.pack(side=BOTTOM, fill=X)
 
-        ''' Set up the Object Browser ''' 
+        ''' Set up the Editor ''' 
         self.editorHeight = 800
         self.editorWidth = 800
         self.objectWidth = 100
 
-        ''' Set up the Editor Pane ''' 
-        self.editorPane = PanedWindow(
-            self.master, 
-            orient = HORIZONTAL, 
-            opaqueresize = True, 
-            height = self.editorHeight, 
-            width = self.editorWidth
-        )
-        ''' Set up the Object Browser ''' 
         objectDict = OrderedDict()
         objectDict['service'] = ["green",("object","service")]
         objectDict['message'] = ["blue",("object","message")]
         objectDict['timer'] = ["gray",("object","timer")]
         objectDict['component'] = ["red",("object","component")]
         objectDict['node'] = ["magenta",("object","node")]
-        self.objectList = ObjectList(
-            self.master, 
-            objectDict=objectDict,
-            height=self.editorHeight, 
-            width=self.objectWidth,
-            maxHeight=self.editorHeight*2,
-            maxWidth=self.objectWidth
-        )
-        ''' Set up the Model View / Editor ''' 
-        displayDict = {}
-        displayDict['service'] = 'blue'
-        displayDict['message'] = 'green'
-        displayDict['component'] = 'white'
-        displayDict['node'] = 'gray'
-        self.modelViewer = ModelViewer(
-            self.master, 
-            height=self.editorHeight, 
-            width=self.editorWidth-self.objectWidth,
-            maxHeight=self.editorHeight*2,
-            maxWidth=self.editorWidth*4,
-            displayMapping = objectDict,
-            model=self.Model
-        )
-        self.editorPane.add(self.objectList)
-        self.editorPane.add(self.modelViewer)
 
-        self.editorPane.pack(fill='both', expand=1)
+        self.editor = Editor(
+            master = self.master,
+            height = self.editorHeight,
+            width = self.editorWidth,
+            splitWidth = self.objectWidth,
+            maxWidth = self.editorHeight * 2,
+            maxHeight = self.editorHeight * 2,
+            editorDict = objectDict,
+            model = self.Model
+        )
 
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
 

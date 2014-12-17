@@ -7,6 +7,12 @@ class BaseROSInterface:
         self.name = name
         self.definition = definition
 
+    def __str__(self):
+        retStr = ""
+        retStr += "Name: {0}".format(name)
+        retStr += "Def : {0}".format(definition)
+        return retStr
+
 class Service(BaseROSInterface):
     def __init__(self, name, definition = ''):
         BaseROSInterface.__init__(self,name,definition)
@@ -23,6 +29,15 @@ class Component:
         self.servers = {}
         self.timers = {}
 
+    def __str__(self):
+        retStr = ""
+        retStr += "publishers:{0}".format(self.publishers)
+        retStr += "subscribers:{0}".format(self.subscribers)
+        retStr += "clients:{0}".format(self.clients)
+        retStr += "servers:{0}".format(self.servers)
+        retStr += "timers:{0}".format(self.servers)
+        return retStr
+
     def addPub(self, name, topic):
         self.publishers[name] = topic
     def addSub(self, name, topic):
@@ -37,6 +52,11 @@ class Component:
 class Node:
     def __init__(self):
         self.components = {}
+
+    def __str__(self):
+        retStr = ""
+        retStr += "components:{0}".format(self.components)
+        return retStr
     
     def addComponent(self, name, component):
         self.components[name] = component
@@ -55,6 +75,14 @@ class Model:
         self.components = {}
         self.messages = {}
         self.services = {}
+
+    def __str__(self):
+        retStr = ""
+        retStr += "nodes:{0}".format(self.nodes)
+        retStr += "components:{0}".format(self.components)
+        retStr += "messages:{0}".format(self.messages)
+        retStr += "services:{0}".format(self.services)
+        return retStr
 
     def addPackage(self, name, package):
         self.packages[name] = package
