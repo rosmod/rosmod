@@ -3,7 +3,7 @@ Guide to using rosgen
 
 Setup Antlr4
 ------------
-Note: This step is optional as the lexer, parser and listener are included with ROS.g4
+**Note**: This step is optional as the ROS lexer, parser and listener python classes are included with ROS.g4
 
 ```bash
 $ cd /usr/local/lib
@@ -15,15 +15,17 @@ $ alias grun='java org.antlr.v4.runtime.misc.TestRig'
 
 Generate ROS Parser, Lexer and Listener:
 ---------------------------------------
-Note: This step is optional as the lexer, parser and listener are included with ROS.g4
+**Note**: This step is optional as the ROS lexer, parser and listener python classes are included with ROS.g4
 
 ```bash
+$ cd 
 $ antlr4 -Dlanguage=Python2 ROS.g4
 ```
 
 Install the Antlr4 Python Target:
 --------------------------------
-Note: This step is optional as the antlr4 python target is included with ros_generator
+**Note**: This step is optional as the antlr4 python target is included with ros_generator
+
 1. Download from: https://pypi.python.org/pypi/antlr4-python2-runtime/
 2. Extract antlr4-python2-runtime-4.4.1.tar.gz
 
