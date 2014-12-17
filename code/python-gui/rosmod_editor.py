@@ -19,11 +19,14 @@ class TextPopup(Text):
         self.pack(side=LEFT, fill=Y)
         self.scrollbar.config(command=self.yview)
         self.config(yscrollcommand=self.scrollbar.set)
-        self.button = Button(self.master,text="Close",command=self._close_Callback)
-        self.window_create(INSERT,window=self.button)
+        self.button = Button(self.master,text="Save",command=self._close_Callback)
+        self.button.pack(side=RIGHT)
+        #self.button = Button(self.master,text="Close",command=self._close_Callback)
+        #self.window_create(INSERT,window=self.button)
 
     def _close_Callback(self):
         self.scrollbar.destroy()
+        self.button.destroy()
         self.destroy()
 
 class EditorFrame(Frame):
