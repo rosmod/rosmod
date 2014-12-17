@@ -9,6 +9,7 @@ class BaseROSInterface:
 
 class Service(BaseROSInterface):
     def __init__(self, name, definition = ''):
+        print definition
         BaseROSInterface.__init__(self,name,definition)
 
 class Message(BaseROSInterface):
@@ -67,7 +68,13 @@ class Model:
 
     def addService(self, name, definition = ''):
         self.services[name] = definition
+
+    def addService(self,serv):
+        self.services[serv.name]=serv.definition
     
     def addMessage(self, name, definition = ''):
         self.messages[name] = definition
+
+    def addMessage(self, msg):
+        self.messages[msg.name]=msg.definition
 

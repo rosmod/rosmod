@@ -19,7 +19,7 @@ class TextPopup(Text):
         self.pack(side=LEFT, fill=Y)
         self.scrollbar.config(command=self.yview)
         self.config(yscrollcommand=self.scrollbar.set)
-        self.button = Button(self,text="Close",command=self._close_Callback)
+        self.button = Button(self.master,text="Close",command=self._close_Callback)
         self.window_create(INSERT,window=self.button)
 
     def _close_Callback(self):
@@ -128,14 +128,10 @@ class ModelViewer(EditorFrame):
         )[0]
         tags = self.canvas.gettags(selectedObject)
         print tags
-        if tags[1] == 'message':
-            msgDef = StringVar(tags[3])
+        if tags[1] == 'message' or tags[1] == 'service':
             self.entry = TextPopup(self.canvas)
             self.entry.pack()
-            self.entry.insert(END,msgDef)
-            print "got a message"
-        elif tags[1] == 'service':
-            print "got a service"
+            self.entry.insert(END,tags[3])
 
     def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
         ypos = initY

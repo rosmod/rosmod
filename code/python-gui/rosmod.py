@@ -30,7 +30,13 @@ class App:
         -----------------------------------------------------
         '''
 
-        serv1 = Service("basicService1")
+        serv1 = Service("basicService1",
+                        """
+string hello
+---
+string retval
+                        """
+        )
         serv2 = Service("basicService2")
         msg1 = Message("basicMessage1")
         msg2 = Message("basicMessage2")
@@ -49,9 +55,11 @@ class App:
         package1.addNode("sat0",node1)
         self.Model = Model()
         self.Model.addPackage("mainPackage",package1)
-        self.Model.messages['basicMessage1'] = ''
-        self.Model.messages['basicMessage2'] = ''
-        self.Model.services['basicService1'] = ''
+        self.Model.addMessage(msg1)
+        self.Model.addMessage(msg2)
+        self.Model.addMessage(msg3)
+        self.Model.addService(serv1)
+        self.Model.addService(serv2)
         self.Model.components['Comp0'] = c1
         self.Model.nodes['sat0'] = node1
 
