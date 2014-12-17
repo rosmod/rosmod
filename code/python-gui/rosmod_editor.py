@@ -11,9 +11,11 @@ from collections import OrderedDict
 from rosmod_classes import *
 
 class TextPopup():
-    def __init__(self, master,objText,width,height):
+    def __init__(self, master,objName,objTextVar,width,height):
         self.master = master
         self.frame = Frame(master=self.master,bg="gray",height=height,width=width)
+        self.label = Label(self.frame, text=objName, anchor=N, bg="dark gray", fg="white", relief=RAISED)
+        self.label.pack()
         self.window = self.master.create_window(
             0,0, 
             anchor=NW, 
@@ -21,6 +23,7 @@ class TextPopup():
             width=width,
             height=height
         )
+        self.textVar = objTextVar
         self.text = Text(self.frame)
         self.scrollbar = Scrollbar(self.frame)
         self.scrollbar.pack(side=RIGHT, fill=Y)
@@ -29,22 +32,27 @@ class TextPopup():
         self.button = Button(self.frame,text="Save",command=self._close_Callback)
         self.button.pack(side=BOTTOM)
         self.text.pack()
-        self.text.insert(END,objText)
+        self.text.insert(END,objTextVar.get())
 
     def _close_Callback(self):
         self.scrollbar.destroy()
         self.button.destroy()
+        self.textVar.set(self.text.get(1.0,END))
         self.text.destroy()
         self.frame.destroy()
+        self.label.destroy()
         self.master.delete(self.window)
 
 class EditorFrame(Frame):
-    def __init__(self, master, height, width, maxHeight, maxWidth):
+    def __init__(self, master, label, height, width, maxHeight, maxWidth):
         Frame.__init__(self,master)
         Frame.config(self,bd=2, relief=SUNKEN)
 
         self.height=height
         self.width=width
+
+        self.label = Label(self, text=label, anchor=N, bg="dark gray", fg="white", relief=RAISED)
+        self.label.pack()
 
         self.VScrollBar = Scrollbar(self, orient=VERTICAL)
         self.VScrollBar.pack(fill='y', side=RIGHT)
@@ -92,7 +100,7 @@ class EditorFrame(Frame):
 
 class ObjectList(EditorFrame):
     def __init__(self, master, objectDict, height, width, maxHeight, maxWidth):
-        EditorFrame.__init__(self,master,height,width,maxHeight,maxWidth)
+        EditorFrame.__init__(self,master,"Object Browser",height,width,maxHeight,maxWidth)
 
         self.objects = []
         self.numObjects = 100
@@ -117,7 +125,7 @@ class ObjectList(EditorFrame):
         
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None):
-        EditorFrame.__init__(self,master,height,width,maxHeight,maxWidth)
+        EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth)
         if model != None:
             self.model=model
         else:
@@ -137,15 +145,29 @@ class ModelViewer(EditorFrame):
         # make tag so that right click on object can be used to inspect code
         self.canvas.tag_bind("object", "<Button-3>", self.OnObjectButtonPress)
 
+    def OnTextUpdate(self,*args):
+        self.activeObject[0][self.activeObject[1]] = self.var.get()
+
     def OnObjectButtonPress(self, event):
         selectedObject = self.canvas.find_closest(
             self.canvas.canvasx(event.x), 
             self.canvas.canvasy(event.y)
         )[0]
         tags = self.canvas.gettags(selectedObject)
-        print tags
-        if tags[1] == 'message' or tags[1] == 'service':
-            self.entry = TextPopup(self.canvas,tags[3],200,200)
+        if tags[1] == 'message':
+            self.var = StringVar()
+            self.var.trace("w", self.OnTextUpdate)
+            self.activeObject = (self.model.services,tags[2])
+            self.var.set(self.model.messages[tags[2]])
+            self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
+        elif tags[1] == 'service':
+            self.var = StringVar()
+            self.var.trace("w", self.OnTextUpdate)
+            self.activeObject = (self.model.services,tags[2])
+            self.var.set(self.model.services[tags[2]])
+            self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
+        else:
+            print tags
 
     def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
         ypos = initY
@@ -155,7 +177,7 @@ class ModelViewer(EditorFrame):
                 (self.displayLayout[dictKey][0],ypos),
                 self.displayLayout[dictKey][1],
                 self.displayMapping[dictKey][0],
-                self.displayMapping[dictKey][1] + (name,object)
+                self.displayMapping[dictKey][1] + (name,None)
             )
             ypos += self.displayLayout[dictKey][1] + padY
         return ypos
