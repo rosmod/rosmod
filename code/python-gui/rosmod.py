@@ -60,7 +60,6 @@ string retval"""
         self.Model.addService(serv2)
         self.Model.components['Comp0'] = c1
         self.Model.nodes['sat0'] = node1
-        print node1.maxNameLen,node1.numObjects
         '''
         -----------------------------------------------------
         -----------------------------------------------------

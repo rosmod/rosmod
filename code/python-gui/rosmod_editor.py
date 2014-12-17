@@ -208,7 +208,6 @@ class ModelViewer(EditorFrame):
             )
 
     def create_object(self, name, coord, color, tagTuple):
-        print "NEED TO CALC WIDTH/ HEIGHT/ SIZE/ ETC BASED ON number of subobjects"
         (x,y) = coord
         if tagTuple[1] == 'message' or tagTuple[1] == 'service' or tagTuple[1] == 'timer':
             width = 80
@@ -220,14 +219,13 @@ class ModelViewer(EditorFrame):
                 activewidth=3.0
             )
             textID = self.canvas.create_text(
-                (x,y),
+                (x+width/2,y-10),
                 text=name,
                 state=DISABLED,
                 tags=tagTuple
             )
-            self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y] 
+            self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x+width,y+height/2] 
         else:
-            print tagTuple[3].maxNameLen,tagTuple[3].numObjects
             width = tagTuple[3].maxNameLen * 15 + 30
             height = tagTuple[3].numObjects * 15 + 30
             objectID = self.canvas.create_rectangle(
@@ -237,20 +235,20 @@ class ModelViewer(EditorFrame):
                 activewidth=3.0
             )
             textID = self.canvas.create_text(
-                (x,y),
+                (x+width/2,y-10),
                 text=name,
                 state=DISABLED,
                 tags=tagTuple
             )
             #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
             if tagTuple[1] == 'node':
-                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y]
+                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x+width,y+height/2]
                 # need to make small boxes for components
                 # need to draw text for component names
                 # need to connect small boxes to their actual components
                 self.connect_objects(tagTuple[3].components,x,y)
             elif tagTuple[1] == 'component':
-                self.objects[tagTuple[3]] = [objectID,textID,x,y]
+                self.objects[tagTuple[3]] = [objectID,textID,x+width,y+height/2]
                 # need to make small boxes for pubs, subs, clients, servers, & timers
                 # need to draw text for names
                 # need to connect small boxes to their respective objects
