@@ -10,24 +10,33 @@ from collections import OrderedDict
 
 from rosmod_classes import *
 
-class TextPopup(Text):
-    def __init__(self, master):
-        Text.__init__(self,master,width=50,height=50)
+class TextPopup():
+    def __init__(self, master,objText,width,height):
         self.master = master
-        self.scrollbar = Scrollbar(self.master)
+        self.frame = Frame(master=self.master,bg="gray",height=height,width=width)
+        self.window = self.master.create_window(
+            0,0, 
+            anchor=NW, 
+            window=self.frame, 
+            width=width,
+            height=height
+        )
+        self.text = Text(self.frame)
+        self.scrollbar = Scrollbar(self.frame)
         self.scrollbar.pack(side=RIGHT, fill=Y)
-        self.pack(side=LEFT, fill=Y)
-        self.scrollbar.config(command=self.yview)
-        self.config(yscrollcommand=self.scrollbar.set)
-        self.button = Button(self.master,text="Save",command=self._close_Callback)
-        self.button.pack(side=RIGHT)
-        #self.button = Button(self.master,text="Close",command=self._close_Callback)
-        #self.window_create(INSERT,window=self.button)
+        self.scrollbar.config(command=self.text.yview)
+        self.text.config(yscrollcommand=self.scrollbar.set)
+        self.button = Button(self.frame,text="Save",command=self._close_Callback)
+        self.button.pack(side=BOTTOM)
+        self.text.pack()
+        self.text.insert(END,objText)
 
     def _close_Callback(self):
         self.scrollbar.destroy()
         self.button.destroy()
-        self.destroy()
+        self.text.destroy()
+        self.frame.destroy()
+        self.master.delete(self.window)
 
 class EditorFrame(Frame):
     def __init__(self, master, height, width, maxHeight, maxWidth):
@@ -136,9 +145,7 @@ class ModelViewer(EditorFrame):
         tags = self.canvas.gettags(selectedObject)
         print tags
         if tags[1] == 'message' or tags[1] == 'service':
-            self.entry = TextPopup(self.canvas)
-            self.entry.pack()
-            self.entry.insert(END,tags[3])
+            self.entry = TextPopup(self.canvas,tags[3],200,200)
 
     def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
         ypos = initY
