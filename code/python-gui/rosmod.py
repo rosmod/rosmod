@@ -58,7 +58,7 @@ string retval"""
         self.Model.addMessage(msg3)
         self.Model.addService(serv1)
         self.Model.addService(serv2)
-        self.Model.components['Comp0'] = c1
+        self.Model.components['Comp0Def'] = c1
         self.Model.nodes['sat0'] = node1
         '''
         -----------------------------------------------------

@@ -196,16 +196,41 @@ class ModelViewer(EditorFrame):
         else:
             self.activeObject = None
 
-    def connect_objects(self,objDict,x,y,nameAsKey=False):
+    def connect_objects(self,objDict,x,y,padY,nameAsKey=False):
+        xpos = x
+        ypos = y
         for localName,obj in objDict.iteritems():
             objKey = obj
             if nameAsKey == True:
                 objKey = obj.name
+            midX,midY = self.create_subObject(
+                localName,
+                (xpos,ypos),
+                (10,10),
+                "black"
+            )
             self.canvas.create_line(
-                x,y,
+                midX,midY,
                 self.objects[objKey][-2],self.objects[objKey][-1],
                 arrow=FIRST
             )
+            ypos += padY
+        return xpos,ypos
+
+    def create_subObject(self, name, coord, size, color):
+        (x,y) = coord
+        (width,height) = size
+        self.canvas.create_rectangle(
+            x,y, x+width, y+height,
+            outline=color, fill =color
+        )
+        self.canvas.create_text(
+            (x + width + 3, y + height/2),
+            text=name,
+            anchor=W,
+            state=DISABLED
+        )
+        return (x,y+height/2)
 
     def create_object(self, name, coord, color, tagTuple):
         (x,y) = coord
@@ -241,21 +266,25 @@ class ModelViewer(EditorFrame):
                 tags=tagTuple
             )
             #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
+            padX = 15
+            padY = 15
+            x += padX
+            y += padY
             if tagTuple[1] == 'node':
                 self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x+width,y+height/2]
                 # need to make small boxes for components
                 # need to draw text for component names
                 # need to connect small boxes to their actual components
-                self.connect_objects(tagTuple[3].components,x,y)
+                self.connect_objects(tagTuple[3].components,x,y,padY)
             elif tagTuple[1] == 'component':
                 self.objects[tagTuple[3]] = [objectID,textID,x+width,y+height/2]
                 # need to make small boxes for pubs, subs, clients, servers, & timers
                 # need to draw text for names
                 # need to connect small boxes to their respective objects
-                self.connect_objects(tagTuple[3].clients,x,y,nameAsKey=True)
-                self.connect_objects(tagTuple[3].servers,x,y,nameAsKey=True)
-                self.connect_objects(tagTuple[3].subscribers,x,y,nameAsKey=True)
-                self.connect_objects(tagTuple[3].publishers,x,y,nameAsKey=True)
+                x,y=self.connect_objects(tagTuple[3].clients,x,y,padY,nameAsKey=True)
+                x,y=self.connect_objects(tagTuple[3].servers,x,y,padY,nameAsKey=True)
+                x,y=self.connect_objects(tagTuple[3].subscribers,x,y,padY,nameAsKey=True)
+                x,y=self.connect_objects(tagTuple[3].publishers,x,y,padY,nameAsKey=True)
         return width,height
 
     def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
