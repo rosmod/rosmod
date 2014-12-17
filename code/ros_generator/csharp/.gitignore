@@ -1,0 +1,15 @@
+# ignore Visual Studio user files
+*.suo
+*.csproj.user
+*.sln.cache
+
+# ignore C# build directories
+[Dd]ebug/
+[Rr]elease/
+packages/
+
+# ignore Java (Maven) build directory
+tool/target/
+
+# ignore NuGet output folders
+/build/nuget/
