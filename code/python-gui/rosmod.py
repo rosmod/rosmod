@@ -35,12 +35,10 @@ class App:
         msg1 = Message("basicMessage1")
         msg2 = Message("basicMessage2")
         msg3 = Message("basicMessage3")
-        timer1 = Timer(1.0)
-        timer2 = Timer(0.0,True)
         c1 = Component()
         c1.addPub("pub0",msg1)
         c1.addPub("pub1",msg2)
-        c1.addTimer("Timer0",timer1)
+        c1.addTimer("Timer0",(1.0,False))
         c1.addSub("sub0",msg1)
         c1.addClient("client",serv1)
         c1.addServer("server",serv1)
@@ -51,6 +49,11 @@ class App:
         package1.addNode("sat0",node1)
         self.Model = Model()
         self.Model.addPackage("mainPackage",package1)
+        self.Model.messages['basicMessage1'] = ''
+        self.Model.messages['basicMessage2'] = ''
+        self.Model.services['basicService1'] = ''
+        self.Model.components['Comp0'] = c1
+        self.Model.nodes['sat0'] = node1
 
         '''
         -----------------------------------------------------
@@ -128,12 +131,19 @@ class App:
             maxWidth=self.objectWidth
         )
         ''' Set up the Model View / Editor ''' 
+        displayDict = {}
+        displayDict['service'] = 'blue'
+        displayDict['message'] = 'green'
+        displayDict['component'] = 'white'
+        displayDict['node'] = 'gray'
         self.modelViewer = ModelViewer(
             self.master, 
             height=self.editorHeight, 
             width=self.editorWidth-self.objectWidth,
             maxHeight=self.editorHeight*2,
-            maxWidth=self.editorWidth*4
+            maxWidth=self.editorWidth*4,
+            displayMapping = objectDict,
+            model=self.Model
         )
         self.editorPane.add(self.objectList)
         self.editorPane.add(self.modelViewer)
