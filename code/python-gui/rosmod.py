@@ -160,9 +160,16 @@ string retval"""
             data = file.read()
             self.statusBar.set("File {0} has {1} bytes".format(file,len(data)))
             file.close()
+            #implement the open functionality here to load the model in
+            self.Model = Model()
+            self.editor.modelViewer.canvas.delete(ALL)
+            self.editor.modelViewer.drawModel()        
 
     def menubar_New_Callback(self):
         self.statusBar.set("Creating new model.")
+        self.Model = Model()
+        self.editor.modelViewer.canvas.delete(ALL)
+        self.editor.modelViewer.drawModel()
 
     def menubar_Save_Callback(self):
         fileName = tkFileDialog.asksaveasfilename(
@@ -172,6 +179,7 @@ string retval"""
         )
         if len(fileName) > 0:
             self.statusBar.set("Saving model as {0}".format(fileName))
+        #implement the save functionality here to write self.Model out
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")
