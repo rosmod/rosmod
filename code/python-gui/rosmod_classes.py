@@ -23,6 +23,8 @@ class Message(BaseROSInterface):
 
 class Component:
     def __init__(self):
+        self.numObjects = 0
+        self.maxNameLen = 0
         self.publishers = {}
         self.subscribers = {}
         self.clients = {}
@@ -39,18 +41,40 @@ class Component:
         return retStr
 
     def addPub(self, name, topic):
+        if name not in self.publishers:
+            self.numObjects += 1
+        if len(name) > self.maxNameLen:
+            self.maxNameLen = len(name)
         self.publishers[name] = topic
     def addSub(self, name, topic):
+        if name not in self.subscribers:
+            self.numObjects += 1
+        if len(name) > self.maxNameLen:
+            self.maxNameLen = len(name)
         self.subscribers[name] = topic
     def addClient(self, name, service):
+        if name not in self.clients:
+            self.numObjects += 1
+        if len(name) > self.maxNameLen:
+            self.maxNameLen = len(name)
         self.clients[name] = service
     def addServer(self, name, service):
+        if name not in self.servers:
+            self.numObjects += 1
+        if len(name) > self.maxNameLen:
+            self.maxNameLen = len(name)
         self.servers[name] = service
     def addTimer(self, name, timerOpts):
+        if name not in self.timers:
+            self.numObjects += 1
+        if len(name) > self.maxNameLen:
+            self.maxNameLen = len(name)
         self.timers[name] = timerOpts
 
 class Node:
     def __init__(self):
+        self.numObjects = 0
+        self.maxNameLen = 0
         self.components = {}
 
     def __str__(self):
@@ -60,6 +84,10 @@ class Node:
         return retStr
     
     def addComponent(self, name, component):
+        if name not in self.components:
+            self.numObjects += 1
+        if len(name) > self.maxNameLen:
+            self.maxNameLen = len(name)
         self.components[name] = component
 
 class Package:

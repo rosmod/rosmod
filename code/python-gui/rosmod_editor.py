@@ -92,51 +92,6 @@ class EditorFrame(Frame):
     def _delete_callback(self,event):
         print "delete has been pressed"
 
-    def _connect_objects(self,objDict,x,y,nameAsKey=False):
-        for localName,obj in objDict.iteritems():
-            objKey = obj
-            if nameAsKey == True:
-                objKey = obj.name
-            self.canvas.create_line(
-                x,y,
-                self.objects[objKey][-2],self.objects[objKey][-1],
-                arrow=FIRST
-            )
-
-    def _create_object(self, name, coord, size, color, tagTuple):
-        (x,y) = coord
-        objectID = self.canvas.create_rectangle(
-            x-size/2, y-size/2, x+size/2, y+size/2, 
-            outline=color, fill=color, tags=tagTuple,
-            activeoutline="black",
-            activewidth=3.0
-        )
-        textID = self.canvas.create_text(
-            (x,y),
-            text=name,
-            state=DISABLED,
-            tags=tagTuple
-        )
-        if len(tagTuple) > 3:
-            #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
-            if tagTuple[1] == 'node':
-                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y]
-                # need to make small boxes for components
-                # need to draw text for component names
-                # need to connect small boxes to their actual components
-                self._connect_objects(tagTuple[3].components,x,y)
-            elif tagTuple[1] == 'component':
-                self.objects[tagTuple[3]] = [objectID,textID,x,y]
-                # need to make small boxes for pubs, subs, clients, servers, & timers
-                # need to draw text for names
-                # need to connect small boxes to their respective objects
-                self._connect_objects(tagTuple[3].clients,x,y,nameAsKey=True)
-                self._connect_objects(tagTuple[3].servers,x,y,nameAsKey=True)
-                self._connect_objects(tagTuple[3].subscribers,x,y,nameAsKey=True)
-                self._connect_objects(tagTuple[3].publishers,x,y,nameAsKey=True)
-            else:
-                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y] 
-
     def _mouse_wheel(self, event):
         direction = 0
         # respond to Linux or Windows wheel event
@@ -154,11 +109,27 @@ class ObjectList(EditorFrame):
 
         ypos = self.width * 3 / 4
         for name,attr in objectDict.iteritems():
-            self._create_object(name,(self.width/2, ypos), self.width * 3/4, attr[0], attr[1])
+            self.draw_objects(name,(self.width/2, ypos), attr[0], attr[1])
             ypos += self.width
 
         self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
 
+    def draw_objects(self, name, coord, color, tagTuple):
+        (x,y) = coord
+        sizeX = 80
+        sizeY = 80
+        objectID = self.canvas.create_rectangle(
+            x-sizeX/2, y-sizeY/2, x+sizeX/2, y+sizeY/2, 
+            outline=color, fill=color, tags=tagTuple,
+            activeoutline="black",
+            activewidth=3.0
+        )
+        textID = self.canvas.create_text(
+            (x,y),
+            text=name,
+            state=DISABLED,
+            tags=tagTuple
+        )
 
     def OnObjectLeftClick(self, event):
         self.focus_set()
@@ -169,7 +140,6 @@ class ObjectList(EditorFrame):
         self.canvas.focus_set()
         self.selectedObjectType = self.canvas.gettags(selectedObject)[1]
         
-
     def GetActiveObjectType(self):
         return self.selectedObjectType
         
@@ -183,14 +153,7 @@ class ModelViewer(EditorFrame):
 
         self.displayMapping = displayMapping
 
-        self.displayLayout = {}
-        # value is [xpos, size]
-        self.displayLayout['service'] = [50,80]
-        self.displayLayout['message'] = [50,80]
-        self.displayLayout['component'] = [150,80]
-        self.displayLayout['node'] = [250,80]
-
-        self.drawModel()
+        self.drawModel(initX=50, initY=50, padX=100, padY=20)
 
         self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
         # make tag so that right click on object can be used to inspect code
@@ -233,24 +196,92 @@ class ModelViewer(EditorFrame):
         else:
             self.activeObject = None
 
-    def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):
+    def connect_objects(self,objDict,x,y,nameAsKey=False):
+        for localName,obj in objDict.iteritems():
+            objKey = obj
+            if nameAsKey == True:
+                objKey = obj.name
+            self.canvas.create_line(
+                x,y,
+                self.objects[objKey][-2],self.objects[objKey][-1],
+                arrow=FIRST
+            )
+
+    def create_object(self, name, coord, color, tagTuple):
+        print "NEED TO CALC WIDTH/ HEIGHT/ SIZE/ ETC BASED ON number of subobjects"
+        (x,y) = coord
+        if tagTuple[1] == 'message' or tagTuple[1] == 'service' or tagTuple[1] == 'timer':
+            width = 80
+            height = 80
+            objectID = self.canvas.create_rectangle(
+                x, y, x+width, y+height, 
+                outline=color, fill=color, tags=tagTuple,
+                activeoutline="black",
+                activewidth=3.0
+            )
+            textID = self.canvas.create_text(
+                (x,y),
+                text=name,
+                state=DISABLED,
+                tags=tagTuple
+            )
+            self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y] 
+        else:
+            print tagTuple[3].maxNameLen,tagTuple[3].numObjects
+            width = tagTuple[3].maxNameLen * 15 + 30
+            height = tagTuple[3].numObjects * 15 + 30
+            objectID = self.canvas.create_rectangle(
+                x, y, x+width, y+height, 
+                outline=color, fill=color, tags=tagTuple,
+                activeoutline="black",
+                activewidth=3.0
+            )
+            textID = self.canvas.create_text(
+                (x,y),
+                text=name,
+                state=DISABLED,
+                tags=tagTuple
+            )
+            #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
+            if tagTuple[1] == 'node':
+                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y]
+                # need to make small boxes for components
+                # need to draw text for component names
+                # need to connect small boxes to their actual components
+                self.connect_objects(tagTuple[3].components,x,y)
+            elif tagTuple[1] == 'component':
+                self.objects[tagTuple[3]] = [objectID,textID,x,y]
+                # need to make small boxes for pubs, subs, clients, servers, & timers
+                # need to draw text for names
+                # need to connect small boxes to their respective objects
+                self.connect_objects(tagTuple[3].clients,x,y,nameAsKey=True)
+                self.connect_objects(tagTuple[3].servers,x,y,nameAsKey=True)
+                self.connect_objects(tagTuple[3].subscribers,x,y,nameAsKey=True)
+                self.connect_objects(tagTuple[3].publishers,x,y,nameAsKey=True)
+        return width,height
+
+    def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
         ypos = initY
+        maxX = 0
         for name,object in drawDict.iteritems():
-            self._create_object(
+            width,height = self.create_object(
                 name,
-                (self.displayLayout[dictKey][0],ypos),
-                self.displayLayout[dictKey][1],
+                (initX,ypos),
                 self.displayMapping[dictKey][0],
                 self.displayMapping[dictKey][1] + (name,object)
             )
-            ypos += self.displayLayout[dictKey][1] + padY
-        return ypos
+            if (width + initX) > maxX:
+                maxX = width + initX
+            ypos += height + padY
+        maxY = ypos
+        return (maxX,maxY)
 
-    def drawModel(self):
-        ypos = self.drawObjectsFromDict('service',self.model.services,50,20)
-        self.drawObjectsFromDict('message',self.model.messages,ypos,20)
-        self.drawObjectsFromDict('component',self.model.components,50,20)
-        self.drawObjectsFromDict('node',self.model.nodes,50,20)
+    def drawModel(self, initX,initY, padX, padY):
+        xpos,ypos = self.drawObjectsFromDict('service',self.model.services,initX,initY,padY)
+        xpos2,ypos = self.drawObjectsFromDict('message',self.model.messages,initX,ypos,padY)
+
+        xpos,ypos = self.drawObjectsFromDict('component',self.model.components,xpos + padX,initY,padY)
+        xpos,ypos = self.drawObjectsFromDict('node',self.model.nodes,xpos+padX,initY,padY)
 
     def addService(self, name, definition = ''):
         self.model.addService(name,definition)
