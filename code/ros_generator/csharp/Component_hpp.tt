@@ -1,0 +1,101 @@
+﻿#ifndef <#Write(define_guard);#>_HPP
+#define <#Write(define_guard);#>_HPP
+
+#include "ros/ros.h"
+
+#include "Component.hpp"
+
+<# foreach (var topic in topics)
+{ #>
+#include "<#Write(project_name);#>/<#Write(topic);#>.h"
+<# } #>
+<# foreach (var srv in services)
+{ #>
+#include "<#Write(project_name);#>/<#Write(srv);#>.h"
+<# } #>
+
+// --------------------------------
+//      USER INCLUDES GO HERE
+// --------------------------------
+
+namespace <#Write(node_name);#>
+
+{
+<#Write("    ");#>class <#Write(comp_name);#> : public Component
+<#Write("    ");#>{
+<#Write("        ");#>public:
+
+<#Write("            ");#>// These functions' business logic will be filled in by the user:
+
+<#Write("            ");#>// Init() is always generated
+<#Write("            ");#>void Init(const ros::TimerEvent& event);
+<# if (subscribers.Count > 0) { #>
+	<# foreach (var sub in subscribers) { #>
+
+<#Write("            ");#>// OnOneData Subscription handler for <#Write(sub.name);#> subscriber 
+<#Write("            ");#>void OnOneData(const <#Write(project_name);#>::<#Write(sub.topic);#>::ConstPtr& received_data);  
+	<# } #>
+<# } #>
+<# if (provided_services.Count > 0) { #>
+	<# foreach (var provided in provided_services) { #>
+
+<#Write("            ");#>// Component Service Callback
+<#Write("            ");#>bool <#Write(provided.name);#>Callback(<#Write(project_name);#>::<#Write(provided.name);#>::Request  &req,
+<# for (int i=0; i<=provided.name.Length + 12; i++) #> <#Write(" ");#>
+<#Write("            ");#><#Write(project_name);#>::<#Write(provided.name);#>::Response &res);
+	<# } #>
+<# } #>
+<# if (timers.Count > 0) { #>
+	<# foreach (var timer in timers) { #>
+
+<#Write("            ");#>// Callback for <#Write(timer.name);#> timer
+<#Write("            ");#>void <#Write(timer.name);#>Callback(const ros::TimerEvent& event);
+	<# } #>
+<# } #> 
+<#Write("            ");#>// these functions' business logic will be auto-generated:
+
+<#Write("            ");#>// startUp() is used to configure timers, publishers, & service providers
+<#Write("            ");#>void startUp();
+
+<#Write("            ");#>// required for clean shutdown
+<#Write("            ");#>~<#Write(comp_name);#>();
+
+<#Write("        ");#>private:
+	<# foreach (var timer in timers)
+	{ #>
+
+<#Write("            ");#>// ROS Timer - <#Write(timer.name);#>
+
+<#Write("            ");#>ros::Timer <#Write(timer.name);#>;
+	<# } #>
+	<# foreach (var sub in subscribers)
+	{ #>
+
+<#Write("            ");#>// ROS Subscriber - <#Write(sub.name);#>
+
+<#Write("            ");#>ros::Subscriber <#Write(sub.name);#>;
+	<# } #>
+	<# foreach (var pub in publishers)
+	{ #>
+
+<#Write("            ");#>// ROS Publisher - <#Write(pub.name);#>
+
+<#Write("            ");#>ros::Publisher <#Write(pub.name);#>;
+	<# } #>
+	<# foreach (var provided in provided_services)
+	{ #>
+
+<#Write("            ");#>// ROS Service Server - <#Write(provided.name);#>_Server
+<#Write("            ");#>ros::ServiceServer <#Write(provided.name);#>_Server;
+	<# } #>
+	<# foreach (var required in required_services)
+	{ #>
+
+<#Write("            ");#>// ROS Service Client - <#Write(required.name);#>_Client
+<#Write("            ");#>ros::ServiceClient <#Write(required.name);#>_Client;
+	<# } #>
+
+<#Write("    ");#>};
+};
+
+#endif
