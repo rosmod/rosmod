@@ -49,6 +49,8 @@ string retval"""
         node1 = Node()
         node1.addComponent("Comp0",c1)
         node1.addComponent("Comp1",c1)
+        node2 = Node()
+        node2.addComponent("OtherComp",c1)
         package1 = Package()
         package1.addNode("sat0",node1)
         self.Model = Model()
@@ -60,6 +62,7 @@ string retval"""
         self.Model.addService(serv2)
         self.Model.components['Comp0Def'] = c1
         self.Model.nodes['sat0'] = node1
+        self.Model.nodes['sat1'] = node2
         '''
         -----------------------------------------------------
         -----------------------------------------------------
