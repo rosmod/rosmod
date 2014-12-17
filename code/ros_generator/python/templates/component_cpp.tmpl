@@ -1,0 +1,160 @@
+$hash_include "$package_name/${component_name}.hpp"
+
+// -------------------------------------------------------
+// BUSINESS LOGIC OF THESE FUNCTIONS SUPPLIED BY DEVELOPER
+// -------------------------------------------------------
+
+// Init Function
+void $component_name::Init(const ros::TimerEvent& event)
+{
+    // Initialize Component
+
+    // Stop Init Timer
+    initOneShotTimer.stop();
+}
+
+#if $len($subscribers) > 0
+#for $sub in $subscribers
+// OnOneData Subscription handler for ${sub.name} subscriber
+void $component_name::OnOneData(const $package_name::${sub.topic}::ConstPtr& received_data)
+{
+    // Business Logic for $sub.name subscriber callback 
+}
+#end for
+
+#end if
+#if $len($provided_services) > 0
+#for $provided in $provided_services
+// Component Service Callback
+bool $component_name::${provided}Callback($package_name::$provided::Request  &req,
+    $package_name::$provided::Response &res)
+{
+    // Business Logic for $provided Service
+}
+#end for
+
+#end if
+#if $len($timers) > 0
+#for $timer in $timers
+// Callback for $timer.name timer
+void $component_name::${timer.name}Callback(const ros::TimerEvent& event)
+{
+    // Business Logic for $timer.name 
+}
+#end for
+
+#end if
+// ---------------------------------------------
+// EVERYTHING BELOW HERE IS COMPLETELY GENERATED
+// ---------------------------------------------
+
+// Destructor - required for clean shutdown when process is killed
+$component_name::~${component_name}()
+{
+#if $len($timers) > 0
+#for $timer in $timers
+    ${timer.name}.stop();
+#end for
+#end if
+#if $len($publishers) > 0
+#for $pub in $publishers
+    ${pub.name}.shutdown();
+#end for
+#end if
+#if $len($subscribers) > 0
+#for $sub in $subscribers
+    ${sub.name}.shutdown();
+#end for
+#end if
+#if $len($provided_services) > 0
+#for $provided in $provided_services
+    ${provided}_server.shutdown();
+#end for
+#end if
+#if $len($required_services) > 0
+#for $required in $required_services
+    ${required}_client.shutdown();
+#end for
+#end if
+}
+
+void $component_name::startUp()
+{
+    ros::NodeHandle nh;
+
+    #if $len($subscribers) > 0 
+    #for $sub in $subscribers
+    // Configure all subscribers associated with this component
+    ros::SubscribeOptions ${sub.name}_options;
+    ${sub.name}_options = 
+	ros::SubscribeOptions::create<$package_name::${sub.topic}>
+	    ("${sub.topic}",
+	     1000,
+	     boost::bind(&$component_name::OnOneData, this, _1),
+	     ros::VoidPtr(),
+             &this->compQueue);
+    this->${sub.name} = nh.subscribe(${sub.name}_options);
+    #end for
+
+    #end if		
+    #if $len($publishers) > 0
+    #for $pub in $publishers
+    // Configure all publishers associated with this component
+    this->${pub.name} = nh.advertise<$package_name::${pub.topic}>
+	("${pub.topic}", 1000);	
+    #end for
+
+    #end if
+    #if $len($provided_services)
+    #for $provided in $provided_services
+    // Configure all provided services associated with this component
+    ros::AdvertiseServiceOptions ${provided}_server_options;
+    ${provided}_server_options = 
+	ros::AdvertiseServiceOptions::create<$package_name::$provided>
+	    ("$provided",
+             boost::bind(&$component_name::${provided}Callback, this, _1, _2),
+	     ros::VoidPtr(),
+             &this->compQueue);
+    this->${provided}_server = nh.advertiseService(${provided}_server_options);
+    #end for
+ 
+    #end if
+    #if $len($required_services) > 0
+    #for $required in $required_services
+    // Configure all required services associated with this component
+    this->${required}_client = nh.serviceClient<$package_name::$required>
+	("$required"); 
+    #end for
+
+    #end if
+    // Create Init Timer
+    ros::TimerOptions timer_options;
+    timer_options = 
+	ros::TimerOptions
+	    (ros::Duration(-1),
+	     boost::bind(&$component_name::Init, this, _1),
+	     &this->compQueue,
+             true);
+    this->initOneShotTimer = nh.createTimer(timer_options);  
+  
+    #if $len($timers)
+    // Create all component timers
+    #for $timer in $timers
+    timer_options = 
+	ros::TimerOptions
+	     #if $timer.period == "0.0"
+	     (ros::Duration(-1),
+             #else
+             (ros::Duration($timer.period),
+             #end if
+	     boost::bind(&$component_name::${timer.name}Callback, this, _1),
+             #if $timer.period == "0.0"
+	     &this->compQueue, true);
+             #else
+	     &this->compQueue);
+	     #end if 
+    this->$(timer.name) = nh.createTimer(timer_options);
+    #end for
+
+    #end if
+}
