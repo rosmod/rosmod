@@ -58,11 +58,15 @@ class EditorFrame(Frame):
         self.canvas.pack(fill=BOTH)
         self.pack(fill=BOTH)
 
-    def _create_object(self, coord, size, color, tagTuple):
+    def _create_object(self, name, coord, size, color, tagTuple):
         (x,y) = coord
         self.canvas.create_rectangle(
             x-size/2, y-size/2, x+size/2, y+size/2, 
             outline=color, fill=color, tags=tagTuple
+        )
+        self.canvas.create_text(
+            (x,y),
+            text=name
         )
 
     def _mouse_wheel(self, event):
@@ -84,7 +88,7 @@ class ObjectList(EditorFrame):
 
         ypos = self.width * 3 / 4
         for name,attr in objectDict.iteritems():
-            self._create_object((self.width/2, ypos), self.width * 3/4, attr[0], attr[1])
+            self._create_object(name,(self.width/2, ypos), self.width * 3/4, attr[0], attr[1])
             ypos += self.width
 
         self.canvas.tag_bind("object", "<Button-1>", self.OnObjectButtonPress)
@@ -137,6 +141,7 @@ class ModelViewer(EditorFrame):
         ypos = initY
         for name,object in drawDict.iteritems():
             self._create_object(
+                name,
                 (self.displayLayout[dictKey][0],ypos),
                 self.displayLayout[dictKey][1],
                 self.displayMapping[dictKey][0],

@@ -129,7 +129,7 @@ string retval
         objectDict['message'] = ["blue",("object","message")]
         objectDict['timer'] = ["gray",("object","timer")]
         objectDict['component'] = ["red",("object","component")]
-        objectDict['node'] = ["black",("object","node")]
+        objectDict['node'] = ["magenta",("object","node")]
         self.objectList = ObjectList(
             self.master, 
             objectDict=objectDict,
