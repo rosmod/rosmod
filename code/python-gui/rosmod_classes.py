@@ -9,8 +9,8 @@ class BaseROSInterface:
 
     def __str__(self):
         retStr = ""
-        retStr += "Name: {0}".format(name)
-        retStr += "Def : {0}".format(definition)
+        retStr += "Name: {0}".format(self.name)
+        retStr += "Def : {0}".format(self.definition)
         return retStr
 
 class Service(BaseROSInterface):
@@ -30,12 +30,12 @@ class Component:
         self.timers = {}
 
     def __str__(self):
-        retStr = ""
-        retStr += "publishers:{0}".format(self.publishers)
-        retStr += "subscribers:{0}".format(self.subscribers)
-        retStr += "clients:{0}".format(self.clients)
-        retStr += "servers:{0}".format(self.servers)
-        retStr += "timers:{0}".format(self.servers)
+        retStr = "Component Definition:\n"
+        retStr += "\tpublishers:{0}\n".format(self.publishers)
+        retStr += "\tsubscribers:{0}\n".format(self.subscribers)
+        retStr += "\tclients:{0}\n".format(self.clients)
+        retStr += "\tservers:{0}\n".format(self.servers)
+        retStr += "\ttimers:{0}\n".format(self.servers)
         return retStr
 
     def addPub(self, name, topic):
@@ -55,7 +55,8 @@ class Node:
 
     def __str__(self):
         retStr = ""
-        retStr += "components:{0}".format(self.components)
+        for name,comp in self.components.iteritems():
+            retStr += "\t{0} :\n\t{1}".format(name,comp)
         return retStr
     
     def addComponent(self, name, component):

@@ -100,17 +100,58 @@ class EditorFrame(Frame):
             activeoutline="black",
             activewidth=3.0
         )
-        self.canvas.create_text(
+        textID = self.canvas.create_text(
             (x,y),
             text=name,
             state=DISABLED,
             tags=tagTuple
         )
         if len(tagTuple) > 3:
-            if tagTuple[1] == 'component':
-                print "component :\n\t{0}".format(tagTuple[3])
-            elif tagTuple[1] == 'node':
-                print "node :\n\t{0}".format(tagTuple[3])
+            #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
+            if tagTuple[1] == 'node':
+                print "NEED TO CONNECT COMPONENTS"
+                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y]
+                # need to make small boxes for components
+                # need to draw text for component names
+                # need to connect small boxes to their actual components
+                for name,comp in tagTuple[3].components.iteritems():
+                    self.canvas.create_line(
+                        x,y,
+                        self.objects[comp][2],self.objects[comp][3],
+                        arrow=FIRST
+                    )
+            elif tagTuple[1] == 'component':
+                self.objects[tagTuple[3]] = [objectID,textID,x,y]
+                # need to make small boxes for pubs, subs, clients, servers, & timers
+                # need to draw text for names
+                # need to connect small boxes to their respective objects
+                print "NEED TO CONNECT MESSAGES & SERVICES"
+                for name,srv in tagTuple[3].clients.iteritems():
+                    self.canvas.create_line(
+                        x,y,
+                        self.objects[srv.name][3],self.objects[srv.name][4],
+                        arrow=FIRST
+                    )
+                for name,srv in tagTuple[3].servers.iteritems():
+                    self.canvas.create_line(
+                        x,y,
+                        self.objects[srv.name][3],self.objects[srv.name][4],
+                        arrow=FIRST
+                    )
+                for name,msg in tagTuple[3].subscribers.iteritems():
+                    self.canvas.create_line(
+                        x,y,
+                        self.objects[msg.name][3],self.objects[msg.name][4],
+                        arrow=FIRST
+                    )
+                for name,msg in tagTuple[3].publishers.iteritems():
+                    self.canvas.create_line(
+                        x,y,
+                        self.objects[msg.name][3],self.objects[msg.name][4],
+                        arrow=FIRST
+                    )
+            else:
+                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x,y] 
 
     def _mouse_wheel(self, event):
         direction = 0
