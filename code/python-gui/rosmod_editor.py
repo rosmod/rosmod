@@ -265,22 +265,17 @@ class ModelViewer(EditorFrame):
                 state=DISABLED,
                 tags=tagTuple
             )
-            #print "{0}:{1}\n{2}".format(tagTuple[1],tagTuple[2],tagTuple[3])
             padX = 15
             padY = 15
-            x += padX
-            y += padY
             if tagTuple[1] == 'node':
                 self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x+width,y+height/2]
-                # need to make small boxes for components
-                # need to draw text for component names
-                # need to connect small boxes to their actual components
+                x += padX
+                y += padY
                 self.connect_objects(tagTuple[3].components,x,y,padY)
             elif tagTuple[1] == 'component':
                 self.objects[tagTuple[3]] = [objectID,textID,x+width,y+height/2]
-                # need to make small boxes for pubs, subs, clients, servers, & timers
-                # need to draw text for names
-                # need to connect small boxes to their respective objects
+                x += padX
+                y += padY
                 x,y=self.connect_objects(tagTuple[3].clients,x,y,padY,nameAsKey=True)
                 x,y=self.connect_objects(tagTuple[3].servers,x,y,padY,nameAsKey=True)
                 x,y=self.connect_objects(tagTuple[3].subscribers,x,y,padY,nameAsKey=True)
