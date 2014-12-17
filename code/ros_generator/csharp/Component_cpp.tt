@@ -1,0 +1,133 @@
+﻿#include "<#Write(hpp.project_name);#>/<#Write(hpp.comp_name);#>.hpp"
+
+using namespace <#Write(hpp.node_name);#>;
+
+// -------------------------------------------------------
+// BUSINESS LOGIC OF THESE FUNCTIONS SUPPLIED BY DEVELOPER
+// -------------------------------------------------------
+
+// Init Function
+void <#Write(hpp.comp_name);#>::Init(const ros::TimerEvent& event)
+{
+<#Write("    ");#>// Initialize Component
+
+<#Write("    ");#>// Stop Init Timer
+<#Write("    ");#>initOneShotTimer.stop();
+}<# if (hpp.subscribers.Count > 0) { #>
+	<# foreach (var sub in hpp.subscribers) { #> 
+// OnOneData Subscription handler for <#Write(sub.name);#> subscriber 
+void <#Write(hpp.comp_name);#>::OnOneData(const <#Write(hpp.project_name);#>::<#Write(sub.topic);#>::ConstPtr& received_data)
+{
+<#Write("    ");#>// Business Logic for <#Write(sub.name);#> subscriber callback 
+}<# } #>
+<# } #><# if (hpp.provided_services.Count > 0) { #>
+	<# foreach (var provided in hpp.provided_services) { #> 
+// Component Service Callback
+bool <#Write(hpp.comp_name);#>::<#Write(provided.name);#>Callback(<#Write(hpp.project_name);#>::<#Write(provided.name);#>::Request  &req,
+<# for (int i=0; i<=hpp.comp_name.Length + provided.name.Length + 14; i++) #> <#Write(" ");#>
+<#Write(hpp.project_name);#>::<#Write(provided.name);#>::Response &res)
+{
+<#Write("    ");#>// Business Logic for <#Write(provided.name);#> Service
+}<# } #>
+<# } #> 
+<# if (hpp.timers.Count > 0) { #>
+	<# foreach (var timer in hpp.timers) { #> 
+// Callback for <#Write(timer.name);#> timer
+void <#Write(hpp.comp_name);#>::<#Write(timer.name);#>Callback(const ros::TimerEvent& event)
+{
+<#Write("    ");#>// Business Logic for <#Write(timer.name);#> 
+}<# } #>
+<# } #> 
+
+// ---------------------------------------------
+// EVERYTHING BELOW HERE IS COMPLETELY GENERATED
+// ---------------------------------------------
+
+// Destructor - required for clean shutdown when process is killed
+<#Write(hpp.comp_name);#>::~<#Write(hpp.comp_name);#>()
+{<# if (hpp.timers.Count > 0) { #>
+	<# foreach (var timer in hpp.timers) { #> 
+<#Write("    ");#><#Write(timer.name);#>.stop();<# } #>
+<# } #><# if (hpp.publishers.Count > 0) { #>
+	<# foreach (var pub in hpp.publishers) { #> 
+<#Write("    ");#><#Write(pub.name);#>.shutdown();<# } #>
+<# } #><# if (hpp.subscribers.Count > 0) { #>
+	<# foreach (var sub in hpp.subscribers) { #> 
+<#Write("    ");#><#Write(sub.name);#>.shutdown();<# } #>
+<# } #><# if (hpp.provided_services.Count > 0) { #>
+	<# foreach (var provided in hpp.provided_services) { #> 
+<#Write("    ");#><#Write(provided.name);#>_Server.shutdown();<# } #>
+<# } #><# if (hpp.required_services.Count > 0) { #>
+	<# foreach (var required in hpp.required_services) { #> 
+<#Write("    ");#><#Write(required.name);#>_Client.shutdown();<# } #>
+<# } #>  
+}
+
+void <#Write(hpp.comp_name);#>::startUp()
+{
+<#Write("    ");#>ros::NodeHandle nh;<# if (hpp.subscribers.Count > 0) { #>
+
+	<# foreach (var sub in hpp.subscribers) { #> 
+<#Write("    ");#>// Configure all subscribers associated with this component
+<#Write("    ");#>ros::SubscribeOptions <#Write(sub.name);#>_options;
+
+<#Write("    ");#><#Write(sub.name);#>_options = 
+<#Write("        ");#>ros::SubscribeOptions::create<<#Write(hpp.project_name);#>::<#Write(sub.topic);#>>
+<#Write("            ");#>("<#Write(sub.topic);#>", 
+<#Write("             ");#>1000,
+<#Write("             ");#>boost::bind(&<#Write(hpp.comp_name);#>::OnOneData, this, _1),
+<#Write("             ");#>ros::VoidPtr(),//(ros::VoidConstPtr)this,
+<#Write("             ");#>&this->compQueue);
+
+<#Write("    ");#>this-><#Write(sub.name);#> = nh.subscribe(<#Write(sub.name);#>_options);<# } #>
+<# } #><# if (hpp.publishers.Count > 0) { #>
+
+	<# foreach (var pub in hpp.publishers) { #> 
+<#Write("    ");#>// Configure all publishers associated with this component
+<#Write("    ");#>this-><#Write(pub.name);#> = nh.advertise<<#Write(hpp.project_name);#>::<#Write(pub.topic);#>>
+<#Write("        ");#>("<#Write(pub.topic);#>", 1000);<# } #>
+<# } #><# if (hpp.provided_services.Count > 0) { #>
+
+	<# foreach (var provided in hpp.provided_services) { #> 
+<#Write("    ");#>// Configure all advertised services associated with this component
+<#Write("    ");#>ros::AdvertiseServiceOptions <#Write(provided.name);#>_Server_options;
+
+<#Write("    ");#><#Write(provided.name);#>_Server_options = 
+<#Write("        ");#>ros::AdvertiseServiceOptions::create<<#Write(hpp.project_name);#>::<#Write(provided.name);#>>
+<#Write("            ");#>("<#Write(provided.name);#>", 
+<#Write("             ");#>boost::bind(&<#Write(hpp.comp_name);#>::<#Write(provided.name);#>Callback, this, _1, _2),
+<#Write("             ");#>ros::VoidPtr(),//(ros::VoidConstPtr)this,
+<#Write("             ");#>&this->compQueue);
+
+<#Write("    ");#>this-><#Write(provided.name);#>_Server = nh.advertiseService(<#Write(provided.name);#>_Server_options);<# } #>
+<# } #><# if (hpp.required_services.Count > 0) { #>
+
+	<# foreach (var required in hpp.required_services) { #> 
+<#Write("    ");#>// Configure all required services associated with this component
+<#Write("    ");#>this-><#Write(required.name);#>_Client = nh.serviceClient<<#Write(hpp.project_name);#>::<#Write(required.name);#>>
+<#Write("        ");#>("<#Write(required.name);#>");<# } #>
+<# } #>  
+
+<#Write("    ");#>// Create Init timer
+<#Write("    ");#>ros::TimerOptions timer_options;
+
+<#Write("    ");#>timer_options = 
+<#Write("        ");#>ros::TimerOptions
+<#Write("            ");#>(ros::Duration(-1), 
+<#Write("             ");#>boost::bind(&<#Write(hpp.comp_name);#>::Init, this, _1),
+<#Write("             ");#>&this->compQueue,
+<#Write("             ");#>true);
+
+<#Write("    ");#>this->initOneShotTimer = nh.createTimer(timer_options);<# if (hpp.timers.Count > 0) { #> 
+
+<#Write("    ");#>// Create all component timers<# foreach (var timer in hpp.timers) { #> 
+<#Write("    ");#>timer_options =
+<#Write("        ");#>ros::TimerOptions
+<#Write("            ");#>(ros::Duration(<#if (timer.period.ToString().Contains("."))#><#{#><#Write(timer.period.ToString());#><#}#><#else#><#{#><#Write(timer.period.ToString());#>.0<#}#>), 
+<#Write("             ");#>boost::bind(&<#Write(hpp.comp_name);#>::<#Write(timer.name);#>Callback, this, _1),
+<#Write("             ");#>&this->compQueue<# if (timer.period != 0.0) { #>);<# } #><# if (timer.period == 0.0) { #>, 
+<#Write("             ");#>true);<# } #> 
+<#Write("    ");#>this-><#Write(timer.name);#> = nh.createTimer(timer_options);<# } #>
+<# } #>
+
+}
