@@ -39,8 +39,8 @@ class EditorFrame(Frame):
         self.canvas.bind("<Button-4>", self._mouse_wheel)
         self.canvas.bind("<Button-5>", self._mouse_wheel)
 
-        self.canvas.pack()
-        self.pack()
+        self.canvas.pack(fill=BOTH)
+        self.pack(fill=BOTH)
 
     def _create_object(self, coord, size, color, tagTuple):
         (x,y) = coord
