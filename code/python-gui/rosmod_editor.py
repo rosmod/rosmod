@@ -42,6 +42,7 @@ class TextPopup():
         self.frame.destroy()
         self.label.destroy()
         self.master.delete(self.window)
+        self.master.config(state=NORMAL)
 
 class EditorFrame(Frame):
     def __init__(self, master, label, height, width, maxHeight, maxWidth):
@@ -145,8 +146,14 @@ class ModelViewer(EditorFrame):
         # make tag so that right click on object can be used to inspect code
         self.canvas.tag_bind("object", "<Button-3>", self.OnObjectButtonPress)
 
+        self.var = StringVar()
+        self.var.trace("w", self.OnTextUpdate)
+        self.activeObject=None
+        self.entry=None
+
     def OnTextUpdate(self,*args):
-        self.activeObject[0][self.activeObject[1]] = self.var.get()
+        if self.activeObject != None:
+            self.activeObject[0][self.activeObject[1]] = self.var.get()
 
     def OnObjectButtonPress(self, event):
         selectedObject = self.canvas.find_closest(
@@ -155,18 +162,17 @@ class ModelViewer(EditorFrame):
         )[0]
         tags = self.canvas.gettags(selectedObject)
         if tags[1] == 'message':
-            self.var = StringVar()
-            self.var.trace("w", self.OnTextUpdate)
-            self.activeObject = (self.model.services,tags[2])
+            self.activeObject = (self.model.messages,tags[2])
             self.var.set(self.model.messages[tags[2]])
             self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
+            self.canvas.config(state=DISABLED)
         elif tags[1] == 'service':
-            self.var = StringVar()
-            self.var.trace("w", self.OnTextUpdate)
             self.activeObject = (self.model.services,tags[2])
             self.var.set(self.model.services[tags[2]])
             self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
+            self.canvas.config(state=DISABLED)
         else:
+            self.activeObject = None
             print tags
 
     def drawObjectsFromDict(self, dictKey, drawDict, initY, padY):

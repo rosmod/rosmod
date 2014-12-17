@@ -9,7 +9,6 @@ class BaseROSInterface:
 
 class Service(BaseROSInterface):
     def __init__(self, name, definition = ''):
-        print definition
         BaseROSInterface.__init__(self,name,definition)
 
 class Message(BaseROSInterface):
