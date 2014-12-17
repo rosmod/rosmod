@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ROS_Generator", "ROS_Generator.csproj", "{3CC8C298-A7D1-46A6-8818-3407023A1639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antlr4.Runtime.v4.5", "3rdParty\antlr4cs-master\runtime\CSharp\Antlr4.Runtime\Antlr4.Runtime.v4.5.csproj", "{E1D192DE-5347-48C4-A9F4-A8CBA2AF3869}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antlr4BuildTasks.v4.0", "3rdParty\antlr4cs-master\runtime\CSharp\Antlr4BuildTasks\Antlr4BuildTasks.v4.0.csproj", "{F63DFE80-AE1F-47A6-A31A-E39DA4C837BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CC8C298-A7D1-46A6-8818-3407023A1639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CC8C298-A7D1-46A6-8818-3407023A1639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CC8C298-A7D1-46A6-8818-3407023A1639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CC8C298-A7D1-46A6-8818-3407023A1639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1D192DE-5347-48C4-A9F4-A8CBA2AF3869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1D192DE-5347-48C4-A9F4-A8CBA2AF3869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1D192DE-5347-48C4-A9F4-A8CBA2AF3869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1D192DE-5347-48C4-A9F4-A8CBA2AF3869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F63DFE80-AE1F-47A6-A31A-E39DA4C837BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F63DFE80-AE1F-47A6-A31A-E39DA4C837BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F63DFE80-AE1F-47A6-A31A-E39DA4C837BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F63DFE80-AE1F-47A6-A31A-E39DA4C837BA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
