@@ -88,6 +88,7 @@ string retval"""
         fileDict['New Model']=self.menubar_New_Callback
         fileDict['Open Model']=self.menubar_Open_Callback
         fileDict['Save Model']=self.menubar_Save_Callback
+        fileDict['Save Model As']=self.menubar_Save_As_Callback
         fileDict['Quit']=self.menubar_Quit_Callback
         optionsDict = OrderedDict()
         helpDict = OrderedDict()
@@ -177,14 +178,23 @@ string retval"""
         self.editor.modelViewer.drawModel()
 
     def menubar_Save_Callback(self):
-        fileName = tkFileDialog.asksaveasfilename(
+        fileName = self.fileName
+        # Overwrite the model file
+        self.statusBar.set("Saved model!")
+        rosgen.generate_model(self.model.workspace, fileName, self.model_path)
+
+    def menubar_Save_As_Callback(self):
+        filePath = tkFileDialog.asksaveasfilename(
             parent=self.master,
             filetypes=self.fileFormats,
             title="Save the model as..."
         )
+        head, fileName = os.path.split(filePath)
+        self.statusBar.set("Saved model as " + fileName)
         if len(fileName) > 0:
             self.statusBar.set("Saving model as {0}".format(fileName))
-        #implement the save functionality here to write self.Model out
+        # Save fileName.rosml model at filePath
+        rosgen.generate_model(self.model.workspace, fileName, head)
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")
