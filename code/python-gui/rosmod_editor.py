@@ -287,7 +287,6 @@ class ModelViewer(EditorFrame):
 
     def createAndAddChildren(self, objName, objDict, dispMapKey, initX, ypos, isOnCanvas=True):
         for childName, child in objDict.iteritems():
-            print childName, child.name
             objRef = child
             if isOnCanvas == True:
                 objRef = self.objects[child.name]
