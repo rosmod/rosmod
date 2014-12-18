@@ -10,11 +10,35 @@ from collections import OrderedDict
 
 from rosmod_classes import *
 
+activeMenus = []
+
+def closeAllContextMenus(menuList):
+    for menu in menuList:
+        menu.unpost()    
+
 # USED FOR RIGHT CLICK MENU FOR OBJECTS (deletion, addition, etc)
 class MenuPopup():
     def __init__(self,master):
         self.master = master
         self.functions = OrderedDict()
+        self.functions['Undo'] = self.UndoCallback
+        self.functions['Redo'] = self.RedoCallback
+        self.contextMenu = Menu(self.master, tearoff=0)
+        
+        for name,callback in self.functions.iteritems():
+            self.contextMenu.add_command(label=name, command=callback)
+
+    def UndoCallback(self):
+        print "UNDO"
+
+    def RedoCallback(self):
+        print "REDO"
+
+    def popupCallback(self,event):
+        global activeMenus
+        closeAllContextMenus(activeMenus)
+        activeMenus.append(self.contextMenu)
+        self.contextMenu.post(event.x_root,event.y_root)
 
 # anything drawn in the editor is of this type
 class EditorObject():
@@ -41,9 +65,10 @@ class EditorObject():
         self.size = [0,0]
         self.children = OrderedDict()
 
-        self.canvas.tag_bind(self.name,"<Double-Button-1>", self.OnDoubleClick)
         self.canvas.tag_bind(self.name,"<Button-1>", self.OnLeftClick)
-        self.canvas.tag_bind(self.name,"<Button-3>", self.OnRightClick)
+        self.canvas.tag_bind(self.name,"<Double-Button-1>", self.OnDoubleClick)
+        self.contextMenu = MenuPopup(self.canvas)
+        self.canvas.tag_bind(self.name,"<Button-3>", self.contextMenu.popupCallback)
 
     def __str__(self):
         retStr = ""
@@ -61,13 +86,15 @@ class EditorObject():
         self.children[name] = obj
 
     def OnRightClick(self, event):
-        print self.name, self.objRef
+        print "RIGHT CLICK",self.name
 
     def OnLeftClick(self,event):
-        print self.name, self.objRef
+        global activeMenus
+        closeAllContextMenus(activeMenus)
+        print "LEFT CLICK",self.name
 
     def OnDoubleClick(self,event):
-        print self.name, self.objRef
+        print "DOUBLE CLICK",self.name
 
     def Draw(self, textOnSide = False, drawArrowToObjRef=False):
         self.size[0] = self.objectPadding[0]
@@ -176,8 +203,11 @@ class EditorFrame(Frame):
         self.canvas.bind("<Button-4>", self._mouse_wheel)
         self.canvas.bind("<Button-5>", self._mouse_wheel)
 
+        self.contextMenu = MenuPopup(self.canvas)
+
         self.canvas.bind("<Button-1>", self._button1_callback)
         self.canvas.bind("<Delete>",self._delete_callback)
+        self.canvas.bind("<Button-3>", self.contextMenu.popupCallback)
 
         self.canvas.pack(fill=BOTH)
         self.pack(fill=BOTH)
@@ -185,6 +215,8 @@ class EditorFrame(Frame):
         self.objects = OrderedDict()
 
     def _button1_callback(self,event):
+        global activeMenus
+        closeAllContextMenus(activeMenus)
         self.focus_set()
         self.canvas.focus_set()
 
@@ -192,6 +224,8 @@ class EditorFrame(Frame):
         print "delete has been pressed"
 
     def _mouse_wheel(self, event):
+        global activeMenus
+        closeAllContextMenus(activeMenus)
         direction = 0
         # respond to Linux or Windows wheel event
         if event.num == 5 or event.delta == -120:
