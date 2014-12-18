@@ -18,6 +18,17 @@ class ROS_Workspace:
         # Useful Dictionaries
         self.packages_dict = {}
 
+    def __str__(self):
+        workspace = "workspace " + self.name + ";"
+        if len(self.packages) > 0:
+            workspace += ""
+            for package in self.packages:
+                workspace += "\npackage " + package.name
+                workspace += "\n{"
+                workspace += str(package)
+                workspace += "\n}"
+        return workspace
+
 # ROS_Package class
 class ROS_Package:
 
@@ -38,6 +49,36 @@ class ROS_Package:
         self.component_definition_dict = {}
         self.nodes_dict = {}
 
+    def __str__(self):
+        package = ""
+        if len(self.messages) > 0:
+            package += "\n    messages"
+            package += "\n    {"
+            for msg in self.messages:
+                package += str(msg)
+            package += "\n    }"
+        if len(self.services) > 0:
+            package += "\n    services"
+            package += "\n    {"
+            for srv in self.services:
+                package += str(srv)
+            package += "\n    }"
+        if len(self.components) > 0:
+            package += "\n    components"
+            package += "\n    {"
+            for component in self.components:
+                package += str(component)
+            package += "\n    }"
+        if len(self.nodes) > 0:
+            package += "\n    nodes"
+            package += "\n    {"
+            for node in self.nodes:
+                package += str(node)
+            package += "\n    }"
+
+        return package
+        
+
 # ROS Message class
 class ROS_Message:
 
@@ -46,6 +87,17 @@ class ROS_Message:
         self.name = ""
         # List of msg fields
         self.fields = []
+
+    def __str__(self):
+        msg = "\n        msg " + self.name
+        msg += "\n        {"
+        for field in self.fields:
+            if len(field) > 2:
+                msg += "\n            " + field[0] + " " + field[1] + "=" + field[2] + ";"
+            else:
+                msg += "\n            " + field[0] + " " + field[1] + ";"
+        msg += "\n        }"
+        return msg
 
 # ROS Service class
 class ROS_Service:
@@ -57,6 +109,34 @@ class ROS_Service:
         self.request_fields = []
         # List of response fields
         self.response_fields = []
+        
+    def __str__(self):
+        srv_str = "\n        srv " + self.name
+        srv_str += "\n        {"
+        if len(self.request_fields) > 0:
+            srv_str += "\n            request"
+            srv_str += "\n            {"
+            for field in self.request_fields:
+                if len(field) > 2:
+                    srv_str += "\n                " 
+                    srv_str += field[0] + " " + field[1] + "=" + field[2] + ";"
+                else:
+                    srv_str += "\n                " 
+                    srv_str += field[0] + " " + field[1] + ";"
+            srv_str += "\n            }"
+        if len(self.response_fields) > 0:
+            srv_str += "\n            response"
+            srv_str += "\n            {"
+            for field in self.response_fields:
+                if len(field) > 2:
+                    srv_str += "\n                " 
+                    srv_str += field[0] + " " + field[1] + "=" + field[2] + ";"
+                else:
+                    srv_str += "\n                " 
+                    srv_str += field[0] + " " + field[1] + ";"
+            srv_str += "\n             }"
+        srv_str += "\n        }"
+        return srv_str
 
 # ROS Component class
 class ROS_Component:
@@ -80,6 +160,30 @@ class ROS_Component:
         self.publishers_dict = {}
         self.subscribers_dict = {}
         self.timers_dict = {}
+
+    def __str__(self):
+        comp = "\n        component " + self.name
+        comp += "\n        {"
+        if len(self.provided_services) > 0:
+            for provided in self.provided_services:
+                comp += "\n            provides " + provided + ";"
+        if len(self.required_services) > 0:
+            for required in self.required_services:
+                comp += "\n            requires " + required + ";"
+        if len(self.publishers) > 0:
+            for publisher in self.publishers:
+                comp += "\n            publisher<" + publisher.topic + "> " + publisher.name + ";" 
+        if len(self.subscribers) > 0:
+            for subscriber in self.subscribers:
+                comp += "\n            subscriber<" + subscriber.topic + "> " + subscriber.name + ";"
+        if len(self.timers) > 0:
+            for timer in self.timers:
+                comp += "\n            timer " + timer.name
+                comp += "\n            {"
+                comp += "\n                period = " + timer.period + timer.period_unit + ";";
+                comp += "\n            }"
+        comp += "\n        }"
+        return comp
 
 # ROS Publisher
 class ROS_Publisher:
@@ -122,6 +226,14 @@ class ROS_Node:
         self.comp_defs = []
         # Useful Dictionary
         self.component_instance_dict = {}
+
+    def __str__(self):
+        node = "\n        node " + self.name
+        node += "\n        {"
+        for instance in self.components:
+            node += "\n            component<" + instance[0] + "> " + instance[1] + ";"
+        node += "\n        }"
+        return node
 
 class Listener(ROSListener):
 

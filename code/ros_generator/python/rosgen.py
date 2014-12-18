@@ -40,31 +40,39 @@ def parse_model(filename):
     # Parse from starting point of grammar
     tree = parser.start()
     # Instantiate a Listener Object
-    workspace = Listener()
+    listener = Listener()
     # Instantiate a Parse Tree Walker
     walker = ParseTreeWalker()
     print "Parsing input model...\n"
     # Walk the parse tree
-    walker.walk(workspace, tree)
+    walker.walk(listener, tree)
 
-    return workspace
+    return listener
     
 # Generate the ROS workspace corresponding to the input model
-def generate_workspace(workspace, model_path):
+def generate_workspace(listener, model_path):
     
     # Instantiate a Generator Object
     generator = Generator()
     # Use listener_object to generate ROS workspace
-    generator.generate(workspace, model_path)
+    generator.generate(listener, model_path)
 
 # Print the ROS workspace 
-def print_workspace(workspace):
+def print_workspace(listener_object):
 
     # Instantiate a Printer Object
     printer = Printer()
     # Print the workspace object
-    printer.print_ros_workspace(workspace)
+    printer.print_ros_workspace(listener_object)
+
+# Generate a ROS model from a workspace object
+# Used to save an edited model
+def generate_model(workspace, model_name, model_path):
     
+    model = str(workspace)
+    with open(os.path.join(model_path, model_name + ".rosml"), 'w') as temp_file:
+        temp_file.write(model)
+    return model
     
 if __name__ == "__main__":
     
@@ -74,10 +82,10 @@ if __name__ == "__main__":
     model_path = os.path.abspath(os.path.dirname(sys.argv[1]))
 
     # Parse the input model
-    workspace = parse_model(model)
+    listener_object = parse_model(model)
 
     # Generate the ROS workspace pertaining to the input model
-    generate_workspace(workspace, model_path)
+    generate_workspace(listener_object, model_path)
 
-    # Print the ROS workspace
-    print_workspace(workspace)
+    # print listener_object.workspace
+    # generate_model(listener_object.workspace, "new_model", model_path)
