@@ -194,7 +194,6 @@ class EditorFrame(Frame):
         
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None,contextDict=None):
-
         if contextDict==None:
             contextDict=OrderedDict()
             contextDict['Add Service'] = self.ContextAddService
@@ -203,6 +202,23 @@ class ModelViewer(EditorFrame):
             contextDict['Add Node'] = self.ContextAddNode
 
         EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,contextDict)
+
+        self.editorObjectContextDict = OrderedDict()
+        self.srvContextDict = OrderedDict()
+        self.msgContextDict = OrderedDict()
+        self.tmrContextDict = OrderedDict()
+        self.compContextDict = OrderedDict()
+        self.nodeContextDict = OrderedDict()
+        self.editorObjectContextDict['service'] = self.srvContextDict
+        self.editorObjectContextDict['message'] = self.msgContextDict
+        self.editorObjectContextDict['timer'] = self.tmrContextDict
+        self.editorObjectContextDict['component'] = self.compContextDict
+        self.editorObjectContextDict['node'] = self.nodeContextDict
+        self.compContextDict['Edit Component'] = self.ContextEdit
+        self.srvContextDict['Edit Service'] = self.ContextEdit
+        self.msgContextDict['Edit Message'] = self.ContextEdit
+        self.tmrContextDict['Edit Timer'] = self.ContextEdit
+        self.nodeContextDict['Edit Node'] = self.ContextEdit
 
         self.model=model
         self.displayMapping = displayMapping
@@ -273,22 +289,6 @@ class ModelViewer(EditorFrame):
     def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
         ypos = initY
         maxX = 0
-        editorObjectContextDict = OrderedDict()
-        srvContextDict = OrderedDict()
-        msgContextDict = OrderedDict()
-        tmrContextDict = OrderedDict()
-        compContextDict = OrderedDict()
-        nodeContextDict = OrderedDict()
-        editorObjectContextDict['service'] = srvContextDict
-        editorObjectContextDict['message'] = msgContextDict
-        editorObjectContextDict['timer'] = tmrContextDict
-        editorObjectContextDict['component'] = compContextDict
-        editorObjectContextDict['node'] = nodeContextDict
-        compContextDict['Edit Component'] = self.ContextEdit
-        srvContextDict['Edit Service'] = self.ContextEdit
-        msgContextDict['Edit Message'] = self.ContextEdit
-        tmrContextDict['Edit Timer'] = self.ContextEdit
-        nodeContextDict['Edit Node'] = self.ContextEdit
         for name,object in drawDict.iteritems():
             self.objects[name] = EditorObject(
                 self.canvas, 
@@ -298,7 +298,7 @@ class ModelViewer(EditorFrame):
                 (0,15), 
                 (initX,ypos),
                 self.displayMapping[dictKey][0],
-                editorObjectContextDict[dictKey]
+                self.editorObjectContextDict[dictKey]
             )
             if dictKey == 'component':
                 self.createAndAddChildren(name,object.required_services_dict,'service',initX,ypos)
@@ -326,24 +326,26 @@ class ModelViewer(EditorFrame):
 
 class PackageViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand,contextDict=None):
+    
+        if contextDict==None:
+            contextDict=OrderedDict()
+            contextDict['Add Package'] = self.ContextAddPackage
+
         EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,contextDict)
-        self.buttons=[]
-        for name,package in packageDict.iteritems():
-            newButton = Radiobutton(
-                self.canvas, 
-                text = name, 
-                variable=buttonVar, 
-                value=name, 
-                indicatoron=0, 
-                command = buttonCommand
-            )
-            self.buttons.append(newButton)
-            newButton.pack()
+        self.padX = 5
+        self.padY = 25
+        self.buttons = []
+        self.Update(packageDict,buttonVar,buttonCommand)
+
+    def ContextAddPackage(self):
+        print "Popup dialog for adding package"
 
     def Update(self,packageDict,buttonVar,buttonCommand):
         for button in self.buttons:
-            button.destroy()
+            self.canvas.delete(button[0])
+            button[1].destroy()
         self.buttons=[]
+        ypos = 5
         for name,package in packageDict.iteritems():
             newButton = Radiobutton(
                 self.canvas, 
@@ -353,8 +355,11 @@ class PackageViewer(EditorFrame):
                 indicatoron=0, 
                 command = buttonCommand
             )
-            self.buttons.append(newButton)
-            newButton.pack()        
+            self.buttons.append(
+                [self.canvas.create_window((self.padX,ypos),window=newButton,anchor=NW),
+                 newButton]
+            )
+            ypos += self.padY
 
 class Editor():
     def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
