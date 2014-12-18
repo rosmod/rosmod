@@ -70,7 +70,7 @@ def print_workspace(listener_object):
 def generate_model(workspace, model_name, model_path):
     
     model = str(workspace)
-    with open(os.path.join(model_path, model_name + ".rosml"), 'w') as temp_file:
+    with open(os.path.join(model_path, model_name), 'w') as temp_file:
         temp_file.write(model)
     return model
     
