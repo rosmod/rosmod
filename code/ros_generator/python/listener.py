@@ -366,7 +366,7 @@ class Listener(ROSListener):
                     # CHECK: If this service has been defined 
                     self.component.provided_services.append(service_name)
                     server_name = service_name + "_server"
-                    self.component.provided_services_dict[server_name] = package.srv_dict[service_name]
+                    self.component.provided_services_dict[server_name] = self.package.srv_dict[service_name]
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
                 context = str(type(child))
