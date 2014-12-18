@@ -27,7 +27,7 @@ print "Compiling all templates...\n"
 from generator import *
 
 # Create and return a workspace object corresponding to the input model
-def parse(filename):
+def parse_model(filename):
 
     # Read the input model
     model = FileStream(filename)
@@ -40,24 +40,31 @@ def parse(filename):
     # Parse from starting point of grammar
     tree = parser.start()
     # Instantiate a Listener Object
-    listener_object = Listener()
+    workspace = Listener()
     # Instantiate a Parse Tree Walker
     walker = ParseTreeWalker()
     print "Parsing input model...\n"
     # Walk the parse tree
-    walker.walk(listener_object, tree)
-    printer = Printer()
-    printer.print_ros_workspace(listener_object)
+    walker.walk(workspace, tree)
 
-    return listener_object
+    return workspace
     
 # Generate the ROS workspace corresponding to the input model
-def generate(workspace, model_path):
+def generate_workspace(workspace, model_path):
     
     # Instantiate a Generator Object
     generator = Generator()
     # Use listener_object to generate ROS workspace
     generator.generate(workspace, model_path)
+
+# Print the ROS workspace 
+def print_workspace(workspace):
+
+    # Instantiate a Printer Object
+    printer = Printer()
+    # Print the workspace object
+    printer.print_ros_workspace(workspace)
+    
     
 if __name__ == "__main__":
     
@@ -65,9 +72,12 @@ if __name__ == "__main__":
     model = sys.argv[1]
     # Obtain the model path
     model_path = os.path.abspath(os.path.dirname(sys.argv[1]))
+
     # Parse the input model
-    workspace = parse(model)
+    workspace = parse_model(model)
+
     # Generate the ROS workspace pertaining to the input model
-    generate(workspace, model_path)
-    
-        
+    generate_workspace(workspace, model_path)
+
+    # Print the ROS workspace
+    print_workspace(workspace)
