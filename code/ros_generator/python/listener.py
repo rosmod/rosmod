@@ -6,6 +6,7 @@
 # Date: 2014.12.16
 
 from ROSListener import ROSListener
+from collections import OrderedDict
 
 # ROS_Workspace class
 class ROS_Workspace:
@@ -16,7 +17,7 @@ class ROS_Workspace:
         # List of ROS packages in workspace
         self.packages = []
         # Useful Dictionaries
-        self.packages_dict = {}
+        self.packages_dict = OrderedDict()
 
     def __str__(self):
         workspace = "workspace " + self.name + ";"
@@ -44,10 +45,10 @@ class ROS_Package:
         # List of nodes in package
         self.nodes = []
         # Useful Dictionaries
-        self.msg_dict = {}
-        self.srv_dict = {}
-        self.component_definition_dict = {}
-        self.nodes_dict = {}
+        self.msg_dict = OrderedDict()
+        self.srv_dict = OrderedDict()
+        self.component_definition_dict = OrderedDict()
+        self.nodes_dict = OrderedDict()
 
     def __str__(self):
         package = ""
@@ -155,11 +156,11 @@ class ROS_Component:
         # List of timers
         self.timers = []
         # Useful Dictionaries
-        self.provided_services_dict = {}
-        self.required_services_dict = {}
-        self.publishers_dict = {}
-        self.subscribers_dict = {}
-        self.timers_dict = {}
+        self.provided_services_dict = OrderedDict()
+        self.required_services_dict = OrderedDict()
+        self.publishers_dict = OrderedDict()
+        self.subscribers_dict = OrderedDict()
+        self.timers_dict = OrderedDict()
 
     def __str__(self):
         comp = "\n        component " + self.name
@@ -225,7 +226,7 @@ class ROS_Node:
         # List of component defs
         self.comp_defs = []
         # Useful Dictionary
-        self.component_instance_dict = {}
+        self.component_instance_dict = OrderedDict()
 
     def __str__(self):
         node = "\n        node " + self.name
