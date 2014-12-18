@@ -21,9 +21,11 @@ def registerContextMenu(menu):
 
 # USED FOR RIGHT CLICK MENU FOR OBJECTS (deletion, addition, etc)
 class MenuPopup():
-    def __init__(self,master,functions):
+    def __init__(self,master,functions,objVar=None,objVarValue=None):
         self.master = master
         self.contextMenu = Menu(self.master, tearoff=0)
+        self.objVar = objVar
+        self.objVarValue = objVarValue
         
         if functions != None:
             for name,callback in functions.iteritems():
@@ -35,6 +37,8 @@ class MenuPopup():
     def popupCallback(self,event):
         closeAllContextMenus()
         registerContextMenu(self.contextMenu)
+        if self.objVar != None and self.objVarValue != None:
+            self.objVar.set(self.objVarValue)
         self.contextMenu.post(event.x_root,event.y_root)
 
 class TextPopup():

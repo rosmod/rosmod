@@ -254,7 +254,7 @@ class ModelViewer(EditorFrame):
         print "Popup dialog for adding node"
 
     def ContextEdit(self):
-        print "Editing active object"
+        print "Editing active object {0}".format(self.var.get())
 
     def OnTextUpdate(self,*args):
         if self.activeObject != None:
@@ -285,6 +285,8 @@ class ModelViewer(EditorFrame):
                 contextFunctionDict=self.editorObjectContextDict[dispMapKey],
                 connectFromObject=isOnCanvas
             )
+            self.objects[childName].contextMenu.objVar = self.var
+            self.objects[childName].contextMenu.objVarValue = childName
             self.objects[objName].addChild(childName,self.objects[childName])
 
     def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
@@ -301,6 +303,8 @@ class ModelViewer(EditorFrame):
                 self.displayMapping[dictKey][0],
                 contextFunctionDict=self.editorObjectContextDict[dictKey]
             )
+            self.objects[name].contextMenu.objVar = self.var
+            self.objects[name].contextMenu.objVarValue = name
             if dictKey == 'component':
                 self.createAndAddChildren(name,object.required_services_dict,'service',initX,ypos)
                 self.createAndAddChildren(name,object.provided_services_dict,'service',initX,ypos)
