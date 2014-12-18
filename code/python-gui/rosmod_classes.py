@@ -9,8 +9,8 @@ class BaseROSInterface:
 
     def __str__(self):
         retStr = ""
-        retStr += "Name: {0}".format(self.name)
-        retStr += "Def : {0}".format(self.definition)
+        retStr += "Name: {0}\n".format(self.name)
+        retStr += "Def : {0}\n".format(self.definition)
         return retStr
 
 class Service(BaseROSInterface):
@@ -21,8 +21,15 @@ class Message(BaseROSInterface):
     def __init__(self, name, definition = ''):
         BaseROSInterface.__init__(self,name,definition)
 
+class Timer:
+    def __init__(self,name,period,units):
+        self.name = name
+        self.period = period
+        self.units = units
+
 class Component:
-    def __init__(self):
+    def __init__(self,name):
+        self.name = name
         self.numObjects = 0
         self.maxNameLen = 0
         self.publishers = {}
@@ -72,7 +79,8 @@ class Component:
         self.timers[name] = timerOpts
 
 class Node:
-    def __init__(self):
+    def __init__(self,name):
+        self.name=name
         self.numObjects = 0
         self.maxNameLen = 0
         self.components = {}
