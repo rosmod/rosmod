@@ -31,7 +31,7 @@ def main(argv):
 	
     # Obtain name and path to input model
     model = argv[1]
-    model_path = os.path.abspath(os.path.dirname(sys.argv[1]))
+    model_path = os.path.abspath(os.path.dirname(argv[1]))
     print "\nModel: ", model
     print "Model Path: ", model_path, "\n"
 
@@ -64,6 +64,8 @@ def main(argv):
     generator = Generator()
     # Use listener_object to generate ROS workspace
     generator.generate(listener_object, model_path)
+
+    return listener_object
 
 if __name__ == "__main__":
     main(sys.argv)
