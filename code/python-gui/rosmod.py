@@ -45,20 +45,20 @@ string retval"""
         msg1 = Message("basicMessage1")
         msg2 = Message("basicMessage2")
         msg3 = Message("basicMessage3")
-        c1 = Component()
+        c1 = Component("Comp0Def")
         c1.addPub("pub0",msg1)
         c1.addPub("pub1",msg2)
-        c1.addTimer("Timer0",(1.0,False))
+        c1.addTimer("Timer0",Timer('TimerDef',1.0,False))
         c1.addSub("sub0",msg1)
         c1.addClient("client",serv1)
         c1.addServer("server",serv1)
-        node1 = Node()
+        node1 = Node("sat0")
         node1.addComponent("Comp0",c1)
         node1.addComponent("Comp1",c1)
-        node2 = Node()
+        node2 = Node("sat1")
         node2.addComponent("OtherComp",c1)
         package1 = Package()
-        package1.addNode("sat0",node1)
+        package1.addNode(node1.name,node1)
         self.Model = Model()
         self.Model.addPackage("mainPackage",package1)
         self.Model.addMessage(msg1)
@@ -66,9 +66,9 @@ string retval"""
         self.Model.addMessage(msg3)
         self.Model.addService(serv1)
         self.Model.addService(serv2)
-        self.Model.components['Comp0Def'] = c1
-        self.Model.nodes['sat0'] = node1
-        self.Model.nodes['sat1'] = node2
+        self.Model.components[c1.name] = c1
+        self.Model.nodes[node1.name] = node1
+        self.Model.nodes[node2.name] = node2
         '''
         -----------------------------------------------------
         -----------------------------------------------------
@@ -124,7 +124,7 @@ string retval"""
         objectDict['message'] = ["blue",("object","message")]
         objectDict['timer'] = ["gray",("object","timer")]
         objectDict['component'] = ["red",("object","component")]
-        objectDict['node'] = ["magenta",("object","node")]
+        objectDict['node'] = ["cyan",("object","node")]
 
         self.editor = Editor(
             master = self.master,

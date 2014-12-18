@@ -10,6 +10,105 @@ from collections import OrderedDict
 
 from rosmod_classes import *
 
+# USED FOR RIGHT CLICK MENU FOR OBJECTS (deletion, addition, etc)
+class MenuPopup():
+    def __init__(self,master):
+        self.master = master
+        self.functions = OrderedDict()
+
+# anything drawn in the editor is of this type
+class EditorObject():
+    def __init__(self,canvas, name, objRef, objPadding, childPadding, position, color, tags = (), drawChildren = True, connectFromObject=True):
+        self.canvas = canvas
+
+        self.fontWidth = 11
+        self.fontHeight = 10
+
+        # these need to be provided
+        self.objRef = objRef
+        self.name = name
+        self.objectPadding = objPadding # (10,10)
+        self.childPadding = childPadding # (0,15)
+        self.drawChildren = drawChildren # True
+        self.position = position # (0,0)
+        self.tags = tags + (self.name,None)
+        self.color = color
+        self.connectFromObject = connectFromObject
+
+        # these will be generated
+        self.maxChildNameLen = 0
+        self.connectionPoint = [0,0]
+        self.size = [0,0]
+        self.children = OrderedDict()
+
+        self.canvas.tag_bind(self.name,"<Double-Button-1>", self.OnDoubleClick)
+        self.canvas.tag_bind(self.name,"<Button-1>", self.OnLeftClick)
+        self.canvas.tag_bind(self.name,"<Button-3>", self.OnRightClick)
+
+    def __str__(self):
+        retStr = ""
+        retStr += "{0}".format(self.position)
+        retStr += "{0}".format(self.connectionPoint)
+        return retStr
+
+    def addChild(self, name, obj):
+        if len(name) > self.maxChildNameLen:
+            self.maxChildNameLen = len(name)
+        numChildren = len(self.children)
+        offsetX = self.childPadding[0]
+        offsetY = numChildren * self.childPadding[1] + self.objectPadding[1]/2
+        obj.position = (self.position[0] + offsetX, self.position[1] + offsetY)
+        self.children[name] = obj
+
+    def OnRightClick(self, event):
+        print self.name, self.objRef
+
+    def OnLeftClick(self,event):
+        print self.name, self.objRef
+
+    def OnDoubleClick(self,event):
+        print self.name, self.objRef
+
+    def Draw(self, textOnSide = False, drawArrowToObjRef=False):
+        self.size[0] = self.objectPadding[0]
+        self.size[1] = self.objectPadding[1]
+        if self.drawChildren == True:
+            self.size[0] += self.maxChildNameLen * self.fontWidth
+            self.size[1] += len(self.children) * self.childPadding[1]
+        self.connectionPoint = [
+            self.position[0] + self.size[0],
+            self.position[1] + self.size[1]/2
+        ]
+        objectID = self.canvas.create_rectangle(
+            self.position[0], self.position[1], 
+            self.position[0] + self.size[0], self.position[1] + self.size[1], 
+            outline=self.color, fill=self.color, tags=self.tags,
+            activeoutline="black",
+            activewidth=3.0
+        )
+        textPos = (self.position[0] + self.size[0]/2, self.position[1] - self.fontHeight)
+        anchor = CENTER
+        if textOnSide == True:
+            textPos = (self.connectionPoint[0] + 3, self.connectionPoint[1])
+            anchor = W
+        textID = self.canvas.create_text(
+            textPos,
+            text=self.name,
+            state=DISABLED,
+            tags = self.tags,
+            anchor = anchor
+        )
+        if drawArrowToObjRef == True and self.connectFromObject == True:
+            self.canvas.create_line(
+                self.position[0],self.position[1]+self.size[1]/2,
+                self.objRef.connectionPoint[0],self.objRef.connectionPoint[1],
+                arrow=FIRST
+            )
+        if self.drawChildren == True:
+            for name,child in self.children.iteritems():
+                child.Draw(textOnSide=True,drawArrowToObjRef=True)
+        return self.size
+
 class TextPopup():
     def __init__(self, master,objName,objTextVar,width,height):
         self.master = master
@@ -100,48 +199,6 @@ class EditorFrame(Frame):
         if event.num == 4 or event.delta == 120:
             direction = -1
         self.canvas.yview_scroll(direction, "units")
-
-class ObjectList(EditorFrame):
-    def __init__(self, master, objectDict, height, width, maxHeight, maxWidth):
-        EditorFrame.__init__(self,master,"Object Browser",height,width,maxHeight,maxWidth)
-
-        self.selectedObjectType = None
-
-        ypos = self.width * 3 / 4
-        for name,attr in objectDict.iteritems():
-            self.draw_objects(name,(self.width/2, ypos), attr[0], attr[1])
-            ypos += self.width
-
-        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
-
-    def draw_objects(self, name, coord, color, tagTuple):
-        (x,y) = coord
-        sizeX = 80
-        sizeY = 80
-        objectID = self.canvas.create_rectangle(
-            x-sizeX/2, y-sizeY/2, x+sizeX/2, y+sizeY/2, 
-            outline=color, fill=color, tags=tagTuple,
-            activeoutline="black",
-            activewidth=3.0
-        )
-        textID = self.canvas.create_text(
-            (x,y),
-            text=name,
-            state=DISABLED,
-            tags=tagTuple
-        )
-
-    def OnObjectLeftClick(self, event):
-        self.focus_set()
-        selectedObject = self.canvas.find_closest(
-            self.canvas.canvasx(event.x), 
-            self.canvas.canvasy(event.y)
-        )[0]
-        self.canvas.focus_set()
-        self.selectedObjectType = self.canvas.gettags(selectedObject)[1]
-        
-    def GetActiveObjectType(self):
-        return self.selectedObjectType
         
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None):
@@ -163,6 +220,7 @@ class ModelViewer(EditorFrame):
         self.var.trace("w", self.OnTextUpdate)
         self.activeObject=None
         self.entry=None
+        self.objects = OrderedDict()
 
     def OnTextUpdate(self,*args):
         if self.activeObject != None:
@@ -196,102 +254,45 @@ class ModelViewer(EditorFrame):
         else:
             self.activeObject = None
 
-    def connect_objects(self,objDict,x,y,padY,nameAsKey=False):
-        xpos = x
-        ypos = y
-        for localName,obj in objDict.iteritems():
-            objKey = obj
-            if nameAsKey == True:
-                objKey = obj.name
-            ypos += padY / 2
-            midX,midY = self.create_subObject(
-                localName,
-                (xpos,ypos),
+    def createAndAddChildren(self, objName, objDict, dispMapKey, initX, ypos, isOnCanvas=True):
+        for childName, child in objDict.iteritems():
+            objRef = child
+            if isOnCanvas == True:
+                objRef = self.objects[child.name]
+            self.objects[childName] = EditorObject(
+                self.canvas,
+                childName,
+                objRef,
                 (10,10),
-                "black"
+                (0,15),
+                (initX,ypos),
+                self.displayMapping[dispMapKey][0],
+                connectFromObject=isOnCanvas
             )
-            ypos += padY / 2
-            if objKey in self.objects:
-                self.canvas.create_line(
-                    midX,midY,
-                    self.objects[objKey][-2],self.objects[objKey][-1],
-                    arrow=FIRST
-                )
-        return xpos,ypos
-
-    def create_subObject(self, name, coord, size, color):
-        (x,y) = coord
-        (width,height) = size
-        self.canvas.create_rectangle(
-            x,y, x+width, y+height,
-            outline=color, fill =color
-        )
-        self.canvas.create_text(
-            (x + width + 3, y + height/2),
-            text=name,
-            anchor=W,
-            state=DISABLED
-        )
-        return (x,y+height/2)
-
-    def create_object(self, name, coord, color, tagTuple):
-        (x,y) = coord
-        if tagTuple[1] == 'message' or tagTuple[1] == 'service' or tagTuple[1] == 'timer':
-            width = 80
-            height = 80
-            objectID = self.canvas.create_rectangle(
-                x, y, x+width, y+height, 
-                outline=color, fill=color, tags=tagTuple,
-                activeoutline="black",
-                activewidth=3.0
-            )
-            textID = self.canvas.create_text(
-                (x+width/2,y-10),
-                text=name,
-                state=DISABLED,
-                tags=tagTuple
-            )
-            self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x+width,y+height/2] 
-        else:
-            subObjHeight = 20
-            width = tagTuple[3].maxNameLen * 11
-            height = tagTuple[3].numObjects * subObjHeight + subObjHeight/2
-            objectID = self.canvas.create_rectangle(
-                x, y, x+width, y+height, 
-                outline=color, fill=color, tags=tagTuple,
-                activeoutline="black",
-                activewidth=3.0
-            )
-            textID = self.canvas.create_text(
-                (x+width/2,y-10),
-                text=name,
-                state=DISABLED,
-                tags=tagTuple
-            )
-            padX = 15
-            padY = subObjHeight
-            if tagTuple[1] == 'node':
-                self.objects[tagTuple[2]] = [tagTuple[3],objectID,textID,x+width,y+height/2]
-                self.connect_objects(tagTuple[3].components,x,y,padY)
-            elif tagTuple[1] == 'component':
-                self.objects[tagTuple[3]] = [objectID,textID,x+width,y+height/2]
-                x,y=self.connect_objects(tagTuple[3].clients,x,y,padY,nameAsKey=True)
-                x,y=self.connect_objects(tagTuple[3].servers,x,y,padY,nameAsKey=True)
-                x,y=self.connect_objects(tagTuple[3].subscribers,x,y,padY,nameAsKey=True)
-                x,y=self.connect_objects(tagTuple[3].publishers,x,y,padY,nameAsKey=True)
-                x,y=self.connect_objects(tagTuple[3].timers,x,y,padY)
-        return width,height
+            self.objects[objName].addChild(childName,self.objects[childName])
 
     def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
         ypos = initY
         maxX = 0
         for name,object in drawDict.iteritems():
-            width,height = self.create_object(
-                name,
+            self.objects[name] = EditorObject(
+                self.canvas, 
+                name, 
+                object, 
+                (10,10), 
+                (0,15), 
                 (initX,ypos),
-                self.displayMapping[dictKey][0],
-                self.displayMapping[dictKey][1] + (name,object)
+                self.displayMapping[dictKey][0]
             )
+            if dictKey == 'component':
+                self.createAndAddChildren(name,object.clients,'service',initX,ypos)
+                self.createAndAddChildren(name,object.servers,'service',initX,ypos)
+                self.createAndAddChildren(name,object.publishers,'message',initX,ypos)
+                self.createAndAddChildren(name,object.subscribers,'message',initX,ypos)
+                self.createAndAddChildren(name,object.timers,'timer',initX,ypos,False)
+            elif dictKey == 'node':
+                self.createAndAddChildren(name,object.components,'component',initX,ypos)
+            width,height = self.objects[name].Draw()
             if (width + initX) > maxX:
                 maxX = width + initX
             ypos += height + padY
@@ -299,26 +300,13 @@ class ModelViewer(EditorFrame):
         return (maxX,maxY)
 
     def drawModel(self, initX,initY, padX, padY):
+        #column 1
         xpos,ypos = self.drawObjectsFromDict('service',self.model.services,initX,initY,padY)
         xpos2,ypos = self.drawObjectsFromDict('message',self.model.messages,initX,ypos,padY)
-
+        #column 2
         xpos,ypos = self.drawObjectsFromDict('component',self.model.components,xpos + padX,initY,padY)
+        #column 3
         xpos,ypos = self.drawObjectsFromDict('node',self.model.nodes,xpos+padX,initY,padY)
-
-    def addService(self, name, definition = ''):
-        self.model.addService(name,definition)
-    
-    def addMessage(self, name, definition = ''):
-        self.model.addMessage(name,definition)
-
-    def addComponent(self, name, component):
-        self.model.addComponent(name, component)
-
-    def addNode(self, name, node):
-        self.model.addNode(name,node)
-
-    def addPackage(self, name, package):
-        self.model.addPackage(name,package)
 
 class Editor():
     def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
@@ -334,23 +322,14 @@ class Editor():
             height = self.height,
             width = self.width
         )
-        self.objectList = ObjectList(
-            master = self.master,
-            objectDict = self.editorDict,
-            height = self.height,
-            width = splitWidth,
-            maxHeight = maxHeight,
-            maxWidth = splitWidth
-        )
         self.modelViewer = ModelViewer(
             master = self.master,
             height = self.height,
             width = self.width - splitWidth,
             maxHeight = maxHeight,
-            maxWidth = maxWidth - splitWidth,
+            maxWidth = maxWidth,
             displayMapping = self.editorDict,
             model=self.model
         )
-        self.editorPane.add(self.objectList)
         self.editorPane.add(self.modelViewer)
         self.editorPane.pack(fill='both',expand=1)
