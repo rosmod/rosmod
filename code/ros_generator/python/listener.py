@@ -391,7 +391,7 @@ class Listener(ROSListener):
             if self.publisher.name != "":
                 if self.publisher.topic != "":
                     self.component.publishers.append(self.publisher)
-                    self.component.publishers_dict[self.publisher.name] = self.publisher
+                    self.component.publishers_dict[self.publisher.name] = self.package.msg_dict[self.publisher.topic]
         elif "subscriber" in ctx.getText():
             self.subscriber = ROS_Subscriber()
             for child in ctx.getChildren():
@@ -404,7 +404,7 @@ class Listener(ROSListener):
             if self.subscriber.name != "":
                 if self.subscriber.topic != "":
                     self.component.subscribers.append(self.subscriber)
-                    self.component.subscribers_dict[self.subscriber.name] = self.subscriber
+                    self.component.subscribers_dict[self.subscriber.name] = self.package.msg_dict[self.subscriber.topic]
 
     # Save all component timers
     def enterRos_timer(self, ctx):
