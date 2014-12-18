@@ -15,6 +15,8 @@ class ROS_Workspace:
         self.name = ""
         # List of ROS packages in workspace
         self.packages = []
+        # Useful Dictionaries
+        self.packages_dict = {}
 
 # ROS_Package class
 class ROS_Package:
@@ -30,6 +32,11 @@ class ROS_Package:
         self.components = []
         # List of nodes in package
         self.nodes = []
+        # Useful Dictionaries
+        self.msg_dict = {}
+        self.srv_dict = {}
+        self.component_definition_dict = {}
+        self.nodes_dict = {}
 
 # ROS Message class
 class ROS_Message:
@@ -67,6 +74,12 @@ class ROS_Component:
         self.subscribers = []
         # List of timers
         self.timers = []
+        # Useful Dictionaries
+        self.provided_services_dict = {}
+        self.required_services_dict = {}
+        self.publishers_dict = {}
+        self.subscribers_dict = {}
+        self.timers_dict = {}
 
 # ROS Publisher
 class ROS_Publisher:
@@ -107,6 +120,8 @@ class ROS_Node:
         self.components = []
         # List of component defs
         self.comp_defs = []
+        # Useful Dictionary
+        self.component_instance_dict = {}
 
 class Listener(ROSListener):
 
@@ -125,6 +140,7 @@ class Listener(ROSListener):
     # On exit, add the new package to list of packages in workspace
     def exitRos_packages(self, ctx):
         self.workspace.packages.append(self.package)
+        self.workspace.packages_dict[self.package.name] = self.package
 
     # Save the package name
     def enterPackage_name(self, ctx):
@@ -158,6 +174,7 @@ class Listener(ROSListener):
     def exitRos_msg(self, ctx):
         # Append new ros msg onto list of package messages
         self.package.messages.append(self.message)
+        self.package.msg_dict[self.message.name] = self.message
 
     # Create a new ROS Service object
     def enterRos_srv(self, ctx):
@@ -217,6 +234,7 @@ class Listener(ROSListener):
     # On exit, add the service to the list of services in the package
     def exitRos_srv(self, ctx):
         self.package.services.append(self.service)
+        self.package.srv_dict[self.service.name] = self.service
         
     # Create a new component object
     def enterRos_component(self, ctx):
@@ -235,6 +253,8 @@ class Listener(ROSListener):
                     service_name = child.getText()
                     # CHECK: If this service has been defined 
                     self.component.provided_services.append(service_name)
+                    server_name = service_name + "_server"
+                    self.component.provided_services_dict[server_name] = service_name
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
                 context = str(type(child))
@@ -242,6 +262,8 @@ class Listener(ROSListener):
                     service_name = child.getText()
                     # CHECK: If this service has been defined 
                     self.component.required_services.append(service_name)
+                    client_name = service_name + "_client"
+                    self.component.required_services_dict[client_name] = service_name
 
     # Save all publishers and susbcribers
     def enterRos_pub_sub(self, ctx):
@@ -257,6 +279,7 @@ class Listener(ROSListener):
             if self.publisher.name != "":
                 if self.publisher.topic != "":
                     self.component.publishers.append(self.publisher)
+                    self.component.publishers_dict[self.publisher.name] = self.publisher
         elif "subscriber" in ctx.getText():
             self.subscriber = ROS_Subscriber()
             for child in ctx.getChildren():
@@ -269,6 +292,7 @@ class Listener(ROSListener):
             if self.subscriber.name != "":
                 if self.subscriber.topic != "":
                     self.component.subscribers.append(self.subscriber)
+                    self.component.subscribers_dict[self.subscriber.name] = self.subscriber
 
     # Save all component timers
     def enterRos_timer(self, ctx):
@@ -282,10 +306,12 @@ class Listener(ROSListener):
             elif "Period_unitContext" in context:
                 self.timer.period_unit = child.getText()
         self.component.timers.append(self.timer)
+        self.component.timers_dict[self.timer.name] = self.timer
 
     # On exit, add component to list of components in package
     def exitRos_component(self, ctx):
         self.package.components.append(self.component)
+        self.package.component_definition_dict[self.component.name] = self.component
 
     # Create a new ROS node object
     def enterRos_node(self, ctx):
@@ -308,8 +334,10 @@ class Listener(ROSListener):
             elif "Component_instanceContext" in context:
                 instance = child.getText()
         self.node.components.append([comp_type, instance])
-        self.node.comp_defs.append(comp_type )
+        self.node.comp_defs.append(comp_type)
+        self.node.component_instance_dict[instance] = self.package.component_definition_dict[comp_type]
 
     # On exit, add the node to the list of nodes in package
     def exitRos_node(self, ctx):
         self.package.nodes.append(self.node)
+        self.package.nodes_dict[self.node.name] = self.node
