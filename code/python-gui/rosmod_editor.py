@@ -15,7 +15,7 @@ class EditorObject():
     def __init__(self,canvas, name, objRef, objPadding, childPadding, position, color, contextFunctionDict=None, tags = (), drawChildren = True, connectFromObject=True):
         self.canvas = canvas
 
-        self.fontWidth = 11
+        self.fontWidth = 8
         self.fontHeight = 10
 
         # these need to be provided
