@@ -26,19 +26,13 @@ from printer import *
 print "Compiling all templates...\n"
 from generator import *
 
-# Start of ROS Generator
-def main(argv):
-	
-    # Obtain name and path to input model
-    model = argv[1]
-    model_path = os.path.abspath(os.path.dirname(argv[1]))
-    print "\nModel: ", model
-    print "Model Path: ", model_path, "\n"
+# Create and return a workspace object corresponding to the input model
+def parse(filename):
 
     # Read the input model
-    generator_input = FileStream(model)
+    model = FileStream(filename)
     # Instantiate the ROSLexer
-    lexer = ROSLexer(generator_input)
+    lexer = ROSLexer(model)
     # Generate Tokens
     stream = CommonTokenStream(lexer)
     # Instantiate the ROSParser
@@ -49,24 +43,31 @@ def main(argv):
     listener_object = Listener()
     # Instantiate a Parse Tree Walker
     walker = ParseTreeWalker()
-    print "Walking Parse Tree...\n"
+    print "Parsing input model...\n"
     # Walk the parse tree
     walker.walk(listener_object, tree)
-
-    # listener_object.workspace has all the information we need
- 
-    # Instantiate a Printer Object
     printer = Printer()
-    # Use listener_object to print workspace information
     printer.print_ros_workspace(listener_object)
 
+    return listener_object
+    
+# Generate the ROS workspace corresponding to the input model
+def generate(workspace, model_path):
+    
     # Instantiate a Generator Object
     generator = Generator()
     # Use listener_object to generate ROS workspace
-    generator.generate(listener_object, model_path)
-
-    return listener_object
-
+    generator.generate(workspace, model_path)
+    
 if __name__ == "__main__":
-    main(sys.argv)
+    
+    # Obtain the model filename
+    model = sys.argv[1]
+    # Obtain the model path
+    model_path = os.path.abspath(os.path.dirname(sys.argv[1]))
+    # Parse the input model
+    workspace = parse(model)
+    # Generate the ROS workspace pertaining to the input model
+    generate(workspace, model_path)
+    
         
