@@ -8,8 +8,6 @@ import tkMessageBox
 
 from collections import OrderedDict
 
-from rosmod_classes import *
-
 activeMenus = []
 
 def closeAllContextMenus(menuList):
@@ -236,24 +234,23 @@ class EditorFrame(Frame):
         
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None):
+
         EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth)
-        if model != None:
-            self.model=model
-        else:
-            self.model=Model()
 
+        self.model=model
         self.displayMapping = displayMapping
-
-        self.drawModel(initX=50, initY=50, padX=100, padY=20)
-
-        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
-        # make tag so that right click on object can be used to inspect code
-        self.canvas.tag_bind("object", "<Button-3>", self.OnObjectRightClick)
+        #self.drawModel(initX=50, initY=50, padX=100, padY=20)
 
         self.var = StringVar()
         self.var.trace("w", self.OnTextUpdate)
         self.activeObject=None
         self.entry=None
+        self.objects = OrderedDict()
+
+    def clear(self):
+        self.canvas.delete(ALL)
+        self.activeObject = None
+        self.entry = None
         self.objects = OrderedDict()
 
     def OnTextUpdate(self,*args):
@@ -290,6 +287,7 @@ class ModelViewer(EditorFrame):
 
     def createAndAddChildren(self, objName, objDict, dispMapKey, initX, ypos, isOnCanvas=True):
         for childName, child in objDict.iteritems():
+            print childName, child.name
             objRef = child
             if isOnCanvas == True:
                 objRef = self.objects[child.name]
@@ -319,13 +317,13 @@ class ModelViewer(EditorFrame):
                 self.displayMapping[dictKey][0]
             )
             if dictKey == 'component':
-                self.createAndAddChildren(name,object.clients,'service',initX,ypos)
-                self.createAndAddChildren(name,object.servers,'service',initX,ypos)
-                self.createAndAddChildren(name,object.publishers,'message',initX,ypos)
-                self.createAndAddChildren(name,object.subscribers,'message',initX,ypos)
-                self.createAndAddChildren(name,object.timers,'timer',initX,ypos,False)
+                self.createAndAddChildren(name,object.required_services_dict,'service',initX,ypos)
+                self.createAndAddChildren(name,object.provided_services_dict,'service',initX,ypos)
+                self.createAndAddChildren(name,object.publishers_dict,'message',initX,ypos)
+                self.createAndAddChildren(name,object.subscribers_dict,'message',initX,ypos)
+                self.createAndAddChildren(name,object.timers_dict,'timer',initX,ypos,False)
             elif dictKey == 'node':
-                self.createAndAddChildren(name,object.components,'component',initX,ypos)
+                self.createAndAddChildren(name,object.component_instance_dict,'component',initX,ypos)
             width,height = self.objects[name].Draw()
             if (width + initX) > maxX:
                 maxX = width + initX
@@ -335,12 +333,32 @@ class ModelViewer(EditorFrame):
 
     def drawModel(self, initX,initY, padX, padY):
         #column 1
-        xpos,ypos = self.drawObjectsFromDict('service',self.model.services,initX,initY,padY)
-        xpos2,ypos = self.drawObjectsFromDict('message',self.model.messages,initX,ypos,padY)
+        xpos,ypos = self.drawObjectsFromDict('service',self.model.srv_dict,initX,initY,padY)
+        xpos2,ypos = self.drawObjectsFromDict('message',self.model.msg_dict,initX,ypos,padY)
         #column 2
-        xpos,ypos = self.drawObjectsFromDict('component',self.model.components,xpos + padX,initY,padY)
+        xpos,ypos = self.drawObjectsFromDict('component',self.model.component_definition_dict,xpos + padX,initY,padY)
         #column 3
-        xpos,ypos = self.drawObjectsFromDict('node',self.model.nodes,xpos+padX,initY,padY)
+        xpos,ypos = self.drawObjectsFromDict('node',self.model.nodes_dict,xpos+padX,initY,padY)
+
+        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
+        # make tag so that right click on object can be used to inspect code
+        self.canvas.tag_bind("object", "<Button-3>", self.OnObjectRightClick)
+
+class PackageViewer(EditorFrame):
+    def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand):
+        EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth)
+        self.buttons=[]
+        for name,package in packageDict.iteritems():
+            newButton = Radiobutton(
+                self.canvas, 
+                text = name, 
+                variable=buttonVar, 
+                value=name, 
+                indicatoron=0, 
+                command = buttonCommand
+            )
+            self.buttons.append(newButton)
+            newButton.pack()
 
 class Editor():
     def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
@@ -349,6 +367,24 @@ class Editor():
         self.width = width
         self.editorDict = editorDict
         self.model = model
+        self.maxWidth = maxWidth
+        self.maxHeight = maxHeight
+        self.splitWidth = splitWidth
+        self.selectedPackageVar = StringVar()
+        self.modelViewer = None
+        self.packageViewer = None
+        self.editorPane = None
+        self.reset(self.model)
+
+    def reset(self,model):
+        if self.modelViewer != None:
+            self.modelViewer.destroy()
+        if self.packageViewer != None:
+            self.packageViewer.destroy()
+        if self.editorPane != None:
+            self.editorPane.destroy()
+        self.model=model
+        
         self.editorPane = PanedWindow(
             self.master,
             orient = HORIZONTAL,
@@ -359,11 +395,34 @@ class Editor():
         self.modelViewer = ModelViewer(
             master = self.master,
             height = self.height,
-            width = self.width - splitWidth,
-            maxHeight = maxHeight,
-            maxWidth = maxWidth,
+            width = self.width - self.splitWidth,
+            maxHeight = self.maxHeight,
+            maxWidth = self.maxWidth,
             displayMapping = self.editorDict,
             model=self.model
         )
+        self.packageViewer = PackageViewer (
+            master = self.master,
+            height = self.height,
+            width = self.splitWidth,
+            maxHeight = self.maxHeight,
+            maxWidth = self.maxWidth,
+            packageDict=self.model.packages_dict,
+            buttonVar = self.selectedPackageVar,
+            buttonCommand = self.OnPackageSelected
+        )
+        self.editorPane.add(self.packageViewer)
         self.editorPane.add(self.modelViewer)
         self.editorPane.pack(fill='both',expand=1)
+
+    def OnPackageSelected(self):
+        print "You've selected {0}".format(self.selectedPackageVar.get())
+        self.modelViewer.model = self.model.packages_dict[self.selectedPackageVar.get()]
+        self.modelViewer.clear()
+        self.modelViewer.drawModel(initX=50,initY=50,padX=100,padY=20)
+        
+        
+        
+        
+
+        

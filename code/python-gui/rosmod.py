@@ -33,7 +33,6 @@ class App:
         THIS CODE IS FOR DEBUGGING ONLY
         -----------------------------------------------------
         -----------------------------------------------------
-        '''
 
         serv1 = Service("basicService1",
                         """string hello
@@ -68,7 +67,7 @@ string retval"""
         self.Model.components[c1.name] = c1
         self.Model.nodes[node1.name] = node1
         self.Model.nodes[node2.name] = node2
-        '''
+
         -----------------------------------------------------
         -----------------------------------------------------
         END DEBUGGING CODE
@@ -119,12 +118,14 @@ string retval"""
         self.editorWidth = 800
         self.objectWidth = 100
 
-        objectDict = OrderedDict()
-        objectDict['service'] = ["green",("object","service")]
-        objectDict['message'] = ["blue",("object","message")]
-        objectDict['timer'] = ["gray",("object","timer")]
-        objectDict['component'] = ["red",("object","component")]
-        objectDict['node'] = ["cyan",("object","node")]
+        self.Model = rosgen.ROS_Workspace()
+
+        self.objectDict = OrderedDict()
+        self.objectDict['service'] = ["green",("object","service")]
+        self.objectDict['message'] = ["blue",("object","message")]
+        self.objectDict['timer'] = ["gray",("object","timer")]
+        self.objectDict['component'] = ["red",("object","component")]
+        self.objectDict['node'] = ["cyan",("object","node")]
 
         self.editor = Editor(
             master = self.master,
@@ -133,7 +134,7 @@ string retval"""
             splitWidth = self.objectWidth,
             maxWidth = self.editorHeight * 2,
             maxHeight = self.editorHeight * 2,
-            editorDict = objectDict,
+            editorDict = self.objectDict,
             model = self.Model
         )
 
@@ -168,12 +169,12 @@ string retval"""
             #self.Model = Model()
             #self.editor.modelViewer.canvas.delete(ALL)
             #self.editor.modelViewer.drawModel()  
-            self.model = rosgen.parse_model(self.fileName)
+            self.Model = rosgen.parse_model(self.fileName)
             self.model_path = os.path.abspath(os.path.dirname(self.fileName))
+            self.editor.reset(self.Model.workspace)
 
     def menubar_New_Callback(self):
         self.statusBar.set("Creating new model.")
-        self.Model = Model()
         self.editor.modelViewer.canvas.delete(ALL)
         self.editor.modelViewer.drawModel()
 
@@ -181,7 +182,7 @@ string retval"""
         fileName = self.fileName
         # Overwrite the model file
         self.statusBar.set("Saved model!")
-        rosgen.generate_model(self.model.workspace, fileName, self.model_path)
+        rosgen.generate_model(self.Model.workspace, fileName, self.model_path)
 
     def menubar_Save_As_Callback(self):
         filePath = tkFileDialog.asksaveasfilename(
@@ -194,7 +195,7 @@ string retval"""
         if len(fileName) > 0:
             self.statusBar.set("Saving model as {0}".format(fileName))
         # Save fileName.rosml model at filePath
-        rosgen.generate_model(self.model.workspace, fileName, head)
+        rosgen.generate_model(self.Model.workspace, fileName, head)
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")
@@ -215,7 +216,7 @@ string retval"""
     '''
     def toolbar_Interpret_Callback(self):
         self.statusBar.set("Generating ROS package files!")
-        rosgen.generate_workspace(self.model, self.model_path)
+        rosgen.generate_workspace(self.Model, self.model_path)
         
     def toolbar_NetworkAnalysis_Callback(self):
         self.statusBar.set("Analyzing the network characteristics!")
