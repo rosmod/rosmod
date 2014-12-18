@@ -18,6 +18,12 @@ from rosmod_tools import *
 from rosmod_editor import *
 from rosmod_classes import *
 
+import sys
+
+sys.path.append('../ros_generator/python/')
+
+import rosgen as rg
+
 class App:
 
     def __init__(self, master):
@@ -74,9 +80,7 @@ string retval"""
         self.master = master
 
         self.fileFormats = [
-            ('ROSMOD Model','*.model'),
-            ('ROSMOD Component','*.comp'),
-            ('ROSMOD Node','*.node')
+            ('ROSMOD Model','*.rosml')
         ]
 
         ''' Set up the program's menu '''
@@ -157,13 +161,13 @@ string retval"""
             title="Select Model"
         )
         if file != None:
-            data = file.read()
-            self.statusBar.set("File {0} has {1} bytes".format(file,len(data)))
+            self.fileName = file.name
+            self.statusBar.set("Opened {0}".format(self.fileName))
             file.close()
             #implement the open functionality here to load the model in
-            self.Model = Model()
-            self.editor.modelViewer.canvas.delete(ALL)
-            self.editor.modelViewer.drawModel()        
+            #self.Model = Model()
+            #self.editor.modelViewer.canvas.delete(ALL)
+            #self.editor.modelViewer.drawModel()        
 
     def menubar_New_Callback(self):
         self.statusBar.set("Creating new model.")
@@ -200,6 +204,8 @@ string retval"""
     '''
     def toolbar_Interpret_Callback(self):
         self.statusBar.set("Generating ROS package files!")
+        rg.main(["hello",self.fileName])
+        #os.system("python ../ros_generator/python/rosgen.py {0}".format(self.fileName))
         
     def toolbar_NetworkAnalysis_Callback(self):
         self.statusBar.set("Analyzing the network characteristics!")
