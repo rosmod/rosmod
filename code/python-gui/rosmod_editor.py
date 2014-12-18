@@ -237,8 +237,8 @@ class ModelViewer(EditorFrame):
     def ContextAddNode(self):
         print "Popup dialog for adding node"
 
-    def ContextEditComponent(self):
-        print "Editing component"
+    def ContextEdit(self):
+        print "Editing active object"
 
     def OnTextUpdate(self,*args):
         if self.activeObject != None:
@@ -284,7 +284,11 @@ class ModelViewer(EditorFrame):
         editorObjectContextDict['timer'] = tmrContextDict
         editorObjectContextDict['component'] = compContextDict
         editorObjectContextDict['node'] = nodeContextDict
-        compContextDict['Edit'] = self.ContextEditComponent
+        compContextDict['Edit Component'] = self.ContextEdit
+        srvContextDict['Edit Service'] = self.ContextEdit
+        msgContextDict['Edit Message'] = self.ContextEdit
+        tmrContextDict['Edit Timer'] = self.ContextEdit
+        nodeContextDict['Edit Node'] = self.ContextEdit
         for name,object in drawDict.iteritems():
             self.objects[name] = EditorObject(
                 self.canvas, 
