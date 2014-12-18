@@ -19,10 +19,9 @@ from rosmod_editor import *
 from rosmod_classes import *
 
 import sys
-
+import os
 sys.path.append('../ros_generator/python/')
-
-import rosgen as rg
+import rosgen as rosgen
 
 class App:
 
@@ -167,7 +166,9 @@ string retval"""
             #implement the open functionality here to load the model in
             #self.Model = Model()
             #self.editor.modelViewer.canvas.delete(ALL)
-            #self.editor.modelViewer.drawModel()        
+            #self.editor.modelViewer.drawModel()  
+            self.model = rosgen.parse_model(self.fileName)
+            self.model_path = os.path.abspath(os.path.dirname(self.fileName))
 
     def menubar_New_Callback(self):
         self.statusBar.set("Creating new model.")
@@ -204,8 +205,7 @@ string retval"""
     '''
     def toolbar_Interpret_Callback(self):
         self.statusBar.set("Generating ROS package files!")
-        rg.main(["hello",self.fileName])
-        #os.system("python ../ros_generator/python/rosgen.py {0}".format(self.fileName))
+        rosgen.generate_workspace(self.model, self.model_path)
         
     def toolbar_NetworkAnalysis_Callback(self):
         self.statusBar.set("Analyzing the network characteristics!")
