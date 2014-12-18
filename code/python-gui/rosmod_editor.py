@@ -282,6 +282,7 @@ class ModelViewer(EditorFrame):
                 (0,15),
                 (initX,ypos),
                 self.displayMapping[dispMapKey][0],
+                contextFunctionDict=self.editorObjectContextDict[dispMapKey],
                 connectFromObject=isOnCanvas
             )
             self.objects[objName].addChild(childName,self.objects[childName])
@@ -298,7 +299,7 @@ class ModelViewer(EditorFrame):
                 (0,15), 
                 (initX,ypos),
                 self.displayMapping[dictKey][0],
-                self.editorObjectContextDict[dictKey]
+                contextFunctionDict=self.editorObjectContextDict[dictKey]
             )
             if dictKey == 'component':
                 self.createAndAddChildren(name,object.required_services_dict,'service',initX,ypos)
