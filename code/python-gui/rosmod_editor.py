@@ -10,8 +10,6 @@ from collections import OrderedDict
 
 from rosmod_dialogs import *
 
-activeMenus = []
-
 # anything drawn in the editor is of this type
 class EditorObject():
     def __init__(self,canvas, name, objRef, objPadding, childPadding, position, color, contextFunctionDict=None, tags = (), drawChildren = True, connectFromObject=True):
@@ -62,8 +60,7 @@ class EditorObject():
         print "RIGHT CLICK",self.name
 
     def OnLeftClick(self,event):
-        global activeMenus
-        closeAllContextMenus(activeMenus)
+        closeAllContextMenus()
         print "LEFT CLICK",self.name
 
     def OnDoubleClick(self,event):
@@ -116,6 +113,8 @@ class EditorFrame(Frame):
 
         self.height=height
         self.width=width
+        self.maxWidth = maxWidth
+        self.maxHeight = maxHeight
 
         self.label = Label(self, text=label, anchor=N, bg="dark gray", fg="white", relief=RAISED)
         self.label.pack()
@@ -129,12 +128,20 @@ class EditorFrame(Frame):
             self,
             width=width, 
             height=height, 
-            scrollregion=(0,0,maxWidth,maxHeight),
+            scrollregion=(0,0,self.maxWidth,self.maxHeight),
             xscrollcommand=self.HScrollBar.set,
             yscrollcommand=self.VScrollBar.set
         )
 
+        self.canvasID = self.canvas.create_rectangle(
+            0, 0, 
+            self.maxWidth, self.maxHeight, 
+            outline="light gray", fill="light gray", 
+            tags="canvas"
+        )
+
         self.contextMenu = MenuPopup(self.canvas,contextDict)
+        self.canvas.tag_bind("canvas","<Button-3>", self.contextMenu.popupCallback)
         
         self.VScrollBar.config(command=self.canvas.yview)
         self.HScrollBar.config(command=self.canvas.xview)
@@ -145,16 +152,23 @@ class EditorFrame(Frame):
 
         self.canvas.bind("<Button-1>", self._button1_callback)
         self.canvas.bind("<Delete>",self._delete_callback)
-        self.canvas.bind("<Button-3>", self.contextMenu.popupCallback)
 
         self.canvas.pack(fill=BOTH)
         self.pack(fill=BOTH)
 
         self.objects = OrderedDict()
 
+    def Update(self):
+        self.canvasID = self.canvas.create_rectangle(
+            0, 0, 
+            self.maxWidth, self.maxHeight, 
+            outline="light gray", fill="light gray", 
+            tags="canvas"
+        )
+        self.canvas.tag_bind("canvas","<Button-3>", self.contextMenu.popupCallback)
+
     def _button1_callback(self,event):
-        global activeMenus
-        closeAllContextMenus(activeMenus)
+        closeAllContextMenus()
         self.focus_set()
         self.canvas.focus_set()
 
@@ -162,8 +176,7 @@ class EditorFrame(Frame):
         print "delete has been pressed"
 
     def _mouse_wheel(self, event):
-        global activeMenus
-        closeAllContextMenus(activeMenus)
+        closeAllContextMenus()
         direction = 0
         # respond to Linux or Windows wheel event
         if event.num == 5 or event.delta == -120:
@@ -182,11 +195,17 @@ class EditorFrame(Frame):
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None,contextDict=None):
 
+        if contextDict==None:
+            contextDict=OrderedDict()
+            contextDict['Add Service'] = self.ContextAddService
+            contextDict['Add Message'] = self.ContextAddMessage
+            contextDict['Add Component'] = self.ContextAddComponent
+            contextDict['Add Node'] = self.ContextAddNode
+
         EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,contextDict)
 
         self.model=model
         self.displayMapping = displayMapping
-        #self.drawModel(initX=50, initY=50, padX=100, padY=20)
 
         self.var = StringVar()
         self.var.trace("w", self.OnTextUpdate)
@@ -199,6 +218,27 @@ class ModelViewer(EditorFrame):
         self.activeObject = None
         self.entry = None
         self.objects = OrderedDict()
+        EditorFrame.Update(self)
+
+    def Update(self, model,initX,initY, padX,padY):
+        self.model = model
+        self.clear()
+        self.drawModel(initX,initY,padX,padY)
+
+    def ContextAddService(self):
+        print "Popup dialog for adding service"
+
+    def ContextAddMessage(self):
+        print "Popup dialog for adding message"
+
+    def ContextAddComponent(self):
+        print "Popup dialog for adding component"
+
+    def ContextAddNode(self):
+        print "Popup dialog for adding node"
+
+    def ContextEditComponent(self):
+        print "Editing component"
 
     def OnTextUpdate(self,*args):
         if self.activeObject != None:
@@ -212,25 +252,6 @@ class ModelViewer(EditorFrame):
             self.canvas.canvasy(event.y)
         )[0]
         tags = self.canvas.gettags(selectedObject)
-
-    def OnObjectRightClick(self, event):
-        self.focus_set()
-        self.canvas.focus_set()
-        selectedObject = self.canvas.find_closest(
-            self.canvas.canvasx(event.x), 
-            self.canvas.canvasy(event.y)
-        )[0]
-        tags = self.canvas.gettags(selectedObject)
-        if tags[1] == 'message':
-            self.activeObject = (self.model.messages,tags[2])
-            self.var.set(self.model.messages[tags[2]])
-            self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
-        elif tags[1] == 'service':
-            self.activeObject = (self.model.services,tags[2])
-            self.var.set(self.model.services[tags[2]])
-            self.entry = TextPopup(self.canvas,tags[2],self.var,200,200)
-        else:
-            self.activeObject = None
 
     def createAndAddChildren(self, objName, objDict, dispMapKey, initX, ypos, isOnCanvas=True):
         for childName, child in objDict.iteritems():
@@ -252,6 +273,18 @@ class ModelViewer(EditorFrame):
     def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
         ypos = initY
         maxX = 0
+        editorObjectContextDict = OrderedDict()
+        srvContextDict = OrderedDict()
+        msgContextDict = OrderedDict()
+        tmrContextDict = OrderedDict()
+        compContextDict = OrderedDict()
+        nodeContextDict = OrderedDict()
+        editorObjectContextDict['service'] = srvContextDict
+        editorObjectContextDict['message'] = msgContextDict
+        editorObjectContextDict['timer'] = tmrContextDict
+        editorObjectContextDict['component'] = compContextDict
+        editorObjectContextDict['node'] = nodeContextDict
+        compContextDict['Edit'] = self.ContextEditComponent
         for name,object in drawDict.iteritems():
             self.objects[name] = EditorObject(
                 self.canvas, 
@@ -260,7 +293,8 @@ class ModelViewer(EditorFrame):
                 (10,10), 
                 (0,15), 
                 (initX,ypos),
-                self.displayMapping[dictKey][0]
+                self.displayMapping[dictKey][0],
+                editorObjectContextDict[dictKey]
             )
             if dictKey == 'component':
                 self.createAndAddChildren(name,object.required_services_dict,'service',initX,ypos)
@@ -285,15 +319,6 @@ class ModelViewer(EditorFrame):
         xpos,ypos = self.drawObjectsFromDict('component',self.model.component_definition_dict,xpos + padX,initY,padY)
         #column 3
         xpos,ypos = self.drawObjectsFromDict('node',self.model.nodes_dict,xpos+padX,initY,padY)
-
-        self.canvas.tag_bind("object", "<Button-1>", self.OnObjectLeftClick)
-        # make tag so that right click on object can be used to inspect code
-        self.canvas.tag_bind("object", "<Button-3>", self.OnObjectRightClick)
-
-    def Update(self, model,initX,initY, padX,padY):
-        self.model = model
-        self.clear()
-        self.drawModel(initX,initY,padX,padY)
 
 class PackageViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand,contextDict=None):
@@ -371,6 +396,7 @@ class Editor():
 
     def reset(self,model):
         self.model=model
+        self.modelViewer.clear()
         self.packageViewer.Update(
             packageDict=self.model.packages_dict,
             buttonVar = self.selectedPackageVar,

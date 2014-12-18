@@ -8,10 +8,16 @@ import tkMessageBox
 
 from collections import OrderedDict
 
+activeMenus = []
 
-def closeAllContextMenus(menuList):
-    for menu in menuList:
+def closeAllContextMenus():
+    global activeMenus
+    for menu in activeMenus:
         menu.unpost()    
+
+def registerContextMenu(menu):
+    global activeMenus
+    activeMenus.append(menu)
 
 # USED FOR RIGHT CLICK MENU FOR OBJECTS (deletion, addition, etc)
 class MenuPopup():
@@ -27,9 +33,8 @@ class MenuPopup():
         self.contextMenu.destroy()
 
     def popupCallback(self,event):
-        global activeMenus
-        closeAllContextMenus(activeMenus)
-        activeMenus.append(self.contextMenu)
+        closeAllContextMenus()
+        registerContextMenu(self.contextMenu)
         self.contextMenu.post(event.x_root,event.y_root)
 
 class TextPopup():
