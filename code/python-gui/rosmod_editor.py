@@ -8,39 +8,13 @@ import tkMessageBox
 
 from collections import OrderedDict
 
+from rosmod_dialogs import *
+
 activeMenus = []
-
-def closeAllContextMenus(menuList):
-    for menu in menuList:
-        menu.unpost()    
-
-# USED FOR RIGHT CLICK MENU FOR OBJECTS (deletion, addition, etc)
-class MenuPopup():
-    def __init__(self,master):
-        self.master = master
-        self.functions = OrderedDict()
-        self.functions['Undo'] = self.UndoCallback
-        self.functions['Redo'] = self.RedoCallback
-        self.contextMenu = Menu(self.master, tearoff=0)
-        
-        for name,callback in self.functions.iteritems():
-            self.contextMenu.add_command(label=name, command=callback)
-
-    def UndoCallback(self):
-        print "UNDO"
-
-    def RedoCallback(self):
-        print "REDO"
-
-    def popupCallback(self,event):
-        global activeMenus
-        closeAllContextMenus(activeMenus)
-        activeMenus.append(self.contextMenu)
-        self.contextMenu.post(event.x_root,event.y_root)
 
 # anything drawn in the editor is of this type
 class EditorObject():
-    def __init__(self,canvas, name, objRef, objPadding, childPadding, position, color, tags = (), drawChildren = True, connectFromObject=True):
+    def __init__(self,canvas, name, objRef, objPadding, childPadding, position, color, contextFunctionDict=None, tags = (), drawChildren = True, connectFromObject=True):
         self.canvas = canvas
 
         self.fontWidth = 11
@@ -56,6 +30,7 @@ class EditorObject():
         self.tags = tags + (self.name,None)
         self.color = color
         self.connectFromObject = connectFromObject
+        self.contextFunctions = contextFunctionDict
 
         # these will be generated
         self.maxChildNameLen = 0
@@ -65,7 +40,7 @@ class EditorObject():
 
         self.canvas.tag_bind(self.name,"<Button-1>", self.OnLeftClick)
         self.canvas.tag_bind(self.name,"<Double-Button-1>", self.OnDoubleClick)
-        self.contextMenu = MenuPopup(self.canvas)
+        self.contextMenu = MenuPopup(self.canvas,contextFunctionDict)
         self.canvas.tag_bind(self.name,"<Button-3>", self.contextMenu.popupCallback)
 
     def __str__(self):
@@ -134,43 +109,8 @@ class EditorObject():
                 child.Draw(textOnSide=True,drawArrowToObjRef=True)
         return self.size
 
-class TextPopup():
-    def __init__(self, master,objName,objTextVar,width,height):
-        self.master = master
-        self.frame = Frame(master=self.master,bg="gray",height=height,width=width)
-        self.label = Label(self.frame, text=objName, anchor=N, bg="dark gray", fg="white", relief=RAISED)
-        self.label.pack()
-        self.window = self.master.create_window(
-            0,0, 
-            anchor=NW, 
-            window=self.frame, 
-            width=width,
-            height=height
-        )
-        self.textVar = objTextVar
-        self.text = Text(self.frame)
-        self.scrollbar = Scrollbar(self.frame)
-        self.scrollbar.pack(side=RIGHT, fill=Y)
-        self.scrollbar.config(command=self.text.yview)
-        self.text.config(yscrollcommand=self.scrollbar.set)
-        self.button = Button(self.frame,text="Save",command=self._close_Callback)
-        self.button.pack(side=BOTTOM)
-        self.text.pack()
-        self.text.insert(END,objTextVar.get())
-        self.master.config(state=DISABLED)
-
-    def _close_Callback(self):
-        self.scrollbar.destroy()
-        self.button.destroy()
-        self.textVar.set(self.text.get(1.0,END))
-        self.text.destroy()
-        self.frame.destroy()
-        self.label.destroy()
-        self.master.delete(self.window)
-        self.master.config(state=NORMAL)
-
 class EditorFrame(Frame):
-    def __init__(self, master, label, height, width, maxHeight, maxWidth):
+    def __init__(self, master, label, height, width, maxHeight, maxWidth,contextDict):
         Frame.__init__(self,master)
         Frame.config(self,bd=2, relief=SUNKEN)
 
@@ -193,6 +133,8 @@ class EditorFrame(Frame):
             xscrollcommand=self.HScrollBar.set,
             yscrollcommand=self.VScrollBar.set
         )
+
+        self.contextMenu = MenuPopup(self.canvas,contextDict)
         
         self.VScrollBar.config(command=self.canvas.yview)
         self.HScrollBar.config(command=self.canvas.xview)
@@ -200,8 +142,6 @@ class EditorFrame(Frame):
         self.canvas.bind("<MouseWheel>", self._mouse_wheel)
         self.canvas.bind("<Button-4>", self._mouse_wheel)
         self.canvas.bind("<Button-5>", self._mouse_wheel)
-
-        self.contextMenu = MenuPopup(self.canvas)
 
         self.canvas.bind("<Button-1>", self._button1_callback)
         self.canvas.bind("<Delete>",self._delete_callback)
@@ -231,11 +171,18 @@ class EditorFrame(Frame):
         if event.num == 4 or event.delta == 120:
             direction = -1
         self.canvas.yview_scroll(direction, "units")
+
+    def destroy(self):
+        self.HScrollBar.destroy()
+        self.VScrollBar.destroy()
+        self.canvas.destroy()
+        self.contextMenu.destroy()
+        Frame.destroy(self)
         
 class ModelViewer(EditorFrame):
-    def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None):
+    def __init__(self, master, height, width, maxHeight, maxWidth, displayMapping=None, model=None,contextDict=None):
 
-        EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth)
+        EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,contextDict)
 
         self.model=model
         self.displayMapping = displayMapping
@@ -343,9 +290,14 @@ class ModelViewer(EditorFrame):
         # make tag so that right click on object can be used to inspect code
         self.canvas.tag_bind("object", "<Button-3>", self.OnObjectRightClick)
 
+    def Update(self, model,initX,initY, padX,padY):
+        self.model = model
+        self.clear()
+        self.drawModel(initX,initY,padX,padY)
+
 class PackageViewer(EditorFrame):
-    def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand):
-        EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth)
+    def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand,contextDict=None):
+        EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,contextDict)
         self.buttons=[]
         for name,package in packageDict.iteritems():
             newButton = Radiobutton(
@@ -359,6 +311,22 @@ class PackageViewer(EditorFrame):
             self.buttons.append(newButton)
             newButton.pack()
 
+    def Update(self,packageDict,buttonVar,buttonCommand):
+        for button in self.buttons:
+            button.destroy()
+        self.buttons=[]
+        for name,package in packageDict.iteritems():
+            newButton = Radiobutton(
+                self.canvas, 
+                text = name, 
+                variable=buttonVar, 
+                value=name, 
+                indicatoron=0, 
+                command = buttonCommand
+            )
+            self.buttons.append(newButton)
+            newButton.pack()        
+
 class Editor():
     def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
         self.master = master
@@ -370,19 +338,6 @@ class Editor():
         self.maxHeight = maxHeight
         self.splitWidth = splitWidth
         self.selectedPackageVar = StringVar()
-        self.modelViewer = None
-        self.packageViewer = None
-        self.editorPane = None
-        self.reset(self.model)
-
-    def reset(self,model):
-        if self.modelViewer != None:
-            self.modelViewer.destroy()
-        if self.packageViewer != None:
-            self.packageViewer.destroy()
-        if self.editorPane != None:
-            self.editorPane.destroy()
-        self.model=model
         
         self.editorPane = PanedWindow(
             self.master,
@@ -414,11 +369,20 @@ class Editor():
         self.editorPane.add(self.modelViewer)
         self.editorPane.pack(fill='both',expand=1)
 
+    def reset(self,model):
+        self.model=model
+        self.packageViewer.Update(
+            packageDict=self.model.packages_dict,
+            buttonVar = self.selectedPackageVar,
+            buttonCommand = self.OnPackageSelected
+        )
+
     def OnPackageSelected(self):
         print "You've selected {0}".format(self.selectedPackageVar.get())
-        self.modelViewer.model = self.model.packages_dict[self.selectedPackageVar.get()]
-        self.modelViewer.clear()
-        self.modelViewer.drawModel(initX=50,initY=50,padX=100,padY=20)
+        self.modelViewer.Update(
+            self.model.packages_dict[self.selectedPackageVar.get()],
+            initX=50,initY=50,padX=100,padY=20
+        )
         
         
         
