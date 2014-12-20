@@ -72,54 +72,7 @@ class App:
 
         self.Model = rosgen.ROS_Workspace()
 
-        self.optionsDict = rosgen.OrderedDict()
-        self.paddingOptions = rosgen.PaddingOptions((5,10),(0,15))
-        self.fontOptions = rosgen.FontOptions()
-        self.optionsDict['service'] = rosgen.CanvasOptions(
-            self.paddingOptions,
-            self.fontOptions,
-            rosgen.DrawOptions(
-                color = "green",
-                minSize = (10,10),
-            ),
-            tags = ("object","service")
-        )
-        self.optionsDict['message'] = rosgen.CanvasOptions(
-            self.paddingOptions,
-            self.fontOptions,
-            rosgen.DrawOptions(
-                color = "blue",
-                minSize = (10,10),
-            ),
-            tags = ("object","message")
-        )
-        self.optionsDict['timer'] = rosgen.CanvasOptions(
-            self.paddingOptions,
-            self.fontOptions,
-            rosgen.DrawOptions(
-                color = "gray",
-                minSize = (10,10),
-            ),
-            tags = ("object","timer")
-        )
-        self.optionsDict['component'] = rosgen.CanvasOptions(
-            self.paddingOptions,
-            self.fontOptions,
-            rosgen.DrawOptions(
-                color = "red",
-                minSize = (10,10),
-            ),
-            tags = ("object","component")
-        )
-        self.optionsDict['node'] = rosgen.CanvasOptions(
-            self.paddingOptions,
-            self.fontOptions,
-            rosgen.DrawOptions(
-                color = "cyan",
-                minSize = (10,10),
-            ),
-            tags = ("object","node")
-        )
+        self.optionsDict = rosgen.canvasOptionsDict
 
         self.editor = Editor(
             master = self.master,
@@ -159,18 +112,16 @@ class App:
             self.fileName = file.name
             self.statusBar.set("Opened {0}".format(self.fileName))
             file.close()
-            #implement the open functionality here to load the model in
-            #self.Model = Model()
-            #self.editor.modelViewer.canvas.delete(ALL)
-            #self.editor.modelViewer.drawModel()  
             self.Model = rosgen.parse_model(self.fileName)
             self.model_path = os.path.abspath(os.path.dirname(self.fileName))
             self.editor.reset(self.Model.workspace)
 
     def menubar_New_Callback(self):
         self.statusBar.set("Creating new model.")
-        self.editor.modelViewer.canvas.delete(ALL)
-        self.editor.modelViewer.drawModel()
+        self.Model = rosgen.Listener()
+        self.Model.workspace = rosgen.ROS_Workspace()
+        self.model_path = os.path.abspath(os.getcwd())
+        self.editor.reset(self.Model.workspace)
 
     def menubar_Save_Callback(self):
         fileName = self.fileName
