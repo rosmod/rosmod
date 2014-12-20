@@ -27,54 +27,6 @@ class App:
 
     def __init__(self, master):
 
-        '''
-        -----------------------------------------------------
-        -----------------------------------------------------
-        THIS CODE IS FOR DEBUGGING ONLY
-        -----------------------------------------------------
-        -----------------------------------------------------
-
-        serv1 = Service("basicService1",
-                        """string hello
----
-string retval"""
-        )
-        serv2 = Service("basicService2")
-        msg1 = Message("basicMessage1")
-        msg2 = Message("basicMessage2")
-        msg3 = Message("basicMessage3")
-        c1 = Component("Comp0Def")
-        c1.addPub("pub0",msg1)
-        c1.addPub("pub1",msg2)
-        c1.addTimer("Timer0",Timer('TimerDef',1.0,False))
-        c1.addSub("sub0",msg1)
-        c1.addClient("client",serv1)
-        c1.addServer("server",serv1)
-        node1 = Node("sat0")
-        node1.addComponent("Comp0",c1)
-        node1.addComponent("Comp1",c1)
-        node2 = Node("sat1")
-        node2.addComponent("OtherComp",c1)
-        package1 = Package()
-        package1.addNode(node1.name,node1)
-        self.Model = Model()
-        self.Model.addPackage("mainPackage",package1)
-        self.Model.addMessage(msg1)
-        self.Model.addMessage(msg2)
-        self.Model.addMessage(msg3)
-        self.Model.addService(serv1)
-        self.Model.addService(serv2)
-        self.Model.components[c1.name] = c1
-        self.Model.nodes[node1.name] = node1
-        self.Model.nodes[node2.name] = node2
-
-        -----------------------------------------------------
-        -----------------------------------------------------
-        END DEBUGGING CODE
-        -----------------------------------------------------
-        -----------------------------------------------------
-        '''        
-
         self.master = master
 
         self.fileFormats = [
@@ -120,12 +72,54 @@ string retval"""
 
         self.Model = rosgen.ROS_Workspace()
 
-        self.objectDict = OrderedDict()
-        self.objectDict['service'] = ["green",("object","service")]
-        self.objectDict['message'] = ["blue",("object","message")]
-        self.objectDict['timer'] = ["gray",("object","timer")]
-        self.objectDict['component'] = ["red",("object","component")]
-        self.objectDict['node'] = ["cyan",("object","node")]
+        self.optionsDict = rosgen.OrderedDict()
+        self.paddingOptions = rosgen.PaddingOptions((10,10),(0,15))
+        self.fontOptions = rosgen.FontOptions()
+        self.optionsDict['service'] = rosgen.CanvasOptions(
+            self.paddingOptions,
+            self.fontOptions,
+            rosgen.DrawOptions(
+                color = "green",
+                minSize = (10,10),
+            ),
+            tags = ("object","service")
+        )
+        self.optionsDict['message'] = rosgen.CanvasOptions(
+            self.paddingOptions,
+            self.fontOptions,
+            rosgen.DrawOptions(
+                color = "blue",
+                minSize = (10,10),
+            ),
+            tags = ("object","message")
+        )
+        self.optionsDict['timer'] = rosgen.CanvasOptions(
+            self.paddingOptions,
+            self.fontOptions,
+            rosgen.DrawOptions(
+                color = "gray",
+                minSize = (10,10),
+            ),
+            tags = ("object","timer")
+        )
+        self.optionsDict['component'] = rosgen.CanvasOptions(
+            self.paddingOptions,
+            self.fontOptions,
+            rosgen.DrawOptions(
+                color = "red",
+                minSize = (10,10),
+            ),
+            tags = ("object","component")
+        )
+        self.optionsDict['node'] = rosgen.CanvasOptions(
+            self.paddingOptions,
+            self.fontOptions,
+            rosgen.DrawOptions(
+                color = "cyan",
+                minSize = (10,10),
+            ),
+            tags = ("object","node")
+        )
 
         self.editor = Editor(
             master = self.master,
@@ -134,7 +128,7 @@ string retval"""
             splitWidth = self.objectWidth,
             maxWidth = self.editorHeight * 2,
             maxHeight = self.editorHeight * 2,
-            editorDict = self.objectDict,
+            editorDict = self.optionsDict,
             model = self.Model
         )
 

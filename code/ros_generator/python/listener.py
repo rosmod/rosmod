@@ -5,8 +5,136 @@
 # Author: Pranav Srinivas Kumar
 # Date: 2014.12.16
 
+'''
+NEED TO:
+* create dictionaries for each type of drawing:
+** child of each object
+*** need to have: text location, color, connectFrom
+** type of each object
+* create dictionaries for each context menu?
+
+'''
+
+
 from ROSListener import ROSListener
 from collections import OrderedDict
+from Tkinter import * 
+import tkFileDialog
+import tkMessageBox
+
+class PaddingOptions():
+    def __init__(self, childOffset, childPadding):
+        self.childOffset = childOffset # (x,y) tuple
+        self.childPadding = childPadding # (x,y) tuple
+
+class FontOptions():
+    def __init__(self, height=10, width=8, fg="black",bg=""):
+        self.height = height
+        self.width = width
+        self.fg = fg
+        self.bg = bg
+
+class DrawOptions():
+    def __init__(self, color, minSize, textPosition="TOP", image=None, drawChildren=True, connectFrom=False):
+        self.color = color
+        self.minSize = minSize
+        self.image = image
+        self.textPosition = textPosition
+        self.drawChildren = drawChildren
+        self.connectFrom = connectFrom        
+
+class CanvasOptions():
+    def __init__(self, paddingOptions, fontOptions, drawOptions, tags=()):
+        self.paddingOptions = paddingOptions
+        self.fontOptions = fontOptions
+        self.drawOptions = drawOptions
+        self.tags = tags
+
+    def copy(self,canvasOptions):
+        self.paddingOptions = canvasOptions.paddingOptions
+        self.fontOptions = canvasOptions.fontOptions
+        self.drawOptions = canvasOptions.drawOptions
+        self.tags = canvasOptions.tags
+
+# Anything that can be drawn on a Tkinter canvas should inherit from this class 
+class CanvasObject(CanvasOptions):
+    def __init__(self, name = "", isObjRef = False, objRef = None):
+        self.maxChildNameLen = 0
+        self.connectionPoint = [-1,-1]
+        self.size = [0,0]
+        self.children = OrderedDict()
+        self.isObjRef = isObjRef
+        self.objRef = objRef
+        self.name = name
+
+    def setCanvasParams(self, canvas, position, canvasOptions):
+        CanvasOptions.copy(self,canvasOptions)
+        # these need to be provided
+        self.position = position
+        self.canvas = canvas
+        self.tags += (self.name,self)
+        
+    def buildChildList(self):
+        pass
+
+    def addChild(self, name, child):
+        if len(name) > self.maxChildNameLen:
+            self.maxChildNameLen = len(name)
+        numChildren = len(self.children)
+        offsetX = self.paddingOptions.childOffset[0] + self.paddingOptions.childOffset[0]
+        offsetY = numChildren * self.paddingOptions.childPadding[1] + self.paddingOptions.childOffset[1]
+        child.position = (self.position[0] + offsetX, self.position[1] + offsetY)
+        self.children[name] = child
+
+    def Draw(self):
+        self.size[0] = self.drawOptions.minSize[0]
+        self.size[1] = self.drawOptions.minSize[1]
+        if self.drawOptions.drawChildren == True:
+            self.size[0] += self.maxChildNameLen * self.fontOptions.width
+            self.size[1] += len(self.children) * self.paddingOptions.childPadding[1]
+        self.connectionPoint = [
+            self.position[0] + self.size[0],
+            self.position[1] + self.size[1]/2
+        ]
+        # need to take into account image here!
+        objectID = self.canvas.create_rectangle(
+            self.position[0], self.position[1], 
+            self.position[0] + self.size[0], self.position[1] + self.size[1], 
+            outline=self.drawOptions.color, fill=self.drawOptions.color, tags=self.tags,
+            activeoutline="black",
+            activewidth=3.0
+        )
+        # need to take into account text position here!
+        if self.drawOptions.textPosition == "TOP":
+            anchor = CENTER
+            textPos = (self.position[0] + self.size[0]/2, self.position[1] - self.fontOptions.height)
+        elif self.drawOptions.textPosition == "BOTTOM":
+            anchor = CENTER
+            textPos = (self.position[0] + self.size[0]/2, self.position[1] + self.size[1] + self.fontOptions.height)
+        elif self.drawOptions.textPosition == "RIGHT":
+            anchor = W
+            textPos = (self.connectionPoint[0] + 3, self.connectionPoint[1])
+        elif self.drawOptions.textPosition == "LEFT":
+            anchor = E
+            textPos = (self.position[0] - 3, self.connectionPoint[1])
+
+        textID = self.canvas.create_text(
+            textPos,
+            text=self.name,
+            state=DISABLED,
+            tags = self.tags,
+            anchor = anchor
+        )
+        if self.drawOptions.connectFrom == True and self.objRef.connectionPoint[0] > 0:
+            self.canvas.create_line(
+                self.position[0],self.position[1]+self.size[1]/2,
+                self.objRef.connectionPoint[0],self.objRef.connectionPoint[1],
+                arrow=FIRST
+            )
+        if self.drawOptions.drawChildren == True:
+            for name,child in self.children.iteritems():
+                child.Draw()
+        return self.size
 
 # ROS_Workspace class
 class ROS_Workspace:
@@ -81,9 +209,10 @@ class ROS_Package:
         
 
 # ROS Message class
-class ROS_Message:
+class ROS_Message(CanvasObject):
 
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of ROS Message
         self.name = ""
         # List of msg fields
@@ -101,9 +230,10 @@ class ROS_Message:
         return msg
 
 # ROS Service class
-class ROS_Service:
+class ROS_Service(CanvasObject):
 
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of ROS Service
         self.name = ""
         # List of request fields
@@ -140,9 +270,10 @@ class ROS_Service:
         return srv_str
 
 # ROS Component class
-class ROS_Component:
+class ROS_Component(CanvasObject):
     
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of the ROS component
         self.name = ""
         # List of provided services
@@ -161,6 +292,30 @@ class ROS_Component:
         self.publishers_dict = OrderedDict()
         self.subscribers_dict = OrderedDict()
         self.timers_dict = OrderedDict()
+        self.dicts = [
+            self.provided_services_dict,
+            self.required_services_dict,
+            self.publishers_dict,
+            self.subscribers_dict,
+            self.timers_dict
+        ]
+
+    def buildChildList(self):
+        for childDict in self.dicts:
+            for name, child in childDict.iteritems():
+                childObj = CanvasObject( name=name, isObjRef=True, objRef=child)
+                childObj.setCanvasParams(
+                    canvas = self.canvas,
+                    position = self.position,
+                    canvasOptions = CanvasOptions(
+                        self.paddingOptions,
+                        self.fontOptions,
+                        self.drawOptions,
+                        ('object','component',name)
+                    )
+                )
+                childObj.drawOptions = DrawOptions("black",(10,10),"RIGHT",connectFrom=True)
+                self.addChild(name,childObj)
 
     def __str__(self):
         comp = "\n        component " + self.name
@@ -187,27 +342,30 @@ class ROS_Component:
         return comp
 
 # ROS Publisher
-class ROS_Publisher:
+class ROS_Publisher(CanvasObject):
     
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of publisher port
         self.name = ""
         # Name of msg topic
         self.topic = ""
 
 # ROS Subscriber
-class ROS_Subscriber:
+class ROS_Subscriber(CanvasObject):
     
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of subscriber port
         self.name = ""
         # Name of msg topic
         self.topic = ""
 
 # ROS Timer
-class ROS_Timer:
+class ROS_Timer(CanvasObject):
     
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of timer
         self.name = ""
         # Period of timer
@@ -216,9 +374,10 @@ class ROS_Timer:
         self.period_unit = ""
 
 # ROS Node
-class ROS_Node:
+class ROS_Node(CanvasObject):
     
     def __init__(self):
+        CanvasObject.__init__(self)
         # Name of the ROS node
         self.name = ""
         # List of components
@@ -235,6 +394,22 @@ class ROS_Node:
             node += "\n            component<" + instance[0] + "> " + instance[1] + ";"
         node += "\n        }"
         return node
+
+    def buildChildList(self):
+        for name, compInst in self.component_instance_dict.iteritems():
+            childObj = CanvasObject( name=name, isObjRef=True, objRef=compInst)
+            childObj.setCanvasParams(
+                canvas = self.canvas,
+                position = self.position,
+                canvasOptions = CanvasOptions(
+                    self.paddingOptions,
+                    self.fontOptions,
+                    self.drawOptions,
+                    ('object','component',name)
+                )
+            )
+            childObj.drawOptions = DrawOptions("black",(10,10),"RIGHT",connectFrom=True)
+            self.addChild(name,childObj)
 
 class Listener(ROSListener):
 
