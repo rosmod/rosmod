@@ -6,12 +6,7 @@
 # Date: 2014.12.16
 
 '''
-* create dictionaries for each type of drawing:
-** child of each object
-*** need to have: text location, color, connectFrom
-** type of each object
 * create dictionaries for each context menu?
-
 '''
 
 
