@@ -6,7 +6,6 @@
 # Date: 2014.12.16
 
 '''
-NEED TO:
 * create dictionaries for each type of drawing:
 ** child of each object
 *** need to have: text location, color, connectFrom
@@ -23,7 +22,7 @@ import tkFileDialog
 import tkMessageBox
 
 class PaddingOptions():
-    def __init__(self, childOffset, childPadding):
+    def __init__(self, childOffset = (5,10), childPadding=(0,15)):
         self.childOffset = childOffset # (x,y) tuple
         self.childPadding = childPadding # (x,y) tuple
 
@@ -89,9 +88,9 @@ class CanvasObject(CanvasOptions):
     def Draw(self):
         self.size[0] = self.drawOptions.minSize[0]
         self.size[1] = self.drawOptions.minSize[1]
-        if self.drawOptions.drawChildren == True:
-            self.size[0] += self.maxChildNameLen * self.fontOptions.width
-            self.size[1] += len(self.children) * self.paddingOptions.childPadding[1]
+        if self.drawOptions.drawChildren == True and len(self.children) > 0:
+            self.size[0] += self.maxChildNameLen * self.fontOptions.width + self.paddingOptions.childOffset[0] * 2
+            self.size[1] += len(self.children) * self.paddingOptions.childPadding[1] + self.paddingOptions.childOffset[1]
         self.connectionPoint = [
             self.position[0] + self.size[0],
             self.position[1] + self.size[1]/2

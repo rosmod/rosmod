@@ -73,7 +73,7 @@ class App:
         self.Model = rosgen.ROS_Workspace()
 
         self.optionsDict = rosgen.OrderedDict()
-        self.paddingOptions = rosgen.PaddingOptions((10,10),(0,15))
+        self.paddingOptions = rosgen.PaddingOptions((5,10),(0,15))
         self.fontOptions = rosgen.FontOptions()
         self.optionsDict['service'] = rosgen.CanvasOptions(
             self.paddingOptions,
