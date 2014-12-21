@@ -202,7 +202,7 @@ $ rosgen <filename>.rosml
 
 * This will generate a ROS workspace is the same directory as the model file:
 
-![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/screenshots/rosgen.png?raw=true "ROS Workspace Generator")
+![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/screenshots/rosgen.png?raw=true "ROS Workspace Generator")
 
 Component Skeleton
 ------------------
