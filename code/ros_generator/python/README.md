@@ -220,7 +220,7 @@ Business Logic
 
 **After filling out all the callback functions, run "catkin_make" to build all ROS packages in the workspace.**
 
-![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/screenshots/rosgen_2.png?raw=true "ROS Workspace Generator") 
+![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/screenshots/rosgen_2.png?raw=true "catkin_make") 
 
 **If the build is successful, run the ROS node**
 
