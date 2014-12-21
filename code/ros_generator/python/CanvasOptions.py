@@ -104,7 +104,7 @@ class CanvasObject(CanvasOptions):
             textPos,
             text=self.name,
             state=DISABLED,
-            tags = self.tags,
+            tags = "text",
             anchor = anchor
         )
         if self.drawOptions.connectFrom == True and  self.objRef != None and self.objRef.connectionPoint[0] > 0:

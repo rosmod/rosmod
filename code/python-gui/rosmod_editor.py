@@ -41,7 +41,7 @@ class EditorFrame(Frame):
             0, 0, 
             self.maxWidth, self.maxHeight, 
             outline="light gray", fill="light gray", 
-            tags="canvas"
+            tags=("object","canvas")
         )
 
         self.contextMenu = MenuPopup(self.canvas,contextDict)
@@ -65,9 +65,9 @@ class EditorFrame(Frame):
             0, 0, 
             self.maxWidth, self.maxHeight, 
             outline="light gray", fill="light gray", 
-            tags="canvas"
+            tags=("object","canvas")
         )
-        self.canvas.tag_bind("canvas","<Button-3>", self.contextMenu.popupCallback)
+        self.canvas.tag_bind("object","<Button-3>", self.contextMenu.popupCallback)
 
     def _button1_callback(self,event):
         closeAllContextMenus()
@@ -96,38 +96,44 @@ class EditorFrame(Frame):
         
 class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, optionsDict=None, model=None,contextDict=None):
-        if contextDict==None:
-            contextDict=OrderedDict()
-            contextDict['Add Service'] = self.ContextAddService
-            contextDict['Add Message'] = self.ContextAddMessage
-            contextDict['Add Component'] = self.ContextAddComponent
-            contextDict['Add Node'] = self.ContextAddNode
 
-        EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,contextDict)
+        self.editorContextDict = OrderedDict()
+        self.canvasContextDict=OrderedDict()
+        self.canvasContextDict['Add Service'] = self.ContextAddService
+        self.canvasContextDict['Add Message'] = self.ContextAddMessage
+        self.canvasContextDict['Add Component'] = self.ContextAddComponent
+        self.canvasContextDict['Add Node'] = self.ContextAddNode
 
-        self.editorObjectContextDict = OrderedDict()
         self.srvContextDict = OrderedDict()
         self.msgContextDict = OrderedDict()
         self.tmrContextDict = OrderedDict()
         self.compContextDict = OrderedDict()
         self.nodeContextDict = OrderedDict()
-        self.editorObjectContextDict['service'] = self.srvContextDict
-        self.editorObjectContextDict['message'] = self.msgContextDict
-        self.editorObjectContextDict['timer'] = self.tmrContextDict
-        self.editorObjectContextDict['component'] = self.compContextDict
-        self.editorObjectContextDict['node'] = self.nodeContextDict
+        self.editorContextDict['canvas'] = self.canvasContextDict
+        self.editorContextDict['service'] = self.srvContextDict
+        self.editorContextDict['message'] = self.msgContextDict
+        self.editorContextDict['timer'] = self.tmrContextDict
+        self.editorContextDict['component'] = self.compContextDict
+        self.editorContextDict['node'] = self.nodeContextDict
+
         self.compContextDict['Edit Component'] = self.ContextEdit
+
         self.srvContextDict['Edit Service'] = self.ContextEdit
+
         self.msgContextDict['Edit Message'] = self.ContextEdit
+
         self.tmrContextDict['Edit Timer'] = self.ContextEdit
+
         self.nodeContextDict['Edit Node'] = self.ContextEdit
+
+        EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
 
         self.model=model
         self.optionsDict = optionsDict
 
         self.var = StringVar()
-        self.var.trace("w", self.OnTextUpdate)
-        self.activeObject=None
+        self.activeObject=[]
+        self.contextMenu.objVar = self.activeObject
         self.entry=None
 
     def clear(self):
@@ -154,11 +160,7 @@ class ModelViewer(EditorFrame):
         print "Popup dialog for adding node"
 
     def ContextEdit(self):
-        print "Editing active object {0}".format(self.var.get())
-
-    def OnTextUpdate(self,*args):
-        if self.activeObject != None:
-            self.activeObject[0][self.activeObject[1]] = self.var.get()
+        print "Editing active object {0}".format(self.activeObject)
 
     def OnObjectLeftClick(self, event):
         self.focus_set()
@@ -169,36 +171,10 @@ class ModelViewer(EditorFrame):
         )[0]
         tags = self.canvas.gettags(selectedObject)
 
-    def createAndAddChildren(self, objName, objDict, dispMapKey, initX, ypos, isOnCanvas=True):
-        for childName, child in objDict.iteritems():
-            objRef = child
-            if isOnCanvas == True:
-                objRef = self.objects[child.name]
-            self.objects[childName] = EditorObject(
-                self.canvas,
-                childName,
-                objRef,
-                (10,10),
-                (0,15),
-                (initX,ypos),
-                self.optionsDict[dispMapKey][0],
-                contextFunctionDict=self.editorObjectContextDict[dispMapKey],
-                connectFromObject=isOnCanvas
-            )
-            childName.contextMenu.objVar = self.var
-            childName.contextMenu.objVarValue = childName
-            obj.addChild(childName,self.objects[childName])
-
     def drawObjectsFromDict(self, dictKey, drawDict, initX, initY, padY):
         ypos = initY
         maxX = 0
         for name,object in drawDict.iteritems():
-            object.contextMenu = MenuPopup(
-                master = self.canvas,
-                functions = self.editorObjectContextDict[dictKey],
-                objVar = self.var,
-                objVarValue = name
-            )
             object.setCanvasParams(
                 canvas = self.canvas,
                 position = (initX,ypos),
@@ -244,11 +220,12 @@ class ModelViewer(EditorFrame):
 class PackageViewer(EditorFrame):
     def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand,contextDict=None):
     
-        if contextDict==None:
-            contextDict=OrderedDict()
-            contextDict['Add Package'] = self.ContextAddPackage
+        self.editorContextDict = OrderedDict()
+        self.canvasContextDict=OrderedDict()
+        self.canvasContextDict['Add Package'] = self.ContextAddPackage
+        self.editorContextDict['canvas'] = self.canvasContextDict
 
-        EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,contextDict)
+        EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
         self.padX = 5
         self.padY = 25
         self.buttons = []

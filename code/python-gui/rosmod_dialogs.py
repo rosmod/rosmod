@@ -21,27 +21,35 @@ def registerContextMenu(menu):
 
 # USED FOR RIGHT CLICK MENU FOR OBJECTS (deletion, addition, etc)
 class MenuPopup():
-    def __init__(self,master,functions=None,objVar=None,objVarValue=None):
+    def __init__(self,master,functionsDict=None,objVar=None,objVarValue=None):
         self.master = master
         self.contextMenu = Menu(self.master, tearoff=0)
         self.objVar = objVar
         self.objVarValue = objVarValue
-        self.functions = functions
+        self.functionsDict = functionsDict
+        self.numCommands = 0
         
-        if self.functions != None:
-            for name,callback in self.functions.iteritems():
-                self.contextMenu.add_command(label=name, command=callback)
-
     def destroy(self):
         self.contextMenu.destroy()
 
     def popupCallback(self,event):
         objID = self.master.find_closest(event.x, event.y)[0]
-        print self.master.gettags(objID)
+        objTags = self.master.gettags(objID)
+        if objTags[0] == "text":
+            objID = self.master.find_overlapping(event.x,event.y,event.x+1,event.y+1)
+            objTags = self.master.gettags(objID[1]) # 0 is canvas, 2 is the text we just had
         closeAllContextMenus()
         registerContextMenu(self.contextMenu)
-        if self.objVar != None and self.objVarValue != None:
-            self.objVar.set(self.objVarValue)
+        self.contextMenu.delete(0,self.numCommands)
+        self.functions = self.functionsDict[objTags[1]]
+        if self.functions != None:
+            for name,callback in self.functions.iteritems():
+                self.contextMenu.add_command(label=name, command=callback)
+            self.numCommands = len(self.functions)
+        print objTags
+        if objTags[1] != "canvas":
+            self.objVar.append(objTags[3])
+
         self.contextMenu.post(event.x_root,event.y_root)
 
 class TextPopup():
