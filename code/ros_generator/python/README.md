@@ -202,25 +202,25 @@ $ rosgen <filename>.rosml
 
 * This will generate a ROS workspace is the same directory as the model file:
 
-![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/screenshots/rosgen.png?raw=true "ROS Workspace Generator")
+![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/screenshots/rosgen.png?raw=true "Generation")
 
 Component Skeleton
 ------------------
 
 **For each component in the model, a skeleton is generated. This is the skeleton for Component_2:**
 
-![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/screenshots/skeleton.png?raw=true "ROS Workspace Generator")
+![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/screenshots/skeleton.png?raw=true "Skeleton")
 
 Business Logic
 --------------
 
 **It is the developer's responsibility to add "business logic" to the generated callback functions. For Component_2, the following is a sample business logic for the skeleton functions:**
 
-![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/screenshots/skeleton_2.png?raw=true "ROS Workspace Generator")
+![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/screenshots/skeleton_2.png?raw=true "Business Logic")
 
 **After filling out all the callback functions, run "catkin_make" to build all ROS packages in the workspace.**
 
-![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/screenshots/rosgen_2.png?raw=true "catkin_make") 
+![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/screenshots/rosgen_2.png?raw=true "catkin_make") 
 
 **If the build is successful, run the ROS node**
 
@@ -240,7 +240,7 @@ This example workspace (with business logic) can be found at:
 
 https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/tests/sample_1/After_Business_Logic/ROS_Workspace
 
-![Alt text](https://github.com/finger563/rosmod/tree/master/code/ros_generator/python/tests/sample_1/screenshot.png?raw=true "ROS Workspace Generator") 
+![Alt text](https://github.com/finger563/rosmod/blob/master/code/ros_generator/python/tests/sample_1/screenshot.png?raw=true "ROS Workspace Generator") 
 
 Quick Start Guide
 =================
