@@ -133,7 +133,7 @@ class ModelViewer(EditorFrame):
 
         self.var = StringVar()
         self.activeObject=[]
-        self.contextMenu.objVar = self.activeObject
+        self.contextMenu.setterFunc = self.SetActiveObject
         self.entry=None
 
     def clear(self):
@@ -146,6 +146,9 @@ class ModelViewer(EditorFrame):
         self.model = model
         self.clear()
         self.drawModel(initX,initY,padX,padY)
+
+    def SetActiveObject(self, object):
+        self.activeObject = object
 
     def ContextAddService(self):
         print "Popup dialog for adding service"
