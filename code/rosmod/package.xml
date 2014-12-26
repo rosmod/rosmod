@@ -1,0 +1,35 @@
+<package>
+  <name>rosmod</name>
+  <version>1.0.0</version>
+  <description>
+    The rosmod stack provides a component model for ROS. Model-based
+    design includes automated workspace generators and a front-end GUI.
+    The component model introduces a priority-based FIFO queue for
+    component-level interactions. 
+  </description>
+  <maintainer email="pkumar@isis.vanderbilt.edu">Pranav Srinivas Kumar</maintainer>
+  <maintainer email="emfinger@isis.vanderbilt.edu">William Emfinger</maintainer>
+  <license>BSD</license>
+
+  <url type="website">https://github.com/finger563/rosmod</url>
+  <author>William Emfinger</author>
+  <author>Pranav Srinivas Kumar</author>
+
+  <buildtool_depend version_gte="0.5.78">catkin</buildtool_depend>
+
+  <build_depend>boost</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>rostest</build_depend>
+  <build_depend>std_msgs</build_depend>
+
+  <run_depend>boost</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>rostest</run_depend>
+  <run_depend>std_msgs</run_depend>
+
+  <test_depend>rosnode</test_depend>
+</package>
