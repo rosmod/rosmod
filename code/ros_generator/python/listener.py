@@ -13,6 +13,8 @@
 from ROSListener import ROSListener
 from collections import OrderedDict
 
+import sys,os
+sys.path.append('../../python_gui/')
 from CanvasOptions import *
 
 canvasOptionsDict = OrderedDict()
@@ -329,12 +331,7 @@ class ROS_Node(CanvasObject):
             childObj.setCanvasParams(
                 canvas = self.canvas,
                 position = self.position,
-                canvasOptions = CanvasOptions(
-                    self.paddingOptions,
-                    self.fontOptions,
-                    self.drawOptions,
-                    ('object','component',name)
-                )
+                canvasOptions = canvasOptionsDict['component']
             )
             objDrawOptions = canvasOptionsDict['component'].drawOptions
             childObj.drawOptions = DrawOptions(

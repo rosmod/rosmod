@@ -117,14 +117,19 @@ class ModelViewer(EditorFrame):
         self.editorContextDict['node'] = self.nodeContextDict
 
         self.compContextDict['Edit Component'] = self.ContextEdit
+        self.compContextDict['Delete'] = self.ContextDelete
 
         self.srvContextDict['Edit Service'] = self.ContextEdit
+        self.srvContextDict['Delete'] = self.ContextDelete
 
         self.msgContextDict['Edit Message'] = self.ContextEdit
+        self.msgContextDict['Delete'] = self.ContextDelete
 
         self.tmrContextDict['Edit Timer'] = self.ContextEdit
+        self.tmrContextDict['Delete'] = self.ContextDelete
 
         self.nodeContextDict['Edit Node'] = self.ContextEdit
+        self.nodeContextDict['Delete'] = self.ContextDelete
 
         EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
 
@@ -132,7 +137,7 @@ class ModelViewer(EditorFrame):
         self.optionsDict = optionsDict
 
         self.var = StringVar()
-        self.activeObject=[]
+        self.activeObject=None
         self.contextMenu.setterFunc = self.SetActiveObject
         self.entry=None
 
@@ -162,8 +167,16 @@ class ModelViewer(EditorFrame):
     def ContextAddNode(self):
         print "Popup dialog for adding node"
 
+    def ContextDelete(self):
+        print "Deleting active object {0}".format(self.activeObject)
+        if self.activeObject.isObjRef == True:
+            print "Active object refers to object {0}".format(self.activeObject.objRef)
+
     def ContextEdit(self):
         print "Editing active object {0}".format(self.activeObject)
+        if self.activeObject.isObjRef == True:
+            print "Active object refers to object {0}".format(self.activeObject.objRef)
+        self.activeObject.edit()
 
     def OnObjectLeftClick(self, event):
         self.focus_set()

@@ -3,6 +3,7 @@ import tkFileDialog
 import tkMessageBox
 from collections import OrderedDict
 
+canvasObjectDict = OrderedDict()
 
 class PaddingOptions():
     def __init__(self, childOffset = (5,10), childPadding=(0,15)):
@@ -50,13 +51,18 @@ class CanvasObject(CanvasOptions):
         self.name = name
 
     def setCanvasParams(self, canvas, position, canvasOptions):
+        global canvasObjectDict
         CanvasOptions.copy(self,canvasOptions)
         # these need to be provided
         self.position = position
         self.canvas = canvas
-        self.tags += (self.name,self)
+        self.tags += (self.name,None)
+        canvasObjectDict[self.name] = self
         
     def buildChildList(self):
+        pass
+
+    def edit(self):
         pass
 
     def addChild(self, name, child):

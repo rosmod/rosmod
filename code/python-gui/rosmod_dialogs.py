@@ -8,6 +8,8 @@ import tkMessageBox
 
 from collections import OrderedDict
 
+from CanvasOptions import *
+
 activeMenus = []
 
 def closeAllContextMenus():
@@ -45,8 +47,8 @@ class MenuPopup():
             for name,callback in self.functions.iteritems():
                 self.contextMenu.add_command(label=name, command=callback)
             self.numCommands = len(self.functions)
-        if objTags[1] != "canvas":
-            self.setterFunc(objTags[3])
+        if objTags[1] != "canvas" and self.setterFunc != None:
+            self.setterFunc(canvasObjectDict[objTags[2]])
 
         self.contextMenu.post(event.x_root,event.y_root)
 
