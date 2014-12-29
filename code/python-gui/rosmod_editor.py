@@ -194,11 +194,12 @@ class ModelViewer(EditorFrame):
         self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddNode(self):
-        print "Popup dialog for adding node"
         newObj = rosgen.ROS_Node()
-        newObj.name = "dummyNode"
-        self.model.AddNode(newObj)
-        self.Update(self.model,self.initPos,self.padding)
+        d = EditorDialogPopup(parent=self.master,title="Enter Node Name")
+        if d.result != None:
+            newObj.name = d.result[0]
+            self.model.AddNode(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def ContextDelete(self):
         print "Deleting active object {0}".format(self.activeObject)
@@ -319,10 +320,12 @@ class PackageViewer(EditorFrame):
 
     def ContextAddPackage(self):
         newObj = rosgen.ROS_Package()
-        newObj.name = "dummyPackage"
-        self.model.AddPackage(newObj)
-        self.Update(self.model,self.buttonVar,self.buttonCommand)
-        self.buttonCommand()
+        d = EditorDialogPopup(parent=self.master,title="Enter Package Name")
+        if d.result != None:
+            newObj.name = d.result[0]
+            self.model.AddPackage(newObj)
+            self.Update(self.model,self.buttonVar,self.buttonCommand)
+            self.buttonCommand()
 
     def ContextDeletePackage(self):
         if self.buttonVar.get() != None and self.buttonVar.get() != "":

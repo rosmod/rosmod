@@ -16,55 +16,7 @@ from collections import OrderedDict
 import sys,os
 sys.path.append('../../python_gui/')
 from CanvasOptions import *
-
-canvasOptionsDict = OrderedDict()
-canvasPaddingOptions = PaddingOptions((5,10),(0,15))
-canvasFontOptions = FontOptions()
-canvasOptionsDict['service'] = CanvasOptions(
-    canvasPaddingOptions,
-    canvasFontOptions,
-    DrawOptions(
-        color = "green",
-        minSize = (10,10),
-    ),
-    tags = ("object","service")
-)
-canvasOptionsDict['message'] = CanvasOptions(
-    canvasPaddingOptions,
-    canvasFontOptions,
-    DrawOptions(
-        color = "blue",
-        minSize = (10,10),
-    ),
-    tags = ("object","message")
-)
-canvasOptionsDict['timer'] = CanvasOptions(
-    canvasPaddingOptions,
-    canvasFontOptions,
-    DrawOptions(
-        color = "gray",
-        minSize = (10,10),
-    ),
-    tags = ("object","timer")
-)
-canvasOptionsDict['component'] = CanvasOptions(
-    canvasPaddingOptions,
-    canvasFontOptions,
-    DrawOptions(
-        color = "red",
-        minSize = (10,10),
-    ),
-    tags = ("object","component")
-)
-canvasOptionsDict['node'] = CanvasOptions(
-    canvasPaddingOptions,
-    canvasFontOptions,
-    DrawOptions(
-        color = "cyan",
-        minSize = (10,10),
-    ),
-    tags = ("object","node")
-)
+from rosmod_dialogs import *
 
 # ROS_Workspace class
 class ROS_Workspace:
@@ -467,6 +419,8 @@ class ROS_Node(CanvasObject):
             self.addChild(name,childObj)
 
 class Listener(ROSListener):
+    def __init__(self):
+        self.workspace = ROS_Workspace()
 
     # Create a new workspace object
     def enterDefine_workspace(self, ctx):

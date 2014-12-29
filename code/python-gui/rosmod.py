@@ -70,7 +70,7 @@ class App:
         self.editorWidth = 800
         self.objectWidth = 100
 
-        self.Model = rosgen.ROS_Workspace()
+        self.Model = rosgen.Listener()
 
         self.optionsDict = rosgen.canvasOptionsDict
 
@@ -82,7 +82,7 @@ class App:
             maxWidth = self.editorHeight * 2,
             maxHeight = self.editorHeight * 2,
             editorDict = self.optionsDict,
-            model = self.Model
+            model = self.Model.workspace
         )
 
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)

@@ -5,12 +5,77 @@
 from Tkinter import *
 import tkFileDialog
 import tkMessageBox
+import tkSimpleDialog
 
 from collections import OrderedDict
 
 from CanvasOptions import *
 
 activeMenus = []
+
+editorDialogsDict = OrderedDict()
+nameDialogDict = OrderedDict()
+nodeDialogDict = OrderedDict()
+compDialogDict = OrderedDict()
+msgDialogDict = OrderedDict()
+srvDialogDict = OrderedDict()
+tmrDialogDict = OrderedDict()
+editorDialogsDict['name'] = nameDialogDict
+editorDialogsDict['node'] = nodeDialogDict
+editorDialogsDict['component'] = compDialogDict
+editorDialogsDict['message'] = msgDialogDict
+editorDialogsDict['service'] = srvDialogDict
+editorDialogsDict['timer'] = tmrDialogDict
+
+canvasOptionsDict = OrderedDict()
+canvasPaddingOptions = PaddingOptions((5,10),(0,15))
+canvasFontOptions = FontOptions()
+canvasOptionsDict['service'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "green",
+        minSize = (10,10),
+    ),
+    tags = ("object","service")
+)
+canvasOptionsDict['message'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "blue",
+        minSize = (10,10),
+    ),
+    tags = ("object","message")
+)
+canvasOptionsDict['timer'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "gray",
+        minSize = (10,10),
+    ),
+    tags = ("object","timer")
+)
+canvasOptionsDict['component'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "red",
+        minSize = (10,10),
+    ),
+    tags = ("object","component")
+)
+canvasOptionsDict['node'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "cyan",
+        minSize = (10,10),
+    ),
+    tags = ("object","node")
+)
+
 
 def closeAllContextMenus():
     global activeMenus
@@ -51,6 +116,25 @@ class MenuPopup():
             self.setterFunc(canvasObjectDict[objTags[2]])
 
         self.contextMenu.post(event.x_root,event.y_root)
+
+class EditorDialogPopup(tkSimpleDialog.Dialog):
+    def body(self,master):
+        self.entries = []
+
+        Label(master, text="First:").grid(row=0)
+        Label(master, text="Second:").grid(row=1)
+
+        self.e1 = Entry(master)
+        self.e2 = Entry(master)
+        
+        self.e1.grid(row=0,column=1)
+        self.e2.grid(row=1,column=1)
+        return self.e1 # initial focus
+
+    def apply(self):
+        first = self.e1.get()
+        second = self.e2.get()
+        self.result = first, second
 
 class TextPopup():
     def __init__(self, master,objName,objTextVar,width,height):
