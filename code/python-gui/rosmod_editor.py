@@ -10,6 +10,11 @@ from collections import OrderedDict
 
 from rosmod_dialogs import *
 
+import sys
+import os
+sys.path.append('../ros_generator/python/')
+import rosgen as rosgen
+
 class EditorFrame(Frame):
     def __init__(self, master, label, height, width, maxHeight, maxWidth,contextDict):
         Frame.__init__(self,master)
@@ -136,6 +141,11 @@ class ModelViewer(EditorFrame):
         self.model=model
         self.optionsDict = optionsDict
 
+        self.initX = 10
+        self.initY = 10
+        self.padX = 10
+        self.padY = 10
+
         self.var = StringVar()
         self.activeObject=None
         self.contextMenu.setterFunc = self.SetActiveObject
@@ -148,35 +158,57 @@ class ModelViewer(EditorFrame):
         EditorFrame.Update(self)
 
     def Update(self, model,initX,initY, padX,padY):
+        self.initX = initX
+        self.initY = initY
+        self.padX = padX
+        self.padY = padY
         self.model = model
         self.clear()
-        self.drawModel(initX,initY,padX,padY)
+        self.drawModel(self.initX,self.initY,self.padX,self.padY)
 
     def SetActiveObject(self, object):
         self.activeObject = object
 
     def ContextAddService(self):
         print "Popup dialog for adding service"
+        newObj = rosgen.ROS_Service()
+        newObj.name = "dummyService"
+        self.model.AddService(newObj)
+        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def ContextAddMessage(self):
         print "Popup dialog for adding message"
+        newObj = rosgen.ROS_Message()
+        newObj.name = "dummyMessage"
+        self.model.AddMessage(newObj)
+        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def ContextAddComponent(self):
         print "Popup dialog for adding component"
+        newObj = rosgen.ROS_Component()
+        newObj.name = "dummyComponent"
+        self.model.AddComponent(newObj)
+        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def ContextAddNode(self):
         print "Popup dialog for adding node"
+        newObj = rosgen.ROS_Node()
+        newObj.name = "dummyNode"
+        self.model.AddNode(newObj)
+        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def ContextDelete(self):
         print "Deleting active object {0}".format(self.activeObject)
         if self.activeObject.isObjRef == True:
             print "Active object refers to object {0}".format(self.activeObject.objRef)
+        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def ContextEdit(self):
         print "Editing active object {0}".format(self.activeObject)
         if self.activeObject.isObjRef == True:
             print "Active object refers to object {0}".format(self.activeObject.objRef)
         self.activeObject.edit()
+        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def OnObjectLeftClick(self, event):
         self.focus_set()
@@ -205,36 +237,40 @@ class ModelViewer(EditorFrame):
         return (maxX,maxY)
 
     def drawModel(self, initX,initY, padX, padY):
+        self.initX = initX
+        self.initY = initY
+        self.padX = padX
+        self.padY = padY
         #column 1
         xpos,ypos = self.drawObjectsFromDict(
             'service',
             self.model.srv_dict,
-            initX,initY,
-            padY
+            self.initX,self.initY,
+            self.padY
         )
         xpos2,ypos = self.drawObjectsFromDict(
             'message',
             self.model.msg_dict,
-            initX,ypos,
-            padY
+            self.initX,ypos,
+            self.padY
         )
         #column 2
         xpos,ypos = self.drawObjectsFromDict(
             'component',
             self.model.component_definition_dict,
-            xpos + padX,initY,
-            padY
+            xpos + self.padX,self.initY,
+            self.padY
         )
         #column 3
         xpos,ypos = self.drawObjectsFromDict(
             'node',
             self.model.nodes_dict,
-            xpos+padX,initY,
-            padY
+            xpos+self.padX,self.initY,
+            self.padY
         )
 
 class PackageViewer(EditorFrame):
-    def __init__(self, master, height, width, maxHeight, maxWidth, packageDict, buttonVar, buttonCommand,contextDict=None):
+    def __init__(self, master, height, width, maxHeight, maxWidth, model, buttonVar, buttonCommand,contextDict=None):
     
         self.editorContextDict = OrderedDict()
         self.canvasContextDict=OrderedDict()
@@ -245,25 +281,35 @@ class PackageViewer(EditorFrame):
         self.padX = 5
         self.padY = 25
         self.buttons = []
-        self.Update(packageDict,buttonVar,buttonCommand)
+        self.model = model
+        self.buttonVar = buttonVar
+        self.buttonCommand = buttonCommand
+        self.Update(self.model,self.buttonVar,self.buttonCommand)
 
     def ContextAddPackage(self):
         print "Popup dialog for adding package"
+        newObj = rosgen.ROS_Package()
+        newObj.name = "dummyPackage"
+        self.model.AddPackage(newObj)
+        self.Update(self.model,self.buttonVar,self.buttonCommand)
 
-    def Update(self,packageDict,buttonVar,buttonCommand):
+    def Update(self,model,buttonVar,buttonCommand):
+        self.model = model
+        self.buttonVar = buttonVar
+        self.buttonCommand = buttonCommand
         for button in self.buttons:
             self.canvas.delete(button[0])
             button[1].destroy()
         self.buttons=[]
         ypos = 5
-        for name,package in packageDict.iteritems():
+        for name,package in self.model.packages_dict.iteritems():
             newButton = Radiobutton(
                 self.canvas, 
                 text = name, 
-                variable=buttonVar, 
+                variable=self.buttonVar, 
                 value=name, 
                 indicatoron=0, 
-                command = buttonCommand
+                command = self.buttonCommand
             )
             self.buttons.append(
                 [self.canvas.create_window((self.padX,ypos),window=newButton,anchor=NW),
@@ -305,7 +351,7 @@ class Editor():
             width = self.splitWidth,
             maxHeight = self.maxHeight,
             maxWidth = self.maxWidth,
-            packageDict=self.model.packages_dict,
+            model=self.model,
             buttonVar = self.selectedPackageVar,
             buttonCommand = self.OnPackageSelected
         )
@@ -317,7 +363,7 @@ class Editor():
         self.model=model
         self.modelViewer.clear()
         self.packageViewer.Update(
-            packageDict=self.model.packages_dict,
+            model=self.model,
             buttonVar = self.selectedPackageVar,
             buttonCommand = self.OnPackageSelected
         )

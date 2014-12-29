@@ -77,6 +77,13 @@ class ROS_Workspace:
         # Useful Dictionaries
         self.packages_dict = OrderedDict()
 
+    def AddPackage(self,package):
+        self.packages.append(package)
+        self.packages_dict[package.name] = package
+    def DeletePackage(self,name):
+        del self.packages_dict[name]
+        self.packages[:] = [pack for pack in self.packages if pack.name != name]
+
     def __str__(self):
         workspace = "workspace " + self.name + ";"
         if len(self.packages) > 0:
@@ -107,6 +114,34 @@ class ROS_Package:
         self.srv_dict = OrderedDict()
         self.component_definition_dict = OrderedDict()
         self.nodes_dict = OrderedDict()
+
+    def AddMessage(self,message):
+        self.messages.append(message)
+        self.msg_dict[message.name] = message
+    def DeleteMessage(self,name):
+        del self.msg_dict[name]
+        self.messages[:] = [msg for msg in self.messages if msg.name != name]
+
+    def AddService(self,service):
+        self.services.append(service)
+        self.srv_dict[service.name] = service
+    def DeleteService(self,name):
+        del self.srv_dict[name]
+        self.services[:] = [srv for srv in self.services if srv.name != name]
+
+    def AddComponent(self,component):
+        self.components.append(component)
+        self.component_definition_dict[component.name] = component
+    def DeleteComponent(self,name):
+        del self.component_definition_dict[name]
+        self.components[:] = [comp for comp in self.components if comp.name != name]
+
+    def AddNode(self,node):
+        self.nodes.append(node)
+        self.nodes_dict[node.name] = node
+    def DeleteNode(self,name):
+        del self.nodes_dict[name]
+        self.nodes[:] = [node for node in self.nodes if node.name != name]
 
     def __str__(self):
         package = ""
