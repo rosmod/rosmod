@@ -78,10 +78,12 @@ class ROS_Workspace:
         self.packages_dict = OrderedDict()
 
     def AddPackage(self,package):
+        self.DeletePackage(package.name)
         self.packages.append(package)
         self.packages_dict[package.name] = package
     def DeletePackage(self,name):
-        del self.packages_dict[name]
+        if name in self.packages_dict:
+            del self.packages_dict[name]
         self.packages[:] = [pack for pack in self.packages if pack.name != name]
 
     def __str__(self):
@@ -116,31 +118,39 @@ class ROS_Package:
         self.nodes_dict = OrderedDict()
 
     def AddMessage(self,message):
+        self.DeleteMessage(message.name)
         self.messages.append(message)
         self.msg_dict[message.name] = message
     def DeleteMessage(self,name):
-        del self.msg_dict[name]
+        if name in self.msg_dict:
+            del self.msg_dict[name]
         self.messages[:] = [msg for msg in self.messages if msg.name != name]
 
     def AddService(self,service):
+        self.DeleteService(service.name)
         self.services.append(service)
         self.srv_dict[service.name] = service
     def DeleteService(self,name):
-        del self.srv_dict[name]
+        if name in self.srv_dict:
+            del self.srv_dict[name]
         self.services[:] = [srv for srv in self.services if srv.name != name]
 
     def AddComponent(self,component):
+        self.DeleteComponent(component.name)
         self.components.append(component)
         self.component_definition_dict[component.name] = component
     def DeleteComponent(self,name):
-        del self.component_definition_dict[name]
+        if name in self.component_definition_dict:
+            del self.component_definition_dict[name]
         self.components[:] = [comp for comp in self.components if comp.name != name]
 
     def AddNode(self,node):
+        self.DeleteNode(node.name)
         self.nodes.append(node)
         self.nodes_dict[node.name] = node
     def DeleteNode(self,name):
-        del self.nodes_dict[name]
+        if name in self.nodes_dict:
+            del self.nodes_dict[name]
         self.nodes[:] = [node for node in self.nodes if node.name != name]
 
     def __str__(self):

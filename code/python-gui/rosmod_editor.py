@@ -164,7 +164,8 @@ class ModelViewer(EditorFrame):
         self.padY = padY
         self.model = model
         self.clear()
-        self.drawModel(self.initX,self.initY,self.padX,self.padY)
+        if self.model != None:
+            self.drawModel(self.initX,self.initY,self.padX,self.padY)
 
     def SetActiveObject(self, object):
         self.activeObject = object
@@ -274,7 +275,8 @@ class PackageViewer(EditorFrame):
     
         self.editorContextDict = OrderedDict()
         self.canvasContextDict=OrderedDict()
-        self.canvasContextDict['Add Package'] = self.ContextAddPackage
+        self.canvasContextDict['Add New Package'] = self.ContextAddPackage
+        self.canvasContextDict['Delete Selected Package'] = self.ContextDeletePackage
         self.editorContextDict['canvas'] = self.canvasContextDict
 
         EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
@@ -287,15 +289,24 @@ class PackageViewer(EditorFrame):
         self.Update(self.model,self.buttonVar,self.buttonCommand)
 
     def ContextAddPackage(self):
-        print "Popup dialog for adding package"
         newObj = rosgen.ROS_Package()
         newObj.name = "dummyPackage"
         self.model.AddPackage(newObj)
         self.Update(self.model,self.buttonVar,self.buttonCommand)
+        self.buttonCommand()
+
+    def ContextDeletePackage(self):
+        if self.buttonVar.get() != None and self.buttonVar.get() != "":
+            print "removing {0}".format(self.buttonVar.get())
+            self.model.DeletePackage(self.buttonVar.get())
+        self.buttonVar.set("")
+        self.Update(self.model,self.buttonVar,self.buttonCommand)
+        self.buttonCommand()
 
     def Update(self,model,buttonVar,buttonCommand):
         self.model = model
         self.buttonVar = buttonVar
+        self.buttonVar.set("")
         self.buttonCommand = buttonCommand
         for button in self.buttons:
             self.canvas.delete(button[0])
@@ -370,8 +381,11 @@ class Editor():
 
     def OnPackageSelected(self):
         print "You've selected {0}".format(self.selectedPackageVar.get())
+        newModel = None
+        if self.selectedPackageVar.get() != None and self.selectedPackageVar.get() != '':
+            newModel = self.model.packages_dict[self.selectedPackageVar.get()]
         self.modelViewer.Update(
-            self.model.packages_dict[self.selectedPackageVar.get()],
+            newModel,
             initX=50,initY=50,padX=100,padY=20
         )
         
