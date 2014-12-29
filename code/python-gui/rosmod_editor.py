@@ -208,7 +208,9 @@ class ModelViewer(EditorFrame):
         print "Editing active object {0}".format(self.activeObject)
         if self.activeObject.isObjRef == True:
             print "Active object refers to object {0}".format(self.activeObject.objRef)
-        self.activeObject.edit()
+            self.activeObject.objRef.Edit()
+        else:
+            self.activeObject.Edit()
         self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
 
     def OnObjectLeftClick(self, event):

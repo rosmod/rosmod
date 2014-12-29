@@ -117,6 +117,9 @@ class ROS_Package:
         self.component_definition_dict = OrderedDict()
         self.nodes_dict = OrderedDict()
 
+    def Edit(self):
+        print "Popup window to input name"
+
     def AddMessage(self,message):
         self.DeleteMessage(message.name)
         self.messages.append(message)
@@ -193,6 +196,9 @@ class ROS_Message(CanvasObject):
         # List of msg fields
         self.fields = []
 
+    def Edit(self):
+        print "Popup window to edit name and add fields"
+
     def __str__(self):
         msg = "\n        msg " + self.name
         msg += "\n        {"
@@ -215,6 +221,9 @@ class ROS_Service(CanvasObject):
         self.request_fields = []
         # List of response fields
         self.response_fields = []
+
+    def Edit(self):
+        print "Popup window to edit name and add requests and responses"
         
     def __str__(self):
         srv_str = "\n        srv " + self.name
@@ -275,6 +284,25 @@ class ROS_Component(CanvasObject):
             ('timer',self.timers_dict)
         ]
 
+    def Edit(self):
+        print "popup window to edit name"
+
+    def AddTimer(self,timer):
+        self.DeleteTimer(timer.name)
+        pass
+    def DeleteTimer(self,name):
+        pass
+
+    def AddService(self,service,srv_type):
+        pass
+    def DeleteService(self,name,srv_type):
+        pass
+
+    def AddMessage(self,message,msg_type):
+        pass
+    def DeleteMessage(self,name,msg_type):
+        pass
+
     def buildChildList(self):
         for objType,childDict in self.dicts:
             for name, child in childDict.iteritems():
@@ -326,6 +354,9 @@ class ROS_Publisher(CanvasObject):
         # Name of msg topic
         self.topic = ""
 
+    def Edit(self):
+        print "Popup window to edit name and topic"
+
 # ROS Subscriber
 class ROS_Subscriber(CanvasObject):
     
@@ -335,6 +366,9 @@ class ROS_Subscriber(CanvasObject):
         self.name = ""
         # Name of msg topic
         self.topic = ""
+
+    def Edit(self):
+        print "Popup window to edit name and topic"
 
 # ROS Timer
 class ROS_Timer(CanvasObject):
@@ -347,6 +381,9 @@ class ROS_Timer(CanvasObject):
         self.period = "0.0"
         # Unit of timer period
         self.period_unit = ""
+
+    def Edit(self):
+        print "Popup window to edit name, period, and units"
 
 # ROS Node
 class ROS_Node(CanvasObject):
@@ -361,6 +398,14 @@ class ROS_Node(CanvasObject):
         self.comp_defs = []
         # Useful Dictionary
         self.component_instance_dict = OrderedDict()
+
+    def Edit(self):
+        print "Popup window to edit name"
+
+    def AddComponent(self,component):
+        pass
+    def DeleteComponent(self,name):
+        pass
 
     def __str__(self):
         node = "\n        node " + self.name

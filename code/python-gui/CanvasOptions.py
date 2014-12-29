@@ -62,7 +62,7 @@ class CanvasObject(CanvasOptions):
     def buildChildList(self):
         pass
 
-    def edit(self):
+    def Edit(self):
         pass
 
     def addChild(self, name, child):
