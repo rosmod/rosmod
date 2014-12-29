@@ -150,6 +150,10 @@ class ROS_Message(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name and add fields"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
+            
 
     def __str__(self):
         msg = "\n        msg " + self.name
@@ -176,6 +180,9 @@ class ROS_Service(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name and add requests and responses"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
         
     def __str__(self):
         srv_str = "\n        srv " + self.name
@@ -238,6 +245,9 @@ class ROS_Component(CanvasObject):
 
     def Edit(self):
         print "popup window to edit name"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
 
     def AddTimer(self,timer):
         self.DeleteTimer(timer.name)
@@ -338,6 +348,9 @@ class ROS_Publisher(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name and topic"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
 
 # ROS Subscriber
 class ROS_Subscriber(CanvasObject):
@@ -351,6 +364,9 @@ class ROS_Subscriber(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name and topic"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
 
 # ROS Timer
 class ROS_Timer(CanvasObject):
@@ -366,6 +382,9 @@ class ROS_Timer(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name, period, and units"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
 
 # ROS Node
 class ROS_Node(CanvasObject):
@@ -383,6 +402,9 @@ class ROS_Node(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name"
+        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        if d.result != None:
+            self.name = d.result[0]
 
     def AddComponent(self,component):
         self.DeleteComponent(component.name)

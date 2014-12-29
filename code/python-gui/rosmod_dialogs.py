@@ -76,10 +76,9 @@ canvasOptionsDict['node'] = CanvasOptions(
     tags = ("object","node")
 )
 
-badChars = ";,. `~[]{}:'\"/?\\<>*&^%$#@!()"
+badCharString = ";,. `~[]{}:'\"/?\\<>*&^%$#@!()"
 
-def badCharsInString(string):
-    global badChars
+def badCharsInString(string,badChars=badCharString):
     for char in badChars:
         if char in string:
             return True
@@ -143,12 +142,13 @@ class EditorDialogPopup(tkSimpleDialog.Dialog):
             if badCharsInString(val):
                 tkMessageBox.showwarning(
                     "Bad Input",
-                    "Input cannot contain\n{0}\n, try again.".format(badChars)
+                    "Input cannot contain\n{0}\n, try again.".format(badCharString)
                 )
                 return 0
         return 1
 
     def apply(self):
+        self.result= []
         for entry in self.entries:
             val = entry.get()
             self.result.append(val)
