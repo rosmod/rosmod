@@ -289,21 +289,51 @@ class ROS_Component(CanvasObject):
 
     def AddTimer(self,timer):
         self.DeleteTimer(timer.name)
-        pass
+        self.timers.append(timer)
+        self.timers_dict[timer.name] = timer
     def DeleteTimer(self,name):
-        pass
+        if name in self.timers_dict:
+            del self.timers_dict[name]
+        self.timers[:] = [tmr for tmr in self.timers if tmr.name != name]
 
     def AddService(self,service,srv_type):
-        pass
+        self.DeleteService(service.name,srv_type)
+        if srv_type == 'client':
+            self.required_services.append(service)
+            self.required_services_dict[service.name] = service
+        elif srv_type == 'server':
+            self.provided_services.append(service)
+            self.provided_services_dict[service.name] = service
     def DeleteService(self,name,srv_type):
-        pass
+        if srv_type == 'client':
+            if name in self.required_services_dict:
+                del self.required_services_dict[name]
+            self.required_services[:] = [srv for srv in self.required_services if srv.name != name]
+        elif srv_type == 'server':
+            if name in self.provided_services_dict:
+                del self.provided_services_dict[name]
+            self.provided_services[:] = [srv for srv in self.provided_services if srv.name != name]
 
     def AddMessage(self,message,msg_type):
-        pass
+        self.DeleteMessage(message.name,msg_type)
+        if msg_type == 'subscriber':
+            self.subscribers.append(message)
+            self.subscribers_dict[message.name] = message
+        elif msg_type == 'publisher':
+            self.publishers.append(message)
+            self.publishers_dict[message.name] = message
     def DeleteMessage(self,name,msg_type):
-        pass
+        if msg_type == 'subscriber':
+            if name in self.subscribers_dict:
+                del self.subscribers_dict[name]
+            self.subscribers[:] = [msg for msg in self.subscribers if msg.name != name]
+        elif msg_type == 'publisher':
+            if name in self.publishers_dict:
+                del self.publishers_dict[name]
+            self.publishers[:] = [msg for msg in self.publishers if msg.name != name]
 
     def buildChildList(self):
+        self.cleanChildren()
         for objType,childDict in self.dicts:
             for name, child in childDict.iteritems():
                 childObj = CanvasObject( name=name, isObjRef=True, objRef=child)
@@ -403,9 +433,13 @@ class ROS_Node(CanvasObject):
         print "Popup window to edit name"
 
     def AddComponent(self,component):
-        pass
+        self.DeleteComponent(component.name)
+        self.components.append(component)
+        self.component_definition_dict[component.name] = component
     def DeleteComponent(self,name):
-        pass
+        if name in self.component_instance_dict:
+            del self.component_instance_dict[name]
+        self.components[:] = [comp for comp in self.components if comp.name != name]
 
     def __str__(self):
         node = "\n        node " + self.name
@@ -416,6 +450,7 @@ class ROS_Node(CanvasObject):
         return node
 
     def buildChildList(self):
+        self.cleanChildren()
         for name, compInst in self.component_instance_dict.iteritems():
             childObj = CanvasObject( name=name, isObjRef=True, objRef=compInst)
             childObj.setCanvasParams(

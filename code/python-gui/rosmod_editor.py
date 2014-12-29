@@ -141,10 +141,8 @@ class ModelViewer(EditorFrame):
         self.model=model
         self.optionsDict = optionsDict
 
-        self.initX = 10
-        self.initY = 10
-        self.padX = 10
-        self.padY = 10
+        self.initPos = [10,10]
+        self.padding = [10,10]
 
         self.var = StringVar()
         self.activeObject=None
@@ -157,15 +155,13 @@ class ModelViewer(EditorFrame):
         self.entry = None
         EditorFrame.Update(self)
 
-    def Update(self, model,initX,initY, padX,padY):
-        self.initX = initX
-        self.initY = initY
-        self.padX = padX
-        self.padY = padY
+    def Update(self, model, initPos, padding):
         self.model = model
+        self.initPos = initPos
+        self.padding = padding
         self.clear()
         if self.model != None:
-            self.drawModel(self.initX,self.initY,self.padX,self.padY)
+            self.drawModel(self.initPos,self.padding)
 
     def SetActiveObject(self, object):
         self.activeObject = object
@@ -175,34 +171,34 @@ class ModelViewer(EditorFrame):
         newObj = rosgen.ROS_Service()
         newObj.name = "dummyService"
         self.model.AddService(newObj)
-        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
+        self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddMessage(self):
         print "Popup dialog for adding message"
         newObj = rosgen.ROS_Message()
         newObj.name = "dummyMessage"
         self.model.AddMessage(newObj)
-        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
+        self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddComponent(self):
         print "Popup dialog for adding component"
         newObj = rosgen.ROS_Component()
         newObj.name = "dummyComponent"
         self.model.AddComponent(newObj)
-        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
+        self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddNode(self):
         print "Popup dialog for adding node"
         newObj = rosgen.ROS_Node()
         newObj.name = "dummyNode"
         self.model.AddNode(newObj)
-        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
+        self.Update(self.model,self.initPos,self.padding)
 
     def ContextDelete(self):
         print "Deleting active object {0}".format(self.activeObject)
         if self.activeObject.isObjRef == True:
             print "Active object refers to object {0}".format(self.activeObject.objRef)
-        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
+        self.Update(self.model,self.initPos,self.padding)
 
     def ContextEdit(self):
         print "Editing active object {0}".format(self.activeObject)
@@ -211,7 +207,7 @@ class ModelViewer(EditorFrame):
             self.activeObject.objRef.Edit()
         else:
             self.activeObject.Edit()
-        self.Update(self.model,self.initX,self.initY,self.padX,self.padY)
+        self.Update(self.model,self.initPos,self.padding)
 
     def OnObjectLeftClick(self, event):
         self.focus_set()
@@ -239,37 +235,39 @@ class ModelViewer(EditorFrame):
         maxY = ypos
         return (maxX,maxY)
 
-    def drawModel(self, initX,initY, padX, padY):
-        self.initX = initX
-        self.initY = initY
-        self.padX = padX
-        self.padY = padY
+    def drawModel(self, initPos, padding):
+        self.initPos = initPos
+        self.padding = padding
+        initX = self.initPos[0]
+        initY = self.initPos[1]
+        padX = self.padding[0]
+        padY = self.padding[1]
         #column 1
         xpos,ypos = self.drawObjectsFromDict(
             'service',
             self.model.srv_dict,
-            self.initX,self.initY,
-            self.padY
+            initX,initY,
+            padY
         )
         xpos2,ypos = self.drawObjectsFromDict(
             'message',
             self.model.msg_dict,
-            self.initX,ypos,
-            self.padY
+            initX,ypos,
+            padY
         )
         #column 2
         xpos,ypos = self.drawObjectsFromDict(
             'component',
             self.model.component_definition_dict,
-            xpos + self.padX,self.initY,
-            self.padY
+            xpos + padX,initY,
+            padY
         )
         #column 3
         xpos,ypos = self.drawObjectsFromDict(
             'node',
             self.model.nodes_dict,
-            xpos+self.padX,self.initY,
-            self.padY
+            xpos+padX,initY,
+            padY
         )
 
 class PackageViewer(EditorFrame):
@@ -282,8 +280,7 @@ class PackageViewer(EditorFrame):
         self.editorContextDict['canvas'] = self.canvasContextDict
 
         EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
-        self.padX = 5
-        self.padY = 25
+        self.padding = [5,25]
         self.buttons = []
         self.model = model
         self.buttonVar = buttonVar
@@ -325,10 +322,10 @@ class PackageViewer(EditorFrame):
                 command = self.buttonCommand
             )
             self.buttons.append(
-                [self.canvas.create_window((self.padX,ypos),window=newButton,anchor=NW),
+                [self.canvas.create_window((self.padding[0],ypos),window=newButton,anchor=NW),
                  newButton]
             )
-            ypos += self.padY
+            ypos += self.padding[1]
 
 class Editor():
     def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
@@ -388,7 +385,8 @@ class Editor():
             newModel = self.model.packages_dict[self.selectedPackageVar.get()]
         self.modelViewer.Update(
             newModel,
-            initX=50,initY=50,padX=100,padY=20
+            initPos=[50,50],
+            padding=[100,20]
         )
         
         
