@@ -121,9 +121,6 @@ class ModelViewer(EditorFrame):
         self.editorContextDict['component'] = self.compContextDict
         self.editorContextDict['node'] = self.nodeContextDict
 
-        self.compContextDict['Edit Component'] = self.ContextEdit
-        self.compContextDict['Delete'] = self.ContextDelete
-
         self.srvContextDict['Edit Service'] = self.ContextEdit
         self.srvContextDict['Delete'] = self.ContextDelete
 
@@ -133,8 +130,17 @@ class ModelViewer(EditorFrame):
         self.tmrContextDict['Edit Timer'] = self.ContextEdit
         self.tmrContextDict['Delete'] = self.ContextDelete
 
+        self.compContextDict['Edit Component'] = self.ContextEdit
+        self.compContextDict['Delete'] = self.ContextDelete
+        self.compContextDict['Add Timer'] = self.CompAddTimer
+        self.compContextDict['Add Publisher'] = self.CompAddPub
+        self.compContextDict['Add Subscriber'] = self.CompAddSub
+        self.compContextDict['Add Client'] = self.CompAddClient
+        self.compContextDict['Add Server'] = self.CompAddServer
+
         self.nodeContextDict['Edit Node'] = self.ContextEdit
         self.nodeContextDict['Delete'] = self.ContextDelete
+        self.nodeContextDict['Add Component'] = self.NodeAddComp
 
         EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
 
@@ -207,6 +213,30 @@ class ModelViewer(EditorFrame):
             self.activeObject.objRef.Edit()
         else:
             self.activeObject.Edit()
+        self.Update(self.model,self.initPos,self.padding)
+
+    def CompAddServer(self):
+        print "popup for adding server to component {0}".format(self.activeObject)
+        self.Update(self.model,self.initPos,self.padding)
+
+    def CompAddClient(self):
+        print "popup for adding client to component {0}".format(self.activeObject)
+        self.Update(self.model,self.initPos,self.padding)
+
+    def CompAddSub(self):
+        print "popup for adding subscriber to component {0}".format(self.activeObject) 
+        self.Update(self.model,self.initPos,self.padding)   
+
+    def CompAddPub(self):
+        print "popup for adding publisher to component {0}".format(self.activeObject)
+        self.Update(self.model,self.initPos,self.padding)
+
+    def CompAddTimer(self):
+        print "popup for adding timer to component {0}".format(self.activeObject)
+        self.Update(self.model,self.initPos,self.padding)
+
+    def NodeAddComp(self):
+        print "popup for adding component to node {0}".format(self.activeObject)
         self.Update(self.model,self.initPos,self.padding)
 
     def OnObjectLeftClick(self, event):
