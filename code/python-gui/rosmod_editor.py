@@ -320,7 +320,7 @@ class PackageViewer(EditorFrame):
 
     def ContextAddPackage(self):
         newObj = rosgen.ROS_Package()
-        d = EditorDialogPopup(parent=self.master,title="Enter Package Name")
+        d = EditorDialogPopup(parent=self.master,title="New Package")
         if d.result != None:
             newObj.name = d.result[0]
             self.model.AddPackage(newObj)

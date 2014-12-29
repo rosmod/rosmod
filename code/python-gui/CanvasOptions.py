@@ -76,7 +76,6 @@ class CanvasObject(CanvasOptions):
         offsetY = numChildren * self.paddingOptions.childPadding[1] + self.paddingOptions.childOffset[1]
         child.position = (self.position[0] + offsetX, self.position[1] + offsetY)
         self.children[name] = child
-        print "name: {0}, pos: {1}".format(name,child.position)
 
     def Draw(self):
         self.size[0] = self.drawOptions.minSize[0]

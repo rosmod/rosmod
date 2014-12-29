@@ -76,6 +76,14 @@ canvasOptionsDict['node'] = CanvasOptions(
     tags = ("object","node")
 )
 
+badChars = ";,. `~[]{}:'\"/?\\<>*&^%$#@!()"
+
+def badCharsInString(string):
+    global badChars
+    for char in badChars:
+        if char in string:
+            return True
+    return False
 
 def closeAllContextMenus():
     global activeMenus
@@ -121,20 +129,29 @@ class EditorDialogPopup(tkSimpleDialog.Dialog):
     def body(self,master):
         self.entries = []
 
-        Label(master, text="First:").grid(row=0)
-        Label(master, text="Second:").grid(row=1)
+        Label(master, text="Name:").grid(row=0)
 
-        self.e1 = Entry(master)
-        self.e2 = Entry(master)
-        
-        self.e1.grid(row=0,column=1)
-        self.e2.grid(row=1,column=1)
-        return self.e1 # initial focus
+        entry1 = Entry(master)
+        self.entries.append(entry1)
+        self.entries[-1].grid(row=0,column=1)
+
+        return self.entries[0] # initial focus
+
+    def validate(self):
+        for entry in self.entries:
+            val = entry.get()
+            if badCharsInString(val):
+                tkMessageBox.showwarning(
+                    "Bad Input",
+                    "Input cannot contain\n{0}\n, try again.".format(badChars)
+                )
+                return 0
+        return 1
 
     def apply(self):
-        first = self.e1.get()
-        second = self.e2.get()
-        self.result = first, second
+        for entry in self.entries:
+            val = entry.get()
+            self.result.append(val)
 
 class TextPopup():
     def __init__(self, master,objName,objTextVar,width,height):
