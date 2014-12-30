@@ -11,6 +11,7 @@ These tools are used to facilitate the download and management of ROS packages a
 ```bash
     $ sudo apt-get install python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential
 ```
+
     If you have trouble installing the packages in the command above, make sure you have added the packages.ros.org debian repository to your apt source lists as described starting here: indigo/Installation/Ubuntu#indigo.2BAC8-Installation.2BAC8-Sources.Setup_your_sources.list
 
     If apt complains that the python-support package is not installable, make sure that you have the Ubuntu universe repositories enabled in your /etc/apt/sources.list
@@ -29,22 +30,28 @@ These tools are used to facilitate the download and management of ROS packages a
 
     If you are using a non-Debian system you need to make sure that you have all build tools (compiler, CMake, etc.) installed. You can install all ROS Python tools via PIP:
 
+
 ```bash
     $ sudo pip install -U rosdep rosinstall_generator wstool rosinstall
 ```
 
+
     If there are errors with this or the rosdep step below, your system's version of pip may be out-of-date. Use your system's package management to update it, or use it to update itself:
+
 
 ```bash
     $ sudo pip install --upgrade setuptools
 ```
 
+
 ## Initializing rosdep
+
 
 ```bash
 $ sudo rosdep init
 $ rosdep update
 ```
+
 
 # Installation
 
