@@ -77,6 +77,7 @@ Desktop Install (recommended): ROS, rqt, rviz, and robot-generic libraries
 ```bash
     $ rosinstall_generator desktop --rosdistro indigo --deps --wet-only --tar > indigo-desktop-wet.rosinstall
     $ wstool init -j8 src indigo-desktop-wet.rosinstall
+```
 
 ROS-Comm: (Bare Bones) ROS package, build, and communication libraries. No GUI tools.
 
