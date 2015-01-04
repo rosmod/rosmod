@@ -16,7 +16,8 @@ from collections import OrderedDict
 
 from rosmod_tools import *
 from rosmod_editor import *
-from rosmod_classes import *
+from rosmod_dialogs import *
+from CanvasOptions import *
 
 import sys
 import os
@@ -74,18 +75,22 @@ class App:
 
         self.optionsDict = rosgen.canvasOptionsDict
 
-        self.editor = Editor(
-            master = self.master,
-            height = self.editorHeight,
-            width = self.editorWidth,
-            splitWidth = self.objectWidth,
-            maxWidth = self.editorHeight * 2,
-            maxHeight = self.editorHeight * 2,
-            editorDict = self.optionsDict,
-            model = self.Model.workspace
-        )
-
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
+
+        self.editor = None
+
+    def init_Editor(self):
+        if self.editor == None:
+            self.editor = Editor(
+                master = self.master,
+                height = self.editorHeight,
+                width = self.editorWidth,
+                splitWidth = self.objectWidth,
+                maxWidth = self.editorHeight * 2,
+                maxHeight = self.editorHeight * 2,
+                editorDict = self.optionsDict,
+                model = self.Model.workspace
+            )
 
     '''
     -------------
@@ -114,14 +119,19 @@ class App:
             file.close()
             self.Model = rosgen.parse_model(self.fileName)
             self.model_path = os.path.abspath(os.path.dirname(self.fileName))
+            self.init_Editor()
             self.editor.reset(self.Model.workspace)
 
     def menubar_New_Callback(self):
         self.statusBar.set("Creating new model.")
         self.Model = rosgen.Listener()
         self.Model.workspace = rosgen.ROS_Workspace()
-        self.model_path = os.path.abspath(os.getcwd())
-        self.editor.reset(self.Model.workspace)
+        d = EditorDialogPopup(parent=self.master,title="New Workspace")
+        if d.result != None:
+            self.Model.workspace.name = d.result[0]
+            self.model_path = os.path.abspath(os.getcwd())
+            self.init_Editor()
+            self.editor.reset(self.Model.workspace)
 
     def menubar_Save_Callback(self):
         fileName = self.fileName

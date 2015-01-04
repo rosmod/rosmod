@@ -175,27 +175,33 @@ class ModelViewer(EditorFrame):
     def ContextAddService(self):
         print "Popup dialog for adding service"
         newObj = rosgen.ROS_Service()
-        newObj.name = "dummyService"
-        self.model.AddService(newObj)
-        self.Update(self.model,self.initPos,self.padding)
+        d = EditorDialogPopup(parent=self.master,title="New Service")
+        if d.result != None:
+            newObj.name = d.result[0]
+            self.model.AddService(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddMessage(self):
         print "Popup dialog for adding message"
         newObj = rosgen.ROS_Message()
-        newObj.name = "dummyMessage"
-        self.model.AddMessage(newObj)
-        self.Update(self.model,self.initPos,self.padding)
+        d = EditorDialogPopup(parent=self.master,title="New Message")
+        if d.result != None:
+            newObj.name = d.result[0]
+            self.model.AddMessage(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddComponent(self):
         print "Popup dialog for adding component"
         newObj = rosgen.ROS_Component()
-        newObj.name = "dummyComponent"
-        self.model.AddComponent(newObj)
-        self.Update(self.model,self.initPos,self.padding)
+        d = EditorDialogPopup(parent=self.master,title="New Component")
+        if d.result != None:
+            newObj.name = d.result[0]
+            self.model.AddComponent(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddNode(self):
         newObj = rosgen.ROS_Node()
-        d = EditorDialogPopup(parent=self.master,title="Enter Node Name")
+        d = EditorDialogPopup(parent=self.master,title="New Node")
         if d.result != None:
             newObj.name = d.result[0]
             self.model.AddNode(newObj)
@@ -369,7 +375,7 @@ class Editor():
         self.maxHeight = maxHeight
         self.splitWidth = splitWidth
         self.selectedPackageVar = StringVar()
-        
+
         self.editorPane = PanedWindow(
             self.master,
             orient = HORIZONTAL,
@@ -377,15 +383,19 @@ class Editor():
             height = self.height,
             width = self.width
         )
-        self.modelViewer = ModelViewer(
-            master = self.master,
-            height = self.height,
-            width = self.width - self.splitWidth,
-            maxHeight = self.maxHeight,
-            maxWidth = self.maxWidth,
-            optionsDict = self.editorDict,
-            model=self.model
-        )
+
+        self.modelViewer = None
+        self.packageViewer = None
+        
+        self.clear()
+
+    def clear(self):
+        if self.modelViewer != None:
+            self.editorPane.forget(self.modelViewer)
+            self.modelViewer = None
+        if self.packageViewer != None:
+            self.editorPane.forget(self.packageViewer)
+            self.packageViewer = None
         self.packageViewer = PackageViewer (
             master = self.master,
             height = self.height,
@@ -397,12 +407,26 @@ class Editor():
             buttonCommand = self.OnPackageSelected
         )
         self.editorPane.add(self.packageViewer)
-        self.editorPane.add(self.modelViewer)
         self.editorPane.pack(fill='both',expand=1)
+
+    def initModelViewer(self):
+        if self.modelViewer == None:
+            self.modelViewer = ModelViewer(
+                master = self.master,
+                height = self.height,
+                width = self.width - self.splitWidth,
+                maxHeight = self.maxHeight,
+                maxWidth = self.maxWidth,
+                optionsDict = self.editorDict,
+                model=self.model
+            )
+            self.editorPane.add(self.modelViewer)
+            self.editorPane.pack(fill='both',expand=1)
 
     def reset(self,model):
         self.model=model
-        self.modelViewer.clear()
+        self.modelViewer = None
+        #self.modelViewer.clear()
         self.packageViewer.Update(
             model=self.model,
             buttonVar = self.selectedPackageVar,
@@ -414,11 +438,12 @@ class Editor():
         newModel = None
         if self.selectedPackageVar.get() != None and self.selectedPackageVar.get() != '':
             newModel = self.model.packages_dict[self.selectedPackageVar.get()]
-        self.modelViewer.Update(
-            newModel,
-            initPos=[50,50],
-            padding=[100,20]
-        )
+            self.initModelViewer()
+            self.modelViewer.Update(
+                newModel,
+                initPos=[50,50],
+                padding=[100,20]
+            )
         
         
         
