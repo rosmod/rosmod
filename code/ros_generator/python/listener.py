@@ -288,6 +288,8 @@ class ROS_Component(CanvasObject):
         self.cleanChildren()
         for obj in self.subscribers:
             objType = 'subscriber'
+            obj.isObjRef = True
+            obj.objRef = obj.topic
             obj.setCanvasParams(
                 canvas = self.canvas,
                 position = self.position,
@@ -302,6 +304,8 @@ class ROS_Component(CanvasObject):
             self.addChild(obj.name,obj)
         for obj in self.publishers:
             objType = 'publisher'
+            obj.isObjRef = True
+            obj.objRef = obj.topic
             obj.setCanvasParams(
                 canvas = self.canvas,
                 position = self.position,
@@ -330,6 +334,8 @@ class ROS_Component(CanvasObject):
             self.addChild(obj.name,obj)
         for obj in self.provided_services:
             objType = 'server'
+            obj.isObjRef = True
+            obj.objRef = obj.service
             obj.setCanvasParams(
                 canvas = self.canvas,
                 position = self.position,
@@ -344,6 +350,8 @@ class ROS_Component(CanvasObject):
             self.addChild(obj.name,obj)
         for obj in self.required_services:
             objType = 'client'
+            obj.isObjRef = True
+            obj.objRef = obj.service
             obj.setCanvasParams(
                 canvas = self.canvas,
                 position = self.position,
@@ -389,7 +397,7 @@ class ROS_Publisher(CanvasObject):
         # Name of publisher port
         self.name = ""
         # Name of msg topic
-        self.topic = ""
+        self.topic = None
 
     def Edit(self):
         print "Popup window to edit name and topic"
@@ -405,7 +413,7 @@ class ROS_Subscriber(CanvasObject):
         # Name of subscriber port
         self.name = ""
         # Name of msg topic
-        self.topic = ""
+        self.topic = None
 
     def Edit(self):
         print "Popup window to edit name and topic"
@@ -638,12 +646,12 @@ class Listener(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "TopicContext" in context:
-                    self.publisher.topic = child.getText()
+                    self.publisher.topic = self.package.msg_dict[child.getText()]
                     # CHECK: If this toic has been defined
                 if "PublisherContext" in context:
                     self.publisher.name = child.getText()
             if self.publisher.name != "":
-                if self.publisher.topic != "":
+                if self.publisher.topic != None:
                     self.component.addPublisher(self.publisher)
 
         elif "subscriber" in ctx.getText():
@@ -651,12 +659,12 @@ class Listener(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "TopicContext" in context:
-                    self.subscriber.topic =  child.getText()
+                    self.subscriber.topic =  self.package.msg_dict[child.getText()]
                     # CHECK: If this topic has been defined
                 if "SubscriberContext" in context:
                     self.subscriber.name = child.getText()
             if self.subscriber.name != "":
-                if self.subscriber.topic != "":
+                if self.subscriber.topic != None:
                     self.component.addSubscriber(self.subscriber)
 
     # Save all component timers

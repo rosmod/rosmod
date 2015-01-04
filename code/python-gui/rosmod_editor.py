@@ -322,6 +322,12 @@ class PackageViewer(EditorFrame):
         self.buttonCommand = buttonCommand
         self.Update(self.model,self.buttonVar,self.buttonCommand)
 
+    def clear(self):
+        for button in self.buttons:
+            self.canvas.delete(button[0])
+            button[1].destroy()
+        self.buttons = []
+
     def ContextAddPackage(self):
         newObj = rosgen.ROS_Package()
         d = EditorDialogPopup(parent=self.master,title="New Package")
@@ -344,10 +350,7 @@ class PackageViewer(EditorFrame):
         self.buttonVar = buttonVar
         self.buttonVar.set("")
         self.buttonCommand = buttonCommand
-        for button in self.buttons:
-            self.canvas.delete(button[0])
-            button[1].destroy()
-        self.buttons=[]
+        self.clear()
         ypos = 5
         for name,package in self.model.packages_dict.iteritems():
             newButton = Radiobutton(
