@@ -247,6 +247,8 @@ class ROS_Component(CanvasObject):
         self.subscribers = []
         # List of timers
         self.timers = []
+        # type of component, i.e. its definition
+        self.comp_type = None
 
     def Edit(self):
         print "popup window to edit name"
@@ -376,10 +378,10 @@ class ROS_Component(CanvasObject):
                 comp += "\n            requires " + required.service.name + ";"
         if len(self.publishers) > 0:
             for publisher in self.publishers:
-                comp += "\n            publisher<" + publisher.topic + "> " + publisher.name + ";" 
+                comp += "\n            publisher<" + publisher.topic.name + "> " + publisher.name + ";" 
         if len(self.subscribers) > 0:
             for subscriber in self.subscribers:
-                comp += "\n            subscriber<" + subscriber.topic + "> " + subscriber.name + ";"
+                comp += "\n            subscriber<" + subscriber.topic.name + "> " + subscriber.name + ";"
         if len(self.timers) > 0:
             for timer in self.timers:
                 comp += "\n            timer " + timer.name
@@ -450,8 +452,6 @@ class ROS_Node(CanvasObject):
         self.components = []
         # List of component defs
         self.comp_defs = []
-        # Useful Dictionary
-        self.component_instance_dict = OrderedDict()
 
     def Edit(self):
         print "Popup window to edit name"
@@ -459,39 +459,38 @@ class ROS_Node(CanvasObject):
         if d.result != None:
             self.name = d.result[0]
 
-    def AddComponent(self,component):
-        self.DeleteComponent(component.name)
+    def addComponent(self,component):
+        self.deleteComponent(component.name)
         self.components.append(component)
-        self.component_definition_dict[component.name] = component
-    def DeleteComponent(self,name):
-        if name in self.component_instance_dict:
-            del self.component_instance_dict[name]
+    def deleteComponent(self,name):
         self.components[:] = [comp for comp in self.components if comp.name != name]
 
     def __str__(self):
         node = "\n        node " + self.name
         node += "\n        {"
         for instance in self.components:
-            node += "\n            component<" + instance[0] + "> " + instance[1] + ";"
+            node += "\n            component<" + instance.comp_type.name + "> " + instance.name + ";"
         node += "\n        }"
         return node
 
     def buildChildList(self):
         self.cleanChildren()
-        for name, compInst in self.component_instance_dict.iteritems():
-            childObj = CanvasObject( name=name, isObjRef=True, objRef=compInst)
-            childObj.setCanvasParams(
+        for obj in self.components:
+            objType = 'component'
+            obj.isObjRef = True
+            obj.objRef = obj.comp_type
+            obj.setCanvasParams(
                 canvas = self.canvas,
                 position = self.position,
-                canvasOptions = canvasOptionsDict['component']
+                canvasOptions = canvasOptionsDict[objType]
             )
-            objDrawOptions = canvasOptionsDict['component'].drawOptions
-            childObj.drawOptions = DrawOptions(
+            objDrawOptions = canvasOptionsDict[objType].drawOptions
+            obj.drawOptions = DrawOptions(
                     color = objDrawOptions.color,
                     minSize = objDrawOptions.minSize,
                     textPosition = "RIGHT", connectFrom = True
                 )
-            self.addChild(name,childObj)
+            self.addChild(obj.name,obj)
 
 class Listener(ROSListener):
     def __init__(self):
@@ -705,9 +704,11 @@ class Listener(ROSListener):
 
             elif "Component_instanceContext" in context:
                 instance = child.getText()
-        self.node.components.append([comp_type, instance])
+        self.component = ROS_Component()
+        self.component.name = instance
+        self.component.comp_type = self.package.component_definition_dict[comp_type]
         self.node.comp_defs.append(comp_type)
-        self.node.component_instance_dict[instance] = self.package.component_definition_dict[comp_type]
+        self.node.addComponent(self.component)
 
     # On exit, add the node to the list of nodes in package
     def exitRos_node(self, ctx):
