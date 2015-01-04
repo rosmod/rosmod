@@ -1,9 +1,61 @@
 from Tkinter import * 
 import tkFileDialog
 import tkMessageBox
+import tkSimpleDialog
 from collections import OrderedDict
 
 canvasObjectDict = OrderedDict()
+
+editorDialogsDict = OrderedDict()
+nameDialogDict = OrderedDict()
+nodeDialogDict = OrderedDict()
+compDialogDict = OrderedDict()
+msgDialogDict = OrderedDict()
+srvDialogDict = OrderedDict()
+tmrDialogDict = OrderedDict()
+editorDialogsDict['name'] = nameDialogDict
+editorDialogsDict['node'] = nodeDialogDict
+editorDialogsDict['component'] = compDialogDict
+editorDialogsDict['message'] = msgDialogDict
+editorDialogsDict['service'] = srvDialogDict
+editorDialogsDict['timer'] = tmrDialogDict
+
+badCharString = ";,. `~[]{}:'\"/?\\<>*&^%$#@!()"
+
+def badCharsInString(string,badChars=badCharString):
+    for char in badChars:
+        if char in string:
+            return True
+    return False
+
+class EditorDialogPopup(tkSimpleDialog.Dialog):
+    def body(self,master):
+        self.entries = []
+
+        Label(master, text="Name:").grid(row=0)
+
+        entry1 = Entry(master)
+        self.entries.append(entry1)
+        self.entries[-1].grid(row=0,column=1)
+
+        return self.entries[0] # initial focus
+
+    def validate(self):
+        for entry in self.entries:
+            val = entry.get()
+            if badCharsInString(val):
+                tkMessageBox.showwarning(
+                    "Bad Input",
+                    "Input cannot contain\n{0}\n, try again.".format(badCharString)
+                )
+                return 0
+        return 1
+
+    def apply(self):
+        self.result= []
+        for entry in self.entries:
+            val = entry.get()
+            self.result.append(val)
 
 class PaddingOptions():
     def __init__(self, childOffset = (5,10), childPadding=(0,15)):
@@ -63,7 +115,12 @@ class CanvasObject(CanvasOptions):
         pass
 
     def Edit(self):
-        pass
+        result = self.name
+        d = EditorDialogPopup(parent=self.canvas,title=result)
+        if d.result != None:
+            result = d.result[0]
+        self.name = result
+            
 
     def cleanChildren(self):
         self.children.clear()
@@ -126,4 +183,3 @@ class CanvasObject(CanvasOptions):
             for name,child in self.children.iteritems():
                 child.Draw()
         return self.size
-

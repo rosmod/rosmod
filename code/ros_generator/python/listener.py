@@ -166,6 +166,24 @@ class ROS_Message(CanvasObject):
         msg += "\n        }"
         return msg
 
+class ROS_Server(CanvasObject):
+    
+    def __init__(self):
+        CanvasObject.__init__(self)
+        # Name change is not saved currently, not supported by grammar
+        self.name = ""
+        # reference to the actual service object
+        self.service = None
+
+class ROS_Client(CanvasObject):
+    
+    def __init__(self):
+        CanvasObject.__init__(self)
+        # Name change is not saved currently, not supported by grammar
+        self.name = ""
+        # reference to the actual service object
+        self.service = None
+
 # ROS Service class
 class ROS_Service(CanvasObject):
 
@@ -229,19 +247,6 @@ class ROS_Component(CanvasObject):
         self.subscribers = []
         # List of timers
         self.timers = []
-        # Useful Dictionaries
-        self.provided_services_dict = OrderedDict()
-        self.required_services_dict = OrderedDict()
-        self.publishers_dict = OrderedDict()
-        self.subscribers_dict = OrderedDict()
-        self.timers_dict = OrderedDict()
-        self.dicts = [
-            ('service',self.provided_services_dict),
-            ('service',self.required_services_dict),
-            ('message',self.publishers_dict),
-            ('message',self.subscribers_dict),
-            ('timer',self.timers_dict)
-        ]
 
     def Edit(self):
         print "popup window to edit name"
@@ -249,78 +254,118 @@ class ROS_Component(CanvasObject):
         if d.result != None:
             self.name = d.result[0]
 
-    def AddTimer(self,timer):
-        self.DeleteTimer(timer.name)
+    def addTimer(self,timer):
+        self.deleteTimer(timer.name)
         self.timers.append(timer)
-        self.timers_dict[timer.name] = timer
-    def DeleteTimer(self,name):
-        if name in self.timers_dict:
-            del self.timers_dict[name]
+    def deleteTimer(self,name):
         self.timers[:] = [tmr for tmr in self.timers if tmr.name != name]
 
-    def AddService(self,service,srv_type):
-        self.DeleteService(service.name,srv_type)
-        if srv_type == 'client':
-            self.required_services.append(service)
-            self.required_services_dict[service.name] = service
-        elif srv_type == 'server':
-            self.provided_services.append(service)
-            self.provided_services_dict[service.name] = service
-    def DeleteService(self,name,srv_type):
-        if srv_type == 'client':
-            if name in self.required_services_dict:
-                del self.required_services_dict[name]
-            self.required_services[:] = [srv for srv in self.required_services if srv.name != name]
-        elif srv_type == 'server':
-            if name in self.provided_services_dict:
-                del self.provided_services_dict[name]
-            self.provided_services[:] = [srv for srv in self.provided_services if srv.name != name]
+    def addServer(self,server):
+        self.deleteServer(server.name)
+        self.provided_services.append(server)
+    def deleteServer(self,name):
+        self.provided_services[:] = [srv for srv in self.provided_services if srv.name != name]
 
-    def AddMessage(self,message,msg_type):
-        self.DeleteMessage(message.name,msg_type)
-        if msg_type == 'subscriber':
-            self.subscribers.append(message)
-            self.subscribers_dict[message.name] = message
-        elif msg_type == 'publisher':
-            self.publishers.append(message)
-            self.publishers_dict[message.name] = message
-    def DeleteMessage(self,name,msg_type):
-        if msg_type == 'subscriber':
-            if name in self.subscribers_dict:
-                del self.subscribers_dict[name]
-            self.subscribers[:] = [msg for msg in self.subscribers if msg.name != name]
-        elif msg_type == 'publisher':
-            if name in self.publishers_dict:
-                del self.publishers_dict[name]
-            self.publishers[:] = [msg for msg in self.publishers if msg.name != name]
+    def addClient(self,client):
+        self.deleteClient(client.name)
+        self.required_services.append(client)
+    def deleteClient(self,name):
+        self.required_services[:] = [srv for srv in self.required_services if srv.name != name]
+
+    def addPublisher(self,pub):
+        self.deletePublisher(pub.name)
+        self.publishers.append(pub)
+    def deletePublisher(self,name):
+        self.publishers[:] = [msg for msg in self.publishers if msg.name != name]
+
+    def addSubscriber(self,sub):
+        self.deleteSubscriber(sub.name)
+        self.subscribers.append(sub)
+    def deleteSubscriber(self,name):
+        self.subscribers[:] = [msg for msg in self.subscribers if msg.name != name]
 
     def buildChildList(self):
         self.cleanChildren()
-        for objType,childDict in self.dicts:
-            for name, child in childDict.iteritems():
-                childObj = CanvasObject( name=name, isObjRef=True, objRef=child)
-                childObj.setCanvasParams(
-                    canvas = self.canvas,
-                    position = self.position,
-                    canvasOptions = canvasOptionsDict[objType]
-                )
-                objDrawOptions = canvasOptionsDict[objType].drawOptions
-                childObj.drawOptions = DrawOptions(
-                    color = objDrawOptions.color,
-                    minSize = objDrawOptions.minSize,
-                    textPosition = "RIGHT", connectFrom = True
-                )
-                self.addChild(name,childObj)
+        for obj in self.subscribers:
+            objType = 'subscriber'
+            obj.setCanvasParams(
+                canvas = self.canvas,
+                position = self.position,
+                canvasOptions = canvasOptionsDict[objType]
+            )
+            objDrawOptions = canvasOptionsDict[objType].drawOptions
+            obj.drawOptions = DrawOptions(
+                color = objDrawOptions.color,
+                minSize = objDrawOptions.minSize,
+                textPosition = "RIGHT", connectFrom = True
+            )
+            self.addChild(obj.name,obj)
+        for obj in self.publishers:
+            objType = 'publisher'
+            obj.setCanvasParams(
+                canvas = self.canvas,
+                position = self.position,
+                canvasOptions = canvasOptionsDict[objType]
+            )
+            objDrawOptions = canvasOptionsDict[objType].drawOptions
+            obj.drawOptions = DrawOptions(
+                color = objDrawOptions.color,
+                minSize = objDrawOptions.minSize,
+                textPosition = "RIGHT", connectFrom = True
+            )
+            self.addChild(obj.name,obj)
+        for obj in self.timers:
+            objType = 'timer'
+            obj.setCanvasParams(
+                canvas = self.canvas,
+                position = self.position,
+                canvasOptions = canvasOptionsDict[objType]
+            )
+            objDrawOptions = canvasOptionsDict[objType].drawOptions
+            obj.drawOptions = DrawOptions(
+                color = objDrawOptions.color,
+                minSize = objDrawOptions.minSize,
+                textPosition = "RIGHT", connectFrom = True
+            )
+            self.addChild(obj.name,obj)
+        for obj in self.provided_services:
+            objType = 'server'
+            obj.setCanvasParams(
+                canvas = self.canvas,
+                position = self.position,
+                canvasOptions = canvasOptionsDict[objType]
+            )
+            objDrawOptions = canvasOptionsDict[objType].drawOptions
+            obj.drawOptions = DrawOptions(
+                color = objDrawOptions.color,
+                minSize = objDrawOptions.minSize,
+                textPosition = "RIGHT", connectFrom = True
+            )
+            self.addChild(obj.name,obj)
+        for obj in self.required_services:
+            objType = 'client'
+            obj.setCanvasParams(
+                canvas = self.canvas,
+                position = self.position,
+                canvasOptions = canvasOptionsDict[objType]
+            )
+            objDrawOptions = canvasOptionsDict[objType].drawOptions
+            obj.drawOptions = DrawOptions(
+                color = objDrawOptions.color,
+                minSize = objDrawOptions.minSize,
+                textPosition = "RIGHT", connectFrom = True
+            )
+            self.addChild(obj.name,obj)
 
     def __str__(self):
         comp = "\n        component " + self.name
         comp += "\n        {"
         if len(self.provided_services) > 0:
             for provided in self.provided_services:
-                comp += "\n            provides " + provided + ";"
+                comp += "\n            provides " + provided.service.name + ";"
         if len(self.required_services) > 0:
             for required in self.required_services:
-                comp += "\n            requires " + required + ";"
+                comp += "\n            requires " + required.service.name + ";"
         if len(self.publishers) > 0:
             for publisher in self.publishers:
                 comp += "\n            publisher<" + publisher.topic + "> " + publisher.name + ";" 
@@ -571,18 +616,20 @@ class Listener(ROSListener):
                 if "Service_nameContext" in context:
                     service_name = child.getText()
                     # CHECK: If this service has been defined 
-                    self.component.provided_services.append(service_name)
-                    server_name = service_name + "_server"
-                    self.component.provided_services_dict[server_name] = self.package.srv_dict[service_name]
+                    self.server = ROS_Server()
+                    self.server.name = service_name + "_server"
+                    self.server.service = self.package.srv_dict[service_name]
+                    self.component.addServer(self.server)
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "Service_nameContext" in context:
                     service_name = child.getText()
                     # CHECK: If this service has been defined 
-                    self.component.required_services.append(service_name)
-                    client_name = service_name + "_client"
-                    self.component.required_services_dict[client_name] = self.package.srv_dict[service_name]
+                    self.client = ROS_Client()
+                    self.client.name = service_name + "_client"
+                    self.client.service = self.package.srv_dict[service_name]
+                    self.component.addClient(self.client)
 
     # Save all publishers and susbcribers
     def enterRos_pub_sub(self, ctx):
@@ -597,8 +644,8 @@ class Listener(ROSListener):
                     self.publisher.name = child.getText()
             if self.publisher.name != "":
                 if self.publisher.topic != "":
-                    self.component.publishers.append(self.publisher)
-                    self.component.publishers_dict[self.publisher.name] = self.package.msg_dict[self.publisher.topic]
+                    self.component.addPublisher(self.publisher)
+
         elif "subscriber" in ctx.getText():
             self.subscriber = ROS_Subscriber()
             for child in ctx.getChildren():
@@ -610,8 +657,7 @@ class Listener(ROSListener):
                     self.subscriber.name = child.getText()
             if self.subscriber.name != "":
                 if self.subscriber.topic != "":
-                    self.component.subscribers.append(self.subscriber)
-                    self.component.subscribers_dict[self.subscriber.name] = self.package.msg_dict[self.subscriber.topic]
+                    self.component.addSubscriber(self.subscriber)
 
     # Save all component timers
     def enterRos_timer(self, ctx):
@@ -624,8 +670,7 @@ class Listener(ROSListener):
                 self.timer.period = child.getText()
             elif "Period_unitContext" in context:
                 self.timer.period_unit = child.getText()
-        self.component.timers.append(self.timer)
-        self.component.timers_dict[self.timer.name] = self.timer
+        self.component.addTimer(self.timer)
 
     # On exit, add component to list of components in package
     def exitRos_component(self, ctx):

@@ -5,27 +5,12 @@
 from Tkinter import *
 import tkFileDialog
 import tkMessageBox
-import tkSimpleDialog
 
 from collections import OrderedDict
 
 from CanvasOptions import *
 
 activeMenus = []
-
-editorDialogsDict = OrderedDict()
-nameDialogDict = OrderedDict()
-nodeDialogDict = OrderedDict()
-compDialogDict = OrderedDict()
-msgDialogDict = OrderedDict()
-srvDialogDict = OrderedDict()
-tmrDialogDict = OrderedDict()
-editorDialogsDict['name'] = nameDialogDict
-editorDialogsDict['node'] = nodeDialogDict
-editorDialogsDict['component'] = compDialogDict
-editorDialogsDict['message'] = msgDialogDict
-editorDialogsDict['service'] = srvDialogDict
-editorDialogsDict['timer'] = tmrDialogDict
 
 canvasOptionsDict = OrderedDict()
 canvasPaddingOptions = PaddingOptions((5,10),(0,15))
@@ -40,6 +25,42 @@ canvasOptionsDict['service'] = CanvasOptions(
     tags = ("object","service")
 )
 canvasOptionsDict['message'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "blue",
+        minSize = (10,10),
+    ),
+    tags = ("object","message")
+)
+canvasOptionsDict['server'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "green",
+        minSize = (10,10),
+    ),
+    tags = ("object","service")
+)
+canvasOptionsDict['client'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "green",
+        minSize = (10,10),
+    ),
+    tags = ("object","service")
+)
+canvasOptionsDict['publisher'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "blue",
+        minSize = (10,10),
+    ),
+    tags = ("object","message")
+)
+canvasOptionsDict['subscriber'] = CanvasOptions(
     canvasPaddingOptions,
     canvasFontOptions,
     DrawOptions(
@@ -76,13 +97,6 @@ canvasOptionsDict['node'] = CanvasOptions(
     tags = ("object","node")
 )
 
-badCharString = ";,. `~[]{}:'\"/?\\<>*&^%$#@!()"
-
-def badCharsInString(string,badChars=badCharString):
-    for char in badChars:
-        if char in string:
-            return True
-    return False
 
 def closeAllContextMenus():
     global activeMenus
@@ -124,67 +138,4 @@ class MenuPopup():
 
         self.contextMenu.post(event.x_root,event.y_root)
 
-class EditorDialogPopup(tkSimpleDialog.Dialog):
-    def body(self,master):
-        self.entries = []
-
-        Label(master, text="Name:").grid(row=0)
-
-        entry1 = Entry(master)
-        self.entries.append(entry1)
-        self.entries[-1].grid(row=0,column=1)
-
-        return self.entries[0] # initial focus
-
-    def validate(self):
-        for entry in self.entries:
-            val = entry.get()
-            if badCharsInString(val):
-                tkMessageBox.showwarning(
-                    "Bad Input",
-                    "Input cannot contain\n{0}\n, try again.".format(badCharString)
-                )
-                return 0
-        return 1
-
-    def apply(self):
-        self.result= []
-        for entry in self.entries:
-            val = entry.get()
-            self.result.append(val)
-
-class TextPopup():
-    def __init__(self, master,objName,objTextVar,width,height):
-        self.master = master
-        self.frame = Frame(master=self.master,bg="gray",height=height,width=width)
-        self.label = Label(self.frame, text=objName, anchor=N, bg="dark gray", fg="white", relief=RAISED)
-        self.label.pack()
-        self.window = self.master.create_window(
-            0,0, 
-            anchor=NW, 
-            window=self.frame, 
-            width=width,
-            height=height
-        )
-        self.textVar = objTextVar
-        self.text = Text(self.frame)
-        self.scrollbar = Scrollbar(self.frame)
-        self.scrollbar.pack(side=RIGHT, fill=Y)
-        self.scrollbar.config(command=self.text.yview)
-        self.text.config(yscrollcommand=self.scrollbar.set)
-        self.button = Button(self.frame,text="Save",command=self._close_Callback)
-        self.button.pack(side=BOTTOM)
-        self.text.pack()
-        self.text.insert(END,objTextVar.get())
-        self.master.config(state=DISABLED)
-
-    def _close_Callback(self):
-        self.scrollbar.destroy()
-        self.button.destroy()
-        self.textVar.set(self.text.get(1.0,END))
-        self.text.destroy()
-        self.frame.destroy()
-        self.label.destroy()
-        self.master.delete(self.window)
-        self.master.config(state=NORMAL)
 
