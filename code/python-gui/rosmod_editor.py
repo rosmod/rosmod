@@ -396,20 +396,18 @@ class Editor():
         if self.modelViewer != None:
             self.editorPane.forget(self.modelViewer)
             self.modelViewer = None
-        if self.packageViewer != None:
-            self.editorPane.forget(self.packageViewer)
-            self.packageViewer = None
-        self.packageViewer = PackageViewer (
-            master = self.master,
-            height = self.height,
-            width = self.splitWidth,
-            maxHeight = self.maxHeight,
-            maxWidth = self.maxWidth,
-            model=self.model,
-            buttonVar = self.selectedPackageVar,
-            buttonCommand = self.OnPackageSelected
-        )
-        self.editorPane.add(self.packageViewer)
+        if self.packageViewer == None:
+            self.packageViewer = PackageViewer (
+                master = self.master,
+                height = self.height,
+                width = self.splitWidth,
+                maxHeight = self.maxHeight,
+                maxWidth = self.maxWidth,
+                model=self.model,
+                buttonVar = self.selectedPackageVar,
+                buttonCommand = self.OnPackageSelected
+            )
+            self.editorPane.add(self.packageViewer)
         self.editorPane.pack(fill='both',expand=1)
 
     def initModelViewer(self):
@@ -428,8 +426,7 @@ class Editor():
 
     def reset(self,model):
         self.model=model
-        self.modelViewer = None
-        #self.modelViewer.clear()
+        self.clear()
         self.packageViewer.Update(
             model=self.model,
             buttonVar = self.selectedPackageVar,
@@ -437,7 +434,6 @@ class Editor():
         )
 
     def OnPackageSelected(self):
-        print "You've selected {0}".format(self.selectedPackageVar.get())
         newModel = None
         if self.selectedPackageVar.get() != None and self.selectedPackageVar.get() != '':
             newModel = self.model.packages_dict[self.selectedPackageVar.get()]

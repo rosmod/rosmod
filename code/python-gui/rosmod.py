@@ -134,10 +134,11 @@ class App:
             self.editor.reset(self.Model.workspace)
 
     def menubar_Save_Callback(self):
-        fileName = self.fileName
-        # Overwrite the model file
-        self.statusBar.set("Saved model!")
-        rosgen.generate_model(self.Model.workspace, fileName, self.model_path)
+        if self.fileName != None:
+            fileName = self.fileName
+            # Overwrite the model file
+            self.statusBar.set("Saved model!")
+            rosgen.generate_model(self.Model.workspace, fileName, self.model_path)
 
     def menubar_Save_As_Callback(self):
         filePath = tkFileDialog.asksaveasfilename(
