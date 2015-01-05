@@ -174,6 +174,10 @@ class ROS_Server(CanvasObject):
         self.name = ""
         # reference to the actual service object
         self.service = None
+        self.parentComp = None
+
+    def Delete(self):
+        self.parentComp.deleteServer(self.name)
 
     def Edit(self):
         options = OrderedDict()
@@ -200,6 +204,10 @@ class ROS_Client(CanvasObject):
         self.name = ""
         # reference to the actual service object
         self.service = None
+        self.parentComp = None
+
+    def Delete(self):
+        self.parentComp.deleteClient(self.name)
 
     def Edit(self):
         options = OrderedDict()
@@ -465,6 +473,10 @@ class ROS_Publisher(CanvasObject):
         self.name = ""
         # Name of msg topic
         self.topic = None
+        self.parentComp = None
+
+    def Delete(self):
+        self.parentComp.deletePublisher(self.name)
 
     def Edit(self):
         options = OrderedDict()
@@ -492,6 +504,10 @@ class ROS_Subscriber(CanvasObject):
         self.name = ""
         # Name of msg topic
         self.topic = None
+        self.parentComp = None
+
+    def Delete(self):
+        self.parentComp.deleteSubscriber(self.name)
 
     def Edit(self):
         options = OrderedDict()
@@ -521,6 +537,10 @@ class ROS_Timer(CanvasObject):
         self.period = period
         # Unit of timer period
         self.period_unit = period_unit
+        self.parentComp = None
+
+    def Delete(self):
+        self.parentComp.deleteTimer(self.name)
 
     def Edit(self):
         d = EditorDialogPopup(
@@ -727,6 +747,7 @@ class Listener(ROSListener):
                     self.server.name = service_name + "_server"
                     self.server.service = self.package.srv_dict[service_name]
                     self.server.package = self.package
+                    self.server.parentComp = self.component
                     self.component.addServer(self.server)
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
@@ -738,6 +759,7 @@ class Listener(ROSListener):
                     self.client.name = service_name + "_client"
                     self.client.service = self.package.srv_dict[service_name]
                     self.client.package = self.package
+                    self.client.parentComp = self.component
                     self.component.addClient(self.client)
 
     # Save all publishers and susbcribers
@@ -754,6 +776,7 @@ class Listener(ROSListener):
             if self.publisher.name != "":
                 if self.publisher.topic != None:
                     self.publisher.package = self.package
+                    self.publisher.parentComp = self.component
                     self.component.addPublisher(self.publisher)
 
         elif "subscriber" in ctx.getText():
@@ -768,6 +791,7 @@ class Listener(ROSListener):
             if self.subscriber.name != "":
                 if self.subscriber.topic != None:
                     self.subscriber.package = self.package
+                    self.subscriber.parentComp = self.component
                     self.component.addSubscriber(self.subscriber)
 
     # Save all component timers
@@ -780,7 +804,10 @@ class Listener(ROSListener):
                 period = child.getText()
             elif "Period_unitContext" in context:
                 period_unit = child.getText()
-        self.component.addTimer(ROS_Timer(name=name,period=period,period_unit=period_unit))
+        self.timer = ROS_Timer(name=name,period=period,period_unit=period_unit)
+        self.timer.package = self.package
+        self.timer.parentComp = self.component
+        self.component.addTimer(self.timer)
 
     # On exit, add component to list of components in package
     def exitRos_component(self, ctx):
