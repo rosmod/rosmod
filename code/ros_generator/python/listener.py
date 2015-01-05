@@ -263,8 +263,8 @@ class ROS_Service(CanvasObject):
 # ROS Component class
 class ROS_Component(CanvasObject):
     
-    def __init__(self):
-        CanvasObject.__init__(self)
+    def __init__(self,isObjRef=False):
+        CanvasObject.__init__(self,isObjRef=isObjRef)
         # Name of the ROS component
         self.name = ""
         # List of provided services

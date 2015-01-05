@@ -172,38 +172,43 @@ class ModelViewer(EditorFrame):
     def SetActiveObject(self, object):
         self.activeObject = object
 
+    def ConfigureNewObject(self, object, dictKey, pos=[0,0]):
+        object.setCanvasParams(
+            canvas = self.canvas,
+            position = pos,
+            canvasOptions = self.optionsDict[dictKey]
+        )
+        object.package = self.model
+
     def ContextAddService(self):
-        print "Popup dialog for adding service"
         newObj = rosgen.ROS_Service()
-        d = EditorDialogPopup(parent=self.master,title="New Service")
-        if d.result != None:
-            newObj.name = d.result[0]
+        self.ConfigureNewObject(newObj,'service')
+        newObj.Edit()
+        if newObj.name != "":
             self.model.addService(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddMessage(self):
-        print "Popup dialog for adding message"
         newObj = rosgen.ROS_Message()
-        d = EditorDialogPopup(parent=self.master,title="New Message")
-        if d.result != None:
-            newObj.name = d.result[0]
+        self.ConfigureNewObject(newObj,'message')
+        newObj.Edit()
+        if newObj.name != "":
             self.model.addMessage(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddComponent(self):
-        print "Popup dialog for adding component"
         newObj = rosgen.ROS_Component()
-        d = EditorDialogPopup(parent=self.master,title="New Component")
-        if d.result != None:
-            newObj.name = d.result[0]
+        self.ConfigureNewObject(newObj,'component')
+        newObj.Edit()
+        if newObj.name != "":
             self.model.addComponent(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddNode(self):
         newObj = rosgen.ROS_Node()
-        d = EditorDialogPopup(parent=self.master,title="New Node")
-        if d.result != None:
-            newObj.name = d.result[0]
+        self.ConfigureNewObject(newObj,'node')
+        newObj.Edit()
+        if newObj.name != "":
             self.model.addNode(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -218,28 +223,52 @@ class ModelViewer(EditorFrame):
         self.Update(self.model,self.initPos,self.padding)
 
     def CompAddServer(self):
-        print "popup for adding server to component {0}".format(self.activeObject)
-        self.Update(self.model,self.initPos,self.padding)
+        newObj = rosgen.ROS_Server()
+        self.ConfigureNewObject(newObj,'server')
+        newObj.Edit()
+        if newObj.name != "":
+            self.activeObject.addServer(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def CompAddClient(self):
-        print "popup for adding client to component {0}".format(self.activeObject)
-        self.Update(self.model,self.initPos,self.padding)
+        newObj = rosgen.ROS_Client()
+        self.ConfigureNewObject(newObj,'client')
+        newObj.Edit()
+        if newObj.name != "":
+            self.activeObject.addClient(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def CompAddSub(self):
-        print "popup for adding subscriber to component {0}".format(self.activeObject) 
-        self.Update(self.model,self.initPos,self.padding)   
+        newObj = rosgen.ROS_Subscriber()
+        self.ConfigureNewObject(newObj,'subscriber')
+        newObj.Edit()
+        if newObj.name != "":
+            self.activeObject.addSubscriber(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def CompAddPub(self):
-        print "popup for adding publisher to component {0}".format(self.activeObject)
-        self.Update(self.model,self.initPos,self.padding)
+        newObj = rosgen.ROS_Publisher()
+        self.ConfigureNewObject(newObj,'publisher')
+        newObj.Edit()
+        if newObj.name != "":
+            self.activeObject.addPublisher(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def CompAddTimer(self):
-        print "popup for adding timer to component {0}".format(self.activeObject)
-        self.Update(self.model,self.initPos,self.padding)
+        newObj = rosgen.ROS_Timer()
+        self.ConfigureNewObject(newObj,'timer')
+        newObj.Edit()
+        if newObj.name != "":
+            self.activeObject.addTimer(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def NodeAddComp(self):
-        print "popup for adding component to node {0}".format(self.activeObject)
-        self.Update(self.model,self.initPos,self.padding)
+        newObj = rosgen.ROS_Component(isObjRef=True)
+        self.ConfigureNewObject(newObj,'component')
+        newObj.Edit()
+        if newObj.name != "":
+            self.activeObject.addComponent(newObj)
+            self.Update(self.model,self.initPos,self.padding)
 
     def OnObjectLeftClick(self, event):
         self.focus_set()
@@ -254,11 +283,7 @@ class ModelViewer(EditorFrame):
         ypos = initY
         maxX = 0
         for name,object in drawDict.iteritems():
-            object.setCanvasParams(
-                canvas = self.canvas,
-                position = (initX,ypos),
-                canvasOptions = self.optionsDict[dictKey]
-            )
+            self.ConfigureNewObject(object,dictKey,[initX,ypos])
             object.buildChildList()
             width,height = object.Draw()
             if (width + initX) > maxX:
