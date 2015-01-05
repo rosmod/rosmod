@@ -175,6 +175,21 @@ class ROS_Server(CanvasObject):
         # reference to the actual service object
         self.service = None
 
+    def Edit(self):
+        options = OrderedDict()
+        options = self.package.srv_dict
+        d = ReferenceDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [
+                ["Name:",self.name,nameStringChars],
+                ["Service:",options]
+            ]
+        )
+        if d.result != None:
+            self.name = d.result[0]
+            self.service = d.result[1]
+
 class ROS_Client(CanvasObject):
     
     def __init__(self):
@@ -183,6 +198,21 @@ class ROS_Client(CanvasObject):
         self.name = ""
         # reference to the actual service object
         self.service = None
+
+    def Edit(self):
+        options = OrderedDict()
+        options = self.package.srv_dict
+        d = ReferenceDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [
+                ["Name:",self.name,nameStringChars],
+                ["Service:",options]
+            ]
+        )
+        if d.result != None:
+            self.name = d.result[0]
+            self.service = d.result[1]
 
 # ROS Service class
 class ROS_Service(CanvasObject):
@@ -421,10 +451,8 @@ class ROS_Publisher(CanvasObject):
         self.topic = None
 
     def Edit(self):
-        print "Popup window to edit name and topic"
         options = OrderedDict()
-        options["topic1"] = 0
-        options["topic2"] = 4
+        options = self.package.msg_dict
         d = ReferenceDialogPopup(
             parent=self.canvas,
             title=self.name,
@@ -435,6 +463,7 @@ class ROS_Publisher(CanvasObject):
         )
         if d.result != None:
             self.name = d.result[0]
+            self.topic = d.result[1]
 
 # ROS Subscriber
 class ROS_Subscriber(CanvasObject):
@@ -447,10 +476,19 @@ class ROS_Subscriber(CanvasObject):
         self.topic = None
 
     def Edit(self):
-        print "Popup window to edit name and topic"
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        options = OrderedDict()
+        options = self.package.msg_dict
+        d = ReferenceDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [
+                ["Name:",self.name,nameStringChars],
+                ["Topic:",options]
+            ]
+        )
         if d.result != None:
             self.name = d.result[0]
+            self.topic = d.result[1]
 
 # ROS Timer
 class ROS_Timer(CanvasObject):
@@ -663,6 +701,7 @@ class Listener(ROSListener):
                     self.server = ROS_Server()
                     self.server.name = service_name + "_server"
                     self.server.service = self.package.srv_dict[service_name]
+                    self.server.package = self.package
                     self.component.addServer(self.server)
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
@@ -673,6 +712,7 @@ class Listener(ROSListener):
                     self.client = ROS_Client()
                     self.client.name = service_name + "_client"
                     self.client.service = self.package.srv_dict[service_name]
+                    self.client.package = self.package
                     self.component.addClient(self.client)
 
     # Save all publishers and susbcribers
@@ -688,6 +728,7 @@ class Listener(ROSListener):
                     self.publisher.name = child.getText()
             if self.publisher.name != "":
                 if self.publisher.topic != None:
+                    self.publisher.package = self.package
                     self.component.addPublisher(self.publisher)
 
         elif "subscriber" in ctx.getText():
@@ -701,6 +742,7 @@ class Listener(ROSListener):
                     self.subscriber.name = child.getText()
             if self.subscriber.name != "":
                 if self.subscriber.topic != None:
+                    self.subscriber.package = self.package
                     self.component.addSubscriber(self.subscriber)
 
     # Save all component timers
@@ -744,6 +786,7 @@ class Listener(ROSListener):
         self.component.name = instance
         self.component.comp_type = self.package.component_definition_dict[comp_type]
         self.node.comp_defs.append(comp_type)
+        self.component.package = self.package
         self.node.addComponent(self.component)
 
     # On exit, add the node to the list of nodes in package

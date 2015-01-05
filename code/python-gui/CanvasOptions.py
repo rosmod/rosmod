@@ -50,6 +50,7 @@ class CanvasObject(CanvasOptions):
         self.isObjRef = isObjRef
         self.objRef = objRef
         self.name = name
+        self.package = None
 
     def setCanvasParams(self, canvas, position, canvasOptions):
         global canvasObjectDict

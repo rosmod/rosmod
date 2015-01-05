@@ -172,25 +172,20 @@ class ReferenceDialogPopup(Dialog):
 
         for val in self.valsList[1:]:
             Label(master, text=val[0]).grid(row=r)
-            self.optionsDict[val[0]] = val[1]
             var = StringVar()
+            self.optionsDict["{0}".format(var)] = val[1]
             self.stringVars.append(var)
             self.stringVars[-1].set("")
             option1 = OptionMenu(
                 master,
                 self.stringVars[-1], 
-                *self.optionsDict[val[0]].keys(), 
-                command = self.test
+                *self.optionsDict["{0}".format(var)].keys()
             )
             self.options.append(option1)
             self.options[-1].grid(row=r,column=1)
             r += 1
 
         return self.entries[0] # initial focus
-
-    def test(self,event):
-        for var in self.stringVars:
-            print var.get()
 
     def validate(self):
         for entry in self.entries:
@@ -208,5 +203,7 @@ class ReferenceDialogPopup(Dialog):
         for entry in self.entries:
             val = entry.get()
             self.result.append(val)
+        for var in self.stringVars:
+            self.result.append(self.optionsDict["{0}".format(var)][var.get()])
 
 

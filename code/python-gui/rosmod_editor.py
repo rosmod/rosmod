@@ -178,7 +178,7 @@ class ModelViewer(EditorFrame):
         d = EditorDialogPopup(parent=self.master,title="New Service")
         if d.result != None:
             newObj.name = d.result[0]
-            self.model.AddService(newObj)
+            self.model.addService(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddMessage(self):
@@ -187,7 +187,7 @@ class ModelViewer(EditorFrame):
         d = EditorDialogPopup(parent=self.master,title="New Message")
         if d.result != None:
             newObj.name = d.result[0]
-            self.model.AddMessage(newObj)
+            self.model.addMessage(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddComponent(self):
@@ -196,7 +196,7 @@ class ModelViewer(EditorFrame):
         d = EditorDialogPopup(parent=self.master,title="New Component")
         if d.result != None:
             newObj.name = d.result[0]
-            self.model.AddComponent(newObj)
+            self.model.addComponent(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddNode(self):
@@ -204,7 +204,7 @@ class ModelViewer(EditorFrame):
         d = EditorDialogPopup(parent=self.master,title="New Node")
         if d.result != None:
             newObj.name = d.result[0]
-            self.model.AddNode(newObj)
+            self.model.addNode(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextDelete(self):
