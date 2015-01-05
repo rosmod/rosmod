@@ -29,11 +29,11 @@ class ROS_Workspace:
         # Useful Dictionaries
         self.packages_dict = OrderedDict()
 
-    def AddPackage(self,package):
-        self.DeletePackage(package.name)
+    def addPackage(self,package):
+        self.deletePackage(package.name)
         self.packages.append(package)
         self.packages_dict[package.name] = package
-    def DeletePackage(self,name):
+    def deletePackage(self,name):
         if name in self.packages_dict:
             del self.packages_dict[name]
         self.packages[:] = [pack for pack in self.packages if pack.name != name]
@@ -72,38 +72,38 @@ class ROS_Package:
     def Edit(self):
         print "Popup window to input name"
 
-    def AddMessage(self,message):
-        self.DeleteMessage(message.name)
+    def addMessage(self,message):
+        self.deleteMessage(message.name)
         self.messages.append(message)
         self.msg_dict[message.name] = message
-    def DeleteMessage(self,name):
+    def deleteMessage(self,name):
         if name in self.msg_dict:
             del self.msg_dict[name]
         self.messages[:] = [msg for msg in self.messages if msg.name != name]
 
-    def AddService(self,service):
-        self.DeleteService(service.name)
+    def addService(self,service):
+        self.deleteService(service.name)
         self.services.append(service)
         self.srv_dict[service.name] = service
-    def DeleteService(self,name):
+    def deleteService(self,name):
         if name in self.srv_dict:
             del self.srv_dict[name]
         self.services[:] = [srv for srv in self.services if srv.name != name]
 
-    def AddComponent(self,component):
-        self.DeleteComponent(component.name)
+    def addComponent(self,component):
+        self.deleteComponent(component.name)
         self.components.append(component)
         self.component_definition_dict[component.name] = component
-    def DeleteComponent(self,name):
+    def deleteComponent(self,name):
         if name in self.component_definition_dict:
             del self.component_definition_dict[name]
         self.components[:] = [comp for comp in self.components if comp.name != name]
 
-    def AddNode(self,node):
-        self.DeleteNode(node.name)
+    def addNode(self,node):
+        self.deleteNode(node.name)
         self.nodes.append(node)
         self.nodes_dict[node.name] = node
-    def DeleteNode(self,name):
+    def deleteNode(self,name):
         if name in self.nodes_dict:
             del self.nodes_dict[name]
         self.nodes[:] = [node for node in self.nodes if node.name != name]
@@ -255,6 +255,8 @@ class ROS_Component(CanvasObject):
         d = EditorDialogPopup(parent=self.canvas,title=self.name)
         if d.result != None:
             self.name = d.result[0]
+        for tmr in self.timers:
+            print tmr,":",tmr.name,tmr.period,tmr.period_unit
 
     def addTimer(self,timer):
         self.deleteTimer(timer.name)
@@ -426,20 +428,30 @@ class ROS_Subscriber(CanvasObject):
 # ROS Timer
 class ROS_Timer(CanvasObject):
     
-    def __init__(self):
+    def __init__(self,name="",period="0.0",period_unit=""):
         CanvasObject.__init__(self)
         # Name of timer
-        self.name = ""
+        self.name = name
         # Period of timer
-        self.period = "0.0"
+        self.period = period
         # Unit of timer period
-        self.period_unit = ""
+        self.period_unit = period_unit
 
     def Edit(self):
         print "Popup window to edit name, period, and units"
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        d = EditorDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList=[
+                ["Name:",self.name,nameStringChars],
+                ["Period:",self.period,digitStringChars],
+                ["Units:",self.period_unit,unitStringChars]
+            ]
+        )
         if d.result != None:
             self.name = d.result[0]
+            self.period = d.result[1]
+            self.period_unit = d.result[2]
 
 # ROS Node
 class ROS_Node(CanvasObject):
@@ -495,6 +507,7 @@ class ROS_Node(CanvasObject):
 class Listener(ROSListener):
     def __init__(self):
         self.workspace = ROS_Workspace()
+        self.timers = []
 
     # Create a new workspace object
     def enterDefine_workspace(self, ctx):
@@ -510,8 +523,7 @@ class Listener(ROSListener):
 
     # On exit, add the new package to list of packages in workspace
     def exitRos_packages(self, ctx):
-        self.workspace.packages.append(self.package)
-        self.workspace.packages_dict[self.package.name] = self.package
+        self.workspace.addPackage(self.package)
 
     # Save the package name
     def enterPackage_name(self, ctx):
@@ -544,8 +556,7 @@ class Listener(ROSListener):
     # On exit, append message to list of messages in package
     def exitRos_msg(self, ctx):
         # Append new ros msg onto list of package messages
-        self.package.messages.append(self.message)
-        self.package.msg_dict[self.message.name] = self.message
+        self.package.addMessage(self.message)
 
     # Create a new ROS Service object
     def enterRos_srv(self, ctx):
@@ -604,8 +615,7 @@ class Listener(ROSListener):
 
     # On exit, add the service to the list of services in the package
     def exitRos_srv(self, ctx):
-        self.package.services.append(self.service)
-        self.package.srv_dict[self.service.name] = self.service
+        self.package.addService(self.service)
         
     # Create a new component object
     def enterRos_component(self, ctx):
@@ -668,16 +678,17 @@ class Listener(ROSListener):
 
     # Save all component timers
     def enterRos_timer(self, ctx):
-        self.timer = ROS_Timer()
         for child in ctx.getChildren():
             context = str(type(child))
             if "Timer_nameContext" in context:
-                self.timer.name = child.getText()
+                name = child.getText()
             elif "Timer_periodContext" in context:
-                self.timer.period = child.getText()
+                period = child.getText()
             elif "Period_unitContext" in context:
-                self.timer.period_unit = child.getText()
-        self.component.addTimer(self.timer)
+                period_unit = child.getText()
+        self.component.addTimer(ROS_Timer(name=name,period=period,period_unit=period_unit))
+        for tmr in self.component.timers:
+            print tmr.name,tmr.period,tmr.period_unit
 
     # On exit, add component to list of components in package
     def exitRos_component(self, ctx):

@@ -4,58 +4,7 @@ import tkMessageBox
 import tkSimpleDialog
 from collections import OrderedDict
 
-canvasObjectDict = OrderedDict()
-
-editorDialogsDict = OrderedDict()
-nameDialogDict = OrderedDict()
-nodeDialogDict = OrderedDict()
-compDialogDict = OrderedDict()
-msgDialogDict = OrderedDict()
-srvDialogDict = OrderedDict()
-tmrDialogDict = OrderedDict()
-editorDialogsDict['name'] = nameDialogDict
-editorDialogsDict['node'] = nodeDialogDict
-editorDialogsDict['component'] = compDialogDict
-editorDialogsDict['message'] = msgDialogDict
-editorDialogsDict['service'] = srvDialogDict
-editorDialogsDict['timer'] = tmrDialogDict
-
-badCharString = ";,. `~[]{}:'\"/?\\<>*&^%$#@!()"
-
-def badCharsInString(string,badChars=badCharString):
-    for char in badChars:
-        if char in string:
-            return True
-    return False
-
-class EditorDialogPopup(tkSimpleDialog.Dialog):
-    def body(self,master):
-        self.entries = []
-
-        Label(master, text="Name:").grid(row=0)
-
-        entry1 = Entry(master)
-        self.entries.append(entry1)
-        self.entries[-1].grid(row=0,column=1)
-
-        return self.entries[0] # initial focus
-
-    def validate(self):
-        for entry in self.entries:
-            val = entry.get()
-            if badCharsInString(val):
-                tkMessageBox.showwarning(
-                    "Bad Input",
-                    "Input cannot contain\n{0}\n, try again.".format(badCharString)
-                )
-                return 0
-        return 1
-
-    def apply(self):
-        self.result= []
-        for entry in self.entries:
-            val = entry.get()
-            self.result.append(val)
+from rosmod_popup import *
 
 class PaddingOptions():
     def __init__(self, childOffset = (5,10), childPadding=(0,15)):
@@ -108,8 +57,8 @@ class CanvasObject(CanvasOptions):
         # these need to be provided
         self.position = position
         self.canvas = canvas
-        self.tags += (self.name,None)
-        canvasObjectDict[self.name] = self
+        self.tags += (self,None)
+        canvasObjectDict["{0}".format(self)] = self
         
     def buildChildList(self):
         pass
