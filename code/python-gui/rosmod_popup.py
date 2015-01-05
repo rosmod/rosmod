@@ -173,9 +173,9 @@ class ReferenceDialogPopup(Dialog):
         for val in self.valsList[1:]:
             Label(master, text=val[0]).grid(row=r)
             var = StringVar()
-            self.optionsDict["{0}".format(var)] = val[1]
+            self.optionsDict["{0}".format(var)] = val[2]
             self.stringVars.append(var)
-            self.stringVars[-1].set("")
+            self.stringVars[-1].set(val[1])
             option1 = OptionMenu(
                 master,
                 self.stringVars[-1], 

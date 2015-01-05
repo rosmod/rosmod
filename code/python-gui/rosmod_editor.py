@@ -361,7 +361,6 @@ class PackageViewer(EditorFrame):
 
     def ContextDeletePackage(self):
         if self.buttonVar.get() != None and self.buttonVar.get() != "":
-            print "removing {0}".format(self.buttonVar.get())
             self.model.DeletePackage(self.buttonVar.get())
         self.buttonVar.set("")
         self.Update(self.model,self.buttonVar,self.buttonCommand)

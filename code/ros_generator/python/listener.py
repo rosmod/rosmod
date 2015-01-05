@@ -183,7 +183,7 @@ class ROS_Server(CanvasObject):
             title=self.name,
             initValsList = [
                 ["Name:",self.name,nameStringChars],
-                ["Service:",options]
+                ["Service:",self.service.name,options]
             ]
         )
         if d.result != None:
@@ -207,7 +207,7 @@ class ROS_Client(CanvasObject):
             title=self.name,
             initValsList = [
                 ["Name:",self.name,nameStringChars],
-                ["Service:",options]
+                ["Service:",self.service.name,options]
             ]
         )
         if d.result != None:
@@ -288,7 +288,7 @@ class ROS_Component(CanvasObject):
                 title=self.name,
                 initValsList=[
                     ["Name:",self.name,nameStringChars],
-                    ["Definition:",options]
+                    ["Definition:",self.comp_type.name,options]
                 ]
             )
             if d.result != None:
@@ -456,7 +456,7 @@ class ROS_Publisher(CanvasObject):
             title=self.name,
             initValsList = [
                 ["Name:",self.name,nameStringChars],
-                ["Topic:",options]
+                ["Topic:",self.topic.name,options]
             ]
         )
         if d.result != None:
@@ -481,7 +481,7 @@ class ROS_Subscriber(CanvasObject):
             title=self.name,
             initValsList = [
                 ["Name:",self.name,nameStringChars],
-                ["Topic:",options]
+                ["Topic:",self.topic.name,options]
             ]
         )
         if d.result != None:
