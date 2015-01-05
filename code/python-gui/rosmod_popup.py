@@ -53,6 +53,7 @@ class Dialog(Toplevel):
         self.entries = []
         self.entryStrings = {}
         self.options = []
+        self.stringVars = []
         self.result = None
 
         body = Frame(self)
@@ -136,16 +137,60 @@ class EditorDialogPopup(Dialog):
             self.entries[-1].insert(0,vals[1])
             r += 1
 
-        self.var = StringVar()
-        self.var.set("a")
-        option1 = OptionMenu(master,self.var, "a","b","c", command = self.test)
-        self.options.append(option1)
-        self.options[-1].grid(row=1,column=1)
+        return self.entries[0] # initial focus
+
+    def validate(self):
+        for entry in self.entries:
+            val = entry.get()
+            if not validString(val,self.entryStrings[entry]):
+                tkMessageBox.showwarning(
+                    "Bad Input",
+                    "Input:\n{0}\n may only contain:\n{1}\nTry again.".format(val,self.entryStrings[entry])
+                )
+                return 0
+        return 1
+
+    def apply(self):
+        self.result = []
+        for entry in self.entries:
+            val = entry.get()
+            self.result.append(val)
+
+class ReferenceDialogPopup(Dialog):
+    def body(self, master):
+
+        r = 0
+        Label(master, text=self.valsList[0][0]).grid(row=r)
+        entry = Entry(master)
+        self.entryStrings[entry] = self.valsList[0][2]
+        self.entries.append(entry)
+        self.entries[-1].grid(row=r,column=1)
+        self.entries[-1].insert(0,self.valsList[0][1])
+        r += 1
+        
+        self.optionsDict = OrderedDict()
+
+        for val in self.valsList[1:]:
+            Label(master, text=val[0]).grid(row=r)
+            self.optionsDict[val[0]] = val[1]
+            var = StringVar()
+            self.stringVars.append(var)
+            self.stringVars[-1].set("")
+            option1 = OptionMenu(
+                master,
+                self.stringVars[-1], 
+                *self.optionsDict[val[0]].keys(), 
+                command = self.test
+            )
+            self.options.append(option1)
+            self.options[-1].grid(row=r,column=1)
+            r += 1
 
         return self.entries[0] # initial focus
 
     def test(self,event):
-        print self.var.get()
+        for var in self.stringVars:
+            print var.get()
 
     def validate(self):
         for entry in self.entries:

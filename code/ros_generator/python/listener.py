@@ -252,11 +252,28 @@ class ROS_Component(CanvasObject):
 
     def Edit(self):
         print "popup window to edit name"
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
-        if d.result != None:
-            self.name = d.result[0]
-        for tmr in self.timers:
-            print tmr,":",tmr.name,tmr.period,tmr.period_unit
+        if self.isObjRef == True:
+            options = OrderedDict()
+            options["def1"] = 1
+            options["def2"] = 2
+            d = ReferenceDialogPopup(
+                parent=self.canvas,
+                title=self.name,
+                initValsList=[
+                    ["Name:",self.name,nameStringChars],
+                    ["Definition:",options]
+                ]
+            )
+            if d.result != None:
+                self.name = d.result[0]
+        else:
+            d = EditorDialogPopup(
+                parent=self.canvas,
+                title=self.name,
+                initValsList = [["Name:",self.name,nameStringChars]]
+            )
+            if d.result != None:
+                self.name = d.result[0]
 
     def addTimer(self,timer):
         self.deleteTimer(timer.name)
@@ -405,7 +422,17 @@ class ROS_Publisher(CanvasObject):
 
     def Edit(self):
         print "Popup window to edit name and topic"
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        options = OrderedDict()
+        options["topic1"] = 0
+        options["topic2"] = 4
+        d = ReferenceDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [
+                ["Name:",self.name,nameStringChars],
+                ["Topic:",options]
+            ]
+        )
         if d.result != None:
             self.name = d.result[0]
 
@@ -687,8 +714,6 @@ class Listener(ROSListener):
             elif "Period_unitContext" in context:
                 period_unit = child.getText()
         self.component.addTimer(ROS_Timer(name=name,period=period,period_unit=period_unit))
-        for tmr in self.component.timers:
-            print tmr.name,tmr.period,tmr.period_unit
 
     # On exit, add component to list of components in package
     def exitRos_component(self, ctx):

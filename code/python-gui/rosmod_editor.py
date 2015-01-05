@@ -214,9 +214,6 @@ class ModelViewer(EditorFrame):
         self.Update(self.model,self.initPos,self.padding)
 
     def ContextEdit(self):
-        print "Editing active object {0}".format(self.activeObject)
-        if self.activeObject.isObjRef == True:
-            print "Active object refers to object {0}".format(self.activeObject.objRef)
         self.activeObject.Edit()
         self.Update(self.model,self.initPos,self.padding)
 
@@ -333,7 +330,7 @@ class PackageViewer(EditorFrame):
         d = EditorDialogPopup(parent=self.master,title="New Package")
         if d.result != None:
             newObj.name = d.result[0]
-            self.model.AddPackage(newObj)
+            self.model.addPackage(newObj)
             self.Update(self.model,self.buttonVar,self.buttonCommand)
             self.buttonCommand()
 
