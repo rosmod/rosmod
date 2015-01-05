@@ -29,14 +29,26 @@ To create a new model, navigate to the _File_ menu and click on _New Model_.
 
 ![Alt text](./screenshots/fileDialog.png "File Dialog")
 
+Upon doing this, a popup window will appear asking you to name the toplevel workspace for this model.  The workspace is what contains all packages in the model.  
+
+![Alt text](./screenshots/workspace.png "Workspace Popup")
+
 ### Opening an Existing Model
 -----------------------------
+To open an existing model, navigate to the _File_ menu and click on _Open Model_. An open file dialog will popup which will allow you to navigate to the proper folder and file which you want to open.  
+
+![Alt text](./screenshots/openFile.png "Open File Dialog")
 
 ### Editing a Model
 -------------------
 
 ### Saving a Model
 ------------------
+Saving a model in the editor means translating it back into the ROSML file format.  Please note that currently if you have comments in a ROSML model file and choose to overwrite it using the editor, the comments will be lost.  
+
+Saving a model (either through _Save Model_ or _Save Model As_) writes the model to the disk.  If you have created a new model and have not saved it, either option will require you to choose a filename with a dialog.  If you have opened a model or have already saved your new model, then only _Save As_ will prompt you for a filename with a dialog.  
+
+![Alt text](./screenshots/saveFile.png "Save File Dialog")
 
 ### Generating code for a Model
 -------------------------------
