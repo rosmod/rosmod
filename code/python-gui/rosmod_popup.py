@@ -22,7 +22,7 @@ editorDialogsDict['timer'] = tmrDialogDict
 digitStringChars = "0987654321."
 nameStringChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_-"
 unitStringChars = "munpfs"
-fieldStringChars = nameStringChars + digitStringChars + "[]:"
+fieldStringChars = nameStringChars + digitStringChars + "[]/"
 
 def validString(string,validChars):
     for char in string:
@@ -232,7 +232,9 @@ class TypeDialogPopup(Dialog):
         for val in self.valsList[1:]:
             Label(master, text=val[0]).grid(row=r)
             text1 = Text(
-                master
+                master=master,
+                height=8,
+                width=30
             )
             text1.insert(END,self.fieldsToString(val[1]))
             self.options.append(text1)
@@ -247,7 +249,7 @@ class TypeDialogPopup(Dialog):
             retStr += "{0} {1}".format(fields[0],fields[1])
             if len(fields) == 3:
                 retStr += " = {0}".format(fields[2])
-            retStr += ";\n"
+            retStr += "\n"
         return retStr
 
     def parseFields(self,stringLine):
@@ -258,16 +260,16 @@ class TypeDialogPopup(Dialog):
         if validString(splits[0],fieldStringChars):
             fields = []
             fields.append(splits[0])
-            if len(splits) == 2 and splits[1][-1] == ';':
-                if validString(splits[1][0:-1],fieldStringChars):
-                    fields.append(splits[1][0:-1])
-                else:
-                    fields = None
-            elif len(splits) == 4 and splits[2] == '=' and splits[3][-1] == ';':
+            if len(splits) == 2:
                 if validString(splits[1],fieldStringChars):
                     fields.append(splits[1])
-                    if validString(splits[3][0:-1],fieldStringChars):
-                        fields.append(splits[3][0:-1])
+                else:
+                    fields = None
+            elif len(splits) == 4 and splits[2] == '=':
+                if validString(splits[1],fieldStringChars):
+                    fields.append(splits[1])
+                    if validString(splits[3],fieldStringChars):
+                        fields.append(splits[3])
                     else:
                         fields = None
                 else:

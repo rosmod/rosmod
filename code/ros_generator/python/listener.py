@@ -684,6 +684,7 @@ class Listener(ROSListener):
     def enterMsg_field(self,ctx):
         field_type = ""
         field_name = ""
+        field_value = ""
         for child in ctx.getChildren():
             context = str(type(child))
             # Find the message field type
@@ -692,9 +693,15 @@ class Listener(ROSListener):
             # Find the message field name
             if "Msg_field_nameContext" in context:
                 field_name = child.getText()
+            # Find the message field value
+            if "Msg_field_valueContext" in context:
+                field_value = child.getText()
         if field_type != "":
             if field_name != "":
-                self.message.fields.append([field_type, field_name])
+                if field_value != "":
+                    self.message.fields.append([field_type, field_name, field_value])
+                else:
+                    self.message.fields.append([field_type, field_name])
 
     # On exit, append message to list of messages in package
     def exitRos_msg(self, ctx):
