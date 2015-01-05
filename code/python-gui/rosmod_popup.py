@@ -5,20 +5,6 @@ from collections import OrderedDict
 
 canvasObjectDict = OrderedDict()
 
-editorDialogsDict = OrderedDict()
-nameDialogDict = OrderedDict()
-nodeDialogDict = OrderedDict()
-compDialogDict = OrderedDict()
-msgDialogDict = OrderedDict()
-srvDialogDict = OrderedDict()
-tmrDialogDict = OrderedDict()
-editorDialogsDict['name'] = nameDialogDict
-editorDialogsDict['node'] = nodeDialogDict
-editorDialogsDict['component'] = compDialogDict
-editorDialogsDict['message'] = msgDialogDict
-editorDialogsDict['service'] = srvDialogDict
-editorDialogsDict['timer'] = tmrDialogDict
-
 digitStringChars = "0987654321."
 nameStringChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_-"
 unitStringChars = "munpfs"

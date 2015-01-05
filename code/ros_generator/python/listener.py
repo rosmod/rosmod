@@ -631,7 +631,7 @@ class ROS_Node(CanvasObject):
     def buildChildList(self):
         self.cleanChildren()
         for obj in self.components:
-            objType = 'component'
+            objType = 'compInst'
             obj.isObjRef = True
             obj.objRef = obj.comp_type
             obj.setCanvasParams(

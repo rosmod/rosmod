@@ -87,6 +87,15 @@ canvasOptionsDict['component'] = CanvasOptions(
     ),
     tags = ("object","component")
 )
+canvasOptionsDict['compInst'] = CanvasOptions(
+    canvasPaddingOptions,
+    canvasFontOptions,
+    DrawOptions(
+        color = "red",
+        minSize = (10,10),
+    ),
+    tags = ("object","compInst")
+)
 canvasOptionsDict['node'] = CanvasOptions(
     canvasPaddingOptions,
     canvasFontOptions,

@@ -113,12 +113,14 @@ class ModelViewer(EditorFrame):
         self.msgContextDict = OrderedDict()
         self.tmrContextDict = OrderedDict()
         self.compContextDict = OrderedDict()
+        self.compInstanceContextDict = OrderedDict()
         self.nodeContextDict = OrderedDict()
         self.editorContextDict['canvas'] = self.canvasContextDict
         self.editorContextDict['service'] = self.srvContextDict
         self.editorContextDict['message'] = self.msgContextDict
         self.editorContextDict['timer'] = self.tmrContextDict
         self.editorContextDict['component'] = self.compContextDict
+        self.editorContextDict['compInst'] = self.compInstanceContextDict
         self.editorContextDict['node'] = self.nodeContextDict
 
         self.srvContextDict['Edit'] = self.ContextEdit
@@ -137,6 +139,9 @@ class ModelViewer(EditorFrame):
         self.compContextDict['Add Subscriber'] = self.CompAddSub
         self.compContextDict['Add Client'] = self.CompAddClient
         self.compContextDict['Add Server'] = self.CompAddServer
+        
+        self.compInstanceContextDict['Edit'] = self.ContextEdit
+        self.compInstanceContextDict['Delete'] = self.ContextDelete
 
         self.nodeContextDict['Edit'] = self.ContextEdit
         self.nodeContextDict['Delete'] = self.ContextDelete
