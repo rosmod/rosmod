@@ -148,6 +148,11 @@ class ROS_Message(CanvasObject):
         # List of msg fields
         self.fields = []
 
+    def Delete(self):
+        for comp in self.package.components:
+            comp.deleteMessage(self.name)
+        self.package.deleteMessage(self.name)
+
     def Edit(self):
         print "Popup window to edit name and add fields"
         d = EditorDialogPopup(parent=self.canvas,title=self.name)
@@ -237,6 +242,11 @@ class ROS_Service(CanvasObject):
         self.request_fields = []
         # List of response fields
         self.response_fields = []
+
+    def Delete(self):
+        for comp in self.package.components:
+            comp.deleteService(self.name)
+        self.package.deleteService(self.name)
 
     def Edit(self):
         print "Popup window to edit name and add requests and responses"
@@ -328,6 +338,14 @@ class ROS_Component(CanvasObject):
             )
             if d.result != None:
                 self.name = d.result[0]
+
+    def deleteService(self,name):
+        self.required_services[:] = [srv for srv in self.required_services if srv.service.name != name]
+        self.provided_services[:] = [srv for srv in self.provided_services if srv.service.name != name]
+
+    def deleteMessage(self,name):
+        self.publishers[:] = [msg for msg in self.publishers if msg.topic.name != name]
+        self.subscribers[:] = [msg for msg in self.subscribers if msg.topic.name != name]
 
     def addTimer(self,timer):
         self.deleteTimer(timer.name)
@@ -666,6 +684,7 @@ class Listener(ROSListener):
     # On exit, append message to list of messages in package
     def exitRos_msg(self, ctx):
         # Append new ros msg onto list of package messages
+        self.message.package = self.package
         self.package.addMessage(self.message)
 
     # Create a new ROS Service object
@@ -725,6 +744,7 @@ class Listener(ROSListener):
 
     # On exit, add the service to the list of services in the package
     def exitRos_srv(self, ctx):
+        self.service.package = self.package
         self.package.addService(self.service)
         
     # Create a new component object
