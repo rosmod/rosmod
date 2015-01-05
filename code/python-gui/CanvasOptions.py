@@ -71,6 +71,8 @@ class CanvasObject(CanvasOptions):
             result = d.result[0]
         self.name = result
             
+    def Delete(self):
+        pass
 
     def cleanChildren(self):
         self.children.clear()

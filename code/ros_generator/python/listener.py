@@ -178,6 +178,8 @@ class ROS_Server(CanvasObject):
     def Edit(self):
         options = OrderedDict()
         options = self.package.srv_dict
+        if self.service == None:
+            self.service = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
             title=self.name,
@@ -202,6 +204,8 @@ class ROS_Client(CanvasObject):
     def Edit(self):
         options = OrderedDict()
         options = self.package.srv_dict
+        if self.service == None:
+            self.service = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
             title=self.name,
@@ -279,10 +283,24 @@ class ROS_Component(CanvasObject):
         self.timers = []
         # type of component, i.e. its definition
         self.comp_type = None
+        self.parentNode = None
+
+    def Delete(self):
+        if self.isObjRef == True:
+            # is an instance in a node
+            if self.parentNode != None:
+                self.parentNode.deleteComponent(self.name)
+        else:
+            # is a definition
+            for node in self.package.nodes:
+                node.deleteCompDef(self)
+            self.package.deleteComponent(self.name)
 
     def Edit(self):
         if self.isObjRef == True:
             options = self.package.component_definition_dict
+            if self.comp_type == None:
+                self.comp_type = options[options.keys()[0]]
             d = ReferenceDialogPopup(
                 parent=self.canvas,
                 title=self.name,
@@ -451,6 +469,8 @@ class ROS_Publisher(CanvasObject):
     def Edit(self):
         options = OrderedDict()
         options = self.package.msg_dict
+        if self.topic == None:
+            self.topic = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
             title=self.name,
@@ -476,6 +496,8 @@ class ROS_Subscriber(CanvasObject):
     def Edit(self):
         options = OrderedDict()
         options = self.package.msg_dict
+        if self.topic == None:
+            self.topic = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
             title=self.name,
@@ -491,7 +513,7 @@ class ROS_Subscriber(CanvasObject):
 # ROS Timer
 class ROS_Timer(CanvasObject):
     
-    def __init__(self,name="",period="0.0",period_unit=""):
+    def __init__(self,name="",period="0.0",period_unit="s"):
         CanvasObject.__init__(self)
         # Name of timer
         self.name = name
@@ -532,11 +554,18 @@ class ROS_Node(CanvasObject):
         if d.result != None:
             self.name = d.result[0]
 
+    def Delete(self):
+        self.package.deleteNode(self.name)
+
     def addComponent(self,component):
         self.deleteComponent(component.name)
         self.components.append(component)
     def deleteComponent(self,name):
         self.components[:] = [comp for comp in self.components if comp.name != name]
+
+    def deleteCompDef(self,compDef):
+        self.components[:] = [comp for comp in self.components if comp.comp_type != compDef]
+        self.comp_defs[:] = [comp for comp in self.comp_defs if comp != compDef.name]
 
     def __str__(self):
         node = "\n        node " + self.name
@@ -781,6 +810,7 @@ class Listener(ROSListener):
         self.component = ROS_Component()
         self.component.name = instance
         self.component.comp_type = self.package.component_definition_dict[comp_type]
+        self.component.parentNode = self.node
         self.node.comp_defs.append(comp_type)
         self.component.package = self.package
         self.node.addComponent(self.component)

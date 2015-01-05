@@ -213,9 +213,7 @@ class ModelViewer(EditorFrame):
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextDelete(self):
-        print "Deleting active object {0}".format(self.activeObject)
-        if self.activeObject.isObjRef == True:
-            print "Active object refers to object {0}".format(self.activeObject.objRef)
+        self.activeObject.Delete()
         self.Update(self.model,self.initPos,self.padding)
 
     def ContextEdit(self):
