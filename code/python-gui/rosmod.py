@@ -71,13 +71,13 @@ class App:
         self.editorWidth = 800
         self.objectWidth = 100
 
-        self.Model = rosgen.Listener()
-
         self.optionsDict = rosgen.canvasOptionsDict
 
         self.master.protocol("WM_DELETE_WINDOW", self.close_Callback)
 
         self.editor = None
+        self.fileName = None
+        self.Model = None
 
     def init_Editor(self):
         if self.editor == None:
@@ -134,24 +134,36 @@ class App:
             self.editor.reset(self.Model.workspace)
 
     def menubar_Save_Callback(self):
-        if self.fileName != None:
-            fileName = self.fileName
-            # Overwrite the model file
-            self.statusBar.set("Saved model!")
-            rosgen.generate_model(self.Model.workspace, fileName, self.model_path)
+        if self.Model == None or self.Model.workspace == None:
+            tkMessageBox.showerror("Save File","Need to create new model first!")
+            return
+        if self.fileName == None:
+            filePath = tkFileDialog.asksaveasfilename(
+                parent=self.master,
+                filetypes=self.fileFormats,
+                title="Save the model as..."
+            )
+            head, self.fileName = os.path.split(filePath)
+        fileName = self.fileName
+        # Overwrite the model file
+        self.statusBar.set("Saved model!")
+        rosgen.generate_model(self.Model.workspace, fileName, self.model_path)
 
     def menubar_Save_As_Callback(self):
+        if self.Model == None or self.Model.workspace == None:
+            tkMessageBox.showerror("Save File","Need to create new model first!")
+            return
         filePath = tkFileDialog.asksaveasfilename(
             parent=self.master,
             filetypes=self.fileFormats,
             title="Save the model as..."
         )
-        head, fileName = os.path.split(filePath)
-        self.statusBar.set("Saved model as " + fileName)
-        if len(fileName) > 0:
-            self.statusBar.set("Saving model as {0}".format(fileName))
+        head, self.fileName = os.path.split(filePath)
+        self.statusBar.set("Saved model as " + self.fileName)
+        if len(self.fileName) > 0:
+            self.statusBar.set("Saving model as {0}".format(self.fileName))
         # Save fileName.rosml model at filePath
-        rosgen.generate_model(self.Model.workspace, fileName, head)
+        rosgen.generate_model(self.Model.workspace, self.fileName, head)
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")

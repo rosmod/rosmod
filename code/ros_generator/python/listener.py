@@ -158,7 +158,6 @@ class ROS_Message(CanvasObject):
         d = EditorDialogPopup(parent=self.canvas,title=self.name)
         if d.result != None:
             self.name = d.result[0]
-            
 
     def __str__(self):
         msg = "\n        msg " + self.name
