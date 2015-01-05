@@ -154,10 +154,17 @@ class ROS_Message(CanvasObject):
         self.package.deleteMessage(self.name)
 
     def Edit(self):
-        print "Popup window to edit name and add fields"
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        d = TypeDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [
+                ["Name:",self.name,nameStringChars],
+                ["Fields:",self.fields]
+            ]
+        )
         if d.result != None:
             self.name = d.result[0]
+            self.fields = d.result[1]
 
     def __str__(self):
         msg = "\n        msg " + self.name
@@ -248,10 +255,19 @@ class ROS_Service(CanvasObject):
         self.package.deleteService(self.name)
 
     def Edit(self):
-        print "Popup window to edit name and add requests and responses"
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        d = TypeDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [
+                ["Name:",self.name,nameStringChars],
+                ["Requests:",self.request_fields],
+                ["Responses:",self.response_fields]
+            ]
+        )
         if d.result != None:
             self.name = d.result[0]
+            self.request_fields = d.result[1]
+            self.response_fields = d.result[2]
         
     def __str__(self):
         srv_str = "\n        srv " + self.name
@@ -277,7 +293,7 @@ class ROS_Service(CanvasObject):
                 else:
                     srv_str += "\n                " 
                     srv_str += field[0] + " " + field[1] + ";"
-            srv_str += "\n             }"
+            srv_str += "\n            }"
         srv_str += "\n        }"
         return srv_str
 

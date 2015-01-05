@@ -202,6 +202,20 @@ class ReferenceDialogPopup(Dialog):
 
 
 class TypeDialogPopup(Dialog):
+
+    def buttonbox(self):
+        box = Frame(self)
+
+        w = Button(box, text="OK", width=10, command=self.ok, default=ACTIVE)
+        w.pack(side=LEFT, padx=5, pady=5)
+        w = Button(box, text="Cancel", width=10, command=self.cancel)
+        w.pack(side=LEFT, padx=5, pady=5)
+
+        #self.bind("<Return>", self.ok)
+        self.bind("<Escape>", self.cancel)
+
+        box.pack()
+
     def body(self, master):
 
         r = 0
@@ -217,36 +231,79 @@ class TypeDialogPopup(Dialog):
 
         for val in self.valsList[1:]:
             Label(master, text=val[0]).grid(row=r)
-            var = StringVar()
-            self.optionsDict["{0}".format(var)] = val[2]
-            self.stringVars.append(var)
-            self.stringVars[-1].set(val[1])
-            option1 = OptionMenu(
-                master,
-                self.stringVars[-1], 
-                *self.optionsDict["{0}".format(var)].keys()
+            text1 = Text(
+                master
             )
-            self.options.append(option1)
+            text1.insert(END,self.fieldsToString(val[1]))
+            self.options.append(text1)
             self.options[-1].grid(row=r,column=1)
             r += 1
 
         return self.entries[0] # initial focus
 
+    def fieldsToString(self,fieldsList):
+        retStr = ""
+        for fields in fieldsList:
+            retStr += "{0} {1}".format(fields[0],fields[1])
+            if len(fields) == 3:
+                retStr += " = {0}".format(fields[2])
+            retStr += ";\n"
+        return retStr
+
+    def parseFields(self,stringLine):
+        fields = None
+        splits = stringLine.split(' ')
+        if len(splits) < 2:
+            return fields
+        if validString(splits[0],fieldStringChars):
+            fields = []
+            fields.append(splits[0])
+            if len(splits) == 2 and splits[1][-1] == ';':
+                if validString(splits[1][0:-1],fieldStringChars):
+                    fields.append(splits[1][0:-1])
+                else:
+                    fields = None
+            elif len(splits) == 4 and splits[2] == '=' and splits[3][-1] == ';':
+                if validString(splits[1],fieldStringChars):
+                    fields.append(splits[1])
+                    if validString(splits[3][0:-1],fieldStringChars):
+                        fields.append(splits[3][0:-1])
+                    else:
+                        fields = None
+                else:
+                    fields = None
+            else:
+                fields = None
+        return fields
+
     def validate(self):
-        for entry in self.entries:
-            val = entry.get()
-            if not validString(val,self.entryStrings[entry]):
-                tkMessageBox.showwarning(
-                    "Bad Input",
-                    "Input:\n{0}\n may only contain:\n{1}\nTry again.".format(val,self.entryStrings[entry])
-                )
-                return 0
+        for textBox in self.options:
+            text = textBox.get(1.0,END)
+            lines = text.split("\n")
+            for line in lines:
+                if len(line) == 0:
+                    continue
+                fields = self.parseFields(line)
+                if fields == None:
+                    tkMessageBox.showwarning(
+                        "Bad Input",
+                        "Input:\n{0}\nmust be ROS formatted, please try again.".format(line)
+                    )
+                    return 0
         return 1
 
     def apply(self):
         self.result = []
         for entry in self.entries:
             val = entry.get()
-            self.result.append(val)
-        for var in self.stringVars:
-            self.result.append(self.optionsDict["{0}".format(var)][var.get()])
+            self.result.append(val)        
+        for textBox in self.options:
+            text = textBox.get(1.0,END)
+            lines = text.split("\n")
+            boxFields = []
+            for line in lines:
+                fields = self.parseFields(line)
+                if fields != None:
+                    boxFields.append(fields)
+            self.result.append(boxFields)
+

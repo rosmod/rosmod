@@ -225,6 +225,7 @@ class ModelViewer(EditorFrame):
         self.ConfigureNewObject(newObj,'server')
         newObj.Edit()
         if newObj.name != "":
+            newObj.parentComp = self.activeObject
             self.activeObject.addServer(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -233,6 +234,7 @@ class ModelViewer(EditorFrame):
         self.ConfigureNewObject(newObj,'client')
         newObj.Edit()
         if newObj.name != "":
+            newObj.parentComp = self.activeObject
             self.activeObject.addClient(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -241,6 +243,7 @@ class ModelViewer(EditorFrame):
         self.ConfigureNewObject(newObj,'subscriber')
         newObj.Edit()
         if newObj.name != "":
+            newObj.parentComp = self.activeObject
             self.activeObject.addSubscriber(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -249,6 +252,7 @@ class ModelViewer(EditorFrame):
         self.ConfigureNewObject(newObj,'publisher')
         newObj.Edit()
         if newObj.name != "":
+            newObj.parentComp = self.activeObject
             self.activeObject.addPublisher(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -257,6 +261,7 @@ class ModelViewer(EditorFrame):
         self.ConfigureNewObject(newObj,'timer')
         newObj.Edit()
         if newObj.name != "":
+            newObj.parentComp = self.activeObject
             self.activeObject.addTimer(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -265,6 +270,7 @@ class ModelViewer(EditorFrame):
         self.ConfigureNewObject(newObj,'component')
         newObj.Edit()
         if newObj.name != "":
+            newObj.parentNode = self.activeObject
             self.activeObject.addComponent(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -359,7 +365,7 @@ class PackageViewer(EditorFrame):
 
     def ContextDeletePackage(self):
         if self.buttonVar.get() != None and self.buttonVar.get() != "":
-            self.model.DeletePackage(self.buttonVar.get())
+            self.model.deletePackage(self.buttonVar.get())
         self.buttonVar.set("")
         self.Update(self.model,self.buttonVar,self.buttonCommand)
         self.buttonCommand()
