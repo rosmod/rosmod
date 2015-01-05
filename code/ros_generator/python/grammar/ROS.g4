@@ -68,6 +68,7 @@ messages
  * Each field consists of:
  * (1) Field Type
  * (2) Field Name
+ * (3) Field Value
  */
 ros_msg
     :   'msg' msg_name
@@ -83,7 +84,7 @@ msg_name
 
 // ROS msg field
 msg_field
-    :   (msg_field_type msg_field_name ';')
+    :   (msg_field_type msg_field_name ('=' msg_field_value)?  ';')
     ;
 
 // Type of message field
@@ -94,6 +95,11 @@ msg_field_type
 // Name of message field
 msg_field_name
     :   ID
+    ;
+
+// Message Field value - the field becomes a const
+msg_field_value
+    :   ( ID | INT | DOUBLE | BOOL)
     ;
 
 /*

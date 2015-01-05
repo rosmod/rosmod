@@ -193,6 +193,15 @@ class ROSListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSParser#msg_field_value.
+    def enterMsg_field_value(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSParser#msg_field_value.
+    def exitMsg_field_value(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSParser#req_argument.
     def enterReq_argument(self, ctx):
         pass
