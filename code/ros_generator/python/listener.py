@@ -281,11 +281,8 @@ class ROS_Component(CanvasObject):
         self.comp_type = None
 
     def Edit(self):
-        print "popup window to edit name"
         if self.isObjRef == True:
-            options = OrderedDict()
-            options["def1"] = 1
-            options["def2"] = 2
+            options = self.package.component_definition_dict
             d = ReferenceDialogPopup(
                 parent=self.canvas,
                 title=self.name,
@@ -296,6 +293,7 @@ class ROS_Component(CanvasObject):
             )
             if d.result != None:
                 self.name = d.result[0]
+                self.comp_type = d.result[1]
         else:
             d = EditorDialogPopup(
                 parent=self.canvas,
@@ -503,7 +501,6 @@ class ROS_Timer(CanvasObject):
         self.period_unit = period_unit
 
     def Edit(self):
-        print "Popup window to edit name, period, and units"
         d = EditorDialogPopup(
             parent=self.canvas,
             title=self.name,
@@ -531,7 +528,6 @@ class ROS_Node(CanvasObject):
         self.comp_defs = []
 
     def Edit(self):
-        print "Popup window to edit name"
         d = EditorDialogPopup(parent=self.canvas,title=self.name)
         if d.result != None:
             self.name = d.result[0]
