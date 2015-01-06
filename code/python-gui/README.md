@@ -51,6 +51,38 @@ To open an existing model, navigate to the _File_ menu and click on _Open Model_
 
 ### Editing a Model
 -------------------
+An opened or newly created model presents you with the _Package Viewer_, which displays all packages that currently exist in the model.  
+
+#### Creating and Removing Packages
+-----------------------------------
+If you right click inside the _Package Viewer_, you'll be presented with a context menu which allows you to either add a new package or delete the selected package.  
+
+![Alt text](./screenshots/packageContext.png "Package Viewer Context Menu")
+
+Any packages that exist in the workspace will be displayed as buttons in the _Package Viewer_.  The user may view the model contained within a package by clicking on the package's button, at which point the button will remain highlighted until another package is selected.  When this happens, the package viewer shrinks to allow for the viewing of the _Model Viewer_.  The _Model Viewer_ shows all objects currently contained within the model, including _services_, _messages_, _component definitions_, and _nodes_ and shows the logical connection between the objects, if any exists.  
+
+![Alt text](./screenshots/selectedPackage.png "Selected Package View")
+
+Right clicking inside the _Model Viewer_ pane brings up the model context menu, which allows for the creation of _messages_, _services_, _components_, and _nodes_.
+
+![Alt text](./screenshots/modelContext.png "Model Viewer Context Menu")
+
+#### Adding Services and Messages
+---------------------------------
+Selecting _Add Service_ or _Add Message_ from the model context menu creates dialog windows which allow you to specify the name of the message or service, as well as the fields or the requests and responses, respectively.  
+
+![Alt text](./screenshots/addService.png "Popup for adding a Service")
+
+![Alt text](./screenshots/addMessage.png "Popup for adding a Message")
+
+#### Adding Components
+----------------------
+
+##### Adding Objects to Components
+----------------------------------
+
+#### Adding Nodes
+-----------------
 
 ### Saving a Model
 ------------------
