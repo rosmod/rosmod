@@ -183,8 +183,17 @@ class App:
     ---------------------------
     '''
     def toolbar_Interpret_Callback(self):
-        self.statusBar.set("Generating ROS package files!")
+        if self.Model == None or self.Model.workspace == None:
+            tkMessageBox.showerror("Interpret Model","No active model!")
+            return
+        filePath = tkFileDialog.askdirectory(
+            parent=self.master,
+            title="Choose Directory"
+        )
+        head, self.workspaceDir = os.path.split(filePath)
+        self.model_path = os.path.abspath(os.path.dirname(self.workspaceDir))
         rosgen.generate_workspace(self.Model, self.model_path)
+        self.statusBar.set("Generated ROS Workspace into " + self.model_path)
         
     def toolbar_NetworkAnalysis_Callback(self):
         self.statusBar.set("Analyzing the network characteristics!")

@@ -19,7 +19,17 @@ Furthermore, the editor allows for the interpretation and analysis of the ROSML 
 
 ## Using the Editor
 -------------------
-This section describes how to use the ROSML editor to create, open, edit, save, and interpret a ROSML model file.  Most of the user interface for the editor is based around right-click context menus which provide the relevant actions according to the given context.  When the editor is started, the main editor pane does not exist, as no model has been initialized yet.  To initialize a model, you must either [Create a new model](#creating-a-model) or [Open an existing model](#open-an-existing-model).
+This section describes how to use the ROSML editor to create, open, edit, save, and interpret a ROSML model file.  Most of the user interface for the editor is based around right-click context menus which provide the relevant actions according to the given context.  When the editor is started, the main editor pane does not exist, as no model has been initialized yet.  
+
+The main operations covered in these subsections are
+
+  * [Creating a New Model](#creating-a-model)
+  * [Opening an Existing Model](#open-an-existing-model)
+  * [Editing a Model](#editing-a-model)
+  * [Saving a Model](#saving-a-model)
+  * [Generating Code for a Model](#generating-code-for-a-model)
+
+Note: to initialize a model, you must either [Create a new model](#creating-a-model) or [Open an existing model](#open-an-existing-model).
 
 ### Creating a Model
 --------------------
@@ -52,4 +62,4 @@ Saving a model (either through _Save Model_ or _Save Model As_) writes the model
 
 ### Generating code for a Model
 -------------------------------
-
+To generate the component code based on the model, you simply press the _Interpret_ toolbar button.  This will promp you for a location in which to save the 

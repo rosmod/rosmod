@@ -5,10 +5,10 @@ $hash_include "ros/ros.h"
 $hash_include "Component.hpp"
 
 #for $topic in $topics
-$hash_include "$package_name/${topic}.h"
+$hash_include "$package_name/${topic.name}.h"
 #end for
 #for $service in $services
-$hash_include "$package_name/${service}.h"
+$hash_include "$package_name/${service.service.name}.h"
 #end for
 
 // --------------------------------
@@ -27,7 +27,7 @@ class $component_name : public Component
 	#if $len($subscribers) > 0
 	#for $sub in $subscribers
 	// OnOneData Subscription handler for $sub.name subscriber 
-	void OnOneData(const $package_name::$sub.topic::ConstPtr& received_data); 
+	void OnOneData(const $package_name::$sub.topic.name::ConstPtr& received_data); 
  
 	#end for
 
@@ -35,8 +35,8 @@ class $component_name : public Component
 	#if $len($provided_services) > 0
 	#for $provided in $provided_services
 	// Component Service Callback
-	bool ${provided}Callback($package_name::$provided::Request  &req,
-		$package_name::$provided::Response &res);
+	bool ${provided.name}Callback($package_name::$provided.service.name::Request  &req,
+		$package_name::$provided.service.name::Response &res);
 
 	#end for
 
@@ -85,16 +85,16 @@ class $component_name : public Component
 	#end if
 	#if $len($provided_services) > 0
 	#for $provided in $provided_services
-	// ROS Service Server - ${provided}_server
-	ros::ServiceServer ${provided}_server;
+	// ROS Service Server - ${provided.name}_server
+	ros::ServiceServer ${provided.name}_server;
 
 	#end for
 
 	#end if
 	#if $len($required_services) > 0
 	#for $required in $required_services
-	// ROS Service Client - ${required}_client
-	ros::ServiceClient ${required}_client;
+	// ROS Service Client - ${required.name}_client
+	ros::ServiceClient ${required.name}_client;
 
 	#end for
 
