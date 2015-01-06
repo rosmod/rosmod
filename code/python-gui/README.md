@@ -77,12 +77,29 @@ Selecting _Add Service_ or _Add Message_ from the model context menu creates dia
 
 #### Adding Components
 ----------------------
+Selecting _Add Component_ form the model context menu creates a dialog window which allows you to name the component definition.  After creation, the component definition has no objects such as timers or servers.  To add these objects to the component definition, you must right click on the component definition to bring up the component definition context menu.  
+
+![Alt text](./screenshots/compDefContext.png "Component Definition Context Menu")
 
 ##### Adding Objects to Components
 ----------------------------------
+This context menu allows you to edit the component's name, delete the component, or add objects to the component.  Note: deleting the component also deletes any component instances which refer to this component.  Adding publishers, subscribers, servers, or clients to the component brings up a popup which allows you to name the object as well as select to what object it refers.  
+
+![Alt text](./screenshots/pubPopup.png "Example popup for creating a publisher.")
+
+For creating a timer, a popup appears which allows you to set the name of the timer, its period, and the units of its period.  
+
+![Alt text](./screenshots/timerPopup.png "Example popup dialog for creating a timer in a component.")
+
+##### Editing Components' Objects
+---------------------------------
+If you right click on an object within a component, it will bring up the same dialog as was used to create the object, but all the options will be filled out with the object's current state.  
 
 #### Adding Nodes
 -----------------
+When you choose _Add Node_ from the model context menu, you are presented with a dialog in which you can name the node.
+
+Adding component instances to the node is done by right clicking on the node and choosing _Add Component_.  This presents you with a selector dialog similar to the component objects' dialogs described above in which you can name the component instance and select which component definition it is using.  
 
 ### Saving a Model
 ------------------
