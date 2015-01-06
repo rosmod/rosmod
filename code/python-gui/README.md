@@ -62,4 +62,6 @@ Saving a model (either through _Save Model_ or _Save Model As_) writes the model
 
 ### Generating code for a Model
 -------------------------------
-To generate the component code based on the model, you simply press the _Interpret_ toolbar button.  This will promp you for a location in which to save the 
+To generate the component code based on the model, you simply press the _Interpret_ toolbar button.  This will prompt you for a location in which to generate the code.  The generated code and build system will be placed into a folder created there called _ROS\_Workspace_.  
+
+![Alt text](./screenshots/generateModel.png "Interpret Model Dialog")
