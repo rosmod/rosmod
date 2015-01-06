@@ -59,7 +59,7 @@ If you right click inside the _Package Viewer_, you'll be presented with a conte
 
 ![Alt text](./screenshots/packageContext.png "Package Viewer Context Menu")
 
-Any packages that exist in the workspace will be displayed as buttons in the _Package Viewer_.  The user may view the model contained within a package by clicking on the package's button, at which point the button will remain highlighted until another package is selected.  When this happens, the package viewer shrinks to allow for the viewing of the _Model Viewer_.  The _Model Viewer_ shows all objects currently contained within the model, including _services_, _messages_, _component definitions_, and _nodes_ and shows the logical connection between the objects, if any exists.  
+Any packages that exist in the workspace will be displayed as buttons in the _Package Viewer_.  The user may view the model contained within a package by clicking on the package's button, at which point the button will remain highlighted until another package is selected.  When this happens, the package viewer shrinks to allow for the viewing of the _Model Viewer_.  These two active editor windows can be resized, scrolled, and expanded.  The _Model Viewer_ shows all objects currently contained within the model, including _services_, _messages_, _component definitions_, and _nodes_ and shows the logical connection between the objects, if any exists.  
 
 ![Alt text](./screenshots/selectedPackage.png "Selected Package View")
 
