@@ -178,6 +178,7 @@ class ModelViewer(EditorFrame):
         self.activeObject = object
 
     def ConfigureNewObject(self, object, dictKey, pos=[0,0]):
+        object.name = dictKey + "Name"
         object.setCanvasParams(
             canvas = self.canvas,
             position = pos,
@@ -188,32 +189,28 @@ class ModelViewer(EditorFrame):
     def ContextAddService(self):
         newObj = rosgen.ROS_Service()
         self.ConfigureNewObject(newObj,'service')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             self.model.addService(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddMessage(self):
         newObj = rosgen.ROS_Message()
         self.ConfigureNewObject(newObj,'message')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             self.model.addMessage(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddComponent(self):
         newObj = rosgen.ROS_Component()
         self.ConfigureNewObject(newObj,'component')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             self.model.addComponent(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
     def ContextAddNode(self):
         newObj = rosgen.ROS_Node()
         self.ConfigureNewObject(newObj,'node')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             self.model.addNode(newObj)
             self.Update(self.model,self.initPos,self.padding)
 
@@ -228,8 +225,7 @@ class ModelViewer(EditorFrame):
     def CompAddServer(self):
         newObj = rosgen.ROS_Server()
         self.ConfigureNewObject(newObj,'server')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             newObj.parentComp = self.activeObject
             self.activeObject.addServer(newObj)
             self.Update(self.model,self.initPos,self.padding)
@@ -237,8 +233,7 @@ class ModelViewer(EditorFrame):
     def CompAddClient(self):
         newObj = rosgen.ROS_Client()
         self.ConfigureNewObject(newObj,'client')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             newObj.parentComp = self.activeObject
             self.activeObject.addClient(newObj)
             self.Update(self.model,self.initPos,self.padding)
@@ -246,8 +241,7 @@ class ModelViewer(EditorFrame):
     def CompAddSub(self):
         newObj = rosgen.ROS_Subscriber()
         self.ConfigureNewObject(newObj,'subscriber')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             newObj.parentComp = self.activeObject
             self.activeObject.addSubscriber(newObj)
             self.Update(self.model,self.initPos,self.padding)
@@ -255,8 +249,7 @@ class ModelViewer(EditorFrame):
     def CompAddPub(self):
         newObj = rosgen.ROS_Publisher()
         self.ConfigureNewObject(newObj,'publisher')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             newObj.parentComp = self.activeObject
             self.activeObject.addPublisher(newObj)
             self.Update(self.model,self.initPos,self.padding)
@@ -264,8 +257,7 @@ class ModelViewer(EditorFrame):
     def CompAddTimer(self):
         newObj = rosgen.ROS_Timer()
         self.ConfigureNewObject(newObj,'timer')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             newObj.parentComp = self.activeObject
             self.activeObject.addTimer(newObj)
             self.Update(self.model,self.initPos,self.padding)
@@ -273,8 +265,7 @@ class ModelViewer(EditorFrame):
     def NodeAddComp(self):
         newObj = rosgen.ROS_Component(isObjRef=True)
         self.ConfigureNewObject(newObj,'component')
-        newObj.Edit()
-        if newObj.name != "":
+        if newObj.Edit():
             newObj.parentNode = self.activeObject
             self.activeObject.addComponent(newObj)
             self.Update(self.model,self.initPos,self.padding)
