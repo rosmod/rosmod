@@ -164,7 +164,9 @@ class ROS_Message(CanvasObject):
             ]
         )
         if d.result != None:
+            self.package.deleteMessage(self.name)
             self.name = d.result[0]
+            self.package.addMessage(self)
             self.fields = d.result[1]
             return 1
         return 0
@@ -207,7 +209,9 @@ class ROS_Server(CanvasObject):
             ]
         )
         if d.result != None:
+            self.parentComp.deleteServer(self.name)
             self.name = d.result[0]
+            self.parentComp.addServer(self)
             self.service = d.result[1]
             return 1
         return 0
@@ -239,7 +243,9 @@ class ROS_Client(CanvasObject):
             ]
         )
         if d.result != None:
+            self.parentComp.deleteClient(self.name)
             self.name = d.result[0]
+            self.parentComp.addClient(self)
             self.service = d.result[1]
             return 1
         return 0
@@ -272,7 +278,9 @@ class ROS_Service(CanvasObject):
             ]
         )
         if d.result != None:
+            self.package.deleteService(self.name)
             self.name = d.result[0]
+            self.package.addService(self)
             self.request_fields = d.result[1]
             self.response_fields = d.result[2]
             return 1
@@ -352,7 +360,9 @@ class ROS_Component(CanvasObject):
                 ]
             )
             if d.result != None:
+                self.parentNode.deleteComponent(self.name)
                 self.name = d.result[0]
+                self.parentNode.addComponent(self)
                 self.comp_type = d.result[1]
                 return 1
         else:
@@ -362,7 +372,9 @@ class ROS_Component(CanvasObject):
                 initValsList = [["Name:",self.name,nameStringChars]]
             )
             if d.result != None:
+                self.package.deleteComponent(self.name)
                 self.name = d.result[0]
+                self.package.addComponent(self)
                 return 1
         return 0
 
@@ -537,7 +549,9 @@ class ROS_Publisher(CanvasObject):
             ]
         )
         if d.result != None:
+            self.parentComp.deletePublisher(self.name)
             self.name = d.result[0]
+            self.parentComp.addPublisher(self)
             self.topic = d.result[1]
             return 1
         return 0
@@ -570,7 +584,9 @@ class ROS_Subscriber(CanvasObject):
             ]
         )
         if d.result != None:
+            self.parentComp.deleteSubscriber(self.name)
             self.name = d.result[0]
+            self.parentComp.addSubscriber(self)
             self.topic = d.result[1]
             return 1
         return 0
@@ -602,7 +618,9 @@ class ROS_Timer(CanvasObject):
             ]
         )
         if d.result != None:
+            self.parentComp.deleteTimer(self.name)
             self.name = d.result[0]
+            self.parentComp.addTimer(self)
             self.period = d.result[1]
             self.period_unit = d.result[2]
             return 1
@@ -621,9 +639,17 @@ class ROS_Node(CanvasObject):
         self.comp_defs = []
 
     def Edit(self):
-        d = EditorDialogPopup(parent=self.canvas,title=self.name)
+        d = EditorDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList=[
+                ["Name:",self.name,nameStringChars]
+            ]
+        )
         if d.result != None:
+            self.package.deleteNode(self.name)
             self.name = d.result[0]
+            self.package.addNode(self)
             return 1
         return 0
 
