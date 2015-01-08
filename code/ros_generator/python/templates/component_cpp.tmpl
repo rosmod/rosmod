@@ -16,7 +16,7 @@ void $component_name::Init(const ros::TimerEvent& event)
 #if $len($subscribers) > 0
 #for $sub in $subscribers
 // OnOneData Subscription handler for ${sub.name} subscriber
-void $component_name::OnOneData(const $package_name::${sub.topic.name}::ConstPtr& received_data)
+void $component_name::${sub.name}_OnOneData(const $package_name::${sub.topic.name}::ConstPtr& received_data)
 {
     // Business Logic for $sub.name subscriber callback 
 }
@@ -90,7 +90,7 @@ void $component_name::startUp()
 	ros::SubscribeOptions::create<$package_name::${sub.topic.name}>
 	    ("${sub.topic.name}",
 	     1000,
-	     boost::bind(&$component_name::OnOneData, this, _1),
+	     boost::bind(&$component_name::${sub.name}_OnOneData, this, _1),
 	     ros::VoidPtr(),
              &this->compQueue);
     this->${sub.name} = nh.subscribe(${sub.name}_options);
