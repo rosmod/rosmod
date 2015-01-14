@@ -55,7 +55,6 @@ ServiceServer2 NodeHandle2::advertiseService(AdvertiseServiceOptions2& ops)
 
 Publisher2 NodeHandle2::advertise(AdvertiseOptions2& ops)
 {
-  ROS_INFO("Advertising...");
   ops.topic = resolveName(ops.topic);
   if (ops.callback_queue == 0)
   {
@@ -68,25 +67,18 @@ Publisher2 NodeHandle2::advertise(AdvertiseOptions2& ops)
       ops.callback_queue = (ros::CMQ *)getGlobalCallbackQueue();
     }
   }
-  ROS_INFO("Creating Subscriber Callbacks Ptr2...");
   SubscriberCallbacksPtr2 callbacks(new SubscriberCallbacks2(ops.connect_cb, ops.disconnect_cb, 
 							   ops.tracked_object, ops.callback_queue));
-  ROS_INFO("Done Creating Subscriber Callbacks Ptr2...");
   if (TopicManager2::instance()->advertise(ops, callbacks))
   {
-    ROS_INFO("Creating Publisher2");
-    Publisher2 pub(ops.topic, ops.md5sum, ops.datatype, *this, callbacks);
-    ROS_INFO("Done Creating Publisher2");
+    Publisher2 pub(ops.topic, ops.md5sum, ops.datatype, *this, callbacks);;
     {
       boost::mutex::scoped_lock lock(collection_->mutex_);
-      ROS_INFO("About to Collection Pushback");
       collection_->pubs_.push_back(pub.impl_);
-      ROS_INFO("Done Collection Pushback");
     }
 
     return pub;
   }
-  ROS_INFO("Returning...");
   return Publisher2();
 }
 
