@@ -1,4 +1,4 @@
-rosmod
+# rosmod
 =================
 
 This repository contains the relevant work towards implementing a component model for ROS, integrating verification for component operation service metrics, and model-driven design and development for ROS.
@@ -11,7 +11,13 @@ All design documents and discussion thus far can be found in the [docs](docs) fo
 
 ## Design:
 ----------
-The current design uses a textual language (defined by a specific grammar with associated parsers) to define the component model.  Models written by the developer using this language can be parsed, checked by the analysis tools, and then generated into complete workspaces with code and build files.
+The current design uses a textual language, ROSML, (defined by a specific grammar with associated parsers) to define the component model.  Models written by the developer using this language can be parsed, checked by the analysis tools, and then generated into complete workspaces with code and build files.
+
+![Alt text](./figures/ros_component.png "Design of a ROS Component")
+
+The component design is shown in the figure above, and a detailed discussion of it can be found in the [Component Design Document](./docs/ComponentModelOverview.md).
+
+We have created a GUI editor, ROSMOD, to make the development of component-based applications easier on the user.  The application is able to create, load, modify, and save model files, and can generate component-based code for the components and nodes in the applications.
 
 The generated code can run on top of stock ROS, or can utilize our changes to the ROS infrastructure.  These changes, detailed in the the [Component Model Design Document](docs/ComponentModelOverview.md), provide
   1. priority-based queuing of component operations

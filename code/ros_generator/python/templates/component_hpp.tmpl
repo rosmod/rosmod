@@ -27,7 +27,7 @@ class $component_name : public Component
 	#if $len($subscribers) > 0
 	#for $sub in $subscribers
 	// OnOneData Subscription handler for $sub.name subscriber 
-	void OnOneData(const $package_name::$sub.topic.name::ConstPtr& received_data); 
+	void ${sub.name}_OnOneData(const $package_name::$sub.topic.name::ConstPtr& received_data); 
  
 	#end for
 
