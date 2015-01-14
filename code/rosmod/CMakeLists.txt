@@ -16,7 +16,24 @@ catkin_package(
   DEPENDS Boost
 )
 
-add_library(rosmod src/rosmod/component_message_queue.cpp)
+add_library(rosmod src/rosmod/cmq.cpp
+                   src/rosmod/timer.cpp 
+                   src/rosmod/internal_timer_manager.cpp
+                   src/rosmod/service_manager.cpp
+                   src/rosmod/publisher.cpp
+                   src/rosmod/service_server.cpp
+                   src/rosmod/topic_manager.cpp
+                   src/rosmod/subscriber.cpp
+                   src/rosmod/subscriber_link.cpp
+                   src/rosmod/subscription.cpp
+                   src/rosmod/publisher_link.cpp
+                   src/rosmod/publication.cpp
+                   src/rosmod/single_subscriber_publisher.cpp
+                   src/rosmod/intraprocess_subscriber_link.cpp
+                   src/rosmod/intraprocess_publisher_link.cpp
+                   src/rosmod/transport_publisher_link.cpp
+                   src/rosmod/transport_subscriber_link.cpp
+                   src/rosmod/node_handle.cpp)
 target_link_libraries(rosmod ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_dependencies(rosmod rosmod_gencpp)
 
