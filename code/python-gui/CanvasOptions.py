@@ -21,13 +21,14 @@ class FontOptions():
 DefaultFontOptions = FontOptions()
 
 class DrawOptions():
-    def __init__(self, color="black", minSize=(10,10), textPosition="TOP", image=None, drawChildren=True, connectFrom=False):
+    def __init__(self, color="black", minSize=(10,10), textPosition="TOP", childEdge="LEFT", image=None, drawChildren=True, connectFrom=False):
         self.color = color
         self.minSize = minSize
         self.image = image
         self.textPosition = textPosition
         self.drawChildren = drawChildren
-        self.connectFrom = connectFrom     
+        self.connectFrom = connectFrom
+        self.childEdge = childEdge
 
 DefaultDrawOptions = DrawOptions()   
 
@@ -115,6 +116,9 @@ class CanvasObject(CanvasOptions):
         elif self.drawOptions.textPosition == "BOTTOM":
             anchor = CENTER
             textPos = (self.position[0] + self.size[0]/2, self.position[1] + self.size[1] + self.fontOptions.height)
+        elif self.drawOptions.textPosition == "CENTER":
+            anchor = CENTER
+            textPos = (self.position[0] + self.size[0]/2, self.position[1] + self.size[1]/2 + self.fontOptions.height)
         elif self.drawOptions.textPosition == "RIGHT":
             anchor = W
             textPos = (self.connectionPoint[0] + 3, self.connectionPoint[1])

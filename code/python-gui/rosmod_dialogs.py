@@ -131,10 +131,12 @@ class MenuPopup():
         self.contextMenu.destroy()
 
     def popupCallback(self,event):
-        objID = self.master.find_closest(event.x, event.y)[0]
+        x = self.master.canvasx(event.x)
+        y = self.master.canvasy(event.y)
+        objID = self.master.find_closest(x,y)[0]
         objTags = self.master.gettags(objID)
         if objTags[0] == "text":
-            objID = self.master.find_overlapping(event.x,event.y,event.x+1,event.y+1)
+            objID = self.master.find_overlapping(x,y,x+1,y+1)
             objTags = self.master.gettags(objID[1]) # 0 is canvas, 2 is the text we just had
         closeAllContextMenus()
         registerContextMenu(self.contextMenu)
