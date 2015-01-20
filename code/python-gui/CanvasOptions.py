@@ -18,6 +18,8 @@ class FontOptions():
         self.fg = fg
         self.bg = bg
 
+DefaultFontOptions = FontOptions()
+
 class DrawOptions():
     def __init__(self, color="black", minSize=(10,10), textPosition="TOP", image=None, drawChildren=True, connectFrom=False):
         self.color = color
@@ -25,7 +27,9 @@ class DrawOptions():
         self.image = image
         self.textPosition = textPosition
         self.drawChildren = drawChildren
-        self.connectFrom = connectFrom        
+        self.connectFrom = connectFrom     
+
+DefaultDrawOptions = DrawOptions()   
 
 class CanvasOptions():
     def __init__(self, paddingOptions, fontOptions, drawOptions, tags=()):

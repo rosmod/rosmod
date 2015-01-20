@@ -294,10 +294,18 @@ class ModelViewer(EditorFrame):
     def drawModel(self, initPos, padding):
         self.initPos = initPos
         self.padding = padding
-        initX = self.initPos[0]
+        initX = 0#self.initPos[0]
         initY = self.initPos[1]
         padX = self.padding[0]
         padY = self.padding[1]
+        maxBaseNameLen = 0
+        for key,obj in self.model.srv_dict.iteritems():
+            if len(obj.name) > maxBaseNameLen:
+                maxBaseNameLen = len(obj.name)
+        for key,obj in self.model.msg_dict.iteritems():
+            if len(obj.name) > maxBaseNameLen:
+                maxBaseNameLen = len(obj.name)
+        initX += maxBaseNameLen * DefaultFontOptions.width + DefaultDrawOptions.minSize[0]
         #column 1
         xpos,ypos = self.drawObjectsFromDict(
             'service',
@@ -312,6 +320,12 @@ class ModelViewer(EditorFrame):
             padY
         )
         #column 2
+        xpos = initX
+        maxCompNameLen = 0
+        for key,obj in self.model.component_definition_dict.iteritems():
+            if len(obj.name) > maxCompNameLen:
+                maxCompNameLen = len(obj.name)
+        xpos += maxCompNameLen * DefaultFontOptions.width / 6
         xpos,ypos = self.drawObjectsFromDict(
             'component',
             self.model.component_definition_dict,
@@ -319,6 +333,12 @@ class ModelViewer(EditorFrame):
             padY
         )
         #column 3
+        xpos += maxCompNameLen * DefaultFontOptions.width / 6
+        maxNodeNameLen = 0
+        for key,obj in self.model.nodes_dict.iteritems():
+            if len(obj.name) > maxNodeNameLen:
+                maxNodeNameLen = len(obj.name)
+        xpos += maxNodeNameLen * DefaultFontOptions.width / 6
         xpos,ypos = self.drawObjectsFromDict(
             'node',
             self.model.nodes_dict,

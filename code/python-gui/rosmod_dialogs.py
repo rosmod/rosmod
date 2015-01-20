@@ -21,6 +21,7 @@ canvasOptionsDict['service'] = CanvasOptions(
     DrawOptions(
         color = "green",
         minSize = (10,10),
+        textPosition = "LEFT"
     ),
     tags = ("object","service")
 )
@@ -30,6 +31,7 @@ canvasOptionsDict['message'] = CanvasOptions(
     DrawOptions(
         color = "blue",
         minSize = (10,10),
+        textPosition = "LEFT"
     ),
     tags = ("object","message")
 )
