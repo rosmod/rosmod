@@ -133,11 +133,13 @@ class MenuPopup():
     def popupCallback(self,event):
         x = self.master.canvasx(event.x)
         y = self.master.canvasy(event.y)
-        objID = self.master.find_closest(x,y)[0]
-        objTags = self.master.gettags(objID)
-        if objTags[0] == "text":
-            objID = self.master.find_overlapping(x,y,x+1,y+1)
-            objTags = self.master.gettags(objID[1]) # 0 is canvas, 2 is the text we just had
+        objID = self.master.find_overlapping(x,y,x+1,y+1)#.find_closest(x,y)[0]
+        if objID == ():
+            objTags = ['object','canvas']
+        else:
+            objTags = self.master.gettags(objID[-1])
+            if objTags[0] == "text":
+                objTags = self.master.gettags(objID[1]) # 0 is canvas, 2 is the text we just had
         closeAllContextMenus()
         registerContextMenu(self.contextMenu)
         self.contextMenu.delete(0,self.numCommands)
@@ -150,5 +152,6 @@ class MenuPopup():
             self.setterFunc(canvasObjectDict[objTags[2]])
 
         self.contextMenu.post(event.x_root,event.y_root)
+
 
 

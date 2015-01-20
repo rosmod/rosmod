@@ -16,14 +16,12 @@ sys.path.append('../ros_generator/python/')
 import rosgen as rosgen
 
 class EditorFrame(Frame):
-    def __init__(self, master, label, height, width, maxHeight, maxWidth,contextDict):
+    def __init__(self, master, label, height, width, contextDict):
         Frame.__init__(self,master)
         Frame.config(self,bd=2, relief=SUNKEN)
 
         self.height=height
         self.width=width
-        self.maxWidth = maxWidth
-        self.maxHeight = maxHeight
 
         self.label = Label(self, text=label, anchor=N, bg="dark gray", fg="white", relief=RAISED)
         self.label.pack()
@@ -35,18 +33,11 @@ class EditorFrame(Frame):
 
         self.canvas = Canvas(
             self,
-            width=width, 
-            height=height, 
-            scrollregion=(0,0,self.maxWidth,self.maxHeight),
+            width=self.width, 
+            height=self.height, 
+            scrollregion=(0,0,self.width,self.height),
             xscrollcommand=self.HScrollBar.set,
             yscrollcommand=self.VScrollBar.set
-        )
-
-        self.canvasID = self.canvas.create_rectangle(
-            0, 0, 
-            self.maxWidth, self.maxHeight, 
-            outline="light gray", fill="light gray", 
-            tags=("object","canvas")
         )
 
         self.contextMenu = MenuPopup(self.canvas,contextDict)
@@ -60,24 +51,22 @@ class EditorFrame(Frame):
         self.canvas.bind("<Button-5>", self._mouse_wheel)
 
         self.canvas.bind("<Button-1>", self._button1_callback)
+        self.canvas.bind("<Button-3>", self.contextMenu.popupCallback)
         self.canvas.bind("<Delete>",self._delete_callback)
 
         self.canvas.pack(fill=BOTH)
         self.pack(fill=BOTH)
 
     def Update(self):
-        self.canvasID = self.canvas.create_rectangle(
-            0, 0, 
-            self.maxWidth, self.maxHeight, 
-            outline="light gray", fill="light gray", 
-            tags=("object","canvas")
-        )
-        self.canvas.tag_bind("object","<Button-3>", self.contextMenu.popupCallback)
+        pass
 
     def _button1_callback(self,event):
         closeAllContextMenus()
         self.focus_set()
         self.canvas.focus_set()
+
+    def _button2_callback(self,event):
+        self.canvas.tag_bind("object","<Button-3>", self.contextMenu.popupCallback)
 
     def _delete_callback(self,event):
         print "delete has been pressed"
@@ -100,7 +89,7 @@ class EditorFrame(Frame):
         Frame.destroy(self)
         
 class ModelViewer(EditorFrame):
-    def __init__(self, master, height, width, maxHeight, maxWidth, optionsDict=None, model=None,contextDict=None):
+    def __init__(self, master, height, width, optionsDict=None, model=None,contextDict=None):
 
         self.editorContextDict = OrderedDict()
         self.canvasContextDict=OrderedDict()
@@ -147,7 +136,7 @@ class ModelViewer(EditorFrame):
         self.nodeContextDict['Delete'] = self.ContextDelete
         self.nodeContextDict['Add Component'] = self.NodeAddComp
 
-        EditorFrame.__init__(self,master,"Model Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
+        EditorFrame.__init__(self,master,"Model Viewer",height,width,self.editorContextDict)
 
         self.model=model
         self.optionsDict = optionsDict
@@ -164,7 +153,6 @@ class ModelViewer(EditorFrame):
         self.canvas.delete(ALL)
         self.activeObject = None
         self.entry = None
-        EditorFrame.Update(self)
 
     def Update(self, model, initPos, padding):
         self.model = model
@@ -173,6 +161,7 @@ class ModelViewer(EditorFrame):
         self.clear()
         if self.model != None:
             self.drawModel(self.initPos,self.padding)
+        EditorFrame.Update(self)
 
     def SetActiveObject(self, object):
         self.activeObject = object
@@ -345,9 +334,10 @@ class ModelViewer(EditorFrame):
             xpos+padX,initY,
             padY
         )
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
 
 class PackageViewer(EditorFrame):
-    def __init__(self, master, height, width, maxHeight, maxWidth, model, buttonVar, buttonCommand,contextDict=None):
+    def __init__(self, master, height, width, model, buttonVar, buttonCommand,contextDict=None):
     
         self.editorContextDict = OrderedDict()
         self.canvasContextDict=OrderedDict()
@@ -355,7 +345,7 @@ class PackageViewer(EditorFrame):
         self.canvasContextDict['Delete Selected Package'] = self.ContextDeletePackage
         self.editorContextDict['canvas'] = self.canvasContextDict
 
-        EditorFrame.__init__(self,master,"Package Viewer",height,width,maxHeight,maxWidth,self.editorContextDict)
+        EditorFrame.__init__(self,master,"Package Viewer",height,width,self.editorContextDict)
         self.padding = [5,25]
         self.buttons = []
         self.model = model
@@ -406,16 +396,15 @@ class PackageViewer(EditorFrame):
                  newButton]
             )
             ypos += self.padding[1]
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
 
 class Editor():
-    def __init__(self,master,height,width,splitWidth,maxWidth,maxHeight,editorDict=None,model=None):
+    def __init__(self,master,height,width,splitWidth,editorDict=None,model=None):
         self.master = master
         self.height = height
         self.width = width
         self.editorDict = editorDict
         self.model = model
-        self.maxWidth = maxWidth
-        self.maxHeight = maxHeight
         self.splitWidth = splitWidth
         self.selectedPackageVar = StringVar()
 
@@ -441,8 +430,6 @@ class Editor():
                 master = self.master,
                 height = self.height,
                 width = self.splitWidth,
-                maxHeight = self.maxHeight,
-                maxWidth = self.maxWidth,
                 model=self.model,
                 buttonVar = self.selectedPackageVar,
                 buttonCommand = self.OnPackageSelected
@@ -456,8 +443,6 @@ class Editor():
                 master = self.master,
                 height = self.height,
                 width = self.width - self.splitWidth,
-                maxHeight = self.maxHeight,
-                maxWidth = self.maxWidth,
                 optionsDict = self.editorDict,
                 model=self.model
             )

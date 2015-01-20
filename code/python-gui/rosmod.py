@@ -86,8 +86,6 @@ class App:
                 height = self.editorHeight,
                 width = self.editorWidth,
                 splitWidth = self.objectWidth,
-                maxWidth = self.editorHeight * 2,
-                maxHeight = self.editorHeight * 2,
                 editorDict = self.optionsDict,
                 model = self.Model.workspace
             )
