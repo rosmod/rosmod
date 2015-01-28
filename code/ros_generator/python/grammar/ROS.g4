@@ -158,7 +158,7 @@ res_argument
 
 // Request Field Type
 req_field_type
-    :   ID
+    :   ( ID | ID '/' ID )
     ;
 
 // Request Field Name
@@ -173,7 +173,7 @@ req_field_value
 
 // Response Field Type
 res_field_type
-    :   ID
+    :   ( ID | ID '/' ID )
     ;
 
 // Response Field Name
