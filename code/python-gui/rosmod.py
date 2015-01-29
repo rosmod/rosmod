@@ -117,6 +117,7 @@ class App:
             file.close()
             self.Model = rosgen.parse_model(self.fileName)
             self.model_path = os.path.abspath(os.path.dirname(self.fileName))
+            print "model path: ", self.model_path
             self.init_Editor()
             self.editor.reset(self.Model.workspace)
 
@@ -142,6 +143,7 @@ class App:
                 title="Save the model as..."
             )
             head, self.fileName = os.path.split(filePath)
+            self.model_path = head
         fileName = self.fileName
         # Overwrite the model file
         self.statusBar.set("Saved model!")
@@ -154,14 +156,17 @@ class App:
         filePath = tkFileDialog.asksaveasfilename(
             parent=self.master,
             filetypes=self.fileFormats,
-            title="Save the model as..."
+            title="Save the model as...",
+            initialdir=self.model_path
         )
-        head, self.fileName = os.path.split(filePath)
-        self.statusBar.set("Saved model as " + self.fileName)
-        if len(self.fileName) > 0:
-            self.statusBar.set("Saving model as {0}".format(self.fileName))
-        # Save fileName.rosml model at filePath
-        rosgen.generate_model(self.Model.workspace, self.fileName, head)
+        if filePath != None and filePath != '':
+            head, self.fileName = os.path.split(filePath)
+            self.model_path = head
+            self.statusBar.set("Saved model as " + self.fileName)
+            if len(self.fileName) > 0:
+                self.statusBar.set("Saving model as {0}".format(self.fileName))
+            # Save fileName.rosml model at filePath
+            rosgen.generate_model(self.Model.workspace, self.fileName, head)
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")
@@ -186,12 +191,14 @@ class App:
             return
         filePath = tkFileDialog.askdirectory(
             parent=self.master,
-            title="Choose Directory"
+            title="Choose Directory",
+            initialdir=self.model_path
         )
-        head, self.workspaceDir = os.path.split(filePath)
-        self.model_path = os.path.abspath(os.path.dirname(self.workspaceDir))
-        rosgen.generate_workspace(self.Model, self.model_path)
-        self.statusBar.set("Generated ROS Workspace into " + self.model_path)
+        if filePath != None and filePath != '':
+            head, self.workspaceDir = os.path.split(filePath)
+            self.model_path = filePath
+            rosgen.generate_workspace(self.Model, self.model_path)
+            self.statusBar.set("Generated ROS Workspace into " + self.model_path)
         
     def toolbar_NetworkAnalysis_Callback(self):
         self.statusBar.set("Analyzing the network characteristics!")
