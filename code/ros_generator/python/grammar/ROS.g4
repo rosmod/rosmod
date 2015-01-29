@@ -89,7 +89,7 @@ msg_field
 
 // Type of message field
 msg_field_type
-    :   ( ID | ID '/' ID)
+    :   ( ID ('/' ID)* ) ( '[' (INT)? ']' )?
     ;
 
 // Name of message field
@@ -158,7 +158,7 @@ res_argument
 
 // Request Field Type
 req_field_type
-    :   ( ID | ID '/' ID )
+    :   ( ID ('/' ID)* ) ( '[' (INT)? ']' )?
     ;
 
 // Request Field Name
@@ -173,7 +173,7 @@ req_field_value
 
 // Response Field Type
 res_field_type
-    :   ( ID | ID '/' ID )
+    :   ( ID ('/' ID)* ) ( '[' (INT)? ']' )?
     ;
 
 // Response Field Name
