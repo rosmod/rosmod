@@ -168,17 +168,50 @@ class Generator:
                 self.component_hpp_str = str(t)
                 # Write the component hpp file
                 hpp_filename = component_name + ".hpp"
-                with open(os.path.join(self.hpp, hpp_filename), 'w') as temp_file:
-                    temp_file.write(self.component_hpp_str)
+
+                # CODE PRESERVATION FOR COMPONENT HEADER FILES
+
+                existing_file_h = []
+                line_number_h = 0
+                overwrite_h = True
+                new_file_h = self.component_hpp_str.splitlines(True)
+                new_text_h = ""
+
+                if(os.path.isfile(os.path.join(self.hpp, hpp_filename)) == False):
+                    with open(os.path.join(self.hpp, hpp_filename), 'w') as temp_file_h:
+                        temp_file_h.write(self.component_hpp_str)
+                else:
+                    with open (os.path.join(self.hpp, hpp_filename), "r") as existing_h:
+                        existing_file_h = existing_h.readlines()
+                        for line_h in existing_file_h:
+                            if "//#PRESERVE CODE" in line_h:
+                                overwrite_h = False
+                            if overwrite_h == False:
+                                new_file_h.insert(line_number_h, line_h)
+                            if "//#END PRESERVE CODE" in line_h:
+                                overwrite_h = True
+                            line_number_h += 1
+                        for line_h in new_file_h:
+                            new_text_h += line_h
+                        with open(os.path.join(self.hpp, hpp_filename), 'w') as new_file_handle_h:
+                            new_file_handle_h.write(new_text_h)
+
+                # GENERATING CPP FILES
+
                 t = component_cpp(searchList=[component_namespace])
                 self.component_cpp_str = str(t)
                 # Write the component cpp file
                 cpp_filename = component_name + ".cpp"
+
+                # CODE PRESERVATION FOR COMPONENT CPP FILES
+
                 existing_file = []
                 line_number = 0
                 overwrite = True
                 new_file = self.component_cpp_str.splitlines(True)
                 new_text = ""
+                preserve_count = 0
+                text_count = 0
 
                 if(os.path.isfile(os.path.join(self.cpp, cpp_filename)) == False):
                     with open(os.path.join(self.cpp, cpp_filename), 'w') as temp_file:
@@ -190,10 +223,12 @@ class Generator:
                             if "//#PRESERVE CODE" in line:
                                 overwrite = False
                             if overwrite == False:
-                                new_file.insert(line_number, line)
+                                new_file.insert(line_number + preserve_count, line)
+                                text_count += 1
+                            line_number += 1
                             if "//#END PRESERVE CODE" in line:
                                 overwrite = True
-                            line_number += 1
+                                preserve_count += text_count
                         for line in new_file:
                             new_text += line
                         with open(os.path.join(self.cpp, cpp_filename), 'w') as new_file_handle:
@@ -210,8 +245,31 @@ class Generator:
                 self.nodeMain_str = str(t)
                 # Write node main.cpp file
                 node_filename = node_name + "_main.cpp"
-                with open(os.path.join(self.cpp, node_filename), 'w') as temp_file:
-                    temp_file.write(self.nodeMain_str)
+
+                existing_file_nm = []
+                line_number_nm = 0
+                overwrite_nm = True
+                new_file_nm = self.nodeMain_str.splitlines(True)
+                new_text_nm = ""
+
+                if(os.path.isfile(os.path.join(self.cpp, node_filename)) == False):
+                    with open(os.path.join(self.cpp, node_filename), 'w') as temp_file_nm:
+                        temp_file_nm.write(self.nodeMain_str)
+                else:
+                    with open (os.path.join(self.cpp, node_filename), "r") as existing_nm:
+                        existing_file_nm = existing_nm.readlines()
+                        for line_nm in existing_file_nm:
+                            if "//#PRESERVE CODE" in line_nm:
+                                overwrite_nm = False
+                            if overwrite_nm == False:
+                                new_file_nm.insert(line_number_nm, line_nm)
+                            if "//#END PRESERVE CODE" in line_nm:
+                                overwrite_nm = True
+                            line_number_nm += 1
+                        for line_nm in new_file_nm:
+                            new_text_nm += line_nm
+                        with open(os.path.join(self.cpp, node_filename), 'w') as new_file_handle_nm:
+                            new_file_handle_nm.write(new_text_nm)
 
             cmake_lists_namespace = {'package_name': package.name, 
                                      'messages': package.messages, 
