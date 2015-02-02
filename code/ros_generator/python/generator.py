@@ -174,8 +174,30 @@ class Generator:
                 self.component_cpp_str = str(t)
                 # Write the component cpp file
                 cpp_filename = component_name + ".cpp"
-                with open(os.path.join(self.cpp, cpp_filename), 'w') as temp_file:
-                    temp_file.write(self.component_cpp_str)
+                existing_file = []
+                line_number = 0
+                overwrite = True
+                new_file = self.component_cpp_str.splitlines(True)
+                new_text = ""
+
+                if(os.path.isfile(os.path.join(self.cpp, cpp_filename)) == False):
+                    with open(os.path.join(self.cpp, cpp_filename), 'w') as temp_file:
+                        temp_file.write(self.component_cpp_str)
+                else:
+                    with open (os.path.join(self.cpp, cpp_filename), "r") as existing:
+                        existing_file = existing.readlines()
+                        for line in existing_file:
+                            if "//#PRESERVE CODE" in line:
+                                overwrite = False
+                            if overwrite == False:
+                                new_file.insert(line_number, line)
+                            if "//#END PRESERVE CODE" in line:
+                                overwrite = True
+                            line_number += 1
+                        for line in new_file:
+                            new_text += line
+                        with open(os.path.join(self.cpp, cpp_filename), 'w') as new_file_handle:
+                            new_file_handle.write(new_text)
 
             for node in package.nodes:
                 node_name = node.name
