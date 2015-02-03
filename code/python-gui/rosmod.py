@@ -21,7 +21,12 @@ from CanvasOptions import *
 
 import sys
 import os
-sys.path.append('../ros_generator/python/')
+
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+head,tail = os.path.split(head)
+sys.path.append(head+'/ros_generator/python/')
 import rosgen as rosgen
 
 class App:
@@ -216,6 +221,12 @@ class App:
         self.statusBar.set("Analyzing the business logic timing characteristics!")
 
 if __name__ == "__main__":
+
+    exeName = sys.argv[0]
+    dirName = os.path.abspath(exeName)
+    head,tail = os.path.split(dirName)
+    head,tail = os.path.split(head)
+    print head
 
     root = Tk()
 

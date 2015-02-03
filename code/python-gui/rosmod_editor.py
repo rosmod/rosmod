@@ -12,7 +12,11 @@ from rosmod_dialogs import *
 
 import sys
 import os
-sys.path.append('../ros_generator/python/')
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+head,tail = os.path.split(head)
+sys.path.append(head+'/ros_generator/python/')
 import rosgen as rosgen
 
 class EditorFrame(Frame):
