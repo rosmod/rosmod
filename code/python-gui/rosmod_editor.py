@@ -342,6 +342,7 @@ class PackageViewer(EditorFrame):
         self.editorContextDict = OrderedDict()
         self.canvasContextDict=OrderedDict()
         self.canvasContextDict['Add New Package'] = self.ContextAddPackage
+        self.canvasContextDict['Edit Selected Package'] = self.ContextEditPackage
         self.canvasContextDict['Delete Selected Package'] = self.ContextDeletePackage
         self.editorContextDict['canvas'] = self.canvasContextDict
 
@@ -353,14 +354,27 @@ class PackageViewer(EditorFrame):
         self.buttonCommand = buttonCommand
         self.Update(self.model,self.buttonVar,self.buttonCommand)
 
+    def ConfigureNewObject(self, object):
+        object.canvas = self.canvas
+        object.workspace = self.model
+
     def clear(self):
         for button in self.buttons:
             self.canvas.delete(button[0])
             button[1].destroy()
         self.buttons = []
 
+    def ContextEditPackage(self):
+        if self.buttonVar.get() != None and self.buttonVar.get() != "":
+            package=self.model.packages_dict[self.buttonVar.get()]
+            package.Edit()
+            self.Update(self.model,self.buttonVar,self.buttonCommand)
+            self.buttonVar.set(package.name)
+            self.buttonCommand()
+
     def ContextAddPackage(self):
         newObj = rosgen.ROS_Package()
+        self.ConfigureNewObject(newObj)
         d = EditorDialogPopup(parent=self.master,title="New Package")
         if d.result != None:
             newObj.name = d.result[0]
@@ -371,7 +385,6 @@ class PackageViewer(EditorFrame):
     def ContextDeletePackage(self):
         if self.buttonVar.get() != None and self.buttonVar.get() != "":
             self.model.deletePackage(self.buttonVar.get())
-        self.buttonVar.set("")
         self.Update(self.model,self.buttonVar,self.buttonCommand)
         self.buttonCommand()
 
@@ -383,6 +396,7 @@ class PackageViewer(EditorFrame):
         self.clear()
         ypos = 5
         for name,package in self.model.packages_dict.iteritems():
+            self.ConfigureNewObject(package)
             newButton = Radiobutton(
                 self.canvas, 
                 text = name, 
@@ -451,6 +465,7 @@ class Editor():
 
     def reset(self,model):
         self.model=model
+        self.model.canvas = self.master
         self.clear()
         self.packageViewer.Update(
             model=self.model,

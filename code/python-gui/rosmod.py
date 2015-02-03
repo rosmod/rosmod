@@ -39,6 +39,7 @@ class App:
         fileDict = OrderedDict()
         fileDict['New Model']=self.menubar_New_Callback
         fileDict['Open Model']=self.menubar_Open_Callback
+        fileDict['Rename Model Workspace']=self.menubar_Rename_Workspace_Callback
         fileDict['Save Model']=self.menubar_Save_Callback
         fileDict['Save Model As']=self.menubar_Save_As_Callback
         fileDict['Quit']=self.menubar_Quit_Callback
@@ -167,6 +168,14 @@ class App:
                 self.statusBar.set("Saving model as {0}".format(self.fileName))
             # Save fileName.rosml model at filePath
             rosgen.generate_model(self.Model.workspace, self.fileName, head)
+
+    def menubar_Rename_Workspace_Callback(self):
+        if self.Model == None or self.Model.workspace == None:
+            tkMessageBox.showerror("Rename Workspace","Need to have a model first!")
+            return
+        if self.Model.workspace.Edit():
+            self.init_Editor()
+            self.editor.reset(self.Model.workspace)
 
     def menubar_Version_Callback(self):
         self.statusBar.set("ROSMOD GUI Version 0.0.1")

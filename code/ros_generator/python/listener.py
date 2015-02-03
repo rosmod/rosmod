@@ -19,7 +19,7 @@ from CanvasOptions import *
 from rosmod_dialogs import *
 
 # ROS_Workspace class
-class ROS_Workspace:
+class ROS_Workspace(CanvasObject):
 
     def __init__(self):
         # Name of ROS workspace
@@ -28,6 +28,17 @@ class ROS_Workspace:
         self.packages = []
         # Useful Dictionaries
         self.packages_dict = OrderedDict()
+
+    def Edit(self):
+        d = EditorDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [["Name:",self.name,nameStringChars]]
+        )
+        if d.result != None:
+            self.name = d.result[0]
+            return 1
+        return 0
 
     def addPackage(self,package):
         self.deletePackage(package.name)
@@ -50,7 +61,7 @@ class ROS_Workspace:
         return workspace
 
 # ROS_Package class
-class ROS_Package:
+class ROS_Package(CanvasObject):
 
     def __init__(self):
         # Name of ROS package
@@ -70,8 +81,17 @@ class ROS_Package:
         self.nodes_dict = OrderedDict()
 
     def Edit(self):
-        print "Popup window to input name"
-        return 1
+        d = EditorDialogPopup(
+            parent=self.canvas,
+            title=self.name,
+            initValsList = [["Name:",self.name,nameStringChars]]
+        )
+        if d.result != None:
+            self.workspace.deletePackage(self.name)
+            self.name = d.result[0]
+            self.workspace.addPackage(self)
+            return 1
+        return 0
 
     def addMessage(self,message):
         self.deleteMessage(message.name)
