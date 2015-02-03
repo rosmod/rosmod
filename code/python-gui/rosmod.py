@@ -222,12 +222,6 @@ class App:
 
 if __name__ == "__main__":
 
-    exeName = sys.argv[0]
-    dirName = os.path.abspath(exeName)
-    head,tail = os.path.split(dirName)
-    head,tail = os.path.split(head)
-    print head
-
     root = Tk()
 
     root.title("ROSMOD")

@@ -139,7 +139,8 @@ class MenuPopup():
         else:
             objTags = self.master.gettags(objID[-1])
             if objTags[0] == "text":
-                objTags = self.master.gettags(objID[1]) # 0 is canvas, 2 is the text we just had
+                objTags = self.master.gettags(objID[0]) 
+                # 0 is object underneath, 1 is the text we just had
         closeAllContextMenus()
         registerContextMenu(self.contextMenu)
         self.contextMenu.delete(0,self.numCommands)

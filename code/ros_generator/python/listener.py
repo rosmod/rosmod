@@ -32,7 +32,7 @@ class ROS_Workspace(CanvasObject):
     def Edit(self):
         d = EditorDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Workspace",
             initValsList = [["Name:",self.name,nameStringChars]]
         )
         if d.result != None:
@@ -83,7 +83,7 @@ class ROS_Package(CanvasObject):
     def Edit(self):
         d = EditorDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Package",
             initValsList = [["Name:",self.name,nameStringChars]]
         )
         if d.result != None:
@@ -177,7 +177,7 @@ class ROS_Message(CanvasObject):
     def Edit(self):
         d = TypeDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Message",
             initValsList = [
                 ["Name:",self.name,nameStringChars],
                 ["Fields:",self.fields]
@@ -222,7 +222,7 @@ class ROS_Server(CanvasObject):
             self.service = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Server",
             initValsList = [
                 ["Name:",self.name,nameStringChars],
                 ["Service:",self.service.name,options]
@@ -256,7 +256,7 @@ class ROS_Client(CanvasObject):
             self.service = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Client",
             initValsList = [
                 ["Name:",self.name,nameStringChars],
                 ["Service:",self.service.name,options]
@@ -290,7 +290,7 @@ class ROS_Service(CanvasObject):
     def Edit(self):
         d = TypeDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Service",
             initValsList = [
                 ["Name:",self.name,nameStringChars],
                 ["Requests:",self.request_fields],
@@ -373,7 +373,7 @@ class ROS_Component(CanvasObject):
                 self.comp_type = options[options.keys()[0]]
             d = ReferenceDialogPopup(
                 parent=self.canvas,
-                title=self.name,
+                title="Edit Component Instance",
                 initValsList=[
                     ["Name:",self.name,nameStringChars],
                     ["Definition:",self.comp_type.name,options]
@@ -388,7 +388,7 @@ class ROS_Component(CanvasObject):
         else:
             d = EditorDialogPopup(
                 parent=self.canvas,
-                title=self.name,
+                title="Edit Component Definition",
                 initValsList = [["Name:",self.name,nameStringChars]]
             )
             if d.result != None:
@@ -562,7 +562,7 @@ class ROS_Publisher(CanvasObject):
             self.topic = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Publisher",
             initValsList = [
                 ["Name:",self.name,nameStringChars],
                 ["Topic:",self.topic.name,options]
@@ -597,7 +597,7 @@ class ROS_Subscriber(CanvasObject):
             self.topic = options[options.keys()[0]]
         d = ReferenceDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Subscriber",
             initValsList = [
                 ["Name:",self.name,nameStringChars],
                 ["Topic:",self.topic.name,options]
@@ -630,7 +630,7 @@ class ROS_Timer(CanvasObject):
     def Edit(self):
         d = EditorDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Timer",
             initValsList=[
                 ["Name:",self.name,nameStringChars],
                 ["Period:",self.period,digitStringChars],
@@ -661,7 +661,7 @@ class ROS_Node(CanvasObject):
     def Edit(self):
         d = EditorDialogPopup(
             parent=self.canvas,
-            title=self.name,
+            title="Edit Node",
             initValsList=[
                 ["Name:",self.name,nameStringChars]
             ]

@@ -116,29 +116,29 @@ class ModelViewer(EditorFrame):
         self.editorContextDict['compInst'] = self.compInstanceContextDict
         self.editorContextDict['node'] = self.nodeContextDict
 
-        self.srvContextDict['Edit'] = self.ContextEdit
-        self.srvContextDict['Delete'] = self.ContextDelete
+        self.srvContextDict['Edit Service'] = self.ContextEdit
+        self.srvContextDict['Delete Service'] = self.ContextDelete
 
-        self.msgContextDict['Edit'] = self.ContextEdit
-        self.msgContextDict['Delete'] = self.ContextDelete
+        self.msgContextDict['Edit Message'] = self.ContextEdit
+        self.msgContextDict['Delete Message'] = self.ContextDelete
 
-        self.tmrContextDict['Edit'] = self.ContextEdit
-        self.tmrContextDict['Delete'] = self.ContextDelete
+        self.tmrContextDict['Edit Timer'] = self.ContextEdit
+        self.tmrContextDict['Delete Timer'] = self.ContextDelete
 
-        self.compContextDict['Edit'] = self.ContextEdit
-        self.compContextDict['Delete'] = self.ContextDelete
+        self.compContextDict['Edit Component Definition'] = self.ContextEdit
+        self.compContextDict['Delete Component Definition'] = self.ContextDelete
         self.compContextDict['Add Timer'] = self.CompAddTimer
         self.compContextDict['Add Publisher'] = self.CompAddPub
         self.compContextDict['Add Subscriber'] = self.CompAddSub
         self.compContextDict['Add Client'] = self.CompAddClient
         self.compContextDict['Add Server'] = self.CompAddServer
         
-        self.compInstanceContextDict['Edit'] = self.ContextEdit
-        self.compInstanceContextDict['Delete'] = self.ContextDelete
+        self.compInstanceContextDict['Edit Component Instance'] = self.ContextEdit
+        self.compInstanceContextDict['Delete Component Instance'] = self.ContextDelete
 
-        self.nodeContextDict['Edit'] = self.ContextEdit
-        self.nodeContextDict['Delete'] = self.ContextDelete
-        self.nodeContextDict['Add Component'] = self.NodeAddComp
+        self.nodeContextDict['Edit Node'] = self.ContextEdit
+        self.nodeContextDict['Delete Node'] = self.ContextDelete
+        self.nodeContextDict['Add Component Instance'] = self.NodeAddComp
 
         EditorFrame.__init__(self,master,"Model Viewer",height,width,self.editorContextDict)
 
@@ -375,6 +375,8 @@ class PackageViewer(EditorFrame):
             self.Update(self.model,self.buttonVar,self.buttonCommand)
             self.buttonVar.set(package.name)
             self.buttonCommand()
+        else:
+            tkMessageBox.showerror("Edit Package","Need to select a package first!")
 
     def ContextAddPackage(self):
         newObj = rosgen.ROS_Package()
@@ -384,18 +386,23 @@ class PackageViewer(EditorFrame):
             newObj.name = d.result[0]
             self.model.addPackage(newObj)
             self.Update(self.model,self.buttonVar,self.buttonCommand)
+            self.buttonVar.set(newObj.name)
             self.buttonCommand()
 
     def ContextDeletePackage(self):
         if self.buttonVar.get() != None and self.buttonVar.get() != "":
             self.model.deletePackage(self.buttonVar.get())
         self.Update(self.model,self.buttonVar,self.buttonCommand)
+        if self.model.packages_dict != OrderedDict():
+            package = self.model.packages_dict.itervalues().next()
+            self.buttonVar.set(package.name)
+        else:
+            self.buttonVar.set('')
         self.buttonCommand()
 
     def Update(self,model,buttonVar,buttonCommand):
         self.model = model
         self.buttonVar = buttonVar
-        self.buttonVar.set("")
         self.buttonCommand = buttonCommand
         self.clear()
         ypos = 5
@@ -479,9 +486,14 @@ class Editor():
 
     def OnPackageSelected(self):
         newModel = None
+        self.initModelViewer()
+        self.modelViewer.Update(
+            None,
+            initPos=[50,50],
+            padding=[100,20]
+        )
         if self.selectedPackageVar.get() != None and self.selectedPackageVar.get() != '':
             newModel = self.model.packages_dict[self.selectedPackageVar.get()]
-            self.initModelViewer()
             self.modelViewer.Update(
                 newModel,
                 initPos=[50,50],
