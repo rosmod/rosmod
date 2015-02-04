@@ -42,7 +42,7 @@ canvasOptionsDict['server'] = CanvasOptions(
         color = "green",
         minSize = (10,10),
     ),
-    tags = ("object","service")
+    tags = ("object","server")
 )
 canvasOptionsDict['client'] = CanvasOptions(
     canvasPaddingOptions,
@@ -51,7 +51,7 @@ canvasOptionsDict['client'] = CanvasOptions(
         color = "green",
         minSize = (10,10),
     ),
-    tags = ("object","service")
+    tags = ("object","client")
 )
 canvasOptionsDict['publisher'] = CanvasOptions(
     canvasPaddingOptions,
@@ -60,7 +60,7 @@ canvasOptionsDict['publisher'] = CanvasOptions(
         color = "blue",
         minSize = (10,10),
     ),
-    tags = ("object","message")
+    tags = ("object","publisher")
 )
 canvasOptionsDict['subscriber'] = CanvasOptions(
     canvasPaddingOptions,
@@ -69,7 +69,7 @@ canvasOptionsDict['subscriber'] = CanvasOptions(
         color = "blue",
         minSize = (10,10),
     ),
-    tags = ("object","message")
+    tags = ("object","subscriber")
 )
 canvasOptionsDict['timer'] = CanvasOptions(
     canvasPaddingOptions,

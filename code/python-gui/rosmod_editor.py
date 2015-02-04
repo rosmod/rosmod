@@ -44,7 +44,10 @@ class EditorFrame(Frame):
             yscrollcommand=self.VScrollBar.set
         )
 
-        self.contextMenu = MenuPopup(self.canvas,contextDict)
+        self.contextMenu = MenuPopup(
+            master=self.canvas,
+            functionsDict=contextDict
+        )
         self.canvas.tag_bind("object","<Button-3>", self.contextMenu.popupCallback)
         
         self.VScrollBar.config(command=self.canvas.yview)
@@ -96,6 +99,7 @@ class ModelViewer(EditorFrame):
     def __init__(self, master, height, width, optionsDict=None, model=None,contextDict=None):
 
         self.editorContextDict = OrderedDict()
+
         self.canvasContextDict=OrderedDict()
         self.canvasContextDict['Add Service'] = self.ContextAddService
         self.canvasContextDict['Add Message'] = self.ContextAddMessage
@@ -104,17 +108,31 @@ class ModelViewer(EditorFrame):
 
         self.srvContextDict = OrderedDict()
         self.msgContextDict = OrderedDict()
-        self.tmrContextDict = OrderedDict()
+
         self.compContextDict = OrderedDict()
-        self.compInstanceContextDict = OrderedDict()
+        self.tmrContextDict = OrderedDict()
+        self.pubContextDict = OrderedDict()
+        self.subContextDict = OrderedDict()
+        self.serverContextDict = OrderedDict()
+        self.clientContextDict = OrderedDict()
+
         self.nodeContextDict = OrderedDict()
+        self.compInstanceContextDict = OrderedDict()
+
         self.editorContextDict['canvas'] = self.canvasContextDict
+        
         self.editorContextDict['service'] = self.srvContextDict
         self.editorContextDict['message'] = self.msgContextDict
-        self.editorContextDict['timer'] = self.tmrContextDict
+        
         self.editorContextDict['component'] = self.compContextDict
-        self.editorContextDict['compInst'] = self.compInstanceContextDict
+        self.editorContextDict['timer'] = self.tmrContextDict
+        self.editorContextDict['publisher'] = self.pubContextDict
+        self.editorContextDict['subscriber'] = self.subContextDict
+        self.editorContextDict['server'] = self.serverContextDict
+        self.editorContextDict['client'] = self.clientContextDict
+        
         self.editorContextDict['node'] = self.nodeContextDict
+        self.editorContextDict['compInst'] = self.compInstanceContextDict
 
         self.srvContextDict['Edit Service'] = self.ContextEdit
         self.srvContextDict['Delete Service'] = self.ContextDelete
@@ -124,6 +142,18 @@ class ModelViewer(EditorFrame):
 
         self.tmrContextDict['Edit Timer'] = self.ContextEdit
         self.tmrContextDict['Delete Timer'] = self.ContextDelete
+
+        self.pubContextDict['Edit Publisher'] = self.ContextEdit
+        self.pubContextDict['Delete Publisher'] = self.ContextDelete
+
+        self.subContextDict['Edit Subscriber'] = self.ContextEdit
+        self.subContextDict['Delete Subscriber'] = self.ContextDelete
+
+        self.serverContextDict['Edit Server'] = self.ContextEdit
+        self.serverContextDict['Delete Server'] = self.ContextDelete
+
+        self.clientContextDict['Edit Client'] = self.ContextEdit
+        self.clientContextDict['Delete Client'] = self.ContextDelete
 
         self.compContextDict['Edit Component Definition'] = self.ContextEdit
         self.compContextDict['Delete Component Definition'] = self.ContextDelete
