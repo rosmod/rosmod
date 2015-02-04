@@ -103,7 +103,7 @@ class ModelViewer(EditorFrame):
         self.canvasContextDict=OrderedDict()
         self.canvasContextDict['Add Service'] = self.ContextAddService
         self.canvasContextDict['Add Message'] = self.ContextAddMessage
-        self.canvasContextDict['Add Component'] = self.ContextAddComponent
+        self.canvasContextDict['Add Component Definition'] = self.ContextAddComponent
         self.canvasContextDict['Add Node'] = self.ContextAddNode
 
         self.srvContextDict = OrderedDict()
@@ -422,13 +422,15 @@ class PackageViewer(EditorFrame):
     def ContextDeletePackage(self):
         if self.buttonVar.get() != None and self.buttonVar.get() != "":
             self.model.deletePackage(self.buttonVar.get())
-        self.Update(self.model,self.buttonVar,self.buttonCommand)
-        if self.model.packages_dict != OrderedDict():
-            package = self.model.packages_dict.itervalues().next()
-            self.buttonVar.set(package.name)
+            self.Update(self.model,self.buttonVar,self.buttonCommand)
+            if self.model.packages_dict != OrderedDict():
+                package = self.model.packages_dict.itervalues().next()
+                self.buttonVar.set(package.name)
+            else:
+                self.buttonVar.set('')
+            self.buttonCommand()
         else:
-            self.buttonVar.set('')
-        self.buttonCommand()
+            tkMessageBox.showerror("Delete Package","Need to select a package first!")
 
     def Update(self,model,buttonVar,buttonCommand):
         self.model = model
