@@ -211,6 +211,7 @@ class App:
         if filePath != None and filePath != '':
             head, self.workspaceDir = os.path.split(filePath)
             self.model_path = filePath
+            rosgen.check_workspace(self.Model, self.model_path)
             rosgen.generate_workspace(self.Model, self.model_path)
             self.statusBar.set("Generated ROS Workspace into " + self.model_path)
         

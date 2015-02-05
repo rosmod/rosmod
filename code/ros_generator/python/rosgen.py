@@ -25,6 +25,7 @@ from listener import *
 from printer import *
 print "Compiling all templates...\n"
 from generator import *
+from loader import *
 
 # Create and return a workspace object corresponding to the input model
 def parse_model(filename):
@@ -48,6 +49,15 @@ def parse_model(filename):
     walker.walk(listener, tree)
 
     return listener
+
+# Check workspace directory for existing code that may
+# require preservation
+def check_workspace(listener, model_path):
+    
+    # Instantiate a Loader Object
+    loader = Loader()
+    # Use load_business_logic to load existing business logic
+    loader.load_business_logic(listener, model_path)
     
 # Generate the ROS workspace corresponding to the input model
 def generate_workspace(listener, model_path):
@@ -83,6 +93,10 @@ if __name__ == "__main__":
 
     # Parse the input model
     listener_object = parse_model(model)
+
+    # Check the workspace directory for existing code that may require
+    # preservation
+    
 
     # Generate the ROS workspace pertaining to the input model
     generate_workspace(listener_object, model_path)

@@ -281,6 +281,8 @@ class ROS_Service(CanvasObject):
         self.request_fields = []
         # List of response fields
         self.response_fields = []
+        # Business Logic
+        self.business_logic = ""
 
     def Delete(self):
         for comp in self.package.components:
@@ -351,6 +353,10 @@ class ROS_Component(CanvasObject):
         self.subscribers = []
         # List of timers
         self.timers = []
+        # Init Business Logic
+        self.init_business_logic = ""
+        self.user_includes = ""
+        self.user_private_variables = ""
         # type of component, i.e. its definition
         self.comp_type = None
         self.parentNode = None
@@ -585,6 +591,7 @@ class ROS_Subscriber(CanvasObject):
         self.name = ""
         # Name of msg topic
         self.topic = None
+        self.business_logic = ""
         self.parentComp = None
 
     def Delete(self):
@@ -622,6 +629,7 @@ class ROS_Timer(CanvasObject):
         self.period = period
         # Unit of timer period
         self.period_unit = period_unit
+        self.business_logic = ""
         self.parentComp = None
 
     def Delete(self):

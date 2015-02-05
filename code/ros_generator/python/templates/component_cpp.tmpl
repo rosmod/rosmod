@@ -5,6 +5,8 @@ $hash_include "$package_name/${component_name}.hpp"
 // -------------------------------------------------------
 
 // Init Function
+#if $init_business_logic == ""
+//# Start Init Marker
 void $component_name::Init(const ros::TimerEvent& event)
 {
     // Initialize Component
@@ -12,38 +14,63 @@ void $component_name::Init(const ros::TimerEvent& event)
     // Stop Init Timer
     initOneShotTimer.stop();
 }
+//# End Init Marker
+#else
+$init_business_logic//# End Init Marker
+#end if
 
 #if $len($subscribers) > 0
 #for $sub in $subscribers
 // OnOneData Subscription handler for ${sub.name} subscriber
+#if $sub.business_logic == ""
+//# Start ${sub.name}_OnOneData Marker
 void $component_name::${sub.name}_OnOneData(const $package_name::${sub.topic.name}::ConstPtr& received_data)
 {
     // Business Logic for $sub.name subscriber subscribing to topic $sub.topic.name callback 
 
 }
+//# End ${sub.name}_OnOneData Marker
+#else
+//# Start ${sub.name}_OnOneData Marker
+$sub.business_logic//# End ${sub.name}_OnOneData Marker
+#end if
 #end for
 
 #end if
 #if $len($provided_services) > 0
 #for $provided in $provided_services
 // Component Service Callback
+#if $provided.service.business_logic == ""
+//# Start ${provided.name}Callback  Marker
 bool $component_name::${provided.name}Callback($package_name::$provided.service.name::Request  &req,
     $package_name::$provided.service.name::Response &res)
 {
     // Business Logic for $provided.name Server providing $provided.service.name Service
 
 }
+//# End ${provided.name}Callback  Marker
+#else
+//# Start ${provided.name}Callback  Marker
+$provided.service.business_logic//# End ${provided.name}Callback  Marker
+#end if
 #end for
 
 #end if
 #if $len($timers) > 0
 #for $timer in $timers
 // Callback for $timer.name timer
+#if $timer.business_logic == ""
+//# Start ${timer.name}Callback Marker
 void $component_name::${timer.name}Callback(const ros::TimerEvent& event)
 {
     // Business Logic for $timer.name 
 
 }
+//# End ${timer.name}Callback Marker
+#else
+//# Start ${timer.name}Callback Marker
+$timer.business_logic//# End ${timer.name}Callback Marker
+#end if
 #end for
 
 #end if

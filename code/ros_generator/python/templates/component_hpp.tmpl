@@ -4,16 +4,23 @@
 $hash_include "ros/ros.h"
 $hash_include "Component.hpp"
 
+// --------------------------------
+//      USER INCLUDES GO HERE
+// --------------------------------
+#if $user_includes == ""
+//# Start User Includes Marker
+//# End User Includes Marker
+#else
+//# Start User Includes Marker
+$user_includes//# End User Includes Marker
+#end if
+
 #for $topic in $topics
 $hash_include "$package_name/${topic.name}.h"
 #end for
 #for $service in $services
 $hash_include "$package_name/${service.service.name}.h"
 #end for
-
-// --------------------------------
-//      USER INCLUDES GO HERE
-// --------------------------------
 
 class $component_name : public Component
 {
@@ -97,7 +104,14 @@ class $component_name : public Component
 	ros::ServiceClient ${required.name}_client;
 
 	#end for
+	#end if
+	#if $user_private_variables == ""
+        //# Start User Private Variables Marker
 
+        //# End User Private Variables Marker
+	#else
+        //# Start User Private Variables Marker
+$user_private_variables        //# End User Private Variables Marker
 	#end if
 };
 
