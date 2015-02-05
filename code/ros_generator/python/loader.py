@@ -13,7 +13,6 @@ class Loader:
 
     def load_business_logic(self, listener, path):
 
-        print "\nChecking for existing packages in ", path
         self.workspace_dir = path + "/" + listener.workspace.name
         
         if os.path.exists(self.workspace_dir):
@@ -63,7 +62,6 @@ class Loader:
                                                     
                         # FIND ALL COMPONENT CPP FILES
                         if(os.path.isfile(os.path.join(self.cpp, component.name + ".cpp")) == True):
-                            print "Found " + component.name + ".cpp"
                             
                             # OPEN THE CPP FILE
                             with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
