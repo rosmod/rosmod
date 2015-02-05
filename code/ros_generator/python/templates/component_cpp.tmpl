@@ -18,7 +18,7 @@ void $component_name::Init(const ros::TimerEvent& event)
 // OnOneData Subscription handler for ${sub.name} subscriber
 void $component_name::${sub.name}_OnOneData(const $package_name::${sub.topic.name}::ConstPtr& received_data)
 {
-    // Business Logic for $sub.name subscriber callback 
+    // Business Logic for $sub.name subscriber subscribing to topic $sub.topic.name callback 
 
 }
 #end for
@@ -30,7 +30,7 @@ void $component_name::${sub.name}_OnOneData(const $package_name::${sub.topic.nam
 bool $component_name::${provided.name}Callback($package_name::$provided.service.name::Request  &req,
     $package_name::$provided.service.name::Response &res)
 {
-    // Business Logic for $provided Service
+    // Business Logic for $provided.name Server providing $provided.service.name Service
 
 }
 #end for
@@ -86,8 +86,9 @@ void $component_name::startUp()
     ros::NodeHandle nh;
 
     #if $len($subscribers) > 0 
-    #for $sub in $subscribers
     // Configure all subscribers associated with this component
+    #for $sub in $subscribers
+    // subscriber: $sub.name
     ros::SubscribeOptions ${sub.name}_options;
     ${sub.name}_options = 
 	ros::SubscribeOptions::create<$package_name::${sub.topic.name}>
@@ -101,16 +102,18 @@ void $component_name::startUp()
 
     #end if		
     #if $len($publishers) > 0
-    #for $pub in $publishers
     // Configure all publishers associated with this component
+    #for $pub in $publishers
+    // publisher: $pub.name
     this->${pub.name} = nh.advertise<$package_name::${pub.topic.name}>
 	("${pub.topic.name}", 1000);	
     #end for
 
     #end if
     #if $len($provided_services)
-    #for $provided in $provided_services
     // Configure all provided services associated with this component
+    #for $provided in $provided_services
+    // server: $provided.name
     ros::AdvertiseServiceOptions ${provided.name}_server_options;
     ${provided.name}_server_options = 
 	ros::AdvertiseServiceOptions::create<$package_name::$provided.service.name>
@@ -123,8 +126,9 @@ void $component_name::startUp()
  
     #end if
     #if $len($required_services) > 0
-    #for $required in $required_services
     // Configure all required services associated with this component
+    #for $required in $required_services
+    // client: ${required.name}_client
     this->${required.name}_client = nh.serviceClient<$package_name::$required.service.name>
 	("$required.service.name"); 
     #end for
@@ -143,6 +147,7 @@ void $component_name::startUp()
     #if $len($timers)
     // Create all component timers
     #for $timer in $timers
+    // timer: timer.name
     timer_options = 
 	ros::TimerOptions
 	     #if $timer.period == "0.0"
