@@ -74,6 +74,9 @@ class ROS_Package(CanvasObject):
         self.components = []
         # List of nodes in package
         self.nodes = []
+        # Code Preservation Variables
+        self.cmakelists_packages = ""
+        self.cmakelists_add_cpp = ""
         # Useful Dictionaries
         self.msg_dict = OrderedDict()
         self.srv_dict = OrderedDict()

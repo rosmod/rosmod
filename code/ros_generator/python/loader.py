@@ -21,6 +21,37 @@ class Loader:
             for package in listener.workspace.packages:
                 self.package_path = self.src_path + "/" + package.name
 
+                if(os.path.isfile(os.path.join(self.package_path, "CMakeLists.txt")) == True):
+                    with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
+                        
+                        # CHECK CMAKELISTS FILE
+                        package_marker = False
+                        package_text = ""
+                        for num, line in enumerate(cmakelists, 1):
+                            if package_marker == True and "## End Package Marker" not in line:
+                                package_text += line
+                            if package_marker == False and "## Start Package Marker" in line:
+                                package_marker = True
+                            if package_marker == True and "## End Package Marker" in line:
+                                package_marker = False
+                            package.cmakelists_packages = package_text   
+
+                if(os.path.isfile(os.path.join(self.package_path, "CMakeLists.txt")) == True):
+                    with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
+                        
+                        # CHECK CMAKELISTS FILE
+                        cpp_marker = False
+                        cpp_text = ""
+                        for num, line in enumerate(cmakelists, 1):
+                            if cpp_marker == True and "## End CPP Marker" not in line:
+                                cpp_text += line
+                            if cpp_marker == False and "## Start CPP Marker" in line:
+                                cpp_marker = True
+                            if cpp_marker == True and "## End CPP Marker" in line:
+                                cpp_marker = False
+                            package.cmakelists_add_cpp = cpp_text                     
+                        
+
                 if os.path.exists(self.package_path):
                     print "Preserving code for Package: ", self.package_path
 

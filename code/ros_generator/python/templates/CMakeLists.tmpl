@@ -8,6 +8,13 @@ find_package(catkin REQUIRED COMPONENTS
 roscpp
 std_msgs
 message_generation
+#if $packages == ""
+\## Start Package Marker
+\## End Package Marker
+#else
+\## Start Package Marker
+$packages\## End Package Marker
+#end if
 )
 
 \## System dependencies are found with CMake's conventions
@@ -176,7 +183,14 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable( ${node.name} src/${package_name}/${node.name}_main.cpp src/${package_name}/Component.cpp 
 #for $comp in $node.comp_defs 
                 src/$package_name/${comp}.cpp  
-#end for 
+#end for
+#if $add_cpp == ""
+		\## Start CPP Marker
+		\## End CPP Marker
+#else
+		\## Start CPP Marker
+$add_cpp                \## End CPP Marker
+#end if 
               )
 #else
 add_executable( ${node.name} src/${package_name}/${node.name}_main.cpp src/${package_name}/Component.cpp)

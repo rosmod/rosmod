@@ -200,7 +200,9 @@ class Generator:
                 with open(os.path.join(self.cpp, node_filename), 'w') as temp_file_nm:
                     temp_file_nm.write(self.nodeMain_str)
 
-            cmake_lists_namespace = {'package_name': package.name, 
+            cmake_lists_namespace = {'package_name': package.name,
+                                     'packages': package.cmakelists_packages,
+                                     'add_cpp': package.cmakelists_add_cpp,
                                      'messages': package.messages, 
                                      'services': package.services, 
                                      'catkin_INCLUDE_DIRS': "${catkin_INCLUDE_DIRS}",
@@ -222,3 +224,4 @@ class Generator:
                 temp_file.write(self.cmake_lists)
             
                 
+
