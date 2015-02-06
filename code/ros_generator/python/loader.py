@@ -77,11 +77,11 @@ class Loader:
                                         init_marker = False
                                 component.init_business_logic = init_text
                                 
-                            # OPEN THE CPP FILE
-                            with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
+                            # CHECK SUBSCRIBER BUSINESS LOGIC
+                            for sub in component.subscribers:
 
-                                # CHECK SUBSCRIBER BUSINESS LOGIC
-                                for sub in component.subscribers:
+                                # OPEN THE CPP FILE
+                                with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
                                     
                                     sub_marker = False
                                     sub_text = ""
@@ -97,11 +97,11 @@ class Loader:
                                             sub_marker = False
                                     sub.business_logic = sub_text
                                     
-                            # OPEN THE CPP FILE
-                            with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
+                            # CHECK TIMER BUSINESS LOGIC
+                            for timer in component.timers:
 
-                                # CHECK TIMER BUSINESS LOGIC
-                                for timer in component.timers:
+                                # OPEN THE CPP FILE
+                                with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
                                     
                                     timer_marker = False
                                     timer_text = ""
@@ -117,11 +117,11 @@ class Loader:
                                             timer_marker = False
                                     timer.business_logic = timer_text
                                     
-                            # OPEN THE CPP FILE
-                            with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
+                            # CHECK SERVICE BUSINESS LOGIC
+                            for service in component.provided_services:
 
-                                # CHECK SERVICE BUSINESS LOGIC
-                                for service in component.provided_services:
+                                # OPEN THE CPP FILE
+                                with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
                                     
                                     service_marker = False
                                     service_text = ""

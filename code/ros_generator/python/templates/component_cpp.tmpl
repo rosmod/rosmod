@@ -42,17 +42,17 @@ $sub.business_logic//# End ${sub.name}_OnOneData Marker
 #for $provided in $provided_services
 // Component Service Callback
 #if $provided.service.business_logic == ""
-//# Start ${provided.name}Callback  Marker
+//# Start ${provided.name}Callback Marker
 bool $component_name::${provided.name}Callback($package_name::$provided.service.name::Request  &req,
     $package_name::$provided.service.name::Response &res)
 {
     // Business Logic for $provided.name Server providing $provided.service.name Service
 
 }
-//# End ${provided.name}Callback  Marker
+//# End ${provided.name}Callback Marker
 #else
-//# Start ${provided.name}Callback  Marker
-$provided.service.business_logic//# End ${provided.name}Callback  Marker
+//# Start ${provided.name}Callback Marker
+$provided.service.business_logic//# End ${provided.name}Callback Marker
 #end if
 #end for
 
