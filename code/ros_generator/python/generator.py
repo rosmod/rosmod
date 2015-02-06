@@ -9,6 +9,7 @@ import sys
 import os
 from Cheetah.Template import Template
 import inspect
+import collections
 # Template Compile step -- Compiling tmpl files in templates
 # Generates equivalent .py files
 generator_dir = os.path.dirname(os.path.realpath(__file__))
@@ -28,6 +29,8 @@ from component_hpp import *
 from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
+
+from OrderedSet import *
 
 class Generator:
     
@@ -145,13 +148,13 @@ class Generator:
                     topics.append(publisher.topic)
                 for subscriber in component.subscribers:
                     topics.append(subscriber.topic)
-                topics = set(topics)
+                topics = OrderedSet(topics)
                 services = []
                 for provided in component.provided_services:
                     services.append(provided)
                 for required in component.required_services:
                     services.append(required)
-                services = set(services)
+                services = OrderedSet(services)
                 hash_include = "#include"
                 component_namespace = {'define_guard': define_guard, 
                                        'hash_include': hash_include, 
@@ -161,6 +164,7 @@ class Generator:
                                        'component_name': component.name,
                                        'init_business_logic': component.init_business_logic,
                                        'user_includes': component.user_includes,
+                                       'user_globals': component.user_globals,
                                        'user_private_variables': component.user_private_variables,
                                        'publishers': component.publishers, 
                                        'subscribers': component.subscribers, 
@@ -202,7 +206,6 @@ class Generator:
 
             cmake_lists_namespace = {'package_name': package.name,
                                      'packages': package.cmakelists_packages,
-                                     'add_cpp': package.cmakelists_add_cpp,
                                      'messages': package.messages, 
                                      'services': package.services, 
                                      'catkin_INCLUDE_DIRS': "${catkin_INCLUDE_DIRS}",

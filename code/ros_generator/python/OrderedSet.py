@@ -1,4 +1,4 @@
-# OrderedSet
+# OrderedSet class
 #
 # Preserved order of elements in set
 #

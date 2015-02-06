@@ -34,23 +34,25 @@ class Loader:
                                 package_marker = True
                             if package_marker == True and "## End Package Marker" in line:
                                 package_marker = False
-                            package.cmakelists_packages = package_text   
+                        package.cmakelists_packages = package_text   
 
                 if(os.path.isfile(os.path.join(self.package_path, "CMakeLists.txt")) == True):
-                    with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
-                        
-                        # CHECK CMAKELISTS FILE
-                        cpp_marker = False
-                        cpp_text = ""
-                        for num, line in enumerate(cmakelists, 1):
-                            if cpp_marker == True and "## End CPP Marker" not in line:
-                                cpp_text += line
-                            if cpp_marker == False and "## Start CPP Marker" in line:
-                                cpp_marker = True
-                            if cpp_marker == True and "## End CPP Marker" in line:
-                                cpp_marker = False
-                            package.cmakelists_add_cpp = cpp_text                     
-                        
+                    for node in package.nodes:
+
+                        with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
+                            # CHECK CMAKELISTS FILE
+                            cpp_marker = False
+                            cpp_text = ""
+                            start_marker = "## Start " + node.name + " CPP Marker"
+                            end_marker = "## End " + node.name + " CPP Marker"
+                            for num, line in enumerate(cmakelists, 1):
+                                if cpp_marker == True and end_marker not in line:
+                                    cpp_text += line
+                                if cpp_marker == False and start_marker in line:
+                                    cpp_marker = True
+                                if cpp_marker == True and end_marker in line:
+                                    cpp_marker = False
+                            node.cmakelists_add_cpp = cpp_text                     
 
                 if os.path.exists(self.package_path):
                     print "Preserving code for Package: ", self.package_path
@@ -93,6 +95,19 @@ class Loader:
                                                     
                         # FIND ALL COMPONENT CPP FILES
                         if(os.path.isfile(os.path.join(self.cpp, component.name + ".cpp")) == True):
+
+                            with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:
+                                # CHECK USER GLOBALS
+                                globals_marker = False
+                                globals_text = ""
+                                for num, line in enumerate(cpp_file, 1):
+                                    if globals_marker == True and "//# End User Globals Marker" not in line:
+                                        globals_text += line
+                                    if globals_marker == False and "//# Start User Globals Marker" in line:
+                                        globals_marker = True
+                                    if globals_marker == True and "//# End User Globals Marker" in line:
+                                        globals_marker = False
+                                component.user_globals = globals_text
                             
                             # OPEN THE CPP FILE
                             with open(os.path.join(self.cpp, component.name + ".cpp"), 'r') as cpp_file:

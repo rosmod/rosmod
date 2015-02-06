@@ -76,7 +76,6 @@ class ROS_Package(CanvasObject):
         self.nodes = []
         # Code Preservation Variables
         self.cmakelists_packages = ""
-        self.cmakelists_add_cpp = ""
         # Useful Dictionaries
         self.msg_dict = OrderedDict()
         self.srv_dict = OrderedDict()
@@ -359,6 +358,7 @@ class ROS_Component(CanvasObject):
         # Init Business Logic
         self.init_business_logic = ""
         self.user_includes = ""
+        self.user_globals = ""
         self.user_private_variables = ""
         # type of component, i.e. its definition
         self.comp_type = None
@@ -668,6 +668,8 @@ class ROS_Node(CanvasObject):
         self.components = []
         # List of component defs
         self.comp_defs = []
+        # Extra CPPs added in CMakeLists
+        self.cmakelists_add_cpp = ""
 
     def Edit(self):
         d = EditorDialogPopup(

@@ -184,12 +184,12 @@ add_executable( ${node.name} src/${package_name}/${node.name}_main.cpp src/${pac
 #for $comp in $node.comp_defs 
                 src/$package_name/${comp}.cpp  
 #end for
-#if $add_cpp == ""
-		\## Start CPP Marker
-		\## End CPP Marker
+#if $node.cmakelists_add_cpp == ""
+		\## Start ${node.name} CPP Marker
+		\## End ${node.name} CPP Marker
 #else
-		\## Start CPP Marker
-$add_cpp                \## End CPP Marker
+		\## Start ${node.name} CPP Marker
+$node.cmakelists_add_cpp                \## End ${node.name} CPP Marker
 #end if 
               )
 #else
