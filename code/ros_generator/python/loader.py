@@ -81,6 +81,19 @@ class Loader:
                                 component.user_includes = incl_text
 
                             with open(os.path.join(self.hpp, component.name + ".hpp"), 'r') as hpp_file:
+                                # CHECK USER GLOBALS IN HPP
+                                hpp_globals_marker = False
+                                hpp_globals_text = ""
+                                for num, line in enumerate(hpp_file, 1):
+                                    if hpp_globals_marker == True and "//# End User Globals Marker" not in line:
+                                        hpp_globals_text += line
+                                    if hpp_globals_marker == False and "//# Start User Globals Marker" in line:
+                                        hpp_globals_marker = True
+                                    if hpp_globals_marker == True and "//# End User Globals Marker" in line:
+                                        hpp_globals_marker = False
+                                component.hpp_globals = hpp_globals_text
+
+                            with open(os.path.join(self.hpp, component.name + ".hpp"), 'r') as hpp_file:
                                 # CHECK USER Private Variables
                                 pv_marker = False
                                 pv_text = ""

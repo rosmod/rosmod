@@ -165,6 +165,7 @@ class Generator:
                                        'init_business_logic': component.init_business_logic,
                                        'user_includes': component.user_includes,
                                        'user_globals': component.user_globals,
+                                       'hpp_globals': component.hpp_globals,
                                        'user_private_variables': component.user_private_variables,
                                        'publishers': component.publishers, 
                                        'subscribers': component.subscribers, 

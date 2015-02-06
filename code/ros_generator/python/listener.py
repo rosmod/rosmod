@@ -359,6 +359,7 @@ class ROS_Component(CanvasObject):
         self.init_business_logic = ""
         self.user_includes = ""
         self.user_globals = ""
+        self.hpp_globals = ""
         self.user_private_variables = ""
         # type of component, i.e. its definition
         self.comp_type = None

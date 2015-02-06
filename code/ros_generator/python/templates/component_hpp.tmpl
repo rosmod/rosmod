@@ -23,6 +23,15 @@ $hash_include "$package_name/${topic.name}.h"
 $hash_include "$package_name/${service.service.name}.h"
 #end for
 
+#if $hpp_globals == ""
+//# Start User Globals Marker
+
+//# End User Globals Marker
+#else
+//# Start User Globals Marker
+$hpp_globals//# End User Globals Marker
+#end if
+
 class $component_name : public Component
 {
     public:
