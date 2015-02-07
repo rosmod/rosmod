@@ -39,6 +39,11 @@ import os
 # * A notebook for the editor's console (debug output),
 #   bash terminal (optional), node/comp logs, etc.
 
+# these notebooks should be contained within a toplevel panedWindow which allows them to 
+# be stacked vertically with a draggable sash between them.  Additionally, the Window 
+# menubar menu will allow the user to choose which of the two notebooks are shown
+# by telling the panedwindow to add or forget the notebook
+
 # these notebooks need to all be scollable in both the horizontal and vertical directions
 # and they need to fill the frame of the window and resize properly when the main editor
 # is resized
