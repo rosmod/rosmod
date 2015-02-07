@@ -16,7 +16,7 @@ exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
 head,tail = os.path.split(head)
-sys.path.append(head+'/ros_generator/python/')
+sys.path.append(head+'/generator_v1/python/')
 import rosgen as rosgen
 
 class EditorFrame(Frame):

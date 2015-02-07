@@ -1,0 +1,125 @@
+workspace ROS_Workspace;
+package Package_1
+{
+    messages
+    {
+        msg ComponentName
+        {
+            string name;
+        }
+    }
+    services
+    {
+        srv ComponentService
+        {
+            request
+            {
+                string operation;
+            }
+            response
+            {
+                string name;
+             }
+        }
+    }
+    components
+    {
+        component Component_1
+        {
+            publisher<ComponentName> Component_1_publisher;
+            subscriber<ComponentName> Component_1_subscriber;
+            timer Timer0
+            {
+                period = 0.5s;
+            }
+        }
+        component Component_2
+        {
+            provides ComponentService;
+            publisher<ComponentName> Component_2_publisher;
+            timer Timer0
+            {
+                period = 1.0s;
+            }
+        }
+        component Component_3
+        {
+            requires ComponentService;
+            timer Timer0
+            {
+                period = 2.0s;
+            }
+        }
+    }
+    nodes
+    {
+        node Ros_node
+        {
+            component<Component_1> Component_1_i;
+            component<Component_2> Component_2_i;
+            component<Component_3> Component_3_i;
+        }
+    }
+}
+package HelloWorldPackage
+{
+    messages
+    {
+        msg HelloPikachu
+        {
+            string name;
+        }
+    }
+    services
+    {
+        srv service1
+        {
+            request
+            {
+                string operation;
+            }
+            response
+            {
+                string name;
+             }
+        }
+    }
+    components
+    {
+        component Component_1
+        {
+            publisher<HelloPikachu> Component_1_publisher;
+            subscriber<HelloPikachu> Component_1_subscriber;
+            timer Timer0
+            {
+                period = 0.5s;
+            }
+        }
+        component Component_2
+        {
+            provides service1;
+            publisher<HelloPikachu> Component_2_publisher;
+            timer Timer0
+            {
+                period = 1.0s;
+            }
+        }
+        component Component_3
+        {
+            requires service1;
+            timer Timer0
+            {
+                period = 2.0s;
+            }
+        }
+    }
+    nodes
+    {
+        node Ros_node_2
+        {
+            component<Component_1> Component_1_i;
+            component<Component_2> Component_2_i;
+            component<Component_3> Component_3_i;
+        }
+    }
+}
