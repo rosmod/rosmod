@@ -1,0 +1,129 @@
+#ifndef ${define_guard}_HPP
+#define ${define_guard}_HPP
+
+$hash_include "ros/ros.h"
+$hash_include "Component.hpp"
+
+// --------------------------------
+//      USER INCLUDES GO HERE
+// --------------------------------
+#if $user_includes == ""
+//# Start User Includes Marker
+
+//# End User Includes Marker
+#else
+//# Start User Includes Marker
+$user_includes//# End User Includes Marker
+#end if
+
+#for $topic in $topics
+$hash_include "$package_name/${topic.name}.h"
+#end for
+#for $service in $services
+$hash_include "$package_name/${service.service.name}.h"
+#end for
+
+#if $hpp_globals == ""
+//# Start User Globals Marker
+
+//# End User Globals Marker
+#else
+//# Start User Globals Marker
+$hpp_globals//# End User Globals Marker
+#end if
+
+class $component_name : public Component
+{
+    public:
+
+        // These functions' business logic will be filled in by the user:
+
+	// Init() is always generated
+	void Init(const ros::TimerEvent& event);
+
+	#if $len($subscribers) > 0
+	#for $sub in $subscribers
+	// OnOneData Subscription handler for $sub.name subscriber 
+	void ${sub.name}_OnOneData(const $package_name::$sub.topic.name::ConstPtr& received_data); 
+ 
+	#end for
+
+	#end if
+	#if $len($provided_services) > 0
+	#for $provided in $provided_services
+	// Component Service Callback
+	bool ${provided.name}Callback($package_name::$provided.service.name::Request  &req,
+		$package_name::$provided.service.name::Response &res);
+
+	#end for
+
+	#end if	
+	#if $len($timers) > 0
+	#for $timer in $timers
+	// Callback for $timer.name timer
+	void ${timer.name}Callback(const ros::TimerEvent& event);
+
+	#end for
+
+	#end if
+	// these functions' business logic will be auto-generated:
+
+	// startUp() is used to configure timers, publishers, & service providers
+	void startUp();
+
+	// required for clean shutdown
+	~${component_name}();
+
+    private:
+
+	#if $len($timers) > 0
+	#for $timer in $timers
+	// ROS Timer - $timer.name
+	ros::Timer $timer.name;
+
+	#end for
+
+	#end if
+	#if $len($subscribers) > 0
+	#for $sub in $subscribers
+	// ROS Subscriber - $sub.name
+	ros::Subscriber $sub.name; 
+
+	#end for
+
+	#end if
+	#if $len($publishers) > 0
+	#for $pub in $publishers
+	// ROS Publisher - $pub.name
+	ros::Publisher $pub.name;
+
+	#end for
+
+	#end if
+	#if $len($provided_services) > 0
+	#for $provided in $provided_services
+	// ROS Service Server - ${provided.name}_server
+	ros::ServiceServer ${provided.name}_server;
+
+	#end for
+
+	#end if
+	#if $len($required_services) > 0
+	#for $required in $required_services
+	// ROS Service Client - ${required.name}_client
+	ros::ServiceClient ${required.name}_client;
+
+	#end for
+	#end if
+	#if $user_private_variables == ""
+        //# Start User Private Variables Marker
+
+        //# End User Private Variables Marker
+	#else
+        //# Start User Private Variables Marker
+$user_private_variables        //# End User Private Variables Marker
+	#end if
+};
+
+
+#endif

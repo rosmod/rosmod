@@ -1,0 +1,205 @@
+$hash_include "$package_name/${component_name}.hpp"
+
+#if $user_globals == ""
+//# Start User Globals Marker
+
+//# End User Globals Marker
+#else
+//# Start User Globals Marker
+$user_globals//# End User Globals Marker
+#end if
+
+// -------------------------------------------------------
+// BUSINESS LOGIC OF THESE FUNCTIONS SUPPLIED BY DEVELOPER
+// -------------------------------------------------------
+
+// Init Function
+#if $init_business_logic == ""
+//# Start Init Marker
+void $component_name::Init(const ros::TimerEvent& event)
+{
+    // Initialize Component
+
+    // Stop Init Timer
+    initOneShotTimer.stop();
+}
+//# End Init Marker
+#else
+//# Start Init Marker
+$init_business_logic//# End Init Marker
+#end if
+
+#if $len($subscribers) > 0
+#for $sub in $subscribers
+// OnOneData Subscription handler for ${sub.name} subscriber
+#if $sub.business_logic == ""
+//# Start ${sub.name}_OnOneData Marker
+void $component_name::${sub.name}_OnOneData(const $package_name::${sub.topic.name}::ConstPtr& received_data)
+{
+    // Business Logic for $sub.name subscriber subscribing to topic $sub.topic.name callback 
+
+}
+//# End ${sub.name}_OnOneData Marker
+#else
+//# Start ${sub.name}_OnOneData Marker
+$sub.business_logic//# End ${sub.name}_OnOneData Marker
+#end if
+#end for
+
+#end if
+#if $len($provided_services) > 0
+#for $provided in $provided_services
+// Component Service Callback
+#if $provided.service.business_logic == ""
+//# Start ${provided.name}Callback Marker
+bool $component_name::${provided.name}Callback($package_name::$provided.service.name::Request  &req,
+    $package_name::$provided.service.name::Response &res)
+{
+    // Business Logic for $provided.name Server providing $provided.service.name Service
+
+}
+//# End ${provided.name}Callback Marker
+#else
+//# Start ${provided.name}Callback Marker
+$provided.service.business_logic//# End ${provided.name}Callback Marker
+#end if
+#end for
+
+#end if
+#if $len($timers) > 0
+#for $timer in $timers
+// Callback for $timer.name timer
+#if $timer.business_logic == ""
+//# Start ${timer.name}Callback Marker
+void $component_name::${timer.name}Callback(const ros::TimerEvent& event)
+{
+    // Business Logic for $timer.name 
+
+}
+//# End ${timer.name}Callback Marker
+#else
+//# Start ${timer.name}Callback Marker
+$timer.business_logic//# End ${timer.name}Callback Marker
+#end if
+#end for
+
+#end if
+// ---------------------------------------------
+// EVERYTHING BELOW HERE IS COMPLETELY GENERATED
+// ---------------------------------------------
+
+// Destructor - required for clean shutdown when process is killed
+$component_name::~${component_name}()
+{
+#if $len($timers) > 0
+#for $timer in $timers
+    ${timer.name}.stop();
+#end for
+#end if
+#if $len($publishers) > 0
+#for $pub in $publishers
+    ${pub.name}.shutdown();
+#end for
+#end if
+#if $len($subscribers) > 0
+#for $sub in $subscribers
+    ${sub.name}.shutdown();
+#end for
+#end if
+#if $len($provided_services) > 0
+#for $provided in $provided_services
+    ${provided.name}_server.shutdown();
+#end for
+#end if
+#if $len($required_services) > 0
+#for $required in $required_services
+    ${required.name}_client.shutdown();
+#end for
+#end if
+}
+
+void $component_name::startUp()
+{
+    ros::NodeHandle nh;
+
+    #if $len($subscribers) > 0 
+    // Configure all subscribers associated with this component
+    #for $sub in $subscribers
+    // subscriber: $sub.name
+    ros::SubscribeOptions ${sub.name}_options;
+    ${sub.name}_options = 
+	ros::SubscribeOptions::create<$package_name::${sub.topic.name}>
+	    ("${sub.topic.name}",
+	     1000,
+	     boost::bind(&$component_name::${sub.name}_OnOneData, this, _1),
+	     ros::VoidPtr(),
+             &this->compQueue);
+    this->${sub.name} = nh.subscribe(${sub.name}_options);
+    #end for
+
+    #end if		
+    #if $len($publishers) > 0
+    // Configure all publishers associated with this component
+    #for $pub in $publishers
+    // publisher: $pub.name
+    this->${pub.name} = nh.advertise<$package_name::${pub.topic.name}>
+	("${pub.topic.name}", 1000);	
+    #end for
+
+    #end if
+    #if $len($provided_services)
+    // Configure all provided services associated with this component
+    #for $provided in $provided_services
+    // server: $provided.name
+    ros::AdvertiseServiceOptions ${provided.name}_server_options;
+    ${provided.name}_server_options = 
+	ros::AdvertiseServiceOptions::create<$package_name::$provided.service.name>
+	    ("$provided.service.name",
+             boost::bind(&$component_name::${provided.name}Callback, this, _1, _2),
+	     ros::VoidPtr(),
+             &this->compQueue);
+    this->${provided.name}_server = nh.advertiseService(${provided.name}_server_options);
+    #end for
+ 
+    #end if
+    #if $len($required_services) > 0
+    // Configure all required services associated with this component
+    #for $required in $required_services
+    // client: ${required.name}_client
+    this->${required.name}_client = nh.serviceClient<$package_name::$required.service.name>
+	("$required.service.name"); 
+    #end for
+
+    #end if
+    // Create Init Timer
+    ros::TimerOptions timer_options;
+    timer_options = 
+	ros::TimerOptions
+	    (ros::Duration(-1),
+	     boost::bind(&$component_name::Init, this, _1),
+	     &this->compQueue,
+             true);
+    this->initOneShotTimer = nh.createTimer(timer_options);  
+  
+    #if $len($timers)
+    // Create all component timers
+    #for $timer in $timers
+    // timer: timer.name
+    timer_options = 
+	ros::TimerOptions
+	     #if $timer.period == "0.0"
+	     (ros::Duration(-1),
+             #else
+             (ros::Duration($timer.period),
+             #end if
+	     boost::bind(&$component_name::${timer.name}Callback, this, _1),
+             #if $timer.period == "0.0"
+	     &this->compQueue, true);
+             #else
+	     &this->compQueue);
+	     #end if 
+    this->$(timer.name) = nh.createTimer(timer_options);
+    #end for
+
+    #end if
+}
