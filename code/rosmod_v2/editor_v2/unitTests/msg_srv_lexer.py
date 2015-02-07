@@ -9,21 +9,8 @@ class MsgSrvLexer(RegexLexer):
 
     tokens = {
         'root' : [
-            (words((
-                'bool',
-                'int8',
-                'uint8',
-                'int16',
-                'uint16',
-                'int32',
-                'uint32',
-                'int64',
-                'uint64',
-                'float32',
-                'float64',
-                'string',
-                'time',
-                'duration')), Keyword),
-            (r'([ ]\S+)([ ]=[ ])(\S+)', bygroups(Text,Operator,String))
+            (r'bool|int8|uint8|int16|uint16|int32|uint32|int64|uint64|float32|float64|string|time|duration',Keyword),
+            (r'(\[\d*\])*[ ]', Operator),
+            (r'(\S+)([ ]=[ ])?(\S+)?',bygroups(Text,Operator,String))
         ]
     }
