@@ -18,20 +18,10 @@ ptext = PygmentsText(root, MsgSrvLexer(), TkFormatter())
 
 ptext.insertFormatted("end",py)
 
-ptext.grid(row=0,column=0,sticky="nsw")
 yscrollbar=Scrollbar(root,orient=VERTICAL,command=ptext.yview)
-yscrollbar.grid(row=0,column=1,sticky="nsew")
 ptext["yscrollcommand"] = yscrollbar.set
-ptext.update()
 
-h=int(round(ptext.winfo_height()/ptext["height"])), int(round(ptext.winfo_width()/ptext["width"]))
-
-def resize(event):
-    pixelX = root.winfo_width()-yscrollbar.winfo_width()
-    pixelY = root.winfo_height()
-    ptext["width"] = int(round(pixelX/h[1]))
-    ptext["height"] = int(round(pixelY/h[0]))
-
-root.bind("<Configure>", resize)
+yscrollbar.pack(side=RIGHT,fill=Y)
+ptext.pack(side=LEFT, fill=BOTH, expand = YES)
 
 root.mainloop()
