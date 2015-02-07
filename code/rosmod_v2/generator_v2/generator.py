@@ -36,7 +36,7 @@ from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
 
-from OrderedSet import *
+from ordered_set import *
 
 class Generator:
 
