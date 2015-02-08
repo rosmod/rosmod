@@ -21,7 +21,12 @@ ptext.insertFormatted("end",py)
 yscrollbar=Scrollbar(root,orient=VERTICAL,command=ptext.yview)
 ptext["yscrollcommand"] = yscrollbar.set
 
+btn0 = Button(root,text="Ok")
+btn1 = Button(root,text="Cancel")
+
 yscrollbar.pack(side=RIGHT,fill=Y)
+btn0.pack(side=BOTTOM)
+btn1.pack(side=BOTTOM)
 ptext.pack(side=LEFT, fill=BOTH, expand = YES)
 
 root.mainloop()
