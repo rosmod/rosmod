@@ -24,9 +24,18 @@ ptext["yscrollcommand"] = yscrollbar.set
 btn0 = Button(root,text="Ok")
 btn1 = Button(root,text="Cancel")
 
-yscrollbar.pack(side=RIGHT,fill=Y)
-btn0.pack(side=BOTTOM)
-btn1.pack(side=BOTTOM)
-ptext.pack(side=LEFT, fill=BOTH, expand = YES)
+ptext.grid(row=0,column=0, columnspan=2, sticky="nsew")
+yscrollbar.grid(row=0,column=2, sticky="nsew")
+btn0.grid(row=1,column=0,sticky="nsew")
+btn1.grid(row=1,column=1,sticky="nsew")
+
+root.rowconfigure(0,weight=1)
+root.columnconfigure(0,weight=1)
+
+
+#yscrollbar.pack(side=RIGHT,fill=Y)
+#btn0.pack(side=LEFT)
+#btn1.pack(side=LEFT)
+#ptext.pack(side=TOP, fill=BOTH, expand = YES)
 
 root.mainloop()
