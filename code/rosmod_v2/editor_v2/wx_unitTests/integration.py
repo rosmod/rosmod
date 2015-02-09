@@ -40,6 +40,7 @@ class Example(wx.Frame):
 
     def BuildMenu(self):
         self.menubar = wx.MenuBar()
+
         # normal file operations menu
         self.fileMenu = wx.Menu()
         self.newMI = self.fileMenu.Append(wx.ID_NEW, '&New', 'New ROSML Model')
@@ -48,6 +49,7 @@ class Example(wx.Frame):
         self.fileMenu.AppendSeparator()
         self.quitMI = wx.MenuItem(self.fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W', 'Quit ROSMOD')
         self.fileMenu.AppendItem(self.quitMI)
+
         # aspects (of the viewer) menu for ROSMOD: packages, hardware, deployment
         self.aspectsMenu = wx.Menu()
         self.packageAMI = self.aspectsMenu.Append(wx.ID_ANY,
@@ -59,6 +61,7 @@ class Example(wx.Frame):
         self.deploymentAMI = self.aspectsMenu.Append(wx.ID_ANY,
                                                      "Deployment",
                                                      "View/Manage the deployment of the model.")
+
         # tools menu for ROSMOD: generate code, analyze network and timing
         self.toolMenu = wx.Menu()
         self.generateMI = self.toolMenu.Append(wx.ID_ANY, 
@@ -70,6 +73,7 @@ class Example(wx.Frame):
         self.blTimingMI = self.toolMenu.Append(wx.ID_ANY, 
                                           "Analyze Timing", 
                                           "Generate CPN Tokens and Analyze Business Logic Model.")
+
         # view menu: show/hide statusbar/toolbar/viewer/output
         self.viewMenu = wx.Menu()
         self.shst = self.viewMenu.Append(wx.ID_ANY, 'Show Statusbar', 'Show Statusbar', kind=wx.ITEM_CHECK)
@@ -81,48 +85,59 @@ class Example(wx.Frame):
         self.viewMenu.Check(self.shvw.GetId(), True)
         self.viewMenu.Check(self.shop.GetId(), True)
 
+        # add the menus to the menubar
         self.menubar.Append(self.fileMenu, '&File')
         self.menubar.Append(self.viewMenu, '&View')
         self.menubar.Append(self.aspectsMenu, '&Aspects')
         self.menubar.Append(self.toolMenu, '&Tools')
         self.SetMenuBar(self.menubar)
         
+        # set up the events for the items in the menubar
         self.RegisterMenuEvents()
 
     def RegisterMenuEvents(self):
+        # file menu
         self.Bind(wx.EVT_MENU, self.OnNew, self.newMI)
         self.Bind(wx.EVT_MENU, self.OnOpen, self.openMI)
         self.Bind(wx.EVT_MENU, self.OnSave, self.saveMI)
         self.Bind(wx.EVT_MENU, self.OnQuit, self.quitMI)
-
+        # aspect menu
         self.Bind(wx.EVT_MENU, self.OnPackageAspect, self.packageAMI)
         self.Bind(wx.EVT_MENU, self.OnHardwareAspect, self.hardwareAMI)
         self.Bind(wx.EVT_MENU, self.OnDeploymentAspect, self.deploymentAMI)
-
+        # tools menu
         self.Bind(wx.EVT_MENU, self.GenerateCode, self.generateMI)
         self.Bind(wx.EVT_MENU, self.AnalyzeNetwork, self.networkQoSMI)
         self.Bind(wx.EVT_MENU, self.AnalyzeTiming, self.blTimingMI)
-
+        # view menu
         self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
 
     def BuildToolBar(self):
         self.toolbar = self.CreateToolBar()
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'), shortHelp="New")
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
+        # file operations
+        self.tnew = self.toolbar.AddLabelTool(wx.ID_ANY, 'New', wx.Bitmap('tnew.gif'), shortHelp="New")
+        self.topen = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
+        self.tsave = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
         self.toolbar.AddSeparator()
-        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
-        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
+        # undo/redo
+        self.tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
+        self.tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.AddSeparator()
-        texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
+        # application exit
+        self.texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
         self.toolbar.Realize()
+        # register the events
+        self.RegisterToolBarEvents()
 
     def RegisterToolBarEvents(self):
-        self.Bind(wx.EVT_TOOL, self.OnQuit, texit)
-        self.Bind(wx.EVT_TOOL, self.OnUndo, tundo)
-        self.Bind(wx.EVT_TOOL, self.OnRedo, tredo)
+        self.Bind(wx.EVT_TOOL, self.OnNew, self.tnew)
+        self.Bind(wx.EVT_TOOL, self.OnOpen, self.topen)
+        self.Bind(wx.EVT_TOOL, self.OnSave, self.tsave)
+        self.Bind(wx.EVT_TOOL, self.OnUndo, self.tundo)
+        self.Bind(wx.EVT_TOOL, self.OnRedo, self.tredo)
+        self.Bind(wx.EVT_TOOL, self.OnQuit, self.texit)
         
     def OnQuit(self, e):
         self.Close()
