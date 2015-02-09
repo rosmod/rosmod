@@ -22,7 +22,7 @@ class Example(wx.Frame):
         
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
-        self.BuildToolbar()
+        #self.BuildToolbar()
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
@@ -131,8 +131,6 @@ class Example(wx.Frame):
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.AddSeparator()
         # application exit
-        self.tcreate = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.png'), shortHelp="New Package")
-        self.tdelete = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('texit.png'), shortHelp="Remove Package")
         self.toolbar.AddSeparator()
         # application exit
         self.texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
@@ -158,30 +156,20 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Ready')
 
     def BuildAspects(self):
-        # build the aspect Panel
-        self.aspectPanel = wx.Panel(self)
-        # build the aspects
         # package aspect
-        self.PackageAspect = aspect.Aspect(self.aspectPanel)
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 1")
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 2")
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 3")
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "All Packages")
+        self.PackageAspect = aspect.Aspect(self)
+
         # hardware aspect
-        self.HardwareAspect = aspect.Aspect(self.aspectPanel)
-        self.HardwareAspect.AddPage(aspect.AspectTab(self.HardwareAspect), "System Hardware")
+        self.HardwareAspect = aspect.Aspect(self)
         self.HardwareAspect.Hide()
         # deployment aspect
-        self.DeploymentAspect = aspect.Aspect(self.aspectPanel)
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 1")
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 2")
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 3")
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "All Packages")
+        self.DeploymentAspect = aspect.Aspect(self)
         self.DeploymentAspect.Hide()
 
         self.apSizer = wx.BoxSizer(wx.VERTICAL)
         self.apSizer.Add(self.PackageAspect, 1, wx.ALL|wx.EXPAND, 5)
-        self.aspectPanel.SetSizer(self.apSizer)
+        self.SetSizer(self.apSizer)
+        self.activeAspect = self.PackageAspect
         
     def OnQuit(self, e):
         self.Close()
@@ -221,41 +209,22 @@ class Example(wx.Frame):
         if self.count == 2:
             self.toolbar.EnableTool(wx.ID_UNDO, True)
 
-    def OnCreate(self, e):
-        newTab = aspect.AspectTab(self.PackageAspect)
-        newTabName = "New Package!"
-        numPages = self.PackageAspect.GetPageCount()
-        self.PackageAspect.InsertPage(numPages-1,newTab, newTabName)
-        self.PackageAspect.SetSelection(numPages-1)
-    
-    def OnDelete(self, e):
-        selectedPage = self.PackageAspect.GetSelection()
-        numPages = self.PackageAspect.GetPageCount()
-        if selectedPage != numPages - 1:
-            self.PackageAspect.DeletePage(selectedPage)
-        else:
-            pass # ERROR DIALOG HERE; can we bake this into the aspect?
-        pass
-
     def HideAllAspects(self):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
         self.apSizer.Clear()
         self.apSizer.Layout()
-        self.toolbar.EnableTool(self.tcreate.GetId(), False)
-        self.toolbar.EnableTool(self.tdelete.GetId(), False)
 
     def ShowAspect(self,aspect):
         self.apSizer.Add(aspect, 1, wx.ALL|wx.EXPAND, 5)
         aspect.Show()
         self.apSizer.Layout()
+        self.activeAspect = aspect
 
     def OnPackageAspect(self, e):
         self.HideAllAspects()
         self.ShowAspect(self.PackageAspect)
-        self.toolbar.EnableTool(self.tcreate.GetId(), True)
-        self.toolbar.EnableTool(self.tdelete.GetId(), True)
 
     def OnHardwareAspect(self, e):
         self.HideAllAspects()
@@ -269,7 +238,7 @@ class Example(wx.Frame):
         self.GetStatusBar().Show(e.IsChecked())
 
     def ToggleToolBar(self, e):
-        self.GetToolBar().Show(e.IsChecked())
+        self.activeAspect.toolbar.Show(e.IsChecked())
         self.SendSizeEvent()
 
     def GenerateCode(self, e):
