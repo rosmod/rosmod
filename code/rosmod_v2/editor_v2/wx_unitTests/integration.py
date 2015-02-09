@@ -229,6 +229,12 @@ class Example(wx.Frame):
         self.PackageAspect.SetSelection(numPages-1)
     
     def OnDelete(self, e):
+        selectedPage = self.PackageAspect.GetSelection()
+        numPages = self.PackageAspect.GetPageCount()
+        if selectedPage != numPages - 1:
+            self.PackageAspect.DeletePage(selectedPage)
+        else:
+            pass # ERROR DIALOG HERE; can we bake this into the aspect?
         pass
 
     def HideAllAspects(self):
