@@ -8,10 +8,10 @@ root = Tk()
 
 imgdir = os.path.join(os.path.dirname(__file__), 'img')
 
-i1 = PhotoImage("img_close", file=os.path.join("./", 'windows_close_program.png'))
-i2 = PhotoImage("img_closepressed", file=os.path.join("./", 'windows_close_program.png'))
-i3 = PhotoImage("img_closeactive", file=os.path.join("./", 'windows_close_program.png'))
-i4 = PhotoImage("img_close2", file=os.path.join("./", 'windows_close_program.png'))
+i1 = PhotoImage("img_close", file=os.path.join("./", 'textit.png'))
+i2 = PhotoImage("img_closepressed", file=os.path.join("./", 'textit.png'))
+i3 = PhotoImage("img_closeactive", file=os.path.join("./", 'textit.png'))
+i4 = PhotoImage("img_close2", file=os.path.join("./", 'textit.png'))
 
 style = Style()
 style.element_create("close", "image", "img_close",
