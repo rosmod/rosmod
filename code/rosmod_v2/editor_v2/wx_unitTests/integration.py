@@ -121,7 +121,7 @@ class Example(wx.Frame):
     def BuildToolbar(self):
         self.toolbar = self.CreateToolBar()
         # file operations
-        self.tnew = self.toolbar.AddLabelTool(wx.ID_ANY, 'New', wx.Bitmap('tnew.gif'), shortHelp="New")
+        self.tnew = self.toolbar.AddLabelTool(wx.ID_ANY, 'New', wx.Bitmap('tnew.png'), shortHelp="New")
         self.topen = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
         self.tsave = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
         self.toolbar.AddSeparator()
@@ -129,6 +129,10 @@ class Example(wx.Frame):
         self.tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
         self.tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
         self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.toolbar.AddSeparator()
+        # application exit
+        self.tcreate = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.png'), shortHelp="New Package")
+        self.tdelete = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('texit.png'), shortHelp="Remove Package")
         self.toolbar.AddSeparator()
         # application exit
         self.texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
@@ -140,8 +144,13 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tnew)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.topen)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tsave)
+
         self.Bind(wx.EVT_TOOL, self.OnUndo, self.tundo)
         self.Bind(wx.EVT_TOOL, self.OnRedo, self.tredo)
+
+        self.Bind(wx.EVT_TOOL, self.OnCreate, self.tcreate)
+        self.Bind(wx.EVT_TOOL, self.OnDelete, self.tdelete)
+
         self.Bind(wx.EVT_TOOL, self.OnQuit, self.texit)
 
     def BuildStatusbar(self):
@@ -212,12 +221,24 @@ class Example(wx.Frame):
         if self.count == 2:
             self.toolbar.EnableTool(wx.ID_UNDO, True)
 
+    def OnCreate(self, e):
+        newTab = aspect.AspectTab(self.PackageAspect)
+        newTabName = "New Package!"
+        numPages = self.PackageAspect.GetPageCount()
+        self.PackageAspect.InsertPage(numPages-1,newTab, newTabName)
+        self.PackageAspect.SetSelection(numPages-1)
+    
+    def OnDelete(self, e):
+        pass
+
     def HideAllAspects(self):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
         self.apSizer.Clear()
         self.apSizer.Layout()
+        self.toolbar.EnableTool(self.tcreate.GetId(), False)
+        self.toolbar.EnableTool(self.tdelete.GetId(), False)
 
     def ShowAspect(self,aspect):
         self.apSizer.Add(aspect, 1, wx.ALL|wx.EXPAND, 5)
@@ -227,6 +248,8 @@ class Example(wx.Frame):
     def OnPackageAspect(self, e):
         self.HideAllAspects()
         self.ShowAspect(self.PackageAspect)
+        self.toolbar.EnableTool(self.tcreate.GetId(), True)
+        self.toolbar.EnableTool(self.tdelete.GetId(), True)
 
     def OnHardwareAspect(self, e):
         self.HideAllAspects()

@@ -18,7 +18,7 @@ class Example(wx.Frame):
         self.count = 5
 
         self.toolbar1 = wx.ToolBar(self)
-        self.toolbar1.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'))
+        self.toolbar1.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.png'))
         self.toolbar1.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'))
         self.toolbar1.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'))
         self.toolbar1.AddSeparator()
