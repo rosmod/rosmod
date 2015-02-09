@@ -28,11 +28,11 @@ class Example(wx.Frame):
         self.toolbar1.EnableTool(wx.ID_REDO, False)
 
         self.toolbar1.AddSeparator()
-        texit = self.toolbar1.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('textit.png'))
+        texit = self.toolbar1.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'))
         self.toolbar1.Realize()
 
         self.toolbar2 = wx.ToolBar(self)
-        qtool = self.toolbar2.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('textit.png'))
+        qtool = self.toolbar2.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'))
         self.toolbar2.Realize()
 
         self.Bind(wx.EVT_TOOL, self.OnQuit, texit)

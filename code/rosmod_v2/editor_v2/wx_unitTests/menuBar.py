@@ -47,7 +47,7 @@ class Example(wx.Frame):
         self.SetMenuBar(menubar)
 
         self.toolbar = self.CreateToolBar()
-        self.toolbar.AddLabelTool(1,'',wx.Bitmap('textit.png'))
+        self.toolbar.AddLabelTool(1,'',wx.Bitmap('texit.png'))
         self.toolbar.Realize()
 
         self.statusbar = self.CreateStatusBar()
