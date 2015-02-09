@@ -3,6 +3,7 @@
 # this code: http://zetcode.com/wxpython/menustoolbars/
 
 import wx
+import os
 
 import tabbed_terminal
 
@@ -12,6 +13,8 @@ class Example(wx.Frame):
         self.InitUI()
     
     def InitUI(self):
+
+        self.fileTypes = "*.rosml"
         
         self.BuildMenu()
         
@@ -37,7 +40,7 @@ class Example(wx.Frame):
 
     def BuildMenu(self):
         self.menubar = wx.MenuBar()
-
+        # normal file operations menu
         self.fileMenu = wx.Menu()
         self.newMI = self.fileMenu.Append(wx.ID_NEW, '&New', 'New ROSML Model')
         self.openMI = self.fileMenu.Append(wx.ID_OPEN, '&Open', 'Open existing ROSML Model')
@@ -45,7 +48,18 @@ class Example(wx.Frame):
         self.fileMenu.AppendSeparator()
         self.quitMI = wx.MenuItem(self.fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W', 'Quit ROSMOD')
         self.fileMenu.AppendItem(self.quitMI)
-
+        # aspects (of the viewer) menu for ROSMOD: packages, hardware, deployment
+        self.aspectsMenu = wx.Menu()
+        self.packageAMI = self.aspectsMenu.Append(wx.ID_ANY,
+                                                  "Packages",
+                                                  "View/Edit the packages in the model.")
+        self.hardwareAMI = self.aspectsMenu.Append(wx.ID_ANY,
+                                                   "Hardware",
+                                                   "View/Edit the hardware in the model.")
+        self.deploymentAMI = self.aspectsMenu.Append(wx.ID_ANY,
+                                                     "Deployment",
+                                                     "View/Manage the deployment of the model.")
+        # tools menu for ROSMOD: generate code, analyze network and timing
         self.toolMenu = wx.Menu()
         self.generateMI = self.toolMenu.Append(wx.ID_ANY, 
                                           "Generate ROS Code\tCtrl+G", 
@@ -56,7 +70,7 @@ class Example(wx.Frame):
         self.blTimingMI = self.toolMenu.Append(wx.ID_ANY, 
                                           "Analyze Timing", 
                                           "Generate CPN Tokens and Analyze Business Logic Model.")
-
+        # view menu: show/hide statusbar/toolbar/viewer/output
         self.viewMenu = wx.Menu()
         self.shst = self.viewMenu.Append(wx.ID_ANY, 'Show Statusbar', 'Show Statusbar', kind=wx.ITEM_CHECK)
         self.shtl = self.viewMenu.Append(wx.ID_ANY, 'Show Toolbar', 'Show Toolbar', kind=wx.ITEM_CHECK)
@@ -69,6 +83,7 @@ class Example(wx.Frame):
 
         self.menubar.Append(self.fileMenu, '&File')
         self.menubar.Append(self.viewMenu, '&View')
+        self.menubar.Append(self.aspectsMenu, '&Aspects')
         self.menubar.Append(self.toolMenu, '&Tools')
         self.SetMenuBar(self.menubar)
         
@@ -79,6 +94,10 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnOpen, self.openMI)
         self.Bind(wx.EVT_MENU, self.OnSave, self.saveMI)
         self.Bind(wx.EVT_MENU, self.OnQuit, self.quitMI)
+
+        self.Bind(wx.EVT_MENU, self.OnPackageAspect, self.packageAMI)
+        self.Bind(wx.EVT_MENU, self.OnHardwareAspect, self.hardwareAMI)
+        self.Bind(wx.EVT_MENU, self.OnDeploymentAspect, self.deploymentAMI)
 
         self.Bind(wx.EVT_MENU, self.GenerateCode, self.generateMI)
         self.Bind(wx.EVT_MENU, self.AnalyzeNetwork, self.networkQoSMI)
@@ -114,13 +133,14 @@ class Example(wx.Frame):
     def OnOpen(self, e):
         """ Open a file"""
         self.dirname = ''
-        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", self.fileTypes, wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
             f = open(os.path.join(self.dirname, self.filename), 'r')
-            self.control.SetValue(f.read())
+            #self.control.SetValue(f.read())
             f.close()
+            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.dirname))
         dlg.Destroy()
 
     def OnSave(self, e):
@@ -141,6 +161,15 @@ class Example(wx.Frame):
             self.toolbar.EnableTool(wx.ID_REDO, False)
         if self.count == 2:
             self.toolbar.EnableTool(wx.ID_UNDO, True)
+
+    def OnPackageAspect(self, e):
+        pass
+
+    def OnHardwareAspect(self, e):
+        pass
+
+    def OnDeploymentAspect(self, e):
+        pass
         
     def ToggleStatusBar(self, e):
         self.GetStatusBar().Show(e.IsChecked())
@@ -151,7 +180,7 @@ class Example(wx.Frame):
 
     def GenerateCode(self, e):
         dlg = wx.MessageDialog( self, "Generate ROS Code", "ROSMOD Generator", wx.OK)
-        dlg.ShowModal() # Show it
+        dlg.ShowModal() # Show it, modal means user can't do anything with base app until this is closed
         dlg.Destroy() # finally destroy it when finished.
         pass
         
