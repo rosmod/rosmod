@@ -52,9 +52,23 @@ class Example(wx.Frame):
         menubar.Append(toolMenu, '&Tools')
         self.SetMenuBar(menubar)
 
+        self.count = 5 # for undo/redo calcs
+
         self.toolbar = self.CreateToolBar()
-        self.toolbar.AddLabelTool(1,'',wx.Bitmap('texit.png'))
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'))
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'))
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'))
+        self.toolbar.AddSeparator()
+        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'))
+        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'))
+        self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.toolbar.AddSeparator()
+        texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'))
         self.toolbar.Realize()
+
+        self.Bind(wx.EVT_TOOL, self.OnQuit, texit)
+        self.Bind(wx.EVT_TOOL, self.OnUndo, tundo)
+        self.Bind(wx.EVT_TOOL, self.OnRedo, tredo)
 
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
@@ -74,6 +88,22 @@ class Example(wx.Frame):
         
     def OnQuit(self, e):
         self.Close()
+
+    def OnUndo(self, e):
+        if self.count > 1 and self.count <= 5:
+            self.count = self.count - 1
+        if self.count == 1:
+            self.toolbar.EnableTool(wx.ID_UNDO, False)
+        if self.count == 4:
+            self.toolbar.EnableTool(wx.ID_REDO, True)
+
+    def OnRedo(self, e):
+        if self.count < 5 and self.count >= 1:
+            self.count = self.count + 1
+        if self.count == 5:
+            self.toolbar.EnableTool(wx.ID_REDO, False)
+        if self.count == 2:
+            self.toolbar.EnableTool(wx.ID_UNDO, True)
         
     def ToggleStatusBar(self, e):
         self.GetStatusBar().Show(e.IsChecked())
