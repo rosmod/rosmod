@@ -7,6 +7,8 @@ import os
 
 import tabbed_terminal
 
+import aspect
+
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(Example, self).__init__(*args,**kwargs)
@@ -15,22 +17,49 @@ class Example(wx.Frame):
     def InitUI(self):
 
         self.fileTypes = "*.rosml"
-        
-        self.BuildMenu()
-        
+
         self.count = 5 # for undo/redo calcs
+        
+        # build the MenuBar,Toolbar, and Statusbar
+        self.BuildMenu()
+        self.BuildToolbar()
+        self.BuildStatusbar()
 
-        self.BuildToolBar()
+        # build the main frame (holds viewer in the top and the output in the bottom)
+        # build the viwer
+        self.viewerPanel = wx.Panel(self)
+        # build the aspects
+        # package aspect
+        self.PackageAspect = aspect.Aspect(self.viewerPanel)
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 1")
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 2")
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 3")
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "All Packages")
+        # hardware aspect
+        self.HardwareAspect = aspect.Aspect(self.viewerPanel)
+        self.HardwareAspect.AddPage(aspect.AspectTab(self.HardwareAspect), "System Hardware")
+        self.HardwareAspect.Hide()
+        # deployment aspect
+        self.DeploymentAspect = aspect.Aspect(self.viewerPanel)
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 1")
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 2")
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 3")
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "All Packages")
+        self.DeploymentAspect.Hide()
 
-        self.statusbar = self.CreateStatusBar()
-        self.statusbar.SetStatusText('Ready')
-
-        self.panel = wx.Panel(self)
-
-        notebook = tabbed_terminal.Tabbed_Terminal(self.panel)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(notebook, 1, wx.ALL|wx.EXPAND, 5)
-        self.panel.SetSizer(sizer)
+        self.vpSizer = wx.BoxSizer(wx.VERTICAL)
+        self.vpSizer.Add(self.PackageAspect, 1, wx.ALL|wx.EXPAND, 5)
+        #self.vpSizer.Add(self.HardwareAspect, 1, wx.ALL|wx.EXPAND, 5)
+        #self.vpSizer.Add(self.DeploymentAspect, 1, wx.ALL|wx.EXPAND, 5)
+        self.viewerPanel.SetSizer(self.vpSizer)
+        
+        # build the output
+        #self.outputPanel = wx.Panel(self)
+        #self.output = tabbed_terminal.Tabbed_Terminal(self.outputPanel)
+        #self.opSizer = wx.BoxSizer(wx.VERTICAL)
+        #self.opSizer.Add(self.output, 1, wx.ALL|wx.EXPAND, 5)
+        #self.outputPanel.SetSizer(self.opSizer)
+        
         self.Layout()
         
         self.SetSize((800, 600))
@@ -113,7 +142,7 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
 
-    def BuildToolBar(self):
+    def BuildToolbar(self):
         self.toolbar = self.CreateToolBar()
         # file operations
         self.tnew = self.toolbar.AddLabelTool(wx.ID_ANY, 'New', wx.Bitmap('tnew.gif'), shortHelp="New")
@@ -129,15 +158,19 @@ class Example(wx.Frame):
         self.texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
         self.toolbar.Realize()
         # register the events
-        self.RegisterToolBarEvents()
+        self.RegisterToolbarEvents()
 
-    def RegisterToolBarEvents(self):
+    def RegisterToolbarEvents(self):
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tnew)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.topen)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tsave)
         self.Bind(wx.EVT_TOOL, self.OnUndo, self.tundo)
         self.Bind(wx.EVT_TOOL, self.OnRedo, self.tredo)
         self.Bind(wx.EVT_TOOL, self.OnQuit, self.texit)
+
+    def BuildStatusbar(self):
+        self.statusbar = self.CreateStatusBar()
+        self.statusbar.SetStatusText('Ready')
         
     def OnQuit(self, e):
         self.Close()
@@ -177,14 +210,29 @@ class Example(wx.Frame):
         if self.count == 2:
             self.toolbar.EnableTool(wx.ID_UNDO, True)
 
+    def HideAllAspects(self):
+        self.PackageAspect.Hide()
+        self.HardwareAspect.Hide()
+        self.DeploymentAspect.Hide()
+        self.vpSizer.Clear()
+        self.vpSizer.Layout()
+
+    def ShowAspect(self,aspect):
+        self.vpSizer.Add(aspect, 1, wx.ALL|wx.EXPAND, 5)
+        aspect.Show()
+        self.vpSizer.Layout()
+
     def OnPackageAspect(self, e):
-        pass
+        self.HideAllAspects()
+        self.ShowAspect(self.PackageAspect)
 
     def OnHardwareAspect(self, e):
-        pass
+        self.HideAllAspects()
+        self.ShowAspect(self.HardwareAspect)
 
     def OnDeploymentAspect(self, e):
-        pass
+        self.HideAllAspects()
+        self.ShowAspect(self.DeploymentAspect)
         
     def ToggleStatusBar(self, e):
         self.GetStatusBar().Show(e.IsChecked())
