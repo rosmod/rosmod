@@ -26,32 +26,8 @@ class Example(wx.Frame):
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
-        # build the viwer
-        self.viewerPanel = wx.Panel(self)
-        # build the aspects
-        # package aspect
-        self.PackageAspect = aspect.Aspect(self.viewerPanel)
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 1")
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 2")
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 3")
-        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "All Packages")
-        # hardware aspect
-        self.HardwareAspect = aspect.Aspect(self.viewerPanel)
-        self.HardwareAspect.AddPage(aspect.AspectTab(self.HardwareAspect), "System Hardware")
-        self.HardwareAspect.Hide()
-        # deployment aspect
-        self.DeploymentAspect = aspect.Aspect(self.viewerPanel)
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 1")
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 2")
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 3")
-        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "All Packages")
-        self.DeploymentAspect.Hide()
 
-        self.vpSizer = wx.BoxSizer(wx.VERTICAL)
-        self.vpSizer.Add(self.PackageAspect, 1, wx.ALL|wx.EXPAND, 5)
-        #self.vpSizer.Add(self.HardwareAspect, 1, wx.ALL|wx.EXPAND, 5)
-        #self.vpSizer.Add(self.DeploymentAspect, 1, wx.ALL|wx.EXPAND, 5)
-        self.viewerPanel.SetSizer(self.vpSizer)
+        self.BuildAspects()
         
         # build the output
         #self.outputPanel = wx.Panel(self)
@@ -171,6 +147,32 @@ class Example(wx.Frame):
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
+
+    def BuildAspects(self):
+        # build the aspect Panel
+        self.aspectPanel = wx.Panel(self)
+        # build the aspects
+        # package aspect
+        self.PackageAspect = aspect.Aspect(self.aspectPanel)
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 1")
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 2")
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "Package 3")
+        self.PackageAspect.AddPage(aspect.AspectTab(self.PackageAspect), "All Packages")
+        # hardware aspect
+        self.HardwareAspect = aspect.Aspect(self.aspectPanel)
+        self.HardwareAspect.AddPage(aspect.AspectTab(self.HardwareAspect), "System Hardware")
+        self.HardwareAspect.Hide()
+        # deployment aspect
+        self.DeploymentAspect = aspect.Aspect(self.aspectPanel)
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 1")
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 2")
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "Package 3")
+        self.DeploymentAspect.AddPage(aspect.AspectTab(self.DeploymentAspect), "All Packages")
+        self.DeploymentAspect.Hide()
+
+        self.apSizer = wx.BoxSizer(wx.VERTICAL)
+        self.apSizer.Add(self.PackageAspect, 1, wx.ALL|wx.EXPAND, 5)
+        self.aspectPanel.SetSizer(self.apSizer)
         
     def OnQuit(self, e):
         self.Close()
@@ -214,13 +216,13 @@ class Example(wx.Frame):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
-        self.vpSizer.Clear()
-        self.vpSizer.Layout()
+        self.apSizer.Clear()
+        self.apSizer.Layout()
 
     def ShowAspect(self,aspect):
-        self.vpSizer.Add(aspect, 1, wx.ALL|wx.EXPAND, 5)
+        self.apSizer.Add(aspect, 1, wx.ALL|wx.EXPAND, 5)
         aspect.Show()
-        self.vpSizer.Layout()
+        self.apSizer.Layout()
 
     def OnPackageAspect(self, e):
         self.HideAllAspects()
