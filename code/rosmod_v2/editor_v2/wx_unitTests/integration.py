@@ -15,18 +15,18 @@ class Example(wx.Frame):
         
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
-        fileMenu.Append(wx.ID_NEW, '&New')
-        fileMenu.Append(wx.ID_OPEN, '&Open')
-        fileMenu.Append(wx.ID_SAVE, '&Save')
+        fileMenu.Append(wx.ID_NEW, '&New', 'New ROSML Model')
+        fileMenu.Append(wx.ID_OPEN, '&Open', 'Open existing ROSML Model')
+        fileMenu.Append(wx.ID_SAVE, '&Save', 'Save current ROSML Model')
         fileMenu.AppendSeparator()
 
-        qmi = wx.MenuItem(fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W')
+        qmi = wx.MenuItem(fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W', 'Quit ROSMOD')
         fileMenu.AppendItem(qmi)
 
         self.Bind(wx.EVT_MENU, self.OnQuit, qmi)
 
         toolMenu = wx.Menu()
-        toolMenu.Append(wx.ID_ANY, "Generate ROS Code", "Generate ROS application code and workspace.")
+        toolMenu.Append(wx.ID_ANY, "Generate ROS Code\tCtrl+G", "Generate ROS application code and workspace.")
         toolMenu.Append(wx.ID_ANY, "Analyze Network", "Analyze application and system network resource utilization.")
         toolMenu.Append(wx.ID_ANY, "Analyze Timing", "Generate CPN Tokens and Analyze Business Logic Model.")
         
@@ -55,15 +55,15 @@ class Example(wx.Frame):
         self.count = 5 # for undo/redo calcs
 
         self.toolbar = self.CreateToolBar()
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'))
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'))
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'))
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'), shortHelp="New")
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
         self.toolbar.AddSeparator()
-        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'))
-        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'))
+        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
+        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.AddSeparator()
-        texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'))
+        texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
         self.toolbar.Realize()
 
         self.Bind(wx.EVT_TOOL, self.OnQuit, texit)
