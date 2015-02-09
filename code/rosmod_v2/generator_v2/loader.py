@@ -9,4 +9,5 @@ class Loader:
 
     def load_business_logic(self, listener, path):
         
-        self.workspace_dir = path + "/" + listener.workspace.name
+        self.workspace_dir = path + "/" + listener.workspace.properties["name"]
+        
