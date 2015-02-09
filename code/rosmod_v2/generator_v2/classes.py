@@ -53,7 +53,6 @@ class ROS_Service(Drawable_Object):
         self.properties["name"] = ""
         self.properties["request"] = ""
         self.properties["response"] = ""
-        self.properties["business_logic"] = ""
 
 # ROS Component
 class ROS_Component(Drawable_Object):
@@ -96,6 +95,7 @@ class ROS_Server(Drawable_Object):
         self.kind = "server"
         self.properties["name"] = ""
         self.properties["service_reference"] = None
+        self.properties["business_logic"] = ""
 
 # ROS Publisher
 class ROS_Publisher(Drawable_Object):
