@@ -13,62 +13,11 @@ class Example(wx.Frame):
     
     def InitUI(self):
         
-        menubar = wx.MenuBar()
-        fileMenu = wx.Menu()
-        fileMenu.Append(wx.ID_NEW, '&New', 'New ROSML Model')
-        fileMenu.Append(wx.ID_OPEN, '&Open', 'Open existing ROSML Model')
-        fileMenu.Append(wx.ID_SAVE, '&Save', 'Save current ROSML Model')
-        fileMenu.AppendSeparator()
-
-        qmi = wx.MenuItem(fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W', 'Quit ROSMOD')
-        fileMenu.AppendItem(qmi)
-
-        self.Bind(wx.EVT_MENU, self.OnQuit, qmi)
-
-        toolMenu = wx.Menu()
-        toolMenu.Append(wx.ID_ANY, "Generate ROS Code\tCtrl+G", "Generate ROS application code and workspace.")
-        toolMenu.Append(wx.ID_ANY, "Analyze Network", "Analyze application and system network resource utilization.")
-        toolMenu.Append(wx.ID_ANY, "Analyze Timing", "Generate CPN Tokens and Analyze Business Logic Model.")
+        self.BuildMenu()
         
-        # useful for nested menus
-        #fileMenu.AppendMenu(wx.ID_ANY, '&Tools', toolMenu)
-
-        viewMenu = wx.Menu()
-        self.shst = viewMenu.Append(wx.ID_ANY, 'Show Statusbar', 'Show Statusbar', kind=wx.ITEM_CHECK)
-        self.shtl = viewMenu.Append(wx.ID_ANY, 'Show Toolbar', 'Show Toolbar', kind=wx.ITEM_CHECK)
-        self.shvw = viewMenu.Append(wx.ID_ANY, 'Show Viewer', 'Show Viewer', kind=wx.ITEM_CHECK)
-        self.shop = viewMenu.Append(wx.ID_ANY, 'Show Output', 'Show Output', kind=wx.ITEM_CHECK)
-
-        viewMenu.Check(self.shst.GetId(), True)
-        viewMenu.Check(self.shtl.GetId(), True)
-        viewMenu.Check(self.shvw.GetId(), True)
-        viewMenu.Check(self.shop.GetId(), True)
-
-        self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
-        self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
-
-        menubar.Append(fileMenu, '&File')
-        menubar.Append(viewMenu, '&View')
-        menubar.Append(toolMenu, '&Tools')
-        self.SetMenuBar(menubar)
-
         self.count = 5 # for undo/redo calcs
 
-        self.toolbar = self.CreateToolBar()
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'), shortHelp="New")
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
-        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
-        self.toolbar.AddSeparator()
-        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
-        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
-        self.toolbar.EnableTool(wx.ID_REDO, False)
-        self.toolbar.AddSeparator()
-        texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
-        self.toolbar.Realize()
-
-        self.Bind(wx.EVT_TOOL, self.OnQuit, texit)
-        self.Bind(wx.EVT_TOOL, self.OnUndo, tundo)
-        self.Bind(wx.EVT_TOOL, self.OnRedo, tredo)
+        self.BuildToolBar()
 
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
@@ -85,9 +34,97 @@ class Example(wx.Frame):
         self.SetTitle('Submenu')
         self.Centre()
         self.Show(True)
+
+    def BuildMenu(self):
+        self.menubar = wx.MenuBar()
+
+        self.fileMenu = wx.Menu()
+        self.newMI = self.fileMenu.Append(wx.ID_NEW, '&New', 'New ROSML Model')
+        self.openMI = self.fileMenu.Append(wx.ID_OPEN, '&Open', 'Open existing ROSML Model')
+        self.saveMI = self.fileMenu.Append(wx.ID_SAVE, '&Save', 'Save current ROSML Model')
+        self.fileMenu.AppendSeparator()
+        self.quitMI = wx.MenuItem(self.fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W', 'Quit ROSMOD')
+        self.fileMenu.AppendItem(self.quitMI)
+
+        self.toolMenu = wx.Menu()
+        self.generateMI = self.toolMenu.Append(wx.ID_ANY, 
+                                          "Generate ROS Code\tCtrl+G", 
+                                          "Generate ROS application code and workspace.")
+        self.networkQoSMI = self.toolMenu.Append(wx.ID_ANY, 
+                                            "Analyze Network", 
+                                            "Analyze application and system network resource utilization.")
+        self.blTimingMI = self.toolMenu.Append(wx.ID_ANY, 
+                                          "Analyze Timing", 
+                                          "Generate CPN Tokens and Analyze Business Logic Model.")
+
+        self.viewMenu = wx.Menu()
+        self.shst = self.viewMenu.Append(wx.ID_ANY, 'Show Statusbar', 'Show Statusbar', kind=wx.ITEM_CHECK)
+        self.shtl = self.viewMenu.Append(wx.ID_ANY, 'Show Toolbar', 'Show Toolbar', kind=wx.ITEM_CHECK)
+        self.shvw = self.viewMenu.Append(wx.ID_ANY, 'Show Viewer', 'Show Viewer', kind=wx.ITEM_CHECK)
+        self.shop = self.viewMenu.Append(wx.ID_ANY, 'Show Output', 'Show Output', kind=wx.ITEM_CHECK)
+        self.viewMenu.Check(self.shst.GetId(), True)
+        self.viewMenu.Check(self.shtl.GetId(), True)
+        self.viewMenu.Check(self.shvw.GetId(), True)
+        self.viewMenu.Check(self.shop.GetId(), True)
+
+        self.menubar.Append(self.fileMenu, '&File')
+        self.menubar.Append(self.viewMenu, '&View')
+        self.menubar.Append(self.toolMenu, '&Tools')
+        self.SetMenuBar(self.menubar)
+        
+        self.RegisterMenuEvents()
+
+    def RegisterMenuEvents(self):
+        self.Bind(wx.EVT_MENU, self.OnNew, self.newMI)
+        self.Bind(wx.EVT_MENU, self.OnOpen, self.openMI)
+        self.Bind(wx.EVT_MENU, self.OnSave, self.saveMI)
+        self.Bind(wx.EVT_MENU, self.OnQuit, self.quitMI)
+
+        self.Bind(wx.EVT_MENU, self.GenerateCode, self.generateMI)
+        self.Bind(wx.EVT_MENU, self.AnalyzeNetwork, self.networkQoSMI)
+        self.Bind(wx.EVT_MENU, self.AnalyzeTiming, self.blTimingMI)
+
+        self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
+        self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
+
+    def BuildToolBar(self):
+        self.toolbar = self.CreateToolBar()
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tnew.gif'), shortHelp="New")
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
+        self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
+        self.toolbar.AddSeparator()
+        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
+        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
+        self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.toolbar.AddSeparator()
+        texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
+        self.toolbar.Realize()
+
+    def RegisterToolBarEvents(self):
+        self.Bind(wx.EVT_TOOL, self.OnQuit, texit)
+        self.Bind(wx.EVT_TOOL, self.OnUndo, tundo)
+        self.Bind(wx.EVT_TOOL, self.OnRedo, tredo)
         
     def OnQuit(self, e):
         self.Close()
+
+    def OnNew(self, e):
+        pass
+
+    def OnOpen(self, e):
+        """ Open a file"""
+        self.dirname = ''
+        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "*.*", wx.OPEN)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.filename = dlg.GetFilename()
+            self.dirname = dlg.GetDirectory()
+            f = open(os.path.join(self.dirname, self.filename), 'r')
+            self.control.SetValue(f.read())
+            f.close()
+        dlg.Destroy()
+
+    def OnSave(self, e):
+        pass
 
     def OnUndo(self, e):
         if self.count > 1 and self.count <= 5:
@@ -111,6 +148,18 @@ class Example(wx.Frame):
     def ToggleToolBar(self, e):
         self.GetToolBar().Show(e.IsChecked())
         self.SendSizeEvent()
+
+    def GenerateCode(self, e):
+        dlg = wx.MessageDialog( self, "Generate ROS Code", "ROSMOD Generator", wx.OK)
+        dlg.ShowModal() # Show it
+        dlg.Destroy() # finally destroy it when finished.
+        pass
+        
+    def AnalyzeNetwork(self, e):
+        pass
+
+    def AnalyzeTiming(self, e):
+        pass
 
 def main():
     
