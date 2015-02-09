@@ -63,7 +63,7 @@ class Example(wx.Frame):
         self.panel.SetSizer(sizer)
         self.Layout()
         
-        #self.SetSize((300, 200))
+        self.SetSize((800, 600))
         self.SetTitle('Submenu')
         self.Centre()
         self.Show(True)
