@@ -3,6 +3,8 @@
 # this code: http://zetcode.com/wxpython/menustoolbars/
 
 import wx
+import wx.aui
+from proportionalSplitter import ProportionalSplitter
 import os
 
 import tabbed_terminal
@@ -16,7 +18,7 @@ class Example(wx.Frame):
     
     def InitUI(self):
 
-        self.fileTypes = "*.rosml"
+        self.fileTypes = "*.rml"
 
         self.count = 5 # for undo/redo calcs
         
@@ -25,15 +27,13 @@ class Example(wx.Frame):
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
+        #self.split1 = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
+        self.split1 = wx.SplitterWindow(self,wx.ID_NEW)
 
         self.BuildAspects()
-        
-        # build the output
-        #self.outputPanel = wx.Panel(self)
-        #self.output = tabbed_terminal.Tabbed_Terminal(self.outputPanel)
-        #self.opSizer = wx.BoxSizer(wx.VERTICAL)
-        #self.opSizer.Add(self.output, 1, wx.ALL|wx.EXPAND, 5)
-        #self.outputPanel.SetSizer(self.opSizer)
+        self.BuildOutput()
+
+        self.split1.SplitHorizontally(self.activeAspect,self.output)
         
         self.Layout()
         
@@ -127,20 +127,20 @@ class Example(wx.Frame):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
 
+    def BuildOutput(self):
+        self.output = tabbed_terminal.Tabbed_Terminal(self.split1)
+        #self.output = aspect.Aspect(self.split1)
+        
     def BuildAspects(self):
         # package aspect
-        self.PackageAspect = aspect.Aspect(self)
-
+        self.PackageAspect = aspect.Aspect(self.split1)
         # hardware aspect
-        self.HardwareAspect = aspect.Aspect(self)
+        self.HardwareAspect = aspect.Aspect(self.split1)
         self.HardwareAspect.Hide()
         # deployment aspect
-        self.DeploymentAspect = aspect.Aspect(self)
+        self.DeploymentAspect = aspect.Aspect(self.split1)
         self.DeploymentAspect.Hide()
 
-        self.apSizer = wx.BoxSizer(wx.VERTICAL)
-        self.apSizer.Add(self.PackageAspect, 1, wx.ALL|wx.EXPAND, 5)
-        self.SetSizer(self.apSizer)
         self.activeAspect = self.PackageAspect
         
     def OnQuit(self, e):
@@ -169,13 +169,10 @@ class Example(wx.Frame):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
-        self.apSizer.Clear()
-        self.apSizer.Layout()
 
     def ShowAspect(self,aspect):
-        self.apSizer.Add(aspect, 1, wx.ALL|wx.EXPAND, 5)
         aspect.Show()
-        self.apSizer.Layout()
+        self.split1.ReplaceWindow(self.activeAspect,aspect)
         self.activeAspect = aspect
         self.viewMenu.Check(self.shtl.GetId(), aspect.toolbar.IsShown())
 
