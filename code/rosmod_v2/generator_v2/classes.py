@@ -42,7 +42,8 @@ class ROS_Message(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "message"
         self.properties["name"] = ""
-        self.properties["fields"] = ""
+        # Fields e.g. [["int", "position"], ["float", "velocity", "334.5"]]
+        self.properties["fields"] = []
 
 # ROS Service
 class ROS_Service(Drawable_Object):
@@ -51,8 +52,8 @@ class ROS_Service(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "service"
         self.properties["name"] = ""
-        self.properties["request"] = ""
-        self.properties["response"] = ""
+        self.properties["request"] = []
+        self.properties["response"] = []
 
 # ROS Component
 class ROS_Component(Drawable_Object):

@@ -166,6 +166,15 @@ class ROSListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSParser#ros_client_server.
+    def enterRos_client_server(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSParser#ros_client_server.
+    def exitRos_client_server(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSParser#msg_field.
     def enterMsg_field(self, ctx):
         pass
@@ -289,15 +298,6 @@ class ROSListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSParser#services.
     def exitServices(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSParser#ros_service.
-    def enterRos_service(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSParser#ros_service.
-    def exitRos_service(self, ctx):
         pass
 
 

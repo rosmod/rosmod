@@ -205,7 +205,7 @@ components
 ros_component
     :   'component' component_name
         '{'
-            ( ros_service
+            ( ros_client_server
             | ros_pub_sub
             | ros_timer
             )*
@@ -222,7 +222,7 @@ component_name
  * (1) Provision - Name of the provided service
  * (2) Requirement - Name of the required service
  */
-ros_service
+ros_client_server
     :   ( 'provides' service_name ';'
         | 'requires' service_name ';'
         )

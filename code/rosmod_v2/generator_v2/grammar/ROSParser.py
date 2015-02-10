@@ -262,7 +262,7 @@ class ROSParser ( Parser ):
     RULE_components = 25
     RULE_ros_component = 26
     RULE_component_name = 27
-    RULE_ros_service = 28
+    RULE_ros_client_server = 28
     RULE_service_name = 29
     RULE_ros_pub_sub = 30
     RULE_publisher = 31
@@ -286,11 +286,11 @@ class ROSParser ( Parser ):
                    u"response", u"res_argument", u"req_field_type", u"req_field_name", 
                    u"req_field_value", u"res_field_type", u"res_field_name", 
                    u"res_field_value", u"components", u"ros_component", 
-                   u"component_name", u"ros_service", u"service_name", u"ros_pub_sub", 
-                   u"publisher", u"subscriber", u"topic", u"ros_timer", 
-                   u"timer_name", u"timer_period", u"period_unit", u"nodes", 
-                   u"ros_node", u"node_name", u"component_instances", u"component_type", 
-                   u"component_instance" ]
+                   u"component_name", u"ros_client_server", u"service_name", 
+                   u"ros_pub_sub", u"publisher", u"subscriber", u"topic", 
+                   u"ros_timer", u"timer_name", u"timer_period", u"period_unit", 
+                   u"nodes", u"ros_node", u"node_name", u"component_instances", 
+                   u"component_type", u"component_instance" ]
 
     def __init__(self, input):
         super(ROSParser, self).__init__(input)
@@ -1788,6 +1788,13 @@ class ROSParser ( Parser ):
                 return self.getTypedRuleContext(ROSParser.Ros_pub_subContext,i)
 
 
+        def ros_client_server(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSParser.Ros_client_serverContext)
+            else:
+                return self.getTypedRuleContext(ROSParser.Ros_client_serverContext,i)
+
+
         def component_name(self):
             return self.getTypedRuleContext(ROSParser.Component_nameContext,0)
 
@@ -1797,13 +1804,6 @@ class ROSParser ( Parser ):
                 return self.getTypedRuleContexts(ROSParser.Ros_timerContext)
             else:
                 return self.getTypedRuleContext(ROSParser.Ros_timerContext,i)
-
-
-        def ros_service(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(ROSParser.Ros_serviceContext)
-            else:
-                return self.getTypedRuleContext(ROSParser.Ros_serviceContext,i)
 
 
         def getRuleIndex(self):
@@ -1841,7 +1841,7 @@ class ROSParser ( Parser ):
                 token = self._input.LA(1)
                 if token in [self.T__16, self.T__11]:
                     self.state = 277 
-                    self.ros_service()
+                    self.ros_client_server()
 
                 elif token in [self.T__20, self.T__18]:
                     self.state = 278 
@@ -1907,10 +1907,10 @@ class ROSParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class Ros_serviceContext(ParserRuleContext):
+    class Ros_client_serverContext(ParserRuleContext):
 
         def __init__(self, parser, parent=None, invokingState=-1):
-            super(ROSParser.Ros_serviceContext, self).__init__(parent, invokingState)
+            super(ROSParser.Ros_client_serverContext, self).__init__(parent, invokingState)
             self.parser = parser
 
         def service_name(self):
@@ -1918,23 +1918,23 @@ class ROSParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ROSParser.RULE_ros_service
+            return ROSParser.RULE_ros_client_server
 
         def enterRule(self, listener):
             if isinstance( listener, ROSListener ):
-                listener.enterRos_service(self)
+                listener.enterRos_client_server(self)
 
         def exitRule(self, listener):
             if isinstance( listener, ROSListener ):
-                listener.exitRos_service(self)
+                listener.exitRos_client_server(self)
 
 
 
 
-    def ros_service(self):
+    def ros_client_server(self):
 
-        localctx = ROSParser.Ros_serviceContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 56, self.RULE_ros_service)
+        localctx = ROSParser.Ros_client_serverContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 56, self.RULE_ros_client_server)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 297
