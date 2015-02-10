@@ -3,7 +3,7 @@
 # Date: 2015.02.06
 
 from collections import OrderedDict
-sys.path.append("../editor_v2/")
+sys.path.append("../editor_v2/wx_unitTests/")
 from drawable import Drawable_Object
 
 # ROS Workspace
