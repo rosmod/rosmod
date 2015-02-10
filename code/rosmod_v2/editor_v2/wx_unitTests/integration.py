@@ -122,6 +122,8 @@ class Example(wx.Frame):
         # view menu
         self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
+        self.Bind(wx.EVT_MENU, self.ToggleAspectView, self.shvw)
+        self.Bind(wx.EVT_MENU, self.ToggleOutputView, self.shop)
 
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
@@ -129,7 +131,6 @@ class Example(wx.Frame):
 
     def BuildOutput(self):
         self.output = tabbed_terminal.Tabbed_Terminal(self.split1)
-        #self.output = aspect.Aspect(self.split1)
         
     def BuildAspects(self):
         # package aspect
@@ -194,6 +195,25 @@ class Example(wx.Frame):
     def ToggleToolBar(self, e):
         self.activeAspect.toolbar.Show(e.IsChecked())
         self.SendSizeEvent()
+
+    def UpdateMainWindow(self, e):
+        print self.shvw.IsChecked(), self.shop.IsChecked()
+        if self.shvw.IsChecked() and self.shop.IsChecked():
+            self.split1.SplitHorizontally(self.activeAspect,self.output)
+        elif self.shvw.IsChecked() and not self.shop.IsChecked():
+            self.split1.Unsplit(self.output)
+        elif not self.shvw.IsChecked() and self.shop.IsChecked():
+            self.split1.Unsplit(self.activeAspect)
+            pass
+        else:
+            pass
+        self.split1.UpdateSize()
+
+    def ToggleAspectView(self, e):
+        self.UpdateMainWindow(e)
+    
+    def ToggleOutputView(self, e):
+        self.UpdateMainWindow(e)
 
     def GenerateCode(self, e):
         dlg = wx.MessageDialog( self, "Generate ROS Code", "ROSMOD Generator", wx.OK)
