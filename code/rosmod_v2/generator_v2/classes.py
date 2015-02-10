@@ -3,21 +3,8 @@
 # Date: 2015.02.06
 
 from collections import OrderedDict
-
-# Drawable Object
-class Drawable_Object:
-    
-    def __init__(self):
-        self.parent = None
-        self.children = []
-        self.kind = ""
-        self.properties = OrderedDict()
-
-    def add(self, child):
-        self.children.append(child)
-        
-    def delete(self, reference):
-        self.children = [child for child in self.children if child != reference]
+sys.path.append("../editor_v2/")
+from drawable import Drawable_Object
 
 # ROS Workspace
 class ROS_Workspace(Drawable_Object):

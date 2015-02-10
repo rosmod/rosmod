@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
 import wx
-import os
+import os,sys
 
+sys.path.append("../../generator_v2")
+
+# for ordered dictionaries
 from collections import OrderedDict
 
 # proportional splitter should work for resizing window
@@ -19,6 +22,9 @@ from terminal import *
 
 # the dialogs that we use (popups)
 import dialogs
+
+# to draw the objects of the model
+import drawable
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
