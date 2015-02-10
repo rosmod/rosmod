@@ -5,9 +5,9 @@ $hash_include <cstdlib>
 $hash_include <boost/thread.hpp>
 
 // Include all components this actor requires
-#if $len($components) > 0
-#for $comp in $components
-$hash_include "$package_name/${comp.comp_type.name}.hpp" 
+#if $len($component_instances) > 0
+#for $instance in $component_instances
+$hash_include "$package_name/${instance.properties["component_reference"].properties["name"]}.hpp" 
 #end for
 
 #end if
@@ -27,17 +27,17 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    #if $len($components) > 0
-    #for $comp in $components
-    $comp.comp_type.name $comp.name; 
+    #if $len($component_instances) > 0
+    #for $instance in $component_instances
+    $instance.properties["component_reference"].properties["name"] $instance.properties["name"]; 
     #end for
 
     #end if
     // Create Component Threads
-    #if $len($components) > 0
-    #for $comp in $components
-    boost::thread ${comp.name}_thread(componentThread, &${comp.name});
-    ROS_INFO("Node ${node_name} has started ${comp.name}");
+    #if $len($component_instances) > 0
+    #for $instance in $component_instances
+    boost::thread ${instance.properties["name"]}_thread(componentThread, &${instance.properties["name"]});
+    ROS_INFO("Node ${node_name} has started ${instance.properties["name"]}");
     #end for
 
     #end if    
@@ -45,9 +45,9 @@ int main(int argc, char **argv)
     ROS_INFO_STREAM("NodeMain thread id = " << boost::this_thread::get_id());
 
     // Create Component Threads
-    #if $len($components) > 0
-    #for $comp in $components
-    ${comp.name}_thread.join();
+    #if $len($component_instances) > 0
+    #for $instance in $component_instances
+    ${instance.properties["name"]}_thread.join();
     #end for
 
     #end if 
