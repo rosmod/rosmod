@@ -28,7 +28,7 @@ class Example(wx.Frame):
 
         # build the main frame (holds viewer in the top and the output in the bottom)
         #self.split1 = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
-        self.split1 = wx.SplitterWindow(self,wx.ID_NEW)
+        self.split1 = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT)
 
         self.BuildAspects()
         self.BuildOutput()
@@ -197,16 +197,16 @@ class Example(wx.Frame):
         self.SendSizeEvent()
 
     def UpdateMainWindow(self, e):
-        print self.shvw.IsChecked(), self.shop.IsChecked()
+        self.split1.Show()
+        self.split1.SplitHorizontally(self.activeAspect,self.output)
         if self.shvw.IsChecked() and self.shop.IsChecked():
-            self.split1.SplitHorizontally(self.activeAspect,self.output)
+            pass
         elif self.shvw.IsChecked() and not self.shop.IsChecked():
             self.split1.Unsplit(self.output)
         elif not self.shvw.IsChecked() and self.shop.IsChecked():
             self.split1.Unsplit(self.activeAspect)
-            pass
         else:
-            pass
+            self.split1.Hide()
         self.split1.UpdateSize()
 
     def ToggleAspectView(self, e):
