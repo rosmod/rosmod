@@ -32,37 +32,38 @@ def getConnectionPoint(objPos,objSize,objType):
 
 class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
-    def getTextPos(option,txtString,objPos,objSize,fontSize):
-        x = -1
-        y = -1
-        if option == TOP:
-            y = objPos[1] - fontSize[1] / 2
-            x = objPos[0] + objSize[0] / 2
-        elif option == BOTTOM:
-            y = objPos[1] + objSize[1] + fontSize[1] / 2
-            x = objPos[0] + objSize[0] / 2            
-        elif option == LEFT:
-            y = objPos[1] + objSize[1] / 2
-            x = objPos[0] - (fontSize[0] * len(txtString)) / 2
-        elif option == RIGHT:
-            y = objPos[1] + objSize[1] / 2
-            x = objPos[0] + objSize[0] + (fontSize[0] * len(txtString)) / 2
-        elif option == CENTER:
-            y = objPos[1] + objSize[1] / 2
-            x = objPos[0] + objSize[0] / 2
-        elif option == NONE:
-            pass
-        txtPos = None
-        if x > 0 and y > 0:
-            txtPos = wx.Point(x,y)
-        return txtPos
+
+def getTextPos(option,txtString,objPos,objSize,fontSize):
+    x = -1
+    y = -1
+    if option == Text_Placement.TOP:
+        y = objPos[1] - fontSize[1] / 2
+        x = objPos[0] + objSize[0] / 2
+    elif option == Text_Placement.BOTTOM:
+        y = objPos[1] + objSize[1] + fontSize[1] / 2
+        x = objPos[0] + objSize[0] / 2            
+    elif option == Text_Placement.LEFT:
+        y = objPos[1] + objSize[1] / 2
+        x = objPos[0] - (fontSize[0] * len(txtString)) / 2
+    elif option == Text_Placement.RIGHT:
+        y = objPos[1] + objSize[1] / 2
+        x = objPos[0] + objSize[0] + (fontSize[0] * len(txtString)) / 2
+    elif option == Text_Placement.CENTER:
+        y = objPos[1] + objSize[1] / 2
+        x = objPos[0] + objSize[0] / 2
+    elif option == Text_Placement.NONE:
+        pass
+    #txtPos = None
+    #if x > 0 and y > 0:
+    txtPos = wx.Point(x,y)
+    return txtPos
 
 class Draw_Method:
     RECT, ROUND_RECT, ICON = range(3)
 
 class Draw_Style:
     def __init__(self):
-        self.icon = None # should be a referene to a wx.Bitmap()
+        self.icon = wx.Bitmap("texit.png")
         self.fontSize = (10,10)
         self.method = Draw_Method.ICON
         self.textPlacement = Text_Placement.TOP
@@ -114,7 +115,7 @@ class Drawable_Object:
             pass
         else:
             pass
-        dc.DrawText(self.name,self.textCenter.Get()[0],self.textCenter.Get()[1])
+        dc.DrawText(self.properties["name"],self.textCenter.Get()[0],self.textCenter.Get()[1])
         for child in self.children:
             child.Draw(dc, scrPanel)
 
@@ -138,7 +139,7 @@ def Layout(dObj, topLeftPos):
     # configure things that will be returned
     maxObjWidth = minSize[0]
     maxObjHeight = minSize[1]
-    dObj.topLeft = topLeftPos
+    dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
     childPos = [topLeftPos[0] + padding[0], topLeftPos[1] + padding[1]]
     if dObj.kind == "workspace":
         pass
@@ -216,15 +217,15 @@ def Layout(dObj, topLeftPos):
     else:
         pass
     dObj.width = maxObjWidth
-    dObj.height = maxObjHeigth
+    dObj.height = maxObjHeight
     dObj.connectionPoint = getConnectionPoint(
         objPos = dObj.topLeft.Get(),
         objSize = (dObj.width,dObj.height),
         objType = dObj.kind
     )
-    dObj.textCenter = Text_Placement.getTextPos(
+    dObj.textCenter = getTextPos(
         option = dObj.style.textPlacement,
-        txtString = dObj.name,
+        txtString = dObj.properties["name"],
         objPos = dObj.topLeft.Get(),
         objSize = (dObj.width,dObj.height),
         fontSize = dObj.style.fontSize

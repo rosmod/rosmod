@@ -89,10 +89,6 @@ class Example(wx.Frame):
     def BuildPackageAspectNotebook(self):
         self.PackageAspect = wx.Notebook(self.viewSplitter, wx.ID_ANY)
         # THIS PART CHANGES BASED ON MODEL, NEED TO REWRITE THIS WITH MODEL INTEGRATION
-        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "Package 1")
-        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "Package 2")
-        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "Package 3")
-        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "All Packages")
         self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
@@ -107,6 +103,27 @@ class Example(wx.Frame):
         self.packageTools['delete package'] = [self.packageTB_delete_ID,self.packageTB_delete]
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, self.packageTB_create)
         self.Bind(wx.EVT_TOOL, self.OnPackageDelete, self.packageTB_delete)
+    def BuildPackageAspectPagesFromModel(self):
+        self.PackageAspect.DeleteAllPages()
+        self.pkgPanels = OrderedDict()
+        for pkg in self.model.workspace.children:
+            newPage = scrolled.ScrolledPanel(self.PackageAspect)
+            self.pkgPanels[pkg.properties["name"]] = pkg
+            self.PackageAspect.AddPage( newPage, pkg.properties["name"])
+            newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
+            newPage.SetupScrolling()
+        newPage = scrolled.ScrolledPanel(self.PackageAspect)
+        self.pkgPanels["All Packages"] = self.model.workspace.children
+        self.PackageAspect.AddPage( newPage, "All Packages")
+        newPage.SetupScrolling()
+    def OnPackagePaint(self,event):
+        dc = wx.PaintDC(event.GetEventObject())
+        dc.Clear()
+        selectedPage = self.PackageAspect.GetSelection()
+        packageName = self.PackageAspect.GetPageText(selectedPage)
+        drawable.Layout(self.pkgPanels[packageName],(0,0))
+        self.pkgPanels[packageName].Draw(dc,event.GetEventObject())
+        
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
     '''
@@ -206,6 +223,7 @@ class Example(wx.Frame):
             fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
         )
         self.model = rosgen.parse_model(self.model_path+'/'+self.filename)
+        self.BuildPackageAspectPagesFromModel()
         self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.model_path))
 
     def OnSave(self, e):
