@@ -22,7 +22,6 @@ class Example(wx.Frame):
         
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
-        #self.BuildToolbar()
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
@@ -118,39 +117,6 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
 
-    def BuildToolbar(self):
-        self.toolbar = self.CreateToolBar()
-        # file operations
-        self.tnew = self.toolbar.AddLabelTool(wx.ID_ANY, 'New', wx.Bitmap('tnew.png'), shortHelp="New")
-        self.topen = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('topen.png'), shortHelp="Open")
-        self.tsave = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tsave.png'), shortHelp="Save")
-        self.toolbar.AddSeparator()
-        # undo/redo
-        self.tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
-        self.tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
-        self.toolbar.EnableTool(wx.ID_REDO, False)
-        self.toolbar.AddSeparator()
-        # application exit
-        self.toolbar.AddSeparator()
-        # application exit
-        self.texit = self.toolbar.AddLabelTool(wx.ID_EXIT, '', wx.Bitmap('texit.png'), shortHelp="Exit")
-        self.toolbar.Realize()
-        # register the events
-        self.RegisterToolbarEvents()
-
-    def RegisterToolbarEvents(self):
-        self.Bind(wx.EVT_TOOL, self.OnNew, self.tnew)
-        self.Bind(wx.EVT_TOOL, self.OnOpen, self.topen)
-        self.Bind(wx.EVT_TOOL, self.OnSave, self.tsave)
-
-        self.Bind(wx.EVT_TOOL, self.OnUndo, self.tundo)
-        self.Bind(wx.EVT_TOOL, self.OnRedo, self.tredo)
-
-        self.Bind(wx.EVT_TOOL, self.OnCreate, self.tcreate)
-        self.Bind(wx.EVT_TOOL, self.OnDelete, self.tdelete)
-
-        self.Bind(wx.EVT_TOOL, self.OnQuit, self.texit)
-
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
@@ -193,22 +159,6 @@ class Example(wx.Frame):
     def OnSave(self, e):
         pass
 
-    def OnUndo(self, e):
-        if self.count > 1 and self.count <= 5:
-            self.count = self.count - 1
-        if self.count == 1:
-            self.toolbar.EnableTool(wx.ID_UNDO, False)
-        if self.count == 4:
-            self.toolbar.EnableTool(wx.ID_REDO, True)
-
-    def OnRedo(self, e):
-        if self.count < 5 and self.count >= 1:
-            self.count = self.count + 1
-        if self.count == 5:
-            self.toolbar.EnableTool(wx.ID_REDO, False)
-        if self.count == 2:
-            self.toolbar.EnableTool(wx.ID_UNDO, True)
-
     def HideAllAspects(self):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
@@ -221,6 +171,7 @@ class Example(wx.Frame):
         aspect.Show()
         self.apSizer.Layout()
         self.activeAspect = aspect
+        self.viewMenu.Check(self.shtl.GetId(), aspect.toolbar.IsShown())
 
     def OnPackageAspect(self, e):
         self.HideAllAspects()

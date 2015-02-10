@@ -10,7 +10,6 @@ class Aspect(wx.Panel):
     def __init__(self,parent,model=None):
         wx.Panel.__init__(self,parent)
 
-        self.toolbar = wx.ToolBar(self)
         self.BuildToolbar()
         self.BuildNotebook()
 
@@ -20,6 +19,25 @@ class Aspect(wx.Panel):
         self.SetSizer(self.boxSizer)
 
     def BuildToolbar(self):
+        self.toolbar = wx.ToolBar(self)
+
+        # file operations
+        self.tnew_ID = wx.NewId()
+        self.topen_ID = wx.NewId()
+        self.tsave_ID = wx.NewId()
+        self.tnew = self.toolbar.AddLabelTool(self.tnew_ID, 'New', wx.Bitmap('tnew.png'), shortHelp="New")
+        self.topen = self.toolbar.AddLabelTool(self.topen_ID, '', wx.Bitmap('topen.png'), shortHelp="Open")
+        self.tsave = self.toolbar.AddLabelTool(self.tsave_ID, '', wx.Bitmap('tsave.png'), shortHelp="Save")
+        self.toolbar.AddSeparator()
+        # undo/redo
+        self.tundo_ID = wx.NewId()
+        self.tredo_ID = wx.NewId()
+        self.tundo = self.toolbar.AddLabelTool(self.tundo_ID, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
+        self.tredo = self.toolbar.AddLabelTool(self.tredo_ID, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
+        self.toolbar.EnableTool(self.tundo_ID, False)
+        self.toolbar.EnableTool(self.tredo_ID, False)
+        self.toolbar.AddSeparator()
+        # create / delete packages
         self.tcreate_ID = wx.NewId()
         self.tdelete_ID = wx.NewId()
         self.tcreate = self.toolbar.AddLabelTool(self.tcreate_ID, '', wx.Bitmap('tnew.png'), shortHelp="New Package")
@@ -27,8 +45,13 @@ class Aspect(wx.Panel):
         self.RegisterToolbarEvents()
 
     def RegisterToolbarEvents(self):
+        wx.EVT_TOOL( self, self.tnew_ID, self.OnNew)
+        wx.EVT_TOOL( self, self.topen_ID, self.OnOpen)
+        wx.EVT_TOOL( self, self.tsave_ID, self.OnSave)
         wx.EVT_TOOL( self, self.tcreate_ID, self.OnCreate)
         wx.EVT_TOOL( self, self.tdelete_ID, self.OnDelete)
+        wx.EVT_TOOL( self, self.tundo_ID, self.OnUndo)
+        wx.EVT_TOOL( self, self.tredo_ID, self.OnRedo)
 
     def BuildNotebook(self):
         self.notebook = wx.Notebook(self, id=wx.ID_ANY, style=
@@ -57,6 +80,20 @@ class Aspect(wx.Panel):
         numPages = self.notebook.GetPageCount()
         if selectedPage != numPages - 1:
             self.notebook.DeletePage(selectedPage)
+        if self.notebook.GetSelection() == numPages - 2: # deleted into last page
+            self.toolbar.EnableTool(self.tdelete.GetId(), False)
+
+    def OnNew(self, e):
+        pass
+    def OnOpen(self, e):
+        pass
+    def OnSave(self, e):
+        pass
+
+    def OnUndo(self, e):
+        pass
+    def OnRedo(self, e):
+        pass
  
     def OnPageChanged(self, event):
         old = event.GetOldSelection()
