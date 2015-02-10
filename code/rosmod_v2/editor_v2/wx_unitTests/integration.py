@@ -58,25 +58,31 @@ class Example(wx.Frame):
         self.aspectsMenu = wx.Menu()
         self.packageAMI = self.aspectsMenu.Append(wx.ID_ANY,
                                                   "Packages",
-                                                  "View/Edit the packages in the model.")
+                                                  "View/Edit the packages in the model.",
+                                                  kind=wx.ITEM_RADIO
+                                              )
         self.hardwareAMI = self.aspectsMenu.Append(wx.ID_ANY,
                                                    "Hardware",
-                                                   "View/Edit the hardware in the model.")
+                                                   "View/Edit the hardware in the model.",
+                                                   kind=wx.ITEM_RADIO
+                                               )
         self.deploymentAMI = self.aspectsMenu.Append(wx.ID_ANY,
                                                      "Deployment",
-                                                     "View/Manage the deployment of the model.")
+                                                     "View/Manage the deployment of the model.",
+                                                     kind=wx.ITEM_RADIO
+                                                 )
 
         # tools menu for ROSMOD: generate code, analyze network and timing
         self.toolMenu = wx.Menu()
         self.generateMI = self.toolMenu.Append(wx.ID_ANY, 
-                                          "Generate ROS Code\tCtrl+G", 
-                                          "Generate ROS application code and workspace.")
+                                               "Generate ROS Code\tCtrl+G", 
+                                               "Generate ROS application code and workspace.")
         self.networkQoSMI = self.toolMenu.Append(wx.ID_ANY, 
-                                            "Analyze Network", 
-                                            "Analyze application and system network resource utilization.")
+                                                 "Analyze Network", 
+                                                 "Analyze application and system network resource utilization.",)
         self.blTimingMI = self.toolMenu.Append(wx.ID_ANY, 
-                                          "Analyze Timing", 
-                                          "Generate CPN Tokens and Analyze Business Logic Model.")
+                                               "Analyze Timing", 
+                                               "Generate CPN Tokens and Analyze Business Logic Model.")
 
         # view menu: show/hide statusbar/toolbar/viewer/output
         self.viewMenu = wx.Menu()
