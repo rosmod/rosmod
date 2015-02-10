@@ -42,6 +42,7 @@ class ROS_Message(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "message"
         self.properties["name"] = ""
+        # Fields e.g. [["int", "position"], ["float", "velocity", "334.5"]]
         self.properties["fields"] = ""
 
 # ROS Service
