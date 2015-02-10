@@ -143,28 +143,6 @@ class Example(wx.Frame):
         self.DeploymentAspect.Hide()
 
         self.activeAspect = self.PackageAspect
-        
-    def OnQuit(self, e):
-        self.Close()
-
-    def OnNew(self, e):
-        pass
-
-    def OnOpen(self, e):
-        """ Open a file"""
-        self.dirname = ''
-        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", self.fileTypes, wx.OPEN)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.filename = dlg.GetFilename()
-            self.dirname = dlg.GetDirectory()
-            f = open(os.path.join(self.dirname, self.filename), 'r')
-            #self.control.SetValue(f.read())
-            f.close()
-            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.dirname))
-        dlg.Destroy()
-
-    def OnSave(self, e):
-        pass
 
     def HideAllAspects(self):
         self.PackageAspect.Hide()
@@ -215,11 +193,48 @@ class Example(wx.Frame):
     def ToggleOutputView(self, e):
         self.UpdateMainWindow(e)
 
+    def OnQuit(self, e):
+        if wx.MessageBox("Really quit ROSMOD?", "Please confirm",
+                         wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
+            return
+        self.Close()
+
+    def OnNew(self, e):
+        self.dirname = ''
+        dlg = wx.FileDialog(self, "Save Model As...", self.dirname, "", self.fileTypes, wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.filename = dlg.GetFilename()
+            self.dirname = dlg.GetDirectory()
+            self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.dirname))
+        dlg.Destroy()
+
+    def OnOpen(self, e):
+        self.dirname = ''
+        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", self.fileTypes, wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.filename = dlg.GetFilename()
+            self.dirname = dlg.GetDirectory()
+            f = open(os.path.join(self.dirname, self.filename), 'r')
+            f.close()
+            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.dirname))
+        dlg.Destroy()
+
+    def OnSave(self, e):
+        self.dirname = ''
+        dlg = wx.FileDialog(self, "Save Model As...", self.dirname, "", self.fileTypes, wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.filename = dlg.GetFilename()
+            self.dirname = dlg.GetDirectory()
+            self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.dirname))
+        dlg.Destroy()
+
     def GenerateCode(self, e):
-        dlg = wx.MessageDialog( self, "Generate ROS Code", "ROSMOD Generator", wx.OK)
-        dlg.ShowModal() # Show it, modal means user can't do anything with base app until this is closed
-        dlg.Destroy() # finally destroy it when finished.
-        pass
+        self.dirname = ''
+        dlg = wx.DirDialog(self, "Choose workspace directory", self.dirname)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.dirname = dlg.GetPath()
+            self.statusbar.SetStatusText('Generated workspace into {}'.format(self.dirname))
+        dlg.Destroy()
         
     def AnalyzeNetwork(self, e):
         pass
