@@ -88,6 +88,7 @@ class Draw_Style:
         self.textPlacement = placement
         self.overlay = overlay
 
+
 '''
 Drawable Objects are anything that should
 be drawn into the viewer of ROSMOD.

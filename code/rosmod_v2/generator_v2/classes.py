@@ -4,8 +4,12 @@
 
 from collections import OrderedDict
 
-import sys
-sys.path.append("../editor_v2/wx_unitTests/")
+import sys, os
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+head,tail = os.path.split(head)
+sys.path.append(head + '/editor_v2/wx_unitTests/')
 from drawable import Drawable_Object
 
 # ROS Workspace
