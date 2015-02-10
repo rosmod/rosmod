@@ -11,6 +11,9 @@ from proportionalSplitter import ProportionalSplitter
 # flat notebook allows us to have scroll buttons and a close button
 import wx.lib.agw.flatnotebook as fnb
 
+# useful for drawing the model and having good scrolling of it
+import wx.lib.scrolledpanel as scrolled
+
 # terminal allows us to have a terminal panel
 from terminal import *
 
@@ -77,10 +80,10 @@ class Example(wx.Frame):
     def BuildPackageAspectNotebook(self):
         self.PackageAspect = wx.Notebook(self.viewSplitter, wx.ID_ANY)
         # THIS PART CHANGES BASED ON MODEL, NEED TO REWRITE THIS WITH MODEL INTEGRATION
-        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "Package 1")
-        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "Package 2")
-        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "Package 3")
-        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "All Packages")
+        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "Package 1")
+        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "Package 2")
+        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "Package 3")
+        self.PackageAspect.AddPage(scrolled.ScrolledPanel(self.PackageAspect), "All Packages")
         self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
