@@ -37,6 +37,7 @@ class Example(wx.Frame):
         self.fileTypes = "ROSMOD Model Files (*.rml *.rosml)|*.rosml"
         self.model_path = ''
         self.model = rosgen.ROS_Workspace()
+        self.BuildStyleDict()
 
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
@@ -107,6 +108,7 @@ class Example(wx.Frame):
         self.PackageAspect.DeleteAllPages()
         self.pkgPanels = OrderedDict()
         for pkg in self.model.workspace.children:
+            pkg.style.icon = None
             newPage = scrolled.ScrolledPanel(self.PackageAspect)
             self.pkgPanels[pkg.properties["name"]] = pkg
             self.PackageAspect.AddPage( newPage, pkg.properties["name"])
@@ -121,6 +123,7 @@ class Example(wx.Frame):
         dc.Clear()
         selectedPage = self.PackageAspect.GetSelection()
         packageName = self.PackageAspect.GetPageText(selectedPage)
+        drawable.Configure(self.pkgPanels[packageName],self.styleDict)
         drawable.Layout(self.pkgPanels[packageName],(0,0))
         self.pkgPanels[packageName].Draw(dc,event.GetEventObject())
         
@@ -428,6 +431,95 @@ class Example(wx.Frame):
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
+
+    def BuildStyleDict(self):
+        self.styleDict = OrderedDict()
+        fontSize = (8,20)
+        WrkStyle = drawable.Draw_Style(icon=None, 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.TOP,
+                              overlay = OrderedDict() )
+        PkgStyle = drawable.Draw_Style(icon=None, 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.TOP,
+                              overlay = OrderedDict() )
+        MsgStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.TOP,
+                              overlay = OrderedDict() )
+        SrvStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.TOP,
+                              overlay = OrderedDict() )
+        CompStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                               font=fontSize, 
+                               method=drawable.Draw_Method.ICON, 
+                               placement=drawable.Text_Placement.TOP,
+                               overlay = OrderedDict() )
+        TmrStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.RIGHT,
+                              overlay = OrderedDict() )
+        PubStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.RIGHT,
+                              overlay = OrderedDict() )
+        SubStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.RIGHT,
+                              overlay = OrderedDict() )
+        CliStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.RIGHT,
+                              overlay = OrderedDict() )
+        SerStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                              font=fontSize, 
+                              method=drawable.Draw_Method.ICON, 
+                              placement=drawable.Text_Placement.RIGHT,
+                              overlay = OrderedDict() )
+        NodeStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                               font=fontSize, 
+                               method=drawable.Draw_Method.ICON, 
+                               placement=drawable.Text_Placement.TOP,
+                               overlay = OrderedDict() )
+        CompInstStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                                   font=fontSize, 
+                                   method=drawable.Draw_Method.ICON, 
+                                   placement=drawable.Text_Placement.RIGHT,
+                                   overlay = OrderedDict() )
+        HardwareStyle = drawable.Draw_Style(icon=None, 
+                                   font=fontSize, 
+                                   method=drawable.Draw_Method.ICON, 
+                                   placement=drawable.Text_Placement.TOP,
+                                   overlay = OrderedDict() )
+        DeploymentStyle = drawable.Draw_Style(icon=None, 
+                                     font=fontSize, 
+                                     method=drawable.Draw_Method.ICON, 
+                                     placement=drawable.Text_Placement.TOP,
+                                     overlay = OrderedDict() )
+
+        self.styleDict["workspace"] = WrkStyle
+        self.styleDict["package"] = PkgStyle
+        self.styleDict["message"] = MsgStyle
+        self.styleDict["service"] = SrvStyle
+        self.styleDict["component"] = CompStyle
+        self.styleDict["timer"] = TmrStyle
+        self.styleDict["publisher"] = PubStyle
+        self.styleDict["subscriber"] = SubStyle
+        self.styleDict["client"] = CliStyle
+        self.styleDict["server"] = SerStyle
+        self.styleDict["node"] = NodeStyle
+        self.styleDict["component_instance"] = CompInstStyle
+        self.styleDict["hardware"] = HardwareStyle
+        self.styleDict["deployment"] = DeploymentStyle
 
 def main():
     
