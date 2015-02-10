@@ -38,6 +38,7 @@ class Listener(ROSListener):
     # Create a new ROS Message object
     def enterRos_msg(self, ctx):
         self.message = ROS_Message()
+        self.message.parent = self.package
 
     # Save the message name
     def enterMsg_name(self, ctx):
@@ -73,6 +74,7 @@ class Listener(ROSListener):
     # Create a new ROS Service object
     def enterRos_srv(self, ctx):
         self.service = ROS_Service()
+        self.service.parent = self.package
 
     # Save the name of the ROS Service
     def enterSrv_name(self, ctx):
@@ -99,7 +101,7 @@ class Listener(ROSListener):
                 if field_value != "":
                     self.service.properties["request"].append([field_type, field_name, field_value])
                 else:
-                    self.service.properties.["request"].append([field_type, field_name])
+                    self.service.properties["request"].append([field_type, field_name])
 
     # Save the response arguments of the service
     def enterRes_argument(self, ctx):
@@ -120,9 +122,9 @@ class Listener(ROSListener):
         if field_type != "":
             if field_name != "":
                 if field_value != "":
-                    self.service.properties.["response"].append([field_type, field_name, field_value])
+                    self.service.properties["response"].append([field_type, field_name, field_value])
                 else:
-                    self.service.properties.["response"].append([field_type, field_name])
+                    self.service.properties["response"].append([field_type, field_name])
 
     # On exit, add the service to the list of services in the package
     def exitRos_srv(self, ctx):
@@ -131,6 +133,7 @@ class Listener(ROSListener):
     # Create a new component object
     def enterRos_component(self, ctx):
         self.component = ROS_Component()
+        self.component.parent = self.package
 
     # Save the name of the component
     def enterComponent_name(self, ctx):
@@ -146,9 +149,10 @@ class Listener(ROSListener):
                     # CHECK: If this service has been defined 
                     self.server = ROS_Server()
                     self.server.properties["name"] = service_name + "_server"
-                    for child in self.packages.children:
-                        if child.properties["name"] == service_name:
+                    for services in self.package.children:
+                        if services.properties["name"] == service_name:
                             self.server.properties["service_reference"] = child
+                    self.server.parent = self.component
                     self.component.add(self.server)
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
@@ -158,9 +162,10 @@ class Listener(ROSListener):
                     # CHECK: If this service has been defined 
                     self.client = ROS_Client()
                     self.client.properties["name"] = service_name + "_client"
-                    for child in self.packages.children:
-                        if child.properties["name"] == service_name:
-                            self.server.properties["service_reference"] = child
+                    for services in self.package.children:
+                        if services.properties["name"] == service_name:
+                            self.client.properties["service_reference"] = child
+                    self.client.parent = self.component
                     self.component.add(self.client)
 
     # Save all publishers and susbcribers
@@ -171,13 +176,14 @@ class Listener(ROSListener):
                 context = str(type(child))
                 if "TopicContext" in context:
                     # CHECK: If this toic has been defined
-                    for child in self.package.children:
-                        if child.properties["name"] == child.getText():
+                    for messages in self.package.children:
+                        if messages.properties["name"] == child.getText():
                             self.publisher.properties["message_reference"] = child
                 if "PublisherContext" in context:
                     self.publisher.properties["name"] = child.getText()
-            if self.publisher.name != "":
-                if self.publisher.topic != None:
+            if self.publisher.properties["name"] != "":
+                if self.publisher.properties["message_reference"] != None:
+                    self.publisher.parent = self.component
                     self.component.add(self.publisher)
 
         elif "subscriber" in ctx.getText():
@@ -185,13 +191,14 @@ class Listener(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "TopicContext" in context:
-                    for child in self.package.children:
-                        if child.properties["name"] == child.getText():
+                    for messages in self.package.children:
+                        if messages.properties["name"] == child.getText():
                             self.subscriber.properties["message_reference"] = child
                 if "SubscriberContext" in context:
                     self.subscriber.properties["name"] = child.getText()
-            if self.subscriber.name != "":
-                if self.subscriber.topic != None:
+            if self.subscriber.properties["name"] != "":
+                if self.subscriber.properties["message_reference"] != None:
+                    self.subscriber.parent = self.component
                     self.component.add(self.subscriber)
 
     # Save all component timers
@@ -208,6 +215,7 @@ class Listener(ROSListener):
         self.timer.properties["name"] = name
         self.timer.properties["period"] = period
         self.timer.properties["unit"] = period_unit
+        self.timer.parent = self.component
         self.component.add(self.timer)
 
     # On exit, add component to list of components in package
@@ -217,6 +225,7 @@ class Listener(ROSListener):
     # Create a new ROS node object
     def enterRos_node(self, ctx):
         self.node = ROS_Node()
+        self.node.parent = self.package
 
     # Save ROS node name
     def enterNode_name(self, ctx):
@@ -237,7 +246,8 @@ class Listener(ROSListener):
         self.component_instance.properties["name"] = instance
         for child in self.package.children:
             if child.properties["name"] == comp_type:
-                self.component_instance.properties["component_reference"] = child 
+                self.component_instance.properties["component_reference"] = child
+        self.component_instance.parent = self.node
         self.node.add(self.component_instance)
 
     # On exit, add the node to the list of nodes in package
