@@ -95,26 +95,24 @@ class Aspect(wx.Panel):
     def OnRedo(self, e):
         pass
  
+    def pageChange(self, event):
+        try:
+            old = event.GetOldSelection()
+            new = event.GetSelection()
+            sel = self.notebook.GetSelection()
+            numPages = self.notebook.GetPageCount()
+            if new == numPages - 1:
+                self.toolbar.EnableTool(self.tdelete_ID, False)
+            else:
+                self.toolbar.EnableTool(self.tdelete_ID, True)
+            #print 'OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel)
+        except wx.PyDeadObjectError:
+            test = None #do nothing
+
     def OnPageChanged(self, event):
-        old = event.GetOldSelection()
-        new = event.GetSelection()
-        sel = self.notebook.GetSelection()
-        numPages = self.notebook.GetPageCount()
-        if new == numPages - 1:
-            self.toolbar.EnableTool(self.tdelete.GetId(), False)
-        else:
-            self.toolbar.EnableTool(self.tdelete.GetId(), True)
-        #print 'OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel)
+        self.pageChange(event)
         event.Skip()
  
     def OnPageChanging(self, event):
-        old = event.GetOldSelection()
-        new = event.GetSelection()
-        sel = self.notebook.GetSelection()
-        numPages = self.notebook.GetPageCount()
-        if new == numPages - 1:
-            self.toolbar.EnableTool(self.tdelete.GetId(), False)
-        else:
-            self.toolbar.EnableTool(self.tdelete.GetId(), True)
-        #print 'OnPageChanging, old:%d, new:%d, sel:%d\n' % (old, new, sel)
+        self.pageChange(event)
         event.Skip()
