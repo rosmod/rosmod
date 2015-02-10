@@ -208,6 +208,14 @@ class Example(wx.Frame):
         )
         self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.dirname))
 
+    def OnUndo(self, e):
+        pass
+    def OnRedo(self, e):
+        pass
+
+    def OnTerminal(self, e):
+        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
+
     '''
     Package Aspect Functions
     '''
@@ -228,11 +236,6 @@ class Example(wx.Frame):
             self.PackageAspect.DeletePage(selectedPage)
         if self.PackageAspect.GetSelection() == numPages - 2: # deleted into last page
             self.toolbar.EnableTool(self.packageTB_delete_ID, False)
-
-    def OnUndo(self, e):
-        pass
-    def OnRedo(self, e):
-        pass
 
     def pageChange(self, event):
         try:
@@ -371,16 +374,20 @@ class Example(wx.Frame):
         self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap('tnew.png'), shortHelp="New")
         self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap('topen.png'), shortHelp="Open")
         self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap('tsave.png'), shortHelp="Save")
+        self.toolbar.AddSeparator()
         # undo/redo
         self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
         self.tb_redo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
         self.toolbar.EnableTool(wx.ID_UNDO, False)
         self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.toolbar.AddSeparator()
+        self.tb_term = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('tterm.png'), shortHelp="Terminal")
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
         self.Bind(wx.EVT_TOOL, self.OnUndo, self.tb_undo)
         self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
+        self.Bind(wx.EVT_TOOL, self.OnTerminal, self.tb_term)
 
     '''
     Build the Statusbar which provides extra information about
