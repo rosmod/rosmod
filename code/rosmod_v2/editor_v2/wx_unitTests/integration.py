@@ -3,11 +3,13 @@
 # this code: http://zetcode.com/wxpython/menustoolbars/
 
 import wx
-from proportionalSplitter import ProportionalSplitter
 import os
-
-# tabbed terminal allows us to create a terminal inside a tab :)
-import tabbed_terminal
+# proportional splitter should work for resizing window
+from proportionalSplitter import ProportionalSplitter
+# flat notebook allows us to have scroll buttons and a close button
+import wx.lib.agw.flatnotebook as fnb
+# terminal allows us to have a terminal panel
+from terminal import *
 # the main views of the model are the aspects
 import aspect
 # the dialogs that we use (popups)
@@ -22,20 +24,18 @@ class Example(wx.Frame):
 
         self.fileTypes = "*.rml"
 
-        self.count = 5 # for undo/redo calcs
-        
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
         #self.split1 = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
-        self.split1 = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT)
+        self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT)
 
         self.BuildAspects()
         self.BuildOutput()
 
-        self.split1.SplitHorizontally(self.activeAspect,self.output)
+        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
         
         self.Layout()
         
@@ -44,6 +44,13 @@ class Example(wx.Frame):
         self.Centre()
         self.Show(True)
 
+    '''
+    Build the menubar which allows for operations on
+    * Files: New, Open, Save, Quit
+    * Aspects: Packages, Hardware, Deployment
+    * Views: Toolbar, Statusbar, Aspects, Output
+    * Tools: Generator, Network QoS Analysis, Timing Analysis
+    '''
     def BuildMenu(self):
         self.menubar = wx.MenuBar()
 
@@ -107,6 +114,9 @@ class Example(wx.Frame):
         # set up the events for the items in the menubar
         self.RegisterMenuEvents()
 
+    '''
+    Bind menu items to functions for event processing
+    '''
     def RegisterMenuEvents(self):
         # file menu
         self.Bind(wx.EVT_MENU, self.OnNew, self.newMI)
@@ -127,25 +137,47 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.ToggleAspectView, self.shvw)
         self.Bind(wx.EVT_MENU, self.ToggleOutputView, self.shop)
 
+    '''
+    Build the Statusbar which provides extra information about
+    all the objects and menus in ROSMOD.  It also displays short
+    info from the output about results of operations.
+    '''
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
 
+    '''
+    Build the output notebook for ROSMOD which holds:
+    * a terminal
+    * the program output
+    * any logs requested from deployment
+    '''
     def BuildOutput(self):
-        self.output = tabbed_terminal.Tabbed_Terminal(self.split1)
+        self.output = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY)
+        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
         
+    '''
+    Build all the Aspects required for ROSMOD:
+    * Packages aspect : used for setting up mgs,srv,comp,node,etc.
+    * Hardware aspect : used for configure the system hardware (hosts)
+    * Deployment aspect : used for assigning nodes to hosts
+    '''
     def BuildAspects(self):
         # package aspect
-        self.PackageAspect = aspect.Aspect(self.split1)
+        self.PackageAspect = aspect.Aspect(self.viewSplitter)
         # hardware aspect
-        self.HardwareAspect = aspect.Aspect(self.split1)
+        self.HardwareAspect = aspect.Aspect(self.viewSplitter)
         self.HardwareAspect.Hide()
         # deployment aspect
-        self.DeploymentAspect = aspect.Aspect(self.split1)
+        self.DeploymentAspect = aspect.Aspect(self.viewSplitter)
         self.DeploymentAspect.Hide()
 
         self.activeAspect = self.PackageAspect
 
+
+    '''
+    Aspect Menubar Menu functions
+    '''
     def HideAllAspects(self):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
@@ -154,7 +186,7 @@ class Example(wx.Frame):
     def ShowAspect(self,aspect):
         if self.shvw.IsChecked():
             aspect.Show()
-            self.split1.ReplaceWindow(self.activeAspect,aspect)
+            self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
             self.activeAspect = aspect
             self.viewMenu.Check(self.shtl.GetId(), aspect.toolbar.IsShown())
 
@@ -170,32 +202,34 @@ class Example(wx.Frame):
         self.HideAllAspects()
         self.ShowAspect(self.DeploymentAspect)
         
+    '''
+    View Menu Functions
+    '''
+    def UpdateMainWindow(self, e):
+        self.viewSplitter.Show()
+        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
+        if self.shvw.IsChecked() and self.shop.IsChecked():
+            pass
+        elif self.shvw.IsChecked() and not self.shop.IsChecked():
+            self.viewSplitter.Unsplit(self.output)
+        elif not self.shvw.IsChecked() and self.shop.IsChecked():
+            self.viewSplitter.Unsplit(self.activeAspect)
+        else:
+            self.viewSplitter.Hide()
+        self.viewSplitter.UpdateSize()
+    def ToggleAspectView(self, e):
+        self.UpdateMainWindow(e)    
+    def ToggleOutputView(self, e):
+        self.UpdateMainWindow(e)
     def ToggleStatusBar(self, e):
         self.GetStatusBar().Show(e.IsChecked())
-
     def ToggleToolBar(self, e):
         self.activeAspect.toolbar.Show(e.IsChecked())
         self.SendSizeEvent()
 
-    def UpdateMainWindow(self, e):
-        self.split1.Show()
-        self.split1.SplitHorizontally(self.activeAspect,self.output)
-        if self.shvw.IsChecked() and self.shop.IsChecked():
-            pass
-        elif self.shvw.IsChecked() and not self.shop.IsChecked():
-            self.split1.Unsplit(self.output)
-        elif not self.shvw.IsChecked() and self.shop.IsChecked():
-            self.split1.Unsplit(self.activeAspect)
-        else:
-            self.split1.Hide()
-        self.split1.UpdateSize()
-
-    def ToggleAspectView(self, e):
-        self.UpdateMainWindow(e)
-    
-    def ToggleOutputView(self, e):
-        self.UpdateMainWindow(e)
-
+    '''
+    Toolbar and File Menubar Menu Functions
+    '''
     def OnQuit(self, e):
         if wx.MessageBox("Really quit ROSMOD?", "Confirm",
                          wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
@@ -235,6 +269,9 @@ class Example(wx.Frame):
         )
         self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.dirname))
 
+    '''
+    Tools Menubar Menu Functions
+    '''
     def GenerateCode(self, e):
         self.dirname = ''
         self.dirname = dialogs.RMLGenerateDirDialog(frame=self,path=self.dirname)
