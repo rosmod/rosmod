@@ -3,13 +3,15 @@
 # this code: http://zetcode.com/wxpython/menustoolbars/
 
 import wx
-import wx.aui
 from proportionalSplitter import ProportionalSplitter
 import os
 
+# tabbed terminal allows us to create a terminal inside a tab :)
 import tabbed_terminal
-
+# the main views of the model are the aspects
 import aspect
+# the dialogs that we use (popups)
+import dialogs
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -150,10 +152,11 @@ class Example(wx.Frame):
         self.DeploymentAspect.Hide()
 
     def ShowAspect(self,aspect):
-        aspect.Show()
-        self.split1.ReplaceWindow(self.activeAspect,aspect)
-        self.activeAspect = aspect
-        self.viewMenu.Check(self.shtl.GetId(), aspect.toolbar.IsShown())
+        if self.shvw.IsChecked():
+            aspect.Show()
+            self.split1.ReplaceWindow(self.activeAspect,aspect)
+            self.activeAspect = aspect
+            self.viewMenu.Check(self.shtl.GetId(), aspect.toolbar.IsShown())
 
     def OnPackageAspect(self, e):
         self.HideAllAspects()
@@ -194,47 +197,48 @@ class Example(wx.Frame):
         self.UpdateMainWindow(e)
 
     def OnQuit(self, e):
-        if wx.MessageBox("Really quit ROSMOD?", "Please confirm",
+        if wx.MessageBox("Really quit ROSMOD?", "Confirm",
                          wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
             return
         self.Close()
 
     def OnNew(self, e):
         self.dirname = ''
-        dlg = wx.FileDialog(self, "Save Model As...", self.dirname, "", self.fileTypes, wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.filename = dlg.GetFilename()
-            self.dirname = dlg.GetDirectory()
-            self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.dirname))
-        dlg.Destroy()
+        self.filename, self.dirname = dialogs.RMLFileDialog(
+            frame = self,
+            prompt ="Save Model As...", 
+            path = self.dirname,
+            fileTypes = self.fileTypes, 
+            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
+        )
+        self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.dirname))
 
     def OnOpen(self, e):
         self.dirname = ''
-        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", self.fileTypes, wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.filename = dlg.GetFilename()
-            self.dirname = dlg.GetDirectory()
-            f = open(os.path.join(self.dirname, self.filename), 'r')
-            f.close()
-            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.dirname))
-        dlg.Destroy()
+        self.filename, self.dirname = dialogs.RMLFileDialog(
+            frame = self,
+            fileTypes = self.fileTypes,
+            path = self.dirname,
+            prompt = "Choose a file",
+            fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
+        )
+        self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.dirname))
 
     def OnSave(self, e):
         self.dirname = ''
-        dlg = wx.FileDialog(self, "Save Model As...", self.dirname, "", self.fileTypes, wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.filename = dlg.GetFilename()
-            self.dirname = dlg.GetDirectory()
-            self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.dirname))
-        dlg.Destroy()
+        self.filename, self.dirname = dialogs.RMLFileDialog(
+            frame = self,
+            prompt = "Save Model As...",
+            path = self.dirname,
+            fileTypes = self.fileTypes, 
+            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
+        )
+        self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.dirname))
 
     def GenerateCode(self, e):
         self.dirname = ''
-        dlg = wx.DirDialog(self, "Choose workspace directory", self.dirname)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.dirname = dlg.GetPath()
-            self.statusbar.SetStatusText('Generated workspace into {}'.format(self.dirname))
-        dlg.Destroy()
+        self.dirname = dialogs.RMLGenerateDirDialog(frame=self,path=self.dirname)
+        self.statusbar.SetStatusText('Generated workspace into {}'.format(self.dirname))
         
     def AnalyzeNetwork(self, e):
         pass

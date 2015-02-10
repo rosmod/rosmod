@@ -2,13 +2,18 @@
 
 import wx
 
+import dialogs
+
 class AspectTab(wx.Panel):
     def __init__(self,parent):
         wx.Panel.__init__(self,parent=parent, id=wx.ID_ANY)
 
 class Aspect(wx.Panel):
-    def __init__(self,parent,model=None):
+    def __init__(self,parent,model=None,fileTypes="*.rml"):
         wx.Panel.__init__(self,parent)
+
+        self.model = model
+        self.fileTypes = fileTypes
 
         self.BuildToolbar()
         self.BuildNotebook()
@@ -79,16 +84,42 @@ class Aspect(wx.Panel):
         selectedPage = self.notebook.GetSelection()
         numPages = self.notebook.GetPageCount()
         if selectedPage != numPages - 1:
+            if wx.MessageBox("Really delete package {}?".format(self.notebook.GetPageText(selectedPage)), "Confirm",
+                             wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
+                return
             self.notebook.DeletePage(selectedPage)
         if self.notebook.GetSelection() == numPages - 2: # deleted into last page
             self.toolbar.EnableTool(self.tdelete.GetId(), False)
 
     def OnNew(self, e):
-        pass
+        self.dirname = ''
+        self.filename, self.dirname = dialogs.RMLFileDialog(
+            frame = self,
+            prompt ="Save Model As...", 
+            path = self.dirname,
+            fileTypes = self.fileTypes, 
+            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
+        )
+
     def OnOpen(self, e):
-        pass
+        self.dirname = ''
+        self.filename, self.dirname = dialogs.RMLFileDialog(
+            frame = self,
+            fileTypes = self.fileTypes,
+            path = self.dirname,
+            prompt = "Choose a file",
+            fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
+        )
+
     def OnSave(self, e):
-        pass
+        self.dirname = ''
+        self.filename, self.dirname = dialogs.RMLFileDialog(
+            frame = self,
+            prompt = "Save Model As...",
+            path = self.dirname,
+            fileTypes = self.fileTypes, 
+            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
+        )
 
     def OnUndo(self, e):
         pass
