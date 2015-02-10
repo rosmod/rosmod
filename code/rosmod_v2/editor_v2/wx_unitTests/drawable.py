@@ -63,6 +63,7 @@ class Draw_Method:
 
 class Draw_Style:
     def __init__(self):
+        # Set to None for rosgen to work
         self.icon = wx.Bitmap("texit.png")
         self.fontSize = (10,10)
         self.method = Draw_Method.ICON

@@ -104,3 +104,4 @@ if __name__ == "__main__":
 
     # Generate the ROS workspace pertaining to the input model
     generate_workspace(listener_object, model_path)
+
