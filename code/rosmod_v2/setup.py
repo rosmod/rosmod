@@ -70,7 +70,7 @@ else:
                 os.chdir(editor_ext_packages + "/TermEmulator-1.0")
                 p = subprocess.Popen(['python', 'setup.py', 'install'])
                 p.wait()
-                os.chdir(generator_ext_packages)
+                os.chdir(editor_ext_packages)
                 p = subprocess.Popen(['rm', '-rf', 'TermEmulator-1.0'])
                 p.wait()
                 os.chdir(setup_path)
