@@ -54,7 +54,7 @@ $packages\## End Package Marker
 add_message_files(
   FILES
 #for $msg in $messages
-  ${msg.name}.msg
+  ${msg.properties["name"]}.msg
 
 #end for
 )
@@ -63,7 +63,7 @@ add_message_files(
 add_service_files(
   FILES
 #for $srv in $services
-  ${srv.name}.srv
+  ${srv.properties["name"]}.srv
 
 #end for
 )
@@ -179,24 +179,24 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 #if $len($nodes) > 0
 #for $node in $nodes
-#if $len($node.comp_defs) > 0
-add_executable( ${node.name} src/${package_name}/${node.name}_main.cpp src/${package_name}/Component.cpp 
-#for $comp in $node.comp_defs 
-                src/$package_name/${comp}.cpp  
+#if $len($node.children) > 0
+add_executable( ${node.properties["name"]} src/${package_name}/${node.properties["name"]}_main.cpp src/${package_name}/Component.cpp 
+#for $instance in $node.children
+                src/$package_name/${instance.properties["component_reference"].properties["name"]}.cpp  
 #end for
-#if $node.cmakelists_add_cpp == ""
-		\## Start ${node.name} CPP Marker
-		\## End ${node.name} CPP Marker
+#if $node.properties["cmakelists_add_cpp"] == ""
+		\## Start ${node.properties["name"]} CPP Marker
+		\## End ${node.properties["name"]} CPP Marker
 #else
-		\## Start ${node.name} CPP Marker
-$node.cmakelists_add_cpp                \## End ${node.name} CPP Marker
+		\## Start ${node.properties["name"]} CPP Marker
+$node.properties["cmakelists_add_cpp"]                \## End ${node.properties["name"]} CPP Marker
 #end if 
               )
 #else
-add_executable( ${node.name} src/${package_name}/${node.name}_main.cpp src/${package_name}/Component.cpp)
+add_executable( ${node.properties["name"]} src/${package_name}/${node.properties["name"]}_main.cpp src/${package_name}/Component.cpp)
 #end if
-target_link_libraries(${node.name} ${catkin_LIBRARIES})
-add_dependencies(${node.name} ${package_name}_generate_messages_cpp)
+target_link_libraries(${node.properties["name"]} ${catkin_LIBRARIES})
+add_dependencies(${node.properties["name"]} ${package_name}_generate_messages_cpp)
 #end for
 #end if
 
