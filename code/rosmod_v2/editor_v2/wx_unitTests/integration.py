@@ -1,15 +1,19 @@
 #!/usr/bin/python
 
-# this code: http://zetcode.com/wxpython/menustoolbars/
-
 import wx
 import os
+
+from collections import OrderedDict
+
 # proportional splitter should work for resizing window
 from proportionalSplitter import ProportionalSplitter
+
 # flat notebook allows us to have scroll buttons and a close button
 import wx.lib.agw.flatnotebook as fnb
+
 # terminal allows us to have a terminal panel
 from terminal import *
+
 # the dialogs that we use (popups)
 import dialogs
 
@@ -24,32 +28,33 @@ class Example(wx.Frame):
 
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
+        self.BuildToolbar()
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
-        #self.split1 = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
+        #self.viewSplitter = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
         self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT)
-
         self.BuildAspects()
         self.BuildOutput()
-
         self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
         
+        self.toolbar.Realize()
         self.Layout()
         
         self.SetSize((800, 600))
-        self.SetTitle('Submenu')
+        self.SetTitle('ROSMOD Editor V2')
         self.Centre()
         self.Show(True)
 
     '''
     Build the output notebook for ROSMOD which holds:
-    * a terminal
     * the program output
+    * a terminal
     * any logs requested from deployment
     '''
     def BuildOutput(self):
         self.output = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY)
+        self.output.AddPage(wx.Panel(self.output), "Console Output")
         self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
         
     '''
@@ -67,72 +72,48 @@ class Example(wx.Frame):
     Package Aspect: panel with toolbar and notebook for managing packages
     '''
     def BuildPackageAspect(self):
-        self.PackageAspect = wx.Panel(self.viewSplitter)
         self.BuildPackageAspectNotebook()
         self.BuildPackageAspectToolbar()
-        self.packageSizer = wx.BoxSizer(wx.VERTICAL)
-        self.packageSizer.Add(self.packageTB, 0, wx.ALL | wx.ALIGN_LEFT | wx.EXPAND, 4)
-        self.packageSizer.Add(self.packageNB, 1, wx.ALL | wx.ALIGN_LEFT | wx.EXPAND, 4)
-        self.PackageAspect.SetSizer(self.packageSizer)
     def BuildPackageAspectNotebook(self):
-        self.packageNB = wx.Notebook(self.PackageAspect, wx.ID_ANY)
+        self.PackageAspect = wx.Notebook(self.viewSplitter, wx.ID_ANY)
         # THIS PART CHANGES BASED ON MODEL, NEED TO REWRITE THIS WITH MODEL INTEGRATION
-        self.packageNB.AddPage(wx.Panel(self.packageNB), "Package 1")
-        self.packageNB.AddPage(wx.Panel(self.packageNB), "Package 2")
-        self.packageNB.AddPage(wx.Panel(self.packageNB), "Package 3")
-        self.packageNB.AddPage(wx.Panel(self.packageNB), "All Packages")
-        self.packageNB.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.packageNB.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "Package 1")
+        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "Package 2")
+        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "Package 3")
+        self.PackageAspect.AddPage(wx.Panel(self.PackageAspect), "All Packages")
+        self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
-        self.packageTB = wx.ToolBar(self.PackageAspect)
-        # file operations
-        self.packageTB_new_ID = wx.NewId()
-        self.packageTB_open_ID = wx.NewId()
-        self.packageTB_save_ID = wx.NewId()
-        self.packageTB_new = self.packageTB.AddLabelTool(self.packageTB_new_ID, 'New', wx.Bitmap('tnew.png'), shortHelp="New")
-        self.pacakgeTB_open = self.packageTB.AddLabelTool(self.packageTB_open_ID, '', wx.Bitmap('topen.png'), shortHelp="Open")
-        self.packageTB_save = self.packageTB.AddLabelTool(self.packageTB_save_ID, '', wx.Bitmap('tsave.png'), shortHelp="Save")
-        self.packageTB.AddSeparator()
-        # undo/redo
-        self.packageTB_undo_ID = wx.NewId()
-        self.packageTB_redo_ID = wx.NewId()
-        self.packageTB_undo = self.packageTB.AddLabelTool(self.packageTB_undo_ID, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
-        self.packageTB_redo = self.packageTB.AddLabelTool(self.packageTB_redo_ID, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
-        self.packageTB.EnableTool(self.packageTB_undo_ID, False)
-        self.packageTB.EnableTool(self.packageTB_redo_ID, False)
-        self.packageTB.AddSeparator()
         # create / delete packages
+        self.packageTools = OrderedDict()
         self.packageTB_create_ID = wx.NewId()
         self.packageTB_delete_ID = wx.NewId()
-        self.packageTB_create = self.packageTB.AddLabelTool(self.packageTB_create_ID, '', wx.Bitmap('tnew.png'), shortHelp="New Package")
-        self.packageTB_delete = self.packageTB.AddLabelTool(self.packageTB_delete_ID, '', wx.Bitmap('texit.png'), shortHelp="Remove Package")
-
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_new_ID, self.OnNew)
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_open_ID, self.OnOpen)
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_save_ID, self.OnSave)
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_create_ID, self.OnPackageCreate)
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_delete_ID, self.OnPackageDelete)
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_undo_ID, self.OnUndo)
-        wx.EVT_TOOL( self.PackageAspect, self.packageTB_redo_ID, self.OnRedo)
+        self.toolbar.AddSeparator()
+        self.packageTB_create = self.toolbar.AddLabelTool(self.packageTB_create_ID, '', wx.Bitmap('tnew.png'), shortHelp="New Package")
+        self.packageTB_delete = self.toolbar.AddLabelTool(self.packageTB_delete_ID, '', wx.Bitmap('texit.png'), shortHelp="Remove Package")
+        self.packageTools['create package'] = [self.packageTB_create_ID,self.packageTB_create]
+        self.packageTools['delete package'] = [self.packageTB_delete_ID,self.packageTB_delete]
+        self.Bind(wx.EVT_TOOL, self.OnPackageCreate, self.packageTB_create)
+        self.Bind(wx.EVT_TOOL, self.OnPackageDelete, self.packageTB_delete)
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
     '''
     def BuildHardwareAspect(self):
-        self.HardwareAspect = wx.Panel(self.viewSplitter)
+        self.HardwareAspect = wx.Notebook(self.viewSplitter)
         self.BuildHardwareAspectToolbar()
         self.HardwareAspect.Hide()
     def BuildHardwareAspectToolbar(self):
-        pass
+        self.hardwareTools = OrderedDict()
     '''
     Deployment Aspect: panel with toolbar and notebook for configuring and managing
     node deployment onto hosts (and roscore deployment)
     '''        
     def BuildDeploymentAspect(self):
-        self.DeploymentAspect = wx.Panel(self.viewSplitter)
+        self.DeploymentAspect = wx.Notebook(self.viewSplitter)
         self.BuildDeploymentAspectToolbar()
         self.DeploymentAspect.Hide()
     def BuildDeploymentAspectToolbar(self):
-        pass
+        self.deploymentTools = OrderedDict()
 
     '''
     Aspect Menubar Menu functions
@@ -147,7 +128,6 @@ class Example(wx.Frame):
             aspect.Show()
             self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
             self.activeAspect = aspect
-            self.viewMenu.Check(self.shtl.GetId(), aspect.toolbar.IsShown())
 
     def OnPackageAspect(self, e):
         self.HideAllAspects()
@@ -183,7 +163,7 @@ class Example(wx.Frame):
     def ToggleStatusBar(self, e):
         self.GetStatusBar().Show(e.IsChecked())
     def ToggleToolBar(self, e):
-        self.activeAspect.toolbar.Show(e.IsChecked())
+        self.toolbar.Show(e.IsChecked())
         self.SendSizeEvent()
 
     '''
@@ -232,22 +212,22 @@ class Example(wx.Frame):
     Package Aspect Functions
     '''
     def OnPackageCreate(self, e):
-        newTab = wx.Panel(self.packageNB)
+        newTab = wx.Panel(self.PackageAspect)
         newTabName = "New Package!"
-        numPages = self.packageNB.GetPageCount()
-        self.packageNB.InsertPage(numPages-1,newTab, newTabName)
-        self.packageNB.SetSelection(numPages-1)
+        numPages = self.PackageAspect.GetPageCount()
+        self.PackageAspect.InsertPage(numPages-1,newTab, newTabName)
+        self.PackageAspect.SetSelection(numPages-1)
     
     def OnPackageDelete(self, e):
-        selectedPage = self.packageNB.GetSelection()
-        numPages = self.packageNB.GetPageCount()
+        selectedPage = self.PackageAspect.GetSelection()
+        numPages = self.PackageAspect.GetPageCount()
         if selectedPage != numPages - 1:
-            if wx.MessageBox("Really delete package {}?".format(self.packageNB.GetPageText(selectedPage)), "Confirm",
+            if wx.MessageBox("Really delete package {}?".format(self.PackageAspect.GetPageText(selectedPage)), "Confirm",
                              wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
                 return
-            self.packageNB.DeletePage(selectedPage)
-        if self.packageNB.GetSelection() == numPages - 2: # deleted into last page
-            self.packageTB.EnableTool(self.tdelete.GetId(), False)
+            self.PackageAspect.DeletePage(selectedPage)
+        if self.PackageAspect.GetSelection() == numPages - 2: # deleted into last page
+            self.toolbar.EnableTool(self.packageTB_delete_ID, False)
 
     def OnUndo(self, e):
         pass
@@ -258,12 +238,12 @@ class Example(wx.Frame):
         try:
             old = event.GetOldSelection()
             new = event.GetSelection()
-            sel = self.packageNB.GetSelection()
-            numPages = self.packageNB.GetPageCount()
+            sel = self.PackageAspect.GetSelection()
+            numPages = self.PackageAspect.GetPageCount()
             if new == numPages - 1:
-                self.packageTB.EnableTool(self.packageTB_delete_ID, False)
+                self.toolbar.EnableTool(self.packageTB_delete_ID, False)
             else:
-                self.packageTB.EnableTool(self.packageTB_delete_ID, True)
+                self.toolbar.EnableTool(self.packageTB_delete_ID, True)
             #print 'OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel)
         except wx.PyDeadObjectError:
             test = None #do nothing
@@ -382,6 +362,25 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
         self.Bind(wx.EVT_MENU, self.ToggleAspectView, self.shvw)
         self.Bind(wx.EVT_MENU, self.ToggleOutputView, self.shop)
+
+    '''
+    '''
+    def BuildToolbar(self):
+        self.toolbar = self.CreateToolBar()
+        # file operations
+        self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap('tnew.png'), shortHelp="New")
+        self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap('topen.png'), shortHelp="Open")
+        self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap('tsave.png'), shortHelp="Save")
+        # undo/redo
+        self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'), shortHelp="Undo")
+        self.tb_redo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'), shortHelp="Redo")
+        self.toolbar.EnableTool(wx.ID_UNDO, False)
+        self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
+        self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
+        self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
+        self.Bind(wx.EVT_TOOL, self.OnUndo, self.tb_undo)
+        self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
 
     '''
     Build the Statusbar which provides extra information about
