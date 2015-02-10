@@ -31,55 +31,55 @@ $init_business_logic//# End Init Marker
 
 #if $len($subscribers) > 0
 #for $sub in $subscribers
-// OnOneData Subscription handler for ${sub.name} subscriber
-#if $sub.business_logic == ""
-//# Start ${sub.name}_OnOneData Marker
-void $component_name::${sub.name}_OnOneData(const $package_name::${sub.topic.name}::ConstPtr& received_data)
+// OnOneData Subscription handler for ${sub.properties["name"]} subscriber
+#if $sub.properties["business_logic"] == ""
+//# Start ${sub.properties["name"]}_OnOneData Marker
+void $component_name::${sub.properties["name"]}_OnOneData(const $package_name::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
 {
-    // Business Logic for $sub.name subscriber subscribing to topic $sub.topic.name callback 
+    // Business Logic for $sub.properties["name"] subscriber subscribing to topic $sub.properties["message_reference"].properties["name"] callback 
 
 }
-//# End ${sub.name}_OnOneData Marker
+//# End ${sub.properties["name"]}_OnOneData Marker
 #else
-//# Start ${sub.name}_OnOneData Marker
-$sub.business_logic//# End ${sub.name}_OnOneData Marker
+//# Start ${sub.properties["name"]}_OnOneData Marker
+$sub.properties["business_logic"]//# End ${sub.properties["name"]}_OnOneData Marker
 #end if
 #end for
 
 #end if
 #if $len($provided_services) > 0
-#for $provided in $provided_services
+#for $server in $servers
 // Component Service Callback
-#if $provided.service.business_logic == ""
-//# Start ${provided.name}Callback Marker
-bool $component_name::${provided.name}Callback($package_name::$provided.service.name::Request  &req,
-    $package_name::$provided.service.name::Response &res)
+#if $server.properties["business_logic"] == ""
+//# Start ${server.properties["service_reference"].properties["name"]}Callback Marker
+bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($package_name::$server.properties["service_reference"].properties["name"]::Request  &req,
+    $package_name::$server.properties["service_reference"].properties["name"]::Response &res)
 {
-    // Business Logic for $provided.name Server providing $provided.service.name Service
+    // Business Logic for $server.properties["name"] Server providing $server.properties["service_reference"].properties["name"] Service
 
 }
-//# End ${provided.name}Callback Marker
+//# End ${server.properties["service_reference"].properties["name"]}Callback Marker
 #else
-//# Start ${provided.name}Callback Marker
-$provided.service.business_logic//# End ${provided.name}Callback Marker
+//# Start ${server.properties["service_reference"].properties["name"]}Callback Marker
+$server.properties["business_logic"]//# End ${server.properties["service_reference"].properties["name"]}Callback Marker
 #end if
 #end for
 
 #end if
 #if $len($timers) > 0
 #for $timer in $timers
-// Callback for $timer.name timer
-#if $timer.business_logic == ""
-//# Start ${timer.name}Callback Marker
-void $component_name::${timer.name}Callback(const ros::TimerEvent& event)
+// Callback for $timer.properties["name"] timer
+#if $timer.properties["business_logic"] == ""
+//# Start ${timer.properties["name"]}Callback Marker
+void $component_name::${timer.properties["name"]}Callback(const ros::TimerEvent& event)
 {
-    // Business Logic for $timer.name 
+    // Business Logic for $timer.properties["name"] 
 
 }
-//# End ${timer.name}Callback Marker
+//# End ${timer.properties["name"]}Callback Marker
 #else
-//# Start ${timer.name}Callback Marker
-$timer.business_logic//# End ${timer.name}Callback Marker
+//# Start ${timer.properties["name"]}Callback Marker
+$timer.properties["business_logic"]//# End ${timer.properties["name"]}Callback Marker
 #end if
 #end for
 
@@ -93,27 +93,27 @@ $component_name::~${component_name}()
 {
 #if $len($timers) > 0
 #for $timer in $timers
-    ${timer.name}.stop();
+    ${timer.properties["name"]}.stop();
 #end for
 #end if
 #if $len($publishers) > 0
 #for $pub in $publishers
-    ${pub.name}.shutdown();
+    ${pub.properties["name"]}.shutdown();
 #end for
 #end if
 #if $len($subscribers) > 0
 #for $sub in $subscribers
-    ${sub.name}.shutdown();
+    ${sub.properties["name"]}.shutdown();
 #end for
 #end if
 #if $len($provided_services) > 0
 #for $provided in $provided_services
-    ${provided.name}_server.shutdown();
+    ${provided}_server.shutdown();
 #end for
 #end if
 #if $len($required_services) > 0
 #for $required in $required_services
-    ${required.name}_client.shutdown();
+    ${required}_client.shutdown();
 #end for
 #end if
 }
@@ -125,49 +125,49 @@ void $component_name::startUp()
     #if $len($subscribers) > 0 
     // Configure all subscribers associated with this component
     #for $sub in $subscribers
-    // subscriber: $sub.name
-    ros::SubscribeOptions ${sub.name}_options;
-    ${sub.name}_options = 
-	ros::SubscribeOptions::create<$package_name::${sub.topic.name}>
-	    ("${sub.topic.name}",
+    // subscriber: $sub.properties["name"]
+    ros::SubscribeOptions ${sub.properties["name"]}_options;
+    ${sub.properties["name"]}_options = 
+	ros::SubscribeOptions::create<$package_name::${sub.properties["message_reference"].properties["name"]}>
+	    ("${sub.properties["message_reference"].properties["name"]}",
 	     1000,
-	     boost::bind(&$component_name::${sub.name}_OnOneData, this, _1),
+	     boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
 	     ros::VoidPtr(),
              &this->compQueue);
-    this->${sub.name} = nh.subscribe(${sub.name}_options);
+    this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
     #end for
 
     #end if		
     #if $len($publishers) > 0
     // Configure all publishers associated with this component
     #for $pub in $publishers
-    // publisher: $pub.name
-    this->${pub.name} = nh.advertise<$package_name::${pub.topic.name}>
-	("${pub.topic.name}", 1000);	
+    // publisher: $pub.properties["name"]
+    this->${pub.properties["name"]} = nh.advertise<$package_name::${pub.properties["message_reference"].properties["name"]}>
+	("${pub.properties["message_reference"].properties["name"]}", 1000);	
     #end for
 
     #end if
     #if $len($provided_services)
     // Configure all provided services associated with this component
-    #for $provided in $provided_services
-    // server: $provided.name
-    ros::AdvertiseServiceOptions ${provided.name}_server_options;
-    ${provided.name}_server_options = 
-	ros::AdvertiseServiceOptions::create<$package_name::$provided.service.name>
-	    ("$provided.service.name",
-             boost::bind(&$component_name::${provided.name}Callback, this, _1, _2),
+    #for $server in $servers
+    // server: $server.properties["name"]
+    ros::AdvertiseServiceOptions ${server.properties["service_reference"].properties["name"]}_server_options;
+    ${server.properties["service_reference"].properties["name"]}_server_options = 
+	ros::AdvertiseServiceOptions::create<$package_name::$server.properties["service_reference"].properties["name"]>
+	    ("$server.properties["service_reference"].properties["name"]",
+             boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
 	     ros::VoidPtr(),
              &this->compQueue);
-    this->${provided.name}_server = nh.advertiseService(${provided.name}_server_options);
+    this->${server.properties["service_reference"].properties["name"]}_server = nh.advertiseService(${server.properties["service_reference"].properties["name"]}_server_options);
     #end for
  
     #end if
     #if $len($required_services) > 0
     // Configure all required services associated with this component
     #for $required in $required_services
-    // client: ${required.name}_client
-    this->${required.name}_client = nh.serviceClient<$package_name::$required.service.name>
-	("$required.service.name"); 
+    // client: ${required}_client
+    this->${required}_client = nh.serviceClient<$package_name::$required>
+	("$required"); 
     #end for
 
     #end if
@@ -184,21 +184,21 @@ void $component_name::startUp()
     #if $len($timers)
     // Create all component timers
     #for $timer in $timers
-    // timer: timer.name
+    // timer: timer.properties["name"]
     timer_options = 
 	ros::TimerOptions
-	     #if $timer.period == "0.0"
+	     #if $timer.properties["period"] == "0.0"
 	     (ros::Duration(-1),
              #else
-             (ros::Duration($timer.period),
+             (ros::Duration($timer.properties["period"]),
              #end if
-	     boost::bind(&$component_name::${timer.name}Callback, this, _1),
-             #if $timer.period == "0.0"
+	     boost::bind(&$component_name::${timer.properties["name"]}Callback, this, _1),
+             #if $timer.properties["period"] == "0.0"
 	     &this->compQueue, true);
              #else
 	     &this->compQueue);
 	     #end if 
-    this->$(timer.name) = nh.createTimer(timer_options);
+    this->$(timer.properties["name"]) = nh.createTimer(timer_options);
     #end for
 
     #end if

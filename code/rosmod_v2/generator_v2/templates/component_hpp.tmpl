@@ -17,10 +17,10 @@ $user_includes//# End User Includes Marker
 #end if
 
 #for $topic in $topics
-$hash_include "$package_name/${topic.name}.h"
+$hash_include "$package_name/${topic}.h"
 #end for
 #for $service in $services
-$hash_include "$package_name/${service.service.name}.h"
+$hash_include "$package_name/${service}.h"
 #end for
 
 #if $hpp_globals == ""
@@ -43,8 +43,8 @@ class $component_name : public Component
 
 	#if $len($subscribers) > 0
 	#for $sub in $subscribers
-	// OnOneData Subscription handler for $sub.name subscriber 
-	void ${sub.name}_OnOneData(const $package_name::$sub.topic.name::ConstPtr& received_data); 
+	// OnOneData Subscription handler for $sub.properties["name"] subscriber 
+	void ${sub.properties["name"]}_OnOneData(const $package_name::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
  
 	#end for
 
@@ -52,16 +52,16 @@ class $component_name : public Component
 	#if $len($provided_services) > 0
 	#for $provided in $provided_services
 	// Component Service Callback
-	bool ${provided.name}Callback($package_name::$provided.service.name::Request  &req,
-		$package_name::$provided.service.name::Response &res);
+	bool ${provided}Callback($package_name::$provided::Request  &req,
+		$package_name::$provided::Response &res);
 
 	#end for
 
 	#end if	
 	#if $len($timers) > 0
 	#for $timer in $timers
-	// Callback for $timer.name timer
-	void ${timer.name}Callback(const ros::TimerEvent& event);
+	// Callback for $timer.properties["name"] timer
+	void ${timer.properties["name"]}Callback(const ros::TimerEvent& event);
 
 	#end for
 
@@ -78,40 +78,40 @@ class $component_name : public Component
 
 	#if $len($timers) > 0
 	#for $timer in $timers
-	// ROS Timer - $timer.name
-	ros::Timer $timer.name;
+	// ROS Timer - $timer.properties["name"]
+	ros::Timer $timer.properties["name"];
 
 	#end for
 
 	#end if
 	#if $len($subscribers) > 0
 	#for $sub in $subscribers
-	// ROS Subscriber - $sub.name
-	ros::Subscriber $sub.name; 
+	// ROS Subscriber - $sub.properties["name"]
+	ros::Subscriber $sub.properties["name"]; 
 
 	#end for
 
 	#end if
 	#if $len($publishers) > 0
 	#for $pub in $publishers
-	// ROS Publisher - $pub.name
-	ros::Publisher $pub.name;
+	// ROS Publisher - $pub.properties["name"]
+	ros::Publisher $pub.properties["name"];
 
 	#end for
 
 	#end if
 	#if $len($provided_services) > 0
 	#for $provided in $provided_services
-	// ROS Service Server - ${provided.name}_server
-	ros::ServiceServer ${provided.name}_server;
+	// ROS Service Server - ${provided}_server
+	ros::ServiceServer ${provided}_server;
 
 	#end for
 
 	#end if
 	#if $len($required_services) > 0
 	#for $required in $required_services
-	// ROS Service Client - ${required.name}_client
-	ros::ServiceClient ${required.name}_client;
+	// ROS Service Client - ${required}_client
+	ros::ServiceClient ${required}_client;
 
 	#end for
 	#end if
