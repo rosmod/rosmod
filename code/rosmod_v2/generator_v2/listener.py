@@ -13,6 +13,7 @@ from classes import *
 class Listener(ROSListener):
     def __init__(self):
         self.workspace = ROS_Workspace()
+        print "\nLISTENER::Parsing ROS Workspace"
 
     # Create a new workspace object
     def enterDefine_workspace(self, ctx):
@@ -34,6 +35,7 @@ class Listener(ROSListener):
     # Save the package name
     def enterPackage_name(self, ctx):
         self.package.properties["name"] = ctx.getText()
+        print "LISTENER::Reading Package: " + ctx.getText()
 
     # Create a new ROS Message object
     def enterRos_msg(self, ctx):
@@ -149,9 +151,9 @@ class Listener(ROSListener):
                     # CHECK: If this service has been defined 
                     self.server = ROS_Server()
                     self.server.properties["name"] = service_name + "_server"
-                    for services in self.package.children:
-                        if services.properties["name"] == service_name:
-                            self.server.properties["service_reference"] = child
+                    for service in self.package.children:
+                        if service.properties["name"] == service_name:
+                            self.server.properties["service_reference"] = service
                     self.server.parent = self.component
                     self.component.add(self.server)
         elif "requires" in ctx.getText():
@@ -162,9 +164,9 @@ class Listener(ROSListener):
                     # CHECK: If this service has been defined 
                     self.client = ROS_Client()
                     self.client.properties["name"] = service_name + "_client"
-                    for services in self.package.children:
-                        if services.properties["name"] == service_name:
-                            self.client.properties["service_reference"] = child
+                    for service in self.package.children:
+                        if service.properties["name"] == service_name:
+                            self.client.properties["service_reference"] = service
                     self.client.parent = self.component
                     self.component.add(self.client)
 
@@ -176,9 +178,9 @@ class Listener(ROSListener):
                 context = str(type(child))
                 if "TopicContext" in context:
                     # CHECK: If this toic has been defined
-                    for messages in self.package.children:
-                        if messages.properties["name"] == child.getText():
-                            self.publisher.properties["message_reference"] = child
+                    for message in self.package.children:
+                        if message.properties["name"] == child.getText():
+                            self.publisher.properties["message_reference"] = message
                 if "PublisherContext" in context:
                     self.publisher.properties["name"] = child.getText()
             if self.publisher.properties["name"] != "":
@@ -191,9 +193,9 @@ class Listener(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "TopicContext" in context:
-                    for messages in self.package.children:
-                        if messages.properties["name"] == child.getText():
-                            self.subscriber.properties["message_reference"] = child
+                    for message in self.package.children:
+                        if message.properties["name"] == child.getText():
+                            self.subscriber.properties["message_reference"] = message
                 if "SubscriberContext" in context:
                     self.subscriber.properties["name"] = child.getText()
             if self.subscriber.properties["name"] != "":

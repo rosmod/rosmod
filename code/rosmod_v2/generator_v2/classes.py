@@ -34,6 +34,7 @@ class ROS_Package(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "package"
         self.properties["name"] = ""
+        self.properties["cmakelists_packages"] = ""
 
 # ROS Message
 class ROS_Message(Drawable_Object):
