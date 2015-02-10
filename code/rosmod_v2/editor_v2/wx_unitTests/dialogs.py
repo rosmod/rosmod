@@ -13,5 +13,9 @@ def RMLFileDialog(frame,fileTypes,path,prompt,fd_flags):
     return fileName, modelPath
 
 def RMLGenerateDirDialog(frame,path):
-    workspacePath = ''
+    workspacePath = path
+    dlg = wx.DirDialog(frame, "Choose workspace directory", workspacePath)
+    if dlg.ShowModal() == wx.ID_OK:
+        workspacePath = dlg.GetPath()
+    dlg.Destroy()
     return workspacePath

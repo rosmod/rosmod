@@ -4,6 +4,7 @@ import wx
 import os,sys
 
 sys.path.append("../../generator_v2")
+import rosgen
 
 # for ordered dictionaries
 from collections import OrderedDict
@@ -33,7 +34,9 @@ class Example(wx.Frame):
     
     def InitUI(self):
 
-        self.fileTypes = "*.rml"
+        self.fileTypes = "ROSMOD Model Files (*.rml *.rosml)|*.rosml"
+        self.model_path = ''
+        self.model = rosgen.ROS_Workspace()
 
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
@@ -185,37 +188,35 @@ class Example(wx.Frame):
         self.Close()
 
     def OnNew(self, e):
-        self.dirname = ''
-        self.filename, self.dirname = dialogs.RMLFileDialog(
+        self.filename, self.model_path = dialogs.RMLFileDialog(
             frame = self,
             prompt ="Save Model As...", 
-            path = self.dirname,
+            path = self.model_path,
             fileTypes = self.fileTypes, 
             fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
-        self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.dirname))
+        self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.model_path))
 
     def OnOpen(self, e):
-        self.dirname = ''
-        self.filename, self.dirname = dialogs.RMLFileDialog(
+        self.filename, self.model_path = dialogs.RMLFileDialog(
             frame = self,
             fileTypes = self.fileTypes,
-            path = self.dirname,
+            path = self.model_path,
             prompt = "Choose a model",
             fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
         )
-        self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.dirname))
+        self.model = rosgen.parse_model(self.model_path+'/'+self.filename)
+        self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.model_path))
 
     def OnSave(self, e):
-        self.dirname = ''
-        self.filename, self.dirname = dialogs.RMLFileDialog(
+        self.filename, self.model_path = dialogs.RMLFileDialog(
             frame = self,
             prompt = "Save Model As...",
-            path = self.dirname,
+            path = self.model_path,
             fileTypes = self.fileTypes, 
             fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
-        self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.dirname))
+        self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.model_path))
 
     def OnUndo(self, e):
         pass
@@ -272,9 +273,12 @@ class Example(wx.Frame):
     Tools Menubar Menu Functions
     '''
     def GenerateCode(self, e):
-        self.dirname = ''
-        self.dirname = dialogs.RMLGenerateDirDialog(frame=self,path=self.dirname)
-        self.statusbar.SetStatusText('Generated workspace into {}'.format(self.dirname))
+        generate_path = dialogs.RMLGenerateDirDialog(frame=self,path=self.model_path)
+        if generate_path != None:
+            print generate_path
+            rosgen.check_workspace(self.model, generate_path)
+            rosgen.generate_workspace(self.model, generate_path)
+            self.statusbar.SetStatusText('Generated workspace into {}'.format(generate_path))
         
     def AnalyzeNetwork(self, e):
         pass

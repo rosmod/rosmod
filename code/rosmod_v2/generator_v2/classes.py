@@ -3,6 +3,8 @@
 # Date: 2015.02.06
 
 from collections import OrderedDict
+
+import sys
 sys.path.append("../editor_v2/wx_unitTests/")
 from drawable import Drawable_Object
 
