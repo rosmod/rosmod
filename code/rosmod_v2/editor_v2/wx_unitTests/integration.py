@@ -110,22 +110,33 @@ class Example(wx.Frame):
         for pkg in self.model.workspace.children:
             pkg.style.icon = None
             newPage = scrolled.ScrolledPanel(self.PackageAspect)
-            self.pkgPanels[pkg.properties["name"]] = pkg
+            self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
             self.PackageAspect.AddPage( newPage, pkg.properties["name"])
             newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
+            newPage.SetSizeWH(1000,1000)
+            newPage.SetVirtualSizeWH(1000,1000)
+            newPage.SetAutoLayout(1)
             newPage.SetupScrolling()
         newPage = scrolled.ScrolledPanel(self.PackageAspect)
-        self.pkgPanels["All Packages"] = self.model.workspace.children
-        self.PackageAspect.AddPage( newPage, "All Packages")
         newPage.SetupScrolling()
+        self.pkgPanels["All Packages"] = [self.model.workspace,newPage]
+        self.PackageAspect.AddPage( newPage, "All Packages")
+
     def OnPackagePaint(self,event):
-        dc = wx.PaintDC(event.GetEventObject())
+        panel = event.GetEventObject()
+        dc = wx.PaintDC(panel)
         dc.Clear()
         selectedPage = self.PackageAspect.GetSelection()
         packageName = self.PackageAspect.GetPageText(selectedPage)
-        drawable.Configure(self.pkgPanels[packageName],self.styleDict)
-        drawable.Layout(self.pkgPanels[packageName],(0,0))
-        self.pkgPanels[packageName].Draw(dc,event.GetEventObject())
+        pkg = self.pkgPanels[packageName][0]
+        drawable.Configure(pkg,self.styleDict)
+        width,height = drawable.Layout(pkg,(0,0))
+        #print width,height
+        #panel.PrepareDC(dc)
+        pkg.Draw(dc)
+        maxX, maxY = dc.GetSizeTuple()
+        #print maxX,maxY
+        #panel.SetScrollbar(wx.VERTICAL,0,
         
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
@@ -208,36 +219,45 @@ class Example(wx.Frame):
         self.Close()
 
     def OnNew(self, e):
-        self.filename, self.model_path = dialogs.RMLFileDialog(
+        filename,model_path = dialogs.RMLFileDialog(
             frame = self,
             prompt ="Save Model As...", 
             path = self.model_path,
             fileTypes = self.fileTypes, 
             fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
-        self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.model_path))
+        if filename != None and model_path != None:
+            self.filename = filename
+            self.model_path = model_path
+            self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.model_path))
 
     def OnOpen(self, e):
-        self.filename, self.model_path = dialogs.RMLFileDialog(
+        filename, model_path = dialogs.RMLFileDialog(
             frame = self,
             fileTypes = self.fileTypes,
             path = self.model_path,
             prompt = "Choose a model",
             fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
         )
-        self.model = rosgen.parse_model(self.model_path+'/'+self.filename)
-        self.BuildPackageAspectPagesFromModel()
-        self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.model_path))
+        if filename != None and model_path != None:
+            self.filename = filename
+            self.model_path = model_path
+            self.model = rosgen.parse_model(self.model_path+'/'+self.filename)
+            self.BuildPackageAspectPagesFromModel()
+            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.model_path))
 
     def OnSave(self, e):
-        self.filename, self.model_path = dialogs.RMLFileDialog(
+        filename,model_path = dialogs.RMLFileDialog(
             frame = self,
             prompt = "Save Model As...",
             path = self.model_path,
             fileTypes = self.fileTypes, 
             fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
-        self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.model_path))
+        if filename != None and model_path != None:
+            self.filename = filename
+            self.model_path = model_path
+            self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.model_path))
 
     def OnUndo(self, e):
         pass
@@ -435,8 +455,9 @@ class Example(wx.Frame):
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
         fontSize = (8,20)
-        minSize = (10,10)
+        minSize = (50,50)
         padding = (10,10)
+        pkgOffset = (100,50)
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
@@ -447,53 +468,54 @@ class Example(wx.Frame):
                                        method=drawable.Draw_Method.ICON, 
                                        placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict(),
-                                       padding = (100,50))
-        MsgStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+                                       padding = (10,10),
+                                       offset = pkgOffset )
+        MsgStyle = drawable.Draw_Style(icon=wx.Bitmap('msgIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
-        SrvStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        SrvStyle = drawable.Draw_Style(icon=wx.Bitmap('srvIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
-        CompStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        CompStyle = drawable.Draw_Style(icon=wx.Bitmap('compIcon.png'), 
                                font=fontSize, 
                                method=drawable.Draw_Method.ICON, 
                                placement=drawable.Text_Placement.TOP,
                                overlay = OrderedDict() )
-        TmrStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        TmrStyle = drawable.Draw_Style(icon=wx.Bitmap('tmrIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        PubStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        PubStyle = drawable.Draw_Style(icon=wx.Bitmap('pubIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        SubStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        SubStyle = drawable.Draw_Style(icon=wx.Bitmap('subIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        CliStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        CliStyle = drawable.Draw_Style(icon=wx.Bitmap('clientIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        SerStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        SerStyle = drawable.Draw_Style(icon=wx.Bitmap('serverIcon.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        NodeStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        NodeStyle = drawable.Draw_Style(icon=wx.Bitmap('nodeIcon.png'), 
                                font=fontSize, 
                                method=drawable.Draw_Method.ICON, 
                                placement=drawable.Text_Placement.TOP,
                                overlay = OrderedDict() )
-        CompInstStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
+        CompInstStyle = drawable.Draw_Style(icon=wx.Bitmap('compInstIcon.png'), 
                                    font=fontSize, 
                                    method=drawable.Draw_Method.ICON, 
                                    placement=drawable.Text_Placement.RIGHT,

@@ -81,8 +81,9 @@ class Draw_Style:
                  method=Draw_Method.ICON, 
                  placement=Text_Placement.TOP,
                  overlay = OrderedDict(),
-                 padding = (100,20),
-                 minSize = (10,10)
+                 padding = (10,10),
+                 offset = (10,10),
+                 minSize = (30,30)
              ):
         self.icon = icon
         self.fontSize = font
@@ -90,6 +91,7 @@ class Draw_Style:
         self.textPlacement = placement
         self.overlay = overlay
         self.padding = padding
+        self.offset = offset
         self.minSize = minSize
 
 
@@ -126,14 +128,14 @@ class Drawable_Object:
 
     '''
     Draw() is called after layout has been calculated
-    Should receive the device context and a scrolled panel
+    Should receive the device context
     '''
-    def Draw(self, dc, scrPanel):
-        dcX,dcY = scrPanel.CalcScrolledPosition(self.topLeft.Get())
+    def Draw(self, dc):
+        x,y = self.topLeft.Get()
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
                 bmp = scale_bitmap(self.style.icon, self.width, self.height)
-                dc.DrawBitmap(bmp,dcX,dcY)
+                dc.DrawBitmap(bmp,x,y)
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
@@ -143,7 +145,7 @@ class Drawable_Object:
         if self.textCenter != None:
             dc.DrawText(self.properties["name"],self.textCenter.Get()[0],self.textCenter.Get()[1])
         for child in self.children:
-            child.Draw(dc, scrPanel)
+            child.Draw(dc)
 
 '''
 The Layout function takes a top-level
@@ -163,10 +165,11 @@ def Layout(dObj, topLeftPos):
     # configure things that will be returned
     padding = dObj.style.padding
     minSize = dObj.style.minSize
+    offset = dObj.style.offset
     maxObjWidth = minSize[0]
     maxObjHeight = minSize[1]
     dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
-    childPos = [topLeftPos[0] + padding[0], topLeftPos[1] + padding[1]]
+    childPos = [topLeftPos[0] + offset[0], topLeftPos[1] + offset[1]]
     if dObj.kind == "workspace":
         pass
     elif dObj.kind == "package":
@@ -190,17 +193,13 @@ def Layout(dObj, topLeftPos):
         for msg in messages:
             w,h = Layout(msg,childPos)
             childPos[1] += padding[1] + h
-            maxHeight = max(h,maxHeight)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,maxHeight)
-        maxObjWidth = max(maxObjWidth, maxWidth)
         # draw label here for services
         for srv in services:
             w,h = Layout(srv,childPos)
             childPos[1] += padding[1] + h
-            maxHeight = max(h,maxHeight)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,maxHeight)
+        maxObjHeight = max(maxObjHeight,childPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + padding[1]]
         maxWidth = 0
@@ -209,9 +208,8 @@ def Layout(dObj, topLeftPos):
         for comp in components:
             w,h = Layout(comp,childPos)
             childPos[1] += padding[1] + h
-            maxHeight = max(h,maxHeight)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,maxHeight)
+        maxObjHeight = max(maxObjHeight,childPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + padding[1]]
         maxWidth = 0
@@ -220,9 +218,8 @@ def Layout(dObj, topLeftPos):
         for node in nodes:
             w,h = Layout(node,childPos)
             childPos[1] += padding[1] + h
-            maxHeight = max(h,maxHeight)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,maxHeight)
+        maxObjHeight = max(maxObjHeight,childPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
     elif dObj.kind == "component" or dObj.kind == "node":
         maxWidth = 0
@@ -230,9 +227,8 @@ def Layout(dObj, topLeftPos):
         for obj in dObj.children:
             w,h = Layout(obj,childPos)
             childPos[1] += padding[1] + h
-            maxHeight += h
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,maxHeight)
+        maxObjHeight = max(maxObjHeight,childPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)    
     elif dObj.kind == "message" or dObj.kind == "service" or dObj.kind == "timer" or dObj.kind == "client" or dObj.kind == "server" or dObj.kind == "publisher" or dObj.kind == "subscriber" or dObj.kind == "component_instance":
         pass

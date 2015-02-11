@@ -12,7 +12,7 @@ def draw_model(dc):
     dc.SetPen(wx.Pen("BLACK",2))
     dc.SetBrush(wx.Brush("BLUE",wx.BDIAGONAL_HATCH))
     sx,sy = panel.CalcScrolledPosition(0,0)
-    ex,ey = panel.CalcScrolledPosition(50,50)
+    ex,ey = panel.CalcScrolledPosition(500,50)
     dc.DrawLine(
         sx,sy,
         ex,ey
