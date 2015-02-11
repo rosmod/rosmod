@@ -139,7 +139,7 @@ class Drawable_Object:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
             dc.SetPen(wx.Pen("BLACK",2))
-            dc.SetBrush(wx.Brush("BLUE",wx.SOLID))
+            dc.SetBrush(wx.Brush(self.style.overlay["fillColor"],wx.SOLID))
             dc.DrawRoundedRectangle(x,y,self.width,self.height,10)
             pass
         else:

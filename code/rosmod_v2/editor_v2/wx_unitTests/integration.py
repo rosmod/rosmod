@@ -470,12 +470,15 @@ class Example(wx.Frame):
         compInstIcon = wx.Bitmap('compInstIcon_small.png')
         compInstIcon = drawable.scale_bitmap(compInstIcon, minSize[0], minSize[1])
 
+        #wx.SystemSettings.AddColour("compColor",wx.Colour(10,148,62))
+        #wx.SystemSettings.AddColour("nodeColor",wx.Colour(10,148,133))
+
         minSize = (50,50)
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
-                              overlay = OrderedDict() )
+                                       overlay = OrderedDict() )
         PkgStyle = drawable.Draw_Style(icon=None, 
                                        font=fontSize, 
                                        method=drawable.Draw_Method.ICON, 
@@ -497,7 +500,7 @@ class Example(wx.Frame):
                                font=fontSize, 
                                method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
-                               overlay = OrderedDict() )
+                                        overlay = OrderedDict([('fillColor','STEEL BLUE')]) )
         TmrStyle = drawable.Draw_Style(icon=tmrIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
@@ -527,7 +530,7 @@ class Example(wx.Frame):
                                font=fontSize, 
                                method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
-                               overlay = OrderedDict() )
+                                        overlay = OrderedDict([('fillColor','TURQUOISE')]) )
         CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
                                    font=fontSize, 
                                    method=drawable.Draw_Method.ICON, 
