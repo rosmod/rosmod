@@ -25,7 +25,7 @@ else:
     # Setup ANTLR4
     print "SETUP::Setting up Antlr4"
     os.chdir("/usr/local/lib")
-    p = subprocess.Popen(['curl', '-O', 'http://www.antlr.org/download/antlr-4.4-complete.jar'])
+    p = subprocess.Popen(['wget', 'http://www.antlr.org/download/antlr-4.4-complete.jar'])
     p.wait()
     os.system("export CLASSPATH=\".:/usr/local/lib/antlr-4.4-complete.jar:$CLASSPATH\"")
     os.system("alias antlr4=\'java -jar /usr/local/lib/antlr-4.4-complete.jar\'")
@@ -38,10 +38,10 @@ else:
         if tar.endswith(".tar.gz"):
             os.chdir(generator_ext_packages)
             if "antlr4-python2-runtime-4.4.1.tar.gz" in tar:
+                print "SETUP::Installing Antlr4 Python Runtime"
                 p = subprocess.Popen(['tar', '-xf', tar])
                 p.wait()
                 os.chdir(generator_ext_packages + "/antlr4-python2-runtime-4.4.1")
-                print "ANTLR CURRENT DIRECTORY: " + os.getcwd()
                 p = subprocess.Popen(['python', 'setup.py', 'install'])
                 p.wait()
                 os.chdir(generator_ext_packages)
@@ -49,6 +49,7 @@ else:
                 p.wait()
                 os.chdir(setup_path)
             elif "Cheetah-2.4.4.tar.gz" in tar:
+                print "SETUP::Installing Cheetah Templating Engine"
                 p = subprocess.Popen(['tar', '-xvzf', tar])
                 p.wait()
                 os.chdir(generator_ext_packages + "/Cheetah-2.4.4")
@@ -62,7 +63,8 @@ else:
     editor_ext_packages = os.path.join(editor_path, "python_packages")
     print "SETUP::Installing Python Packages at " + editor_ext_packages
     for tar in os.listdir(editor_ext_packages):
-        if tar.endswith(".tar.gz"):
+        if tar.endswith(".tar.gz") and "Pygments" not in tar:
+            print "SETUP::Instaling TermEmulator", tar
             os.chdir(editor_ext_packages)
             if "TermEmulator-1.0.tar.gz" in tar:
                 p = subprocess.Popen(['tar', '-xf', tar])
@@ -75,18 +77,9 @@ else:
                 p.wait()
                 os.chdir(setup_path)
 
-        if tar.endswith(".tar.bz2"):
-            os.chdir(editor_ext_packages)
-            if "wxPython-src-3.0.2.0.tar.bz2" in tar:
-                p = subprocess.Popen(['tar', '-xzf', tar])
-                p.wait()
-                os.chdir(editor_ext_packages + "/wxPython-src-3.0.2.0")
-                p = subprocess.Popen(['python', 'setup.py', 'install'])
-                p.wait()
-                os.chdir(editor_ext_packages)
-                p = subprocess.Popen(['rm', '-rf', 'wxPython-src-3.0.2.0'])
-                p.wait()
-                os.chdir(setup_path)
+    print "SETUP::Installing wxPython Tools"
+    p = subprocess.Popen(['apt-get', 'install', 'python-wxtools'])
+    p.wait()
 
 
 
