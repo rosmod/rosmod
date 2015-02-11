@@ -75,6 +75,18 @@ else:
                 p.wait()
                 os.chdir(setup_path)
 
+        if tar.endswith(".tar.bz2"):
+            os.chdir(editor_ext_packages)
+            if "wxPython-src-3.0.2.0.tar.bz2" in tar:
+                p = subprocess.Popen(['tar', '-xzf', tar])
+                p.wait()
+                os.chdir(editor_ext_packages + "/wxPython-src-3.0.2.0")
+                p = subprocess.Popen(['python', 'setup.py', 'install'])
+                p.wait()
+                os.chdir(editor_ext_packages)
+                p = subprocess.Popen(['rm', '-rf', 'wxPython-src-3.0.2.0'])
+                p.wait()
+                os.chdir(setup_path)
 
 
 
