@@ -18,6 +18,23 @@ import wx.lib.agw.flatnotebook as fnb
 # useful for drawing the model and having good scrolling of it
 import wx.lib.scrolledpanel as scrolled
 
+# need float canvas for new style of rendering
+from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
+
+try:
+    import numpy as N
+    import numpy.random as RandomArray
+    haveNumpy = True
+    #print "Using numpy, version:", N.__version__
+except ImportError:
+            # numpy isn't there
+            haveNumpy = False
+            errorText = (
+            "The FloatCanvas requires the numpy module, version 1.* \n\n"
+            "You can get info about it at:\n"
+            "http://numpy.scipy.org/\n\n"
+            )
+
 # terminal allows us to have a terminal panel
 from terminal import *
 
@@ -108,18 +125,8 @@ class Example(wx.Frame):
         self.pkgPanels = OrderedDict()
         for pkg in self.model.workspace.children:
             pkg.style.icon = None
-            newPage = wx.ScrolledWindow(self.PackageAspect)
-            newPage.SetScrollbars(wx.VERTICAL,10,1,10)
-            newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
-            newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
-            self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
-            self.PackageAspect.AddPage( newPage, pkg.properties["name"])
-        newPage = wx.ScrolledWindow(self.PackageAspect)
-        newPage.SetScrollbar(wx.VERTICAL,10,1,10)
-        newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
-        newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
-        self.pkgPanels["All Packages"] = [self.model.workspace,newPage]
-        self.PackageAspect.AddPage( newPage, "All Packages")
+            self.BuildPackagePage(self.PackageAspect,pkg)
+        self.BuildPackagePage(self.PackageAspect,self.model.workspace)
 
     def OnPackagePaint(self,event):
         panel = event.GetEventObject()
@@ -134,6 +141,16 @@ class Example(wx.Frame):
         panel.DoPrepareDC(dc)
         pkg.Draw(dc)
         panel.SetVirtualSize((width,height))
+
+    def BuildPackagePage(self,parent,pkg):
+        newPage = wx.ScrolledWindow(self.PackageAspect)
+        newPage.SetScrollbars(wx.VERTICAL,10,1,10)
+        newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
+        newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
+        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
+        self.PackageAspect.AddPage( newPage, pkg.properties["name"])
+        
+
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
     '''
