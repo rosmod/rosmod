@@ -40,7 +40,7 @@ def getWidthWithText(objSize,txtPlacement,objName,font):
         height += fontSize[1]
         width = max(width,len(objName)*fontSize[0])
     elif txtPlacement == Text_Placement.LEFT or txtPlacement == Text_Placement.RIGHT:
-        width += len(objName)*fontSize[0]
+        width += (len(objName)+2)*fontSize[0]
     elif txtPlacement == Text_Placement.CENTER:
         width = max(width,len(objName)*fontSize[0])
     elif txtPlacement == Text_Placement.NONE:
@@ -62,7 +62,7 @@ def getTextPos(option,txtString,objPos,objSize,font):
         x = objPos[0] - (fontSize[0] * len(txtString)) /2
     elif option == Text_Placement.RIGHT:
         y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
-        x = objPos[0] + objSize[0] + fontSize[0]
+        x = objPos[0] + objSize[0]
     elif option == Text_Placement.CENTER:
         y = objPos[1] + objSize[1] / 2
         x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0])/2

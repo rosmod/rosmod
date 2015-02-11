@@ -89,7 +89,6 @@ class Example(wx.Frame):
         self.BuildPackageAspectToolbar()
     def BuildPackageAspectNotebook(self):
         self.PackageAspect = wx.Notebook(self.viewSplitter, wx.ID_ANY)
-        # THIS PART CHANGES BASED ON MODEL, NEED TO REWRITE THIS WITH MODEL INTEGRATION
         self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
@@ -112,12 +111,13 @@ class Example(wx.Frame):
             newPage = wx.ScrolledWindow(self.PackageAspect)
             newPage.SetScrollbars(wx.VERTICAL,10,1,10)
             newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
+            newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
             self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
             self.PackageAspect.AddPage( newPage, pkg.properties["name"])
-            newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
         newPage = wx.ScrolledWindow(self.PackageAspect)
         newPage.SetScrollbar(wx.VERTICAL,10,1,10)
         newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
+        newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
         self.pkgPanels["All Packages"] = [self.model.workspace,newPage]
         self.PackageAspect.AddPage( newPage, "All Packages")
 
@@ -476,7 +476,7 @@ class Example(wx.Frame):
         elist=e.GetFacenames()
         elist.sort()
         print elist[2]
-        font['facename'] = elist[6]
+        font['facename'] = elist[2]
         font['pointSize'] = 10
 
         testFont = wx.Font(
