@@ -3,6 +3,9 @@
 import wx
 from collections import OrderedDict
 
+# need float canvas for new style of rendering
+from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
+
 def scale_bitmap(bitmap, width, height):
     image = wx.ImageFromBitmap(bitmap)
     image = image.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
@@ -132,21 +135,28 @@ class Drawable_Object:
     Draw() is called after layout has been calculated
     Should receive the device context
     '''
-    def Draw(self, dc):
+    def Draw(self, canvas):
         x,y = self.topLeft.Get()
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
-                dc.DrawBitmap(self.style.icon,x,y)
+                canvas.AddScaledBitmap(
+                    self.style.icon,
+                    XY = (x,y),
+                    Height = self.height,
+                    Position = "tl")
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
-            dc.SetPen(wx.Pen("BLACK",2))
-            dc.SetBrush(wx.Brush(self.style.overlay["fillColor"],wx.SOLID))
-            dc.DrawRoundedRectangle(x,y,self.width,self.height,10)
-            pass
+            rect = canvas.AddRectangle(
+                (x,y),
+                (self.width,self.height),
+                FillColor = self.style.overlay["fillColor"],
+                InForeground = False)
+            rect.HitFill = True
         else:
             pass
         if self.textCenter != None:
+            '''
             if 'facename' in self.style.font and 'pointSize' in self.style.font:
                 dc.SetFont(
                     wx.Font(
@@ -157,9 +167,10 @@ class Drawable_Object:
                         underline=False,
                         face=self.style.font['facename']
                     ))
-            dc.DrawText(self.properties["name"],self.textCenter.Get()[0],self.textCenter.Get()[1])
+            '''
+            canvas.AddText(self.properties["name"],(x,y),Position="tl")
         for child in self.children:
-            child.Draw(dc)
+            child.Draw(canvas)
 
 '''
 The Layout function takes a top-level
