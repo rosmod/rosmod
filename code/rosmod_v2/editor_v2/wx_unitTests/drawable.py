@@ -138,6 +138,9 @@ class Drawable_Object:
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
+            dc.SetPen(wx.Pen("BLACK",2))
+            dc.SetBrush(wx.Brush("BLUE",wx.SOLID))
+            dc.DrawRoundedRectangle(x,y,self.width,self.height,10)
             pass
         else:
             pass
@@ -198,7 +201,7 @@ def Layout(dObj, topLeftPos):
             w,h = Layout(srv,childPos)
             childPos[1] += padding[1] + h
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1])
+        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
         maxWidth = 0
@@ -208,7 +211,7 @@ def Layout(dObj, topLeftPos):
             w,h = Layout(comp,childPos)
             childPos[1] += padding[1] + h
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1])
+        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
         maxWidth = 0
@@ -218,7 +221,7 @@ def Layout(dObj, topLeftPos):
             w,h = Layout(node,childPos)
             childPos[1] += padding[1] + h
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1])
+        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
     elif dObj.kind == "component" or dObj.kind == "node":
         maxWidth = 0
@@ -227,7 +230,7 @@ def Layout(dObj, topLeftPos):
             w,h = Layout(obj,childPos)
             childPos[1] += padding[1] + h
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1])
+        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)    
     elif dObj.kind == "message" or dObj.kind == "service" or dObj.kind == "timer" or dObj.kind == "client" or dObj.kind == "server" or dObj.kind == "publisher" or dObj.kind == "subscriber" or dObj.kind == "component_instance":
         pass
