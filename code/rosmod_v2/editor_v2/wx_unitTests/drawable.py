@@ -134,8 +134,7 @@ class Drawable_Object:
         x,y = self.topLeft.Get()
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
-                bmp = scale_bitmap(self.style.icon, self.width, self.height)
-                dc.DrawBitmap(bmp,x,y)
+                dc.DrawBitmap(self.style.icon,x,y)
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:

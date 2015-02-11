@@ -450,9 +450,27 @@ class Example(wx.Frame):
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
         fontSize = (8,20)
-        minSize = (50,50)
+        minSize = (30,30)
         padding = (10,10)
         pkgOffset = (100,50)
+        msgIcon = wx.Bitmap('msgIcon_small.png')
+        msgIcon = drawable.scale_bitmap(msgIcon, minSize[0], minSize[1])
+        srvIcon = wx.Bitmap('srvIcon_small.png')
+        srvIcon= drawable.scale_bitmap(srvIcon, minSize[0], minSize[1])
+        tmrIcon = wx.Bitmap('tmrIcon_small.png')
+        tmrIcon= drawable.scale_bitmap(tmrIcon, minSize[0], minSize[1])
+        pubIcon = wx.Bitmap('pubIcon_small.png')
+        pubIcon= drawable.scale_bitmap(pubIcon, minSize[0], minSize[1])
+        subIcon = wx.Bitmap('subIcon_small.png')
+        subIcon= drawable.scale_bitmap(subIcon, minSize[0], minSize[1])
+        clientIcon = wx.Bitmap('clientIcon_small.png')
+        clientIcon = drawable.scale_bitmap(clientIcon, minSize[0], minSize[1])
+        serverIcon = wx.Bitmap('serverIcon_small.png')
+        serverIcon = drawable.scale_bitmap(serverIcon, minSize[0], minSize[1])
+        compInstIcon = wx.Bitmap('compInstIcon_small.png')
+        compInstIcon = drawable.scale_bitmap(compInstIcon, minSize[0], minSize[1])
+
+        minSize = (50,50)
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
@@ -465,52 +483,52 @@ class Example(wx.Frame):
                                        overlay = OrderedDict(),
                                        padding = (10,10),
                                        offset = pkgOffset )
-        MsgStyle = drawable.Draw_Style(icon=wx.Bitmap('msgIcon.png'), 
+        MsgStyle = drawable.Draw_Style(icon=msgIcon, 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
-        SrvStyle = drawable.Draw_Style(icon=wx.Bitmap('srvIcon.png'), 
+        SrvStyle = drawable.Draw_Style(icon=srvIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
-        CompStyle = drawable.Draw_Style(icon=wx.Bitmap('compIcon.png'), 
+        CompStyle = drawable.Draw_Style(icon=None,
                                font=fontSize, 
-                               method=drawable.Draw_Method.ICON, 
+                               method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
                                overlay = OrderedDict() )
-        TmrStyle = drawable.Draw_Style(icon=wx.Bitmap('tmrIcon.png'), 
+        TmrStyle = drawable.Draw_Style(icon=tmrIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        PubStyle = drawable.Draw_Style(icon=wx.Bitmap('pubIcon.png'), 
+        PubStyle = drawable.Draw_Style(icon=pubIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        SubStyle = drawable.Draw_Style(icon=wx.Bitmap('subIcon.png'), 
+        SubStyle = drawable.Draw_Style(icon=subIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        CliStyle = drawable.Draw_Style(icon=wx.Bitmap('clientIcon.png'), 
+        CliStyle = drawable.Draw_Style(icon=clientIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        SerStyle = drawable.Draw_Style(icon=wx.Bitmap('serverIcon.png'), 
+        SerStyle = drawable.Draw_Style(icon=serverIcon,
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
-        NodeStyle = drawable.Draw_Style(icon=wx.Bitmap('nodeIcon.png'), 
+        NodeStyle = drawable.Draw_Style(icon=None,
                                font=fontSize, 
-                               method=drawable.Draw_Method.ICON, 
+                               method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
                                overlay = OrderedDict() )
-        CompInstStyle = drawable.Draw_Style(icon=wx.Bitmap('compInstIcon.png'), 
+        CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
                                    font=fontSize, 
                                    method=drawable.Draw_Method.ICON, 
                                    placement=drawable.Text_Placement.RIGHT,
