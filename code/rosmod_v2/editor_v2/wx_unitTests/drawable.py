@@ -50,17 +50,17 @@ def getTextPos(option,txtString,objPos,objSize,fontSize):
     x = -1
     y = -1
     if option == Text_Placement.TOP:
-        y = objPos[1] - fontSize[1] / 2
+        y = objPos[1] - fontSize[1]
         x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) /2
     elif option == Text_Placement.BOTTOM:
-        y = objPos[1] + objSize[1] + fontSize[1] / 2
+        y = objPos[1] + objSize[1] + fontSize[1]
         x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) /2
     elif option == Text_Placement.LEFT:
-        y = objPos[1] + objSize[1] / 2
+        y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
         x = objPos[0] - (fontSize[0] * len(txtString)) /2
     elif option == Text_Placement.RIGHT:
-        y = objPos[1] + objSize[1] / 2
-        x = objPos[0] + objSize[0]
+        y = objPos[1] + objSize[1] / 2 - fontSize[1] /2
+        x = objPos[0] + objSize[0] 
     elif option == Text_Placement.CENTER:
         y = objPos[1] + objSize[1] / 2
         x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0])/2
@@ -80,13 +80,17 @@ class Draw_Style:
                  font=(10,20), 
                  method=Draw_Method.ICON, 
                  placement=Text_Placement.TOP,
-                 overlay = OrderedDict()
+                 overlay = OrderedDict(),
+                 padding = (100,20),
+                 minSize = (10,10)
              ):
         self.icon = icon
         self.fontSize = font
         self.method = method
         self.textPlacement = placement
         self.overlay = overlay
+        self.padding = padding
+        self.minSize = minSize
 
 
 '''
@@ -156,9 +160,9 @@ necessarily, as the text may extend beyond the object
 and this would capture the extent of the text
 '''
 def Layout(dObj, topLeftPos):
-    padding = (100,10)
-    minSize = (10,10)
     # configure things that will be returned
+    padding = dObj.style.padding
+    minSize = dObj.style.minSize
     maxObjWidth = minSize[0]
     maxObjHeight = minSize[1]
     dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
