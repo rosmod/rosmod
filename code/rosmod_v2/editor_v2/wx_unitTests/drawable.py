@@ -185,7 +185,13 @@ def Layout(dObj, topLeftPos):
     dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
     childPos = [topLeftPos[0] + offset[0], topLeftPos[1] + offset[1]]
     if dObj.kind == "workspace":
-        pass
+        maxWidth = 0
+        for obj in dObj.children:
+            w,h = Layout(obj,childPos)
+            childPos[1] += padding[1] + h
+            maxWidth = max(w,maxWidth)
+        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
+        maxObjWidth = max(maxObjWidth, maxWidth)    
     elif dObj.kind == "package":
         messages = []
         services = []

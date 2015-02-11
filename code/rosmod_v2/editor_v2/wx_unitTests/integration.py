@@ -120,6 +120,7 @@ class Example(wx.Frame):
         self.packageTools['delete package'] = [self.packageTB_delete_ID,self.packageTB_delete]
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, self.packageTB_create)
         self.Bind(wx.EVT_TOOL, self.OnPackageDelete, self.packageTB_delete)
+
     def BuildPackageAspectPagesFromModel(self):
         self.PackageAspect.DeleteAllPages()
         self.pkgPanels = OrderedDict()
@@ -127,6 +128,14 @@ class Example(wx.Frame):
             pkg.style.icon = None
             self.BuildPackagePage(self.PackageAspect,pkg)
         self.BuildPackagePage(self.PackageAspect,self.model.workspace)
+
+    def BuildPackagePage(self,parent,pkg):
+        newPage = wx.ScrolledWindow(self.PackageAspect)
+        newPage.SetScrollbars(wx.VERTICAL,10,1,10)
+        newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
+        newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
+        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
+        self.PackageAspect.AddPage( newPage, pkg.properties["name"])
 
     def OnPackagePaint(self,event):
         panel = event.GetEventObject()
@@ -140,16 +149,7 @@ class Example(wx.Frame):
         panel.SetVirtualSize((width,height))
         panel.DoPrepareDC(dc)
         pkg.Draw(dc)
-        panel.SetVirtualSize((width,height))
-
-    def BuildPackagePage(self,parent,pkg):
-        newPage = wx.ScrolledWindow(self.PackageAspect)
-        newPage.SetScrollbars(wx.VERTICAL,10,1,10)
-        newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
-        newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
-        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
-        self.PackageAspect.AddPage( newPage, pkg.properties["name"])
-        
+        panel.SetVirtualSize((width,height))        
 
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
