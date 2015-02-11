@@ -130,20 +130,103 @@ class Example(wx.Frame):
         self.BuildPackagePage(self.PackageAspect,self.model.workspace)
 
     def BuildPackagePage(self,parent,pkg):
-        newPage = wx.ScrolledWindow(self.PackageAspect)
-        newPage.SetScrollbars(wx.VERTICAL,10,1,10)
-        newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
-        newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
-        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
+        newPage = wx.Panel(parent)
+        navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "DARK SLATE BLUE")
+        canvas = navCanvas.Canvas
+        msgWindow = wx.TextCtrl(newPage,wx.ID_ANY,"Look here for event output",
+                                style= (wx.TE_MULTILINE | 
+                                        wx.TE_READONLY |
+                                        wx.SUNKEN_BORDER)
+                            )
+        panelSizer = wx.BoxSizer(wx.VERTICAL)
+        panelSizer.Add(navCanvas, 5, wx.EXPAND | wx.ALIGN_TOP )
+        panelSizer.Add(msgWindow, 1, wx.EXPAND | wx.ALL | wx.ALIGN_BOTTOM ) 
+        newPage.SetSizer(panelSizer)
+        
+        canvas.InitAll()
+        canvas.SetProjectionFun("FlatEarth")
+        self.BindCanvasMouseEvents(canvas)
+
+        drawable.Configure(pkg,self.styleDict)
+        width,height = drawable.Layout(pkg,(0,0))
+        pkg.Draw(canvas)
+        canvas.Draw()
+        
+        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage,canvas,msgWindow,panelSizer]
         self.PackageAspect.AddPage( newPage, pkg.properties["name"])
 
+    def BindCanvasMouseEvents(self,canvas):
+        canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
+        canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnPackageMouseWheel)
+        canvas.Bind(FloatCanvas.EVT_LEFT_DOWN, self.OnPackageLeftDown) 
+        canvas.Bind(FloatCanvas.EVT_LEFT_UP, self.OnPackageLeftUp)
+        canvas.Bind(FloatCanvas.EVT_LEFT_DCLICK, self.OnPackageLeftDouble) 
+
+        canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.OnPackageMiddleDown) 
+        canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.OnPackageMiddleUp) 
+        canvas.Bind(FloatCanvas.EVT_MIDDLE_DCLICK, self.OnPackageMiddleDouble) 
+
+        canvas.Bind(FloatCanvas.EVT_RIGHT_DOWN, self.OnPackageRightDown) 
+        canvas.Bind(FloatCanvas.EVT_RIGHT_UP, self.OnPackageRightUp) 
+        canvas.Bind(FloatCanvas.EVT_RIGHT_DCLICK, self.OnPackageRightDouble)
+
+    def UnBindCanvasMouseEvents(self,canvas):
+        canvas.Unbind(FloatCanvas.EVT_MOTION)
+        canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
+        canvas.Unbind(FloatCanvas.EVT_LEFT_DOWN)
+        canvas.Unbind(FloatCanvas.EVT_LEFT_UP)
+        canvas.Unbind(FloatCanvas.EVT_LEFT_DCLICK)
+
+        canvas.Unbind(FloatCanvas.EVT_MIDDLE_DOWN)
+        canvas.Unbind(FloatCanvas.EVT_MIDDLE_UP)
+        canvas.Unbind(FloatCanvas.EVT_MIDDLE_DCLICK)
+
+        canvas.Unbind(FloatCanvas.EVT_RIGHT_DOWN)
+        canvas.Unbind(FloatCanvas.EVT_RIGHT_UP)
+        canvas.Unbind(FloatCanvas.EVT_RIGHT_DCLICK)
+
+    def GetPackagePanelInfo(self):
+        selectedPage = self.PackageAspect.GetSelection()
+        packageName = self.PackageAspect.GetPageText(selectedPage)
+        return self.pkgPanels[packageName]
+    def PackageLog(self, text, msgWindow):
+        msgWindow.AppendText(text)
+        if not text[-1] == "\n":
+            msgWindow.AppendText("\n")
+    def PrintCoords(self,event,msgWindow):
+        self.PackageLog("coords are: %s"%(event.Coords,),msgWindow)
+        self.PackageLog("pixel coords are: %s\n"%(event.GetPosition(),),msgWindow)
+    def OnPackageMouseMove(self,event):
+        pass
+    def OnPackageMouseWheel(self,event):
+        pass
+    def OnPackageLeftDown(self,event):
+        info = self.GetPackagePanelInfo()
+        msgWindow = info[3]
+        self.PackageLog("LeftDown",msgWindow)
+        self.PrintCoords(event,msgWindow)
+    def OnPackageLeftUp(self,event):
+        pass
+    def OnPackageLeftDouble(self,event):
+        pass
+    def OnPackageMiddleDown(self,event):
+        pass
+    def OnPackageMiddleUp(self,event):
+        pass
+    def OnPackageMiddleDouble(self,event):
+        pass
+    def OnPackageRightDown(self,event):
+        pass
+    def OnPackageRightUp(self,event):
+        pass
+    def OnPackageRightDouble(self,event):
+        pass
     def OnPackagePaint(self,event):
         panel = event.GetEventObject()
         dc = wx.PaintDC(panel)
         dc.Clear()
-        selectedPage = self.PackageAspect.GetSelection()
-        packageName = self.PackageAspect.GetPageText(selectedPage)
-        pkg = self.pkgPanels[packageName][0]
+        info = self.GetpackagePanelInfo()
+        pkg = info[0]
         drawable.Configure(pkg,self.styleDict)
         width,height = drawable.Layout(pkg,(0,0))
         panel.SetVirtualSize((width,height))
@@ -471,22 +554,14 @@ class Example(wx.Frame):
         minSize = (30,30)
         padding = (10,10)
         pkgOffset = (100,50)
-        msgIcon = wx.Bitmap('msgIcon_small.png')
-        msgIcon = drawable.scale_bitmap(msgIcon, minSize[0], minSize[1])
-        srvIcon = wx.Bitmap('srvIcon_small.png')
-        srvIcon= drawable.scale_bitmap(srvIcon, minSize[0], minSize[1])
-        tmrIcon = wx.Bitmap('tmrIcon_small.png')
-        tmrIcon= drawable.scale_bitmap(tmrIcon, minSize[0], minSize[1])
-        pubIcon = wx.Bitmap('pubIcon_small.png')
-        pubIcon= drawable.scale_bitmap(pubIcon, minSize[0], minSize[1])
-        subIcon = wx.Bitmap('subIcon_small.png')
-        subIcon= drawable.scale_bitmap(subIcon, minSize[0], minSize[1])
-        clientIcon = wx.Bitmap('clientIcon_small.png')
-        clientIcon = drawable.scale_bitmap(clientIcon, minSize[0], minSize[1])
-        serverIcon = wx.Bitmap('serverIcon_small.png')
-        serverIcon = drawable.scale_bitmap(serverIcon, minSize[0], minSize[1])
-        compInstIcon = wx.Bitmap('compInstIcon_small.png')
-        compInstIcon = drawable.scale_bitmap(compInstIcon, minSize[0], minSize[1])
+        msgIcon = wx.Bitmap('msgIcon.png')
+        srvIcon = wx.Bitmap('srvIcon.png')
+        tmrIcon = wx.Bitmap('tmrIcon.png')
+        pubIcon = wx.Bitmap('pubIcon.png')
+        subIcon = wx.Bitmap('subIcon.png')
+        clientIcon = wx.Bitmap('clientIcon.png')
+        serverIcon = wx.Bitmap('serverIcon.png')
+        compInstIcon = wx.Bitmap('compInstIcon.png')
 
         e=wx.FontEnumerator()
         e.EnumerateFacenames(fixedWidthOnly = True)
