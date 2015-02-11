@@ -435,16 +435,19 @@ class Example(wx.Frame):
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
         fontSize = (8,20)
+        minSize = (10,10)
+        padding = (10,10)
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
         PkgStyle = drawable.Draw_Style(icon=None, 
-                              font=fontSize, 
-                              method=drawable.Draw_Method.ICON, 
-                              placement=drawable.Text_Placement.TOP,
-                              overlay = OrderedDict() )
+                                       font=fontSize, 
+                                       method=drawable.Draw_Method.ICON, 
+                                       placement=drawable.Text_Placement.TOP,
+                                       overlay = OrderedDict(),
+                                       padding = (100,50))
         MsgStyle = drawable.Draw_Style(icon=wx.Bitmap('texit.png'), 
                               font=fontSize, 
                               method=drawable.Draw_Method.ICON, 
