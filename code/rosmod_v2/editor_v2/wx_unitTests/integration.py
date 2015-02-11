@@ -113,12 +113,7 @@ class Example(wx.Frame):
             self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
             self.PackageAspect.AddPage( newPage, pkg.properties["name"])
             newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
-            newPage.SetSizeWH(1000,1000)
-            newPage.SetVirtualSizeWH(1000,1000)
-            newPage.SetAutoLayout(1)
-            newPage.SetupScrolling()
         newPage = scrolled.ScrolledPanel(self.PackageAspect)
-        newPage.SetupScrolling()
         self.pkgPanels["All Packages"] = [self.model.workspace,newPage]
         self.PackageAspect.AddPage( newPage, "All Packages")
 

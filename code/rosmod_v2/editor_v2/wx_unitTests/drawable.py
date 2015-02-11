@@ -201,7 +201,7 @@ def Layout(dObj, topLeftPos):
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,childPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
-        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + padding[1]]
+        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
         maxWidth = 0
         maxHeight = 0
         # draw label here for components
@@ -211,7 +211,7 @@ def Layout(dObj, topLeftPos):
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,childPos[1])
         maxObjWidth = max(maxObjWidth, maxWidth)
-        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + padding[1]]
+        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
         maxWidth = 0
         maxHeight = 0
         # draw label here for nodes
