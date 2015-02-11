@@ -450,7 +450,7 @@ class Example(wx.Frame):
 
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
-        fontSize = (7,15)
+        font = OrderedDict()
         minSize = (30,30)
         padding = (10,10)
         pkgOffset = (100,50)
@@ -471,79 +471,94 @@ class Example(wx.Frame):
         compInstIcon = wx.Bitmap('compInstIcon_small.png')
         compInstIcon = drawable.scale_bitmap(compInstIcon, minSize[0], minSize[1])
 
-        #wx.SystemSettings.AddColour("compColor",wx.Colour(10,148,62))
-        #wx.SystemSettings.AddColour("nodeColor",wx.Colour(10,148,133))
+        e=wx.FontEnumerator()
+        e.EnumerateFacenames(fixedWidthOnly = True)
+        elist=e.GetFacenames()
+        elist.sort()
+        print elist[2]
+        font['facename'] = elist[6]
+        font['pointSize'] = 10
+
+        testFont = wx.Font(
+            pointSize=font['pointSize'],
+            family=wx.FONTFAMILY_TELETYPE,
+            style=wx.NORMAL,
+            weight=wx.NORMAL,
+            underline=False,
+            face=font['facename']
+        )
+        font['size'] = testFont.GetPixelSize()
 
         minSize = (50,50)
         WrkStyle = drawable.Draw_Style(icon=None, 
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict() )
         PkgStyle = drawable.Draw_Style(icon=None, 
-                                       font=fontSize, 
+                                       font=font, 
                                        method=drawable.Draw_Method.ICON, 
                                        placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict(),
                                        padding = (50,10),
                                        offset = pkgOffset )
         MsgStyle = drawable.Draw_Style(icon=msgIcon, 
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
         SrvStyle = drawable.Draw_Style(icon=srvIcon,
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
                               overlay = OrderedDict() )
         CompStyle = drawable.Draw_Style(icon=None,
-                               font=fontSize, 
+                               font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict([('fillColor','STEEL BLUE')]) )
         TmrStyle = drawable.Draw_Style(icon=tmrIcon,
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         PubStyle = drawable.Draw_Style(icon=pubIcon,
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         SubStyle = drawable.Draw_Style(icon=subIcon,
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         CliStyle = drawable.Draw_Style(icon=clientIcon,
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         SerStyle = drawable.Draw_Style(icon=serverIcon,
-                              font=fontSize, 
+                              font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         NodeStyle = drawable.Draw_Style(icon=None,
-                               font=fontSize, 
+                               font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict([('fillColor','TURQUOISE')]) )
         CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
-                                   font=fontSize, 
+                                   font=font, 
                                    method=drawable.Draw_Method.ICON, 
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict() )
         HardwareStyle = drawable.Draw_Style(icon=None, 
-                                   font=fontSize, 
+                                   font=font, 
                                    method=drawable.Draw_Method.ICON, 
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict() )
         DeploymentStyle = drawable.Draw_Style(icon=None, 
-                                     font=fontSize, 
+                                     font=font, 
                                      method=drawable.Draw_Method.ICON, 
                                      placement=drawable.Text_Placement.TOP,
                                      overlay = OrderedDict() )

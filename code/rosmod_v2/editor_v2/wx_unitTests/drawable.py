@@ -33,7 +33,8 @@ def getConnectionPoint(objPos,objSize,objType):
 class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
 
-def getWidthWithText(objSize,txtPlacement,objName,fontSize):
+def getWidthWithText(objSize,txtPlacement,objName,font):
+    fontSize = font['size']
     width,height = objSize
     if txtPlacement == Text_Placement.TOP or txtPlacement == Text_Placement.BOTTOM:
         height += fontSize[1]
@@ -46,15 +47,16 @@ def getWidthWithText(objSize,txtPlacement,objName,fontSize):
         pass
     return width,height
 
-def getTextPos(option,txtString,objPos,objSize,fontSize):
+def getTextPos(option,txtString,objPos,objSize,font):
     x = -1
     y = -1
+    fontSize = font['size']
     if option == Text_Placement.TOP:
         y = objPos[1] - fontSize[1]
-        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0])
+        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) / 2
     elif option == Text_Placement.BOTTOM:
         y = objPos[1] + objSize[1] + fontSize[1]
-        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) /2
+        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) / 2
     elif option == Text_Placement.LEFT:
         y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
         x = objPos[0] - (fontSize[0] * len(txtString)) /2
@@ -77,7 +79,7 @@ class Draw_Method:
 class Draw_Style:
     def __init__(self, 
                  icon=None, 
-                 font=(10,20), 
+                 font=OrderedDict([('size',(10,20))]), 
                  method=Draw_Method.ICON, 
                  placement=Text_Placement.TOP,
                  overlay = OrderedDict(),
@@ -86,7 +88,7 @@ class Draw_Style:
                  minSize = (30,30)
              ):
         self.icon = icon
-        self.fontSize = font
+        self.font = font
         self.method = method
         self.textPlacement = placement
         self.overlay = overlay
@@ -145,6 +147,16 @@ class Drawable_Object:
         else:
             pass
         if self.textCenter != None:
+            if 'facename' in self.style.font and 'pointSize' in self.style.font:
+                dc.SetFont(
+                    wx.Font(
+                        pointSize=self.style.font['pointSize'],
+                        family=wx.FONTFAMILY_TELETYPE,
+                        style=wx.NORMAL,
+                        weight=wx.NORMAL,
+                        underline=False,
+                        face=self.style.font['facename']
+                    ))
             dc.DrawText(self.properties["name"],self.textCenter.Get()[0],self.textCenter.Get()[1])
         for child in self.children:
             child.Draw(dc)
@@ -244,13 +256,13 @@ def Layout(dObj, topLeftPos):
         txtString = dObj.properties["name"],
         objPos = dObj.topLeft.Get(),
         objSize = (dObj.width,dObj.height),
-        fontSize = dObj.style.fontSize
+        font = dObj.style.font
     )
     maxObjWidth, maxObjHeight = getWidthWithText(
         objSize = (dObj.width,dObj.height),
         txtPlacement = dObj.style.textPlacement,
         objName = dObj.properties["name"],
-        fontSize = dObj.style.fontSize
+        font = dObj.style.font
     )
     return maxObjWidth,maxObjHeight
 
