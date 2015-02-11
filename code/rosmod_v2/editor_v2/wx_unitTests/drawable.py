@@ -51,7 +51,7 @@ def getTextPos(option,txtString,objPos,objSize,fontSize):
     y = -1
     if option == Text_Placement.TOP:
         y = objPos[1] - fontSize[1]
-        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) /2
+        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0])
     elif option == Text_Placement.BOTTOM:
         y = objPos[1] + objSize[1] + fontSize[1]
         x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) /2
@@ -59,8 +59,8 @@ def getTextPos(option,txtString,objPos,objSize,fontSize):
         y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
         x = objPos[0] - (fontSize[0] * len(txtString)) /2
     elif option == Text_Placement.RIGHT:
-        y = objPos[1] + objSize[1] / 2 - fontSize[1] /2
-        x = objPos[0] + objSize[0] 
+        y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
+        x = objPos[0] + objSize[0] + fontSize[0]
     elif option == Text_Placement.CENTER:
         y = objPos[1] + objSize[1] / 2
         x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0])/2
@@ -189,14 +189,11 @@ def Layout(dObj, topLeftPos):
             elif obj.kind == "node":
                 nodes.append(obj)
         maxWidth = 0
-        maxHeight = 0
         # now Layout the Objects
-        # draw label here for messages
         for msg in messages:
             w,h = Layout(msg,childPos)
             childPos[1] += padding[1] + h
             maxWidth = max(w,maxWidth)
-        # draw label here for services
         for srv in services:
             w,h = Layout(srv,childPos)
             childPos[1] += padding[1] + h
@@ -205,8 +202,6 @@ def Layout(dObj, topLeftPos):
         maxObjWidth = max(maxObjWidth, maxWidth)
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
         maxWidth = 0
-        maxHeight = 0
-        # draw label here for components
         for comp in components:
             w,h = Layout(comp,childPos)
             childPos[1] += padding[1] + h
@@ -215,8 +210,6 @@ def Layout(dObj, topLeftPos):
         maxObjWidth = max(maxObjWidth, maxWidth)
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
         maxWidth = 0
-        maxHeight = 0
-        # draw label here for nodes
         for node in nodes:
             w,h = Layout(node,childPos)
             childPos[1] += padding[1] + h
@@ -225,7 +218,6 @@ def Layout(dObj, topLeftPos):
         maxObjWidth = max(maxObjWidth, maxWidth)
     elif dObj.kind == "component" or dObj.kind == "node":
         maxWidth = 0
-        maxHeight = 0
         for obj in dObj.children:
             w,h = Layout(obj,childPos)
             childPos[1] += padding[1] + h

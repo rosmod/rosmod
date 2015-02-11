@@ -109,11 +109,15 @@ class Example(wx.Frame):
         self.pkgPanels = OrderedDict()
         for pkg in self.model.workspace.children:
             pkg.style.icon = None
-            newPage = scrolled.ScrolledPanel(self.PackageAspect)
+            newPage = wx.ScrolledWindow(self.PackageAspect)
+            newPage.SetScrollbars(wx.VERTICAL,10,1,10)
+            newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
             self.pkgPanels[pkg.properties["name"]] = [pkg,newPage]
             self.PackageAspect.AddPage( newPage, pkg.properties["name"])
             newPage.Bind(wx.EVT_PAINT, self.OnPackagePaint)
-        newPage = scrolled.ScrolledPanel(self.PackageAspect)
+        newPage = wx.ScrolledWindow(self.PackageAspect)
+        newPage.SetScrollbar(wx.VERTICAL,10,1,10)
+        newPage.SetScrollbar(wx.HORIZONTAL,10,1,10)
         self.pkgPanels["All Packages"] = [self.model.workspace,newPage]
         self.PackageAspect.AddPage( newPage, "All Packages")
 
@@ -126,13 +130,10 @@ class Example(wx.Frame):
         pkg = self.pkgPanels[packageName][0]
         drawable.Configure(pkg,self.styleDict)
         width,height = drawable.Layout(pkg,(0,0))
-        #print width,height
-        #panel.PrepareDC(dc)
+        panel.SetVirtualSize((width,height))
+        panel.DoPrepareDC(dc)
         pkg.Draw(dc)
-        maxX, maxY = dc.GetSizeTuple()
-        #print maxX,maxY
-        #panel.SetScrollbar(wx.VERTICAL,0,
-        
+        panel.SetVirtualSize((width,height))
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
     '''
@@ -449,7 +450,7 @@ class Example(wx.Frame):
 
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
-        fontSize = (8,20)
+        fontSize = (7,15)
         minSize = (30,30)
         padding = (10,10)
         pkgOffset = (100,50)
@@ -484,7 +485,7 @@ class Example(wx.Frame):
                                        method=drawable.Draw_Method.ICON, 
                                        placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict(),
-                                       padding = (10,10),
+                                       padding = (50,10),
                                        offset = pkgOffset )
         MsgStyle = drawable.Draw_Style(icon=msgIcon, 
                               font=fontSize, 
