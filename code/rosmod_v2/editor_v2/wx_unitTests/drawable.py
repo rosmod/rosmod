@@ -168,7 +168,7 @@ class Drawable_Object:
                         face=self.style.font['facename']
                     ))
             '''
-            canvas.AddText(self.properties["name"],(x,y),Position="tl")
+            canvas.AddScaledText(self.properties["name"],(x,y),Size=self.style.font['pointSize'],Position="bl")
         for child in self.children:
             child.Draw(canvas)
 

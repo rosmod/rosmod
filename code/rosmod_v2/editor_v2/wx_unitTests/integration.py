@@ -150,7 +150,7 @@ class Example(wx.Frame):
         drawable.Configure(pkg,self.styleDict)
         width,height = drawable.Layout(pkg,(0,0))
         pkg.Draw(canvas)
-        canvas.Draw()
+        canvas.ZoomToBB()
         
         self.pkgPanels[pkg.properties["name"]] = [pkg,newPage,canvas,msgWindow,panelSizer]
         self.PackageAspect.AddPage( newPage, pkg.properties["name"])
@@ -199,7 +199,17 @@ class Example(wx.Frame):
     def OnPackageMouseMove(self,event):
         pass
     def OnPackageMouseWheel(self,event):
-        pass
+        info = self.GetPackagePanelInfo()
+        canvas = info[2]
+        msgWindow = info[3]
+        self.PackageLog("Mouse Wheel",msgWindow)
+        self.PrintCoords(event,msgWindow)
+        Rot = event.GetWheelRotation()
+        Rot = Rot / abs(Rot) * 0.1
+        if event.ControlDown(): # move left-right
+            canvas.MoveImage( (Rot, 0), "Panel" )
+        else: # move up-down
+            canvas.MoveImage( (0, -Rot), "Panel" )
     def OnPackageLeftDown(self,event):
         info = self.GetPackagePanelInfo()
         msgWindow = info[3]
@@ -221,18 +231,6 @@ class Example(wx.Frame):
         pass
     def OnPackageRightDouble(self,event):
         pass
-    def OnPackagePaint(self,event):
-        panel = event.GetEventObject()
-        dc = wx.PaintDC(panel)
-        dc.Clear()
-        info = self.GetpackagePanelInfo()
-        pkg = info[0]
-        drawable.Configure(pkg,self.styleDict)
-        width,height = drawable.Layout(pkg,(0,0))
-        panel.SetVirtualSize((width,height))
-        panel.DoPrepareDC(dc)
-        pkg.Draw(dc)
-        panel.SetVirtualSize((width,height))        
 
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
@@ -553,7 +551,7 @@ class Example(wx.Frame):
         font = OrderedDict()
         minSize = (30,30)
         padding = (10,10)
-        pkgOffset = (100,50)
+        pkgOffset = (50,50)
         msgIcon = wx.Bitmap('msgIcon.png')
         srvIcon = wx.Bitmap('srvIcon.png')
         tmrIcon = wx.Bitmap('tmrIcon.png')
