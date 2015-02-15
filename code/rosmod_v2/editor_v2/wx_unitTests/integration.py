@@ -154,7 +154,7 @@ class Example(wx.Frame):
         width,height = drawable.Layout(pkg,(0,0),canvas)
         pkg.Draw(canvas)
         canvas.Draw()
-        canvas.ZoomToBB()
+        canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)

@@ -146,7 +146,7 @@ class Drawable_Object:
         self.topLeft = wx.Point()
         self.height = 0
         self.width = 0
-        self.textCenter = wx.Point()
+        self.textPosition = wx.Point()
         self.connectionPoint = wx.Point()
         
     def add(self, child):
@@ -180,10 +180,10 @@ class Drawable_Object:
             rect.HitFill = True
         else:
             pass
-        if self.textCenter != None:
-            drawText(self.properties["name"],self.textCenter.Get(),self.style,canvas)
+        if self.textPosition != None:
+            drawText(self.properties["name"],self.textPosition.Get(),self.style,canvas)
         canvas.AddPoint(self.topLeft.Get())
-        canvas.AddPoint(self.textCenter.Get())
+        canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
             child.Draw(canvas)
 
@@ -260,7 +260,6 @@ def Layout(dObj, topLeftPos, canvas):
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth += maxWidth
-        print maxObjWidth, maxObjHeight
     elif dObj.kind == "component" or dObj.kind == "node":
         maxWidth = 0
         for obj in dObj.children:
@@ -284,7 +283,7 @@ def Layout(dObj, topLeftPos, canvas):
         objSize = (dObj.width,dObj.height),
         objType = dObj.kind
     )
-    dObj.textCenter = getTextPos(
+    dObj.textPosition = getTextPos(
         option = dObj.style.textPlacement,
         txtString = dObj.properties["name"],
         objPos = dObj.topLeft.Get(),
