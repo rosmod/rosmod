@@ -243,7 +243,7 @@ def Layout(dObj, topLeftPos, canvas):
             childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth = max(maxObjWidth, maxWidth)
+        maxObjWidth += maxWidth
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
         maxWidth = 0
         for comp in components:
@@ -251,7 +251,7 @@ def Layout(dObj, topLeftPos, canvas):
             childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth = max(maxObjWidth, maxWidth)
+        maxObjWidth += maxWidth
         childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
         maxWidth = 0
         for node in nodes:
@@ -259,7 +259,8 @@ def Layout(dObj, topLeftPos, canvas):
             childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth = max(maxObjWidth, maxWidth)
+        maxObjWidth += maxWidth
+        print maxObjWidth, maxObjHeight
     elif dObj.kind == "component" or dObj.kind == "node":
         maxWidth = 0
         for obj in dObj.children:

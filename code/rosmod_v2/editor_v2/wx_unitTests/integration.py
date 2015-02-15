@@ -131,7 +131,7 @@ class Example(wx.Frame):
 
     def BuildPackagePage(self,parent,pkg):
         newPage = wx.Panel(parent)
-        navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "DARK SLATE BLUE")
+        navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "BEIGE")
         canvas = navCanvas.Canvas
         msgWindow = wx.TextCtrl(newPage,wx.ID_ANY,"Look here for event output",
                                 style= (wx.TE_MULTILINE | 
@@ -142,21 +142,19 @@ class Example(wx.Frame):
         panelSizer.Add(navCanvas, 5, wx.EXPAND | wx.ALIGN_TOP )
         panelSizer.Add(msgWindow, 1, wx.EXPAND | wx.ALL | wx.ALIGN_BOTTOM ) 
         newPage.SetSizer(panelSizer)
+
+        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage,canvas,msgWindow,panelSizer]
+        self.PackageAspect.AddPage( newPage, pkg.properties["name"])
         
         canvas.InitAll()
         canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
 
         drawable.Configure(pkg,self.styleDict)
-
-        pkg.style.textPlacement = drawable.Text_Placement.NONE
-
         width,height = drawable.Layout(pkg,(0,0),canvas)
         pkg.Draw(canvas)
+        canvas.Draw()
         canvas.ZoomToBB()
-        
-        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage,canvas,msgWindow,panelSizer]
-        self.PackageAspect.AddPage( newPage, pkg.properties["name"])
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
@@ -553,9 +551,9 @@ class Example(wx.Frame):
         self.styleDict = OrderedDict()
         font = OrderedDict()
         font['pointSize'] = 10
-        minSize = (1,1)
-        padding = (1,1)
-        pkgOffset = (5,5)
+        minSize = (10,10)
+        padding = (10,10)
+        pkgOffset = (50,50)
         msgIcon = wx.Bitmap('msgIcon.png')
         srvIcon = wx.Bitmap('srvIcon.png')
         tmrIcon = wx.Bitmap('tmrIcon.png')
@@ -575,7 +573,7 @@ class Example(wx.Frame):
                                        method=drawable.Draw_Method.ICON, 
                                        placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict(),
-                                       padding = (1,1),
+                                       padding = (50,25),
                                        offset = pkgOffset )
         MsgStyle = drawable.Draw_Style(icon=msgIcon, 
                               font=font, 
