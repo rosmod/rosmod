@@ -144,11 +144,14 @@ class Example(wx.Frame):
         newPage.SetSizer(panelSizer)
         
         canvas.InitAll()
-        canvas.SetProjectionFun("FlatEarth")
+        canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
 
         drawable.Configure(pkg,self.styleDict)
-        width,height = drawable.Layout(pkg,(0,0))
+
+        pkg.style.textPlacement = drawable.Text_Placement.NONE
+
+        width,height = drawable.Layout(pkg,(0,0),canvas)
         pkg.Draw(canvas)
         canvas.ZoomToBB()
         
@@ -549,9 +552,10 @@ class Example(wx.Frame):
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
         font = OrderedDict()
-        minSize = (30,30)
-        padding = (10,10)
-        pkgOffset = (50,50)
+        font['pointSize'] = 10
+        minSize = (1,1)
+        padding = (1,1)
+        pkgOffset = (5,5)
         msgIcon = wx.Bitmap('msgIcon.png')
         srvIcon = wx.Bitmap('srvIcon.png')
         tmrIcon = wx.Bitmap('tmrIcon.png')
@@ -561,25 +565,6 @@ class Example(wx.Frame):
         serverIcon = wx.Bitmap('serverIcon.png')
         compInstIcon = wx.Bitmap('compInstIcon.png')
 
-        e=wx.FontEnumerator()
-        e.EnumerateFacenames(fixedWidthOnly = True)
-        elist=e.GetFacenames()
-        elist.sort()
-        print elist[2]
-        font['facename'] = elist[2]
-        font['pointSize'] = 10
-
-        testFont = wx.Font(
-            pointSize=font['pointSize'],
-            family=wx.FONTFAMILY_TELETYPE,
-            style=wx.NORMAL,
-            weight=wx.NORMAL,
-            underline=False,
-            face=font['facename']
-        )
-        font['size'] = testFont.GetPixelSize()
-
-        minSize = (50,50)
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
@@ -590,7 +575,7 @@ class Example(wx.Frame):
                                        method=drawable.Draw_Method.ICON, 
                                        placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict(),
-                                       padding = (50,10),
+                                       padding = (1,1),
                                        offset = pkgOffset )
         MsgStyle = drawable.Draw_Style(icon=msgIcon, 
                               font=font, 

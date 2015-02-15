@@ -6,12 +6,6 @@ from collections import OrderedDict
 # need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
 
-def scale_bitmap(bitmap, width, height):
-    image = wx.ImageFromBitmap(bitmap)
-    image = image.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
-    result = wx.BitmapFromImage(image)
-    return result
-
 def getConnectionPoint(objPos,objSize,objType):
     x = -1
     y = -1
@@ -36,16 +30,49 @@ def getConnectionPoint(objPos,objSize,objType):
 class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
 
-def getWidthWithText(objSize,txtPlacement,objName,font):
-    fontSize = font['size']
+
+def drawText(text,pos,style,canvas):
+    if style.textPlacement != Text_Placement.NONE:
+        posStr = "cc"
+        if style.textPlacement == Text_Placement.TOP:
+            posStr = "bc"
+        elif style.textPlacement == Text_Placement.BOTTOM:
+            posStr = "tc"
+        elif style.textPlacement == Text_Placement.CENTER:
+            posStr = "cc"
+        elif style.textPlacement == Text_Placement.LEFT:
+            posStr = "cr"
+        elif style.textPlacement == Text_Placement.RIGHT:
+            posStr = "cl"
+        return canvas.AddScaledText(
+            text,
+            pos,
+            Size=style.font['pointSize'],
+            Position=posStr,
+            Family=wx.MODERN
+        )
+    else:
+        return None
+
+def getWidthWithText(objSize,style,objName,canvas):
+    txtPlacement = style.textPlacement
+    txt = drawText(objName,(0,0),style,canvas)
+    txtWidth = 0
+    txtHeight = 0
+    if txt != None:
+        txt.CalcBoundingBox()
+        BB = txt.BoundingBox
+        txtHeight = abs(BB[0][1] - BB[1][1]) * 1.2
+        txtWidth = abs(BB[0][0] - BB[1][0]) * 1.2
+        canvas.RemoveObject(txt)
     width,height = objSize
     if txtPlacement == Text_Placement.TOP or txtPlacement == Text_Placement.BOTTOM:
-        height += fontSize[1]
-        width = max(width,len(objName)*fontSize[0])
+        width = max(width,txtWidth)
+        height += txtHeight
     elif txtPlacement == Text_Placement.LEFT or txtPlacement == Text_Placement.RIGHT:
-        width += (len(objName)+2)*fontSize[0]
+        width += txtWidth
     elif txtPlacement == Text_Placement.CENTER:
-        width = max(width,len(objName)*fontSize[0])
+        width = max(width,txtWidth)
     elif txtPlacement == Text_Placement.NONE:
         pass
     return width,height
@@ -53,27 +80,24 @@ def getWidthWithText(objSize,txtPlacement,objName,font):
 def getTextPos(option,txtString,objPos,objSize,font):
     x = -1
     y = -1
-    fontSize = font['size']
     if option == Text_Placement.TOP:
-        y = objPos[1] - fontSize[1]
-        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) / 2
+        y = objPos[1]
+        x = objPos[0] + objSize[0] / 2 
     elif option == Text_Placement.BOTTOM:
-        y = objPos[1] + objSize[1] + fontSize[1]
-        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0]) / 2
+        y = objPos[1] - objSize[1]
+        x = objPos[0] + objSize[0] / 2 
     elif option == Text_Placement.LEFT:
-        y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
-        x = objPos[0] - (fontSize[0] * len(txtString)) /2
+        y = objPos[1] - objSize[1] / 2 
+        x = objPos[0] 
     elif option == Text_Placement.RIGHT:
-        y = objPos[1] + objSize[1] / 2 - fontSize[1] / 2
+        y = objPos[1] - objSize[1] / 2 
         x = objPos[0] + objSize[0]
     elif option == Text_Placement.CENTER:
-        y = objPos[1] + objSize[1] / 2
-        x = objPos[0] + objSize[0] / 2 - (len(txtString) * fontSize[0])/2
+        y = objPos[1] - objSize[1] / 2
+        x = objPos[0] + objSize[0] / 2 
     elif option == Text_Placement.NONE:
         pass
-    txtPos = None
-    if x > 0 and y > 0:
-        txtPos = wx.Point(x,y)
+    txtPos = wx.Point(x,y)
     return txtPos
 
 class Draw_Method:
@@ -148,27 +172,18 @@ class Drawable_Object:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
             rect = canvas.AddRectangle(
-                (x,y),
+                (x,y-self.height),
                 (self.width,self.height),
                 FillColor = self.style.overlay["fillColor"],
-                InForeground = False)
+                InForeground = False
+            )
             rect.HitFill = True
         else:
             pass
         if self.textCenter != None:
-            '''
-            if 'facename' in self.style.font and 'pointSize' in self.style.font:
-                dc.SetFont(
-                    wx.Font(
-                        pointSize=self.style.font['pointSize'],
-                        family=wx.FONTFAMILY_TELETYPE,
-                        style=wx.NORMAL,
-                        weight=wx.NORMAL,
-                        underline=False,
-                        face=self.style.font['facename']
-                    ))
-            '''
-            canvas.AddScaledText(self.properties["name"],(x,y),Size=self.style.font['pointSize'],Position="bl")
+            drawText(self.properties["name"],self.textCenter.Get(),self.style,canvas)
+        canvas.AddPoint(self.topLeft.Get())
+        canvas.AddPoint(self.textCenter.Get())
         for child in self.children:
             child.Draw(canvas)
 
@@ -186,7 +201,7 @@ laid-out object; NOTE: this is not the h,w of the object
 necessarily, as the text may extend beyond the object
 and this would capture the extent of the text
 '''
-def Layout(dObj, topLeftPos):
+def Layout(dObj, topLeftPos, canvas):
     # configure things that will be returned
     padding = dObj.style.padding
     minSize = dObj.style.minSize
@@ -194,14 +209,14 @@ def Layout(dObj, topLeftPos):
     maxObjWidth = minSize[0]
     maxObjHeight = minSize[1]
     dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
-    childPos = [topLeftPos[0] + offset[0], topLeftPos[1] + offset[1]]
+    childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
     if dObj.kind == "workspace":
         maxWidth = 0
         for obj in dObj.children:
-            w,h = Layout(obj,childPos)
-            childPos[1] += padding[1] + h
+            w,h = Layout(obj,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)    
     elif dObj.kind == "package":
         messages = []
@@ -220,38 +235,38 @@ def Layout(dObj, topLeftPos):
         maxWidth = 0
         # now Layout the Objects
         for msg in messages:
-            w,h = Layout(msg,childPos)
-            childPos[1] += padding[1] + h
+            w,h = Layout(msg,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
         for srv in services:
-            w,h = Layout(srv,childPos)
-            childPos[1] += padding[1] + h
+            w,h = Layout(srv,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
-        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
+        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
         maxWidth = 0
         for comp in components:
-            w,h = Layout(comp,childPos)
-            childPos[1] += padding[1] + h
+            w,h = Layout(comp,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
-        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] + offset[1]]
+        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
         maxWidth = 0
         for node in nodes:
-            w,h = Layout(node,childPos)
-            childPos[1] += padding[1] + h
+            w,h = Layout(node,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
     elif dObj.kind == "component" or dObj.kind == "node":
         maxWidth = 0
         for obj in dObj.children:
-            w,h = Layout(obj,childPos)
-            childPos[1] += padding[1] + h
+            w,h = Layout(obj,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,childPos[1] - topLeftPos[1])
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)    
     elif dObj.kind == "message" or dObj.kind == "service" or dObj.kind == "timer" or dObj.kind == "client" or dObj.kind == "server" or dObj.kind == "publisher" or dObj.kind == "subscriber" or dObj.kind == "component_instance":
         pass
@@ -277,9 +292,9 @@ def Layout(dObj, topLeftPos):
     )
     maxObjWidth, maxObjHeight = getWidthWithText(
         objSize = (dObj.width,dObj.height),
-        txtPlacement = dObj.style.textPlacement,
+        style = dObj.style,
         objName = dObj.properties["name"],
-        font = dObj.style.font
+        canvas = canvas
     )
     return maxObjWidth,maxObjHeight
 
