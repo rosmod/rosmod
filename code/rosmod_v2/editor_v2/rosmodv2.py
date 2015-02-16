@@ -9,6 +9,7 @@ tools through the use of toolbar buttons and subprocesses.
 '''
 
 import wx
+import wx.stc as stc
 import os,sys
 
 sys.path.append("../generator_v2")
@@ -145,11 +146,9 @@ class Example(wx.Frame):
         newPage = wx.Panel(parent)
         navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "BEIGE")
         canvas = navCanvas.Canvas
-        msgWindow = wx.TextCtrl(newPage,wx.ID_ANY,"Look here for event output",
-                                style= (wx.TE_MULTILINE | 
-                                        wx.TE_READONLY |
-                                        wx.SUNKEN_BORDER)
-                            )
+        msgWindow = stc.StyledTextCtrl(newPage,wx.ID_ANY,
+                                style= wx.SUNKEN_BORDER)
+        msgWindow.SetReadOnly(True)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer.Add(navCanvas, 5, wx.EXPAND | wx.ALIGN_TOP )
         panelSizer.Add(msgWindow, 1, wx.EXPAND | wx.ALL | wx.ALIGN_BOTTOM ) 
@@ -229,9 +228,12 @@ class Example(wx.Frame):
         packageName = self.PackageAspect.GetPageText(selectedPage)
         return self.pkgPanels[packageName]
     def PackageLog(self, text, msgWindow):
+        msgWindow.SetReadOnly(False)
         msgWindow.AppendText(text)
         if not text[-1] == "\n":
             msgWindow.AppendText("\n")
+        msgWindow.SetReadOnly(True)
+        msgWindow.ScrollToLine(msgWindow.GetLineCount())
     def PrintCoords(self,event,msgWindow):
         self.PackageLog("coords are: %s"%(event.Coords,),msgWindow)
         self.PackageLog("pixel coords are: %s\n"%(event.GetPosition(),),msgWindow)
