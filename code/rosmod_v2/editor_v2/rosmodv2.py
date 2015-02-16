@@ -18,7 +18,7 @@ import rosgen
 from collections import OrderedDict
 
 # proportional splitter should work for resizing window
-from proportionalSplitter import ProportionalSplitter
+#from proportionalSplitter import ProportionalSplitter
 
 # flat notebook allows us to have scroll buttons and a close button
 import wx.lib.agw.flatnotebook as fnb
