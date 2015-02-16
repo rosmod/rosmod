@@ -1,4 +1,12 @@
 #!/usr/bin/python
+'''
+This Program is designed to be the user interface
+for the ROSMOD modeling language.  It has the ability
+to create, load, display, edit, and export ROSMOD models.
+
+Additionally, it supports the interaction with analysis
+tools through the use of toolbar buttons and subprocesses.
+'''
 
 import wx
 import os,sys
