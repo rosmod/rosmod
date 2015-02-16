@@ -31,6 +31,8 @@ from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
 
 from contextMenu import ContextMenu
 
+from dialogs import *
+
 try:
     import numpy as N
     import numpy.random as RandomArray
@@ -181,12 +183,16 @@ class Example(wx.Frame):
         canvas = info[2]
         msgWindow = info[3]
         self.PackageLog("Editing {}".format(self.activeObject.properties),msgWindow)
+        ed = EditDialog(canvas)
+        ed.ShowModal()
+        ed.Destroy()
 
     def PkgDelete(self, e):
         info = self.GetPackagePanelInfo()
         canvas = info[2]
         msgWindow = info[3]
         self.PackageLog("Deleting {}".format(self.activeObject.properties),msgWindow)
+        ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name']))
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
