@@ -254,9 +254,15 @@ class Example(wx.Frame):
         pass
     def OnPackageRightUp(self,event):
         info = self.GetPackagePanelInfo()
-        msgWindow = info[3]
-        self.PackageLog("RightUp",msgWindow)
-        self.PrintCoords(event,msgWindow)
+        canvas = info[2]
+        self.activeObject = info[0]
+
+        cm = OrderedDict()
+        # set up proper context menu here: should be different per type of object
+        cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
+        cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
+        self.PopupMenu(ContextMenu(canvas,cm))
+
     def OnPackageRightDouble(self,event):
         pass
 
