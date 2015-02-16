@@ -135,6 +135,7 @@ class TestPanel(wx.Panel):
     def OnButton(self, event):
         btn = event.GetEventObject()
         label = btn.GetLabel()
+        self.log.SetCurrentPos(self.log.GetTextLength())
         self.colour = label
         self.log('\n\n%s button clicked'%label, label)
         event.Skip()
