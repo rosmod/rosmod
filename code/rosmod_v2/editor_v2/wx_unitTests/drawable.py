@@ -159,15 +159,18 @@ class Drawable_Object:
     Draw() is called after layout has been calculated
     Should receive the device context
     '''
-    def Draw(self, canvas):
+    def Draw(self, canvas, bindFunc):
         x,y = self.topLeft.Get()
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
-                canvas.AddScaledBitmap(
+                bmp = canvas.AddScaledBitmap(
                     self.style.icon,
                     XY = (x,y),
                     Height = self.height,
                     Position = "tl")
+                bmp.HitFill = True
+                bmp.Name = self
+                bmp.Bind(FloatCanvas.EVT_FC_RIGHT_UP, bindFunc)
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
@@ -178,6 +181,8 @@ class Drawable_Object:
                 InForeground = False
             )
             rect.HitFill = True
+            rect.Name = self
+            rect.Bind(FloatCanvas.EVT_FC_RIGHT_UP, bindFunc)
         else:
             pass
         if self.textPosition != None:
@@ -185,7 +190,7 @@ class Drawable_Object:
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
-            child.Draw(canvas)
+            child.Draw(canvas,bindFunc)
 
 '''
 The Layout function takes a top-level

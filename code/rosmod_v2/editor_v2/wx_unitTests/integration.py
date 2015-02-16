@@ -152,9 +152,15 @@ class Example(wx.Frame):
 
         drawable.Configure(pkg,self.styleDict)
         width,height = drawable.Layout(pkg,(0,0),canvas)
-        pkg.Draw(canvas)
+        pkg.Draw(canvas,self.OnPkgRightClick)
         canvas.Draw()
         canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
+
+    def OnPkgRightClick(self, Object):
+        info = self.GetPackagePanelInfo()
+        canvas = info[2]
+        msgWindow = info[3]
+        self.PackageLog("{}".format(Object.Name.properties),msgWindow)
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
