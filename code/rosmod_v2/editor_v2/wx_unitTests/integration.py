@@ -21,6 +21,8 @@ import wx.lib.scrolledpanel as scrolled
 # need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
 
+from contextMenu import ContextMenu
+
 try:
     import numpy as N
     import numpy.random as RandomArray
@@ -159,8 +161,24 @@ class Example(wx.Frame):
     def OnPkgRightClick(self, Object):
         info = self.GetPackagePanelInfo()
         canvas = info[2]
+        self.activeObject = Object.Name
+        cm = OrderedDict()
+        # set up proper context menu here: should be different per type of object
+        cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
+        cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
+        self.PopupMenu(ContextMenu(canvas,cm))
+
+    def PkgEdit(self, e):
+        info = self.GetPackagePanelInfo()
+        canvas = info[2]
         msgWindow = info[3]
-        self.PackageLog("{}".format(Object.Name.properties),msgWindow)
+        self.PackageLog("Editing {}".format(self.activeObject.properties),msgWindow)
+
+    def PkgDelete(self, e):
+        info = self.GetPackagePanelInfo()
+        canvas = info[2]
+        msgWindow = info[3]
+        self.PackageLog("Deleting {}".format(self.activeObject.properties),msgWindow)
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
@@ -235,7 +253,10 @@ class Example(wx.Frame):
     def OnPackageRightDown(self,event):
         pass
     def OnPackageRightUp(self,event):
-        pass
+        info = self.GetPackagePanelInfo()
+        msgWindow = info[3]
+        self.PackageLog("RightUp",msgWindow)
+        self.PrintCoords(event,msgWindow)
     def OnPackageRightDouble(self,event):
         pass
 

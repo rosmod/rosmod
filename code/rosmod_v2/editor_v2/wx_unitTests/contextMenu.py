@@ -20,10 +20,10 @@ class ContextMenu(wx.Menu):
             self.Bind(wx.EVT_MENU, func, mi)
         
 
-class Example(wx.Frame):
+class ContextMenuExample(wx.Frame):
     
     def __init__(self, *args, **kwargs):
-        super(Example, self).__init__(*args, **kwargs) 
+        super(ContextMenuExample, self).__init__(*args, **kwargs) 
             
         self.InitUI()
         
@@ -48,12 +48,12 @@ class Example(wx.Frame):
     def OnDelete(self, e):
         print "In OnDelete()!"
         
-def main():
+def context_menu_main():
     
     ex = wx.App()
-    Example(None)
+    ContextMenuExample(None)
     ex.MainLoop()    
 
 
 if __name__ == '__main__':
-    main()
+    context_menu_main()
