@@ -4,28 +4,20 @@
 
 import wx
 
+from collections import OrderedDict
 
-class MyPopupMenu(wx.Menu):
+
+class ContextMenu(wx.Menu):
     
-    def __init__(self, parent):
-        super(MyPopupMenu, self).__init__()
+    def __init__(self, parent, functionsDict):
+        super(ContextMenu, self).__init__()
         
         self.parent = parent
 
-        mmi = wx.MenuItem(self, wx.NewId(), 'Minimize')
-        self.AppendItem(mmi)
-        self.Bind(wx.EVT_MENU, self.OnMinimize, mmi)
-
-        cmi = wx.MenuItem(self, wx.NewId(), 'Close')
-        self.AppendItem(cmi)
-        self.Bind(wx.EVT_MENU, self.OnClose, cmi)
-
-
-    def OnMinimize(self, e):
-        self.parent.Iconize()
-
-    def OnClose(self, e):
-        self.parent.Close()
+        for name,func in functionsDict.iteritems():
+            mi = wx.MenuItem(self, wx.NewId(), name)
+            self.AppendItem(mi)
+            self.Bind(wx.EVT_MENU, func, mi)
         
 
 class Example(wx.Frame):
@@ -45,7 +37,16 @@ class Example(wx.Frame):
         self.Show(True)
         
     def OnRightDown(self, e):
-        self.PopupMenu(MyPopupMenu(self), e.GetPosition())
+        cm = OrderedDict()
+        cm['Edit'] = self.OnEdit
+        cm['Delete'] = self.OnDelete
+        self.PopupMenu(ContextMenu(self,cm), e.GetPosition())
+
+    def OnEdit(self, e):
+        print "In OnEdit()!"
+
+    def OnDelete(self, e):
+        print "In OnDelete()!"
         
 def main():
     
