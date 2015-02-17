@@ -178,6 +178,18 @@ class Drawable_Object:
                 for node in nodes:
                     retKids.extend([child for child in node.children if child.kind == kind])
             return retKids
+        elif self.kind == 'workspace':
+            if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
+                for pkg in self.children:
+                    comps = [child for child in pkg.children if child.kind == 'component']
+                    for comp in comps:
+                        retKids.extend([child for child in comp.children if child.kind == kind])                
+            elif kind == 'component_instance':
+                for pkg in self.children:
+                    nodes = [child for child in pkg.children if child.kind == 'node']
+                    for node in nodes:
+                        retKids.extend([child for child in node.children if child.kind == kind])
+            return retKids
         else:
             return [child for child in self.children if child.kind == kind]
 
@@ -343,7 +355,7 @@ def Layout(dObj, topLeftPos, canvas):
 
 def Configure(dObj,styleDict):
     dObj.style.Copy(styleDict[dObj.kind])
-    if dObj.kind == "package" or dObj.kind == "component" or dObj.kind == "node":
+    if dObj.kind == "workspace" or dObj.kind == "package" or dObj.kind == "component" or dObj.kind == "node":
         for child in dObj.children:
             Configure(child,styleDict)
     else:

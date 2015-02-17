@@ -179,6 +179,7 @@ class Example(wx.Frame):
         bbox = [canvas.PixelToWorld((0,0)),canvas.PixelToWorld(canvasSizePixels)]
         bbox = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]]
         bbox = Utilities.BBox.asBBox([[bbox[0],bbox[1]],[bbox[2],bbox[3]]])
+        #print bbox
         self.activeObject = Object.Name
         drawable.Configure(pkg,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
