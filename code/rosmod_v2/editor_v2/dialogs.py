@@ -46,6 +46,7 @@ class EditDialog(wx.Dialog):
         title = kw.pop('title', "ROSMOD V2")
         self.references = kw.pop('references',[])
         super(EditDialog, self).__init__(*args,**kw)
+        self.returnDict = OrderedDict()
         self.InitUI()
         self.SetTitle(title)
 
@@ -56,6 +57,7 @@ class EditDialog(wx.Dialog):
         pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
 
         rNum = 0
+        self.inputs = OrderedDict()
         for key,value in self.editDict.iteritems():
             #print key, value
             label = None
@@ -65,6 +67,7 @@ class EditDialog(wx.Dialog):
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
                 field.AppendText(value)
+                self.inputs[key] = field
             elif key == 'fields' or key == 'request' or key == 'response':
                 # anything that takes a multi-line string
                 # supports code completion and syntax highlighting
@@ -75,10 +78,12 @@ class EditDialog(wx.Dialog):
                 field.Colourise(0,-1)
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
                 pbox.AddGrowableRow(rNum,1)
-            elif key == 'service_reference' or key == 'message_reference':
+                self.inputs[key] = field
+            elif key == 'service_reference' or key == 'message_reference' or key == 'component_reference':
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.ComboBox(panel, choices = self.references, style=wx.CB_READONLY)
                 field.SetValue(value.properties['name'])
+                self.inputs[key] = field
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
             rNum += 1
@@ -103,5 +108,16 @@ class EditDialog(wx.Dialog):
         okButton.Bind(wx.EVT_BUTTON, self.OnClose)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
 
+    def GetInput(self):
+        for key,field in self.inputs.iteritems():
+            if key == 'name' or key == 'period' or key == 'unit':
+                self.returnDict[key] = field.GetValue()
+            elif key == 'fields' or key == 'request' or key == 'response':
+                self.returnDict[key] = field.GetText()                
+            elif key == 'service_reference' or key == 'message_reference' or key == 'component_reference':
+                self.returnDict[key] = field.GetValue()    
+        return self.returnDict
+
     def OnClose(self, e):
         self.Destroy()
+        return "HELLO"

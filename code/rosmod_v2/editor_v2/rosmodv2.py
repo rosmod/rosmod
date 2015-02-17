@@ -199,6 +199,8 @@ class Example(wx.Frame):
                         references = references,
                         style=wx.RESIZE_BORDER)
         ed.ShowModal()
+        inputs = ed.GetInput()
+        print inputs
         ed.Destroy()
 
     def PkgDelete(self, e):
