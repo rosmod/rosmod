@@ -166,6 +166,7 @@ class Drawable_Object:
     def delete(self, reference):
         self.children = [child for child in self.children if child != reference]
 
+    # REFACTOR THIS TO BE RECURSIVE SO IT WILL BE CLEANER
     def getChildrenByKind(self,kind):
         retKids = []
         if self.kind == 'package':
@@ -177,6 +178,8 @@ class Drawable_Object:
                 nodes = [child for child in self.children if child.kind == 'node']
                 for node in nodes:
                     retKids.extend([child for child in node.children if child.kind == kind])
+            else:
+                retKids.extend([child for child in self.children if child.kind == kind])
             return retKids
         elif self.kind == 'workspace':
             if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
@@ -189,6 +192,9 @@ class Drawable_Object:
                     nodes = [child for child in pkg.children if child.kind == 'node']
                     for node in nodes:
                         retKids.extend([child for child in node.children if child.kind == kind])
+            else:
+                for pkg in self.children:
+                    retKids.extend([child for child in pkg.children if child.kind == kind])
             return retKids
         else:
             return [child for child in self.children if child.kind == kind]
