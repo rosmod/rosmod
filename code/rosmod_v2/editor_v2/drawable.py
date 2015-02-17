@@ -161,6 +161,7 @@ class Drawable_Object:
         self.connectionPoint = wx.Point()
         
     def add(self, child):
+        child.parent = self
         self.children.append(child)
         
     def delete(self):

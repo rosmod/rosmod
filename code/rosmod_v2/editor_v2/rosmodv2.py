@@ -139,11 +139,10 @@ class Example(wx.Frame):
         self.PackageAspect.DeleteAllPages()
         self.pkgPanels = OrderedDict()
         for pkg in self.model.workspace.children:
-            pkg.style.icon = None
             self.BuildPackagePage(self.PackageAspect,pkg)
         self.BuildPackagePage(self.PackageAspect,self.model.workspace)
 
-    def BuildPackagePage(self,parent,pkg):
+    def BuildPackagePage(self,parent,pkg,insertPos=-1):
         newPage = wx.Panel(parent)
         navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "BEIGE")
         canvas = navCanvas.Canvas
@@ -156,7 +155,10 @@ class Example(wx.Frame):
         newPage.SetSizer(panelSizer)
 
         self.pkgPanels[pkg.properties["name"]] = [pkg,newPage,canvas,msgWindow,panelSizer]
-        self.PackageAspect.AddPage( newPage, pkg.properties["name"])
+        if insertPos == -1:
+            self.PackageAspect.AddPage( newPage, pkg.properties['name'] )
+        else:
+            self.PackageAspect.InsertPage( insertPos, newPage, pkg.properties["name"])
         
         canvas.InitAll()
         drawable.Configure(pkg,self.styleDict)
@@ -237,6 +239,8 @@ class Example(wx.Frame):
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
             drawable.Configure(pkg,self.styleDict)
+            selectedPage = self.PackageAspect.GetSelection()
+            self.PackageAspect.SetPageText(selectedPage,pkg.properties['name'])
             self.DrawModel(pkg,canvas)
 
     def PkgDelete(self, e):
@@ -244,12 +248,19 @@ class Example(wx.Frame):
         pkg = info[0]
         canvas = info[2]
         msgWindow = info[3]
-        if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
-            self.PackageLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
-            self.activeObject.deleteAllRefs()
-            self.activeObject.delete()
-            drawable.Configure(pkg,self.styleDict)
-            self.DrawModel(pkg,canvas)
+        if pkg.kind != 'workspace':
+            if self.activeObject.kind == 'package':
+                self.OnPackageDelete(e)
+            else:
+                if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+                    self.PackageLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
+                    self.activeObject.deleteAllRefs()
+                    self.activeObject.delete()
+                    drawable.Configure(pkg,self.styleDict)
+                    self.DrawModel(pkg,canvas)
+        else:
+            dialogs.ErrorDialog(self,"Cannot delete workspace!")
+        self.activeObject = None
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
@@ -257,11 +268,6 @@ class Example(wx.Frame):
         canvas.Bind(FloatCanvas.EVT_LEFT_DOWN, self.OnPackageLeftDown) 
         canvas.Bind(FloatCanvas.EVT_LEFT_UP, self.OnPackageLeftUp)
         canvas.Bind(FloatCanvas.EVT_LEFT_DCLICK, self.OnPackageLeftDouble) 
-
-        canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.OnPackageMiddleDown) 
-        canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.OnPackageMiddleUp) 
-        canvas.Bind(FloatCanvas.EVT_MIDDLE_DCLICK, self.OnPackageMiddleDouble) 
-
         canvas.Bind(FloatCanvas.EVT_RIGHT_DOWN, self.OnPackageRightDown) 
         canvas.Bind(FloatCanvas.EVT_RIGHT_UP, self.OnPackageRightUp) 
         canvas.Bind(FloatCanvas.EVT_RIGHT_DCLICK, self.OnPackageRightDouble)
@@ -272,11 +278,6 @@ class Example(wx.Frame):
         canvas.Unbind(FloatCanvas.EVT_LEFT_DOWN)
         canvas.Unbind(FloatCanvas.EVT_LEFT_UP)
         canvas.Unbind(FloatCanvas.EVT_LEFT_DCLICK)
-
-        canvas.Unbind(FloatCanvas.EVT_MIDDLE_DOWN)
-        canvas.Unbind(FloatCanvas.EVT_MIDDLE_UP)
-        canvas.Unbind(FloatCanvas.EVT_MIDDLE_DCLICK)
-
         canvas.Unbind(FloatCanvas.EVT_RIGHT_DOWN)
         canvas.Unbind(FloatCanvas.EVT_RIGHT_UP)
         canvas.Unbind(FloatCanvas.EVT_RIGHT_DCLICK)
@@ -298,31 +299,12 @@ class Example(wx.Frame):
     def OnPackageMouseMove(self,event):
         pass
     def OnPackageMouseWheel(self,event):
-        info = self.GetPackagePanelInfo()
-        canvas = info[2]
-        msgWindow = info[3]
-        self.PackageLog("Mouse Wheel",msgWindow)
-        self.PrintCoords(event,msgWindow)
-        Rot = event.GetWheelRotation()
-        Rot = Rot / abs(Rot) * 0.1
-        if event.ControlDown(): # move left-right
-            canvas.MoveImage( (Rot, 0), "Panel" )
-        else: # move up-down
-            canvas.MoveImage( (0, -Rot), "Panel" )
+        pass
     def OnPackageLeftDown(self,event):
-        info = self.GetPackagePanelInfo()
-        msgWindow = info[3]
-        self.PackageLog("LeftDown",msgWindow)
-        self.PrintCoords(event,msgWindow)
+        pass
     def OnPackageLeftUp(self,event):
         pass
     def OnPackageLeftDouble(self,event):
-        pass
-    def OnPackageMiddleDown(self,event):
-        pass
-    def OnPackageMiddleUp(self,event):
-        pass
-    def OnPackageMiddleDouble(self,event):
         pass
     def OnPackageRightDown(self,event):
         pass
@@ -336,7 +318,6 @@ class Example(wx.Frame):
         cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
         cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
         self.PopupMenu(ContextMenu(canvas,cm))
-
     def OnPackageRightDouble(self,event):
         pass
 
@@ -476,22 +457,43 @@ class Example(wx.Frame):
     Package Aspect Functions
     '''
     def OnPackageCreate(self, e):
-        newTab = wx.Panel(self.PackageAspect)
-        newTabName = "New Package!"
-        numPages = self.PackageAspect.GetPageCount()
-        self.PackageAspect.InsertPage(numPages-1,newTab, newTabName)
-        self.PackageAspect.SetSelection(numPages-1)
+        newPkg = rosgen.ROS_Package()
+        newPkg.properties['name'] = "New Package"
+        ed = EditDialog(self,
+                        editDict=newPkg.properties,
+                        title="Edit "+newPkg.kind,
+                        references = [],
+                        style=wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                newPkg.properties[key] = value
+            self.model.workspace.add(newPkg)
+            numPages = self.PackageAspect.GetPageCount()
+            self.BuildPackagePage(self.PackageAspect,newPkg,numPages-1)
+            self.PackageAspect.SetSelection(numPages - 1)
     
     def OnPackageDelete(self, e):
         selectedPage = self.PackageAspect.GetSelection()
         numPages = self.PackageAspect.GetPageCount()
-        if selectedPage != numPages - 1:
-            if wx.MessageBox("Really delete package {}?".format(self.PackageAspect.GetPageText(selectedPage)), "Confirm",
-                             wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
-                return
-            self.PackageAspect.DeletePage(selectedPage)
-        if self.PackageAspect.GetSelection() == numPages - 2: # deleted into last page
-            self.toolbar.EnableTool(self.packageTB_delete_ID, False)
+        pkgName = self.PackageAspect.GetPageText(selectedPage)
+        info = self.pkgPanels[pkgName]
+        pkg = info[0]
+        if pkg.kind != 'workspace':
+            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                self.PackageAspect.DeletePage(selectedPage)
+                newSelection = self.PackageAspect.GetSelection()
+                pkg.delete()
+                if newSelection == numPages - 2: # deleted into last page
+                    self.toolbar.EnableTool(self.packageTB_delete_ID, False)
+                info = self.pkgPanels[self.PackageAspect.GetPageText(newSelection)]
+                pkg = info[0]
+                canvas = info[2]
+                drawable.Configure(pkg,self.styleDict)
+                self.DrawModel(pkg,canvas)
+        else:
+            dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
 
     def pageChange(self, event):
         try:
@@ -503,10 +505,17 @@ class Example(wx.Frame):
                 self.toolbar.EnableTool(self.packageTB_delete_ID, False)
             else:
                 self.toolbar.EnableTool(self.packageTB_delete_ID, True)
-            #print 'OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel)
-        except wx.PyDeadObjectError:
-            test = None #do nothing
 
+            if new >= 0:
+                packageName = self.PackageAspect.GetPageText(new)
+                info = self.pkgPanels[packageName]
+                pkg = info[0]
+                canvas = info[2]
+                drawable.Configure(pkg,self.styleDict)
+                self.DrawModel(pkg,canvas)
+        except:
+            test = None #do nothing
+        
     def OnPageChanged(self, event):
         self.pageChange(event)
         event.Skip()
@@ -675,7 +684,8 @@ class Example(wx.Frame):
 
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=font, 
-                              method=drawable.Draw_Method.ICON, 
+                                       method=drawable.Draw_Method.ICON, 
+                                       offset = pkgOffset,
                               placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict() )
         PkgStyle = drawable.Draw_Style(icon=None, 
