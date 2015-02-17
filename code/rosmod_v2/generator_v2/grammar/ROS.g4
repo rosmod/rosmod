@@ -89,7 +89,7 @@ msg_field
 
 // Type of message field
 msg_field_type
-    :   ( ID ('/' ID)* ) ( '[' (INT)? ']' )?
+    :   ( ID ('/' ID)* ) ( '[' (INT)? ']' )*
     ;
 
 // Name of message field
