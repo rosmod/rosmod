@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 import wx
+import wx.stc as stc
+
+from collections import OrderedDict
 
 def RMLFileDialog(frame,fileTypes,path,prompt,fd_flags):
     modelPath = None
@@ -39,6 +42,7 @@ def ConfirmDialog(frame, msg):
 class EditDialog(wx.Dialog):
     
     def __init__(self, *args, **kw):
+        self.editDict = kw.pop('editDict', OrderedDict())
         super(EditDialog, self).__init__(*args,**kw)
         self.InitUI()
         self.SetTitle("Test")
@@ -47,6 +51,32 @@ class EditDialog(wx.Dialog):
         
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
+        pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
+
+        rNum = 0
+        for key,value in self.editDict.iteritems():
+            #print key, value
+            label = None
+            txt = None
+            if key == 'name':
+                label = wx.StaticText(panel, label=key + ":")
+                txt = wx.TextCtrl(panel)
+                txt.AppendText(value)
+            elif key == 'fields' or key == 'request' or key == 'response':
+                label = wx.StaticText(panel, label=key + ":")
+                txt = stc.StyledTextCtrl(panel,)
+                txt.SetText('\n'.join(' '.join(e) for e in value))
+                txt.EmptyUndoBuffer()
+                txt.Colourise(0,-1)
+                txt.SetMarginType(1, stc.STC_MARGIN_NUMBER)
+                pbox.AddGrowableRow(rNum,1)
+            if label != None and txt != None:
+                pbox.AddMany([(label),(txt,1,wx.EXPAND)])
+            rNum += 1
+
+        pbox.AddGrowableCol(1,1)
+
+        panel.SetSizer(pbox)
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         okButton = wx.Button(self, label='Ok')
@@ -57,7 +87,7 @@ class EditDialog(wx.Dialog):
         vbox.Add(panel, proportion=1, 
             flag=wx.ALL|wx.EXPAND, border=5)
         vbox.Add(hbox, 
-            flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
+            flag=wx.ALIGN_CENTER|wx.BOTTOM, border=10)
 
         self.SetSizer(vbox)
         

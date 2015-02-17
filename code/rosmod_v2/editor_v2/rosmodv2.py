@@ -182,7 +182,7 @@ class Example(wx.Frame):
         canvas = info[2]
         msgWindow = info[3]
         self.PackageLog("Editing {}".format(self.activeObject.properties),msgWindow)
-        ed = EditDialog(canvas)
+        ed = EditDialog(canvas,editDict=self.activeObject.properties,style=wx.RESIZE_BORDER)
         ed.ShowModal()
         ed.Destroy()
 
