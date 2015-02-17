@@ -61,7 +61,7 @@ class Listener(ROSListener):
                 field_name = child.getText()
             # Find the message field value
             if "Msg_field_valueContext" in context:
-                field_value = child.getText()
+                field_value = child.getText().replace(";", "")
         if field_type != "":
             if field_name != "":
                 if field_value != "":
