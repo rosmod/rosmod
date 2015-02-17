@@ -241,10 +241,15 @@ class Example(wx.Frame):
 
     def PkgDelete(self, e):
         info = self.GetPackagePanelInfo()
+        pkg = info[0]
         canvas = info[2]
         msgWindow = info[3]
-        self.PackageLog("Deleting {}".format(self.activeObject.properties),msgWindow)
-        ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name']))
+        if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+            self.PackageLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
+            self.activeObject.deleteAllRefs()
+            self.activeObject.delete()
+            drawable.Configure(pkg,self.styleDict)
+            self.DrawModel(pkg,canvas)
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)

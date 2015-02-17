@@ -163,8 +163,23 @@ class Drawable_Object:
     def add(self, child):
         self.children.append(child)
         
-    def delete(self, reference):
-        self.children = [child for child in self.children if child != reference]
+    def delete(self):
+        self.parent.children = [x for x in self.parent.children if x != self]
+        del self
+
+    def deleteAllRefs(self):
+        if self.kind == 'component':
+            nodes = self.parent.getChildrenByKind('node')
+            for node in nodes:
+                node.children = [x for x in node.children if x.properties['component_reference'] != self]
+        elif self.kind == 'message':
+            comps = self.parent.getChildrenByKind('component')
+            for comp in comps:
+                comp.children = [x for x in comp.children if 'message_reference' not in x.properties.keys() or x.properties['message_reference'] != self]
+        elif self.kind == 'service':
+            comps = self.parent.getChildrenByKind('component')
+            for comp in comps:
+                comp.children = [x for x in comp.children if 'service_reference' not in x.properties.keys() or x.properties['service_reference'] != self]
 
     # REFACTOR THIS TO BE RECURSIVE SO IT WILL BE CLEANER
     def getChildrenByKind(self,kind):
