@@ -155,6 +155,9 @@ class Drawable_Object:
     def delete(self, reference):
         self.children = [child for child in self.children if child != reference]
 
+    def getChildrenByKind(self,kind):
+        return [child for child in self.children if child.kind == kind]
+
     '''
     Draw() is called after layout has been calculated
     Should receive the device context

@@ -179,12 +179,24 @@ class Example(wx.Frame):
 
     def PkgEdit(self, e):
         info = self.GetPackagePanelInfo()
+        pkg = info[0]
         canvas = info[2]
         msgWindow = info[3]
-        self.PackageLog("Editing {}".format(self.activeObject.properties),msgWindow)
+        self.PackageLog(
+            "Editing {} of type {}".format(self.activeObject.properties['name'],self.activeObject.kind),
+            msgWindow)
+        objs = []
+        if self.activeObject.kind == 'publisher' or self.activeObject.kind == 'subscriber':
+            objs = pkg.getChildrenByKind('message')
+        elif self.activeObject.kind == 'server' or self.activeObject.kind == 'client':
+            objs = pkg.getChildrenByKind('service')
+        elif self.activeObject.kind == 'component_instance':
+            objs = pkg.getChildrenByKind('component')
+        references = [x.properties['name'] for x in objs]
         ed = EditDialog(canvas,
                         editDict=self.activeObject.properties,
                         title="Edit "+self.activeObject.kind,
+                        references = references,
                         style=wx.RESIZE_BORDER)
         ed.ShowModal()
         ed.Destroy()

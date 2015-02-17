@@ -44,6 +44,7 @@ class EditDialog(wx.Dialog):
     def __init__(self, *args, **kw):
         self.editDict = kw.pop('editDict', OrderedDict())
         title = kw.pop('title', "ROSMOD V2")
+        self.references = kw.pop('references',[])
         super(EditDialog, self).__init__(*args,**kw)
         self.InitUI()
         self.SetTitle(title)
@@ -76,7 +77,7 @@ class EditDialog(wx.Dialog):
                 pbox.AddGrowableRow(rNum,1)
             elif key == 'service_reference' or key == 'message_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                field = wx.ComboBox(panel, choices = [value.properties['name']], style=wx.CB_READONLY)
+                field = wx.ComboBox(panel, choices = self.references, style=wx.CB_READONLY)
                 field.SetValue(value.properties['name'])
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
