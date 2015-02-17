@@ -79,7 +79,7 @@ class Example(wx.Frame):
         self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
         self.BuildAspects()
         self.BuildOutput()
-        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
+        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-100)
         self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
         self.toolbar.Realize()
@@ -166,7 +166,8 @@ class Example(wx.Frame):
     def DrawModel(self, model, canvas):
         canvasSizePixels = canvas.GetSize()
         bbox = [canvas.PixelToWorld((0,0)),canvas.PixelToWorld(canvasSizePixels)]
-        bbox = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]]
+        delta = 20
+        bbox = [bbox[0][0]+delta,bbox[0][1]-delta,bbox[1][0]-delta,bbox[1][1]+delta]
         bbox = Utilities.BBox.asBBox([[bbox[0],bbox[1]],[bbox[2],bbox[3]]])
         canvas.UnBindAll()
         canvas.ClearAll()
@@ -175,7 +176,7 @@ class Example(wx.Frame):
         width,height = drawable.Layout(model,(0,0),canvas)
         model.Draw(canvas,self.OnPkgLeftClick,self.OnPkgRightClick)
         canvas.Draw()
-        canvas.ZoomToBB(bbox,True)
+        canvas.ZoomToBB()
 
     def OnPkgLeftClick(self, Object):
         info = self.GetPackagePanelInfo()
@@ -385,7 +386,7 @@ class Example(wx.Frame):
     '''
     def UpdateMainWindow(self, e):
         self.viewSplitter.Show()
-        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
+        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,self.viewSplitter.GetSashPosition())
         if self.shvw.IsChecked() and self.shop.IsChecked():
             pass
         elif self.shvw.IsChecked() and not self.shop.IsChecked():
@@ -654,8 +655,8 @@ class Example(wx.Frame):
     def BuildStyleDict(self):
         self.styleDict = OrderedDict()
         font = OrderedDict()
-        font['pointSize'] = 10
-        minSize = (10,10)
+        font['pointSize'] = 20
+        minSize = (30,30)
         padding = (10,10)
         pkgOffset = (50,50)
         msgIcon = wx.Bitmap('icons/model/msgIcon.png')
@@ -677,66 +678,79 @@ class Example(wx.Frame):
                                        method=drawable.Draw_Method.ICON, 
                                        placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict(),
+                                       minSize = minSize,
                                        padding = (50,25),
                                        offset = pkgOffset )
         MsgStyle = drawable.Draw_Style(icon=msgIcon, 
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
+                                       minSize = minSize,
                               overlay = OrderedDict() )
         SrvStyle = drawable.Draw_Style(icon=srvIcon,
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.TOP,
+                                       minSize = minSize,
                               overlay = OrderedDict() )
         CompStyle = drawable.Draw_Style(icon=None,
                                font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 
                                placement=drawable.Text_Placement.TOP,
+                                       minSize = minSize,
                                         overlay = OrderedDict([('fillColor','STEEL BLUE')]) )
         TmrStyle = drawable.Draw_Style(icon=tmrIcon,
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         PubStyle = drawable.Draw_Style(icon=pubIcon,
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         SubStyle = drawable.Draw_Style(icon=subIcon,
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         CliStyle = drawable.Draw_Style(icon=clientIcon,
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                               placement=drawable.Text_Placement.RIGHT,
                               overlay = OrderedDict() )
         SerStyle = drawable.Draw_Style(icon=serverIcon,
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                               placement=drawable.Text_Placement.RIGHT,
                                        overlay = OrderedDict() )
         NodeStyle = drawable.Draw_Style(icon=None,
                                font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 
+                                       minSize = minSize,
                                placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict([('fillColor','TURQUOISE')]) )
         CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
                                    font=font, 
                                    method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict() )
         HardwareStyle = drawable.Draw_Style(icon=None, 
                                    font=font, 
                                    method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict() )
         DeploymentStyle = drawable.Draw_Style(icon=None, 
                                      font=font, 
                                      method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
                                      placement=drawable.Text_Placement.TOP,
                                      overlay = OrderedDict() )
 
