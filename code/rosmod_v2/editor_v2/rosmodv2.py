@@ -163,6 +163,10 @@ class Example(wx.Frame):
         canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
 
     def DrawModel(self, model, canvas):
+        canvasSizePixels = canvas.GetSize()
+        bbox = [canvas.PixelToWorld((0,0)),canvas.PixelToWorld(canvasSizePixels)]
+        bbox = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]]
+        bbox = Utilities.BBox.asBBox([[bbox[0],bbox[1]],[bbox[2],bbox[3]]])
         canvas.UnBindAll()
         canvas.ClearAll()
         canvas.SetProjectionFun(None)
@@ -170,15 +174,12 @@ class Example(wx.Frame):
         width,height = drawable.Layout(model,(0,0),canvas)
         model.Draw(canvas,self.OnPkgLeftClick,self.OnPkgRightClick)
         canvas.Draw()
+        canvas.ZoomToBB(bbox,True)
 
     def OnPkgLeftClick(self, Object):
         info = self.GetPackagePanelInfo()
         pkg = info[0]
         canvas = info[2]
-        canvasSizePixels = canvas.GetSize()
-        bbox = [canvas.PixelToWorld((0,0)),canvas.PixelToWorld(canvasSizePixels)]
-        bbox = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]]
-        bbox = Utilities.BBox.asBBox([[bbox[0],bbox[1]],[bbox[2],bbox[3]]])
         #print bbox
         self.activeObject = Object.Name
         drawable.Configure(pkg,self.styleDict)
@@ -197,7 +198,6 @@ class Example(wx.Frame):
                 if child.properties[key[1]] == self.activeObject:
                     child.style.overlay['overlayColor']='RED'
         self.DrawModel(pkg,canvas)
-        canvas.ZoomToBB(bbox,True)
 
     def OnPkgRightClick(self, Object):
         info = self.GetPackagePanelInfo()
@@ -217,14 +217,13 @@ class Example(wx.Frame):
         self.PackageLog(
             "Editing {} of type {}".format(self.activeObject.properties['name'],self.activeObject.kind),
             msgWindow)
-        objs = []
+        references = []
         if self.activeObject.kind == 'publisher' or self.activeObject.kind == 'subscriber':
-            objs = pkg.getChildrenByKind('message')
+            references = pkg.getChildrenByKind('message')
         elif self.activeObject.kind == 'server' or self.activeObject.kind == 'client':
-            objs = pkg.getChildrenByKind('service')
+            references = pkg.getChildrenByKind('service')
         elif self.activeObject.kind == 'component_instance':
-            objs = pkg.getChildrenByKind('component')
-        references = [x.properties['name'] for x in objs]
+            references = pkg.getChildrenByKind('component')
         ed = EditDialog(canvas,
                         editDict=self.activeObject.properties,
                         title="Edit "+self.activeObject.kind,
@@ -232,8 +231,11 @@ class Example(wx.Frame):
                         style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
-        print inputs
-        ed.Destroy()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                self.activeObject.properties[key] = value
+            drawable.Configure(pkg,self.styleDict)
+            self.DrawModel(pkg,canvas)
 
     def PkgDelete(self, e):
         info = self.GetPackagePanelInfo()

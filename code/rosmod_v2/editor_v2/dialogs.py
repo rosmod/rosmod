@@ -73,7 +73,8 @@ class EditDialog(wx.Dialog):
                 # supports code completion and syntax highlighting
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
-                field.SetText('\n'.join(' '.join(e) for e in value))
+                fieldStr = self.GenerateFieldString(value)
+                field.SetText(fieldStr)
                 field.EmptyUndoBuffer()
                 field.Colourise(0,-1)
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
@@ -81,7 +82,8 @@ class EditDialog(wx.Dialog):
                 self.inputs[key] = field
             elif key == 'service_reference' or key == 'message_reference' or key == 'component_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                field = wx.ComboBox(panel, choices = self.references, style=wx.CB_READONLY)
+                refNames = [x.properties['name'] for x in self.references]
+                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
                 field.SetValue(value.properties['name'])
                 self.inputs[key] = field
             if label != None and field != None:
@@ -105,19 +107,54 @@ class EditDialog(wx.Dialog):
 
         self.SetSizer(vbox)
         
-        okButton.Bind(wx.EVT_BUTTON, self.OnClose)
+        okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
 
-    def GetInput(self):
+    def GenerateFieldString(self,fieldsList):
+        retStr = ""
+        for field in fieldsList:
+            fStr = ""
+            if len(field) == 2:
+                fStr = ' '.join(field)
+            elif len(field) == 3:
+                fStr = '{} {} = {}'.format(field[0],field[1],field[2])
+            if fStr != "":
+                retStr += fStr + '\n'
+        return retStr
+
+    def ParseFieldLine(self,fieldLine):
+        retField = []
+        retField = fieldLine.split(" ")
+        retField = [x for x in retField if x != "="]
+        return retField
+
+    def ParseFields(self,fieldStr):
+        retFields = []
+        fields = fieldStr.split('\n')
+        for field in fields:
+            retFields.append(self.ParseFieldLine(field))
+        return retFields
+
+    def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
             if key == 'name' or key == 'period' or key == 'unit':
                 self.returnDict[key] = field.GetValue()
             elif key == 'fields' or key == 'request' or key == 'response':
-                self.returnDict[key] = field.GetText()                
+                fieldTxt = field.GetText()
+                retFields = self.ParseFields(fieldTxt)
+                self.returnDict[key] = retFields
             elif key == 'service_reference' or key == 'message_reference' or key == 'component_reference':
-                self.returnDict[key] = field.GetValue()    
+                objName = field.GetValue()
+                obj = [x for x in self.references if x.properties['name'] == objName]
+                self.returnDict[key] = obj[0]
+
+    def GetInput(self):
         return self.returnDict
 
-    def OnClose(self, e):
+    def OnOk(self,e):
+        self.UpdateInputs()
         self.Destroy()
-        return "HELLO"
+
+    def OnClose(self, e):
+        self.returnDict = OrderedDict()
+        self.Destroy()
