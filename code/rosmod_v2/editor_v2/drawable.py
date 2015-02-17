@@ -174,7 +174,9 @@ class Drawable_Object:
                 for comp in comps:
                     retKids.extend([child for child in comp.children if child.kind == kind])                
             elif kind == 'component_instance':
-                pass
+                nodes = [child for child in self.children if child.kind == 'node']
+                for node in nodes:
+                    retKids.extend([child for child in node.children if child.kind == kind])
             return retKids
         else:
             return [child for child in self.children if child.kind == kind]

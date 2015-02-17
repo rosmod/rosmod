@@ -181,16 +181,16 @@ class Example(wx.Frame):
         kind = self.activeObject.kind
         keys = []
         if kind == 'message':
-            keys = ['publisher','subscriber']
+            keys = [['publisher','message_reference'],['subscriber','message_reference']]
         elif kind == 'service':
-            keys = ['server','client']
+            keys = [['server','service_reference'],['client','service_reference']]
         elif kind == 'component':
-            keys = ['component']
+            keys = [['component_instance','component_reference']]
         for key in keys:
-            children = pkg.getChildrenByKind(key)
+            children = pkg.getChildrenByKind(key[0])
             for child in children:
-                child.style.overlay['overlayColor']='RED'
-        print self.activeObject.style.overlay
+                if child.properties[key[1]] == self.activeObject:
+                    child.style.overlay['overlayColor']='RED'
         self.DrawModel(pkg,canvas)
 
     def OnPkgRightClick(self, Object):
