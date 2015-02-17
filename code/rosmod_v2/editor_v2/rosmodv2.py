@@ -28,7 +28,7 @@ import wx.lib.agw.flatnotebook as fnb
 import wx.lib.scrolledpanel as scrolled
 
 # need float canvas for new style of rendering
-from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
+from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
 
 from contextMenu import ContextMenu
 
@@ -175,6 +175,10 @@ class Example(wx.Frame):
         info = self.GetPackagePanelInfo()
         pkg = info[0]
         canvas = info[2]
+        canvasSizePixels = canvas.GetSize()
+        bbox = [canvas.PixelToWorld((0,0)),canvas.PixelToWorld(canvasSizePixels)]
+        bbox = [bbox[0][0],bbox[0][1],bbox[1][0],bbox[1][1]]
+        bbox = Utilities.BBox.asBBox([[bbox[0],bbox[1]],[bbox[2],bbox[3]]])
         self.activeObject = Object.Name
         drawable.Configure(pkg,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
@@ -192,6 +196,7 @@ class Example(wx.Frame):
                 if child.properties[key[1]] == self.activeObject:
                     child.style.overlay['overlayColor']='RED'
         self.DrawModel(pkg,canvas)
+        canvas.ZoomToBB(bbox,True)
 
     def OnPkgRightClick(self, Object):
         info = self.GetPackagePanelInfo()
