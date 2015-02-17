@@ -76,10 +76,11 @@ class Example(wx.Frame):
 
         # build the main frame (holds viewer in the top and the output in the bottom)
         #self.viewSplitter = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
-        self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT)
+        self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
         self.BuildAspects()
         self.BuildOutput()
         self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
+        self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
         self.toolbar.Realize()
         self.Layout()
@@ -394,6 +395,9 @@ class Example(wx.Frame):
         else:
             self.viewSplitter.Hide()
         self.viewSplitter.UpdateSize()
+    def OnSplitterDClick(self, e):
+        self.shop.Check(False)
+        self.UpdateMainWindow(e)
     def ToggleAspectView(self, e):
         self.UpdateMainWindow(e)    
     def ToggleOutputView(self, e):
