@@ -58,21 +58,28 @@ class EditDialog(wx.Dialog):
         for key,value in self.editDict.iteritems():
             #print key, value
             label = None
-            txt = None
-            if key == 'name':
+            field = None
+            if key == 'name' or key == 'period' or key == 'unit':
+                # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
-                txt = wx.TextCtrl(panel)
-                txt.AppendText(value)
+                field = wx.TextCtrl(panel)
+                field.AppendText(value)
             elif key == 'fields' or key == 'request' or key == 'response':
+                # anything that takes a multi-line string
+                # supports code completion and syntax highlighting
                 label = wx.StaticText(panel, label=key + ":")
-                txt = stc.StyledTextCtrl(panel)
-                txt.SetText('\n'.join(' '.join(e) for e in value))
-                txt.EmptyUndoBuffer()
-                txt.Colourise(0,-1)
-                txt.SetMarginType(1, stc.STC_MARGIN_NUMBER)
+                field = stc.StyledTextCtrl(panel)
+                field.SetText('\n'.join(' '.join(e) for e in value))
+                field.EmptyUndoBuffer()
+                field.Colourise(0,-1)
+                field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
                 pbox.AddGrowableRow(rNum,1)
-            if label != None and txt != None:
-                pbox.AddMany([(label),(txt,1,wx.EXPAND)])
+            elif key == 'service_reference' or key == 'message_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                field = wx.ComboBox(panel, choices = [value.properties['name']], style=wx.CB_READONLY)
+                field.SetValue(value.properties['name'])
+            if label != None and field != None:
+                pbox.AddMany([(label),(field,1,wx.EXPAND)])
             rNum += 1
 
         pbox.AddGrowableCol(1,1)
