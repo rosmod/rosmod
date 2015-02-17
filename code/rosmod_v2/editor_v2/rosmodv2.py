@@ -158,14 +158,40 @@ class Example(wx.Frame):
         self.PackageAspect.AddPage( newPage, pkg.properties["name"])
         
         canvas.InitAll()
+        drawable.Configure(pkg,self.styleDict)
+        self.DrawModel(pkg,canvas)
+        canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
+
+    def DrawModel(self, model, canvas):
+        canvas.UnBindAll()
+        canvas.ClearAll()
         canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
-
-        drawable.Configure(pkg,self.styleDict)
-        width,height = drawable.Layout(pkg,(0,0),canvas)
-        pkg.Draw(canvas,self.OnPkgRightClick)
+        width,height = drawable.Layout(model,(0,0),canvas)
+        model.Draw(canvas,self.OnPkgLeftClick,self.OnPkgRightClick)
         canvas.Draw()
-        canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
+
+    def OnPkgLeftClick(self, Object):
+        info = self.GetPackagePanelInfo()
+        pkg = info[0]
+        canvas = info[2]
+        self.activeObject = Object.Name
+        drawable.Configure(pkg,self.styleDict)
+        self.activeObject.style.overlay['overlayColor']="RED"
+        kind = self.activeObject.kind
+        keys = []
+        if kind == 'message':
+            keys = ['publisher','subscriber']
+        elif kind == 'service':
+            keys = ['server','client']
+        elif kind == 'component':
+            keys = ['component']
+        for key in keys:
+            children = pkg.getChildrenByKind(key)
+            for child in children:
+                child.style.overlay['overlayColor']='RED'
+        print self.activeObject.style.overlay
+        self.DrawModel(pkg,canvas)
 
     def OnPkgRightClick(self, Object):
         info = self.GetPackagePanelInfo()
@@ -680,7 +706,7 @@ class Example(wx.Frame):
                               font=font, 
                               method=drawable.Draw_Method.ICON, 
                               placement=drawable.Text_Placement.RIGHT,
-                              overlay = OrderedDict() )
+                                       overlay = OrderedDict() )
         NodeStyle = drawable.Draw_Style(icon=None,
                                font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 

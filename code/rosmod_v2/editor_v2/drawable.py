@@ -2,6 +2,7 @@
 
 import wx
 from collections import OrderedDict
+import copy
 
 # need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
@@ -123,6 +124,16 @@ class Draw_Style:
         self.offset = offset
         self.minSize = minSize
 
+    def Copy(self,other):
+        self.icon = other.icon
+        self.font = copy.deepcopy(other.font)
+        self.method = copy.deepcopy(other.method)
+        self.textPlacement = copy.deepcopy(other.textPlacement)
+        self.overlay = copy.deepcopy(other.overlay)
+        self.padding = copy.deepcopy(other.padding)
+        self.offset = copy.deepcopy(other.offset)
+        self.minSize = copy.deepcopy(other.minSize)
+
 
 '''
 Drawable Objects are anything that should
@@ -156,13 +167,23 @@ class Drawable_Object:
         self.children = [child for child in self.children if child != reference]
 
     def getChildrenByKind(self,kind):
-        return [child for child in self.children if child.kind == kind]
+        retKids = []
+        if self.kind == 'package':
+            if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
+                comps = [child for child in self.children if child.kind == 'component']
+                for comp in comps:
+                    retKids.extend([child for child in comp.children if child.kind == kind])                
+            elif kind == 'component_instance':
+                pass
+            return retKids
+        else:
+            return [child for child in self.children if child.kind == kind]
 
     '''
     Draw() is called after layout has been calculated
     Should receive the device context
     '''
-    def Draw(self, canvas, bindFunc):
+    def Draw(self, canvas, leftClickFunc, rightClickFunc):
         x,y = self.topLeft.Get()
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
@@ -173,7 +194,8 @@ class Drawable_Object:
                     Position = "tl")
                 bmp.HitFill = True
                 bmp.Name = self
-                bmp.Bind(FloatCanvas.EVT_FC_RIGHT_UP, bindFunc)
+                bmp.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
+                bmp.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
@@ -185,15 +207,26 @@ class Drawable_Object:
             )
             rect.HitFill = True
             rect.Name = self
-            rect.Bind(FloatCanvas.EVT_FC_RIGHT_UP, bindFunc)
+            rect.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
+            rect.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
         else:
             pass
+        if 'overlayColor' in self.style.overlay.keys():
+            rect = canvas.AddRectangle(
+                (x,y-self.height),
+                (self.width,self.height),
+                LineColor = self.style.overlay['overlayColor'],
+                LineWidth = 5,
+                FillColor = self.style.overlay['overlayColor'],
+                InForeground = False,
+                FillStyle = 'Transparent'
+            )
         if self.textPosition != None:
             drawText(self.properties["name"],self.textPosition.Get(),self.style,canvas)
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
-            child.Draw(canvas,bindFunc)
+            child.Draw(canvas,leftClickFunc,rightClickFunc)
 
 '''
 The Layout function takes a top-level
@@ -307,7 +340,7 @@ def Layout(dObj, topLeftPos, canvas):
     return maxObjWidth,maxObjHeight
 
 def Configure(dObj,styleDict):
-    dObj.style = styleDict[dObj.kind]
+    dObj.style.Copy(styleDict[dObj.kind])
     if dObj.kind == "package" or dObj.kind == "component" or dObj.kind == "node":
         for child in dObj.children:
             Configure(child,styleDict)
