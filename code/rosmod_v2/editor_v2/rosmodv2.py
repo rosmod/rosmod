@@ -207,11 +207,14 @@ class Example(wx.Frame):
         info = self.GetPackagePanelInfo()
         canvas = info[2]
         self.activeObject = Object.Name
+        self.PopupMenu(ContextMenu(canvas,self.BuildPkgContextMenu(self.activeObject)))
+
+    def BuildPkgContextMenu(self, obj):
         cm = OrderedDict()
         # set up proper context menu here: should be different per type of object
         cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
         cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
-        self.PopupMenu(ContextMenu(canvas,cm))
+        return cm
 
     def PkgEdit(self, e):
         info = self.GetPackagePanelInfo()
