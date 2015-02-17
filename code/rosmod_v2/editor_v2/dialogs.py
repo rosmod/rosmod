@@ -124,15 +124,18 @@ class EditDialog(wx.Dialog):
 
     def ParseFieldLine(self,fieldLine):
         retField = []
-        retField = fieldLine.split(" ")
-        retField = [x for x in retField if x != "="]
+        tmp = fieldLine.split(" ")
+        if len(tmp) >= 2:
+            retField = [x for x in tmp if x != "="]
         return retField
 
     def ParseFields(self,fieldStr):
         retFields = []
         fields = fieldStr.split('\n')
         for field in fields:
-            retFields.append(self.ParseFieldLine(field))
+            fLst = self.ParseFieldLine(field)
+            if fLst != []:
+                retFields.append(fLst)
         return retFields
 
     def UpdateInputs(self):
