@@ -43,9 +43,10 @@ class EditDialog(wx.Dialog):
     
     def __init__(self, *args, **kw):
         self.editDict = kw.pop('editDict', OrderedDict())
+        title = kw.pop('title', "ROSMOD V2")
         super(EditDialog, self).__init__(*args,**kw)
         self.InitUI()
-        self.SetTitle("Test")
+        self.SetTitle(title)
 
     def InitUI(self):
         
@@ -64,7 +65,7 @@ class EditDialog(wx.Dialog):
                 txt.AppendText(value)
             elif key == 'fields' or key == 'request' or key == 'response':
                 label = wx.StaticText(panel, label=key + ":")
-                txt = stc.StyledTextCtrl(panel,)
+                txt = stc.StyledTextCtrl(panel)
                 txt.SetText('\n'.join(' '.join(e) for e in value))
                 txt.EmptyUndoBuffer()
                 txt.Colourise(0,-1)
