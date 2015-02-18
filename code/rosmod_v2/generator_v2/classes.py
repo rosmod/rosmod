@@ -69,7 +69,7 @@ class ROS_Timer(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "timer"
         self.properties["name"] = ""
-        self.properties["period"] = 0.0
+        self.properties["period"] = "0.0"
         self.properties["unit"] = ""
         self.properties["business_logic"] = ""
 

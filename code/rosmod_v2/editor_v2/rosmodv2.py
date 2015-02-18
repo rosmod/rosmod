@@ -268,46 +268,132 @@ class Example(wx.Frame):
         return cm
 
     def BuildCompContextMenu(self,cm):
-        cm['Add Timer'] = self.CompAddTimer
-        cm['Add Subscriber'] = self.CompAddSub
-        cm['Add Publisher'] = self.CompAddPub
-        cm['Add Client'] = self.CompAddClient
-        cm['Add Server'] = self.CompAddServer
+        cm['Add Timer'] = lambda evt : self.CompAdd(evt,'timer')
+        cm['Add Subscriber'] = lambda evt :self.CompAdd(evt,'subscriber')
+        cm['Add Publisher'] = lambda evt : self.CompAdd(evt,'publisher')
+        cm['Add Client'] = lambda evt : self.CompAdd(evt,'client')
+        cm['Add Server'] = lambda evt : self.CompAdd(evt,'server')
         return cm
     def BuildNodeContextMenu(self,cm):
-        cm['Add Component Instance'] = self.NodeAddCompInst
+        cm['Add Component Instance'] = lambda evt : self.NodeAdd(evt,'component_instance')
         return cm
     def BuildPackageContextMenu(self,cm):
-        cm['Add Message'] = self.PackageAddMessage
-        cm['Add Service'] = self.PackageAddService
-        cm['Add Component Definition'] = self.PackageAddComponent
-        cm['Add Node'] = self.PackageAddNode
+        cm['Add Message'] = lambda evt : self.PackageAdd(evt,'message')
+        cm['Add Service'] = lambda evt : self.PackageAdd(evt,'service')
+        cm['Add Component Definition'] = lambda evt : self.PackageAdd(evt,'component')
+        cm['Add Node'] = lambda evt : self.PackageAdd(evt,'node')
         return cm
     def BuildWorkspaceContextMenu(self,cm):
         return cm
 
-    def CompAddTimer(self,e):
-        pass
-    def CompAddSub(self,e):
-        pass
-    def CompAddPub(self,e):
-        pass
-    def CompAddClient(self,e):
-        pass
-    def CompAddServer(self,e):
-        pass
+    def CompAdd(self,e,kind):
+        info = self.GetPackagePanelInfo()
+        pkg = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
 
-    def NodeAddCompInst(self,e):
-        pass
+        comp = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'timer':
+            newObj = rosgen.ROS_Timer()
+        elif kind == 'subscriber':
+            newObj = rosgen.ROS_Subscriber()
+            references = pkg.getChildrenByKind('message')
+        elif kind == 'publisher':
+            newObj = rosgen.ROS_Publisher()
+            references = pkg.getChildrenByKind('message')
+        elif kind == 'server':
+            newObj = rosgen.ROS_Server()
+            references = pkg.getChildrenByKind('service')
+        elif kind == 'client':
+            newObj = rosgen.ROS_Client()
+            references = pkg.getChildrenByKind('service')
+        if newObj != None:
+            newObj.properties['name'] = "New" + kind
+            ed = EditDialog(self,
+                            editDict=newObj.properties,
+                            title="Edit "+newObj.kind,
+                            references = references,
+                            style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                comp.add(newObj)
+                self.PackageLog(
+                    "Added {} to {}".format(newObj.properties['name'],comp.properties['name']),
+                    msgWindow)
+                drawable.Configure(pkg,self.styleDict)
+                self.DrawModel(pkg,canvas)
+
+    def NodeAdd(self,e,kind):
+        info = self.GetPackagePanelInfo()
+        pkg = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
+
+        comp = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'component_instance':
+            newObj = rosgen.ROS_Component_Instance()
+            references = pkg.getChildrenByKind('component')
+        if newObj != None:
+            newObj.properties['name'] = "New" + kind
+            ed = EditDialog(self,
+                            editDict=newObj.properties,
+                            title="Edit "+newObj.kind,
+                            references = references,
+                            style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                comp.add(newObj)
+                self.PackageLog(
+                    "Added {} to {}".format(newObj.properties['name'],comp.properties['name']),
+                    msgWindow)
+                drawable.Configure(pkg,self.styleDict)
+                self.DrawModel(pkg,canvas)
     
-    def PackageAddMessage(self,e):
-        pass
-    def PackageAddService(self,e):
-        pass
-    def PackageAddComponent(self,e):
-        pass
-    def PackageAddNode(self,e):
-        pass
+    def PackageAdd(self,e,kind):
+        info = self.GetPackagePanelInfo()
+        pkg = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
+
+        comp = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'message':
+            newObj = rosgen.ROS_Message()
+        elif kind == 'service':
+            newObj = rosgen.ROS_Service()
+        elif kind == 'component':
+            newObj = rosgen.ROS_Component()
+        elif kind == 'node':
+            newObj = rosgen.ROS_Node()
+        if newObj != None:
+            newObj.properties['name'] = "New" + kind
+            ed = EditDialog(self,
+                            editDict=newObj.properties,
+                            title="Edit "+newObj.kind,
+                            references = references,
+                            style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                comp.add(newObj)
+                self.PackageLog(
+                    "Added {} to {}".format(newObj.properties['name'],comp.properties['name']),
+                    msgWindow)
+                drawable.Configure(pkg,self.styleDict)
+                self.DrawModel(pkg,canvas)
 
     def PkgEdit(self, e):
         info = self.GetPackagePanelInfo()
@@ -357,6 +443,40 @@ class Example(wx.Frame):
         else:
             dialogs.ErrorDialog(self,"Cannot delete workspace!")
         self.activeObject = None
+
+    def OnPackageCreate(self, e):
+        newPkg = rosgen.ROS_Package()
+        newPkg.properties['name'] = "New Package"
+        ed = EditDialog(self,
+                        editDict=newPkg.properties,
+                        title="Edit "+newPkg.kind,
+                        references = [],
+                        style=wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                newPkg.properties[key] = value
+            self.model.workspace.add(newPkg)
+            numPages = self.PackageAspect.GetPageCount()
+            self.BuildPackagePage(self.PackageAspect,newPkg,numPages-1)
+            self.PackageAspect.SetSelection(numPages - 1)
+    
+    def OnPackageDelete(self, e):
+        selectedPage = self.PackageAspect.GetSelection()
+        numPages = self.PackageAspect.GetPageCount()
+        pkgName = self.PackageAspect.GetPageText(selectedPage)
+        info = self.PackageAspectInfo.GetPageInfo(pkgName)
+        pkg = info.obj
+        if pkg.kind != 'workspace':
+            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                info.canvas.ClearAll()
+                pkg.delete()
+                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
+                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
+                self.PackageAspect.DeletePage(selectedPage)
+        else:
+            dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnPackageMouseWheel)
@@ -520,40 +640,6 @@ class Example(wx.Frame):
     '''
     Package Aspect Functions
     '''
-    def OnPackageCreate(self, e):
-        newPkg = rosgen.ROS_Package()
-        newPkg.properties['name'] = "New Package"
-        ed = EditDialog(self,
-                        editDict=newPkg.properties,
-                        title="Edit "+newPkg.kind,
-                        references = [],
-                        style=wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
-        if inputs != OrderedDict():
-            for key,value in inputs.iteritems():
-                newPkg.properties[key] = value
-            self.model.workspace.add(newPkg)
-            numPages = self.PackageAspect.GetPageCount()
-            self.BuildPackagePage(self.PackageAspect,newPkg,numPages-1)
-            self.PackageAspect.SetSelection(numPages - 1)
-    
-    def OnPackageDelete(self, e):
-        selectedPage = self.PackageAspect.GetSelection()
-        numPages = self.PackageAspect.GetPageCount()
-        pkgName = self.PackageAspect.GetPageText(selectedPage)
-        info = self.PackageAspectInfo.GetPageInfo(pkgName)
-        pkg = info.obj
-        if pkg.kind != 'workspace':
-            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
-                info.canvas.ClearAll()
-                pkg.delete()
-                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
-                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
-                self.PackageAspect.DeletePage(selectedPage)
-        else:
-            dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
-
     def pageChange(self, event):
         self.PackageAspect.Refresh()
         old = event.GetOldSelection()

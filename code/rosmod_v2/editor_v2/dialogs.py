@@ -59,21 +59,23 @@ class EditDialog(wx.Dialog):
         rNum = 0
         self.inputs = OrderedDict()
         for key,value in self.editDict.iteritems():
-            #print key, value
             label = None
             field = None
             if key == 'name' or key == 'period' or key == 'unit':
                 # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
-                field.AppendText(value)
+                if value != "" and value != None and value != []:
+                    field.AppendText(value)
                 self.inputs[key] = field
             elif key == 'fields' or key == 'request' or key == 'response':
                 # anything that takes a multi-line string
                 # supports code completion and syntax highlighting
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
-                fieldStr = self.GenerateFieldString(value)
+                fieldStr = ''
+                if value != None and value != []:
+                    fieldStr = self.GenerateFieldString(value)
                 field.SetText(fieldStr)
                 field.EmptyUndoBuffer()
                 field.Colourise(0,-1)
@@ -84,7 +86,8 @@ class EditDialog(wx.Dialog):
                 label = wx.StaticText(panel, label=key + ":")
                 refNames = [x.properties['name'] for x in self.references]
                 field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
-                field.SetValue(value.properties['name'])
+                if value != None:
+                    field.SetValue(value.properties['name'])
                 self.inputs[key] = field
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
