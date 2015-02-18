@@ -255,9 +255,25 @@ class Example(wx.Frame):
 
     def BuildPkgContextMenu(self, obj):
         cm = OrderedDict()
-        # set up proper context menu here: should be different per type of object
         cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
         cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
+        if obj.kind == 'component':
+            cm = self.BuildCompContextMenu(cm)
+        elif obj.kind == 'node':
+            cm = self.BuildNodeContextMenu(cm)
+        elif obj.kind == 'package':
+            cm = self.BuildNodeContextMenu(cm)
+        elif obj.kind == 'workspace':
+            cm = self.BuildWorkspaceContextMenu(cm)
+        return cm
+
+    def BuildCompContextMenu(self,cm):
+        return cm
+    def BuildNodeContextMenu(self,cm):
+        return cm
+    def BuildPackageContextMenu(self,cm):
+        return cm
+    def BuildWorkspaceContextMenu(self,cm):
         return cm
 
     def PkgEdit(self, e):
