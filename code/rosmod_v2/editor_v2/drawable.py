@@ -166,7 +166,6 @@ class Drawable_Object:
         
     def delete(self):
         self.parent.children = [x for x in self.parent.children if x != self]
-        del self
 
     def deleteAllRefs(self):
         if self.kind == 'component':

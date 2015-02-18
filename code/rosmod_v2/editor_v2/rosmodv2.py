@@ -82,8 +82,7 @@ class AspectInfo():
     def AddTBInfo(self,tbInfo):
         self.toolbarButtons[tbInfo.name] = tbInfo
     def DelTBInfo(self,name):
-        if name in self.toolbarButtons:
-            del self.toolbarButtons[name]
+        self.toolbarButtons.pop(name,None)
 
     def GetPageInfo(self,name):
         if name in self.pages.keys():
@@ -93,8 +92,7 @@ class AspectInfo():
     def AddPageInfo(self,pageInfo):
         self.pages[pageInfo.name] = pageInfo
     def DelPageInfo(self,name):
-        if name in self.pages:
-            del self.pages[name]
+        self.pages.pop(name,None)
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -499,9 +497,10 @@ class Example(wx.Frame):
         pkg = info.obj
         if pkg.kind != 'workspace':
             if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                info.canvas.ClearAll()
+                pkg.delete()
                 self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
                 self.PackageAspect.DeletePage(selectedPage)
-                pkg.delete()
         else:
             dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
 
