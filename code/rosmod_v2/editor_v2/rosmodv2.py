@@ -511,7 +511,6 @@ class Example(wx.Frame):
         new = event.GetSelection()
         sel = self.PackageAspect.GetSelection()
         numPages = self.PackageAspect.GetPageCount()
-        print old,new,sel,numPages
         if sel >= 0:
             deleteTBID = self.PackageAspectInfo.GetTBInfo("delete").obj.GetId()
             if sel >= numPages - 1:
