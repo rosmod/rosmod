@@ -57,6 +57,45 @@ import dialogs
 # to draw the objects of the model
 import drawable
 
+class TBInfo():
+    def __init__(self,name, obj):
+        self.name = name
+        self.obj = obj
+
+class PkgPageInfo():
+    def __init__(self, name, obj, canvas, msgWindow):
+        self.name = name
+        self.obj = obj
+        self.canvas = canvas
+        self.msgWindow = msgWindow
+
+class AspectInfo():
+    def __init__(self):
+        self.pages = OrderedDict()
+        self.toolbarButtons = OrderedDict()
+
+    def GetTBInfo(self,name):
+        if name in self.toolbarButtons.keys():
+            return self.toolbarButtons[name]
+        else:
+            return None
+    def AddTBInfo(self,tbInfo):
+        self.toolbarButtons[tbInfo.name] = tbInfo
+    def DelTBInfo(self,name):
+        if name in self.toolbarButtons:
+            del self.toolbarButtons[name]
+
+    def GetPageInfo(self,name):
+        if name in self.pages.keys():
+            return self.pages[name]
+        else:
+            return None
+    def AddPageInfo(self,pageInfo):
+        self.pages[pageInfo.name] = pageInfo
+    def DelPageInfo(self,name):
+        if name in self.pages:
+            del self.pages[name]
+
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(Example, self).__init__(*args,**kwargs)
@@ -108,6 +147,9 @@ class Example(wx.Frame):
     * Deployment aspect : used for assigning nodes to hosts
     '''
     def BuildAspects(self):
+        self.PackageAspectInfo = AspectInfo()
+        self.HardwareAspectInfo = AspectInfo()
+        self.DeploymentAspectInfo = AspectInfo()
         self.BuildPackageAspect()
         self.BuildHardwareAspect()
         self.BuildDeploymentAspect()
@@ -119,25 +161,28 @@ class Example(wx.Frame):
         self.BuildPackageAspectNotebook()
         self.BuildPackageAspectToolbar()
     def BuildPackageAspectNotebook(self):
-        self.PackageAspect = wx.Notebook(self.viewSplitter, wx.ID_ANY)
-        self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.PackageAspect.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+        #self.PackageAspect = wx.Notebook(self.viewSplitter)
+        self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
+                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
+
+        self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
         # create / delete packages
-        self.packageTools = OrderedDict()
-        self.packageTB_create_ID = wx.NewId()
-        self.packageTB_delete_ID = wx.NewId()
         self.toolbar.AddSeparator()
-        self.packageTB_create = self.toolbar.AddLabelTool(self.packageTB_create_ID, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New Package")
-        self.packageTB_delete = self.toolbar.AddLabelTool(self.packageTB_delete_ID, '', wx.Bitmap('icons/toolbar/texit.png'), shortHelp="Remove Package")
-        self.packageTools['create package'] = [self.packageTB_create_ID,self.packageTB_create]
-        self.packageTools['delete package'] = [self.packageTB_delete_ID,self.packageTB_delete]
-        self.Bind(wx.EVT_TOOL, self.OnPackageCreate, self.packageTB_create)
-        self.Bind(wx.EVT_TOOL, self.OnPackageDelete, self.packageTB_delete)
+        createTBinfo = TBInfo(
+            name="create",
+            obj=self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New Package"))
+        deleteTBinfo = TBInfo(
+            name="delete",
+            obj=self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/texit.png'), shortHelp="Remove Package"))
+        self.PackageAspectInfo.AddTBInfo(createTBinfo)
+        self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
+        self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
 
     def BuildPackageAspectPagesFromModel(self):
         self.PackageAspect.DeleteAllPages()
-        self.pkgPanels = OrderedDict()
         for pkg in self.model.workspace.children:
             self.BuildPackagePage(self.PackageAspect,pkg)
         self.BuildPackagePage(self.PackageAspect,self.model.workspace)
@@ -154,7 +199,8 @@ class Example(wx.Frame):
         panelSizer.Add(msgWindow, 1, wx.EXPAND | wx.ALL | wx.ALIGN_BOTTOM ) 
         newPage.SetSizer(panelSizer)
 
-        self.pkgPanels[pkg.properties["name"]] = [pkg,newPage,canvas,msgWindow,panelSizer]
+        pageInfo = PkgPageInfo(name=pkg.properties['name'],obj=pkg,canvas=canvas,msgWindow=msgWindow)
+        self.PackageAspectInfo.AddPageInfo(pageInfo)
         if insertPos == -1:
             self.PackageAspect.AddPage( newPage, pkg.properties['name'] )
         else:
@@ -182,8 +228,8 @@ class Example(wx.Frame):
 
     def OnPkgLeftClick(self, Object):
         info = self.GetPackagePanelInfo()
-        pkg = info[0]
-        canvas = info[2]
+        pkg = info.obj
+        canvas = info.canvas
         #print bbox
         self.activeObject = Object.Name
         drawable.Configure(pkg,self.styleDict)
@@ -205,7 +251,7 @@ class Example(wx.Frame):
 
     def OnPkgRightClick(self, Object):
         info = self.GetPackagePanelInfo()
-        canvas = info[2]
+        canvas = info.canvas
         self.activeObject = Object.Name
         self.PopupMenu(ContextMenu(canvas,self.BuildPkgContextMenu(self.activeObject)))
 
@@ -218,9 +264,9 @@ class Example(wx.Frame):
 
     def PkgEdit(self, e):
         info = self.GetPackagePanelInfo()
-        pkg = info[0]
-        canvas = info[2]
-        msgWindow = info[3]
+        pkg = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
         self.PackageLog(
             "Editing {} of type {}".format(self.activeObject.properties['name'],self.activeObject.kind),
             msgWindow)
@@ -248,9 +294,9 @@ class Example(wx.Frame):
 
     def PkgDelete(self, e):
         info = self.GetPackagePanelInfo()
-        pkg = info[0]
-        canvas = info[2]
-        msgWindow = info[3]
+        pkg = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
         if pkg.kind != 'workspace':
             if self.activeObject.kind == 'package':
                 self.OnPackageDelete(e)
@@ -266,29 +312,17 @@ class Example(wx.Frame):
         self.activeObject = None
 
     def BindCanvasMouseEvents(self,canvas):
-        canvas.Bind(FloatCanvas.EVT_MOTION, self.OnPackageMouseMove)
         canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnPackageMouseWheel)
-        canvas.Bind(FloatCanvas.EVT_LEFT_DOWN, self.OnPackageLeftDown) 
-        canvas.Bind(FloatCanvas.EVT_LEFT_UP, self.OnPackageLeftUp)
-        canvas.Bind(FloatCanvas.EVT_LEFT_DCLICK, self.OnPackageLeftDouble) 
-        canvas.Bind(FloatCanvas.EVT_RIGHT_DOWN, self.OnPackageRightDown) 
         canvas.Bind(FloatCanvas.EVT_RIGHT_UP, self.OnPackageRightUp) 
-        canvas.Bind(FloatCanvas.EVT_RIGHT_DCLICK, self.OnPackageRightDouble)
 
     def UnBindCanvasMouseEvents(self,canvas):
-        canvas.Unbind(FloatCanvas.EVT_MOTION)
         canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
-        canvas.Unbind(FloatCanvas.EVT_LEFT_DOWN)
-        canvas.Unbind(FloatCanvas.EVT_LEFT_UP)
-        canvas.Unbind(FloatCanvas.EVT_LEFT_DCLICK)
-        canvas.Unbind(FloatCanvas.EVT_RIGHT_DOWN)
         canvas.Unbind(FloatCanvas.EVT_RIGHT_UP)
-        canvas.Unbind(FloatCanvas.EVT_RIGHT_DCLICK)
 
     def GetPackagePanelInfo(self):
         selectedPage = self.PackageAspect.GetSelection()
         packageName = self.PackageAspect.GetPageText(selectedPage)
-        return self.pkgPanels[packageName]
+        return self.PackageAspectInfo.GetPageInfo(packageName)
     def PackageLog(self, text, msgWindow):
         msgWindow.SetReadOnly(False)
         msgWindow.AppendText(text)
@@ -296,54 +330,36 @@ class Example(wx.Frame):
             msgWindow.AppendText("\n")
         msgWindow.SetReadOnly(True)
         msgWindow.ScrollToLine(msgWindow.GetLineCount())
-    def PrintCoords(self,event,msgWindow):
-        self.PackageLog("coords are: %s"%(event.Coords,),msgWindow)
-        self.PackageLog("pixel coords are: %s\n"%(event.GetPosition(),),msgWindow)
-    def OnPackageMouseMove(self,event):
-        pass
     def OnPackageMouseWheel(self,event):
-        pass
-    def OnPackageLeftDown(self,event):
-        pass
-    def OnPackageLeftUp(self,event):
-        pass
-    def OnPackageLeftDouble(self,event):
-        pass
-    def OnPackageRightDown(self,event):
-        pass
+        info = self.GetPackagePanelInfo()
+        canvas = info.canvas
+        Rot = event.GetWheelRotation()
+        Rot = Rot / abs(Rot) * 0.1
+        if event.ControlDown(): # move left-right
+            canvas.MoveImage( (Rot, 0), "Panel" )
+        else: # move up-down
+            canvas.MoveImage( (0, -Rot), "Panel" )
     def OnPackageRightUp(self,event):
         info = self.GetPackagePanelInfo()
-        canvas = info[2]
-        self.activeObject = info[0]
-
-        cm = OrderedDict()
-        # set up proper context menu here: should be different per type of object
-        cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
-        cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
-        self.PopupMenu(ContextMenu(canvas,cm))
-    def OnPackageRightDouble(self,event):
-        pass
+        canvas = info.canvas
+        self.activeObject = info.obj
+        self.PopupMenu(ContextMenu(canvas,self.BuildPkgContextMenu(self.activeObject)))
 
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
     '''
     def BuildHardwareAspect(self):
-        self.HardwareAspect = wx.Notebook(self.viewSplitter)
-        self.BuildHardwareAspectToolbar()
+        self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
+                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
         self.HardwareAspect.Hide()
-    def BuildHardwareAspectToolbar(self):
-        self.hardwareTools = OrderedDict()
     '''
     Deployment Aspect: panel with toolbar and notebook for configuring and managing
     node deployment onto hosts (and roscore deployment)
     '''        
     def BuildDeploymentAspect(self):
-        self.DeploymentAspect = wx.Notebook(self.viewSplitter)
-        self.BuildDeploymentAspectToolbar()
+        self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
+                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
         self.DeploymentAspect.Hide()
-    def BuildDeploymentAspectToolbar(self):
-        self.deploymentTools = OrderedDict()
-
     '''
     Aspect Menubar Menu functions
     '''
@@ -402,10 +418,8 @@ class Example(wx.Frame):
     Toolbar and File Menubar Menu Functions
     '''
     def OnQuit(self, e):
-        if wx.MessageBox("Really quit ROSMOD?", "Confirm",
-                         wx.ICON_QUESTION | wx.YES_NO, self) == wx.NO:
-            return
-        self.Close()
+        if ConfirmDialog(self,"Really quit ROSMOD?"):
+            self.Close()
 
     def OnNew(self, e):
         filename,model_path = dialogs.RMLFileDialog(
@@ -481,43 +495,37 @@ class Example(wx.Frame):
         selectedPage = self.PackageAspect.GetSelection()
         numPages = self.PackageAspect.GetPageCount()
         pkgName = self.PackageAspect.GetPageText(selectedPage)
-        info = self.pkgPanels[pkgName]
-        pkg = info[0]
+        info = self.PackageAspectInfo.GetPageInfo(pkgName)
+        pkg = info.obj
         if pkg.kind != 'workspace':
             if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
                 self.PackageAspect.DeletePage(selectedPage)
-                newSelection = self.PackageAspect.GetSelection()
                 pkg.delete()
-                if newSelection == numPages - 2: # deleted into last page
-                    self.toolbar.EnableTool(self.packageTB_delete_ID, False)
-                info = self.pkgPanels[self.PackageAspect.GetPageText(newSelection)]
-                pkg = info[0]
-                canvas = info[2]
-                drawable.Configure(pkg,self.styleDict)
-                self.DrawModel(pkg,canvas)
         else:
             dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
 
     def pageChange(self, event):
-        try:
-            old = event.GetOldSelection()
-            new = event.GetSelection()
-            sel = self.PackageAspect.GetSelection()
-            numPages = self.PackageAspect.GetPageCount()
-            if new == numPages - 1:
-                self.toolbar.EnableTool(self.packageTB_delete_ID, False)
+        self.PackageAspect.Refresh()
+        old = event.GetOldSelection()
+        new = event.GetSelection()
+        sel = self.PackageAspect.GetSelection()
+        numPages = self.PackageAspect.GetPageCount()
+        print old,new,sel,numPages
+        if sel >= 0:
+            deleteTBID = self.PackageAspectInfo.GetTBInfo("delete").obj.GetId()
+            if sel >= numPages - 1:
+                self.toolbar.EnableTool(deleteTBID, False)
             else:
-                self.toolbar.EnableTool(self.packageTB_delete_ID, True)
-
-            if new >= 0:
-                packageName = self.PackageAspect.GetPageText(new)
-                info = self.pkgPanels[packageName]
-                pkg = info[0]
-                canvas = info[2]
-                drawable.Configure(pkg,self.styleDict)
-                self.DrawModel(pkg,canvas)
-        except:
-            test = None #do nothing
+                self.toolbar.EnableTool(deleteTBID, True)
+                
+            packageName = self.PackageAspect.GetPageText(sel)
+            print packageName
+            info = self.PackageAspectInfo.GetPageInfo(packageName)
+            pkg = info.obj
+            canvas = info.canvas
+            drawable.Configure(pkg,self.styleDict)
+            self.DrawModel(pkg,canvas)
         
     def OnPageChanged(self, event):
         self.pageChange(event)
