@@ -262,19 +262,52 @@ class Example(wx.Frame):
         elif obj.kind == 'node':
             cm = self.BuildNodeContextMenu(cm)
         elif obj.kind == 'package':
-            cm = self.BuildNodeContextMenu(cm)
+            cm = self.BuildPackageContextMenu(cm)
         elif obj.kind == 'workspace':
             cm = self.BuildWorkspaceContextMenu(cm)
         return cm
 
     def BuildCompContextMenu(self,cm):
+        cm['Add Timer'] = self.CompAddTimer
+        cm['Add Subscriber'] = self.CompAddSub
+        cm['Add Publisher'] = self.CompAddPub
+        cm['Add Client'] = self.CompAddClient
+        cm['Add Server'] = self.CompAddServer
         return cm
     def BuildNodeContextMenu(self,cm):
+        cm['Add Component Instance'] = self.NodeAddCompInst
         return cm
     def BuildPackageContextMenu(self,cm):
+        cm['Add Message'] = self.PackageAddMessage
+        cm['Add Service'] = self.PackageAddService
+        cm['Add Component Definition'] = self.PackageAddComponent
+        cm['Add Node'] = self.PackageAddNode
         return cm
     def BuildWorkspaceContextMenu(self,cm):
         return cm
+
+    def CompAddTimer(self,e):
+        pass
+    def CompAddSub(self,e):
+        pass
+    def CompAddPub(self,e):
+        pass
+    def CompAddClient(self,e):
+        pass
+    def CompAddServer(self,e):
+        pass
+
+    def NodeAddCompInst(self,e):
+        pass
+    
+    def PackageAddMessage(self,e):
+        pass
+    def PackageAddService(self,e):
+        pass
+    def PackageAddComponent(self,e):
+        pass
+    def PackageAddNode(self,e):
+        pass
 
     def PkgEdit(self, e):
         info = self.GetPackagePanelInfo()
