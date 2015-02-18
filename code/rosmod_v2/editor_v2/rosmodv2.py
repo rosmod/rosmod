@@ -297,7 +297,7 @@ class Example(wx.Frame):
         msgWindow = info.msgWindow
         if pkg.kind != 'workspace':
             if self.activeObject.kind == 'package':
-                self.OnPackageDelete(e)
+                wx.CallAfter(self.OnPackageDelete,e)
             else:
                 if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
                     self.PackageLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
@@ -499,6 +499,7 @@ class Example(wx.Frame):
             if ConfirmDialog(self,"Delete {}?".format(pkgName)):
                 info.canvas.ClearAll()
                 pkg.delete()
+                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
                 self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
                 self.PackageAspect.DeletePage(selectedPage)
         else:
@@ -510,7 +511,6 @@ class Example(wx.Frame):
         new = event.GetSelection()
         sel = self.PackageAspect.GetSelection()
         numPages = self.PackageAspect.GetPageCount()
-        print old,new,sel,numPages
         if sel >= 0:
             deleteTBID = self.PackageAspectInfo.GetTBInfo("delete").obj.GetId()
             if sel >= numPages - 1:
@@ -519,7 +519,6 @@ class Example(wx.Frame):
                 self.toolbar.EnableTool(deleteTBID, True)
                 
             packageName = self.PackageAspect.GetPageText(sel)
-            print packageName
             info = self.PackageAspectInfo.GetPageInfo(packageName)
             pkg = info.obj
             canvas = info.canvas
