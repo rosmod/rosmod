@@ -286,15 +286,37 @@ class Example(wx.Frame):
     def BuildWorkspaceContextMenu(self,cm):
         return cm
 
-    def CompAdd(self,e,kind):
+    def GenericAdd(self,newObj,refs,parent):
         info = self.GetPackagePanelInfo()
         pkg = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
+        kind = newObj.kind
+        if newObj != None:
+            newObj.properties['name'] = "New" + kind
+            ed = EditDialog(self,
+                            editDict=newObj.properties,
+                            title="Edit "+newObj.kind,
+                            references = refs,
+                            style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                parent.add(newObj)
+                self.PackageLog(
+                    "Added child {} to parent {}".format(newObj.properties['name'],parent.properties['name']),
+                    msgWindow)
+                drawable.Configure(pkg,self.styleDict)
+                self.DrawModel(pkg,canvas)            
 
+    def CompAdd(self,e,kind):
         comp = self.activeObject
         newObj = None
         references = []
+        info = self.GetPackagePanelInfo()
+        pkg = info.obj
         if kind == 'timer':
             newObj = rosgen.ROS_Timer()
         elif kind == 'subscriber':
@@ -310,62 +332,23 @@ class Example(wx.Frame):
             newObj = rosgen.ROS_Client()
             references = pkg.getChildrenByKind('service')
         if newObj != None:
-            newObj.properties['name'] = "New" + kind
-            ed = EditDialog(self,
-                            editDict=newObj.properties,
-                            title="Edit "+newObj.kind,
-                            references = references,
-                            style=wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
-            if inputs != OrderedDict():
-                for key,value in inputs.iteritems():
-                    newObj.properties[key] = value
-                comp.add(newObj)
-                self.PackageLog(
-                    "Added {} to {}".format(newObj.properties['name'],comp.properties['name']),
-                    msgWindow)
-                drawable.Configure(pkg,self.styleDict)
-                self.DrawModel(pkg,canvas)
+            self.GenericAdd(newObj,references,comp)
+
 
     def NodeAdd(self,e,kind):
-        info = self.GetPackagePanelInfo()
-        pkg = info.obj
-        canvas = info.canvas
-        msgWindow = info.msgWindow
-
-        comp = self.activeObject
+        node = self.activeObject
         newObj = None
         references = []
+        info = self.GetPackagePanelInfo()
+        pkg = info.obj
         if kind == 'component_instance':
             newObj = rosgen.ROS_Component_Instance()
             references = pkg.getChildrenByKind('component')
         if newObj != None:
-            newObj.properties['name'] = "New" + kind
-            ed = EditDialog(self,
-                            editDict=newObj.properties,
-                            title="Edit "+newObj.kind,
-                            references = references,
-                            style=wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
-            if inputs != OrderedDict():
-                for key,value in inputs.iteritems():
-                    newObj.properties[key] = value
-                comp.add(newObj)
-                self.PackageLog(
-                    "Added {} to {}".format(newObj.properties['name'],comp.properties['name']),
-                    msgWindow)
-                drawable.Configure(pkg,self.styleDict)
-                self.DrawModel(pkg,canvas)
+            self.GenericAdd(newObj,references,node)
     
     def PackageAdd(self,e,kind):
-        info = self.GetPackagePanelInfo()
-        pkg = info.obj
-        canvas = info.canvas
-        msgWindow = info.msgWindow
-
-        comp = self.activeObject
+        package = self.activeObject
         newObj = None
         references = []
         if kind == 'message':
@@ -377,23 +360,7 @@ class Example(wx.Frame):
         elif kind == 'node':
             newObj = rosgen.ROS_Node()
         if newObj != None:
-            newObj.properties['name'] = "New" + kind
-            ed = EditDialog(self,
-                            editDict=newObj.properties,
-                            title="Edit "+newObj.kind,
-                            references = references,
-                            style=wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
-            if inputs != OrderedDict():
-                for key,value in inputs.iteritems():
-                    newObj.properties[key] = value
-                comp.add(newObj)
-                self.PackageLog(
-                    "Added {} to {}".format(newObj.properties['name'],comp.properties['name']),
-                    msgWindow)
-                drawable.Configure(pkg,self.styleDict)
-                self.DrawModel(pkg,canvas)
+            self.GenericAdd(newObj,references,package)
 
     def PkgEdit(self, e):
         info = self.GetPackagePanelInfo()
