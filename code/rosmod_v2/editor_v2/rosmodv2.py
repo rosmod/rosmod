@@ -112,8 +112,8 @@ class Example(wx.Frame):
         self.BuildStatusbar()
 
         # build the main frame (holds viewer in the top and the output in the bottom)
-        #self.viewSplitter = ProportionalSplitter(self,wx.ID_NEW,proportion=0.66)
-        self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
+        self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,
+                                              style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
         self.BuildAspects()
         self.BuildOutput()
         self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-100)
@@ -159,7 +159,6 @@ class Example(wx.Frame):
         self.BuildPackageAspectNotebook()
         self.BuildPackageAspectToolbar()
     def BuildPackageAspectNotebook(self):
-        #self.PackageAspect = wx.Notebook(self.viewSplitter)
         self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
 
@@ -184,6 +183,7 @@ class Example(wx.Frame):
         for pkg in self.model.workspace.children:
             self.BuildPackagePage(self.PackageAspect,pkg)
         self.BuildPackagePage(self.PackageAspect,self.model.workspace)
+        self.PackageAspect.AdvanceSelection()
 
     def BuildPackagePage(self,parent,pkg,insertPos=-1):
         newPage = wx.Panel(parent)
@@ -203,7 +203,7 @@ class Example(wx.Frame):
             self.PackageAspect.AddPage( newPage, pkg.properties['name'] )
         else:
             self.PackageAspect.InsertPage( insertPos, newPage, pkg.properties["name"])
-        
+        self.PackageAspect.AdvanceSelection()
         canvas.InitAll()
         drawable.Configure(pkg,self.styleDict)
         self.DrawModel(pkg,canvas)
@@ -511,6 +511,7 @@ class Example(wx.Frame):
         new = event.GetSelection()
         sel = self.PackageAspect.GetSelection()
         numPages = self.PackageAspect.GetPageCount()
+        print old,new,sel,numPages
         if sel >= 0:
             deleteTBID = self.PackageAspectInfo.GetTBInfo("delete").obj.GetId()
             if sel >= numPages - 1:
