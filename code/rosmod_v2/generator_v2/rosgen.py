@@ -26,8 +26,9 @@ ros_grammar = os.path.realpath(os.path.abspath
                                  (inspect.getfile
                                   (inspect.currentframe()
                                )
-                              )[0], "grammar")
+                              )[0], "grammar/01-Workspace/")
                             ))
+
 if ros_grammar not in sys.path:
     sys.path.insert(0, ros_grammar)
 from ROSLexer import ROSLexer

@@ -23,7 +23,6 @@ ros_templates = os.path.realpath(os.path.abspath
                                  )
                                 )[0], "templates")
                               ))
-print ros_templates
 if ros_templates not in sys.path:
     sys.path.insert(0, ros_templates)
 from package_xml import *
