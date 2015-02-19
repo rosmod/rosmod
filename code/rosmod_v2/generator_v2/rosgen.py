@@ -36,6 +36,38 @@ from ROSParser import ROSParser
 from ROSListener import ROSListener
 from ROSVisitor import ROSVisitor
 
+# Find Hosts Lexer, Parser and Visitor
+hosts_grammar = os.path.realpath(os.path.abspath
+                               (os.path.join
+                                (os.path.split
+                                 (inspect.getfile
+                                  (inspect.currentframe()
+                               )
+                              )[0], "grammar/02-Hosts/")
+                            ))
+
+if hosts_grammar not in sys.path:
+    sys.path.insert(0, hosts_grammar)
+from HostsLexer import HostsLexer
+from HostsParser import HostsParser
+from HostsListener import HostsListener
+
+# Find Hosts Lexer, Parser and Visitor
+deployment_grammar = os.path.realpath(os.path.abspath
+                               (os.path.join
+                                (os.path.split
+                                 (inspect.getfile
+                                  (inspect.currentframe()
+                               )
+                              )[0], "grammar/03-Deployment/")
+                            ))
+
+if deployment_grammar not in sys.path:
+    sys.path.insert(0, deployment_grammar)
+from DeploymentLexer import DeploymentLexer
+from DeploymentParser import DeploymentParser
+from DeploymentListener import DeploymentListener
+
 from listener import *
 from generator import *
 from loader import *
