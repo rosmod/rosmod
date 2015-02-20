@@ -602,6 +602,8 @@ class Example(wx.Frame):
         pass
 
     def OnTerminal(self, e):
+        self.shop.Check(True)
+        self.UpdateMainWindow(e)
         self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
 
     '''
