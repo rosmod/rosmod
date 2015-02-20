@@ -25,11 +25,8 @@ def PrintStringAsAscii(s):
             print ord(ch), 
 
 class TermEmulatorDemo(wx.Panel):
-    def __init__(self, parent):
-        # wx.Frame.__init__(self, None, wx.ID_ANY, "TermEmulator Demo", \
-        #                  size = (700, 500))
-
-        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
+    def __init__(self,parent = None):
+        wx.Panel.__init__(self, parent, wx.ID_ANY)
         
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
@@ -167,7 +164,7 @@ class TermEmulatorDemo(wx.Panel):
         if processPid == 0: # child process
             os.execl(path, *arglist)
         
-        # print "Child process pid", processPid
+        #print "Child process pid", processPid
         
         # Sets raw mode
         #tty.setraw(processIO)
@@ -227,9 +224,9 @@ class TermEmulatorDemo(wx.Panel):
             self.isRunning = False
             wx.CallAfter(self.ReadProcessOutput)
             wx.CallAfter(self.UpdateUI)
-            # print "Process exited"
+            #print "Process exited"
             
-        # print "Notifier thread exited"
+        #print "Notifier thread exited"
         
     def SetTerminalRenditionStyle(self, style):
         fontStyle = wx.FONTSTYLE_NORMAL
@@ -400,8 +397,7 @@ class TermEmulatorDemo(wx.Panel):
         self.UpdateCursorPos()
         
     def OnTermEmulatorUpdateWindowTitle(self, title):
-        # self.SetTitle(title)
-        a = "No-Op"
+        pass
         
     def OnTermEmulatorUnhandledEscSeq(self, escSeq):
         print "Unhandled escape sequence: [" + escSeq
