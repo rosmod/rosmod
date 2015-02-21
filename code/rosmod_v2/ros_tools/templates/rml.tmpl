@@ -1,0 +1,24 @@
+workspace $workspace.properties["name"]
+
+#if $workspace.children != []
+#for $package in $workspace.children
+package $package.properties["name"]
+{
+#if $package.getChildrenByKind("message") != []
+    // Set of ROS Messages
+    messages 
+    {
+#for $message in $package.getChildrenByKind("message")
+        // ROS msg - $message.properties["name"]
+        msg $message.properties["name"]
+        {
+#for $field in $message.properties["fields"]            
+            
+        } 
+#end for
+    }
+#end if
+
+}
+#end for
+#end if
