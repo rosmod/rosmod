@@ -1094,7 +1094,7 @@ class ROS_Project:
         # Ros Workspace
         self.workspace = ROS_Workspace()
         # Workspace Path
-        self.workspace_path = os.path.join(self.project_path, "01-ROS-Workspace")
+        self.workspace_path = os.path.join(self.project_path, "01-Software-Configuration")
         # Hardware Configurations Path
         self.hardware_configurations_path = os.path.join(self.project_path, "02-Hardware-Configuration")
         # Hardware Configurations - List of all rhw objects in Project
@@ -1102,7 +1102,7 @@ class ROS_Project:
         # Deployment
         self.deployments = []
         # Deployment Path
-        self.deployment_path = os.path.join(self.project_path, "03-Software-Deployment")
+        self.deployment_path = os.path.join(self.project_path, "03-Deployment")
 
         # ROS Workspace Builder
         self.builder = ROS_Workspace_Builder()
@@ -1204,12 +1204,21 @@ class ROS_Project:
             if rhw.endswith(".rhw"):
                 rhw_file = os.path.join(self.hardware_configurations_path, rhw)
                 self.parse_rhw(rhw_file)
+                count += 1
+
+        if count == 0:
+            print "ROSTOOLS::No ROS Hardware Configurations (.rhw) files found in", self.hardware_configurations_path
+
+        count = 0
 
         for rdp in os.listdir(self.deployment_path):
             if rdp.endswith(".rdp"):
                 rdp_file = os.path.join(self.deployment_path, rdp)
                 self.parse_rdp(rdp_file)
-
+                count += 1
+                
+        if count == 0:
+            print "ROSTOOLS::No ROS Deployment (.rdp) files found in", self.deployment_path
 
     # Check workspace directory for existing code that may
     # require preservation
@@ -1247,7 +1256,7 @@ if __name__ == "__main__":
     # Obtain the model path
     #model_path = os.path.abspath(os.path.dirname(sys.argv[1]))  
 
-    My_Project = ROS_Project(name="sample_project", 
+    My_Project = ROS_Project(name="sample", 
                              path="/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools")
     My_Project.create()
 
