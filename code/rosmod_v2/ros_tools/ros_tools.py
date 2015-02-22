@@ -1090,7 +1090,7 @@ class ROS_Project:
         # Name of the ROS Project
         self.project_name = kwargs.pop("name", "")
         # Path to ROS Project
-        self.project_path = os.path.join(kwargs.pop("path", ""), self.project_name)
+        self.project_path = kwargs.pop("path", "")
         # Ros Workspace
         self.workspace = ROS_Workspace()
         # Workspace Path
@@ -1111,9 +1111,14 @@ class ROS_Project:
         # Deployment Builder
         self.deployment_builder = ROS_Deployment_Builder()
 
+    # Create a new ROSMOD Project
     def create(self):
         if not os.path.exists(self.project_path):
             os.makedirs(self.project_path)
+        project = "project.rosmod"
+        with open(os.path.join(self.project_path, project), 'w') as temp_file:
+            temp_file.write("This is a ROSMOD Project")
+            temp_file.close() 
         if not os.path.exists(self.workspace_path):
             os.makedirs(self.workspace_path)
         if not os.path.exists(self.hardware_configurations_path):
@@ -1121,6 +1126,44 @@ class ROS_Project:
         if not os.path.exists(self.deployment_path):
             os.makedirs(self.deployment_path)
 
+    # Open an existing ROSMOD Project
+    def open(self, project_path):
+        valid_project = False
+        project_directories = []
+        for prj_file in os.listdir(project_path):
+            if prj_file.endswith(".rosmod"):
+                print "ROSTOOLS::Opening ROSMOD Project:", project_path
+                valid_project = True
+
+        if valid_project == True:
+            print "ROSTOOLS::Project Name:", os.path.basename(project_path)
+            print "ROSTOOLS::Project Path:", project_path
+            sub_directories = [x[0] for x in os.walk(project_path)]
+            for sd in reversed(sub_directories):
+                project_directories.append(sd)
+            del project_directories[-1]
+            # Find subdirectories
+            sd_count = 0
+            for pd in project_directories:
+                if "01-Software-Configuration" in pd:
+                    print "ROSTOOLS::Found Software Configuration:", pd
+                    sd_count += 1
+                elif "02-Hardware-Configuration" in pd:
+                    print "ROSTOOLS::Found Hardware Configuration:", pd
+                    sd_count += 1
+                elif "03-Deployment" in pd:
+                    print "ROSTOOLS::Found Deployment:", pd
+                    sd_count += 1
+
+            # If all is well, reinitialize the project with the right name & path
+            if sd_count == 3:
+                self.__init__(name=os.path.basename(project_path), path=project_path)
+                self.parse_models()
+            else:
+                print "ROSTOOLS::ERROR::Invalid Project!"
+            
+
+    # Parse .rml software configurations model
     def parse_rml(self, filename):
         print "ROSTOOLS::Parsing File:", filename
         # Read the input model
@@ -1142,6 +1185,7 @@ class ROS_Project:
         self.workspace =  self.builder.workspace
         return self.workspace
 
+    # Parse .rhw hardware configurations model
     def parse_rhw(self, filename):
         print "ROSTOOLS::Parsing File:", filename
         # Read the hardware configurations model
@@ -1163,6 +1207,7 @@ class ROS_Project:
         self.hardware_configurations.append(self.hardware.hardware_configuration)
         return self.hardware_configurations
 
+    # Parse .rdp software deployment model
     def parse_rdp(self, filename):
         print "ROSTOOLS::Parsing File:", filename
         # Read the hardware configurations model
@@ -1247,9 +1292,8 @@ class ROS_Project:
 
 if __name__ == "__main__":
 
-    My_Project = ROS_Project(name="sample", 
-                             path="/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools")
-    My_Project.create()
+    My_Project = ROS_Project()
+    My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
 
     # Parse the input model
     # My_Project.parse_rml(model)
@@ -1261,7 +1305,7 @@ if __name__ == "__main__":
     # My_Project.parse_rdp(deployment)
 
     # Parse all .rml, .rhw & .rdp files in Project
-    My_Project.parse_models()
+    #My_Project.parse_models()
 
     # Check the workspace directory for existing code that may require
     # preservation
