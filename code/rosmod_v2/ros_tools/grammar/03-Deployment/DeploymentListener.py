@@ -13,21 +13,21 @@ class DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by DeploymentParser#host.
-    def enterHost(self, ctx):
-        pass
-
-    # Exit a parse tree produced by DeploymentParser#host.
-    def exitHost(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by DeploymentParser#start.
     def enterStart(self, ctx):
         pass
 
     # Exit a parse tree produced by DeploymentParser#start.
     def exitStart(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by DeploymentParser#nodes.
+    def enterNodes(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#nodes.
+    def exitNodes(self, ctx):
         pass
 
 
@@ -49,12 +49,39 @@ class DeploymentListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by DeploymentParser#hostname.
+    def enterHostname(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#hostname.
+    def exitHostname(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by DeploymentParser#deployment.
     def enterDeployment(self, ctx):
         pass
 
     # Exit a parse tree produced by DeploymentParser#deployment.
     def exitDeployment(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by DeploymentParser#define_deployment.
+    def enterDefine_deployment(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#define_deployment.
+    def exitDefine_deployment(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by DeploymentParser#deployment_name.
+    def enterDeployment_name(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#deployment_name.
+    def exitDeployment_name(self, ctx):
         pass
 
 

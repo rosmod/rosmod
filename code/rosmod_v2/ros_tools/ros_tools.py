@@ -3,6 +3,7 @@
 # Date: 2015.02.20
 
 import sys, os, inspect, collections
+from collections import OrderedDict
 
 # Find ANTLR4 python runtime
 antlr4 = os.path.realpath(os.path.abspath
@@ -245,14 +246,20 @@ class ROS_HW(Drawable_Object):
         self.properties["name"] = ""
 
 # Deployment classes here
-
+class ROS_Deployment(Drawable_Object):
+    # Initialize Deployment
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "software_deployment"
+        self.properties["name"] = ""
+        self.deployment_map = OrderedDict()
 
 # Ros Workspace Builder
 # Builds a ROS Workspace Object from .rml file
 class ROS_Workspace_Builder(ROSListener):
     def __init__(self):
         self.workspace = ROS_Workspace()
-        print "ROSMOD_DEBUG::Parsing ROS Workspace"
+        print "ROSTOOLS::Parsing ROS Workspace"
 
     # Create a new workspace object
     def enterDefine_workspace(self, ctx):
@@ -274,7 +281,7 @@ class ROS_Workspace_Builder(ROSListener):
     # Save the package name
     def enterPackage_name(self, ctx):
         self.package.properties["name"] = ctx.getText()
-        print "LISTENER::Reading Package: " + ctx.getText()
+        print "ROSTOOLS::Reading Package: " + ctx.getText()
 
     # Create a new ROS Message object
     def enterRos_msg(self, ctx):
@@ -499,7 +506,7 @@ class ROS_Hardware_Builder(HostsListener):
     def __init__(self):
         self.hardware_configuration = ROS_HW()
         self.host = ROS_Host()
-        print "ROSMOD_DEBUG::Parsing Hardware Configuration"
+        print "ROSTOOLS::Parsing Hardware Configuration"
 
     # Create a new Hardware Configuration Object
     def enterDefine_hardware_configuration(self, ctx):
@@ -537,6 +544,40 @@ class ROS_Hardware_Builder(HostsListener):
     # Add the created host to hardware configuration children
     def exitHost(self, ctx):
         self.hardware_configuration.add(self.host)  
+
+class ROS_Deployment_Builder(DeploymentListener):
+    def __init__(self):
+        self.deployment = ROS_Deployment()
+        self.host = ""
+        self.node = ""
+        self.node_alias = ""
+        print "ROSTOOLS::Parsing Deployment"
+
+    # Create a new Deployment Object
+    def enterDefine_deployment(self, ctx):
+        self.deployment = ROS_Deployment()
+
+    # Save the deployment name
+    def enterDeployment_name(self, ctx):
+        self.deployment.properties["name"] = ctx.getText()
+    
+    def enterHostname(self, ctx):
+        self.host = ctx.getText()
+        self.deployment.deployment_map[self.host] = []
+
+    def enterNode(self, ctx):
+        self.node = ctx.getText()
+
+    def enterNode_alias(self, ctx):
+        self.node_alias = ctx.getText()
+
+    def exitNode_alias(self, ctx):
+        self.deployment.deployment_map[self.host].append([self.node, self.node_alias])
+        self.node = ""
+        self.node_alias = ""
+    
+    def exitNode_host_mapping(self, ctx):
+        self.host = ""
 
 # OrderedSet recipe - because python set doesn't preserve order
 class OrderedSet(collections.MutableSet):
@@ -600,10 +641,10 @@ class OrderedSet(collections.MutableSet):
 class Workspace_Generator:
     # Main Generate function
     def generate(self, workspace, path):
-        print "GENERATOR::Generating ROS Workspace..."
+        print "ROSTOOLS::Generating ROS Workspace..."
         # Make the workspace directory
         self.workspace_dir = os.path.join(path, workspace.properties["name"])
-        print "GENERATOR::Workspace Path:", self.workspace_dir
+        print "ROSTOOLS::Workspace Path:", self.workspace_dir
         if not os.path.exists(self.workspace_dir):
             os.makedirs(self.workspace_dir)
 
@@ -623,7 +664,7 @@ class Workspace_Generator:
         for package in workspace.children:
             # Create the package directory
             self.package_path = os.path.join(self.src_path, package.properties["name"])
-            print "GENERATOR::" + package.properties["name"] + " Path: " + self.package_path
+            print "ROSTOOLS::" + package.properties["name"] + " Path: " + self.package_path
             if not os.path.exists(self.package_path):
                 os.makedirs(self.package_path)
 
@@ -838,7 +879,7 @@ class Workspace_Loader:
     # Load the business logic of component operations
     def load(self, workspace, path):
         
-        print "LOADER::Checking for existing workspace in path:", path
+        print "ROSTOOLS::Checking for existing workspace in path:", path
         self.workspace_dir = path + "/" + workspace.properties["name"]
 
         if os.path.exists(self.workspace_dir):
@@ -886,7 +927,7 @@ class Workspace_Loader:
                             node.properties["cmakelists_add_cpp"] = cpp_text                     
 
                 if os.path.exists(self.package_path):
-                    print "LOADER::Preserving code for Package: ", self.package_path
+                    print "ROSTOOLS::Preserving code for Package: ", self.package_path
 
                     self.include = self.package_path + "/include"
                     self.src = self.package_path + "/src"
@@ -1060,12 +1101,16 @@ class ROS_Project:
         # Hardware Configurations - List of all rhw objects in Project
         self.hardware_configurations = []
         # Deployment
+        self.deployments = []
+        # Deployment Path
         self.deployment_path = os.path.join(self.project_path, "03-Software-Deployment")
 
         # ROS Workspace Builder
         self.builder = ROS_Workspace_Builder()
         # Hardware Configuations Builder
         self.hardware = ROS_Hardware_Builder()
+        # Deployment Builder
+        self.deployment_builder = ROS_Deployment_Builder()
 
     def create(self):
         if not os.path.exists(self.project_path):
@@ -1100,11 +1145,11 @@ class ROS_Project:
     def parse_rhw(self, filename):
         # Read the hardware configurations model
         model = FileStream(filename)
-        # Instantiate the ROSLexer
+        # Instantiate the HostsLexer
         lexer = HostsLexer(model)
         # Generate Tokens
         stream = CommonTokenStream(lexer)
-        # Instantiate the ROSParser
+        # Instantiate the HostsParser
         parser = HostsParser(stream)
         # Parse from starting point of grammar
         tree = parser.start()
@@ -1116,6 +1161,26 @@ class ROS_Project:
 
         self.hardware_configurations.append(self.hardware.hardware_configuration)
         return self.hardware_configurations
+
+    def parse_rdp(self, filename):
+        # Read the hardware configurations model
+        model = FileStream(filename)
+        # Instantiate the DeploymentLexer
+        lexer = DeploymentLexer(model)
+        # Generate Tokens
+        stream = CommonTokenStream(lexer)
+        # Instantiate the DeploymentParser
+        parser = DeploymentParser(stream)
+        # Parse from starting point of grammar
+        tree = parser.start()
+        # Instantiate a Parse Tree Walker
+        walker = ParseTreeWalker()    
+
+        # Walk the parse tree
+        walker.walk(self.deployment_builder, tree)
+
+        self.deployments.append(self.deployment_builder.deployment)
+        return self.deployments
 
     # Check workspace directory for existing code that may
     # require preservation
@@ -1148,6 +1213,8 @@ if __name__ == "__main__":
     model = sys.argv[1]
     # Obtain the hardware configurations model
     hardware = sys.argv[2]
+    # Obtain the deployment model
+    deployment = sys.argv[3]
     # Obtain the model path
     model_path = os.path.abspath(os.path.dirname(sys.argv[1]))  
 
@@ -1160,6 +1227,9 @@ if __name__ == "__main__":
 
     # Parse the hardware configurations model
     My_Project.parse_rhw(hardware)
+
+    # Parse the deployment model
+    My_Project.parse_rdp(deployment)
 
     # Check the workspace directory for existing code that may require
     # preservation

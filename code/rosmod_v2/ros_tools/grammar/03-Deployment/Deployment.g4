@@ -9,8 +9,23 @@ grammar Deployment;
  * This is the start of the Deployment Grammar
  */
 start
-    :   (deployment)
+    :   (define_deployment)
+        (deployment)
         EOF
+    ;
+
+/*
+ * Define a Deployment
+ */
+define_deployment
+    :   'deployment' deployment_name ';'
+    ;
+
+/*
+ * Name the deployment
+ */
+deployment_name
+    :   ID
     ;
 
 /*
@@ -23,17 +38,34 @@ deployment
     ;
 
 /*
+ * Node Host Mapping
+ */
+node_host_mapping
+    :   'host' hostname
+        '{'
+            (nodes)+
+        '}'
+    ;
+
+/*
+ * Refer to a valid Host name
+ */
+hostname
+    :   ID
+    ;
+
+/*
  * Define a node-to-host mapping
  */
-node_host_mapping    
-    :   'deploy' '<' node ',' node_alias '>' 'on' host ';'
+nodes  
+    :   'deploy' node 'as' node_alias ';'
     ;
 
 /*
  * Refer to a valid ROS Node
  */
 node
-    :   ROS_NODE
+    :   ID
     ;
 
 /*
@@ -44,26 +76,11 @@ node_alias
     ;
 
 /*
- * Refer to a valid Host name
- */
-host
-    :   ID
-    ;
-
-/*
- * Valid ROS Node reference
- */
-ROS_NODE
-    :   ('a'..'z' | 'A'..'Z' | '_')
-        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '/')*
-    ;   
-
-/*
  * Valid ID
  */
 ID
-    :   ('a'..'z' | 'A'..'Z' | '_')
-        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_')*
+    :   ( 'a'..'z' | 'A'..'Z' | '_' )
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '/' )*
     ;
 
 

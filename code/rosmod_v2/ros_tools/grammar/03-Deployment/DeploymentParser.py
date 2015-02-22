@@ -11,18 +11,23 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\13\'\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
-        buf.write(u"\3\2\3\2\3\2\3\3\6\3\23\n\3\r\3\16\3\24\3\4\3\4\3\4\3")
-        buf.write(u"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\7\3\7\3")
-        buf.write(u"\7\2\2\b\2\4\6\b\n\f\2\2!\2\16\3\2\2\2\4\22\3\2\2\2\6")
-        buf.write(u"\26\3\2\2\2\b \3\2\2\2\n\"\3\2\2\2\f$\3\2\2\2\16\17\5")
-        buf.write(u"\4\3\2\17\20\7\2\2\3\20\3\3\2\2\2\21\23\5\6\4\2\22\21")
-        buf.write(u"\3\2\2\2\23\24\3\2\2\2\24\22\3\2\2\2\24\25\3\2\2\2\25")
-        buf.write(u"\5\3\2\2\2\26\27\7\3\2\2\27\30\7\7\2\2\30\31\5\b\5\2")
-        buf.write(u"\31\32\7\6\2\2\32\33\5\n\6\2\33\34\7\4\2\2\34\35\7\5")
-        buf.write(u"\2\2\35\36\5\f\7\2\36\37\7\b\2\2\37\7\3\2\2\2 !\7\t\2")
-        buf.write(u"\2!\t\3\2\2\2\"#\7\n\2\2#\13\3\2\2\2$%\7\n\2\2%\r\3\2")
-        buf.write(u"\2\2\3\24")
+        buf.write(u"\13:\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write(u"\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\3\2\3\3\3\3\3\3")
+        buf.write(u"\3\3\3\4\3\4\3\5\6\5 \n\5\r\5\16\5!\3\6\3\6\3\6\3\6\6")
+        buf.write(u"\6(\n\6\r\6\16\6)\3\6\3\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b")
+        buf.write(u"\3\b\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22")
+        buf.write(u"\2\2\62\2\24\3\2\2\2\4\30\3\2\2\2\6\34\3\2\2\2\b\37\3")
+        buf.write(u"\2\2\2\n#\3\2\2\2\f-\3\2\2\2\16/\3\2\2\2\20\65\3\2\2")
+        buf.write(u"\2\22\67\3\2\2\2\24\25\5\4\3\2\25\26\5\b\5\2\26\27\7")
+        buf.write(u"\2\2\3\27\3\3\2\2\2\30\31\7\6\2\2\31\32\5\6\4\2\32\33")
+        buf.write(u"\7\t\2\2\33\5\3\2\2\2\34\35\7\n\2\2\35\7\3\2\2\2\36 ")
+        buf.write(u"\5\n\6\2\37\36\3\2\2\2 !\3\2\2\2!\37\3\2\2\2!\"\3\2\2")
+        buf.write(u"\2\"\t\3\2\2\2#$\7\7\2\2$%\5\f\7\2%\'\7\4\2\2&(\5\16")
+        buf.write(u"\b\2\'&\3\2\2\2()\3\2\2\2)\'\3\2\2\2)*\3\2\2\2*+\3\2")
+        buf.write(u"\2\2+,\7\b\2\2,\13\3\2\2\2-.\7\n\2\2.\r\3\2\2\2/\60\7")
+        buf.write(u"\5\2\2\60\61\5\20\t\2\61\62\7\3\2\2\62\63\5\22\n\2\63")
+        buf.write(u"\64\7\t\2\2\64\17\3\2\2\2\65\66\7\n\2\2\66\21\3\2\2\2")
+        buf.write(u"\678\7\n\2\28\23\3\2\2\2\4!)")
         return buf.getvalue()
 		
 
@@ -37,28 +42,32 @@ class DeploymentParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     EOF = Token.EOF
-    T__5=1
-    T__4=2
-    T__3=3
-    T__2=4
-    T__1=5
-    T__0=6
-    ROS_NODE=7
+    T__6=1
+    T__5=2
+    T__4=3
+    T__3=4
+    T__2=5
+    T__1=6
+    T__0=7
     ID=8
     WS=9
 
-    tokenNames = [ u"<INVALID>", u"'deploy'", u"'>'", u"'on'", u"','", u"'<'", 
-                   u"';'", u"ROS_NODE", u"ID", u"WS" ]
+    tokenNames = [ u"<INVALID>", u"'as'", u"'{'", u"'deploy'", u"'deployment'", 
+                   u"'host'", u"'}'", u"';'", u"ID", u"WS" ]
 
     RULE_start = 0
-    RULE_deployment = 1
-    RULE_node_host_mapping = 2
-    RULE_node = 3
-    RULE_node_alias = 4
-    RULE_host = 5
+    RULE_define_deployment = 1
+    RULE_deployment_name = 2
+    RULE_deployment = 3
+    RULE_node_host_mapping = 4
+    RULE_hostname = 5
+    RULE_nodes = 6
+    RULE_node = 7
+    RULE_node_alias = 8
 
-    ruleNames =  [ u"start", u"deployment", u"node_host_mapping", u"node", 
-                   u"node_alias", u"host" ]
+    ruleNames =  [ u"start", u"define_deployment", u"deployment_name", u"deployment", 
+                   u"node_host_mapping", u"hostname", u"nodes", u"node", 
+                   u"node_alias" ]
 
     def __init__(self, input):
         super(DeploymentParser, self).__init__(input)
@@ -76,6 +85,10 @@ class DeploymentParser ( Parser ):
 
         def EOF(self):
             return self.getToken(DeploymentParser.EOF, 0)
+
+        def define_deployment(self):
+            return self.getTypedRuleContext(DeploymentParser.Define_deploymentContext,0)
+
 
         def deployment(self):
             return self.getTypedRuleContext(DeploymentParser.DeploymentContext,0)
@@ -101,10 +114,96 @@ class DeploymentParser ( Parser ):
         self.enterRule(localctx, 0, self.RULE_start)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 12 
+            self.state = 18 
+            self.define_deployment()
+
+            self.state = 19 
             self.deployment()
-            self.state = 13
+            self.state = 20
             self.match(self.EOF)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Define_deploymentContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(DeploymentParser.Define_deploymentContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def deployment_name(self):
+            return self.getTypedRuleContext(DeploymentParser.Deployment_nameContext,0)
+
+
+        def getRuleIndex(self):
+            return DeploymentParser.RULE_define_deployment
+
+        def enterRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.enterDefine_deployment(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.exitDefine_deployment(self)
+
+
+
+
+    def define_deployment(self):
+
+        localctx = DeploymentParser.Define_deploymentContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 2, self.RULE_define_deployment)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 22
+            self.match(self.T__3)
+            self.state = 23 
+            self.deployment_name()
+            self.state = 24
+            self.match(self.T__0)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Deployment_nameContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(DeploymentParser.Deployment_nameContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(DeploymentParser.ID, 0)
+
+        def getRuleIndex(self):
+            return DeploymentParser.RULE_deployment_name
+
+        def enterRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.enterDeployment_name(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.exitDeployment_name(self)
+
+
+
+
+    def deployment_name(self):
+
+        localctx = DeploymentParser.Deployment_nameContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_deployment_name)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 26
+            self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -143,20 +242,20 @@ class DeploymentParser ( Parser ):
     def deployment(self):
 
         localctx = DeploymentParser.DeploymentContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 2, self.RULE_deployment)
+        self.enterRule(localctx, 6, self.RULE_deployment)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 16 
+            self.state = 29 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 15 
+                self.state = 28 
                 self.node_host_mapping()
-                self.state = 18 
+                self.state = 31 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==DeploymentParser.T__5):
+                if not (_la==DeploymentParser.T__2):
                     break
 
         except RecognitionException as re:
@@ -173,16 +272,15 @@ class DeploymentParser ( Parser ):
             super(DeploymentParser.Node_host_mappingContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def node_alias(self):
-            return self.getTypedRuleContext(DeploymentParser.Node_aliasContext,0)
+        def nodes(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(DeploymentParser.NodesContext)
+            else:
+                return self.getTypedRuleContext(DeploymentParser.NodesContext,i)
 
 
-        def host(self):
-            return self.getTypedRuleContext(DeploymentParser.HostContext,0)
-
-
-        def node(self):
-            return self.getTypedRuleContext(DeploymentParser.NodeContext,0)
+        def hostname(self):
+            return self.getTypedRuleContext(DeploymentParser.HostnameContext,0)
 
 
         def getRuleIndex(self):
@@ -202,26 +300,120 @@ class DeploymentParser ( Parser ):
     def node_host_mapping(self):
 
         localctx = DeploymentParser.Node_host_mappingContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_node_host_mapping)
+        self.enterRule(localctx, 8, self.RULE_node_host_mapping)
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 20
-            self.match(self.T__5)
-            self.state = 21
-            self.match(self.T__1)
-            self.state = 22 
-            self.node()
-            self.state = 23
+            self.state = 33
             self.match(self.T__2)
-            self.state = 24 
-            self.node_alias()
-            self.state = 25
+            self.state = 34 
+            self.hostname()
+            self.state = 35
+            self.match(self.T__5)
+            self.state = 37 
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while True:
+                self.state = 36 
+                self.nodes()
+                self.state = 39 
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if not (_la==DeploymentParser.T__4):
+                    break
+
+            self.state = 41
+            self.match(self.T__1)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class HostnameContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(DeploymentParser.HostnameContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(DeploymentParser.ID, 0)
+
+        def getRuleIndex(self):
+            return DeploymentParser.RULE_hostname
+
+        def enterRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.enterHostname(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.exitHostname(self)
+
+
+
+
+    def hostname(self):
+
+        localctx = DeploymentParser.HostnameContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 10, self.RULE_hostname)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 43
+            self.match(self.ID)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class NodesContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(DeploymentParser.NodesContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def node_alias(self):
+            return self.getTypedRuleContext(DeploymentParser.Node_aliasContext,0)
+
+
+        def node(self):
+            return self.getTypedRuleContext(DeploymentParser.NodeContext,0)
+
+
+        def getRuleIndex(self):
+            return DeploymentParser.RULE_nodes
+
+        def enterRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.enterNodes(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, DeploymentListener ):
+                listener.exitNodes(self)
+
+
+
+
+    def nodes(self):
+
+        localctx = DeploymentParser.NodesContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_nodes)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 45
             self.match(self.T__4)
-            self.state = 26
-            self.match(self.T__3)
-            self.state = 27 
-            self.host()
-            self.state = 28
+            self.state = 46 
+            self.node()
+            self.state = 47
+            self.match(self.T__6)
+            self.state = 48 
+            self.node_alias()
+            self.state = 49
             self.match(self.T__0)
         except RecognitionException as re:
             localctx.exception = re
@@ -237,8 +429,8 @@ class DeploymentParser ( Parser ):
             super(DeploymentParser.NodeContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def ROS_NODE(self):
-            return self.getToken(DeploymentParser.ROS_NODE, 0)
+        def ID(self):
+            return self.getToken(DeploymentParser.ID, 0)
 
         def getRuleIndex(self):
             return DeploymentParser.RULE_node
@@ -257,11 +449,11 @@ class DeploymentParser ( Parser ):
     def node(self):
 
         localctx = DeploymentParser.NodeContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 6, self.RULE_node)
+        self.enterRule(localctx, 14, self.RULE_node)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 30
-            self.match(self.ROS_NODE)
+            self.state = 51
+            self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -296,49 +488,10 @@ class DeploymentParser ( Parser ):
     def node_alias(self):
 
         localctx = DeploymentParser.Node_aliasContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 8, self.RULE_node_alias)
+        self.enterRule(localctx, 16, self.RULE_node_alias)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 32
-            self.match(self.ID)
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class HostContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(DeploymentParser.HostContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def ID(self):
-            return self.getToken(DeploymentParser.ID, 0)
-
-        def getRuleIndex(self):
-            return DeploymentParser.RULE_host
-
-        def enterRule(self, listener):
-            if isinstance( listener, DeploymentListener ):
-                listener.enterHost(self)
-
-        def exitRule(self, listener):
-            if isinstance( listener, DeploymentListener ):
-                listener.exitHost(self)
-
-
-
-
-    def host(self):
-
-        localctx = DeploymentParser.HostContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_host)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 34
+            self.state = 53
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
