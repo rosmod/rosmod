@@ -40,7 +40,11 @@ host
     :   'host' host_name 
         '{'
             (ip_address)
-            (architecture)?
+            (username)
+            (password)
+            (architecture)
+            (init)
+            (local_sshkey)
         '}'
     ;
 
@@ -55,27 +59,87 @@ host_name
  * IP address of host
  */
 ip_address
-    :   'ip_address' '=' ADDRESS ';'
+    :   'ip_address' '=' ip_address_string
+    ;
+
+/*
+ * IP Address String
+ */
+ip_address_string
+    :   IP_ADDRESS_STRING
     ;
 
 /*
  * Architecture
  */
 architecture
-    :   'architecture' '=' ID ';'
+    :   ( 'architecture' '=' architecture_string )?
+    ;
+
+architecture_string
+    :   ID
+    ;
+
+/*
+ * Absolute path to some Init Script
+ */
+init
+    :   ( 'init' '=' init_path )?
+    ;
+
+init_path
+    :   ABSOLUTE_PATH
+    ;
+
+/*
+ * Username of host machine
+ */
+username
+    :   'username' '=' username_string
+    ;
+
+username_string
+    :   ( ID | IP_ADDRESS_STRING )
+    ;
+
+/* 
+ * Password of host machine
+ */
+password    
+    :   'password' '=' password_string
+    ;
+
+password_string
+    :   ( ID | IP_ADDRESS_STRING )
+    ;
+
+/*
+ * Absolute Path to local ssh key
+ */
+local_sshkey
+    :   ( 'sshkey' '=' sshkey_path )?
+    ;
+
+sshkey_path
+    :   ABSOLUTE_PATH
     ;
 
 /*
  * Valid IP Address
  */
-ADDRESS
-    :    ('0'..'9' | 'a'..'f' | 'A'..'f' | ':' | '.')+
+IP_ADDRESS_STRING
+    :    ( '0'..'9' | 'a'..'f' | 'A'..'F' | ':' | '.' )+
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
-    :   ('a'..'z' | 'A'..'Z' | '_')
-        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_')*
+    :   ( 'a'..'z' | 'A'..'Z' | '_' )
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
+    ;
+
+ABSOLUTE_PATH
+    :   ( '/' | '~' )
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '.' | '/' )*
     ;
 
 // White spaces and escape codes are ignored

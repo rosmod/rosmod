@@ -237,7 +237,7 @@ class ROS_Host(Drawable_Object):
         self.properties["local_sshkey"] = ""
 
 # Hardware Configuration - Group of ROS Hosts
-class Hardware_Configuration(Drawable_Object):
+class ROS_HW(Drawable_Object):
     # Initialize Hardware Configuration
     def __init__(self):
         Drawable_Object.__init__(self)
@@ -252,7 +252,7 @@ class Hardware_Configuration(Drawable_Object):
 class ROS_Workspace_Builder(ROSListener):
     def __init__(self):
         self.workspace = ROS_Workspace()
-        print "\nLISTENER::Parsing ROS Workspace"
+        print "ROSMOD_DEBUG::Parsing ROS Workspace"
 
     # Create a new workspace object
     def enterDefine_workspace(self, ctx):
@@ -494,6 +494,49 @@ class ROS_Workspace_Builder(ROSListener):
     # On exit, add the node to the list of nodes in package
     def exitRos_node(self, ctx):
         self.package.children.append(self.node)
+
+class ROS_Hardware_Builder(HostsListener):
+    def __init__(self):
+        self.hardware_configuration = ROS_HW()
+        self.host = ROS_Host()
+        print "ROSMOD_DEBUG::Parsing Hardware Configuration"
+
+    # Create a new Hardware Configuration Object
+    def enterDefine_hardware_configuration(self, ctx):
+        self.hardware_configuration = ROS_HW()
+
+    # Save the configuration name
+    def enterConfiguration_name(self, ctx):
+        self.hardware_configuration.properties["name"] = ctx.getText()
+
+    # Create a new ROS Host
+    def enterHost(self, ctx):
+        self.host = ROS_Host()
+
+    def enterHost_name(self, ctx):
+        self.host.properties["name"] = ctx.getText()
+
+    def enterIp_address_string(self, ctx):
+        self.host.properties["ip_address"] = ctx.getText()
+
+    def enterArchitecture_string(self, ctx):
+        self.host.properties["architecture"] = ctx.getText()
+
+    def enterInit_path(self, ctx):
+        self.host.properties["init"] = ctx.getText()
+        
+    def enterUsername_string(self, ctx):
+        self.host.properties["username"] = ctx.getText()
+
+    def enterPassword_string(self, ctx):
+        self.host.properties["password"] = ctx.getText()
+
+    def enterSshkey_path(self, ctx):
+        self.host.properties[""] = ctx.getText()
+
+    # Add the created host to hardware configuration children
+    def exitHost(self, ctx):
+        self.hardware_configuration.add(self.host)  
 
 # OrderedSet recipe - because python set doesn't preserve order
 class OrderedSet(collections.MutableSet):
@@ -1012,13 +1055,17 @@ class ROS_Project:
         self.workspace = ROS_Workspace()
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-ROS-Workspace")
-        # Hardware Configurations 
+        # Hardware Configurations Path
         self.hardware_configurations_path = os.path.join(self.project_path, "02-Hardware-Configuration")
+        # Hardware Configurations - List of all rhw objects in Project
+        self.hardware_configurations = []
         # Deployment
         self.deployment_path = os.path.join(self.project_path, "03-Software-Deployment")
 
         # ROS Workspace Builder
         self.builder = ROS_Workspace_Builder()
+        # Hardware Configuations Builder
+        self.hardware = ROS_Hardware_Builder()
 
     def create(self):
         if not os.path.exists(self.project_path):
@@ -1050,6 +1097,26 @@ class ROS_Project:
         self.workspace =  self.builder.workspace
         return self.workspace
 
+    def parse_rhw(self, filename):
+        # Read the hardware configurations model
+        model = FileStream(filename)
+        # Instantiate the ROSLexer
+        lexer = HostsLexer(model)
+        # Generate Tokens
+        stream = CommonTokenStream(lexer)
+        # Instantiate the ROSParser
+        parser = HostsParser(stream)
+        # Parse from starting point of grammar
+        tree = parser.start()
+        # Instantiate a Parse Tree Walker
+        walker = ParseTreeWalker()
+
+        # Walk the parse tree
+        walker.walk(self.hardware, tree)
+
+        self.hardware_configurations.append(self.hardware.hardware_configuration)
+        return self.hardware_configurations
+
     # Check workspace directory for existing code that may
     # require preservation
     def check_workspace(self):
@@ -1079,6 +1146,8 @@ if __name__ == "__main__":
 
     # Obtain the model filename
     model = sys.argv[1]
+    # Obtain the hardware configurations model
+    hardware = sys.argv[2]
     # Obtain the model path
     model_path = os.path.abspath(os.path.dirname(sys.argv[1]))  
 
@@ -1088,6 +1157,9 @@ if __name__ == "__main__":
 
     # Parse the input model
     My_Project.parse_rml(model)
+
+    # Parse the hardware configurations model
+    My_Project.parse_rhw(hardware)
 
     # Check the workspace directory for existing code that may require
     # preservation
