@@ -259,7 +259,6 @@ class ROS_Deployment(Drawable_Object):
 class ROS_Workspace_Builder(ROSListener):
     def __init__(self):
         self.workspace = ROS_Workspace()
-        print "ROSTOOLS::Parsing ROS Workspace"
 
     # Create a new workspace object
     def enterDefine_workspace(self, ctx):
@@ -506,7 +505,6 @@ class ROS_Hardware_Builder(HostsListener):
     def __init__(self):
         self.hardware_configuration = ROS_HW()
         self.host = ROS_Host()
-        print "ROSTOOLS::Parsing Hardware Configuration"
 
     # Create a new Hardware Configuration Object
     def enterDefine_hardware_configuration(self, ctx):
@@ -515,6 +513,7 @@ class ROS_Hardware_Builder(HostsListener):
     # Save the configuration name
     def enterConfiguration_name(self, ctx):
         self.hardware_configuration.properties["name"] = ctx.getText()
+        print "ROSTOOLS::Reading Hardware Configuration:", ctx.getText()
 
     # Create a new ROS Host
     def enterHost(self, ctx):
@@ -551,7 +550,6 @@ class ROS_Deployment_Builder(DeploymentListener):
         self.host = ""
         self.node = ""
         self.node_alias = ""
-        print "ROSTOOLS::Parsing Deployment"
 
     # Create a new Deployment Object
     def enterDefine_deployment(self, ctx):
@@ -560,6 +558,7 @@ class ROS_Deployment_Builder(DeploymentListener):
     # Save the deployment name
     def enterDeployment_name(self, ctx):
         self.deployment.properties["name"] = ctx.getText()
+        print "ROSTOOLS::Reading Deployment:", ctx.getText()
     
     def enterHostname(self, ctx):
         self.host = ctx.getText()
@@ -1123,6 +1122,7 @@ class ROS_Project:
                 os.makedirs(self.deployment_path)
 
     def parse_rml(self, filename):
+        print "ROSTOOLS::Parsing File:", filename
         # Read the input model
         model = FileStream(filename)
         # Instantiate the ROSLexer
@@ -1143,6 +1143,7 @@ class ROS_Project:
         return self.workspace
 
     def parse_rhw(self, filename):
+        print "ROSTOOLS::Parsing File:", filename
         # Read the hardware configurations model
         model = FileStream(filename)
         # Instantiate the HostsLexer
@@ -1163,6 +1164,7 @@ class ROS_Project:
         return self.hardware_configurations
 
     def parse_rdp(self, filename):
+        print "ROSTOOLS::Parsing File:", filename
         # Read the hardware configurations model
         model = FileStream(filename)
         # Instantiate the DeploymentLexer
@@ -1181,6 +1183,33 @@ class ROS_Project:
 
         self.deployments.append(self.deployment_builder.deployment)
         return self.deployments
+
+    # Parse all model files in all aspects of Project
+    def parse_models(self):
+        count = 0
+        for rml in os.listdir(self.workspace_path):
+            if rml.endswith(".rml"):
+                rml_file = os.path.join(self.workspace_path, rml)
+                count += 1
+                
+        if count == 0:
+            print "ROSTOOLS::No ROSMOD (.rml) file found in", self.workspace_path
+        elif count > 1:
+            print "ROSTOOLS::ERROR::There can only be one .rml file in 01-ROS-Workspace!"
+        else:
+            self.parse_rml(rml_file)
+        count = 0
+
+        for rhw in os.listdir(self.hardware_configurations_path):
+            if rhw.endswith(".rhw"):
+                rhw_file = os.path.join(self.hardware_configurations_path, rhw)
+                self.parse_rhw(rhw_file)
+
+        for rdp in os.listdir(self.deployment_path):
+            if rdp.endswith(".rdp"):
+                rdp_file = os.path.join(self.deployment_path, rdp)
+                self.parse_rdp(rdp_file)
+
 
     # Check workspace directory for existing code that may
     # require preservation
@@ -1210,31 +1239,33 @@ class ROS_Project:
 if __name__ == "__main__":
 
     # Obtain the model filename
-    model = sys.argv[1]
+    #model = sys.argv[1]
     # Obtain the hardware configurations model
-    hardware = sys.argv[2]
+    #hardware = sys.argv[2]
     # Obtain the deployment model
-    deployment = sys.argv[3]
+    #deployment = sys.argv[3]
     # Obtain the model path
-    model_path = os.path.abspath(os.path.dirname(sys.argv[1]))  
+    #model_path = os.path.abspath(os.path.dirname(sys.argv[1]))  
 
-    My_Project = ROS_Project(name="My_Project", 
-                             path="/home/jeb/Desktop/")
+    My_Project = ROS_Project(name="sample_project", 
+                             path="/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools")
     My_Project.create()
 
     # Parse the input model
-    My_Project.parse_rml(model)
+    # My_Project.parse_rml(model)
 
     # Parse the hardware configurations model
-    My_Project.parse_rhw(hardware)
+    # My_Project.parse_rhw(hardware)
 
     # Parse the deployment model
-    My_Project.parse_rdp(deployment)
+    # My_Project.parse_rdp(deployment)
+
+    My_Project.parse_models()
 
     # Check the workspace directory for existing code that may require
     # preservation
-    My_Project.check_workspace()
+    #My_Project.check_workspace()
 
     # Generate the ROS workspace pertaining to the input model
-    My_Project.generate_workspace()    
+    #My_Project.generate_workspace()    
        
