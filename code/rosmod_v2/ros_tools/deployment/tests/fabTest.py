@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-from fabric.api import env, run, sudo
+from fabric.api import *
+
+from collections import OrderedDict
 
 env.use_ssh_config = False
 
@@ -10,13 +12,17 @@ class dep_node():
         self.ipAddress = ipAddress
         self.keyFile = keyFile
 
-hosts = [dep_node('ubuntu','129.59.79.182','~/.ssh/id_rsa_jetsontk1'),
-         dep_node('ubuntu','129.59.79.66','~/.ssh/id_rsa_jetsontk1')]
+hostDict = OrderedDict()
+hostDict['jetson'] = dep_node('ubuntu','129.59.79.182','~/.ssh/id_rsa_jetsontk1')
+hostDict['bbb'] = dep_node('ubuntu','129.59.79.66','~/.ssh/id_rsa_jetsontk1')
 
+env.hosts = ['jetson','bbb']
+
+@parallel
 def jetson_testfunc():
-    for host in hosts:
-        env.key_filename = host.keyFile
-        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-        run('uname -a')
+    host = hostDict[env.host_string]
+    env.key_filename = host.keyFile
+    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+    run('uname -a')
 
-jetson_testfunc()
+execute(jetson_testfunc)
