@@ -1114,12 +1114,12 @@ class ROS_Project:
     def create(self):
         if not os.path.exists(self.project_path):
             os.makedirs(self.project_path)
-            if not os.path.exists(self.workspace_path):
-                os.makedirs(self.workspace_path)
-            if not os.path.exists(self.hardware_configurations_path):
-                os.makedirs(self.hardware_configurations_path)
-            if not os.path.exists(self.deployment_path):
-                os.makedirs(self.deployment_path)
+        if not os.path.exists(self.workspace_path):
+            os.makedirs(self.workspace_path)
+        if not os.path.exists(self.hardware_configurations_path):
+            os.makedirs(self.hardware_configurations_path)
+        if not os.path.exists(self.deployment_path):
+            os.makedirs(self.deployment_path)
 
     def parse_rml(self, filename):
         print "ROSTOOLS::Parsing File:", filename
@@ -1247,15 +1247,6 @@ class ROS_Project:
 
 if __name__ == "__main__":
 
-    # Obtain the model filename
-    #model = sys.argv[1]
-    # Obtain the hardware configurations model
-    #hardware = sys.argv[2]
-    # Obtain the deployment model
-    #deployment = sys.argv[3]
-    # Obtain the model path
-    #model_path = os.path.abspath(os.path.dirname(sys.argv[1]))  
-
     My_Project = ROS_Project(name="sample", 
                              path="/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools")
     My_Project.create()
@@ -1269,6 +1260,7 @@ if __name__ == "__main__":
     # Parse the deployment model
     # My_Project.parse_rdp(deployment)
 
+    # Parse all .rml, .rhw & .rdp files in Project
     My_Project.parse_models()
 
     # Check the workspace directory for existing code that may require
