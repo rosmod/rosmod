@@ -11,23 +11,24 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\13:\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
-        buf.write(u"\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\3\2\3\3\3\3\3\3")
-        buf.write(u"\3\3\3\4\3\4\3\5\6\5 \n\5\r\5\16\5!\3\6\3\6\3\6\3\6\6")
-        buf.write(u"\6(\n\6\r\6\16\6)\3\6\3\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b")
-        buf.write(u"\3\b\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22")
-        buf.write(u"\2\2\62\2\24\3\2\2\2\4\30\3\2\2\2\6\34\3\2\2\2\b\37\3")
-        buf.write(u"\2\2\2\n#\3\2\2\2\f-\3\2\2\2\16/\3\2\2\2\20\65\3\2\2")
-        buf.write(u"\2\22\67\3\2\2\2\24\25\5\4\3\2\25\26\5\b\5\2\26\27\7")
-        buf.write(u"\2\2\3\27\3\3\2\2\2\30\31\7\6\2\2\31\32\5\6\4\2\32\33")
-        buf.write(u"\7\t\2\2\33\5\3\2\2\2\34\35\7\n\2\2\35\7\3\2\2\2\36 ")
-        buf.write(u"\5\n\6\2\37\36\3\2\2\2 !\3\2\2\2!\37\3\2\2\2!\"\3\2\2")
-        buf.write(u"\2\"\t\3\2\2\2#$\7\7\2\2$%\5\f\7\2%\'\7\4\2\2&(\5\16")
-        buf.write(u"\b\2\'&\3\2\2\2()\3\2\2\2)\'\3\2\2\2)*\3\2\2\2*+\3\2")
-        buf.write(u"\2\2+,\7\b\2\2,\13\3\2\2\2-.\7\n\2\2.\r\3\2\2\2/\60\7")
-        buf.write(u"\5\2\2\60\61\5\20\t\2\61\62\7\3\2\2\62\63\5\22\n\2\63")
-        buf.write(u"\64\7\t\2\2\64\17\3\2\2\2\65\66\7\n\2\2\66\21\3\2\2\2")
-        buf.write(u"\678\7\n\2\28\23\3\2\2\2\4!)")
+        buf.write(u"\r?\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4")
+        buf.write(u"\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3")
+        buf.write(u"\3\3\4\3\4\3\5\6\5 \n\5\r\5\16\5!\3\6\3\6\3\6\3\6\6\6")
+        buf.write(u"(\n\6\r\6\16\6)\3\6\3\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3")
+        buf.write(u"\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4")
+        buf.write(u"\6\b\n\f\16\20\22\2\2\67\2\24\3\2\2\2\4\30\3\2\2\2\6")
+        buf.write(u"\34\3\2\2\2\b\37\3\2\2\2\n#\3\2\2\2\f-\3\2\2\2\16/\3")
+        buf.write(u"\2\2\2\20:\3\2\2\2\22<\3\2\2\2\24\25\5\4\3\2\25\26\5")
+        buf.write(u"\b\5\2\26\27\7\2\2\3\27\3\3\2\2\2\30\31\7\5\2\2\31\32")
+        buf.write(u"\5\6\4\2\32\33\7\n\2\2\33\5\3\2\2\2\34\35\7\f\2\2\35")
+        buf.write(u"\7\3\2\2\2\36 \5\n\6\2\37\36\3\2\2\2 !\3\2\2\2!\37\3")
+        buf.write(u"\2\2\2!\"\3\2\2\2\"\t\3\2\2\2#$\7\7\2\2$%\5\f\7\2%\'")
+        buf.write(u"\7\4\2\2&(\5\16\b\2\'&\3\2\2\2()\3\2\2\2)\'\3\2\2\2)")
+        buf.write(u"*\3\2\2\2*+\3\2\2\2+,\7\t\2\2,\13\3\2\2\2-.\7\f\2\2.")
+        buf.write(u"\r\3\2\2\2/\60\7\6\2\2\60\61\5\20\t\2\61\62\7\4\2\2\62")
+        buf.write(u"\63\7\3\2\2\63\64\7\b\2\2\64\65\7\13\2\2\65\66\5\22\n")
+        buf.write(u"\2\66\67\7\13\2\2\678\7\n\2\289\7\t\2\29\17\3\2\2\2:")
+        buf.write(u";\7\f\2\2;\21\3\2\2\2<=\7\f\2\2=\23\3\2\2\2\4!)")
         return buf.getvalue()
 		
 
@@ -42,18 +43,20 @@ class DeploymentParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     EOF = Token.EOF
-    T__6=1
-    T__5=2
-    T__4=3
-    T__3=4
-    T__2=5
-    T__1=6
-    T__0=7
-    ID=8
-    WS=9
+    T__8=1
+    T__7=2
+    T__6=3
+    T__5=4
+    T__4=5
+    T__3=6
+    T__2=7
+    T__1=8
+    T__0=9
+    ID=10
+    WS=11
 
-    tokenNames = [ u"<INVALID>", u"'as'", u"'{'", u"'deploy'", u"'deployment'", 
-                   u"'host'", u"'}'", u"';'", u"ID", u"WS" ]
+    tokenNames = [ u"<INVALID>", u"'alias'", u"'{'", u"'deployment'", u"'node'", 
+                   u"'host'", u"'='", u"'}'", u"';'", u"'\"'", u"ID", u"WS" ]
 
     RULE_start = 0
     RULE_define_deployment = 1
@@ -160,11 +163,11 @@ class DeploymentParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 22
-            self.match(self.T__3)
+            self.match(self.T__6)
             self.state = 23 
             self.deployment_name()
             self.state = 24
-            self.match(self.T__0)
+            self.match(self.T__1)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -255,7 +258,7 @@ class DeploymentParser ( Parser ):
                 self.state = 31 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==DeploymentParser.T__2):
+                if not (_la==DeploymentParser.T__4):
                     break
 
         except RecognitionException as re:
@@ -305,11 +308,11 @@ class DeploymentParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 33
-            self.match(self.T__2)
+            self.match(self.T__4)
             self.state = 34 
             self.hostname()
             self.state = 35
-            self.match(self.T__5)
+            self.match(self.T__7)
             self.state = 37 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
@@ -319,11 +322,11 @@ class DeploymentParser ( Parser ):
                 self.state = 39 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==DeploymentParser.T__4):
+                if not (_la==DeploymentParser.T__5):
                     break
 
             self.state = 41
-            self.match(self.T__1)
+            self.match(self.T__2)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -406,15 +409,25 @@ class DeploymentParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 45
-            self.match(self.T__4)
+            self.match(self.T__5)
             self.state = 46 
             self.node()
             self.state = 47
-            self.match(self.T__6)
-            self.state = 48 
-            self.node_alias()
+            self.match(self.T__7)
+            self.state = 48
+            self.match(self.T__8)
             self.state = 49
+            self.match(self.T__3)
+            self.state = 50
             self.match(self.T__0)
+            self.state = 51 
+            self.node_alias()
+            self.state = 52
+            self.match(self.T__0)
+            self.state = 53
+            self.match(self.T__1)
+            self.state = 54
+            self.match(self.T__2)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -452,7 +465,7 @@ class DeploymentParser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_node)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 51
+            self.state = 56
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -491,7 +504,7 @@ class DeploymentParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_node_alias)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 53
+            self.state = 58
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re

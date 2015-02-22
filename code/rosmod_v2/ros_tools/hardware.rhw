@@ -2,18 +2,18 @@ hardware_configuration Sat_Cluster_3;
 
 host Sat1
 {
-    ip_address = 19.24.4.5
-    username = bbb1
-    password = bbbros_1
+    ip_address = "19.24.4.5";
+    username = "bbb1";
+    password = "bbbros_1";
 }
 
 host Sat2
 {
-    ip_address = 10.0.0.80:e
-    username = pranav
-    password = mistborn
-    architecture = My_arch
-    init = /home/jeb/myscript.sh
-    sshkey = ~/.ssh/idrsa
+    ip_address = "10.0.0.80:e";
+    username = "pranav";
+    password = "mistborn";
+    architecture = "My_arch";
+    init = "/home/jeb/myscript.sh";
+    sshkey = "~/.ssh/idrsa";
 }
 

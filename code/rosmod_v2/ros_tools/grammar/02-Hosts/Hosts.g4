@@ -59,7 +59,7 @@ host_name
  * IP address of host
  */
 ip_address
-    :   'ip_address' '=' ip_address_string
+    :   'ip_address' '=' '"' ip_address_string '"' ';'
     ;
 
 /*
@@ -73,7 +73,7 @@ ip_address_string
  * Architecture
  */
 architecture
-    :   ( 'architecture' '=' architecture_string )?
+    :   ( 'architecture' '=' '"' architecture_string '"' ';')?
     ;
 
 architecture_string
@@ -84,7 +84,7 @@ architecture_string
  * Absolute path to some Init Script
  */
 init
-    :   ( 'init' '=' init_path )?
+    :   ( 'init' '=' '"' init_path '"' ';')?
     ;
 
 init_path
@@ -95,7 +95,7 @@ init_path
  * Username of host machine
  */
 username
-    :   'username' '=' username_string
+    :   'username' '=' '"' username_string '"' ';'
     ;
 
 username_string
@@ -106,7 +106,7 @@ username_string
  * Password of host machine
  */
 password    
-    :   'password' '=' password_string
+    :   'password' '=' '"' password_string '"' ';'
     ;
 
 password_string
@@ -117,7 +117,7 @@ password_string
  * Absolute Path to local ssh key
  */
 local_sshkey
-    :   ( 'sshkey' '=' sshkey_path )?
+    :   ( 'sshkey' '=' '"' sshkey_path '"' ';')?
     ;
 
 sshkey_path

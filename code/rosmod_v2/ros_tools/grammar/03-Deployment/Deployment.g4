@@ -58,7 +58,10 @@ hostname
  * Define a node-to-host mapping
  */
 nodes  
-    :   'deploy' node 'as' node_alias ';'
+    :   'node' node 
+        '{'
+            'alias' '=' '"' node_alias '"' ';'
+        '}'
     ;
 
 /*
