@@ -393,12 +393,15 @@ class Example(wx.Frame):
     def BuildWorkspaceContextMenu(self,cm):
         return cm
     def BuildHardwareContextMenu(self,cm):
+        cm['Add Host'] = lambda evt : self.HardwareAdd(evt,'host')
         return cm
     def BuildHostContextMenu(self,cm):
         return cm
     def BuildDeploymentContextMenu(self,cm):
+        cm['Add Host Instance'] = lambda evt : self.DeploymentAdd(evt,'host_instance')
         return cm
     def BuildHostInstanceContextMenu(self,cm):
+        cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
         return cm
     def BuildNodeInstanceContextMenu(self,cm):
         return cm
@@ -478,6 +481,35 @@ class Example(wx.Frame):
             newObj = ros_tools.ROS_Node()
         if newObj != None:
             self.GenericAdd(newObj,references,package)
+
+    def HardwareAdd(self,e,kind):
+        hw = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'host':
+            newObj = ros_tools.ROS_Host()
+        if newObj != None:
+            self.GenericAdd(newObj,references,hw)
+
+    def DeploymentAdd(self,e,kind):
+        dep = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'host_instance':
+            newObj = ros_tools.ROS_Host_Instance()
+            references = dep.properties['hardware_configuration_reference'].children
+        if newObj != None:
+            self.GenericAdd(newObj,references,dep)
+
+    def HostInstAdd(self,e,kind):
+        host = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'node_instance':
+            newObj = ros_tools.ROS_Node_Instance()
+            references = self.project.workspace.getChildrenByKind('node')
+        if newObj != None:
+            self.GenericAdd(newObj,references,host)
 
     def AspectEdit(self, e):
         info = self.GetActivePanelInfo()
