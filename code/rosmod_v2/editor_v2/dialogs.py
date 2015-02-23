@@ -23,6 +23,11 @@ def RMLGenerateDirDialog(frame,path):
     dlg.Destroy()
     return workspacePath
 
+def InfoDialog(frame, info):
+    dlg = wx.MessageDialog(frame, info, 'Info', wx.OK )
+    dlg.ShowModal()
+    dlg.Destroy()
+
 def ErrorDialog(frame, msg):
     dlg = wx.MessageDialog(frame, msg, 'Error', wx.OK | wx.ICON_ERROR)
     dlg.ShowModal()
