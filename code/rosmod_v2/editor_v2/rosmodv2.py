@@ -619,6 +619,22 @@ class Example(wx.Frame):
             self.BuildModelPage(self.DeploymentAspect,newObj,self.DeploymentAspectInfo,numPages-1)
             self.DeploymentAspect.SetSelection(numPages - 1)
     def OnDeploymentDelete(self, e):
+        '''
+        selectedPage = self.DeploymentAspect.GetSelection()
+        numPages = self.DeploymentAspect.GetPageCount()
+        pkgName = self..GetPageText(selectedPage)
+        info = self.PackageAspectInfo.GetPageInfo(pkgName)
+        pkg = info.obj
+        if pkg.kind != 'workspace':
+            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                info.canvas.ClearAll()
+                pkg.delete()
+                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
+                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
+                self.PackageAspect.DeletePage(selectedPage)
+        else:
+        dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
+        '''
         pass
 
     def OnPackageCreate(self, e):
@@ -779,9 +795,18 @@ class Example(wx.Frame):
             if inputs != OrderedDict():
                 self.filename = inputs['name']
                 self.project_path = project_path
+                self.project = ros_tools.ROS_Project()
+                self.project.new(self.filename,self.project_path)
+                self.project.workspace.properties['name'] = "Workspace"
+                newHW = ros_tools.ROS_HW()
+                newHW.properties['name'] = "Hardware"
+                self.project.hardware_configurations.append(newHW)
+                newDeployment = ros_tools.ROS_Deployment()
+                newDeployment.properties['name'] = "Deployment"
+                newDeployment.properties['hardware_configuration_reference'] = newHW
+                self.project.deployments.append(newDeployment)
+                self.BuildAspectPages()
                 self.statusbar.SetStatusText('Created new project: {} in {}'.format(self.filename,self.project_path))
-
-
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
