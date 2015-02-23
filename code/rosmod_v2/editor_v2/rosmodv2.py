@@ -12,8 +12,8 @@ import wx
 import wx.stc as stc
 import os,sys
 
-sys.path.append("../generator_v2")
-import rosgen
+sys.path.append("../ros_tools")
+import ros_tools
 
 # for ordered dictionaries
 from collections import OrderedDict
@@ -102,8 +102,8 @@ class Example(wx.Frame):
     def InitUI(self):
 
         self.fileTypes = "ROSMOD Model Files (*.rml *.rosml)|*.rosml"
-        self.model_path = ''
-        self.model = rosgen.ROS_Workspace()
+        self.project_path = ''
+        self.project = ros_tools.ROS_Project()
         self.BuildStyleDict()
 
         # build the MenuBar,Toolbar, and Statusbar
@@ -180,9 +180,9 @@ class Example(wx.Frame):
 
     def BuildPackageAspectPagesFromModel(self):
         self.PackageAspect.DeleteAllPages()
-        for pkg in self.model.workspace.children:
+        for pkg in self.project.workspace.children:
             self.BuildPackagePage(self.PackageAspect,pkg)
-        self.BuildPackagePage(self.PackageAspect,self.model.workspace)
+        self.BuildPackagePage(self.PackageAspect,self.project.workspace)
         self.PackageAspect.AdvanceSelection()
 
     def BuildPackagePage(self,parent,pkg,insertPos=-1):
@@ -424,7 +424,7 @@ class Example(wx.Frame):
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 newPkg.properties[key] = value
-            self.model.workspace.add(newPkg)
+            self.project.workspace.add(newPkg)
             numPages = self.PackageAspect.GetPageCount()
             self.BuildPackagePage(self.PackageAspect,newPkg,numPages-1)
             self.PackageAspect.SetSelection(numPages - 1)
@@ -559,42 +559,43 @@ class Example(wx.Frame):
         filename,model_path = dialogs.RMLFileDialog(
             frame = self,
             prompt ="Save Model As...", 
-            path = self.model_path,
+            path = self.project_path,
             fileTypes = self.fileTypes, 
             fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
         if filename != None and model_path != None:
             self.filename = filename
-            self.model_path = model_path
-            self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.model_path))
+            self.project_path = model_path
+            self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.project_path))
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
             frame = self,
             fileTypes = self.fileTypes,
-            path = self.model_path,
-            prompt = "Choose a model",
+            path = self.project_path,
+            prompt = "Choose a ROS Project",
             fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
         )
         if filename != None and model_path != None:
             self.filename = filename
-            self.model_path = model_path
-            self.model = rosgen.parse_model(self.model_path+'/'+self.filename)
+            self.project_path = model_path
+            # self.project = rosgen.parse_model(self.project_path+'/'+self.filename)
+            self.project.open(self.project_path)
             self.BuildPackageAspectPagesFromModel()
-            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.model_path))
+            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.project_path))
 
     def OnSave(self, e):
         filename,model_path = dialogs.RMLFileDialog(
             frame = self,
             prompt = "Save Model As...",
-            path = self.model_path,
+            path = self.project_path,
             fileTypes = self.fileTypes, 
             fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
         if filename != None and model_path != None:
             self.filename = filename
-            self.model_path = model_path
-            self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.model_path))
+            self.project_path = model_path
+            self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.project_path))
 
     def OnUndo(self, e):
         pass
@@ -641,13 +642,16 @@ class Example(wx.Frame):
     Tools Menubar Menu Functions
     '''
     def GenerateCode(self, e):
-        generate_path = dialogs.RMLGenerateDirDialog(frame=self,path=self.model_path)
+        self.project.generate_workspace()
+        self.statusbar.SetStatusText('Generated ROS Workspace')
+        '''
+        generate_path = dialogs.RMLGenerateDirDialog(frame=self,path=self.project_path)
         if generate_path != None:
             print generate_path
-            rosgen.check_workspace(self.model, generate_path)
-            rosgen.generate_workspace(self.model, generate_path)
+            rosgen.check_workspace(self.project, generate_path)
+            rosgen.generate_workspace(self.project, generate_path)
             self.statusbar.SetStatusText('Generated workspace into {}'.format(generate_path))
-        
+        '''
     def AnalyzeNetwork(self, e):
         pass
 
