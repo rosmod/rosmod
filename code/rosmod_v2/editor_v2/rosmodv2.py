@@ -320,7 +320,6 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         pkg = info.obj
         canvas = info.canvas
-        #print bbox
         self.activeObject = Object.Name
         drawable.Configure(pkg,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
@@ -636,7 +635,6 @@ class Example(wx.Frame):
             aspect.Show()
             self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
             self.activeAspect = aspect
-            print self.activeAspect
 
     def OnPackageAspect(self, e):
         self.activeAspectInfo = self.PackageAspectInfo

@@ -369,7 +369,6 @@ def Layout(dObj, topLeftPos, canvas):
          dObj.kind == "subscriber" or \
          dObj.kind == "component_instance" or \
          dObj.kind == "host" or \
-         dObj.kind == "host_instance" or \
          dObj.kind == "node_instance":
         pass
     dObj.width = maxObjWidth
@@ -397,12 +396,12 @@ def Layout(dObj, topLeftPos, canvas):
 def Configure(dObj,styleDict):
     dObj.style.Copy(styleDict[dObj.kind])
     if dObj.kind == "workspace" or \
-       dObj.kind == "hardware_configuration" or \
-       dObj.kind == "deployment" or \
-       dObj.kind == "host_instance" or \
        dObj.kind == "package" or \
        dObj.kind == "component" or \
-       dObj.kind == "node":
+       dObj.kind == "node" or \
+       dObj.kind == "hardware_configuration" or \
+       dObj.kind == "deployment" or \
+       dObj.kind == "host_instance":
         for child in dObj.children:
             Configure(child,styleDict)
     else:
