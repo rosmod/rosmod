@@ -1289,10 +1289,10 @@ class ROS_Project:
         # Walk the parse tree
         walker.walk(self.hardware, tree)
 
-        self.hardware = ROS_Hardware_Builder()
         self.hardware.hardware_configuration.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading Hardware Configuration:", self.hardware.hardware_configuration.properties["name"]
         self.hardware_configurations.append(self.hardware.hardware_configuration)
+        self.hardware = ROS_Hardware_Builder()
 
     # Parse .rdp software deployment model
     def parse_rdp(self, filename):
