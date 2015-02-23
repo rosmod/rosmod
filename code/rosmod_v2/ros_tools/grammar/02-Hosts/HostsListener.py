@@ -67,21 +67,3 @@ class HostsListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by HostsParser#configuration_name.
-    def enterConfiguration_name(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#configuration_name.
-    def exitConfiguration_name(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#define_hardware_configuration.
-    def enterDefine_hardware_configuration(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#define_hardware_configuration.
-    def exitDefine_hardware_configuration(self, ctx):
-        pass
-
-

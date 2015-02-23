@@ -531,15 +531,6 @@ class ROS_Hardware_Builder(HostsListener):
         self.hardware_configuration = ROS_HW()
         self.host = ROS_Host()
 
-    # Create a new Hardware Configuration Object
-    def enterDefine_hardware_configuration(self, ctx):
-        self.hardware_configuration = ROS_HW()
-
-    # Save the configuration name
-    def enterConfiguration_name(self, ctx):
-        self.hardware_configuration.properties["name"] = ctx.getText()
-        print "ROSTOOLS::Reading Hardware Configuration:", ctx.getText()
-
     # Create a new ROS Host
     def enterHost(self, ctx):
         self.host = ROS_Host()
@@ -558,21 +549,13 @@ class ROS_Hardware_Builder(HostsListener):
         self.hardware_configuration.add(self.host)  
 
 class ROS_Deployment_Builder(DeploymentListener):
-    def __init__(self, workspace_object, hardware_configurations_object):
+    def __init__(self, workspace_object, hardware_configurations_object, deployment_name):
         self.deployment = ROS_Deployment()
+        self.deployment.properties["name"] = deployment_name
         self.workspace = workspace_object
         self.all_hw_configs = hardware_configurations_object
         self.host_instance = None
         self.node_instance = None
-
-    # Create a new Deployment Object
-    def enterDefine_deployment(self, ctx):
-        self.deployment = ROS_Deployment()
-
-    # Save the deployment name
-    def enterDeployment_name(self, ctx):
-        self.deployment.properties["name"] = ctx.getText()
-        print "ROSTOOLS::Reading Deployment:", ctx.getText()
 
     # Using hardware configuration
     def enterHardware(self, ctx):
@@ -1281,6 +1264,8 @@ class ROS_Project:
         # Walk the parse tree
         walker.walk(self.hardware, tree)
 
+        self.hardware.hardware_configuration.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading Hardware Configuration:", self.hardware.hardware_configuration.properties["name"]
         self.hardware_configurations.append(self.hardware.hardware_configuration)
         return self.hardware_configurations
 
@@ -1302,7 +1287,8 @@ class ROS_Project:
 
         # Create a deployment builder using the 
         # update workspace & hardware configurations objects
-        self.deployment_builder = ROS_Deployment_Builder(self.workspace, self.hardware_configurations)
+        deployment_name = os.path.basename(filename.split(".")[0])
+        self.deployment_builder = ROS_Deployment_Builder(self.workspace, self.hardware_configurations, deployment_name)
 
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
@@ -1362,16 +1348,17 @@ class ROS_Project:
         workspace = Workspace_Generator()
         # Use listener_object to generate ROS workspace
         workspace.generate(self.workspace, self.workspace_path)
-'''
+
     # Generate a ROS model from a workspace object
     # Used to save an edited model
-    def generate_model(workspace, model_name, model_path):
-        # WIP - Template INCOMPLETE
-        model = str(workspace)
+    def save_workspace(self):
+        rml_namespace = {'workspace': self.workspace}
+        t = rml(searchList=[rml_workspace])
+        self.rml = str(t)
         with open(os.path.join(model_path, model_name), 'w') as temp_file:
             temp_file.write(model)
             return model
-'''
+
 
 if __name__ == "__main__":
 

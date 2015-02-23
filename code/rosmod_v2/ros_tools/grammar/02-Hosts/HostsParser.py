@@ -11,25 +11,22 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\16@\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
-        buf.write(u"\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\6\2\27\n\2\r\2\16\2")
-        buf.write(u"\30\3\2\3\2\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3")
-        buf.write(u"\5\3\5\3\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\b\3")
-        buf.write(u"\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t<\n\t\3\n\3\n\3\n\2")
-        buf.write(u"\2\13\2\4\6\b\n\f\16\20\22\2\28\2\24\3\2\2\2\4\34\3\2")
-        buf.write(u"\2\2\6 \3\2\2\2\b\"\3\2\2\2\n)\3\2\2\2\f+\3\2\2\2\16")
-        buf.write(u"\62\3\2\2\2\20;\3\2\2\2\22=\3\2\2\2\24\26\5\4\3\2\25")
-        buf.write(u"\27\5\b\5\2\26\25\3\2\2\2\27\30\3\2\2\2\30\26\3\2\2\2")
-        buf.write(u"\30\31\3\2\2\2\31\32\3\2\2\2\32\33\7\2\2\3\33\3\3\2\2")
-        buf.write(u"\2\34\35\7\6\2\2\35\36\5\6\4\2\36\37\7\n\2\2\37\5\3\2")
-        buf.write(u"\2\2 !\7\r\2\2!\7\3\2\2\2\"#\7\7\2\2#$\5\n\6\2$%\7\3")
-        buf.write(u"\2\2%&\5\f\7\2&\'\5\20\t\2\'(\7\t\2\2(\t\3\2\2\2)*\7")
-        buf.write(u"\r\2\2*\13\3\2\2\2+,\7\4\2\2,-\7\b\2\2-.\7\13\2\2./\5")
-        buf.write(u"\16\b\2/\60\7\13\2\2\60\61\7\n\2\2\61\r\3\2\2\2\62\63")
-        buf.write(u"\7\f\2\2\63\17\3\2\2\2\64\65\7\5\2\2\65\66\7\b\2\2\66")
-        buf.write(u"\67\7\13\2\2\678\5\22\n\289\7\13\2\29:\7\n\2\2:<\3\2")
-        buf.write(u"\2\2;\64\3\2\2\2;<\3\2\2\2<\21\3\2\2\2=>\7\r\2\2>\23")
-        buf.write(u"\3\2\2\2\4\30;")
+        buf.write(u"\r\65\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write(u"\4\b\t\b\3\2\6\2\22\n\2\r\2\16\2\23\3\2\3\2\3\3\3\3\3")
+        buf.write(u"\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3")
+        buf.write(u"\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\61\n\7\3\b")
+        buf.write(u"\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2/\2\21\3\2\2\2\4\27")
+        buf.write(u"\3\2\2\2\6\36\3\2\2\2\b \3\2\2\2\n\'\3\2\2\2\f\60\3\2")
+        buf.write(u"\2\2\16\62\3\2\2\2\20\22\5\4\3\2\21\20\3\2\2\2\22\23")
+        buf.write(u"\3\2\2\2\23\21\3\2\2\2\23\24\3\2\2\2\24\25\3\2\2\2\25")
+        buf.write(u"\26\7\2\2\3\26\3\3\2\2\2\27\30\7\6\2\2\30\31\5\6\4\2")
+        buf.write(u"\31\32\7\3\2\2\32\33\5\b\5\2\33\34\5\f\7\2\34\35\7\b")
+        buf.write(u"\2\2\35\5\3\2\2\2\36\37\7\f\2\2\37\7\3\2\2\2 !\7\4\2")
+        buf.write(u"\2!\"\7\7\2\2\"#\7\t\2\2#$\5\n\6\2$%\7\t\2\2%&\7\n\2")
+        buf.write(u"\2&\t\3\2\2\2\'(\7\13\2\2(\13\3\2\2\2)*\7\5\2\2*+\7\7")
+        buf.write(u"\2\2+,\7\t\2\2,-\5\16\b\2-.\7\t\2\2./\7\n\2\2/\61\3\2")
+        buf.write(u"\2\2\60)\3\2\2\2\60\61\3\2\2\2\61\r\3\2\2\2\62\63\7\f")
+        buf.write(u"\2\2\63\17\3\2\2\2\4\23\60")
         return buf.getvalue()
 		
 
@@ -44,35 +41,31 @@ class HostsParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     EOF = Token.EOF
-    T__8=1
-    T__7=2
-    T__6=3
-    T__5=4
-    T__4=5
-    T__3=6
-    T__2=7
-    T__1=8
-    T__0=9
-    IP_ADDRESS_STRING=10
-    ID=11
-    WS=12
+    T__7=1
+    T__6=2
+    T__5=3
+    T__4=4
+    T__3=5
+    T__2=6
+    T__1=7
+    T__0=8
+    IP_ADDRESS_STRING=9
+    ID=10
+    WS=11
 
     tokenNames = [ u"<INVALID>", u"'{'", u"'ip_address'", u"'architecture'", 
-                   u"'hardware_configuration'", u"'host'", u"'='", u"'}'", 
-                   u"';'", u"'\"'", u"IP_ADDRESS_STRING", u"ID", u"WS" ]
+                   u"'host'", u"'='", u"'}'", u"'\"'", u"';'", u"IP_ADDRESS_STRING", 
+                   u"ID", u"WS" ]
 
     RULE_start = 0
-    RULE_define_hardware_configuration = 1
-    RULE_configuration_name = 2
-    RULE_host = 3
-    RULE_host_name = 4
-    RULE_ip_address = 5
-    RULE_ip_address_string = 6
-    RULE_architecture = 7
-    RULE_architecture_string = 8
+    RULE_host = 1
+    RULE_host_name = 2
+    RULE_ip_address = 3
+    RULE_ip_address_string = 4
+    RULE_architecture = 5
+    RULE_architecture_string = 6
 
-    ruleNames =  [ u"start", u"define_hardware_configuration", u"configuration_name", 
-                   u"host", u"host_name", u"ip_address", u"ip_address_string", 
+    ruleNames =  [ u"start", u"host", u"host_name", u"ip_address", u"ip_address_string", 
                    u"architecture", u"architecture_string" ]
 
     def __init__(self, input):
@@ -99,10 +92,6 @@ class HostsParser ( Parser ):
                 return self.getTypedRuleContext(HostsParser.HostContext,i)
 
 
-        def define_hardware_configuration(self):
-            return self.getTypedRuleContext(HostsParser.Define_hardware_configurationContext,0)
-
-
         def getRuleIndex(self):
             return HostsParser.RULE_start
 
@@ -124,105 +113,20 @@ class HostsParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 18 
-            self.define_hardware_configuration()
-            self.state = 20 
+            self.state = 15 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 19 
+                self.state = 14 
                 self.host()
-                self.state = 22 
+                self.state = 17 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (_la==HostsParser.T__4):
                     break
 
-            self.state = 24
+            self.state = 19
             self.match(self.EOF)
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Define_hardware_configurationContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(HostsParser.Define_hardware_configurationContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def configuration_name(self):
-            return self.getTypedRuleContext(HostsParser.Configuration_nameContext,0)
-
-
-        def getRuleIndex(self):
-            return HostsParser.RULE_define_hardware_configuration
-
-        def enterRule(self, listener):
-            if isinstance( listener, HostsListener ):
-                listener.enterDefine_hardware_configuration(self)
-
-        def exitRule(self, listener):
-            if isinstance( listener, HostsListener ):
-                listener.exitDefine_hardware_configuration(self)
-
-
-
-
-    def define_hardware_configuration(self):
-
-        localctx = HostsParser.Define_hardware_configurationContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 2, self.RULE_define_hardware_configuration)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 26
-            self.match(self.T__5)
-            self.state = 27 
-            self.configuration_name()
-            self.state = 28
-            self.match(self.T__1)
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Configuration_nameContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(HostsParser.Configuration_nameContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def ID(self):
-            return self.getToken(HostsParser.ID, 0)
-
-        def getRuleIndex(self):
-            return HostsParser.RULE_configuration_name
-
-        def enterRule(self, listener):
-            if isinstance( listener, HostsListener ):
-                listener.enterConfiguration_name(self)
-
-        def exitRule(self, listener):
-            if isinstance( listener, HostsListener ):
-                listener.exitConfiguration_name(self)
-
-
-
-
-    def configuration_name(self):
-
-        localctx = HostsParser.Configuration_nameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_configuration_name)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 30
-            self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -266,22 +170,22 @@ class HostsParser ( Parser ):
     def host(self):
 
         localctx = HostsParser.HostContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 6, self.RULE_host)
+        self.enterRule(localctx, 2, self.RULE_host)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 32
+            self.state = 21
             self.match(self.T__4)
-            self.state = 33 
+            self.state = 22 
             self.host_name()
-            self.state = 34
-            self.match(self.T__8)
+            self.state = 23
+            self.match(self.T__7)
 
-            self.state = 35 
+            self.state = 24 
             self.ip_address()
 
-            self.state = 36 
+            self.state = 25 
             self.architecture()
-            self.state = 37
+            self.state = 26
             self.match(self.T__2)
         except RecognitionException as re:
             localctx.exception = re
@@ -317,10 +221,10 @@ class HostsParser ( Parser ):
     def host_name(self):
 
         localctx = HostsParser.Host_nameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 8, self.RULE_host_name)
+        self.enterRule(localctx, 4, self.RULE_host_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 39
+            self.state = 28
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -357,21 +261,21 @@ class HostsParser ( Parser ):
     def ip_address(self):
 
         localctx = HostsParser.Ip_addressContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_ip_address)
+        self.enterRule(localctx, 6, self.RULE_ip_address)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 41
-            self.match(self.T__7)
-            self.state = 42
+            self.state = 30
+            self.match(self.T__6)
+            self.state = 31
             self.match(self.T__3)
-            self.state = 43
-            self.match(self.T__0)
-            self.state = 44 
-            self.ip_address_string()
-            self.state = 45
-            self.match(self.T__0)
-            self.state = 46
+            self.state = 32
             self.match(self.T__1)
+            self.state = 33 
+            self.ip_address_string()
+            self.state = 34
+            self.match(self.T__1)
+            self.state = 35
+            self.match(self.T__0)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -406,10 +310,10 @@ class HostsParser ( Parser ):
     def ip_address_string(self):
 
         localctx = HostsParser.Ip_address_stringContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_ip_address_string)
+        self.enterRule(localctx, 8, self.RULE_ip_address_string)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 48
+            self.state = 37
             self.match(self.IP_ADDRESS_STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -446,25 +350,25 @@ class HostsParser ( Parser ):
     def architecture(self):
 
         localctx = HostsParser.ArchitectureContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_architecture)
+        self.enterRule(localctx, 10, self.RULE_architecture)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 57
+            self.state = 46
             _la = self._input.LA(1)
-            if _la==HostsParser.T__6:
-                self.state = 50
-                self.match(self.T__6)
-                self.state = 51
+            if _la==HostsParser.T__5:
+                self.state = 39
+                self.match(self.T__5)
+                self.state = 40
                 self.match(self.T__3)
-                self.state = 52
-                self.match(self.T__0)
-                self.state = 53 
-                self.architecture_string()
-                self.state = 54
-                self.match(self.T__0)
-                self.state = 55
+                self.state = 41
                 self.match(self.T__1)
+                self.state = 42 
+                self.architecture_string()
+                self.state = 43
+                self.match(self.T__1)
+                self.state = 44
+                self.match(self.T__0)
 
 
         except RecognitionException as re:
@@ -501,10 +405,10 @@ class HostsParser ( Parser ):
     def architecture_string(self):
 
         localctx = HostsParser.Architecture_stringContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_architecture_string)
+        self.enterRule(localctx, 12, self.RULE_architecture_string)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 59
+            self.state = 48
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re

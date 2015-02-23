@@ -9,24 +9,8 @@ grammar Hosts;
  * This is the start of the Hosts Grammar
  */
 start
-    :   (define_hardware_configuration)
-    	(host)+
+    :   (host)+
         EOF
-    ;
-
-/*
- * Define a Hardware Configuration
- * E.g. hardware_configuration 3-Sat-Cluster
- */
-define_hardware_configuration
-    :   'hardware_configuration' configuration_name ';'
-    ;
-
-/*
- * Name of the hardware configuration
- */
-configuration_name
-    :   ID
     ;
 
 /*

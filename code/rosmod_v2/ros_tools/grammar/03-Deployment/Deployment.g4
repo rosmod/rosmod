@@ -9,24 +9,9 @@ grammar Deployment;
  * This is the start of the Deployment Grammar
  */
 start
-    :   (define_deployment)
-        (use_hardware_config)
+    :   (use_hardware_config)
         (deployment)
         EOF
-    ;
-
-/*
- * Define a Deployment
- */
-define_deployment
-    :   'deployment ' deployment_name ';'
-    ;
-
-/*
- * Name the deployment
- */
-deployment_name
-    :  (' ')* (IDENT (' ')* )*
     ;
 
 /*
