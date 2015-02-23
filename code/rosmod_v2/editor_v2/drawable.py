@@ -23,6 +23,12 @@ def getConnectionPoint(objPos,objSize,objType):
         pass
     elif objType == "workspace":
         pass
+    elif objType == "host":
+        pass
+    elif objType == "hardware_configuration":
+        pass
+    elif objType == "software_deployment":
+        pass
     conPos = None
     if x > 0 and y > 0:
         conPos = wx.Point(x,y)
@@ -168,7 +174,11 @@ class Drawable_Object:
         self.parent.children = [x for x in self.parent.children if x != self]
 
     def deleteAllRefs(self):
-        if self.kind == 'component':
+        if self.kind == 'host':
+            pass
+        elif self.kind == 'node':
+            pass
+        elif self.kind == 'component':
             nodes = self.parent.getChildrenByKind('node')
             for node in nodes:
                 node.children = [x for x in node.children if x.properties['component_reference'] != self]
@@ -211,6 +221,10 @@ class Drawable_Object:
                 for pkg in self.children:
                     retKids.extend([child for child in pkg.children if child.kind == kind])
             return retKids
+        elif self.kind == 'hardware_configuration':
+            pass
+        elif self.kind == 'software_deployment':
+            pass
         else:
             return [child for child in self.children if child.kind == kind]
 
@@ -286,7 +300,12 @@ def Layout(dObj, topLeftPos, canvas):
     maxObjHeight = minSize[1]
     dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
     childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
-    if dObj.kind == "workspace":
+    if dObj.kind == "workspace" or \
+       dObj.kind == "component" or \
+       dObj.kind == "node" or \
+       dObj.kind == "hardware_configuration" or \
+       dObj.kind == "software_deployment" or \
+       dObj.kind == "host_instance":
         maxWidth = 0
         for obj in dObj.children:
             w,h = Layout(obj,childPos,canvas)
@@ -335,22 +354,15 @@ def Layout(dObj, topLeftPos, canvas):
             childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth += maxWidth
-    elif dObj.kind == "component" or dObj.kind == "node":
-        maxWidth = 0
-        for obj in dObj.children:
-            w,h = Layout(obj,childPos,canvas)
-            childPos[1] -= (padding[1] + h)
-            maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth = max(maxObjWidth, maxWidth)    
-    elif dObj.kind == "message" or dObj.kind == "service" or dObj.kind == "timer" or dObj.kind == "client" or dObj.kind == "server" or dObj.kind == "publisher" or dObj.kind == "subscriber" or dObj.kind == "component_instance":
-        pass
-    elif dObj.kind == "hardware":
-        pass
-    elif dObj.kind == "deployment":
-        pass
-    else:
+        maxObjWidth += maxWidth    
+    elif dObj.kind == "message" or \
+         dObj.kind == "service" or \
+         dObj.kind == "timer" or \
+         dObj.kind == "client" or \
+         dObj.kind == "server" or \
+         dObj.kind == "publisher" or \
+         dObj.kind == "subscriber" or \
+         dObj.kind == "component_instance":
         pass
     dObj.width = maxObjWidth
     dObj.height = maxObjHeight
@@ -376,7 +388,13 @@ def Layout(dObj, topLeftPos, canvas):
 
 def Configure(dObj,styleDict):
     dObj.style.Copy(styleDict[dObj.kind])
-    if dObj.kind == "workspace" or dObj.kind == "package" or dObj.kind == "component" or dObj.kind == "node":
+    if dObj.kind == "workspace" or \
+       dObj.kind == "hardware_configuration" or \
+       dObj.kind == "software_deployment" or \
+       dObj.kind == "host_instance" or \
+       dObj.kind == "package" or \
+       dObj.kind == "component" or \
+       dObj.kind == "node":
         for child in dObj.children:
             Configure(child,styleDict)
     else:
