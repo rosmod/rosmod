@@ -616,26 +616,23 @@ class Example(wx.Frame):
                 newObj.properties[key] = value
             self.project.deployments.append(newObj)
             numPages = self.DeploymentAspect.GetPageCount()
+            if numPages <= 0:
+                numPages = 1
             self.BuildModelPage(self.DeploymentAspect,newObj,self.DeploymentAspectInfo,numPages-1)
             self.DeploymentAspect.SetSelection(numPages - 1)
+                
     def OnDeploymentDelete(self, e):
-        '''
         selectedPage = self.DeploymentAspect.GetSelection()
         numPages = self.DeploymentAspect.GetPageCount()
-        pkgName = self..GetPageText(selectedPage)
-        info = self.PackageAspectInfo.GetPageInfo(pkgName)
-        pkg = info.obj
-        if pkg.kind != 'workspace':
-            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
-                info.canvas.ClearAll()
-                pkg.delete()
-                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
-                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
-                self.PackageAspect.DeletePage(selectedPage)
-        else:
-        dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
-        '''
-        pass
+        objName = self.DeploymentAspect.GetPageText(selectedPage)
+        info = self.DeploymentAspectInfo.GetPageInfo(objName)
+        obj = info.obj
+        if ConfirmDialog(self,"Delete {}?".format(objName)):
+            info.canvas.ClearAll()
+            self.project.deployments = [x for x in self.project.deployments if x != obj]
+            self.DeploymentAspect.GetPage(selectedPage).DestroyChildren()
+            self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
+            self.DeploymentAspect.DeletePage(selectedPage)
 
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
@@ -824,17 +821,28 @@ class Example(wx.Frame):
             self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.project_path))
 
     def OnSave(self, e):
-        filename,model_path = dialogs.RMLFileDialog(
-            frame = self,
-            prompt = "Save Model As...",
-            path = self.project_path,
-            fileTypes = self.fileTypes, 
-            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
-        )
-        if filename != None and model_path != None:
-            self.filename = filename
-            self.project_path = model_path
-            self.statusbar.SetStatusText('Saved model {} into {}'.format(self.filename,self.project_path))
+        self.project.save()
+
+    def OnSaveAs(self, e):
+        dlgDict = OrderedDict([('name',self.project.project_name)])
+        ed = dialogs.EditDialog( self,
+                                 editDict = dlgDict,
+                                 title = 'Choose New Project Name',
+                                 style = wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            project_path = dialogs.RMLDirectoryDialog(
+                frame = self,
+                prompt ="Choose New Project Location", 
+                path = self.project_path,
+            )
+            if project_path != None:
+                self.filename = inputs['name']
+                self.project_path = project_path
+                self.project.save(self.filename,self.project_path)
+                self.BuildAspectPages()
+                self.statusbar.SetStatusText('Saved project as: {} in {}'.format(self.filename,self.project_path))
 
     def OnUndo(self, e):
         pass
@@ -902,9 +910,10 @@ class Example(wx.Frame):
 
         # normal file operations menu
         self.fileMenu = wx.Menu()
-        self.newMI = self.fileMenu.Append(wx.ID_NEW, '&New', 'New ROSML Model')
-        self.openMI = self.fileMenu.Append(wx.ID_OPEN, '&Open', 'Open existing ROSML Model')
-        self.saveMI = self.fileMenu.Append(wx.ID_SAVE, '&Save', 'Save current ROSML Model')
+        self.newMI = self.fileMenu.Append(wx.ID_NEW, '&New', 'New Project')
+        self.openMI = self.fileMenu.Append(wx.ID_OPEN, '&Open', 'Open existing Project')
+        self.saveMI = self.fileMenu.Append(wx.ID_SAVE, '&Save', 'Save current Project')
+        self.saveAsMI = self.fileMenu.Append(wx.ID_SAVEAS, 'Save &As', 'Save current Project As...')
         self.fileMenu.AppendSeparator()
         self.quitMI = wx.MenuItem(self.fileMenu, wx.ID_EXIT, '&Quit\tCtrl+W', 'Quit ROSMOD')
         self.fileMenu.AppendItem(self.quitMI)
@@ -968,6 +977,7 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnNew, self.newMI)
         self.Bind(wx.EVT_MENU, self.OnOpen, self.openMI)
         self.Bind(wx.EVT_MENU, self.OnSave, self.saveMI)
+        self.Bind(wx.EVT_MENU, self.OnSaveAs, self.saveAsMI)
         self.Bind(wx.EVT_MENU, self.OnQuit, self.quitMI)
         # aspect menu
         self.Bind(wx.EVT_MENU, self.OnPackageAspect, self.packageAMI)
