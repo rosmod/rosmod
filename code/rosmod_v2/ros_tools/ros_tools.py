@@ -97,7 +97,7 @@ from nodeMain import *
 from CMakeLists import *
 from rml import *
 from rhw import *
-# from rdp import *
+from rdp import *
 
 # Find Drawable_Object
 exeName = sys.argv[0]
@@ -279,6 +279,7 @@ class ROS_Node_Instance(Drawable_Object):
         # Alias name given to Node instance
         self.properties["name"] = ""
         # Reference to actual node object
+        self.properties["node_reference_string"] = ""
         self.properties["node_reference"] = None
         self.properties["cmdline_arguments"] = "" 
 
@@ -625,6 +626,7 @@ class ROS_Deployment_Builder(DeploymentListener):
         self.node_alias = ctx.getText()
 
     def enterNode(self, ctx):
+        self.node_instance.properties["node_reference_string"] = ctx.getText()
         package = ctx.getText().split(".")[0]
         node = ctx.getText().split(".")[1]
         found_package = False
@@ -1370,7 +1372,7 @@ class ROS_Project:
         self.rml = str(t)
         with open(os.path.join(path, self.workspace.properties["name"] + ".rml"), 'w') as temp_file:
             temp_file.write(self.rml)
-        print "ROSTOOLS::" + self.workspace.properties["name"] + ".rml " + "saved at " + path
+        print "ROSTOOLS::Saving " + self.workspace.properties["name"] + ".rml " + "at " + path
 
     # Generate a ROS Hardware Configurations model (.rhw file) from a ROS_HW Object
     def save_rhw(self, path=""):
@@ -1383,14 +1385,20 @@ class ROS_Project:
             with open(os.path.join(path, hw.properties["name"] + ".rhw"), 'w') as temp_file:
                 temp_file.write(self.rhw)
                 temp_file.close()
-            print "ROSTOOLS::" + hw.properties["name"] + ".rhw " + "saved at " + path
+            print "ROSTOOLS::Saving " + hw.properties["name"] + ".rhw " + "at " + path
 
     # Generate a ROS Deployment model (.rdp file) from a ROS_Deployment Object
     def save_rdp(self, path=""):
         if path == "":
             path = self.deployment_path
-        rdp_namespace = {'' : self.deployments}
-                         
+        for dp in self.deployments:
+            rdp_namespace = {'deployment' : dp}
+            t = rdp(searchList=[rdp_namespace])
+            self.rdp = str(t)
+            with open(os.path.join(path, dp.properties["name"] + ".rdp"), 'w') as temp_file:
+                temp_file.write(self.rdp)
+                temp_file.close()
+            print "ROSTOOLS::Saving " + dp.properties["name"] + ".rdp " + "at " + path        
 
 if __name__ == "__main__":
 
@@ -1399,4 +1407,5 @@ if __name__ == "__main__":
     My_Project.generate_workspace()
     My_Project.save_rml()
     My_Project.save_rhw()
+    My_Project.save_rdp()
        

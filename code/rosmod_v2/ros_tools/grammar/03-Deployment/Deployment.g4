@@ -64,7 +64,7 @@ properties
             (username)
             (local_sshkey)
             (init)
-            (env_variables)
+            (env_variables)*
         '}'
     ;
 
@@ -105,7 +105,7 @@ init_path
  * Environment Variables
  */
 env_variables
-    :   ('ENV ' env_name(' ')* '='(' ')* '"' env_value '"'(' ')* ';')*
+    :   ('ENV ' env_name(' ')* '='(' ')* '"' env_value '"'(' ')* ';')
     ;
 
 /*
