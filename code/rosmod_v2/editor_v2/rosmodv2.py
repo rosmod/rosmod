@@ -62,7 +62,7 @@ class TBInfo():
         self.name = name
         self.obj = obj
 
-class PkgPageInfo():
+class AspectPageInfo():
     def __init__(self, name, obj, canvas, msgWindow):
         self.name = name
         self.obj = obj
@@ -154,6 +154,65 @@ class Example(wx.Frame):
         self.activeAspect = self.PackageAspect
         self.activeAspectInfo = self.PackageAspectInfo
     '''
+    Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
+    '''
+    def BuildHardwareAspect(self):
+        self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
+                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
+        self.HardwareAspect.Hide()
+    def AddHardwareAspectToolbar(self):
+        createTBinfo = TBInfo(
+            name="create",
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                     shortHelpString="New Hardware Configuration"))
+        deleteTBinfo = TBInfo(
+            name="delete",
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                     shortHelpString="Remove Hardware Configuration"))
+        self.HardwareAspectInfo.AddTBInfo(createTBinfo)
+        self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
+        self.Bind(wx.EVT_TOOL, self.OnHardwareCreate, createTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnHardwareDelete, deleteTBinfo.obj)
+        self.toolbar.Realize()
+    def RemoveHardwareAspectToolbar(self):
+        for name,tbinfo in self.HardwareAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.RemoveTool(tbinfo.obj.GetId())
+            self.HardwareAspectInfo.DelTBInfo(name)
+        self.toolbar.Realize()
+
+    '''
+    Deployment Aspect: panel with toolbar and notebook for configuring and managing
+    node deployment onto hosts (and roscore deployment)
+    '''        
+    def BuildDeploymentAspect(self):
+        self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
+                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
+        self.DeploymentAspect.Hide()
+    def AddDeploymentAspectToolbar(self):
+        createTBinfo = TBInfo(
+            name="create",
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                     shortHelpString="New Deployment"))
+        deleteTBinfo = TBInfo(
+            name="delete",
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                     shortHelpString="Remove Deployment"))
+        self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
+        self.toolbar.Realize()
+    def RemoveDeploymentAspectToolbar(self):
+        for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.RemoveTool(tbinfo.obj.GetId())
+            self.DeploymentAspectInfo.DelTBInfo(name)
+        self.toolbar.Realize()
+
+    '''
     Package Aspect: panel with toolbar and notebook for managing packages
     '''
     def BuildPackageAspect(self):
@@ -187,14 +246,36 @@ class Example(wx.Frame):
             self.PackageAspectInfo.DelTBInfo(name)
         self.toolbar.Realize()
 
-    def BuildPackageAspectPagesFromModel(self):
+    def BuildAspectPages(self):
+        self.BuildPackageAspectPages()
+        self.BuildHardwareAspectPages()
+        self.BuildDeploymentAspectPages()
+    def BuildPackageAspectPages(self):
         self.PackageAspect.DeleteAllPages()
         for pkg in self.project.workspace.children:
-            self.BuildPackagePage(self.PackageAspect,pkg)
-        self.BuildPackagePage(self.PackageAspect,self.project.workspace)
+            self.BuildModelPage( parent = self.PackageAspect,
+                                 model = pkg,
+                                 aspectInfo = self.PackageAspectInfo)
+        self.BuildModelPage( parent = self.PackageAspect,
+                             model = self.project.workspace,
+                             aspectInfo = self.PackageAspectInfo)
         self.PackageAspect.AdvanceSelection()
+    def BuildHardwareAspectPages(self):
+        self.HardwareAspect.DeleteAllPages()
+        for hw in self.project.hardware_configurations:
+            self.BuildModelPage( parent = self.HardwareAspect,
+                                 model = hw,
+                                 aspectInfo = self.HardwareAspectInfo)
+        self.DeploymentAspect.AdvanceSelection()
+    def BuildDeploymentAspectPages(self):
+        self.DeploymentAspect.DeleteAllPages()
+        for dep in self.project.deployments:
+            self.BuildModelPage( parent = self.DeploymentAspect,
+                                 model = dep,
+                                 aspectInfo = self.DeploymentAspectInfo)
+        self.DeploymentAspect.AdvanceSelection()
 
-    def BuildPackagePage(self,parent,pkg,insertPos=-1):
+    def BuildModelPage(self,parent,model,aspectInfo,insertPos=-1):
         newPage = wx.Panel(parent)
         navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "BEIGE")
         canvas = navCanvas.Canvas
@@ -206,17 +287,16 @@ class Example(wx.Frame):
         panelSizer.Add(msgWindow, 1, wx.EXPAND | wx.ALL | wx.ALIGN_BOTTOM ) 
         newPage.SetSizer(panelSizer)
 
-        pageInfo = PkgPageInfo(name=pkg.properties['name'],obj=pkg,canvas=canvas,msgWindow=msgWindow)
-        self.PackageAspectInfo.AddPageInfo(pageInfo)
+        pageInfo = AspectPageInfo(name=model.properties['name'],obj=model,canvas=canvas,msgWindow=msgWindow)
+        aspectInfo.AddPageInfo(pageInfo)
         if insertPos == -1:
-            self.PackageAspect.AddPage( newPage, pkg.properties['name'] )
+            parent.AddPage( newPage, model.properties['name'] )
         else:
-            self.PackageAspect.InsertPage( insertPos, newPage, pkg.properties["name"])
-        self.PackageAspect.AdvanceSelection()
+            parent.InsertPage( insertPos, newPage, model.properties["name"])
+        parent.AdvanceSelection()
         canvas.InitAll()
-        drawable.Configure(pkg,self.styleDict)
-        self.DrawModel(pkg,canvas)
-        canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
+        drawable.Configure(model,self.styleDict)
+        self.DrawModel(model,canvas)
 
     def DrawModel(self, model, canvas):
         canvas.UnBindAll()
@@ -269,20 +349,9 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = Object.Name
-        self.PopupMenu(ContextMenu(canvas,self.BuildAspectContextMenu(self.activeObject)))
+        self.PopupMenu(ContextMenu(canvas,self.AspectContextMenu(self.activeObject)))
 
-    def BuildAspectContextMenu(self, obj):
-        cm = OrderedDict()
-        if self.activeAspect == self.PackageAspect:
-            cm = self.BuildPkgContextMenu(obj)
-        elif self.activeAspect == self.HardwareAspect:
-            cm = self.BuildHWContextMenu(obj)
-        elif self.activeAspect == self.DeploymentAspect:
-            cm = self.BuildDeploymentContextMenu(obj)
-        return cm
-
-    def BuildPkgContextMenu(self, obj):
-        print obj
+    def AspectContextMenu(self, obj):
         cm = OrderedDict()
         cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
         cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
@@ -294,6 +363,16 @@ class Example(wx.Frame):
             cm = self.BuildPackageContextMenu(cm)
         elif obj.kind == 'workspace':
             cm = self.BuildWorkspaceContextMenu(cm)
+        elif obj.kind == 'hardware_configuration':
+            cm = self.BuildHardwareContextMenu(cm)
+        elif obj.kind == 'host':
+            cm = self.BuildHostContextMenu(cm)
+        elif obj.kind == 'deployment':
+            cm = self.BuildDeploymentContextMenu(cm)
+        elif obj.kind == 'host_instance':
+            cm = self.BuildHostInstanceContextMenu(cm)
+        elif obj.kind == 'node_instance':
+            cm = self.BuildNodeInstanceContextMenu(cm)
         return cm
 
     def BuildCompContextMenu(self,cm):
@@ -306,13 +385,23 @@ class Example(wx.Frame):
     def BuildNodeContextMenu(self,cm):
         cm['Add Component Instance'] = lambda evt : self.NodeAdd(evt,'component_instance')
         return cm
-    def BuildPackageContextMenu(self,cm):
+    def BuildPackageContextMenu(self, cm):
         cm['Add Message'] = lambda evt : self.PackageAdd(evt,'message')
         cm['Add Service'] = lambda evt : self.PackageAdd(evt,'service')
         cm['Add Component Definition'] = lambda evt : self.PackageAdd(evt,'component')
         cm['Add Node'] = lambda evt : self.PackageAdd(evt,'node')
         return cm
     def BuildWorkspaceContextMenu(self,cm):
+        return cm
+    def BuildHardwareContextMenu(self,cm):
+        return cm
+    def BuildHostContextMenu(self,cm):
+        return cm
+    def BuildDeploymentContextMenu(self,cm):
+        return cm
+    def BuildHostInstanceContextMenu(self,cm):
+        return cm
+    def BuildNodeInstanceContextMenu(self,cm):
         return cm
 
     def GenericAdd(self,newObj,refs,parent):
@@ -440,6 +529,16 @@ class Example(wx.Frame):
             dialogs.ErrorDialog(self,"Cannot delete workspace!")
         self.activeObject = None
 
+    def OnHardwareCreate(self, e):
+        pass
+    def OnHardwareDelete(self, e):
+        pass
+        
+    def OnDeploymentCreate(self, e):
+        pass
+    def OnDeploymentDelete(self, e):
+        pass
+
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
         newPkg.properties['name'] = "New Package"
@@ -508,23 +607,8 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = info.obj
-        self.PopupMenu(ContextMenu(canvas,self.BuildAspectContextMenu(self.activeObject)))
+        self.PopupMenu(ContextMenu(canvas,self.AspectContextMenu(self.activeObject)))
 
-    '''
-    Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
-    '''
-    def BuildHardwareAspect(self):
-        self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
-                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-        self.HardwareAspect.Hide()
-    '''
-    Deployment Aspect: panel with toolbar and notebook for configuring and managing
-    node deployment onto hosts (and roscore deployment)
-    '''        
-    def BuildDeploymentAspect(self):
-        self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
-                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-        self.DeploymentAspect.Hide()
     '''
     Aspect Menubar Menu functions
     '''
@@ -533,6 +617,8 @@ class Example(wx.Frame):
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
         self.RemovePackageAspectToolbar()
+        self.RemoveHardwareAspectToolbar()
+        self.RemoveDeploymentAspectToolbar()
 
     def ShowAspect(self,aspect):
         if self.shvw.IsChecked():
@@ -550,11 +636,13 @@ class Example(wx.Frame):
         self.HideAllAspects()
         self.ShowAspect(self.HardwareAspect)
         self.activeAspectInfo = self.HardwareAspectInfo
+        self.AddHardwareAspectToolbar()
 
     def OnDeploymentAspect(self, e):
         self.HideAllAspects()
         self.ShowAspect(self.DeploymentAspect)
         self.activeAspectInfo = self.DeploymentAspectInfo
+        self.AddDeploymentAspectToolbar()
         
     '''
     View Menu Functions
@@ -615,9 +703,8 @@ class Example(wx.Frame):
         if filename != None and model_path != None:
             self.filename = filename
             self.project_path = model_path
-            # self.project = ros_tools.parse_model(self.project_path+'/'+self.filename)
             self.project.open(self.project_path)
-            self.BuildPackageAspectPagesFromModel()
+            self.BuildAspectPages()
             self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.project_path))
 
     def OnSave(self, e):
@@ -828,7 +915,48 @@ class Example(wx.Frame):
         clientIcon = wx.Bitmap('icons/model/clientIcon.png')
         serverIcon = wx.Bitmap('icons/model/serverIcon.png')
         compInstIcon = wx.Bitmap('icons/model/compInstIcon.png')
+        hostIcon = wx.Bitmap('icons/model/bbb.png')
+        hostInstIcon = wx.Bitmap('icons/model/bbb.png')
 
+        '''
+        STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
+        '''
+        HardwareStyle = drawable.Draw_Style(icon=None, 
+                              font=font, 
+                                       method=drawable.Draw_Method.ICON, 
+                                       offset = pkgOffset,
+                              placement=drawable.Text_Placement.TOP,
+                                       overlay = OrderedDict() )
+        HostStyle = drawable.Draw_Style(icon=hostIcon,
+                                   font=font, 
+                                   method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
+                                   placement=drawable.Text_Placement.TOP,
+                                   overlay = OrderedDict() )
+        '''
+        STYLES USED FOR DEPLOYMENT CONFIGURATION OBJECTS
+        '''
+        DeploymentStyle = drawable.Draw_Style(icon=None, 
+                              font=font, 
+                                       method=drawable.Draw_Method.ICON, 
+                                       offset = pkgOffset,
+                              placement=drawable.Text_Placement.TOP,
+                                       overlay = OrderedDict() )
+        NodeInstStyle = drawable.Draw_Style(icon=None,
+                               font=font, 
+                               method=drawable.Draw_Method.ROUND_RECT, 
+                                       minSize = minSize,
+                               placement=drawable.Text_Placement.RIGHT,
+                                        overlay = OrderedDict([('fillColor','TURQUOISE')]) )
+        HostInstStyle = drawable.Draw_Style(icon=hostInstIcon,
+                                   font=font, 
+                                   method=drawable.Draw_Method.ICON, 
+                                       minSize = minSize,
+                                   placement=drawable.Text_Placement.TOP,
+                                   overlay = OrderedDict() )
+        '''
+        STYLES USED FOR SOFTWARE CONFIGURATION OBJECTS
+        '''
         WrkStyle = drawable.Draw_Style(icon=None, 
                               font=font, 
                                        method=drawable.Draw_Method.ICON, 
@@ -903,18 +1031,6 @@ class Example(wx.Frame):
                                        minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict() )
-        HardwareStyle = drawable.Draw_Style(icon=None, 
-                                   font=font, 
-                                   method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                                   placement=drawable.Text_Placement.TOP,
-                                   overlay = OrderedDict() )
-        DeploymentStyle = drawable.Draw_Style(icon=None, 
-                                     font=font, 
-                                     method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                                     placement=drawable.Text_Placement.TOP,
-                                     overlay = OrderedDict() )
 
         self.styleDict["workspace"] = WrkStyle
         self.styleDict["package"] = PkgStyle
@@ -928,8 +1044,11 @@ class Example(wx.Frame):
         self.styleDict["server"] = SerStyle
         self.styleDict["node"] = NodeStyle
         self.styleDict["component_instance"] = CompInstStyle
-        self.styleDict["hardware"] = HardwareStyle
+        self.styleDict["hardware_configuration"] = HardwareStyle
+        self.styleDict["host"] = HostStyle
         self.styleDict["deployment"] = DeploymentStyle
+        self.styleDict["host_instance"] = HostInstStyle
+        self.styleDict["node_instance"] = NodeInstStyle
 
 def main():
     ex = wx.App()
