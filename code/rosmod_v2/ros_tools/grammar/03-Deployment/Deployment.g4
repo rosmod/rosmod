@@ -41,9 +41,10 @@ deployment
  * Node Host Mapping
  */
 node_host_mapping
-    :   'host' hostname
+    :   'host_instance' hostname
         '{'
-            (nodes)+
+            (properties)
+	        (node_instances)
         '}'
     ;
 
@@ -55,12 +56,89 @@ hostname
     ;
 
 /*
+ * Host instance properties
+ */
+properties
+    :   'properties'
+        '{'
+            (username)
+            (local_sshkey)
+            (init)
+            (env_variables)
+        '}'
+    ;
+
+/*
+ * Username of host machine
+ */
+username
+    :   'username' '=' '"' username_string '"' ';'
+    ;
+
+username_string
+    :   ID
+    ;
+
+/*
+ * Absolute Path to local ssh key
+ */
+local_sshkey
+    :   ( 'sshkey' '=' '"' sshkey_path '"' ';')?
+    ;
+
+sshkey_path
+    :   ABSOLUTE_PATH
+    ;
+
+/*
+ * Absolute path to some Init Script
+ */
+init
+    :   ( 'init' '=' '"' init_path '"' ';')?
+    ;
+
+init_path
+    :   ABSOLUTE_PATH
+    ;
+
+/*
+ * Environment Variables
+ */
+env_variables
+    :   ('ENV' env_name '=' env_value ';')*
+    ;
+
+/*
+ * Name of an environment variable
+ */
+env_name
+    :   ID
+    ;
+
+/*
+ * Value of an environment variable
+ */
+env_value
+    :   ID
+    ;
+
+/*
+ * Node Instances deployed on host
+ */
+node_instances
+    :   'nodes'
+        '{'
+            (nodes)+
+        '}'
+    ;
+
+/*
  * Define a node-to-host mapping
  */
 nodes  
-    :   'node' node 
+    :   'node_instance' node_alias
         '{'
-            'alias' '=' '"' node_alias '"' ';'
+            'reference' '=' '"' node '"' ';'
         '}'
     ;
 
@@ -84,6 +162,14 @@ node_alias
 ID
     :   ( 'a'..'z' | 'A'..'Z' | '_' )
         ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '/' )*
+    ;
+
+/*
+ * Valid Absolute Path
+ */
+ABSOLUTE_PATH
+    :   ( '/' | '~' )
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '.' | '/' )*
     ;
 
 

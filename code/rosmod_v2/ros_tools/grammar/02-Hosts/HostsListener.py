@@ -4,12 +4,12 @@ from antlr4 import *
 # This class defines a complete listener for a parse tree produced by HostsParser.
 class HostsListener(ParseTreeListener):
 
-    # Enter a parse tree produced by HostsParser#username_string.
-    def enterUsername_string(self, ctx):
+    # Enter a parse tree produced by HostsParser#ip_address.
+    def enterIp_address(self, ctx):
         pass
 
-    # Exit a parse tree produced by HostsParser#username_string.
-    def exitUsername_string(self, ctx):
+    # Exit a parse tree produced by HostsParser#ip_address.
+    def exitIp_address(self, ctx):
         pass
 
 
@@ -31,12 +31,21 @@ class HostsListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by HostsParser#init.
-    def enterInit(self, ctx):
+    # Enter a parse tree produced by HostsParser#start.
+    def enterStart(self, ctx):
         pass
 
-    # Exit a parse tree produced by HostsParser#init.
-    def exitInit(self, ctx):
+    # Exit a parse tree produced by HostsParser#start.
+    def exitStart(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by HostsParser#ip_address_string.
+    def enterIp_address_string(self, ctx):
+        pass
+
+    # Exit a parse tree produced by HostsParser#ip_address_string.
+    def exitIp_address_string(self, ctx):
         pass
 
 
@@ -58,15 +67,6 @@ class HostsListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by HostsParser#password.
-    def enterPassword(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#password.
-    def exitPassword(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by HostsParser#configuration_name.
     def enterConfiguration_name(self, ctx):
         pass
@@ -76,84 +76,12 @@ class HostsListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by HostsParser#local_sshkey.
-    def enterLocal_sshkey(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#local_sshkey.
-    def exitLocal_sshkey(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#ip_address.
-    def enterIp_address(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#ip_address.
-    def exitIp_address(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#username.
-    def enterUsername(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#username.
-    def exitUsername(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#password_string.
-    def enterPassword_string(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#password_string.
-    def exitPassword_string(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#start.
-    def enterStart(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#start.
-    def exitStart(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#ip_address_string.
-    def enterIp_address_string(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#ip_address_string.
-    def exitIp_address_string(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#init_path.
-    def enterInit_path(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#init_path.
-    def exitInit_path(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by HostsParser#define_hardware_configuration.
     def enterDefine_hardware_configuration(self, ctx):
         pass
 
     # Exit a parse tree produced by HostsParser#define_hardware_configuration.
     def exitDefine_hardware_configuration(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by HostsParser#sshkey_path.
-    def enterSshkey_path(self, ctx):
-        pass
-
-    # Exit a parse tree produced by HostsParser#sshkey_path.
-    def exitSshkey_path(self, ctx):
         pass
 
 
