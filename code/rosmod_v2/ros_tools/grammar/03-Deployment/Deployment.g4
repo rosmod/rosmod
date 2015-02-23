@@ -10,6 +10,7 @@ grammar Deployment;
  */
 start
     :   (define_deployment)
+        (use_hardware_config)
         (deployment)
         EOF
     ;
@@ -25,7 +26,21 @@ define_deployment
  * Name the deployment
  */
 deployment_name
-    :   ID
+    :   IDENT
+    ;
+
+/*
+ * Use a specific hardware configuration
+ */
+use_hardware_config
+    :   'using' hardware ';'
+    ;
+
+/*
+ * Hardware Config
+ */
+hardware
+    :    IDENT
     ;
 
 /*
@@ -52,7 +67,7 @@ node_host_mapping
  * Refer to a valid Host name
  */
 hostname
-    :   ID
+    :   IDENT
     ;
 
 /*
@@ -76,7 +91,7 @@ username
     ;
 
 username_string
-    :   ID
+    :   IDENT
     ;
 
 /*
@@ -105,21 +120,21 @@ init_path
  * Environment Variables
  */
 env_variables
-    :   ('ENV' env_name '=' env_value ';')*
+    :   ('ENV' env_name '=' '"' env_value '"' ';')*
     ;
 
 /*
  * Name of an environment variable
  */
 env_name
-    :   ID
+    :   IDENT
     ;
 
 /*
  * Value of an environment variable
  */
 env_value
-    :   ID
+    :   IDENT
     ;
 
 /*
@@ -139,6 +154,7 @@ nodes
     :   'node_instance' node_alias
         '{'
             'reference' '=' '"' node '"' ';'
+            ('cmdline_arguments' '=' '"' arguments '"' ';')?
         '}'
     ;
 
@@ -146,22 +162,29 @@ nodes
  * Refer to a valid ROS Node
  */
 node
-    :   ID
+    :   IDENT
+    ;
+
+/*
+ * Command Line Arguments
+ */
+arguments
+    :   IDENT
     ;
 
 /*
  * Define an alias to ROS Node
  */
 node_alias
-    :   ID
+    :   IDENT
     ;
 
 /*
  * Valid ID
  */
-ID
-    :   ( 'a'..'z' | 'A'..'Z' | '_' )
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '/' )*
+IDENT
+    :   ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_')
+        ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/')+
     ;
 
 /*
@@ -174,10 +197,14 @@ ABSOLUTE_PATH
 
 
 // White spaces and escape codes are ignored
-WS
-    :   ( (' ')*
+EC
+    :   ( (' ')+
         | '\t'
         | '\r'
         | '\n'
         ) -> channel(HIDDEN)
+    ;
+
+WS 
+    :   (' ')
     ;

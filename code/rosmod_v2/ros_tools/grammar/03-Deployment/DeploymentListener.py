@@ -31,6 +31,15 @@ class DeploymentListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by DeploymentParser#hardware.
+    def enterHardware(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#hardware.
+    def exitHardware(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by DeploymentParser#env_name.
     def enterEnv_name(self, ctx):
         pass
@@ -40,21 +49,21 @@ class DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by DeploymentParser#hostname.
-    def enterHostname(self, ctx):
-        pass
-
-    # Exit a parse tree produced by DeploymentParser#hostname.
-    def exitHostname(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by DeploymentParser#init.
     def enterInit(self, ctx):
         pass
 
     # Exit a parse tree produced by DeploymentParser#init.
     def exitInit(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by DeploymentParser#hostname.
+    def enterHostname(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#hostname.
+    def exitHostname(self, ctx):
         pass
 
 
@@ -103,6 +112,15 @@ class DeploymentListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by DeploymentParser#arguments.
+    def enterArguments(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#arguments.
+    def exitArguments(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by DeploymentParser#start.
     def enterStart(self, ctx):
         pass
@@ -136,6 +154,15 @@ class DeploymentListener(ParseTreeListener):
 
     # Exit a parse tree produced by DeploymentParser#node_host_mapping.
     def exitNode_host_mapping(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by DeploymentParser#use_hardware_config.
+    def enterUse_hardware_config(self, ctx):
+        pass
+
+    # Exit a parse tree produced by DeploymentParser#use_hardware_config.
+    def exitUse_hardware_config(self, ctx):
         pass
 
 

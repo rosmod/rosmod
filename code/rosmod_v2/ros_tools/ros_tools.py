@@ -230,12 +230,6 @@ class ROS_Host(Drawable_Object):
         self.properties["name"] = ""
         self.properties["ip_address"] = ""
         self.properties["architecture"] = ""
-        # Absolute path to some start up script
-        self.properties["init"] = ""
-        self.properties["username"] = ""
-        self.properties["password"] = ""
-        # Absolute path to a local ssh key file
-        self.properties["local_sshkey"] = ""
 
 # Hardware Configuration - Group of ROS Hosts
 class ROS_HW(Drawable_Object):
@@ -250,9 +244,40 @@ class ROS_Deployment(Drawable_Object):
     # Initialize Deployment
     def __init__(self):
         Drawable_Object.__init__(self)
-        self.kind = "software_deployment"
+        self.kind = "deployment"
         self.properties["name"] = ""
-        self.deployment_map = OrderedDict()
+        self.properties["hardware_configuration_reference"] = None
+
+# Host Instances in a Deployment
+class ROS_Host_Instance(Drawable_Object):
+    # Initialize Host Instance
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "host_instance"
+        self.properties["name"] = ""
+        # Reference to actual host object
+        self.properties["host_reference"] = None
+        # Username of host
+        self.properties["username"] = ""
+        # Path to ssh key to access host
+        self.properties["sshkey"] = ""
+        # Absolute path to some start up script
+        self.properties["init"] = ""
+        # Environment Variables per host instance
+        # [[env_name1, env_value1], [env_name2, env_value2], ..]
+        self.properties["env_variables"] = []
+ 
+# Node Instances in Deployment per Host Instance
+class ROS_Node_Instance(Drawable_Object):
+    # Initialize ROS Node Instance
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "node_instance"
+        # Alias name given to Node instance
+        self.properties["name"] = ""
+        # Reference to actual node object
+        self.properties["node_reference"] = None
+        self.properties["cmdline_arguments"] = "" 
 
 # Ros Workspace Builder
 # Builds a ROS Workspace Object from .rml file
@@ -528,28 +553,17 @@ class ROS_Hardware_Builder(HostsListener):
     def enterArchitecture_string(self, ctx):
         self.host.properties["architecture"] = ctx.getText()
 
-    def enterInit_path(self, ctx):
-        self.host.properties["init"] = ctx.getText()
-        
-    def enterUsername_string(self, ctx):
-        self.host.properties["username"] = ctx.getText()
-
-    def enterPassword_string(self, ctx):
-        self.host.properties["password"] = ctx.getText()
-
-    def enterSshkey_path(self, ctx):
-        self.host.properties[""] = ctx.getText()
-
     # Add the created host to hardware configuration children
     def exitHost(self, ctx):
         self.hardware_configuration.add(self.host)  
 
 class ROS_Deployment_Builder(DeploymentListener):
-    def __init__(self):
+    def __init__(self, workspace_object, hardware_configurations_object):
         self.deployment = ROS_Deployment()
-        self.host = ""
-        self.node = ""
-        self.node_alias = ""
+        self.workspace = workspace_object
+        self.all_hw_configs = hardware_configurations_object
+        self.host_instance = None
+        self.node_instance = None
 
     # Create a new Deployment Object
     def enterDefine_deployment(self, ctx):
@@ -559,24 +573,89 @@ class ROS_Deployment_Builder(DeploymentListener):
     def enterDeployment_name(self, ctx):
         self.deployment.properties["name"] = ctx.getText()
         print "ROSTOOLS::Reading Deployment:", ctx.getText()
-    
-    def enterHostname(self, ctx):
-        self.host = ctx.getText()
-        self.deployment.deployment_map[self.host] = []
 
-    def enterNode(self, ctx):
-        self.node = ctx.getText()
+    # Using hardware configuration
+    def enterHardware(self, ctx):
+        found = False
+        for config in self.all_hw_configs:
+            if config.properties["name"] == ctx.getText():
+                print "ROSTOOLS::Using Hardware Configuration:", ctx.getText()
+                self.deployment.properties["hardware_configuration_reference"] = config
+                found = True
+        if found == False:
+            print "ROSTOOLS::ERROR::Invalid Hardware Configuration used in Deployment"
+
+    # Create a new host instance
+    def enterNode_host_mapping(self, ctx):
+        self.host_instance = ROS_Host_Instance()
+    
+    # Find host object ref from host name
+    def enterHostname(self, ctx):
+        self.host_instance.properties["name"] = ctx.getText()
+        if self.deployment.properties["hardware_configuration_reference"] != None:
+            for hardware in self.deployment.properties["hardware_configuration_reference"].children:
+                if hardware.properties["name"] == ctx.getText():
+                    self.host_instance.properties["host_reference"] = hardware
+        else:
+            print "ROSTOOLS::ERROR::Hardware Configuration Reference is set to None"
+
+    # Username to login to host
+    def enterUsername_string(self, ctx):
+        self.host_instance.properties["username"] = ctx.getText()
+
+    # SSH Key to login to host
+    def enterSshkey_path(self, ctx):
+        self.host_instance.properties["sshkey"] = ctx.getText()
+
+    # Init script to run on host
+    def enterInit_path(self, ctx):
+        self.host_instance.properties["init"] = ctx.getText()
+
+    # Environment variables to set on host
+    def enterEnv_variables(self, ctx):
+        env_name = ""
+        env_value = ""
+        for child in ctx.getChildren():
+            context = str(type(child))
+            if "Env_nameContext" in context:
+                env_name = child.getText()
+            elif "Env_valueContext" in context:
+                env_value = child.getText()
+        if env_name != "" and env_value != "":
+            self.host_instance.properties["env_variables"].append([env_name, env_value])
+        else:
+            print "ROSTOOLS::ERROR::Invalid Environment Variable!"
+
+    def enterNodes(self, ctx):
+        self.node_instance = ROS_Node_Instance()
 
     def enterNode_alias(self, ctx):
+        self.node_instance.properties["name"] = ctx.getText()
         self.node_alias = ctx.getText()
 
-    def exitNode_alias(self, ctx):
-        self.deployment.deployment_map[self.host].append([self.node, self.node_alias])
-        self.node = ""
-        self.node_alias = ""
-    
-    def exitNode_host_mapping(self, ctx):
-        self.host = ""
+    def enterNode(self, ctx):
+        package = ctx.getText().split("/")[0]
+        node = ctx.getText().split("/")[1]
+        found_package = False
+        found_node = False
+
+        # For all packages in workspace
+        for child in self.workspace.children:
+            # Find the referenced package
+            if child.properties["name"] == package:
+                found_package = True
+                # For all nodes in package
+                for node_ref in child.getChildrenByKind("node"):
+                    # Find the referenced node
+                    if node_ref.properties["name"] == node:
+                        self.node_instance.properties["node_reference"] = node_ref
+                        found_node = True
+
+        if found_package != True or found_node != True:
+            print "ROSTOOLS::ERROR::Invalid Package or Node Name"
+
+    def enterArguments(self, ctx):
+        self.node_instance.properties["cmdline_arguments"] = ctx.getText()
 
 # OrderedSet recipe - because python set doesn't preserve order
 class OrderedSet(collections.MutableSet):
@@ -1109,7 +1188,7 @@ class ROS_Project:
         # Hardware Configuations Builder
         self.hardware = ROS_Hardware_Builder()
         # Deployment Builder
-        self.deployment_builder = ROS_Deployment_Builder()
+        self.deployment_builder = None
 
     # Create a new ROSMOD Project
     def create(self):
@@ -1142,21 +1221,19 @@ class ROS_Project:
             for sd in reversed(sub_directories):
                 project_directories.append(sd)
             del project_directories[-1]
+            
             # Find subdirectories
             sd_count = 0
             for pd in project_directories:
                 if "01-Software-Configuration" in pd:
-                    print "ROSTOOLS::Found Software Configuration:", pd
                     sd_count += 1
                 elif "02-Hardware-Configuration" in pd:
-                    print "ROSTOOLS::Found Hardware Configuration:", pd
                     sd_count += 1
                 elif "03-Deployment" in pd:
-                    print "ROSTOOLS::Found Deployment:", pd
                     sd_count += 1
 
             # If all is well, reinitialize the project with the right name & path
-            if sd_count == 3:
+            if sd_count >= 3:
                 self.__init__(name=os.path.basename(project_path), path=project_path)
                 self.parse_models()
             else:
@@ -1223,6 +1300,10 @@ class ROS_Project:
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()    
 
+        # Create a deployment builder using the 
+        # update workspace & hardware configurations objects
+        self.deployment_builder = ROS_Deployment_Builder(self.workspace, self.hardware_configurations)
+
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
 
@@ -1242,7 +1323,7 @@ class ROS_Project:
         elif count > 1:
             print "ROSTOOLS::ERROR::There can only be one .rml file in 01-ROS-Workspace!"
         else:
-            self.parse_rml(rml_file)
+            self.workspace = self.parse_rml(rml_file)
         count = 0
 
         for rhw in os.listdir(self.hardware_configurations_path):
@@ -1297,23 +1378,4 @@ if __name__ == "__main__":
     My_Project = ROS_Project()
     My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
     My_Project.generate_workspace()
-
-    # Parse the input model
-    # My_Project.parse_rml(model)
-
-    # Parse the hardware configurations model
-    # My_Project.parse_rhw(hardware)
-
-    # Parse the deployment model
-    # My_Project.parse_rdp(deployment)
-
-    # Parse all .rml, .rhw & .rdp files in Project
-    #My_Project.parse_models()
-
-    # Check the workspace directory for existing code that may require
-    # preservation
-    #My_Project.check_workspace()
-
-    # Generate the ROS workspace pertaining to the input model
-    #My_Project.generate_workspace()    
        
