@@ -286,8 +286,9 @@ class ROS_Node_Instance(Drawable_Object):
 # Ros Workspace Builder
 # Builds a ROS Workspace Object from .rml file
 class ROS_Workspace_Builder(ROSListener):
-    def __init__(self):
+    def __init__(self, parent_project):
         self.workspace = ROS_Workspace()
+        self.workspace.parent = parent_project
 
     # Create a new ROS Package object
     def enterRos_packages(self, ctx):
@@ -523,8 +524,9 @@ class ROS_Workspace_Builder(ROSListener):
         self.package.children.append(self.node)
 
 class ROS_Hardware_Builder(HostsListener):
-    def __init__(self):
+    def __init__(self, parent_project):
         self.hardware_configuration = ROS_HW()
+        self.hardware_configuration.parent = parent_project
         self.host = ROS_Host()
 
     # Create a new ROS Host
@@ -545,8 +547,9 @@ class ROS_Hardware_Builder(HostsListener):
         self.hardware_configuration.add(self.host)  
 
 class ROS_Deployment_Builder(DeploymentListener):
-    def __init__(self, workspace_object, hardware_configurations_object, deployment_name):
+    def __init__(self, workspace_object, hardware_configurations_object, deployment_name, parent_project):
         self.deployment = ROS_Deployment()
+        self.deployment.parent = parent_project
         self.deployment.properties["name"] = deployment_name
         self.workspace = workspace_object
         self.all_hw_configs = hardware_configurations_object
@@ -1177,9 +1180,9 @@ class ROS_Project:
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
 
         # ROS Workspace Builder
-        self.builder = ROS_Workspace_Builder()
+        self.builder = ROS_Workspace_Builder(self)
         # Hardware Configuations Builder
-        self.hardware = ROS_Hardware_Builder()
+        self.hardware = ROS_Hardware_Builder(self)
         # Deployment Builder
         self.deployment_builder = None
 
@@ -1292,7 +1295,7 @@ class ROS_Project:
         self.hardware.hardware_configuration.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading Hardware Configuration:", self.hardware.hardware_configuration.properties["name"]
         self.hardware_configurations.append(self.hardware.hardware_configuration)
-        self.hardware = ROS_Hardware_Builder()
+        self.hardware = ROS_Hardware_Builder(self)
 
     # Parse .rdp software deployment model
     def parse_rdp(self, filename):
@@ -1313,7 +1316,7 @@ class ROS_Project:
         # Create a deployment builder using the 
         # update workspace & hardware configurations objects
         deployment_name = os.path.basename(filename.split(".")[0])
-        self.deployment_builder = ROS_Deployment_Builder(self.workspace, self.hardware_configurations, deployment_name)
+        self.deployment_builder = ROS_Deployment_Builder(self.workspace, self.hardware_configurations, deployment_name, self)
 
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
