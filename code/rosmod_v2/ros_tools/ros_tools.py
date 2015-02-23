@@ -566,6 +566,13 @@ class ROS_Deployment_Builder(DeploymentListener):
     # Create a new host instance
     def enterNode_host_mapping(self, ctx):
         self.host_instance = ROS_Host_Instance()
+
+    # Add host instance to self.deployment.children
+    def exitNode_host_mapping(self, ctx):
+        if self.host_instance != None:
+            self.deployment.add(self.host_instance)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Host Instance in Deployment"
     
     # Find host object ref from host name
     def enterHostname(self, ctx):
