@@ -167,17 +167,28 @@ class Example(wx.Frame):
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
         # create / delete packages
-        self.toolbar.AddSeparator()
         createTBinfo = TBInfo(
             name="create",
-            obj=self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New Package"))
+            obj=self.toolbar.CreateTool(wx.ID_ANY, label='', 
+                                        bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                        shortHelp="New Package"))
         deleteTBinfo = TBInfo(
             name="delete",
-            obj=self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/texit.png'), shortHelp="Remove Package"))
+            obj=self.toolbar.CreateTool(wx.ID_ANY, label='', 
+                                        bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                        shortHelp="Remove Package"))
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
         self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
+    def AddPackageAspectToolbar(self):
+        for name,obj in self.PackageAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.AddTool(obj)
+        self.toolbar.Realize()
+    def RemovePackageAspectToolbar(self):
+        for name,obj in self.PackageAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.RemoveTool(obj)
+        self.toolbar.Realize()
 
     def BuildPackageAspectPagesFromModel(self):
         self.PackageAspect.DeleteAllPages()
@@ -524,6 +535,7 @@ class Example(wx.Frame):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
+        self.RemovePackageAspectToolbar()
 
     def ShowAspect(self,aspect):
         if self.shvw.IsChecked():
@@ -535,6 +547,7 @@ class Example(wx.Frame):
         self.HideAllAspects()
         self.ShowAspect(self.PackageAspect)
         self.activeAspectInfo = self.PackageAspectInfo
+        self.AddPackageAspectToolbar()
 
     def OnHardwareAspect(self, e):
         self.HideAllAspects()
@@ -789,6 +802,7 @@ class Example(wx.Frame):
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.AddSeparator()
         self.tb_term = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tterm.png'), shortHelp="Terminal")
+        self.toolbar.AddSeparator()
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
