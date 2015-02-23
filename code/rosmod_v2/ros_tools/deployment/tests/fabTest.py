@@ -42,10 +42,7 @@ def testfunc():
         envVarStr += " export {}={}".format(key,value)
     with prefix(envVarStr):
         for executable in host.executables:
-            run('echo $ROS_MASTER_URI')
-            run('echo $ROS_IP')
-            run('{}'.format(executable))
+            run('dtach -n `mktemp -u /tmp/dtach.XXXX` {}'.format(executable))
             run('ps aux | grep {}'.format(executable))
-            #run('echo $ROS_MAIN')
 
 execute(testfunc)
