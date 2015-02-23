@@ -1,7 +1,6 @@
-workspace $workspace.properties["name"]
-
 #if $workspace.children != []
 #for $package in $workspace.children
+// ROS Package - $package.properties["name"]
 package $package.properties["name"]
 {
 #if $package.getChildrenByKind("message") != []
@@ -71,32 +70,24 @@ package $package.properties["name"]
             provides $server.properties["service_reference"].properties["name"];
 #end for
 #end if	
-
 #if $component.getChildrenByKind("client") != []
 #for $client in $component.getChildrenByKind("client")
-	    requires $client.properties["service_reference"].properties["name"];
-#end for
+	    requires $client.properties["service_reference"].properties["name"];#end for
 #end if	
-
 #if $component.getChildrenByKind("publisher") != []
 #for $pb in $component.getChildrenByKind("publisher")
-	    publisher<$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];     
-#end for
+	    publisher<$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];#end for
 #end if	
-
 #if $component.getChildrenByKind("subscriber") != []
 #for $sb in $component.getChildrenByKind("subscriber")
-     	    subscriber<$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];
-#end for
+     	    subscriber<$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];#end for
 #end if	
-
 #if $component.getChildrenByKind("timer") != []
 #for $timer in $component.getChildrenByKind("timer")
 	    timer $timer.properties["name"]
 	    {
 	        period = $timer.properties["period"]$timer.properties["unit"];
-	    }
-#end for
+	    }#end for
 #end if	    
 	}
 #end for

@@ -95,6 +95,7 @@ from component_hpp import *
 from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
+from rml import *
 
 # Find Drawable_Object
 exeName = sys.argv[0]
@@ -1346,13 +1347,15 @@ class ROS_Project:
 
     # Generate a ROS model from a workspace object
     # Used to save an edited model
-    def save_workspace(self):
+    def save_rml(self, path=""):
+        if path == "":
+            path = self.workspace_path
         rml_namespace = {'workspace': self.workspace}
-        t = rml(searchList=[rml_workspace])
+        t = rml(searchList=[rml_namespace])
         self.rml = str(t)
-        with open(os.path.join(model_path, model_name), 'w') as temp_file:
-            temp_file.write(model)
-            return model
+        print "ROSTOOLS::Saving Workspace at " + path 
+        with open(os.path.join(path, self.workspace.properties["name"] + ".rml"), 'w') as temp_file:
+            temp_file.write(self.rml)
 
 
 if __name__ == "__main__":
@@ -1360,4 +1363,5 @@ if __name__ == "__main__":
     My_Project = ROS_Project()
     My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
     My_Project.generate_workspace()
+    My_Project.save_rml()
        

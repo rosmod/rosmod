@@ -1,89 +1,77 @@
-//New ROS Package - Package_1
+// ROS Package - Package_1
 package Package_1
 {
-    // Set of ROS messages
+    // Set of ROS Messages
     messages 
     {
         // ROS msg - ComponentName
-	msg ComponentName
-	{
-	    string name;	    
-	}
-
+        msg ComponentName
+        {
+            string name;
+        } 
     }
 
-    // Set of ROS services
+    // Set of ROS Services
     services
     {
         // ROS srv - ComponentService
-	srv ComponentService
-	{
-	     request
-	     {
-		string operation;
-	     }
+        srv ComponentService
+        {
+            request
+            {
+                string operation;
+            }
 
-	     response
-	     {
-		string name;
-	     }		
-	}
+            response
+            {
+                string name;
+            }
+        }
     }
 
     // Set of ROS Components
     components
     {
-        // ROS component - Component_1
-        component Component_1
+        // ROS Component - Component_1
+	component
 	{
 	    publisher<ComponentName> Component_1_publisher;
-	    subscriber<ComponentName> Component_1_subscriber;	
-	
+     	    subscriber<ComponentName> Component_1_subscriber;
 	    timer Timer0
 	    {
-            	period = 0.5s;	        		
-            }
+	        period = 0.5s;
+	    }
 	}
-
-        // ROS component - Component_2
-        component Component_2
+        // ROS Component - Component_2
+	component
 	{
             provides ComponentService;
-	    publisher<ComponentName> Component_2_publisher;	
-	
+	    publisher<ComponentName> Component_2_publisher;
 	    timer Timer0
 	    {
-            	period = 1.0s;	        		
-            }
+	        period = 1.0s;
+	    }
 	}
-
-        // ROS component - Component_3
-        component Component_3
+        // ROS Component - Component_3
+	component
 	{
-            requires ComponentService;
-	
+	    requires ComponentService;
 	    timer Timer0
 	    {
-            	period = 2.0s;	        		
-            }
+	        period = 2.0s;
+	    }
 	}
     }
 
     // Set of ROS Nodes in this package
-    nodes 
+    nodes
     {
-	node Ros_node
+        node Ros_node 
 	{
-	    // Instantiating components in ROS node
-	    component<Component_1> Component_1_i;
-	    component<Component_2> Component_2_i;
-	    component<Component_3> Component_3_i;	
+            // Instantiating components in ROS node
+     	    component<Component_1> Component_1_i;
+     	    component<Component_2> Component_2_i;
+     	    component<Component_3> Component_3_i;
 	}
     }
-
 }
-
-
-
-
-
