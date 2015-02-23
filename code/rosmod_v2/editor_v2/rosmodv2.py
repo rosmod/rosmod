@@ -101,7 +101,7 @@ class Example(wx.Frame):
     
     def InitUI(self):
 
-        self.fileTypes = "ROSMOD Model Files (*.rml *.rosml)|*.rosml"
+        self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = ''
         self.project = ros_tools.ROS_Project()
         self.BuildStyleDict()
@@ -169,12 +169,12 @@ class Example(wx.Frame):
         # create / delete packages
         createTBinfo = TBInfo(
             name="create",
-            obj=self.toolbar.CreateTool(wx.ID_ANY, label='', 
+            obj=self.toolbar.AddLabelTool(wx.ID_ANY, label='', 
                                         bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
                                         shortHelp="New Package"))
         deleteTBinfo = TBInfo(
             name="delete",
-            obj=self.toolbar.CreateTool(wx.ID_ANY, label='', 
+            obj=self.toolbar.AddLabelTool(wx.ID_ANY, label='', 
                                         bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                         shortHelp="Remove Package"))
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
