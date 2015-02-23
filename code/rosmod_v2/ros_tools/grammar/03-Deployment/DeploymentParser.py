@@ -11,7 +11,7 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\27\u018a\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
+        buf.write(u"\31\u018a\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
         buf.write(u"\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t")
         buf.write(u"\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22")
         buf.write(u"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\3\2\3\2\3\2")
@@ -234,12 +234,15 @@ class DeploymentParser ( Parser ):
     IDENT=19
     ABSOLUTE_PATH=20
     WS=21
+    COMMENT=22
+    LINE_COMMENT=23
 
     tokenNames = [ u"<INVALID>", u"'reference '", u"'cmdline_arguments '", 
                    u"'='", u"'node_instance '", u"';'", u"'using '", u"'nodes'", 
                    u"'sshkey '", u"' '", u"'{'", u"'username '", u"'ENV '", 
                    u"'host_instance '", u"'init '", u"'properties'", u"'/'", 
-                   u"'}'", u"'\"'", u"IDENT", u"ABSOLUTE_PATH", u"WS" ]
+                   u"'}'", u"'\"'", u"IDENT", u"ABSOLUTE_PATH", u"WS", u"COMMENT", 
+                   u"LINE_COMMENT" ]
 
     RULE_start = 0
     RULE_use_hardware_config = 1

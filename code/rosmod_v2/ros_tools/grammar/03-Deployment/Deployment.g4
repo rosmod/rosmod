@@ -184,3 +184,14 @@ WS
     : ( ' ' | '\t' | '\n' | '\r' )+ -> channel(HIDDEN) 
     ;
 
+// Paragraph comments are ignored
+COMMENT
+    :   '/*' .*? '*/' -> skip
+    ;
+
+// Line comments are ignored
+LINE_COMMENT
+    :   '//' ~[\r\n]* -> skip
+    ;
+
+

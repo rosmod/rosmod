@@ -96,6 +96,8 @@ from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
 from rml import *
+from rhw import *
+# from rdp import *
 
 # Find Drawable_Object
 exeName = sys.argv[0]
@@ -1353,10 +1355,29 @@ class ROS_Project:
         rml_namespace = {'workspace': self.workspace}
         t = rml(searchList=[rml_namespace])
         self.rml = str(t)
-        print "ROSTOOLS::Saving Workspace at " + path 
         with open(os.path.join(path, self.workspace.properties["name"] + ".rml"), 'w') as temp_file:
             temp_file.write(self.rml)
+        print "ROSTOOLS::" + self.workspace.properties["name"] + ".rml " + "saved at " + path
 
+    # Generate a ROS Hardware Configurations model (.rhw file) from a ROS_HW Object
+    def save_rhw(self, path=""):
+        if path == "":
+            path = self.hardware_configurations_path
+        for hw in self.hardware_configurations:
+            rhw_namespace = {'hardware' : hw}
+            t = rhw(searchList=[rhw_namespace])
+            self.rhw = str(t)
+            with open(os.path.join(path, hw.properties["name"] + ".rhw"), 'w') as temp_file:
+                temp_file.write(self.rhw)
+                temp_file.close()
+            print "ROSTOOLS::" + hw.properties["name"] + ".rhw " + "saved at " + path
+
+    # Generate a ROS Deployment model (.rdp file) from a ROS_Deployment Object
+    def save_rdp(self, path=""):
+        if path == "":
+            path = self.deployment_path
+        rdp_namespace = {'' : self.deployments}
+                         
 
 if __name__ == "__main__":
 
@@ -1364,4 +1385,5 @@ if __name__ == "__main__":
     My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
     My_Project.generate_workspace()
     My_Project.save_rml()
+    My_Project.save_rhw()
        

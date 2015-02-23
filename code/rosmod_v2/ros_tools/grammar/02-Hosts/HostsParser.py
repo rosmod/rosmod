@@ -11,11 +11,11 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\r\65\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
-        buf.write(u"\4\b\t\b\3\2\6\2\22\n\2\r\2\16\2\23\3\2\3\2\3\3\3\3\3")
-        buf.write(u"\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3")
-        buf.write(u"\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\61\n\7\3\b")
-        buf.write(u"\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2/\2\21\3\2\2\2\4\27")
+        buf.write(u"\17\65\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u"\7\4\b\t\b\3\2\6\2\22\n\2\r\2\16\2\23\3\2\3\2\3\3\3\3")
+        buf.write(u"\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5")
+        buf.write(u"\3\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\61\n\7\3")
+        buf.write(u"\b\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2/\2\21\3\2\2\2\4\27")
         buf.write(u"\3\2\2\2\6\36\3\2\2\2\b \3\2\2\2\n\'\3\2\2\2\f\60\3\2")
         buf.write(u"\2\2\16\62\3\2\2\2\20\22\5\4\3\2\21\20\3\2\2\2\22\23")
         buf.write(u"\3\2\2\2\23\21\3\2\2\2\23\24\3\2\2\2\24\25\3\2\2\2\25")
@@ -52,10 +52,12 @@ class HostsParser ( Parser ):
     IP_ADDRESS_STRING=9
     ID=10
     WS=11
+    COMMENT=12
+    LINE_COMMENT=13
 
     tokenNames = [ u"<INVALID>", u"'{'", u"'ip_address'", u"'architecture'", 
                    u"'host'", u"'='", u"'}'", u"'\"'", u"';'", u"IP_ADDRESS_STRING", 
-                   u"ID", u"WS" ]
+                   u"ID", u"WS", u"COMMENT", u"LINE_COMMENT" ]
 
     RULE_start = 0
     RULE_host = 1

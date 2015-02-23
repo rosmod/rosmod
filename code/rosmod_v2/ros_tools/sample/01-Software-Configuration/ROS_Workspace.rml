@@ -33,7 +33,7 @@ package Package_1
     components
     {
         // ROS Component - Component_1
-	component
+	component Component_1
 	{
 	    publisher<ComponentName> Component_1_publisher;
      	    subscriber<ComponentName> Component_1_subscriber;
@@ -43,7 +43,7 @@ package Package_1
 	    }
 	}
         // ROS Component - Component_2
-	component
+	component Component_2
 	{
             provides ComponentService;
 	    publisher<ComponentName> Component_2_publisher;
@@ -53,7 +53,7 @@ package Package_1
 	    }
 	}
         // ROS Component - Component_3
-	component
+	component Component_3
 	{
 	    requires ComponentService;
 	    timer Timer0
