@@ -152,6 +152,7 @@ class Example(wx.Frame):
         self.BuildHardwareAspect()
         self.BuildDeploymentAspect()
         self.activeAspect = self.PackageAspect
+        self.activeAspectInfo = self.PackageAspectInfo
     '''
     Package Aspect: panel with toolbar and notebook for managing packages
     '''
@@ -166,17 +167,28 @@ class Example(wx.Frame):
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def BuildPackageAspectToolbar(self):
         # create / delete packages
-        self.toolbar.AddSeparator()
         createTBinfo = TBInfo(
             name="create",
-            obj=self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New Package"))
+            obj=self.toolbar.CreateTool(wx.ID_ANY, label='', 
+                                        bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                        shortHelp="New Package"))
         deleteTBinfo = TBInfo(
             name="delete",
-            obj=self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/texit.png'), shortHelp="Remove Package"))
+            obj=self.toolbar.CreateTool(wx.ID_ANY, label='', 
+                                        bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                        shortHelp="Remove Package"))
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
         self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
+    def AddPackageAspectToolbar(self):
+        for name,obj in self.PackageAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.AddTool(obj)
+        self.toolbar.Realize()
+    def RemovePackageAspectToolbar(self):
+        for name,obj in self.PackageAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.RemoveTool(obj)
+        self.toolbar.Realize()
 
     def BuildPackageAspectPagesFromModel(self):
         self.PackageAspect.DeleteAllPages()
@@ -210,22 +222,25 @@ class Example(wx.Frame):
         canvas.Zoom(1,pkg.textPosition.Get(),pkg.textPosition.Get())
 
     def DrawModel(self, model, canvas):
-        canvasSizePixels = canvas.GetSize()
-        bbox = [canvas.PixelToWorld((0,0)),canvas.PixelToWorld(canvasSizePixels)]
-        delta = 20
-        bbox = [bbox[0][0]+delta,bbox[0][1]-delta,bbox[1][0]-delta,bbox[1][1]+delta]
-        bbox = Utilities.BBox.asBBox([[bbox[0],bbox[1]],[bbox[2],bbox[3]]])
         canvas.UnBindAll()
         canvas.ClearAll()
         canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
         width,height = drawable.Layout(model,(0,0),canvas)
-        model.Draw(canvas,self.OnPkgLeftClick,self.OnPkgRightClick)
+        model.Draw(canvas,self.OnLeftClick,self.OnRightClick)
         canvas.Draw()
         canvas.ZoomToBB()
 
+    def OnLeftClick(self, Object):
+        if self.activeAspect == self.PackageAspect:
+            self.OnPkgLeftClick(Object)
+        elif self.activeAspect == self.HardwareAspect:
+            self.OnHWLeftClick(Object)
+        elif self.activeAspect == self.DeploymentAspect:
+            self.OnDeploymentLeftClick(Object)
+
     def OnPkgLeftClick(self, Object):
-        info = self.GetPackagePanelInfo()
+        info = self.GetActivePanelInfo()
         pkg = info.obj
         canvas = info.canvas
         #print bbox
@@ -247,13 +262,30 @@ class Example(wx.Frame):
                     child.style.overlay['overlayColor']='RED'
         self.DrawModel(pkg,canvas)
 
-    def OnPkgRightClick(self, Object):
-        info = self.GetPackagePanelInfo()
+    def OnHWLeftClick(self, Object):
+        pass
+
+    def OnDeploymentLeftClick(self, Object):
+        pass
+
+    def OnRightClick(self, Object):
+        info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = Object.Name
-        self.PopupMenu(ContextMenu(canvas,self.BuildPkgContextMenu(self.activeObject)))
+        self.PopupMenu(ContextMenu(canvas,self.BuildAspectContextMenu(self.activeObject)))
+
+    def BuildAspectContextMenu(self, obj):
+        cm = OrderedDict()
+        if self.activeAspect == self.PackageAspect:
+            cm = self.BuildPkgContextMenu(obj)
+        elif self.activeAspect == self.HardwareAspect:
+            cm = self.BuildHWContextMenu(obj)
+        elif self.activeAspect == self.DeploymentAspect:
+            cm = self.BuildDeploymentContextMenu(obj)
+        return cm
 
     def BuildPkgContextMenu(self, obj):
+        print obj
         cm = OrderedDict()
         cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
         cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
@@ -287,7 +319,7 @@ class Example(wx.Frame):
         return cm
 
     def GenericAdd(self,newObj,refs,parent):
-        info = self.GetPackagePanelInfo()
+        info = self.GetActivePanelInfo()
         pkg = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
@@ -305,7 +337,7 @@ class Example(wx.Frame):
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 parent.add(newObj)
-                self.PackageLog(
+                self.AspectLog(
                     "Added child {} to parent {}".format(newObj.properties['name'],parent.properties['name']),
                     msgWindow)
                 drawable.Configure(pkg,self.styleDict)
@@ -315,7 +347,7 @@ class Example(wx.Frame):
         comp = self.activeObject
         newObj = None
         references = []
-        info = self.GetPackagePanelInfo()
+        info = self.GetActivePanelInfo()
         pkg = info.obj
         if kind == 'timer':
             newObj = rosgen.ROS_Timer()
@@ -339,7 +371,7 @@ class Example(wx.Frame):
         node = self.activeObject
         newObj = None
         references = []
-        info = self.GetPackagePanelInfo()
+        info = self.GetActivePanelInfo()
         pkg = info.obj
         if kind == 'component_instance':
             newObj = rosgen.ROS_Component_Instance()
@@ -363,11 +395,11 @@ class Example(wx.Frame):
             self.GenericAdd(newObj,references,package)
 
     def PkgEdit(self, e):
-        info = self.GetPackagePanelInfo()
+        info = self.GetActivePanelInfo()
         pkg = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
-        self.PackageLog(
+        self.AspectLog(
             "Editing {} of type {}".format(self.activeObject.properties['name'],self.activeObject.kind),
             msgWindow)
         references = []
@@ -393,7 +425,7 @@ class Example(wx.Frame):
             self.DrawModel(pkg,canvas)
 
     def PkgDelete(self, e):
-        info = self.GetPackagePanelInfo()
+        info = self.GetActivePanelInfo()
         pkg = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
@@ -402,7 +434,7 @@ class Example(wx.Frame):
                 wx.CallAfter(self.OnPackageDelete,e)
             else:
                 if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
-                    self.PackageLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
+                    self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                     self.activeObject.deleteAllRefs()
                     self.activeObject.delete()
                     drawable.Configure(pkg,self.styleDict)
@@ -446,26 +478,28 @@ class Example(wx.Frame):
             dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
 
     def BindCanvasMouseEvents(self,canvas):
-        canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnPackageMouseWheel)
-        canvas.Bind(FloatCanvas.EVT_RIGHT_UP, self.OnPackageRightUp) 
+        canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnMouseWheel)
+        canvas.Bind(FloatCanvas.EVT_RIGHT_UP, self.OnRightUp) 
 
     def UnBindCanvasMouseEvents(self,canvas):
         canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
         canvas.Unbind(FloatCanvas.EVT_RIGHT_UP)
 
-    def GetPackagePanelInfo(self):
-        selectedPage = self.PackageAspect.GetSelection()
-        packageName = self.PackageAspect.GetPageText(selectedPage)
-        return self.PackageAspectInfo.GetPageInfo(packageName)
-    def PackageLog(self, text, msgWindow):
+    def GetActivePanelInfo(self):
+        selectedAspect = self.activeAspect
+        selectedAspectInfo = self.activeAspectInfo
+        selectedPage = selectedAspect.GetSelection()
+        packageName = selectedAspect.GetPageText(selectedPage)
+        return selectedAspectInfo.GetPageInfo(packageName)
+    def AspectLog(self, text, msgWindow):
         msgWindow.SetReadOnly(False)
         msgWindow.AppendText(text)
         if not text[-1] == "\n":
             msgWindow.AppendText("\n")
         msgWindow.SetReadOnly(True)
         msgWindow.ScrollToLine(msgWindow.GetLineCount())
-    def OnPackageMouseWheel(self,event):
-        info = self.GetPackagePanelInfo()
+    def OnMouseWheel(self,event):
+        info = self.GetActivePanelInfo()
         canvas = info.canvas
         Rot = event.GetWheelRotation()
         Rot = Rot / abs(Rot) * 0.1
@@ -473,11 +507,11 @@ class Example(wx.Frame):
             canvas.MoveImage( (Rot, 0), "Panel" )
         else: # move up-down
             canvas.MoveImage( (0, -Rot), "Panel" )
-    def OnPackageRightUp(self,event):
-        info = self.GetPackagePanelInfo()
+    def OnRightUp(self,event):
+        info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = info.obj
-        self.PopupMenu(ContextMenu(canvas,self.BuildPkgContextMenu(self.activeObject)))
+        self.PopupMenu(ContextMenu(canvas,self.BuildAspectContextMenu(self.activeObject)))
 
     '''
     Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
@@ -501,6 +535,7 @@ class Example(wx.Frame):
         self.PackageAspect.Hide()
         self.HardwareAspect.Hide()
         self.DeploymentAspect.Hide()
+        self.RemovePackageAspectToolbar()
 
     def ShowAspect(self,aspect):
         if self.shvw.IsChecked():
@@ -511,14 +546,18 @@ class Example(wx.Frame):
     def OnPackageAspect(self, e):
         self.HideAllAspects()
         self.ShowAspect(self.PackageAspect)
+        self.activeAspectInfo = self.PackageAspectInfo
+        self.AddPackageAspectToolbar()
 
     def OnHardwareAspect(self, e):
         self.HideAllAspects()
         self.ShowAspect(self.HardwareAspect)
+        self.activeAspectInfo = self.HardwareAspectInfo
 
     def OnDeploymentAspect(self, e):
         self.HideAllAspects()
         self.ShowAspect(self.DeploymentAspect)
+        self.activeAspectInfo = self.DeploymentAspectInfo
         
     '''
     View Menu Functions
@@ -767,6 +806,7 @@ class Example(wx.Frame):
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.AddSeparator()
         self.tb_term = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tterm.png'), shortHelp="Terminal")
+        self.toolbar.AddSeparator()
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
