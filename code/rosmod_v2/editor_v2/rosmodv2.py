@@ -763,17 +763,25 @@ class Example(wx.Frame):
             self.Close()
 
     def OnNew(self, e):
-        filename,model_path = dialogs.RMLFileDialog(
+        project_path = dialogs.RMLDirectoryDialog(
             frame = self,
-            prompt ="Save Model As...", 
+            prompt ="Choose New Project Location", 
             path = self.project_path,
-            fileTypes = self.fileTypes, 
-            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
         )
-        if filename != None and model_path != None:
-            self.filename = filename
-            self.project_path = model_path
-            self.statusbar.SetStatusText('Created model {} in {}'.format(self.filename,self.project_path))
+        if project_path != None:
+            dlgDict = OrderedDict([('name','New Project')])
+            ed = dialogs.EditDialog( self,
+                                     editDict = dlgDict,
+                                     title = 'Choose Project Name',
+                                     style = wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                self.filename = inputs['name']
+                self.project_path = project_path
+                self.statusbar.SetStatusText('Created new project: {} in {}'.format(self.filename,self.project_path))
+
+
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
