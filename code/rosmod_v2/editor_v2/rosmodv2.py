@@ -158,36 +158,33 @@ class Example(wx.Frame):
     '''
     def BuildPackageAspect(self):
         self.BuildPackageAspectNotebook()
-        self.BuildPackageAspectToolbar()
+        self.AddPackageAspectToolbar()
     def BuildPackageAspectNotebook(self):
         self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
 
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-    def BuildPackageAspectToolbar(self):
-        # create / delete packages
+    def AddPackageAspectToolbar(self):
         createTBinfo = TBInfo(
             name="create",
-            obj=self.toolbar.AddLabelTool(wx.ID_ANY, label='', 
-                                        bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
-                                        shortHelp="New Package"))
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                     shortHelpString="New Package"))
         deleteTBinfo = TBInfo(
             name="delete",
-            obj=self.toolbar.AddLabelTool(wx.ID_ANY, label='', 
-                                        bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
-                                        shortHelp="Remove Package"))
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                     shortHelpString="Remove Package"))
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
         self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
-    def AddPackageAspectToolbar(self):
-        for name,obj in self.PackageAspectInfo.toolbarButtons.iteritems():
-            self.toolbar.AddTool(obj)
         self.toolbar.Realize()
     def RemovePackageAspectToolbar(self):
-        for name,obj in self.PackageAspectInfo.toolbarButtons.iteritems():
-            self.toolbar.RemoveTool(obj)
+        for name,tbinfo in self.PackageAspectInfo.toolbarButtons.iteritems():
+            self.toolbar.RemoveTool(tbinfo.obj.GetId())
+            self.PackageAspectInfo.DelTBInfo(name)
         self.toolbar.Realize()
 
     def BuildPackageAspectPagesFromModel(self):
@@ -350,18 +347,18 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         pkg = info.obj
         if kind == 'timer':
-            newObj = rosgen.ROS_Timer()
+            newObj = ros_tools.ROS_Timer()
         elif kind == 'subscriber':
-            newObj = rosgen.ROS_Subscriber()
+            newObj = ros_tools.ROS_Subscriber()
             references = pkg.getChildrenByKind('message')
         elif kind == 'publisher':
-            newObj = rosgen.ROS_Publisher()
+            newObj = ros_tools.ROS_Publisher()
             references = pkg.getChildrenByKind('message')
         elif kind == 'server':
-            newObj = rosgen.ROS_Server()
+            newObj = ros_tools.ROS_Server()
             references = pkg.getChildrenByKind('service')
         elif kind == 'client':
-            newObj = rosgen.ROS_Client()
+            newObj = ros_tools.ROS_Client()
             references = pkg.getChildrenByKind('service')
         if newObj != None:
             self.GenericAdd(newObj,references,comp)
@@ -374,7 +371,7 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         pkg = info.obj
         if kind == 'component_instance':
-            newObj = rosgen.ROS_Component_Instance()
+            newObj = ros_tools.ROS_Component_Instance()
             references = pkg.getChildrenByKind('component')
         if newObj != None:
             self.GenericAdd(newObj,references,node)
@@ -384,13 +381,13 @@ class Example(wx.Frame):
         newObj = None
         references = []
         if kind == 'message':
-            newObj = rosgen.ROS_Message()
+            newObj = ros_tools.ROS_Message()
         elif kind == 'service':
-            newObj = rosgen.ROS_Service()
+            newObj = ros_tools.ROS_Service()
         elif kind == 'component':
-            newObj = rosgen.ROS_Component()
+            newObj = ros_tools.ROS_Component()
         elif kind == 'node':
-            newObj = rosgen.ROS_Node()
+            newObj = ros_tools.ROS_Node()
         if newObj != None:
             self.GenericAdd(newObj,references,package)
 
@@ -444,7 +441,7 @@ class Example(wx.Frame):
         self.activeObject = None
 
     def OnPackageCreate(self, e):
-        newPkg = rosgen.ROS_Package()
+        newPkg = ros_tools.ROS_Package()
         newPkg.properties['name'] = "New Package"
         ed = EditDialog(self,
                         editDict=newPkg.properties,
@@ -618,7 +615,7 @@ class Example(wx.Frame):
         if filename != None and model_path != None:
             self.filename = filename
             self.project_path = model_path
-            # self.project = rosgen.parse_model(self.project_path+'/'+self.filename)
+            # self.project = ros_tools.parse_model(self.project_path+'/'+self.filename)
             self.project.open(self.project_path)
             self.BuildPackageAspectPagesFromModel()
             self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.project_path))
@@ -682,15 +679,8 @@ class Example(wx.Frame):
     '''
     def GenerateCode(self, e):
         self.project.generate_workspace()
+        dialogs.InfoDialog(self,"Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
-        '''
-        generate_path = dialogs.RMLGenerateDirDialog(frame=self,path=self.project_path)
-        if generate_path != None:
-            print generate_path
-            rosgen.check_workspace(self.project, generate_path)
-            rosgen.generate_workspace(self.project, generate_path)
-            self.statusbar.SetStatusText('Generated workspace into {}'.format(generate_path))
-        '''
     def AnalyzeNetwork(self, e):
         pass
 
@@ -942,7 +932,6 @@ class Example(wx.Frame):
         self.styleDict["deployment"] = DeploymentStyle
 
 def main():
-    
     ex = wx.App()
     Example(None)
     ex.MainLoop()    
