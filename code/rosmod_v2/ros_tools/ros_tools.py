@@ -1419,12 +1419,16 @@ class ROS_Project:
         else:
             self.new(project_name, project_path)
 
+        # Save the ROS Workpace Model
         self.save_rml()
+        # Save the ROS Hardware Configurations Model
         self.save_rhw()
+        # Save the ROS Deployment Model
         self.save_rdp()
 
 if __name__ == "__main__":
 
+    # Testing ROS Tools Features
     My_Project = ROS_Project()
     My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
     My_Project.generate_workspace()
