@@ -222,9 +222,14 @@ class Drawable_Object:
                     retKids.extend([child for child in pkg.children if child.kind == kind])
             return retKids
         elif self.kind == 'hardware_configuration':
-            pass
-        elif self.kind == 'software_deployment':
-            pass
+            if kind == 'host':
+                retKids.extend(self.children)
+        elif self.kind == 'deployment':
+            if kind == 'node_instance':
+                for host in self.children:
+                    retKids.extend(host.children)
+            elif kind == 'host_instance':
+                retKids.extend(self.children)
         else:
             return [child for child in self.children if child.kind == kind]
 
@@ -304,7 +309,7 @@ def Layout(dObj, topLeftPos, canvas):
        dObj.kind == "component" or \
        dObj.kind == "node" or \
        dObj.kind == "hardware_configuration" or \
-       dObj.kind == "software_deployment" or \
+       dObj.kind == "deployment" or \
        dObj.kind == "host_instance":
         maxWidth = 0
         for obj in dObj.children:
@@ -362,7 +367,10 @@ def Layout(dObj, topLeftPos, canvas):
          dObj.kind == "server" or \
          dObj.kind == "publisher" or \
          dObj.kind == "subscriber" or \
-         dObj.kind == "component_instance":
+         dObj.kind == "component_instance" or \
+         dObj.kind == "host" or \
+         dObj.kind == "host_instance" or \
+         dObj.kind == "node_instance":
         pass
     dObj.width = maxObjWidth
     dObj.height = maxObjHeight
@@ -390,7 +398,7 @@ def Configure(dObj,styleDict):
     dObj.style.Copy(styleDict[dObj.kind])
     if dObj.kind == "workspace" or \
        dObj.kind == "hardware_configuration" or \
-       dObj.kind == "software_deployment" or \
+       dObj.kind == "deployment" or \
        dObj.kind == "host_instance" or \
        dObj.kind == "package" or \
        dObj.kind == "component" or \

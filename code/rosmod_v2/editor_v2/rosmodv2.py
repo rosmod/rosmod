@@ -503,11 +503,21 @@ class Example(wx.Frame):
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            prevName = self.activeObject.properties['name']
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
+            newName = self.activeObject.properties['name']
+            if self.activeObject.kind == 'package' or \
+               self.activeObject.kind == 'workspace' or \
+               self.activeObject.kind == 'hardware_configuration' or \
+               self.activeObject.kind == 'deployment':
+                info.name = newName
+                self.activeAspectInfo.AddPageInfo(info)
+                if newName != prevName:
+                    self.activeAspectInfo.DelPageInfo(prevName)
             drawable.Configure(pkg,self.styleDict)
-            selectedPage = self.PackageAspect.GetSelection()
-            self.PackageAspect.SetPageText(selectedPage,pkg.properties['name'])
+            selectedPage = self.activeAspect.GetSelection()
+            self.activeAspect.SetPageText(selectedPage,pkg.properties['name'])
             self.DrawModel(pkg,canvas)
 
     def PkgDelete(self, e):
@@ -585,8 +595,9 @@ class Example(wx.Frame):
         selectedAspect = self.activeAspect
         selectedAspectInfo = self.activeAspectInfo
         selectedPage = selectedAspect.GetSelection()
-        packageName = selectedAspect.GetPageText(selectedPage)
-        return selectedAspectInfo.GetPageInfo(packageName)
+        pageName = selectedAspect.GetPageText(selectedPage)
+        pageInfo = selectedAspectInfo.GetPageInfo(pageName)
+        return pageInfo
     def AspectLog(self, text, msgWindow):
         msgWindow.SetReadOnly(False)
         msgWindow.AppendText(text)
@@ -625,23 +636,24 @@ class Example(wx.Frame):
             aspect.Show()
             self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
             self.activeAspect = aspect
+            print self.activeAspect
 
     def OnPackageAspect(self, e):
+        self.activeAspectInfo = self.PackageAspectInfo
         self.HideAllAspects()
         self.ShowAspect(self.PackageAspect)
-        self.activeAspectInfo = self.PackageAspectInfo
         self.AddPackageAspectToolbar()
 
     def OnHardwareAspect(self, e):
+        self.activeAspectInfo = self.HardwareAspectInfo
         self.HideAllAspects()
         self.ShowAspect(self.HardwareAspect)
-        self.activeAspectInfo = self.HardwareAspectInfo
         self.AddHardwareAspectToolbar()
 
     def OnDeploymentAspect(self, e):
+        self.activeAspectInfo = self.DeploymentAspectInfo
         self.HideAllAspects()
         self.ShowAspect(self.DeploymentAspect)
-        self.activeAspectInfo = self.DeploymentAspectInfo
         self.AddDeploymentAspectToolbar()
         
     '''
