@@ -66,14 +66,25 @@ class EditDialog(wx.Dialog):
         for key,value in self.editDict.iteritems():
             label = None
             field = None
-            if key == 'name' or key == 'period' or key == 'unit':
+            if key == 'name' or \
+               key == 'period' or \
+               key == 'unit' or \
+               key == 'ip_address' or \
+               key == 'architecture' or \
+               key == 'username' or \
+               key == 'sshkey' or \
+               key == 'init' or \
+               key == 'cmdline_arguments':
                 # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
                 self.inputs[key] = field
-            elif key == 'fields' or key == 'request' or key == 'response':
+            elif key == 'fields' or \
+                 key == 'request' or \
+                 key == 'response' or \
+                 key == 'env_variables':
                 # anything that takes a multi-line string
                 # supports code completion and syntax highlighting
                 label = wx.StaticText(panel, label=key + ":")
@@ -87,7 +98,11 @@ class EditDialog(wx.Dialog):
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
                 pbox.AddGrowableRow(rNum,1)
                 self.inputs[key] = field
-            elif key == 'service_reference' or key == 'message_reference' or key == 'component_reference':
+            elif key == 'service_reference' or \
+                 key == 'message_reference' or \
+                 key == 'component_reference' or \
+                 key == 'host_reference' or \
+                 key == 'node_reference':
                 label = wx.StaticText(panel, label=key + ":")
                 refNames = [x.properties['name'] for x in self.references]
                 field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
