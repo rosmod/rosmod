@@ -11,6 +11,7 @@ tools through the use of toolbar buttons and subprocesses.
 import wx
 import wx.stc as stc
 import os,sys
+import copy
 
 sys.path.append("../ros_tools")
 import ros_tools
@@ -538,20 +539,26 @@ class Example(wx.Frame):
                         references = references,
                         style=wx.RESIZE_BORDER)
         ed.ShowModal()
+        prevProps = copy.copy(self.activeObject.properties)
         inputs = ed.GetInput()
         if inputs != OrderedDict():
-            prevName = self.activeObject.properties['name']
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
-            newName = self.activeObject.properties['name']
             if self.activeObject.kind == 'package' or \
                self.activeObject.kind == 'workspace' or \
                self.activeObject.kind == 'hardware_configuration' or \
                self.activeObject.kind == 'deployment':
+                newName = self.activeObject.properties['name']
+                prevName = prevProps['name']
                 info.name = newName
                 self.activeAspectInfo.AddPageInfo(info)
                 if newName != prevName:
                     self.activeAspectInfo.DelPageInfo(prevName)
+            if self.activeObject.kind == 'deployment':
+                prevRef = prevProps['hardware_configuration_reference']
+                newRef = self.activeObject.properties['hardware_configuration_reference']
+                if newRef != prevRef:
+                    self.activeObject.children = []
             drawable.Configure(pkg,self.styleDict)
             selectedPage = self.activeAspect.GetSelection()
             self.activeAspect.SetPageText(selectedPage,pkg.properties['name'])
@@ -595,10 +602,22 @@ class Example(wx.Frame):
                 newObj.properties[key] = value
             self.project.hardware_configurations.append(newObj)
             numPages = self.HardwareAspect.GetPageCount()
+            if numPages <= 0:
+                numPages = 1
             self.BuildModelPage(self.HardwareAspect,newObj,self.HardwareAspectInfo,numPages-1)
             self.HardwareAspect.SetSelection(numPages - 1)
     def OnHardwareDelete(self, e):
-        pass
+        selectedPage = self.HardwareAspect.GetSelection()
+        numPages = self.HardwareAspect.GetPageCount()
+        objName = self.HardwareAspect.GetPageText(selectedPage)
+        info = self.HardwareAspectInfo.GetPageInfo(objName)
+        obj = info.obj
+        if ConfirmDialog(self,"Delete {}?".format(objName)):
+            info.canvas.ClearAll()
+            self.project.hardware_configurations = [x for x in self.project.hardware_configurations if x != obj]
+            self.HardwareAspect.GetPage(selectedPage).DestroyChildren()
+            self.HardwareAspectInfo.DelPageInfo(obj.properties['name'])
+            self.HardwareAspect.DeletePage(selectedPage)
         
     def OnDeploymentCreate(self, e):
         newObj = ros_tools.ROS_Deployment()
