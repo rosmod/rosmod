@@ -1184,7 +1184,7 @@ class ROS_Project:
         self.deployment_builder = None
 
     # Create a new ROSMOD Project
-    def new(self, project_name, project_path):
+    def new(self, project_name = "", project_path = ""):
         print "ROSTOOLS::Creating project " + project_name + " at " + project_path
         if project_name != "":
             self.project_name = project_name
@@ -1210,25 +1210,6 @@ class ROS_Project:
             os.makedirs(self.hardware_configurations_path)
         if not os.path.exists(os.path.join(self.project_path, "03-Deployment")):
             os.makedirs(self.deployment_path)        
-
-    # Setup a new ROSMOD Project
-    def setup(self, path):
-        if path == "":
-            print "ROSTOOLS::ERROR::Invalid Project Path"
-        else:
-            self.project_path = path
-        if not os.path.exists(os.path.join(self.project_path, self.project_name)):
-            os.makedirs(os.path.join(self.project_path, self.project_name))
-        project = "project.rosmod"
-        with open(os.path.join(self.project_path, project), 'w') as temp_file:
-            temp_file.write("This is a ROSMOD Project")
-            temp_file.close() 
-        if not os.path.exists(self.workspace_path):
-            os.makedirs(self.workspace_path)
-        if not os.path.exists(self.hardware_configurations_path):
-            os.makedirs(self.hardware_configurations_path)
-        if not os.path.exists(self.deployment_path):
-            os.makedirs(self.deployment_path)
 
     # Open an existing ROSMOD Project
     def open(self, project_path):
@@ -1263,7 +1244,6 @@ class ROS_Project:
                 self.parse_models()
             else:
                 print "ROSTOOLS::ERROR::Invalid Project!"
-            
 
     # Parse .rml software configurations model
     def parse_rml(self, filename):
@@ -1433,22 +1413,22 @@ class ROS_Project:
             print "ROSTOOLS::Saving " + dp.properties["name"] + ".rdp " + "at " + path   
 
     # Save the entire project
-    def save(self, path=""):
-        if path == "":
-            path = self.project_path
+    def save(self, project_name = "", project_path = ""):
+        if project_path == "":
+            project_path = self.project_path
+        else:
+            self.new(project_name, project_path)
 
-        # This case is as good as create a new project
-        #else:
-         #   self.new()
-        
+        self.save_rml()
+        self.save_rhw()
+        self.save_rdp()
 
 if __name__ == "__main__":
 
     My_Project = ROS_Project()
     My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
     My_Project.generate_workspace()
-    My_Project.save_rml()
-    My_Project.save_rhw()
-    My_Project.save_rdp()
-    My_Project.new("Orbiter", "/home/jeb/Desktop")
+    My_Project.save()
+    My_Project.save("Orbiter", "/home/jeb/Desktop")
+    My_Project.save("Another_Orbiter", "/home/jeb/Desktop")
        
