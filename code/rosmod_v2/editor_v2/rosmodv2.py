@@ -521,19 +521,23 @@ class Example(wx.Frame):
 
     def PkgDelete(self, e):
         info = self.GetActivePanelInfo()
-        pkg = info.obj
+        model = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
-        if pkg.kind != 'workspace':
+        if model.kind != 'workspace':
             if self.activeObject.kind == 'package':
                 wx.CallAfter(self.OnPackageDelete,e)
+            elif self.activeObject.kind == 'hardware_configuration':
+                wx.CallAfter(self.OnHardwareDelete,e)
+            elif self.activeObject.kind == 'deployment':
+                wx.CallAfter(self.OnDeploymentDelete,e)
             else:
                 if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
                     self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                     self.activeObject.deleteAllRefs()
                     self.activeObject.delete()
-                    drawable.Configure(pkg,self.styleDict)
-                    self.DrawModel(pkg,canvas)
+                    drawable.Configure(model,self.styleDict)
+                    self.DrawModel(model,canvas)
         else:
             dialogs.ErrorDialog(self,"Cannot delete workspace!")
         self.activeObject = None
@@ -563,7 +567,7 @@ class Example(wx.Frame):
                 newPkg.properties[key] = value
             self.project.workspace.add(newPkg)
             numPages = self.PackageAspect.GetPageCount()
-            self.BuildPackagePage(self.PackageAspect,newPkg,numPages-1)
+            self.BuildModelPage(self.PackageAspect,newPkg,self.PackageAspectInfo,numPages-1)
             self.PackageAspect.SetSelection(numPages - 1)
     
     def OnPackageDelete(self, e):
