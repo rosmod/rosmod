@@ -1269,12 +1269,14 @@ class ROS_Project:
     # require preservation
     def check_workspace(self):
         # Instantiate a Loader Object
-        workspace = Workspace_Loader()
-        # Use load_business_logic to load existing business logic
-        workspace.load(self.workspace, self.workspace_path)
+        business_logic = Workspace_Loader()
+        # Use load to load existing business logic
+        business_logic.load(self.workspace, self.workspace_path)
     
     # Generate the ROS workspace corresponding to the input model
     def generate_workspace(self):
+        # Check for an existing workspace in workspace_path
+        self.check_workspace()
         # Instantiate a Generator Object
         workspace = Workspace_Generator()
         # Use listener_object to generate ROS workspace
@@ -1294,6 +1296,7 @@ if __name__ == "__main__":
 
     My_Project = ROS_Project()
     My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
+    My_Project.generate_workspace()
 
     # Parse the input model
     # My_Project.parse_rml(model)
