@@ -173,11 +173,16 @@ class Drawable_Object:
     def delete(self):
         self.parent.children = [x for x in self.parent.children if x != self]
 
-    def deleteAllRefs(self):
+    def deleteAllRefs(self,project):
         if self.kind == 'host':
-            pass
+            deployments = project.deployments
+            for dep in deployments:
+                dep.children = [x for x in dep.children if x.properties['host_reference'] != self]
         elif self.kind == 'node':
-            pass
+            deployments = project.deployments
+            for dep in deployments:
+                for HI in dep.children:
+                    HI.children = [x for x in HI.children if x.properties['node_reference'] != self]
         elif self.kind == 'component':
             nodes = self.parent.getChildrenByKind('node')
             for node in nodes:

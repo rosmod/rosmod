@@ -161,6 +161,8 @@ class Example(wx.Frame):
         self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
         self.HardwareAspect.Hide()
+        self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddHardwareAspectToolbar(self):
         createTBinfo = TBInfo(
             name="create",
@@ -191,6 +193,8 @@ class Example(wx.Frame):
         self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
         self.DeploymentAspect.Hide()
+        self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddDeploymentAspectToolbar(self):
         createTBinfo = TBInfo(
             name="create",
@@ -222,7 +226,6 @@ class Example(wx.Frame):
     def BuildPackageAspectNotebook(self):
         self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddPackageAspectToolbar(self):
@@ -579,7 +582,7 @@ class Example(wx.Frame):
             else:
                 if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
                     self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
-                    self.activeObject.deleteAllRefs()
+                    self.activeObject.deleteAllRefs(self.project)
                     self.activeObject.delete()
                     drawable.Configure(model,self.styleDict)
                     self.DrawModel(model,canvas)
@@ -746,18 +749,21 @@ class Example(wx.Frame):
         self.HideAllAspects()
         self.ShowAspect(self.PackageAspect)
         self.AddPackageAspectToolbar()
+        self.pageChange(None)
 
     def OnHardwareAspect(self, e):
         self.activeAspectInfo = self.HardwareAspectInfo
         self.HideAllAspects()
         self.ShowAspect(self.HardwareAspect)
         self.AddHardwareAspectToolbar()
+        self.pageChange(None)
 
     def OnDeploymentAspect(self, e):
         self.activeAspectInfo = self.DeploymentAspectInfo
         self.HideAllAspects()
         self.ShowAspect(self.DeploymentAspect)
         self.AddDeploymentAspectToolbar()
+        self.pageChange(None)
         
     '''
     View Menu Functions
@@ -877,20 +883,20 @@ class Example(wx.Frame):
     Package Aspect Functions
     '''
     def pageChange(self, event):
-        self.PackageAspect.Refresh()
-        old = event.GetOldSelection()
-        new = event.GetSelection()
-        sel = self.PackageAspect.GetSelection()
-        numPages = self.PackageAspect.GetPageCount()
+        selectedAspect = self.activeAspect
+        selectedAspectInfo = self.activeAspectInfo
+        selectedAspect.Refresh()
+        sel = selectedAspect.GetSelection()
+        numPages = selectedAspect.GetPageCount()
         if sel >= 0:
-            deleteTBID = self.PackageAspectInfo.GetTBInfo("delete").obj.GetId()
+            deleteTBID = selectedAspectInfo.GetTBInfo("delete").obj.GetId()
             if sel >= numPages - 1:
                 self.toolbar.EnableTool(deleteTBID, False)
             else:
                 self.toolbar.EnableTool(deleteTBID, True)
                 
-            packageName = self.PackageAspect.GetPageText(sel)
-            info = self.PackageAspectInfo.GetPageInfo(packageName)
+            pageName = selectedAspect.GetPageText(sel)
+            info = selectedAspectInfo.GetPageInfo(pageName)
             pkg = info.obj
             canvas = info.canvas
             drawable.Configure(pkg,self.styleDict)
