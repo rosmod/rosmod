@@ -10,23 +10,8 @@ grammar ROS;
  * This is the start of the ROS Grammar
  */
 start
-    :   (define_workspace)
-        (ros_packages)+
+    :   (ros_packages)+
         EOF
-    ;
-
-/*
- * Define a ROS workspace
- */
-define_workspace
-    :   'workspace' workspace_name ';'
-    ;
-
-/*
- * Provide a name for the workspace
- */
-workspace_name
-    :   ID
     ;
 
 /*

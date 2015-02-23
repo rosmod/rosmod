@@ -58,21 +58,21 @@ class ROSListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSParser#msg_name.
-    def enterMsg_name(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSParser#msg_name.
-    def exitMsg_name(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSParser#ros_srv.
     def enterRos_srv(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSParser#ros_srv.
     def exitRos_srv(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSParser#msg_name.
+    def enterMsg_name(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSParser#msg_name.
+    def exitMsg_name(self, ctx):
         pass
 
 
@@ -109,15 +109,6 @@ class ROSListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSParser#messages.
     def exitMessages(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSParser#workspace_name.
-    def enterWorkspace_name(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSParser#workspace_name.
-    def exitWorkspace_name(self, ctx):
         pass
 
 
@@ -262,15 +253,6 @@ class ROSListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSParser#res_field_type.
     def exitRes_field_type(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSParser#define_workspace.
-    def enterDefine_workspace(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSParser#define_workspace.
-    def exitDefine_workspace(self, ctx):
         pass
 
 

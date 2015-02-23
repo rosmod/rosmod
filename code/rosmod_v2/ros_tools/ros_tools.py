@@ -285,14 +285,6 @@ class ROS_Workspace_Builder(ROSListener):
     def __init__(self):
         self.workspace = ROS_Workspace()
 
-    # Create a new workspace object
-    def enterDefine_workspace(self, ctx):
-        self.workspace = ROS_Workspace()
-        
-    # Save the workspace name
-    def enterWorkspace_name(self, ctx):
-        self.workspace.properties["name"] = ctx.getText()
-
     # Create a new ROS Package object
     def enterRos_packages(self, ctx):
         self.package = ROS_Package()
@@ -1238,6 +1230,9 @@ class ROS_Project:
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
+
+        self.builder.workspace.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading ROS Workspace:", self.builder.workspace.properties["name"]
 
         # Walk the parse tree
         walker.walk(self.builder, tree)
