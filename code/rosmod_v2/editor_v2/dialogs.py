@@ -101,6 +101,7 @@ class EditDialog(wx.Dialog):
             elif key == 'service_reference' or \
                  key == 'message_reference' or \
                  key == 'component_reference' or \
+                 key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
                  key == 'node_reference':
                 label = wx.StaticText(panel, label=key + ":")

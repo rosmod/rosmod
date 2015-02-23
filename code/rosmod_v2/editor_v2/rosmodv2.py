@@ -352,8 +352,8 @@ class Example(wx.Frame):
 
     def AspectContextMenu(self, obj):
         cm = OrderedDict()
-        cm['Edit'] = self.PkgEdit        # edits the object's properties (name, fields, etc.)
-        cm['Delete'] = self.PkgDelete    # deletes the object and all references from the model
+        cm['Edit'] = self.AspectEdit        # edits the object's properties (name, fields, etc.)
+        cm['Delete'] = self.AspectDelete    # deletes the object and all references from the model
         if obj.kind == 'component':
             cm = self.BuildCompContextMenu(cm)
         elif obj.kind == 'node':
@@ -393,12 +393,15 @@ class Example(wx.Frame):
     def BuildWorkspaceContextMenu(self,cm):
         return cm
     def BuildHardwareContextMenu(self,cm):
+        cm['Add Host'] = lambda evt : self.HardwareAdd(evt,'host')
         return cm
     def BuildHostContextMenu(self,cm):
         return cm
     def BuildDeploymentContextMenu(self,cm):
+        cm['Add Host Instance'] = lambda evt : self.DeploymentAdd(evt,'host_instance')
         return cm
     def BuildHostInstanceContextMenu(self,cm):
+        cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
         return cm
     def BuildNodeInstanceContextMenu(self,cm):
         return cm
@@ -479,7 +482,36 @@ class Example(wx.Frame):
         if newObj != None:
             self.GenericAdd(newObj,references,package)
 
-    def PkgEdit(self, e):
+    def HardwareAdd(self,e,kind):
+        hw = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'host':
+            newObj = ros_tools.ROS_Host()
+        if newObj != None:
+            self.GenericAdd(newObj,references,hw)
+
+    def DeploymentAdd(self,e,kind):
+        dep = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'host_instance':
+            newObj = ros_tools.ROS_Host_Instance()
+            references = dep.properties['hardware_configuration_reference'].children
+        if newObj != None:
+            self.GenericAdd(newObj,references,dep)
+
+    def HostInstAdd(self,e,kind):
+        host = self.activeObject
+        newObj = None
+        references = []
+        if kind == 'node_instance':
+            newObj = ros_tools.ROS_Node_Instance()
+            references = self.project.workspace.getChildrenByKind('node')
+        if newObj != None:
+            self.GenericAdd(newObj,references,host)
+
+    def AspectEdit(self, e):
         info = self.GetActivePanelInfo()
         pkg = info.obj
         canvas = info.canvas
@@ -494,6 +526,12 @@ class Example(wx.Frame):
             references = pkg.getChildrenByKind('service')
         elif self.activeObject.kind == 'component_instance':
             references = pkg.getChildrenByKind('component')
+        elif self.activeObject.kind == 'deployment':
+            references = self.project.hardware_configurations
+        elif self.activeObject.kind == 'host_instance':
+            references = pkg.properties['hardware_configuration_reference'].children
+        elif self.activeObject.kind == 'node_instance':
+            references = self.project.workspace.getChildrenByKind('node')
         ed = EditDialog(canvas,
                         editDict=self.activeObject.properties,
                         title="Edit "+self.activeObject.kind,
@@ -519,7 +557,7 @@ class Example(wx.Frame):
             self.activeAspect.SetPageText(selectedPage,pkg.properties['name'])
             self.DrawModel(pkg,canvas)
 
-    def PkgDelete(self, e):
+    def AspectDelete(self, e):
         info = self.GetActivePanelInfo()
         model = info.obj
         canvas = info.canvas
