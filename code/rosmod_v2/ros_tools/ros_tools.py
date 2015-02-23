@@ -1184,9 +1184,41 @@ class ROS_Project:
         self.deployment_builder = None
 
     # Create a new ROSMOD Project
-    def create(self):
+    def new(self, project_name, project_path):
+        print "ROSTOOLS::Creating project " + project_name + " at " + project_path
+        if project_name != "":
+            self.project_name = project_name
+        else:
+            print "ROSTOOLS::ERROR::Invalid Project Name"
+        if project_path != "":
+            self.project_path = project_path
+        else:
+            print "ROSTOOLS::ERROR::Invalid Project Path"
+        self.project_path = os.path.join(self.project_path, self.project_name)
         if not os.path.exists(self.project_path):
             os.makedirs(self.project_path)
+        project = project_name + ".rosmod"
+        with open(os.path.join(self.project_path, project), 'w') as temp_file:
+            temp_file.write("This is a ROSMOD Project")
+            temp_file.close() 
+        self.workspace_path = os.path.join(self.project_path, "01-Software-Configuration")
+        self.hardware_configurations_path = os.path.join(self.project_path, "02-Hardware-Configuration")
+        self.deployment_path = os.path.join(self.project_path, "03-Deployment")
+        if not os.path.exists(os.path.join(self.project_path, "01-Software-Configuration")):
+            os.makedirs(self.workspace_path)
+        if not os.path.exists(os.path.join(self.project_path, "02-Hardware-Configuration")):
+            os.makedirs(self.hardware_configurations_path)
+        if not os.path.exists(os.path.join(self.project_path, "03-Deployment")):
+            os.makedirs(self.deployment_path)        
+
+    # Setup a new ROSMOD Project
+    def setup(self, path):
+        if path == "":
+            print "ROSTOOLS::ERROR::Invalid Project Path"
+        else:
+            self.project_path = path
+        if not os.path.exists(os.path.join(self.project_path, self.project_name)):
+            os.makedirs(os.path.join(self.project_path, self.project_name))
         project = "project.rosmod"
         with open(os.path.join(self.project_path, project), 'w') as temp_file:
             temp_file.write("This is a ROSMOD Project")
@@ -1398,7 +1430,17 @@ class ROS_Project:
             with open(os.path.join(path, dp.properties["name"] + ".rdp"), 'w') as temp_file:
                 temp_file.write(self.rdp)
                 temp_file.close()
-            print "ROSTOOLS::Saving " + dp.properties["name"] + ".rdp " + "at " + path        
+            print "ROSTOOLS::Saving " + dp.properties["name"] + ".rdp " + "at " + path   
+
+    # Save the entire project
+    def save(self, path=""):
+        if path == "":
+            path = self.project_path
+
+        # This case is as good as create a new project
+        #else:
+         #   self.new()
+        
 
 if __name__ == "__main__":
 
@@ -1408,4 +1450,5 @@ if __name__ == "__main__":
     My_Project.save_rml()
     My_Project.save_rhw()
     My_Project.save_rdp()
+    My_Project.new("Orbiter", "/home/jeb/Desktop")
        
