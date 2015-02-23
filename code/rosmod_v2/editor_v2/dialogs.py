@@ -164,13 +164,29 @@ class EditDialog(wx.Dialog):
 
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
-            if key == 'name' or key == 'period' or key == 'unit':
+            if key == 'name' or \
+               key == 'period' or \
+               key == 'unit' or \
+               key == 'ip_address' or \
+               key == 'architecture' or \
+               key == 'username' or \
+               key == 'sshkey' or \
+               key == 'init' or \
+               key == 'cmdline_arguments':
                 self.returnDict[key] = field.GetValue()
-            elif key == 'fields' or key == 'request' or key == 'response':
+            elif key == 'fields' or \
+                 key == 'request' or \
+                 key == 'response' or \
+                 key == 'env_variables':
                 fieldTxt = field.GetText()
                 retFields = self.ParseFields(fieldTxt)
                 self.returnDict[key] = retFields
-            elif key == 'service_reference' or key == 'message_reference' or key == 'component_reference':
+            elif key == 'service_reference' or \
+                 key == 'message_reference' or \
+                 key == 'component_reference' or \
+                 key == 'hardware_configuration_reference' or \
+                 key == 'host_reference' or \
+                 key == 'node_reference':
                 objName = field.GetValue()
                 obj = [x for x in self.references if x.properties['name'] == objName]
                 self.returnDict[key] = obj[0]

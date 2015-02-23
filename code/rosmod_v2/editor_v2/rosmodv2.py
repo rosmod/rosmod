@@ -581,12 +581,43 @@ class Example(wx.Frame):
         self.activeObject = None
 
     def OnHardwareCreate(self, e):
-        pass
+        newObj = ros_tools.ROS_HW()
+        newObj.properties['name'] = "New Hardware Configuration"
+        ed = EditDialog(self,
+                        editDict=newObj.properties,
+                        title="Edit "+newObj.kind,
+                        references = [],
+                        style=wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                newObj.properties[key] = value
+            self.project.hardware_configurations.append(newObj)
+            numPages = self.HardwareAspect.GetPageCount()
+            self.BuildModelPage(self.HardwareAspect,newObj,self.HardwareAspectInfo,numPages-1)
+            self.HardwareAspect.SetSelection(numPages - 1)
     def OnHardwareDelete(self, e):
         pass
         
     def OnDeploymentCreate(self, e):
-        pass
+        newObj = ros_tools.ROS_Deployment()
+        newObj.properties['name'] = "New Deployment"
+        references = self.project.hardware_configurations
+        ed = EditDialog(self,
+                        editDict=newObj.properties,
+                        title="Edit "+newObj.kind,
+                        references = references,
+                        style=wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                newObj.properties[key] = value
+            self.project.deployments.append(newObj)
+            numPages = self.DeploymentAspect.GetPageCount()
+            self.BuildModelPage(self.DeploymentAspect,newObj,self.DeploymentAspectInfo,numPages-1)
+            self.DeploymentAspect.SetSelection(numPages - 1)
     def OnDeploymentDelete(self, e):
         pass
 
