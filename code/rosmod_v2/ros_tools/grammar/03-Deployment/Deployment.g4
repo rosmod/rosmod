@@ -19,28 +19,28 @@ start
  * Define a Deployment
  */
 define_deployment
-    :   'deployment' deployment_name ';'
+    :   'deployment ' deployment_name ';'
     ;
 
 /*
  * Name the deployment
  */
 deployment_name
-    :   IDENT
+    :  (' ')* (IDENT (' ')* )*
     ;
 
 /*
  * Use a specific hardware configuration
  */
 use_hardware_config
-    :   'using' hardware ';'
+    :   'using ' hardware ';'
     ;
 
 /*
  * Hardware Config
  */
 hardware
-    :    IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
@@ -56,7 +56,7 @@ deployment
  * Node Host Mapping
  */
 node_host_mapping
-    :   'host_instance' hostname
+    :   'host_instance ' hostname
         '{'
             (properties)
 	        (node_instances)
@@ -67,7 +67,7 @@ node_host_mapping
  * Refer to a valid Host name
  */
 hostname
-    :   IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
@@ -87,18 +87,18 @@ properties
  * Username of host machine
  */
 username
-    :   'username' '=' '"' username_string '"' ';'
+    :   'username '(' ')* '='(' ')* '"' username_string '"'(' ')* ';'
     ;
 
 username_string
-    :   IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
  * Absolute Path to local ssh key
  */
 local_sshkey
-    :   ( 'sshkey' '=' '"' sshkey_path '"' ';')?
+    :   ( 'sshkey '(' ')* '='(' ')* '"' sshkey_path '"'(' ')* ';')
     ;
 
 sshkey_path
@@ -109,7 +109,7 @@ sshkey_path
  * Absolute path to some Init Script
  */
 init
-    :   ( 'init' '=' '"' init_path '"' ';')?
+    :   ( 'init '(' ')* '='(' ')* '"' init_path '"'(' ')* ';')?
     ;
 
 init_path
@@ -120,21 +120,21 @@ init_path
  * Environment Variables
  */
 env_variables
-    :   ('ENV' env_name '=' '"' env_value '"' ';')*
+    :   ('ENV ' env_name(' ')* '='(' ')* '"' env_value '"'(' ')* ';')*
     ;
 
 /*
  * Name of an environment variable
  */
 env_name
-    :   IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
  * Value of an environment variable
  */
 env_value
-    :   IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
@@ -151,10 +151,10 @@ node_instances
  * Define a node-to-host mapping
  */
 nodes  
-    :   'node_instance' node_alias
+    :   'node_instance ' node_alias
         '{'
-            'reference' '=' '"' node '"' ';'
-            ('cmdline_arguments' '=' '"' arguments '"' ';')?
+            'reference ' (' ')* '=' (' ')* '"' node '"' (' ')* ';'
+            ('cmdline_arguments '(' ')* '='(' ')* '"' arguments '"'(' ')* ';')?
         '}'
     ;
 
@@ -162,29 +162,28 @@ nodes
  * Refer to a valid ROS Node
  */
 node
-    :   IDENT
+    :   (('/')* IDENT ('/')*)* 
     ;
 
 /*
  * Command Line Arguments
  */
 arguments
-    :   IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
  * Define an alias to ROS Node
  */
 node_alias
-    :   IDENT
+    :   (' ')* (IDENT (' ')* )*
     ;
 
 /*
  * Valid ID
- */
+ */ 
 IDENT
-    :   ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_')
-        ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/')+
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' )
     ;
 
 /*
@@ -195,16 +194,8 @@ ABSOLUTE_PATH
         ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '.' | '/' )*
     ;
 
-
-// White spaces and escape codes are ignored
-EC
-    :   ( (' ')+
-        | '\t'
-        | '\r'
-        | '\n'
-        ) -> channel(HIDDEN)
+// Ignore whitespaces & escape sequences
+WS
+    : ( ' ' | '\t' | '\n' | '\r' )+ -> channel(HIDDEN) 
     ;
 
-WS 
-    :   (' ')
-    ;
