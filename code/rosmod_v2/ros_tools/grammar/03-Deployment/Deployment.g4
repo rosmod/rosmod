@@ -44,7 +44,7 @@ node_host_mapping
     :   'host_instance ' hostname
         '{'
             (properties)
-	        (node_instances)
+	    (node_instances)
         '}'
     ;
 

@@ -614,6 +614,12 @@ class ROS_Deployment_Builder(DeploymentListener):
     def enterNodes(self, ctx):
         self.node_instance = ROS_Node_Instance()
 
+    def exitNodes(self, ctx):
+        if self.node_instance != None:
+            self.host_instance.add(self.node_instance)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Node Instance used in Deployment"
+
     def enterNode_alias(self, ctx):
         self.node_instance.properties["name"] = ctx.getText()
         self.node_alias = ctx.getText()
