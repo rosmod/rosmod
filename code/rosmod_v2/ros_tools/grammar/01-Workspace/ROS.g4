@@ -321,7 +321,7 @@ component_instance
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
     :   ('a'..'z' | 'A'..'Z' | '_')
-        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_')*
+        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '/')*
     ;
 
 // A digit - any number between 0 and 9
