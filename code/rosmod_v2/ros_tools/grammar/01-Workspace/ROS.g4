@@ -44,7 +44,7 @@ package_name
 messages
     :   'messages'
         '{'
-            (ros_msg)+
+            (ros_msg)*
         '}'
     ;
 
@@ -93,7 +93,7 @@ msg_field_value
 services
     :   'services'
         '{'
-            (ros_srv)+
+            (ros_srv)*
         '}'
     ;
 
@@ -105,8 +105,8 @@ services
 ros_srv
     :   'srv' srv_name
         '{'
-            (request)*
-            (response)*
+            (request)
+            (response)
         '}'
     ;
 
@@ -119,7 +119,7 @@ srv_name
 request
     :   'request'
         '{'
-            (req_argument)+
+            (req_argument)*
         '}'
     ;
 
@@ -132,7 +132,7 @@ req_argument
 response
     :   'response'
         '{'
-            (res_argument)+
+            (res_argument)*
         '}'
     ;
 
