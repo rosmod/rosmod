@@ -1433,9 +1433,7 @@ if __name__ == "__main__":
 
     # Testing ROS Tools Features
     My_Project = ROS_Project()
-    My_Project.open("/home/jeb/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
+    My_Project.open("/home/pranav/Repositories/rosmod/code/rosmod_v2/ros_tools/sample")
     My_Project.generate_workspace()
     My_Project.save()
-    My_Project.save("Orbiter", "/home/jeb/Desktop")
-    My_Project.save("Another_Orbiter", "/home/jeb/Desktop")
        

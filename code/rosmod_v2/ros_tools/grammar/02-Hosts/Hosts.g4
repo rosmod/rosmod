@@ -9,7 +9,7 @@ grammar Hosts;
  * This is the start of the Hosts Grammar
  */
 start
-    :   (host)+
+    :   (host)*
         EOF
     ;
 

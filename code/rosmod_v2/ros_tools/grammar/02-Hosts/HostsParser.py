@@ -11,22 +11,22 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\17\65\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
-        buf.write(u"\7\4\b\t\b\3\2\6\2\22\n\2\r\2\16\2\23\3\2\3\2\3\3\3\3")
-        buf.write(u"\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5")
-        buf.write(u"\3\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\61\n\7\3")
-        buf.write(u"\b\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2/\2\21\3\2\2\2\4\27")
-        buf.write(u"\3\2\2\2\6\36\3\2\2\2\b \3\2\2\2\n\'\3\2\2\2\f\60\3\2")
-        buf.write(u"\2\2\16\62\3\2\2\2\20\22\5\4\3\2\21\20\3\2\2\2\22\23")
-        buf.write(u"\3\2\2\2\23\21\3\2\2\2\23\24\3\2\2\2\24\25\3\2\2\2\25")
-        buf.write(u"\26\7\2\2\3\26\3\3\2\2\2\27\30\7\6\2\2\30\31\5\6\4\2")
-        buf.write(u"\31\32\7\3\2\2\32\33\5\b\5\2\33\34\5\f\7\2\34\35\7\b")
-        buf.write(u"\2\2\35\5\3\2\2\2\36\37\7\f\2\2\37\7\3\2\2\2 !\7\4\2")
-        buf.write(u"\2!\"\7\7\2\2\"#\7\t\2\2#$\5\n\6\2$%\7\t\2\2%&\7\n\2")
-        buf.write(u"\2&\t\3\2\2\2\'(\7\13\2\2(\13\3\2\2\2)*\7\5\2\2*+\7\7")
-        buf.write(u"\2\2+,\7\t\2\2,-\5\16\b\2-.\7\t\2\2./\7\n\2\2/\61\3\2")
-        buf.write(u"\2\2\60)\3\2\2\2\60\61\3\2\2\2\61\r\3\2\2\2\62\63\7\f")
-        buf.write(u"\2\2\63\17\3\2\2\2\4\23\60")
+        buf.write(u"\17\66\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u"\7\4\b\t\b\3\2\7\2\22\n\2\f\2\16\2\25\13\2\3\2\3\2\3")
+        buf.write(u"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3")
+        buf.write(u"\5\3\5\3\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\62")
+        buf.write(u"\n\7\3\b\3\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2\60\2\23\3\2")
+        buf.write(u"\2\2\4\30\3\2\2\2\6\37\3\2\2\2\b!\3\2\2\2\n(\3\2\2\2")
+        buf.write(u"\f\61\3\2\2\2\16\63\3\2\2\2\20\22\5\4\3\2\21\20\3\2\2")
+        buf.write(u"\2\22\25\3\2\2\2\23\21\3\2\2\2\23\24\3\2\2\2\24\26\3")
+        buf.write(u"\2\2\2\25\23\3\2\2\2\26\27\7\2\2\3\27\3\3\2\2\2\30\31")
+        buf.write(u"\7\6\2\2\31\32\5\6\4\2\32\33\7\3\2\2\33\34\5\b\5\2\34")
+        buf.write(u"\35\5\f\7\2\35\36\7\b\2\2\36\5\3\2\2\2\37 \7\f\2\2 \7")
+        buf.write(u"\3\2\2\2!\"\7\4\2\2\"#\7\7\2\2#$\7\t\2\2$%\5\n\6\2%&")
+        buf.write(u"\7\t\2\2&\'\7\n\2\2\'\t\3\2\2\2()\7\13\2\2)\13\3\2\2")
+        buf.write(u"\2*+\7\5\2\2+,\7\7\2\2,-\7\t\2\2-.\5\16\b\2./\7\t\2\2")
+        buf.write(u"/\60\7\n\2\2\60\62\3\2\2\2\61*\3\2\2\2\61\62\3\2\2\2")
+        buf.write(u"\62\r\3\2\2\2\63\64\7\f\2\2\64\17\3\2\2\2\4\23\61")
         return buf.getvalue()
 		
 
@@ -115,19 +115,17 @@ class HostsParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 15 
+            self.state = 17
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while True:
+            while _la==HostsParser.T__4:
                 self.state = 14 
                 self.host()
-                self.state = 17 
+                self.state = 19
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==HostsParser.T__4):
-                    break
 
-            self.state = 19
+            self.state = 20
             self.match(self.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -175,19 +173,19 @@ class HostsParser ( Parser ):
         self.enterRule(localctx, 2, self.RULE_host)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 21
+            self.state = 22
             self.match(self.T__4)
-            self.state = 22 
+            self.state = 23 
             self.host_name()
-            self.state = 23
+            self.state = 24
             self.match(self.T__7)
 
-            self.state = 24 
+            self.state = 25 
             self.ip_address()
 
-            self.state = 25 
+            self.state = 26 
             self.architecture()
-            self.state = 26
+            self.state = 27
             self.match(self.T__2)
         except RecognitionException as re:
             localctx.exception = re
@@ -226,7 +224,7 @@ class HostsParser ( Parser ):
         self.enterRule(localctx, 4, self.RULE_host_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 28
+            self.state = 29
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -266,17 +264,17 @@ class HostsParser ( Parser ):
         self.enterRule(localctx, 6, self.RULE_ip_address)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 30
-            self.match(self.T__6)
             self.state = 31
-            self.match(self.T__3)
+            self.match(self.T__6)
             self.state = 32
+            self.match(self.T__3)
+            self.state = 33
             self.match(self.T__1)
-            self.state = 33 
+            self.state = 34 
             self.ip_address_string()
-            self.state = 34
-            self.match(self.T__1)
             self.state = 35
+            self.match(self.T__1)
+            self.state = 36
             self.match(self.T__0)
         except RecognitionException as re:
             localctx.exception = re
@@ -315,7 +313,7 @@ class HostsParser ( Parser ):
         self.enterRule(localctx, 8, self.RULE_ip_address_string)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 37
+            self.state = 38
             self.match(self.IP_ADDRESS_STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -356,20 +354,20 @@ class HostsParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 46
+            self.state = 47
             _la = self._input.LA(1)
             if _la==HostsParser.T__5:
-                self.state = 39
-                self.match(self.T__5)
                 self.state = 40
-                self.match(self.T__3)
+                self.match(self.T__5)
                 self.state = 41
+                self.match(self.T__3)
+                self.state = 42
                 self.match(self.T__1)
-                self.state = 42 
+                self.state = 43 
                 self.architecture_string()
-                self.state = 43
-                self.match(self.T__1)
                 self.state = 44
+                self.match(self.T__1)
+                self.state = 45
                 self.match(self.T__0)
 
 
@@ -410,7 +408,7 @@ class HostsParser ( Parser ):
         self.enterRule(localctx, 12, self.RULE_architecture_string)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 48
+            self.state = 49
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re

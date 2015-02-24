@@ -34,7 +34,7 @@ hardware
  * (1) Maps a ROS Node to a Hardware Host
  */
 deployment
-    :   (node_host_mapping)+
+    :   (node_host_mapping)*
     ;
 
 /*
