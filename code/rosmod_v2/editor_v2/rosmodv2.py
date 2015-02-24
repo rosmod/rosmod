@@ -196,20 +196,24 @@ class Example(wx.Frame):
         self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddDeploymentAspectToolbar(self):
-        createTBinfo = TBInfo(
-            name="create",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
-                                     shortHelpString="New Deployment"))
-        deleteTBinfo = TBInfo(
-            name="delete",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
-                                     shortHelpString="Remove Deployment"))
+        createTBinfo = TBInfo( name="create",
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                                        shortHelpString="New Deployment"))
+        deleteTBinfo = TBInfo( name="delete",
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                                        shortHelpString="Remove Deployment"))
+        deployTBinfo = TBInfo( name='deploy',
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/tdeploy.png'),
+                                                        shortHelpString="Deploy System"))
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
         self.toolbar.Realize()
     def RemoveDeploymentAspectToolbar(self):
         for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
@@ -656,6 +660,9 @@ class Example(wx.Frame):
             self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
             self.DeploymentAspect.DeletePage(selectedPage)
 
+    def OnDeploymentDeploy(self,e):
+        pass
+
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
         newPkg.properties['name'] = "New Package"
@@ -1099,12 +1106,12 @@ class Example(wx.Frame):
                                        minSize = minSize,
                                placement=drawable.Text_Placement.RIGHT,
                                         overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-        HostInstStyle = drawable.Draw_Style(icon=hostInstIcon,
+        HostInstStyle = drawable.Draw_Style(icon=None,
                                    font=font, 
-                                   method=drawable.Draw_Method.ICON, 
+                                   method=drawable.Draw_Method.ROUND_RECT, 
                                        minSize = minSize,
                                    placement=drawable.Text_Placement.TOP,
-                                   overlay = OrderedDict() )
+                                            overlay = OrderedDict([('fillColor','RED')]) )
         '''
         STYLES USED FOR SOFTWARE CONFIGURATION OBJECTS
         '''
