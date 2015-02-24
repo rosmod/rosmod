@@ -51,6 +51,7 @@ $packages\## End Package Marker
 \##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 # Generate messages in the 'msg' folder
+#if $messages != []
 add_message_files(
   FILES
 #for $msg in $messages
@@ -58,8 +59,10 @@ add_message_files(
 
 #end for
 )
+#end if
 
 # Generate services in the 'srv' folder
+#if $services != []
 add_service_files(
   FILES
 #for $srv in $services
@@ -67,6 +70,7 @@ add_service_files(
 
 #end for
 )
+#end if
 
 \## Generate actions in the 'action' folder
 # add_action_files(
