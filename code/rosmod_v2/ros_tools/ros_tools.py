@@ -450,10 +450,10 @@ class ROS_Workspace_Builder(ROSListener):
                             self.publisher.properties["message_reference"] = message
                 if "PublisherContext" in context:
                     self.publisher.properties["name"] = child.getText()
-            if self.publisher.properties["name"] != "":
-                if self.publisher.properties["message_reference"] != None:
-                    self.publisher.parent = self.component
-                    self.component.add(self.publisher)
+            #if self.publisher.properties["name"] != "":
+                #if self.publisher.properties["message_reference"] != None:
+            self.publisher.parent = self.component
+            self.component.add(self.publisher)
 
         elif "subscriber" in ctx.getText():
             self.subscriber = ROS_Subscriber()
@@ -465,10 +465,10 @@ class ROS_Workspace_Builder(ROSListener):
                             self.subscriber.properties["message_reference"] = message
                 if "SubscriberContext" in context:
                     self.subscriber.properties["name"] = child.getText()
-            if self.subscriber.properties["name"] != "":
-                if self.subscriber.properties["message_reference"] != None:
-                    self.subscriber.parent = self.component
-                    self.component.add(self.subscriber)
+            #if self.subscriber.properties["name"] != "":
+                #if self.subscriber.properties["message_reference"] != None:
+            self.subscriber.parent = self.component
+            self.component.add(self.subscriber)
 
     # Save all component timers
     def enterRos_timer(self, ctx):
