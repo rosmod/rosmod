@@ -48,6 +48,7 @@ class EditDialog(wx.Dialog):
     
     def __init__(self, *args, **kw):
         self.editDict = kw.pop('editDict', OrderedDict())
+        self.editObj = kw.pop('editObj', None)
         title = kw.pop('title', "ROSMOD V2")
         self.references = kw.pop('references',[])
         super(EditDialog, self).__init__(*args,**kw)
@@ -99,8 +100,20 @@ class EditDialog(wx.Dialog):
                 pbox.AddGrowableRow(rNum,1)
                 self.inputs[key] = field
             elif key == 'service_reference' or \
-                 key == 'message_reference' or \
-                 key == 'component_reference' or \
+                 key == 'message_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                refNames = []
+                for ref in self.references:
+                    name = ""
+                    if ref.parent != self.editObj.parent.parent:
+                        name += ref.parent.properties['name'] + '/'
+                    name += ref.properties['name']
+                    refNames.append(name)
+                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                if value != None:
+                    field.SetValue(value.properties['name'])
+                self.inputs[key] = field
+            elif key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
                  key == 'node_reference':
@@ -182,8 +195,17 @@ class EditDialog(wx.Dialog):
                 retFields = self.ParseFields(fieldTxt)
                 self.returnDict[key] = retFields
             elif key == 'service_reference' or \
-                 key == 'message_reference' or \
-                 key == 'component_reference' or \
+                 key == 'message_reference':
+                objName = field.GetValue()
+                refList = objName.split('/')
+                for ref in self.references:
+                    if ref.properties['name'] == refList[-1]:
+                        if len(refList) == 1 or \
+                           (len(refList) > 1 and ref.parent.properties['name'] == refList[0]):
+                            obj = [ref]
+                            break
+                self.returnDict[key] = obj[0]
+            elif key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
                  key == 'node_reference':
