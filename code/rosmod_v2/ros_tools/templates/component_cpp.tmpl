@@ -34,7 +34,7 @@ $init_business_logic//# End Init Marker
 // OnOneData Subscription handler for ${sub.properties["name"]} subscriber
 #if $sub.properties["business_logic"] == ""
 //# Start ${sub.properties["name"]}_OnOneData Marker
-void $component_name::${sub.properties["name"]}_OnOneData(const $package_name::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
+void $component_name::${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
 {
     // Business Logic for $sub.properties["name"] subscriber subscribing to topic $sub.properties["message_reference"].properties["name"] callback 
 
@@ -52,8 +52,8 @@ $sub.properties["business_logic"]//# End ${sub.properties["name"]}_OnOneData Mar
 // Component Service Callback
 #if $server.properties["business_logic"] == ""
 //# Start ${server.properties["service_reference"].properties["name"]}Callback Marker
-bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($package_name::$server.properties["service_reference"].properties["name"]::Request  &req,
-    $package_name::$server.properties["service_reference"].properties["name"]::Response &res)
+bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request  &req,
+    $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
 {
     // Business Logic for $server.properties["name"] Server providing $server.properties["service_reference"].properties["name"] Service
 
@@ -113,7 +113,7 @@ $component_name::~${component_name}()
 #end if
 #if $len($required_services) > 0
 #for $required in $required_services
-    ${required}_client.shutdown();
+    ${required[1]}_client.shutdown();
 #end for
 #end if
 }
@@ -128,7 +128,7 @@ void $component_name::startUp()
     // subscriber: $sub.properties["name"]
     ros::SubscribeOptions ${sub.properties["name"]}_options;
     ${sub.properties["name"]}_options = 
-	ros::SubscribeOptions::create<$package_name::${sub.properties["message_reference"].properties["name"]}>
+	ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
 	    ("${sub.properties["message_reference"].properties["name"]}",
 	     1000,
 	     boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
@@ -142,7 +142,7 @@ void $component_name::startUp()
     // Configure all publishers associated with this component
     #for $pub in $publishers
     // publisher: $pub.properties["name"]
-    this->${pub.properties["name"]} = nh.advertise<$package_name::${pub.properties["message_reference"].properties["name"]}>
+    this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>
 	("${pub.properties["message_reference"].properties["name"]}", 1000);	
     #end for
 
@@ -153,7 +153,7 @@ void $component_name::startUp()
     // server: $server.properties["name"]
     ros::AdvertiseServiceOptions ${server.properties["service_reference"].properties["name"]}_server_options;
     ${server.properties["service_reference"].properties["name"]}_server_options = 
-	ros::AdvertiseServiceOptions::create<$package_name::$server.properties["service_reference"].properties["name"]>
+	ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
 	    ("$server.properties["service_reference"].properties["name"]",
              boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
 	     ros::VoidPtr(),
@@ -165,9 +165,9 @@ void $component_name::startUp()
     #if $len($required_services) > 0
     // Configure all required services associated with this component
     #for $required in $required_services
-    // client: ${required}_client
-    this->${required}_client = nh.serviceClient<$package_name::$required>
-	("$required"); 
+    // client: ${required[1]}_client
+    this->${required[1]}_client = nh.serviceClient<$required[0]::$required[1]>
+	("$required[1]"); 
     #end for
 
     #end if

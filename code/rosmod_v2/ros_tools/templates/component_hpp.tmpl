@@ -44,16 +44,16 @@ class $component_name : public Component
 	#if $len($subscribers) > 0
 	#for $sub in $subscribers
 	// OnOneData Subscription handler for $sub.properties["name"] subscriber 
-	void ${sub.properties["name"]}_OnOneData(const $package_name::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
+	void ${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
  
 	#end for
 
 	#end if
 	#if $len($provided_services) > 0
-	#for $provided in $provided_services
+	#for $server in $servers
 	// Component Service Callback
-	bool ${provided}Callback($package_name::$provided::Request  &req,
-		$package_name::$provided::Response &res);
+	bool ${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request &req,
+		$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res);
 
 	#end for
 
@@ -110,8 +110,8 @@ class $component_name : public Component
 	#end if
 	#if $len($required_services) > 0
 	#for $required in $required_services
-	// ROS Service Client - ${required}_client
-	ros::ServiceClient ${required}_client;
+	// ROS Service Client - ${required[1]}_client
+	ros::ServiceClient ${required[1]}_client;
 
 	#end for
 	#end if

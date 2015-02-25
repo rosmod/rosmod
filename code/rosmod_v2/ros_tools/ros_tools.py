@@ -893,7 +893,7 @@ class Workspace_Generator:
                         subscribers.append(child)
                     elif child.kind == "client":
                         clients.append(child)
-                        required_service = child.properties["service_reference"].properties["name"]
+                        required_service = [child.properties["service_reference"].parent.properties["name"], child.properties["service_reference"].properties["name"]]
                         if required_service not in required_services:
                             required_services.append(required_service)
                     elif child.kind == "server":
