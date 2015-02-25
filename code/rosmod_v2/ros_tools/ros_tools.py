@@ -906,18 +906,18 @@ class Workspace_Generator:
 
                 topics = []
                 for publisher in publishers:
-                    topics.append([publisher.parent.parent.properties["name"], 
+                    topics.append([publisher.properties["message_reference"].parent.properties["name"], 
                                    publisher.properties["message_reference"].properties["name"]])
                 for subscriber in subscribers:
-                    topics.append([subscriber.parent.parent.properties["name"], 
+                    topics.append([subscriber.properties["message_reference"].parent.properties["name"], 
                                    subscriber.properties["message_reference"].properties["name"]])
                 # topics = OrderedSet(topics)
                 services = []
                 for client in clients:
-                    services.append([client.parent.parent.properties["name"],
+                    services.append([client.properties["service_reference"].parent.properties["name"],
                                      client.properties["service_reference"].properties["name"]])
                 for server in servers:
-                    services.append([server.parent.parent.properties["name"],
+                    services.append([server.properties["service_reference"].parent.properties["name"],
                                     server.properties["service_reference"].properties["name"]])
                 # services = OrderedSet(services)
                 hash_include = "#include"
