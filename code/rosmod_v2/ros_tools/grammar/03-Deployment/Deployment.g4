@@ -87,7 +87,7 @@ local_sshkey
     ;
 
 sshkey_path
-    :   ABSOLUTE_PATH
+    :   IDENT
     ;
 
 /*
@@ -98,7 +98,7 @@ init
     ;
 
 init_path
-    :   ABSOLUTE_PATH
+    :   IDENT
     ;
 
 /*
@@ -147,7 +147,7 @@ nodes
  * Refer to a valid ROS Node
  */
 node
-    :   (('/')* IDENT ('/')*)* 
+    :   (IDENT)
     ;
 
 /*
@@ -168,15 +168,7 @@ node_alias
  * Valid ID
  */ 
 IDENT
-    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' )
-    ;
-
-/*
- * Valid Absolute Path
- */
-ABSOLUTE_PATH
-    :   ( '/' | '~' )
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '.' | '/' )*
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' | '~' )*
     ;
 
 // Ignore whitespaces & escape sequences
