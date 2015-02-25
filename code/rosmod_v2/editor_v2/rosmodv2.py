@@ -476,7 +476,7 @@ class Example(wx.Frame):
         pkg = info.obj
         if kind == 'component_instance':
             newObj = ros_tools.ROS_Component_Instance()
-            references = pkg.getChildrenByKind('component')
+            references = node.parent.getChildrenByKind('component')
         if newObj != None:
             self.GenericAdd(newObj,references,node)
     
@@ -538,7 +538,7 @@ class Example(wx.Frame):
         elif self.activeObject.kind == 'server' or self.activeObject.kind == 'client':
             references = self.project.workspace.getChildrenByKind('service')
         elif self.activeObject.kind == 'component_instance':
-            references = pkg.getChildrenByKind('component')
+            references = self.activeObject.parent.parent.getChildrenByKind('component')
         elif self.activeObject.kind == 'deployment':
             references = self.project.hardware_configurations
         elif self.activeObject.kind == 'host_instance':
