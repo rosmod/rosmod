@@ -37,10 +37,10 @@ package cluster_flight_application
     // Set of ROS Nodes in this package
     nodes
     {
-        node tmpNode 
+        node clusterFlightNode 
 	{
             // Instantiating components in ROS node
-     	    component<TrajectoryPlanner_def> TP_i;
+     	    component<TrajectoryPlanner_def> trajectoryPlanner_comp;
 	}
     }
 }
@@ -142,12 +142,12 @@ package satellite_flight_application
     // Set of ROS Nodes in this package
     nodes
     {
-        node tmpNode2 
+        node satelliteFlightNode 
 	{
             // Instantiating components in ROS node
-     	    component<GroundInterface_def> GI_i;
-     	    component<OrbitController_def> OC_i;
-     	    component<SatelliteBusInterface_def> SBI_i;
+     	    component<GroundInterface_def> groundInterface_comp;
+     	    component<OrbitController_def> orbitController_comp;
+     	    component<SatelliteBusInterface_def> satBusIntf_comp;
 	}
     }
 }
@@ -181,7 +181,7 @@ package wam_application
 	    publisher<HRImageVector> hrImage_pub;
 	    timer Timer0
 	    {
-	        period = 1.0s;
+	        period = 10.0s;
 	    }
 	}
         // ROS Component - ImageProcessor_def
@@ -196,7 +196,7 @@ package wam_application
 	    publisher<LRImageVector> lrImage_pub;
 	    timer Timer0
 	    {
-	        period = 10.0s;
+	        period = 5.0s;
 	    }
 	}
     }
@@ -204,12 +204,20 @@ package wam_application
     // Set of ROS Nodes in this package
     nodes
     {
-        node tmpNode3 
+        node imageProcessorNode 
 	{
             // Instantiating components in ROS node
-     	    component<HighResolutionImageProducer_def> HRIP_i;
-     	    component<ImageProcessor_def> IP_i;
-     	    component<LowResolutionIMageProducer_def> LRIP_i;
+     	    component<ImageProcessor_def> image_processor_comp;
+	}
+        node lowResolutionImager 
+	{
+            // Instantiating components in ROS node
+     	    component<LowResolutionIMageProducer_def> LR_sensor;
+	}
+        node highResolutionImager 
+	{
+            // Instantiating components in ROS node
+     	    component<HighResolutionImageProducer_def> HR_sensor;
 	}
     }
 }
