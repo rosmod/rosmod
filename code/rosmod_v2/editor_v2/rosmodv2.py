@@ -424,6 +424,7 @@ class Example(wx.Frame):
             newObj.properties['name'] = "New" + kind
             ed = EditDialog(self,
                             editDict=newObj.properties,
+                            editObj = newObj,
                             title="Edit "+newObj.kind,
                             references = refs,
                             style=wx.RESIZE_BORDER)
@@ -449,16 +450,20 @@ class Example(wx.Frame):
             newObj = ros_tools.ROS_Timer()
         elif kind == 'subscriber':
             newObj = ros_tools.ROS_Subscriber()
-            references = pkg.getChildrenByKind('message')
+            newObj.parent = comp
+            references = self.project.workspace.getChildrenByKind('message')
         elif kind == 'publisher':
             newObj = ros_tools.ROS_Publisher()
-            references = pkg.getChildrenByKind('message')
+            newObj.parent = comp
+            references = self.project.workspace.getChildrenByKind('message')
         elif kind == 'server':
             newObj = ros_tools.ROS_Server()
-            references = pkg.getChildrenByKind('service')
+            newObj.parent = comp
+            references = self.project.workspace.getChildrenByKind('service')
         elif kind == 'client':
             newObj = ros_tools.ROS_Client()
-            references = pkg.getChildrenByKind('service')
+            newObj.parent = comp
+            references = self.project.workspace.getChildrenByKind('service')
         if newObj != None:
             self.GenericAdd(newObj,references,comp)
 
@@ -529,9 +534,9 @@ class Example(wx.Frame):
             msgWindow)
         references = []
         if self.activeObject.kind == 'publisher' or self.activeObject.kind == 'subscriber':
-            references = pkg.getChildrenByKind('message')
+            references = self.project.workspace.getChildrenByKind('message')
         elif self.activeObject.kind == 'server' or self.activeObject.kind == 'client':
-            references = pkg.getChildrenByKind('service')
+            references = self.project.workspace.getChildrenByKind('service')
         elif self.activeObject.kind == 'component_instance':
             references = pkg.getChildrenByKind('component')
         elif self.activeObject.kind == 'deployment':
@@ -542,6 +547,7 @@ class Example(wx.Frame):
             references = self.project.workspace.getChildrenByKind('node')
         ed = EditDialog(canvas,
                         editDict=self.activeObject.properties,
+                        editObj = self.activeObject,
                         title="Edit "+self.activeObject.kind,
                         references = references,
                         style=wx.RESIZE_BORDER)
