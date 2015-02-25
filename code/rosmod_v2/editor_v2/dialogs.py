@@ -111,7 +111,11 @@ class EditDialog(wx.Dialog):
                     refNames.append(name)
                 field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
                 if value != None:
-                    field.SetValue(value.properties['name'])
+                    setName = ""
+                    if value.parent != self.editObj.parent.parent:
+                        setName += value.parent.properties['name'] + '/'
+                    setName += value.properties['name']
+                    field.SetValue(setName)
                 self.inputs[key] = field
             elif key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
