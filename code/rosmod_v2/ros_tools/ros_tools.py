@@ -671,8 +671,8 @@ class ROS_Deployment_Builder(DeploymentListener):
 
     def enterNode(self, ctx):
         self.node_instance.properties["node_reference_string"] = ctx.getText()
-        package = ctx.getText().split(".")[0]
-        node = ctx.getText().split(".")[1]
+        package = ctx.getText().split("/")[0]
+        node = ctx.getText().split("/")[1]
         found_package = False
         found_node = False
 

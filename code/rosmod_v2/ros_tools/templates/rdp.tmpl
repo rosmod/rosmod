@@ -30,7 +30,7 @@ host_instance $host_instance.properties["name"]
         // ROS Node Instance - $node_instance.properties["name"] 
         node_instance $node_instance.properties["name"]
 	{
-	    reference = "$node_instance.properties["node_reference_string"]";
+	    reference = "$node_instance.properties["node_reference"].parent.properties["name"]/$node_instance.properties["node_reference"].properties["name"]";
 #if $node_instance.properties["cmdline_arguments"] != ""
     	    cmdline_arguments = "$node_instance.properties["cmdline_arguments"]";		   
 #end if
