@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import wx
+import math
 from collections import OrderedDict
 import copy
 
@@ -313,8 +314,6 @@ def Layout(dObj, topLeftPos, canvas):
     if dObj.kind == "workspace" or \
        dObj.kind == "component" or \
        dObj.kind == "node" or \
-       dObj.kind == "hardware_configuration" or \
-       dObj.kind == "deployment" or \
        dObj.kind == "host_instance":
         maxWidth = 0
         for obj in dObj.children:
@@ -322,7 +321,26 @@ def Layout(dObj, topLeftPos, canvas):
             childPos[1] -= (padding[1] + h)
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth = max(maxObjWidth, maxWidth)    
+        maxObjWidth = max(maxObjWidth, maxWidth)
+    elif dObj.kind == "deployment" or \
+         dObj.kind == "hardware_configuration":
+        # lay out objects in a square
+        sideLen = int(math.sqrt(len(dObj.children)))
+        maxWidth = 0
+        numDone = 0
+        while numDone < len(dObj.children):
+            obj = dObj.children[numDone]
+            w,h = Layout(obj,childPos,canvas)
+            childPos[1] -= (padding[1] + h)
+            maxWidth = max(w,maxWidth)
+            numDone += 1
+            if (numDone % sideLen) == 0:
+                maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
+                maxObjWidth += maxWidth
+                childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
+                maxWidth = 0
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
+        maxObjWidth = max(maxObjWidth, maxWidth)
     elif dObj.kind == "package":
         messages = []
         services = []
