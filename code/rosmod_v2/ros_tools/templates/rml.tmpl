@@ -71,20 +71,20 @@ package $package.properties["name"]
 	{
 #if $component.getChildrenByKind("server") != []
 #for $server in $component.getChildrenByKind("server")
-            provides $server.properties["service_reference"].properties["name"];
+            provides $server.properties["service_text"];
 #end for
 #end if	
 #if $component.getChildrenByKind("client") != []
 #for $client in $component.getChildrenByKind("client")
-	    requires $client.properties["service_reference"].properties["name"];#end for
+	    requires $client.properties["service_text"];#end for
 #end if	
 #if $component.getChildrenByKind("publisher") != []
 #for $pb in $component.getChildrenByKind("publisher")
-	    publisher<$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];#end for
+	    publisher<$pb.properties["message_text"]> $pb.properties["name"];#end for
 #end if	
 #if $component.getChildrenByKind("subscriber") != []
 #for $sb in $component.getChildrenByKind("subscriber")
-     	    subscriber<$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];#end for
+     	    subscriber<$sb.properties["message_text"]> $sb.properties["name"];#end for
 #end if	
 #if $component.getChildrenByKind("timer") != []
 #for $timer in $component.getChildrenByKind("timer")
@@ -108,7 +108,7 @@ package $package.properties["name"]
 #if $node.getChildrenByKind("component_instance") != []
             // Instantiating components in ROS node
 #for $instance in $node.getChildrenByKind("component_instance")
-     	    component<$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
+     	    component<$instance.properties["component_text"]> $instance.properties["name"];
 #end for             						 
 #end if    	     
 	}

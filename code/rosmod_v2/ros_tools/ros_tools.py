@@ -175,6 +175,7 @@ class ROS_Client(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "client"
         self.properties["name"] = ""
+        self.properties["service_text"] = ""
         self.properties["service_reference"] = None
 
 # ROS Server
@@ -184,6 +185,7 @@ class ROS_Server(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "server"
         self.properties["name"] = ""
+        self.properties["service_text"] = ""
         self.properties["service_reference"] = None
         self.properties["business_logic"] = ""
 
@@ -193,6 +195,7 @@ class ROS_Publisher(Drawable_Object):
     def __init__(self):
         Drawable_Object.__init__(self)
         self.kind = "publisher"
+        self.properties["message_text"] = ""
         self.properties["name"] = ""
         self.properties["message_reference"] = None
 
@@ -203,6 +206,7 @@ class ROS_Subscriber(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "subscriber"
         self.properties["name"] = ""
+        self.properties["message_text"] = ""
         self.properties["message_reference"] = None
         self.properties["business_logic"] = ""
 
@@ -213,6 +217,7 @@ class ROS_Component_Instance(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "component_instance"
         self.properties["name"] = ""
+        self.properties["component_text"] = ""
         self.properties["component_reference"] = None
 
 # ROS Node
@@ -289,6 +294,7 @@ class ROS_Workspace_Builder(ROSListener):
     def __init__(self, parent_project):
         self.workspace = ROS_Workspace()
         self.workspace.parent = parent_project
+        self.parent = parent_project
 
     # Create a new ROS Package object
     def enterRos_packages(self, ctx):
@@ -414,27 +420,41 @@ class ROS_Workspace_Builder(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "Service_nameContext" in context:
-                    service_name = child.getText()
-                    # CHECK: If this service has been defined 
                     self.server = ROS_Server()
+                    if "/" not in child.getText():
+                        service_name = child.getText()
+                        self.server.properties["service_text"] = child.getText()
+                        for service in self.package.children:
+                            if service.properties["name"] == service_name:
+                                self.server.properties["service_reference"] = service
+                    else:
+                        self.server.properties["service_text"] = child.getText()
+                        service_name = child.getText().split('/')[-1]
+                    # CHECK: If this service has been defined 
                     self.server.properties["name"] = service_name + "_server"
-                    for service in self.package.children:
-                        if service.properties["name"] == service_name:
-                            self.server.properties["service_reference"] = service
                     self.server.parent = self.component
+                    if self.server.properties["service_reference"] == None:
+                        self.parent.null_references.append(self.server)
                     self.component.add(self.server)
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "Service_nameContext" in context:
-                    service_name = child.getText()
-                    # CHECK: If this service has been defined 
                     self.client = ROS_Client()
+                    if "/" not in child.getText():
+                        service_name = child.getText()
+                        self.client.properties["service_text"] = child.getText()
+                        for service in self.package.children:
+                            if service.properties["name"] == service_name:
+                                self.client.properties["service_reference"] = service
+                    else:
+                        self.client.properties["service_text"] = child.getText()
+                        service_name = child.getText().split('/')[-1]
+                    # CHECK: If this service has been defined 
                     self.client.properties["name"] = service_name + "_client"
-                    for service in self.package.children:
-                        if service.properties["name"] == service_name:
-                            self.client.properties["service_reference"] = service
                     self.client.parent = self.component
+                    if self.client.properties["service_reference"] == None:
+                        self.parent.null_references.append(self.client)
                     self.component.add(self.client)
 
     # Save all publishers and susbcribers
@@ -444,15 +464,21 @@ class ROS_Workspace_Builder(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "TopicContext" in context:
-                    # CHECK: If this toic has been defined
-                    for message in self.package.children:
-                        if message.properties["name"] == child.getText():
-                            self.publisher.properties["message_reference"] = message
+                    if "/" not in child.getText():
+                        topic_name = child.getText()
+                        self.publisher.properties["message_text"] = child.getText()
+                        # CHECK: If this toic has been defined
+                        for message in self.package.children:
+                            if message.properties["name"] == topic_name:
+                                self.publisher.properties["message_reference"] = message
+                    else:
+                        self.publisher.properties["message_text"] = child.getText()
+                        topic_name = child.getText().split('/')[-1]
                 if "PublisherContext" in context:
                     self.publisher.properties["name"] = child.getText()
-            #if self.publisher.properties["name"] != "":
-                #if self.publisher.properties["message_reference"] != None:
             self.publisher.parent = self.component
+            if self.publisher.properties["message_reference"] == None:
+                self.parent.null_references.append(self.publisher)
             self.component.add(self.publisher)
 
         elif "subscriber" in ctx.getText():
@@ -460,14 +486,20 @@ class ROS_Workspace_Builder(ROSListener):
             for child in ctx.getChildren():
                 context = str(type(child))
                 if "TopicContext" in context:
-                    for message in self.package.children:
-                        if message.properties["name"] == child.getText():
-                            self.subscriber.properties["message_reference"] = message
+                    if "/" not in child.getText():
+                        topic_name = child.getText()
+                        self.subscriber.properties["message_text"] = child.getText()          
+                        for message in self.package.children:
+                            if message.properties["name"] == topic_name:
+                                self.subscriber.properties["message_reference"] = message   
+                    else:
+                        self.subscriber.properties["message_text"] = child.getText()
+                        topic_name = child.getText().split('/')[-1]
                 if "SubscriberContext" in context:
                     self.subscriber.properties["name"] = child.getText()
-            #if self.subscriber.properties["name"] != "":
-                #if self.subscriber.properties["message_reference"] != None:
             self.subscriber.parent = self.component
+            if self.subscriber.properties["message_reference"] == None:
+                self.parent.null_references.append(self.subscriber)
             self.component.add(self.subscriber)
 
     # Save all component timers
@@ -504,19 +536,28 @@ class ROS_Workspace_Builder(ROSListener):
     def enterComponent_instances(self, ctx):
         comp_type = ""
         instance = ""
+        local_component = False
+        self.component_instance = ROS_Component_Instance()
         for child in ctx.getChildren():
             context = str(type(child))
             if "Component_typeContext" in context:
-                comp_type = child.getText()
-
+                if "/" not in child.getText():
+                    comp_type = child.getText()
+                    self.component_instance.properties["component_text"] = child.getText()
+                    local_component = True
+                else:
+                    self.component_instance.properties["component_text"] = child.getText()
+                    comp_type = child.getText().split('/')[-1]
             elif "Component_instanceContext" in context:
                 instance = child.getText()
-        self.component_instance = ROS_Component_Instance()
         self.component_instance.properties["name"] = instance
-        for child in self.package.children:
-            if child.properties["name"] == comp_type:
-                self.component_instance.properties["component_reference"] = child
+        if local_component == True:
+            for child in self.package.children:
+                if child.properties["name"] == comp_type:
+                    self.component_instance.properties["component_reference"] = child
         self.component_instance.parent = self.node
+        if self.component_instance.properties["component_reference"] == None:
+            self.parent.null_references.append(self.component_instance)
         self.node.add(self.component_instance)
 
     # On exit, add the node to the list of nodes in package
@@ -865,16 +906,20 @@ class Workspace_Generator:
 
                 topics = []
                 for publisher in publishers:
-                    topics.append(publisher.properties["message_reference"].properties["name"])
+                    topics.append([publisher.parent.parent.properties["name"], 
+                                   publisher.properties["message_reference"].properties["name"]])
                 for subscriber in subscribers:
-                    topics.append(subscriber.properties["message_reference"].properties["name"])
-                topics = OrderedSet(topics)
+                    topics.append([subscriber.parent.parent.properties["name"], 
+                                   subscriber.properties["message_reference"].properties["name"]])
+                # topics = OrderedSet(topics)
                 services = []
-                for provided in provided_services:
-                    services.append(provided)
-                for required in required_services:
-                    services.append(required)
-                services = OrderedSet(services)
+                for client in clients:
+                    services.append([client.parent.parent.properties["name"],
+                                     client.properties["service_reference"].properties["name"]])
+                for server in servers:
+                    services.append([server.parent.parent.properties["name"],
+                                    server.properties["service_reference"].properties["name"]])
+                # services = OrderedSet(services)
                 hash_include = "#include"
                 component_namespace = {'define_guard': define_guard, 
                                        'hash_include': hash_include, 
@@ -1186,6 +1231,10 @@ class ROS_Project:
         # Deployment Builder
         self.deployment_builder = None
 
+        # Global list of null references
+        self.null_references = []
+        self.checked_references = False
+
     # Create a new ROSMOD Project
     def new(self, project_name = "", project_path = ""):
         print "ROSTOOLS::Creating project " + project_name + " at " + project_path
@@ -1359,6 +1408,64 @@ class ROS_Project:
                 
         if count == 0:
             print "ROSTOOLS::No ROS Deployment (.rdp) files found in", self.deployment_path
+
+        self.resolve_references()
+
+    # Resolving Null references in all workspace packages
+    def resolve_references(self):
+        print "ROSTOOLS::Checking for unresolved references..."
+        object_kind = ""
+        remove_list = []
+        for obj in self.null_references:
+            if "publisher" in obj.kind or "subscriber" in obj.kind:
+                package = obj.properties["message_text"].split('/')[0]
+                reference = obj.properties["message_text"].split('/')[-1]
+                # First, find the package
+                for child in self.workspace.children:
+                    if child.properties["name"] == package:
+                        # Get all its messages
+                        for msg in child.getChildrenByKind("message"):
+                            if msg.properties["name"] == reference:
+                                obj.properties["message_reference"] = msg
+                                remove_list.append(obj)
+            if "client" in obj.kind or "server" in obj.kind:
+                package = obj.properties["service_text"].split('/')[0]
+                reference = obj.properties["service_text"].split('/')[-1]
+                # First, find the package
+                for child in self.workspace.children:
+                    if child.properties["name"] == package:
+                        # Get all its services
+                        for srv in child.getChildrenByKind("service"):
+                            if srv.properties["name"] == reference:
+                                obj.properties["service_reference"] = srv
+                                remove_list.append(obj)
+            if "component_instance" in obj.kind:
+                package = obj.properties["component_text"].split('/')[0]
+                reference = obj.properties["component_text"].split('/')[-1]
+                # First, find the package
+                for child in self.workspace.children:
+                    if child.properties["name"] == package:
+                        # Get all components
+                        for comp in child.getChildrenByKind("component"):
+                            if comp.properties["name"] == reference:
+                                obj.properties["component_reference"] = comp
+                                remove_list.append(obj)
+
+        # Removed not-null references from list
+        for obj in remove_list:
+            self.null_references.remove(obj)
+        # Check for remaining null references
+        if len(self.null_references) > 0 and self.checked_references == False:
+            print self.null_references
+            print "ROSTOOLS::ERROR::Unable to resolve all null references"
+            for obj in self.null_references:
+                if obj.kind == "publisher" or obj.kind == "subscriber":
+                    print "ROSTOOLS::ERROR::Invalid Reference " + obj.properties["message_text"] + " used when defining " +  obj.kind + " " + obj.properties["name"]
+                if obj.kind == "client" or obj.kind == "server":
+                    print "ROSTOOLS::ERROR::Invalid Reference " + obj.properties["service_text"] + " used when defining " +  obj.kind + " " + obj.properties["name"]
+                if obj.kind == "component_instance":
+                    print "ROSTOOLS::ERROR::Invalid Reference " + obj.properties["component_text"] + " used when defining " +  obj.kind + " " + obj.properties["name"]
+        self.checked_references = True
 
     # Check workspace directory for existing code that may
     # require preservation

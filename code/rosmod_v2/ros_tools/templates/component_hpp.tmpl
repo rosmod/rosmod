@@ -17,10 +17,10 @@ $user_includes//# End User Includes Marker
 #end if
 
 #for $topic in $topics
-$hash_include "$package_name/${topic}.h"
+$hash_include "$topic[0]/${topic[1]}.h"
 #end for
 #for $service in $services
-$hash_include "$package_name/${service}.h"
+$hash_include "$service[0]/${service[1]}.h"
 #end for
 
 #if $hpp_globals == ""

@@ -39,8 +39,8 @@ package Package_1
         // ROS Component - Component_1
 	component Component_1
 	{
-	    publisher<ComponentName> Component_1_publisher;
-     	    subscriber<ComponentName> Component_1_subscriber;
+	    publisher<Package_1/ComponentName> Component_1_publisher;
+     	    subscriber<Package_1/ComponentName> Component_1_subscriber;
 	    timer Timer0
 	    {
 	        period = 0.5s;
@@ -49,7 +49,7 @@ package Package_1
         // ROS Component - Component_2
 	component Component_2
 	{
-            provides ComponentService;
+            provides Package_1/ComponentService;
 	    publisher<ComponentName> Component_2_publisher;
 	    timer Timer0
 	    {
@@ -73,7 +73,7 @@ package Package_1
         node Ros_node 
 	{
             // Instantiating components in ROS node
-     	    component<Component_1> Component_1_i;
+     	    component<Package_1/Component_1> Component_1_i;
      	    component<Component_2> Component_2_i;
      	    component<Component_3> Component_3_i;
 	}
