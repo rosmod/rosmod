@@ -71,20 +71,39 @@ package $package.properties["name"]
 	{
 #if $component.getChildrenByKind("server") != []
 #for $server in $component.getChildrenByKind("server")
-            provides $server.properties["service_text"];
+#if $server.properties["service_reference"].parent.properties["name"] == $package.properties["name"]
+            provides $server.properties["service_reference"].properties["name"];
+#else
+	    provides $server.properties["service_reference"].parent.properties["name"]/$server.properties["service_reference"].properties["name"];
+#end if
 #end for
 #end if	
 #if $component.getChildrenByKind("client") != []
 #for $client in $component.getChildrenByKind("client")
-	    requires $client.properties["service_text"];#end for
+#if $client.properties["service_reference"].parent.properties["name"] == $package.properties["name"]
+	    requires $client.properties["service_reference"].properties["name"];
+#else
+	    requires $client.properties["service_reference"].parent.properties["name"]/$client.properties["service_reference"].properties["name"];
+#end if
+#end for
 #end if	
 #if $component.getChildrenByKind("publisher") != []
 #for $pb in $component.getChildrenByKind("publisher")
-	    publisher<$pb.properties["message_text"]> $pb.properties["name"];#end for
+#if $pb.properties["message_reference"].parent.properties["name"] == $package.properties["name"]
+	    publisher<$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];
+#else
+	    publisher<$pb.properties["message_reference"].parent.properties["name"]/$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];
+#end if
+#end for
 #end if	
 #if $component.getChildrenByKind("subscriber") != []
 #for $sb in $component.getChildrenByKind("subscriber")
-     	    subscriber<$sb.properties["message_text"]> $sb.properties["name"];#end for
+#if $sb.properties["message_reference"].parent.properties["name"] == $package.properties["name"]
+     	    subscriber<$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];
+#else
+	    subscriber<$sb.properties["message_reference"].parent.properties["name"]/$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];
+#end if
+#end for
 #end if	
 #if $component.getChildrenByKind("timer") != []
 #for $timer in $component.getChildrenByKind("timer")
@@ -108,7 +127,11 @@ package $package.properties["name"]
 #if $node.getChildrenByKind("component_instance") != []
             // Instantiating components in ROS node
 #for $instance in $node.getChildrenByKind("component_instance")
-     	    component<$instance.properties["component_text"]> $instance.properties["name"];
+#if $instance.properties["component_reference"].parent.properties["name"] == $package.properties["name"]
+     	    component<$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
+#else
+	    component<$instance.properties["component_reference"].parent.properties["name"]/$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
+#end if
 #end for             						 
 #end if    	     
 	}
