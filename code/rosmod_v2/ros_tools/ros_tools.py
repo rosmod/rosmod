@@ -1144,7 +1144,7 @@ class Workspace_Loader:
                                         destructor_text += line
                                     if destructor_marker == False and "//# Start Destructor Marker" in line:
                                         destructor_marker = True
-                                    if desstructor_marker == True and "//# End Destructor Marker" in line:
+                                    if destructor_marker == True and "//# End Destructor Marker" in line:
                                         destructor_marker = False
                                 component.properties["destructor"] = destructor_text
 
