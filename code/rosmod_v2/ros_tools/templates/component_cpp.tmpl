@@ -117,6 +117,14 @@ $component_name::~${component_name}()
     ${required[1]}_client.shutdown();
 #end for
 #end if
+#if $destructor == ""
+//# Start Destructor Marker
+
+//# End Destructor Marker
+#else
+//# Start Destructor Marker
+$destructor//# End Destructor Marker
+#end if
 }
 
 void $component_name::startUp()

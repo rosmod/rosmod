@@ -156,6 +156,7 @@ class ROS_Component(Drawable_Object):
         self.properties["user_globals"] = ""
         self.properties["hpp_globals"] = ""
         self.properties["user_private_variables"] = ""
+        self.properties["destructor"] = ""
 
 # ROS Timer
 class ROS_Timer(Drawable_Object):
@@ -932,6 +933,7 @@ class Workspace_Generator:
                                        'user_globals': component.properties["user_globals"],
                                        'hpp_globals': component.properties["hpp_globals"],
                                        'user_private_variables': component.properties["user_private_variables"],
+                                       'destructor': component.properties["destructor"],
                                        'publishers': publishers, 
                                        'subscribers': subscribers, 
                                        'clients': clients,
@@ -1131,6 +1133,20 @@ class Workspace_Loader:
                                     if init_marker == True and "//# End Init Marker" in line:
                                         init_marker = False
                                 component.properties["init_business_logic"] = init_text
+
+                            # OPEN THE CPP FILE
+                            with open(os.path.join(self.cpp, component.properties["name"] + ".cpp"), 'r') as cpp_file:
+                                # CHECK INIT BUSINESS LOGIC
+                                destructor_marker = False
+                                destructor_text = ""
+                                for num, line in enumerate(cpp_file, 1):
+                                    if destructor_marker == True and "//# End Destructor" not in line:
+                                        destructor_text += line
+                                    if destructor_marker == False and "//# Start Destructor Marker" in line:
+                                        destructor_marker = True
+                                    if desstructor_marker == True and "//# End Destructor Marker" in line:
+                                        destructor_marker = False
+                                component.properties["destructor"] = destructor_text
 
                             subscribers = []
                             timers = []
