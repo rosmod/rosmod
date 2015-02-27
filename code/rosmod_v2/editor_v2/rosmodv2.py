@@ -99,6 +99,7 @@ class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(Example, self).__init__(*args,**kwargs)
         self.InitUI()
+        self.Maximize()
     
     def InitUI(self):
 
@@ -1117,7 +1118,7 @@ class Example(wx.Frame):
                                    method=drawable.Draw_Method.ROUND_RECT, 
                                        minSize = minSize,
                                    placement=drawable.Text_Placement.TOP,
-                                            overlay = OrderedDict([('fillColor','RED')]) )
+                                            overlay = OrderedDict([('fillColor','WHITE')]) )
         '''
         STYLES USED FOR SOFTWARE CONFIGURATION OBJECTS
         '''
