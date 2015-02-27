@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 2.8.3)
 project($package_name)
 
+#if $functions == ""
+\## Start Global Marker
+
+\## End Global Marker
+#else
+\## Start Global Marker
+$functions\## End Global Marker
+#end if
+
 \## Find catkin macros and libraries
 \## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 \## is used, also find other catkin packages
@@ -111,6 +120,13 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+#if $include_dirs == ""
+\## Start Include Directories Marker
+\## End Include Directories Marker
+#else
+\## Start Include Directories Marker
+$include_dirs\## End Include Directories Marker
+#end if
 )
 
 \## Declare a cpp library
@@ -199,7 +215,16 @@ $node.properties["cmakelists_add_cpp"]                \## End ${node.properties[
 #else
 add_executable( ${node.properties["name"]} src/${package_name}/${node.properties["name"]}_main.cpp src/${package_name}/Component.cpp)
 #end if
-target_link_libraries(${node.properties["name"]} ${catkin_LIBRARIES})
+target_link_libraries(${node.properties["name"]} 
+#if $node.properties["cmakelists_target_link_libs"] == ""
+                      \## Start ${node.properties["name"]} Target Link Libraries Marker
+
+                      \## End ${node.properties["name"]} Target Link Libraries Marker
+#else
+                      \## Start ${node.properties["name"]} Target Link Libraries Marker
+$node.properties["cmakelists_target_link_libs"]                      \## End ${node.properties["name"]} Target Link Libraries Marker
+#end if
+                      ${catkin_LIBRARIES})
 add_dependencies(${node.properties["name"]} ${package_name}_generate_messages_cpp)
 #end for
 #end if

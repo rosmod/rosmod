@@ -123,6 +123,8 @@ class ROS_Package(Drawable_Object):
         self.kind = "package"
         self.properties["name"] = ""
         self.properties["cmakelists_packages"] = ""
+        self.properties["cmakelists_functions"] = ""
+        self.properties["cmakelists_include_dirs"] = ""
 
 # ROS Message
 class ROS_Message(Drawable_Object):
@@ -229,6 +231,7 @@ class ROS_Node(Drawable_Object):
         self.kind = "node"
         self.properties["name"] = ""
         self.properties["cmakelists_add_cpp"] = ""
+        self.properties["cmakelists_target_link_libs"] = ""
 
 # ROS Host
 class ROS_Host(Drawable_Object):
@@ -976,6 +979,8 @@ class Workspace_Generator:
 
             cmake_lists_namespace = {'package_name': package.properties["name"],
                                      'packages': package.properties["cmakelists_packages"],
+                                     'functions': package.properties["cmakelists_functions"],
+                                     'include_dirs': package.properties["cmakelists_include_dirs"],
                                      'messages': messages, 
                                      'services': cmakelists_services, 
                                      'catkin_INCLUDE_DIRS': "${catkin_INCLUDE_DIRS}",
@@ -1024,6 +1029,34 @@ class Workspace_Loader:
                                 package_marker = False
                         package.properties["cmakelists_packages"] = package_text   
 
+                    with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
+                        
+                        # CHECK CMAKELISTS FILE
+                        functions_marker = False
+                        functions_text = ""
+                        for num, line in enumerate(cmakelists, 1):
+                            if functions_marker == True and "## End Global Marker" not in line:
+                                functions_text += line
+                            if functions_marker == False and "## Start Global Marker" in line:
+                                functions_marker = True
+                            if functions_marker == True and "## End Global Marker" in line:
+                                functions_marker = False
+                        package.properties["cmakelists_functions"] = functions_text  
+
+                    with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
+                        
+                        # CHECK CMAKELISTS FILE
+                        include_marker = False
+                        include_text = ""
+                        for num, line in enumerate(cmakelists, 1):
+                            if include_marker == True and "## End Include Directories Marker" not in line:
+                                include_text += line
+                            if include_marker == False and "## Start Include Directories Marker" in line:
+                                include_marker = True
+                            if include_marker == True and "## End Include Directories Marker" in line:
+                                include_marker = False
+                        package.properties["cmakelists_include_dirs"] = include_text   
+
                 if(os.path.isfile(os.path.join(self.package_path, "CMakeLists.txt")) == True):
 
                     nodes = []
@@ -1045,7 +1078,25 @@ class Workspace_Loader:
                                     cpp_marker = True
                                 if cpp_marker == True and end_marker in line:
                                     cpp_marker = False
-                            node.properties["cmakelists_add_cpp"] = cpp_text                     
+                            node.properties["cmakelists_add_cpp"] = cpp_text  
+
+                        with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
+                            # CHECK CMAKELISTS FILE
+                            tll_marker = False
+                            tll_text = ""
+                            start_marker = "## Start " + node.properties["name"] + " Target Link Libraries Marker"
+                            end_marker = "## End " + node.properties["name"] + " Target Link Libraries Marker"
+
+## Start user_input
+
+                            for num, line in enumerate(cmakelists, 1):
+                                if tll_marker == True and end_marker not in line:
+                                    tll_text += line
+                                if tll_marker == False and start_marker in line:
+                                    tll_marker = True
+                                if tll_marker == True and end_marker in line:
+                                    tll_marker = False
+                            node.properties["cmakelists_target_link_libraries"] = tll_text                     
 
                 if os.path.exists(self.package_path):
                     print "ROSTOOLS::Preserving code for Package: ", self.package_path
