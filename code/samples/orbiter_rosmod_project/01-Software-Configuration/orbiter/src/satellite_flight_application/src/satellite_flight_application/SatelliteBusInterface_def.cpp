@@ -69,7 +69,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
     int sentbytes=0,numbytes=0;
     char msgbuf[100];
     memset(msgbuf,0,100);
-    sprintf(msgbuf,"Ship:%s:Status2:1:1:1\r\n",callback_.SatName());
+    sprintf(msgbuf,"Ship:%s:Status2:1:1:1\r\n",nodeName.c_str());
     if ( numbytes = send(sockfd, msgbuf, strlen(msgbuf),0) == -1) {
       perror("send");
       return false;
@@ -93,9 +93,9 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
     pch = strtok (recvbuf,",");
     int count = 0;
 
-    satellite_flight_application_SatelliteState state;
+    satellite_flight_application::SatState state;
 
-    state->sat_id = nodeName;
+    state.sat_id = nodeName;
 
     while (pch != NULL)
     {
@@ -103,31 +103,31 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
         printf ("%s\n",pch);
         switch (count-7) {
         case 0:     // rpos_x
-            state->rpos_x = atof(pch);
+            state.rpos_x = atof(pch);
             break;
         case 1:     // rpos_y
-            state->rpos_y = atof(pch);
+            state.rpos_y = atof(pch);
             break;
         case 2:     // rpos_z
-            state->rpos_z = atof(pch);
+            state.rpos_z = atof(pch);
             break;
         case 3:     // rvel_x
-            state->rvel_x = atof(pch);
+            state.rvel_x = atof(pch);
             break;
         case 4:     // rvel_y
-            state->rvel_y = atof(pch);
+            state.rvel_y = atof(pch);
             break;
         case 5:     // rvel_z
-            state->rvel_z = atof(pch);
+            state.rvel_z = atof(pch);
             break;
         case 6:     // vrot_x
-            state->vrot_x = atof(pch);
+            state.vrot_x = atof(pch);
             break;
         case 7:     // vrot_y
-            state->vrot_y = atof(pch);
+            state.vrot_y = atof(pch);
             break;
         case 8:     // vrot_z
-            state->vrot_z = atof(pch);
+            state.vrot_z = atof(pch);
             break;
         default:
             break;

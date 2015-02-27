@@ -9,6 +9,21 @@
 // --------------------------------
 //# Start User Includes Marker
 
+#include <sys/types.h>
+#include <sys/socket.h>
+//#include <netdb.h> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <ifaddrs.h>
+
+#include <cstring>      // std::memcpy
+#include <algorithm>    // std::swap
+#include <memory>
 //# End User Includes Marker
 
 #include "satellite_flight_application/SatelliteState.h"

@@ -107,7 +107,7 @@ void GroundInterface_def::Timer0Callback(const ros::TimerEvent& event)
 
     int numbytes, recvbytes=0;
 
-    if ((numbytes = recvfrom(callback_.sockfd, buf, 1023,MSG_DONTWAIT, (struct sockaddr *) &peer_addr, &peer_addr_len)) == -1) {
+    if ((numbytes = recvfrom(sockfd, buf, 1023,MSG_DONTWAIT, (struct sockaddr *) &peer_addr, &peer_addr_len)) == -1) {
       ROS_INFO("Receive Timeout!\n");
       return;
     }
@@ -121,13 +121,13 @@ void GroundInterface_def::Timer0Callback(const ros::TimerEvent& event)
     while (pch != NULL)
     {
       switch (count++) {
-      case 0:     // command_ID
-    	gndCommand.com_id = CORBA::string_dup(pch);
+      case 0:     // command string, e.g. "START"
+    	gndCommand.command = pch;
         break;
-      case 1:     // actual command
-    	gndCommand.duration = atof(pch);
+      case 1:     // duration
+    	gndCommand.params[0] = atof(pch);
         break;
-	// SHOULD GET PARAMS HERE IF WE WANT TO USE THEM
+	// SHOULD GET OTHER PARAMS HERE IF WE WANT TO USE THEM
       default:
         pch = NULL;
         break;
