@@ -259,6 +259,7 @@ class ROS_Deployment(Drawable_Object):
         self.kind = "deployment"
         self.properties["name"] = ""
         self.properties["hardware_configuration_reference"] = None
+        self.connections = OrderedDict()
 
 # Host Instances in a Deployment
 class ROS_Host_Instance(Drawable_Object):
