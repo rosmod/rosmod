@@ -1086,9 +1086,6 @@ class Workspace_Loader:
                             tll_text = ""
                             start_marker = "## Start " + node.properties["name"] + " Target Link Libraries Marker"
                             end_marker = "## End " + node.properties["name"] + " Target Link Libraries Marker"
-
-## Start user_input
-
                             for num, line in enumerate(cmakelists, 1):
                                 if tll_marker == True and end_marker not in line:
                                     tll_text += line
@@ -1096,7 +1093,7 @@ class Workspace_Loader:
                                     tll_marker = True
                                 if tll_marker == True and end_marker in line:
                                     tll_marker = False
-                            node.properties["cmakelists_target_link_libraries"] = tll_text                     
+                            node.properties["cmakelists_target_link_libs"] = tll_text                     
 
                 if os.path.exists(self.package_path):
                     print "ROSTOOLS::Preserving code for Package: ", self.package_path
