@@ -11,6 +11,7 @@ grammar Deployment;
 start
     :   (use_hardware_config)
         (deployment)
+	    (connections)
         EOF
     ;
 
@@ -162,6 +163,30 @@ arguments
  */
 node_alias
     :   (' ')* (IDENT (' ')* )*
+    ;
+
+/*
+ * Explicit Connections in Deployment
+ */
+connections
+    :   (group)*
+    ;
+
+/* 
+ * Groups/Associations between ports
+ */
+group
+    :   'group' group_id
+        '{'
+             (' ')* (IDENT (' ')* )*
+        '}'
+    ;
+
+/*
+ * Group ID of a set of connected ports
+ */
+group_id 
+    :   (IDENT)
     ;
 
 /*
