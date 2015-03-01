@@ -224,6 +224,7 @@ class Example(wx.Frame):
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
@@ -696,6 +697,7 @@ class Example(wx.Frame):
                         executable = node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
                         cmdArgs = node.properties['cmdline_arguments']
                     ))
+                    nodeList[-1].cmdArgs += "-nodename {}".format(node.properties['name'])
                 hostDict[host.properties['name']] = fabTest.deployed_host(
                     userName = host.properties['username'],
                     ipAddress = host.properties['host_reference'].properties['ip_address'],
