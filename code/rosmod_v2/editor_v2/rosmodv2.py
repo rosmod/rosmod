@@ -138,6 +138,23 @@ class Example(wx.Frame):
         self.Centre()
         self.Show(True)
 
+        self.workQueue = []
+        self.workTimerPeriod = 5.0
+        self.workTimerID = wx.NewId()  # pick a number
+        self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
+        self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
+        wx.EVT_TIMER(self, self.workTimerID, self.WorkFunction)  # call the on_timer function
+
+    '''
+    This function is what handles the work of updating the gui by communicating with other processes
+    that the gui has started, e.g. the deployment or monitoring processes.
+    '''
+    def WorkFunction(self,e):
+        print "Work queue has {} items".format(len(self.workQueue))
+        if len(self.workQueue) > 0:
+            for workItem in self.workQueue:
+                print workItem
+
     '''
     Build the output notebook for ROSMOD which holds:
     * the program output
@@ -694,6 +711,7 @@ class Example(wx.Frame):
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
+            self.workQueue.append("hello")
             self.deploying = True
             selectedPage = self.DeploymentAspect.GetSelection()
             objName = self.DeploymentAspect.GetPageText(selectedPage)
@@ -734,6 +752,7 @@ class Example(wx.Frame):
 
     def OnDeploymentStop(self,e):
         if self.deployed == True:
+            self.workQueue.remove("hello")
             p = multiprocessing.Process(target=fabTest.stopTest, args=(self.depQ,))
             p.start()
             p.join()
@@ -886,6 +905,7 @@ class Example(wx.Frame):
     '''
     def OnQuit(self, e):
         if ConfirmDialog(self,"Really quit ROSMOD?"):
+            self.workTimer.Stop()
             self.Close()
 
     def OnNew(self, e):
