@@ -114,6 +114,9 @@ class Example(wx.Frame):
         self.project = ros_tools.ROS_Project()
         self.BuildStyleDict()
 
+        self.undoList = []
+        self.redoList = []
+
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
         self.BuildToolbar()
@@ -446,6 +449,7 @@ class Example(wx.Frame):
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
+                self.UpdateUndo()
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 parent.add(newObj)
@@ -570,6 +574,7 @@ class Example(wx.Frame):
         prevProps = copy.copy(self.activeObject.properties)
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
             if self.activeObject.kind == 'package' or \
@@ -606,6 +611,7 @@ class Example(wx.Frame):
                 wx.CallAfter(self.OnDeploymentDelete,e)
             else:
                 if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+                    self.UpdateUndo()
                     self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                     self.activeObject.deleteAllRefs(self.project)
                     self.activeObject.delete()
@@ -626,6 +632,7 @@ class Example(wx.Frame):
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
             self.project.hardware_configurations.append(newObj)
@@ -641,6 +648,7 @@ class Example(wx.Frame):
         info = self.HardwareAspectInfo.GetPageInfo(objName)
         obj = info.obj
         if ConfirmDialog(self,"Delete {}?".format(objName)):
+            self.UpdateUndo()
             info.canvas.ClearAll()
             self.project.hardware_configurations = [x for x in self.project.hardware_configurations if x != obj]
             self.HardwareAspect.GetPage(selectedPage).DestroyChildren()
@@ -660,6 +668,7 @@ class Example(wx.Frame):
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
             self.project.deployments.append(newObj)
@@ -675,6 +684,7 @@ class Example(wx.Frame):
         info = self.DeploymentAspectInfo.GetPageInfo(objName)
         obj = info.obj
         if ConfirmDialog(self,"Delete {}?".format(objName)):
+            self.UpdateUndo()
             info.canvas.ClearAll()
             self.project.deployments = [x for x in self.project.deployments if x != obj]
             self.DeploymentAspect.GetPage(selectedPage).DestroyChildren()
@@ -743,6 +753,7 @@ class Example(wx.Frame):
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newPkg.properties[key] = value
             self.project.workspace.add(newPkg)
@@ -758,6 +769,7 @@ class Example(wx.Frame):
         pkg = info.obj
         if pkg.kind != 'workspace':
             if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                self.UpdateUndo()
                 info.canvas.ClearAll()
                 pkg.delete()
                 self.PackageAspect.GetPage(selectedPage).DestroyChildren()
@@ -945,10 +957,24 @@ class Example(wx.Frame):
                 self.BuildAspectPages()
                 self.statusbar.SetStatusText('Saved project as: {} in {}'.format(self.filename,self.project_path))
 
+    def UpdateUndo(self):
+        self.undoList.append(copy.copy(self.project))
+        self.toolbar.EnableTool(wx.ID_UNDO, True)
+
     def OnUndo(self, e):
-        pass
+        if len(self.undoList) > 0:
+            self.project = self.undoList.pop()
+            self.redoList.append(self.project)
+            self.toolbar.EnableTool(wx.ID_REDO, True)
+            if len(self.undoList) == 0:
+                self.toolbar.EnableTool(wx.ID_UNDO, False)
     def OnRedo(self, e):
-        pass
+        if len(self.redoList) > 0:
+            self.project = self.redoList.pop()
+            self.undoList.append(self.project)
+            self.toolbar.EnableTool(wx.ID_UNDO, True)
+            if len(self.redoList) == 0:
+                self.toolbar.EnableTool(wx.ID_REDO, False)
 
     def OnTerminal(self, e):
         self.shop.Check(True)
