@@ -44,8 +44,7 @@ def getPIDsFromPS(psString, name):
     return pids
 
 @parallel
-def parallelDeploy(q):
-    hostDict = q.get()
+def parallelDeploy(hostDict):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "{}@{}".format(host.userName,host.ipAddress)
@@ -62,13 +61,12 @@ def parallelDeploy(q):
     return host
 
 @parallel
-def parallelStop(q):
-    hostDict = q.get()
+def parallelStop(hostDict):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
     envVarStr = ""
-    for key,value in host.envVars.iteritems():
+    for key,value in host.envVars:
         envVarStr += " export {}={}".format(key,value)
     with prefix(envVarStr):
         for node in host.nodes:
@@ -77,12 +75,16 @@ def parallelStop(q):
                 node.pid = -1
 
 def deployTest(q):
-    newHosts = execute(parallelDeploy,q)
+    hostDict = q.get()
+    newHosts = execute(parallelDeploy,hostDict)
     hostDict = newHosts
+    q.put(hostDict)
     return hostDict
 
 def stopTest(q):
-    retVals = execute(parallelStop,q)
+    hostDict = q.get()
+    retVals = execute(parallelStop,hostDict)
+    q.put(retVals)
     return retVals
     
     

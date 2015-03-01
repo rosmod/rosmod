@@ -693,7 +693,7 @@ class Example(wx.Frame):
                 nodeList = []
                 for node in host.children:
                     nodeList.append(fabTest.deployed_node(
-                        executable = node.properties['node_reference'].properties['name'],
+                        executable = node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
                         cmdArgs = node.properties['cmdline_arguments']
                     ))
                 hostDict[host.properties['name']] = fabTest.deployed_host(
@@ -701,12 +701,13 @@ class Example(wx.Frame):
                     ipAddress = host.properties['host_reference'].properties['ip_address'],
                     keyFile = host.properties['sshkey'],
                     nodes = nodeList,
-                    envVars = host.properties['env_variables']
+                    envVars = copy.copy(host.properties['env_variables'])
                 )
                 hostDict[host.properties['name']].envVars.append(['ROS_MASTER_URI','http://129.59.79.169:11311/'])
-                hostDict[host.properties['name']].envVars.append(['ROS_IP','129.59.79.66'])
+                hostDict[host.properties['name']].envVars.append(
+                    ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
+                )
                 env.hosts.append(host.properties['name'])
-            print hostDict
             self.depQ = multiprocessing.Queue()
             p = multiprocessing.Process(target=fabTest.deployTest, args=(self.depQ,))
             self.depQ.put(hostDict)
@@ -719,7 +720,7 @@ class Example(wx.Frame):
 
     def OnDeploymentStop(self,e):
         if self.deployed == True:
-            p = multiprocessing.Process(target=fabTest.stopTest, args=(hostDict))
+            p = multiprocessing.Process(target=fabTest.stopTest, args=(self.depQ,))
             p.start()
             p.join()
             self.deployed = False
