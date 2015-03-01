@@ -13,8 +13,14 @@ import wx.stc as stc
 import os,sys
 import copy
 
+import multiprocessing
+
+from fabric.api import *
+
 sys.path.append("../ros_tools")
 import ros_tools
+sys.path.append("../ros_tools/deployment/tests")
+import fabTest
 
 # for ordered dictionaries
 from collections import OrderedDict
@@ -191,6 +197,8 @@ class Example(wx.Frame):
     node deployment onto hosts (and roscore deployment)
     '''        
     def BuildDeploymentAspect(self):
+        self.deployed = False
+        self.deploying = False
         self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
         self.DeploymentAspect.Hide()
@@ -209,12 +217,17 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tdeploy.png'),
                                                         shortHelpString="Deploy System"))
+        stopTBinfo = TBInfo( name='stop',
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/tstop.png'),
+                                                        shortHelpString="Stop Deployed System"))
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
         self.toolbar.Realize()
     def RemoveDeploymentAspectToolbar(self):
         for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
@@ -656,7 +669,6 @@ class Example(wx.Frame):
                 
     def OnDeploymentDelete(self, e):
         selectedPage = self.DeploymentAspect.GetSelection()
-        numPages = self.DeploymentAspect.GetPageCount()
         objName = self.DeploymentAspect.GetPageText(selectedPage)
         info = self.DeploymentAspectInfo.GetPageInfo(objName)
         obj = info.obj
@@ -668,7 +680,52 @@ class Example(wx.Frame):
             self.DeploymentAspect.DeletePage(selectedPage)
 
     def OnDeploymentDeploy(self,e):
-        pass
+        if self.deployed == False:
+            self.deploying = True
+            selectedPage = self.DeploymentAspect.GetSelection()
+            objName = self.DeploymentAspect.GetPageText(selectedPage)
+            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            dep = info.obj
+            env.use_ssh_config = False
+            hostDict = {}
+            env.hosts = []
+            for host in dep.children:
+                nodeList = []
+                for node in host.children:
+                    nodeList.append(fabTest.deployed_node(
+                        executable = node.properties['node_reference'].properties['name'],
+                        cmdArgs = node.properties['cmdline_arguments']
+                    ))
+                hostDict[host.properties['name']] = fabTest.deployed_host(
+                    userName = host.properties['username'],
+                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    keyFile = host.properties['sshkey'],
+                    nodes = nodeList,
+                    envVars = host.properties['env_variables']
+                )
+                hostDict[host.properties['name']].envVars.append(['ROS_MASTER_URI','http://129.59.79.169:11311/'])
+                hostDict[host.properties['name']].envVars.append(['ROS_IP','129.59.79.66'])
+                env.hosts.append(host.properties['name'])
+            print hostDict
+            self.depQ = multiprocessing.Queue()
+            p = multiprocessing.Process(target=fabTest.deployTest, args=(self.depQ,))
+            self.depQ.put(hostDict)
+            p.start()
+            p.join()
+            self.deployed = True
+            self.deploying = False
+        else:
+            ErrorDialog(self,"System is already running a deployment!")
+
+    def OnDeploymentStop(self,e):
+        if self.deployed == True:
+            p = multiprocessing.Process(target=fabTest.stopTest, args=(hostDict))
+            p.start()
+            p.join()
+            self.deployed = False
+            self.deploying = False
+        else:
+            ErrorDialog(self,"System is not running a deployment")
 
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
