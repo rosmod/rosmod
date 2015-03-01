@@ -646,6 +646,7 @@ class Example(wx.Frame):
             self.HardwareAspect.GetPage(selectedPage).DestroyChildren()
             self.HardwareAspectInfo.DelPageInfo(obj.properties['name'])
             self.HardwareAspect.DeletePage(selectedPage)
+            os.remove(self.project.hardware_configurations_path + '/' + obj.properties['name'] + '.rhw')
         
     def OnDeploymentCreate(self, e):
         newObj = ros_tools.ROS_Deployment()
@@ -679,6 +680,7 @@ class Example(wx.Frame):
             self.DeploymentAspect.GetPage(selectedPage).DestroyChildren()
             self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
             self.DeploymentAspect.DeletePage(selectedPage)
+            os.remove(self.project.deployment_path + '/' + obj.properties['name'] + '.rdp')
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
