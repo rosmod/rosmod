@@ -450,12 +450,12 @@ class Example(wx.Frame):
         kind = newObj.kind
         if newObj != None:
             newObj.properties['name'] = "New" + kind
-            ed = EditDialog(self,
-                            editDict=newObj.properties,
-                            editObj = newObj,
-                            title="Edit "+newObj.kind,
-                            references = refs,
-                            style=wx.RESIZE_BORDER)
+            ed = dialogs.EditDialog(self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Edit "+newObj.kind,
+                                    references = refs,
+                                    style=wx.RESIZE_BORDER)
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
@@ -574,12 +574,12 @@ class Example(wx.Frame):
             references = pkg.properties['hardware_configuration_reference'].children
         elif self.activeObject.kind == 'node_instance':
             references = self.project.workspace.getChildrenByKind('node')
-        ed = EditDialog(canvas,
-                        editDict=self.activeObject.properties,
-                        editObj = self.activeObject,
-                        title="Edit "+self.activeObject.kind,
-                        references = references,
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(canvas,
+                                editDict=self.activeObject.properties,
+                                editObj = self.activeObject,
+                                title="Edit "+self.activeObject.kind,
+                                references = references,
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         prevProps = copy.copy(self.activeObject.properties)
         inputs = ed.GetInput()
@@ -634,11 +634,11 @@ class Example(wx.Frame):
     def OnHardwareCreate(self, e):
         newObj = ros_tools.ROS_HW()
         newObj.properties['name'] = "New Hardware Configuration"
-        ed = EditDialog(self,
-                        editDict=newObj.properties,
-                        title="Edit "+newObj.kind,
-                        references = [],
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(self,
+                                editDict=newObj.properties,
+                                title="Edit "+newObj.kind,
+                                references = [],
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -670,11 +670,11 @@ class Example(wx.Frame):
         newObj = ros_tools.ROS_Deployment()
         newObj.properties['name'] = "New Deployment"
         references = self.project.hardware_configurations
-        ed = EditDialog(self,
-                        editDict=newObj.properties,
-                        title="Edit "+newObj.kind,
-                        references = references,
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(self,
+                                editDict=newObj.properties,
+                                title="Edit "+newObj.kind,
+                                references = references,
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -757,11 +757,11 @@ class Example(wx.Frame):
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
         newPkg.properties['name'] = "New Package"
-        ed = EditDialog(self,
-                        editDict=newPkg.properties,
-                        title="Edit "+newPkg.kind,
-                        references = [],
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(self,
+                                editDict=newPkg.properties,
+                                title="Edit "+newPkg.kind,
+                                references = [],
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
