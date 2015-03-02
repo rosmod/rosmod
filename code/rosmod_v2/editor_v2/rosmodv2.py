@@ -620,7 +620,7 @@ class Example(wx.Frame):
             elif self.activeObject.kind == 'deployment':
                 wx.CallAfter(self.OnDeploymentDelete,e)
             else:
-                if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+                if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
                     self.UpdateUndo()
                     self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                     self.activeObject.deleteAllRefs(self.project)
@@ -657,7 +657,7 @@ class Example(wx.Frame):
         objName = self.HardwareAspect.GetPageText(selectedPage)
         info = self.HardwareAspectInfo.GetPageInfo(objName)
         obj = info.obj
-        if ConfirmDialog(self,"Delete {}?".format(objName)):
+        if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
             self.UpdateUndo()
             info.canvas.ClearAll()
             self.project.hardware_configurations = [x for x in self.project.hardware_configurations if x != obj]
@@ -693,7 +693,7 @@ class Example(wx.Frame):
         objName = self.DeploymentAspect.GetPageText(selectedPage)
         info = self.DeploymentAspectInfo.GetPageInfo(objName)
         obj = info.obj
-        if ConfirmDialog(self,"Delete {}?".format(objName)):
+        if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
             self.UpdateUndo()
             info.canvas.ClearAll()
             self.project.deployments = [x for x in self.project.deployments if x != obj]
@@ -741,7 +741,7 @@ class Example(wx.Frame):
             self.deployed = True
             self.deploying = False
         else:
-            ErrorDialog(self,"System is already running a deployment!")
+            dialogs.ErrorDialog(self,"System is already running a deployment!")
 
     def OnDeploymentStop(self,e):
         if self.deployed == True:
@@ -752,7 +752,7 @@ class Example(wx.Frame):
             self.deployed = False
             self.deploying = False
         else:
-            ErrorDialog(self,"System is not running a deployment")
+            dialogs.ErrorDialog(self,"System is not running a deployment")
 
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
@@ -780,7 +780,7 @@ class Example(wx.Frame):
         info = self.PackageAspectInfo.GetPageInfo(pkgName)
         pkg = info.obj
         if pkg.kind != 'workspace':
-            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+            if dialogs.ConfirmDialog(self,"Delete {}?".format(pkgName)):
                 self.UpdateUndo()
                 info.canvas.ClearAll()
                 pkg.delete()
@@ -897,7 +897,7 @@ class Example(wx.Frame):
     Toolbar and File Menubar Menu Functions
     '''
     def OnQuit(self, e):
-        if ConfirmDialog(self,"Really quit ROSMOD?"):
+        if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
             self.workTimer.Stop()
             self.Close()
 
