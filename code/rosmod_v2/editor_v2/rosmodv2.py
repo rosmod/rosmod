@@ -25,21 +25,11 @@ import fabTest
 # for ordered dictionaries
 from collections import OrderedDict
 
-# proportional splitter should work for resizing window
-#from proportionalSplitter import ProportionalSplitter
-
 # flat notebook allows us to have scroll buttons and a close button
 import wx.lib.agw.flatnotebook as fnb
 
-# useful for drawing the model and having good scrolling of it
-import wx.lib.scrolledpanel as scrolled
-
 # need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
-
-from contextMenu import ContextMenu
-
-from dialogs import *
 
 try:
     import numpy as N
@@ -57,12 +47,9 @@ except ImportError:
 
 # terminal allows us to have a terminal panel
 from terminal import *
-
-# the dialogs that we use (popups)
 import dialogs
-
-# to draw the objects of the model
 import drawable
+from contextMenu import ContextMenu
 
 class TBInfo():
     def __init__(self,name, obj):
@@ -100,6 +87,12 @@ class AspectInfo():
         self.pages[pageInfo.name] = pageInfo
     def DelPageInfo(self,name):
         self.pages.pop(name,None)
+
+class WorkItem():
+    def __init__(self,_type,process,obj):
+        self._type = _type
+        self.process = process
+        self.obj = obj
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -711,8 +704,6 @@ class Example(wx.Frame):
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
-            self.workQueue.append("hello")
-            self.deploying = True
             selectedPage = self.DeploymentAspect.GetSelection()
             objName = self.DeploymentAspect.GetPageText(selectedPage)
             info = self.DeploymentAspectInfo.GetPageInfo(objName)
@@ -740,6 +731,8 @@ class Example(wx.Frame):
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
                 env.hosts.append(host.properties['name'])
+            self.workQueue.append("hello")
+            self.deploying = True
             self.depQ = multiprocessing.Queue()
             p = multiprocessing.Process(target=fabTest.deployTest, args=(self.depQ,))
             self.depQ.put(hostDict)
