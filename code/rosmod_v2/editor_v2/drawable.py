@@ -211,7 +211,6 @@ class Drawable_Object:
                     retKids.extend([child for child in node.children if child.kind == kind])
             else:
                 retKids.extend([child for child in self.children if child.kind == kind])
-            return retKids
         elif self.kind == 'workspace':
             if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
                 for pkg in self.children:
@@ -226,7 +225,6 @@ class Drawable_Object:
             else:
                 for pkg in self.children:
                     retKids.extend([child for child in pkg.children if child.kind == kind])
-            return retKids
         elif self.kind == 'hardware_configuration':
             if kind == 'host':
                 retKids.extend(self.children)
@@ -238,39 +236,41 @@ class Drawable_Object:
                 retKids.extend(self.children)
         else:
             return [child for child in self.children if child.kind == kind]
+        return retKids
 
     '''
     Draw() is called after layout has been calculated
     Should receive the device context
     '''
-    def Draw(self, canvas, leftClickFunc, rightClickFunc):
+    def Draw(self, canvas, leftClickFunc, rightClickFunc, leftDClickFunc):
         x,y = self.topLeft.Get()
+        dObj = None
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
-                bmp = canvas.AddScaledBitmap(
+                dObj = canvas.AddScaledBitmap(
                     self.style.icon,
                     XY = (x,y),
                     Height = self.height,
                     Position = "tl")
-                bmp.HitFill = True
-                bmp.Name = self
-                bmp.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
-                bmp.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
+                dObj.HitFill = True
+                dObj.Name = self
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
-            rect = canvas.AddRectangle(
+            dObj = canvas.AddRectangle(
                 (x,y-self.height),
                 (self.width,self.height),
                 FillColor = self.style.overlay["fillColor"],
                 InForeground = False
             )
-            rect.HitFill = True
-            rect.Name = self
-            rect.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
-            rect.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
+            dObj.HitFill = True
+            dObj.Name = self
         else:
             pass
+        if dObj != None:
+            dObj.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
+            dObj.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
+            dObj.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, leftDClickFunc)
         if 'overlayColor' in self.style.overlay.keys():
             rect = canvas.AddRectangle(
                 (x,y-self.height),
@@ -286,7 +286,7 @@ class Drawable_Object:
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
-            child.Draw(canvas,leftClickFunc,rightClickFunc)
+            child.Draw(canvas,leftClickFunc,rightClickFunc,leftDClickFunc)
 
 '''
 The Layout function takes a top-level

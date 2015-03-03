@@ -340,7 +340,7 @@ class Example(wx.Frame):
         canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
         width,height = drawable.Layout(model,(0,0),canvas)
-        model.Draw(canvas,self.OnLeftClick,self.OnRightClick)
+        model.Draw(canvas,self.OnLeftClick,self.OnRightClick,self.OnLeftDoubleClick)
         canvas.Draw()
         canvas.ZoomToBB()
 
@@ -351,6 +351,9 @@ class Example(wx.Frame):
             self.OnHWLeftClick(Object)
         elif self.activeAspect == self.DeploymentAspect:
             self.OnDeploymentLeftClick(Object)
+
+    def OnLeftDoubleClick(self, Object):
+        pass
 
     def OnPkgLeftClick(self, Object):
         info = self.GetActivePanelInfo()
@@ -378,7 +381,24 @@ class Example(wx.Frame):
         pass
 
     def OnDeploymentLeftClick(self, Object):
-        pass
+        info = self.GetActivePanelInfo()
+        dep = info.obj
+        canvas = info.canvas
+        self.activeObject = Object.Name
+        drawable.Configure(dep,self.styleDict)
+        self.activeObject.style.overlay['overlayColor']="RED"
+        kind = self.activeObject.kind
+        keys = []
+        if kind == 'node_instance':
+            keys = [['node_instance','node_reference']]
+        elif kind == 'host_instance':
+            keys = [['host_instance','host_reference']]
+        for key in keys:
+            children = dep.getChildrenByKind(key[0])
+            for child in children:
+                if child.properties[key[1]] == self.activeObject.properties[key[1]]:
+                    child.style.overlay['overlayColor']='RED'
+        self.DrawModel(dep,canvas)
 
     def OnRightClick(self, Object):
         info = self.GetActivePanelInfo()
