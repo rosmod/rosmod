@@ -353,7 +353,7 @@ class Example(wx.Frame):
             self.OnDeploymentLeftClick(Object)
 
     def OnLeftDoubleClick(self, Object):
-        pass
+        self.AspectEdit(None)
 
     def OnPkgLeftClick(self, Object):
         info = self.GetActivePanelInfo()
