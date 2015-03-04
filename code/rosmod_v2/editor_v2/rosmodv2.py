@@ -378,7 +378,10 @@ class Example(wx.Frame):
         self.DrawModel(pkg,canvas)
 
     def OnHWLeftClick(self, Object):
-        pass
+        info = self.GetActivePanelInfo()
+        dep = info.obj
+        canvas = info.canvas
+        self.activeObject = Object.Name
 
     def OnDeploymentLeftClick(self, Object):
         info = self.GetActivePanelInfo()
