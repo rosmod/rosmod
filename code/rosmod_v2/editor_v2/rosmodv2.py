@@ -32,7 +32,7 @@ import wx.lib.agw.flatnotebook as fnb
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
 
 try:
-    import numpy as N
+    import numpy
     import numpy.random as RandomArray
     haveNumpy = True
     #print "Using numpy, version:", N.__version__
@@ -920,7 +920,24 @@ class Example(wx.Frame):
     Toolbar and File Menubar Menu Functions
     '''
     def OnPrint(self, e):
-        pass
+        info = self.GetActivePanelInfo()
+        canvas = info.canvas
+        model = info.obj
+        msgWindow = info.msgWindow
+        canvas.Scale = 1
+        canvas.SetToNewScale(False)
+        canvas._ResetBoundingBox()
+        box = canvas.BoundingBox
+        canvas.ViewPortCenter -= (canvas.PixelToWorld((0,0)) - numpy.array((box[0,0],box[1,1])))
+        bmp = wx.EmptyBitmap(box.Width,box.Height)
+        dc = wx.MemoryDC()
+        dc.SelectObject(bmp)
+        dc.Clear()
+        canvas._DrawObjects(dc,canvas._DrawList,dc,canvas.BoundingBox)
+        dc.SelectObject(wx.NullBitmap)
+        bmp.SaveFile("tmp.bmp",wx.BITMAP_TYPE_PNG)
+        #drawable.Configure(model,self.styleDict)
+        #self.DrawModel(model,canvas)
 
     def OnQuit(self, e):
         if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
@@ -1198,7 +1215,7 @@ class Example(wx.Frame):
         self.styleDict = OrderedDict()
         font = OrderedDict()
         font['pointSize'] = 20
-        minSize = (30,30)
+        minSize = (50,50)
         padding = (10,10)
         pkgOffset = (50,50)
         msgIcon = wx.Bitmap('icons/model/msgIcon.png')
