@@ -919,6 +919,9 @@ class Example(wx.Frame):
     '''
     Toolbar and File Menubar Menu Functions
     '''
+    def OnPrint(self, e):
+        pass
+
     def OnQuit(self, e):
         if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
             self.workTimer.Stop()
@@ -1164,6 +1167,7 @@ class Example(wx.Frame):
         self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New")
         self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap('icons/toolbar/topen.png'), shortHelp="Open")
         self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap('icons/toolbar/tsave.png'), shortHelp="Save")
+        self.tb_print = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tprint.png'), shortHelp="Print Page to File")
         self.toolbar.AddSeparator()
         # undo/redo
         self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('icons/toolbar/tundo.png'), shortHelp="Undo")
@@ -1176,6 +1180,7 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
+        self.Bind(wx.EVT_TOOL, self.OnPrint, self.tb_print)
         self.Bind(wx.EVT_TOOL, self.OnUndo, self.tb_undo)
         self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
         self.Bind(wx.EVT_TOOL, self.OnTerminal, self.tb_term)
