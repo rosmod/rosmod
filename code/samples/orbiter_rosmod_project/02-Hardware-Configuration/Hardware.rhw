@@ -1,53 +1,28 @@
 /*
  * ROS Hardware Configurations Model
  */
-
-// Host - BBB_421
-host BBB_421
+// Host - BBB_111
+host BBB_111
 {
-    ip_address = "2001:470:489e::421";
+    ip_address = "2001:470:489e::111";
     architecture = "armv7l";
 }
-// Host - BBB_422
-host BBB_422
+// Host - BBB_112
+host BBB_112
 {
-    ip_address = "2001:470:489e::422";
+    ip_address = "2001:470:489e::112";
     architecture = "armv7l";
 }
-// Host - BBB_423
-host BBB_423
+// Host - BBB_113
+host BBB_113
 {
-    ip_address = "2001:470:489e::423";
+    ip_address = "2001:470:489e::113";
     architecture = "armv7l";
 }
-// Host - BBB_424
-host BBB_424
+// Host - BBB_114
+host BBB_114
 {
-    ip_address = "2001:470:489e::424";
-    architecture = "armv7l";
-}
-// Host - BBB_411
-host BBB_411
-{
-    ip_address = "2001:470:489e::411";
-    architecture = "armv7l";
-}
-// Host - BBB_412
-host BBB_412
-{
-    ip_address = "2001:470:489e::412";
-    architecture = "armv7l";
-}
-// Host - BBB_413
-host BBB_413
-{
-    ip_address = "2001:470:489e::413";
-    architecture = "armv7l";
-}
-// Host - BBB_414
-host BBB_414
-{
-    ip_address = "2001:470:489e::414";
+    ip_address = "2001:470:489e::114";
     architecture = "armv7l";
 }
 // Host - BBB_121
@@ -74,28 +49,28 @@ host BBB_124
     ip_address = "2001:470:489e::124";
     architecture = "armv7l";
 }
-// Host - BBB_111
-host BBB_111
+// Host - BBB_211
+host BBB_211
 {
-    ip_address = "2001:470:489e::111";
+    ip_address = "2001:470:489e::211";
     architecture = "armv7l";
 }
-// Host - BBB_112
-host BBB_112
+// Host - BBB_212
+host BBB_212
 {
-    ip_address = "2001:470:489e::112";
+    ip_address = "2001:470:489e::212";
     architecture = "armv7l";
 }
-// Host - BBB_113
-host BBB_113
+// Host - BBB_213
+host BBB_213
 {
-    ip_address = "2001:470:489e::113";
+    ip_address = "2001:470:489e::213";
     architecture = "armv7l";
 }
-// Host - BBB_114
-host BBB_114
+// Host - BBB_214
+host BBB_214
 {
-    ip_address = "2001:470:489e::114";
+    ip_address = "2001:470:489e::214";
     architecture = "armv7l";
 }
 // Host - BBB_221
@@ -122,28 +97,28 @@ host BBB_224
     ip_address = "2001:470:489e::224";
     architecture = "armv7l";
 }
-// Host - BBB_211
-host BBB_211
+// Host - BBB_311
+host BBB_311
 {
-    ip_address = "2001:470:489e::211";
+    ip_address = "2001:470:489e::311";
     architecture = "armv7l";
 }
-// Host - BBB_212
-host BBB_212
+// Host - BBB_312
+host BBB_312
 {
-    ip_address = "2001:470:489e::212";
+    ip_address = "2001:470:489e::312";
     architecture = "armv7l";
 }
-// Host - BBB_213
-host BBB_213
+// Host - BBB_313
+host BBB_313
 {
-    ip_address = "2001:470:489e::213";
+    ip_address = "2001:470:489e::313";
     architecture = "armv7l";
 }
-// Host - BBB_214
-host BBB_214
+// Host - BBB_314
+host BBB_314
 {
-    ip_address = "2001:470:489e::214";
+    ip_address = "2001:470:489e::314";
     architecture = "armv7l";
 }
 // Host - BBB_321
@@ -170,28 +145,52 @@ host BBB_324
     ip_address = "2001:470:489e::324";
     architecture = "armv7l";
 }
-// Host - BBB_311
-host BBB_311
+// Host - BBB_411
+host BBB_411
 {
-    ip_address = "2001:470:489e::311";
+    ip_address = "2001:470:489e::411";
     architecture = "armv7l";
 }
-// Host - BBB_312
-host BBB_312
+// Host - BBB_412
+host BBB_412
 {
-    ip_address = "2001:470:489e::312";
+    ip_address = "2001:470:489e::412";
     architecture = "armv7l";
 }
-// Host - BBB_313
-host BBB_313
+// Host - BBB_413
+host BBB_413
 {
-    ip_address = "2001:470:489e::313";
+    ip_address = "2001:470:489e::413";
     architecture = "armv7l";
 }
-// Host - BBB_314
-host BBB_314
+// Host - BBB_414
+host BBB_414
 {
-    ip_address = "2001:470:489e::314";
+    ip_address = "2001:470:489e::414";
+    architecture = "armv7l";
+}
+// Host - BBB_421
+host BBB_421
+{
+    ip_address = "2001:470:489e::421";
+    architecture = "armv7l";
+}
+// Host - BBB_422
+host BBB_422
+{
+    ip_address = "2001:470:489e::422";
+    architecture = "armv7l";
+}
+// Host - BBB_423
+host BBB_423
+{
+    ip_address = "2001:470:489e::423";
+    architecture = "armv7l";
+}
+// Host - BBB_424
+host BBB_424
+{
+    ip_address = "2001:470:489e::424";
     architecture = "armv7l";
 }
 
