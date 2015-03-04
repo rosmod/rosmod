@@ -920,24 +920,33 @@ class Example(wx.Frame):
     Toolbar and File Menubar Menu Functions
     '''
     def OnPrint(self, e):
-        info = self.GetActivePanelInfo()
-        canvas = info.canvas
-        model = info.obj
-        msgWindow = info.msgWindow
-        canvas.Scale = 1
-        canvas.SetToNewScale(False)
-        canvas._ResetBoundingBox()
-        box = canvas.BoundingBox
-        canvas.ViewPortCenter -= (canvas.PixelToWorld((0,0)) - numpy.array((box[0,0],box[1,1])))
-        bmp = wx.EmptyBitmap(box.Width,box.Height)
-        dc = wx.MemoryDC()
-        dc.SelectObject(bmp)
-        dc.Clear()
-        canvas._DrawObjects(dc,canvas._DrawList,dc,canvas.BoundingBox)
-        dc.SelectObject(wx.NullBitmap)
-        bmp.SaveFile("tmp.bmp",wx.BITMAP_TYPE_PNG)
-        #drawable.Configure(model,self.styleDict)
-        #self.DrawModel(model,canvas)
+        imgName, imgPath = dialogs.RMLFileDialog(
+            frame = self,
+            fileTypes = "PNG Images (*.png)|*.png",
+            path = self.project_path,
+            prompt = "Save Aspect View As Image...",
+            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
+        )
+        if imgName != None and imgPath != None:
+            info = self.GetActivePanelInfo()
+            canvas = info.canvas
+            model = info.obj
+            msgWindow = info.msgWindow
+            canvas.Scale = 1
+            canvas.SetToNewScale(False)
+            canvas._ResetBoundingBox()
+            box = canvas.BoundingBox
+            canvas.ViewPortCenter -= (canvas.PixelToWorld((0,0)) - numpy.array((box[0,0],box[1,1])))
+            bmp = wx.EmptyBitmap(box.Width,box.Height)
+            dc = wx.MemoryDC()
+            dc.SelectObject(bmp)
+            dc.Clear()
+            canvas._DrawObjects(dc,canvas._DrawList,dc,canvas.BoundingBox)
+            dc.SelectObject(wx.NullBitmap)
+            if imgName[-4:] != ".png":
+                imgName += ".png"
+            bmp.SaveFile(imgPath+'/'+imgName,wx.BITMAP_TYPE_PNG)
+            self.statusbar.SetStatusText('Saved {} to {}'.format(imgName,imgPath))
 
     def OnQuit(self, e):
         if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
