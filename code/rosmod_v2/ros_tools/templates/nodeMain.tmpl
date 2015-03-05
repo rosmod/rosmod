@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     // Create Component Objects
     #if $len($component_instances) > 0
     #for $instance in $component_instances
-    $instance.properties["component_reference"].properties["name"] ${instance.properties["name"]}(nodeName, argc, argv); 
+    $instance.properties["component_reference"].properties["name"] ${instance.properties["name"]}(nodeName, "${instance.properties["name"]}", argc, argv); 
     #end for
 
     #end if

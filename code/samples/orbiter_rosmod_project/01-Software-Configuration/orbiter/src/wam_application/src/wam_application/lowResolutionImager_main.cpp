@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    LowResolutionIMageProducer_def LR_sensor(nodeName, argc, argv); 
+    LowResolutionIMageProducer_def LR_sensor(nodeName, "LR_sensor", argc, argv); 
 
     // Create Component Threads
     boost::thread LR_sensor_thread(componentThread, &LR_sensor);

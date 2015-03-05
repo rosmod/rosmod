@@ -1,8 +1,9 @@
 #include "wam_application/Component.hpp"
 
 // Component constructor - Obtaining node arguments
-Component::Component(std::string node, int argc, char **argv) {
+Component::Component(std::string node, std::string comp, int argc, char **argv) {
     nodeName = node;
+    compName = comp;
     node_argc = argc;
     node_argv = argv;
 }

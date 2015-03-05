@@ -6,8 +6,8 @@
 
 #include "boost/filesystem.hpp"
 
-#include "rapidxml.hpp"
-#include "rapidxml_utils.hpp"
+#include "wam_application/rapidxml.hpp"
+#include "wam_application/rapidxml_utils.hpp"
 
 using namespace rapidxml;
 
@@ -47,7 +47,7 @@ public:
 
     for (xml_node<> *node = doc.first_node("group"); node; node = node->next_sibling())
       {
-	rosmod::Group group;
+	Group group;
 	for (xml_attribute<> *attr = node->first_attribute();
 	     attr; attr = attr->next_attribute())
 	  {
@@ -68,9 +68,3 @@ public:
     return true;
   }
 };
-
-int main(){
-  rosmod::GroupXMLParser groupParser;
-  groupParser.Parse("testGroups.xml");
-  groupParser.Print();
-}

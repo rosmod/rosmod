@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    HighResolutionImageProducer_def HR_sensor(nodeName, argc, argv); 
+    HighResolutionImageProducer_def HR_sensor(nodeName, "HR_sensor", argc, argv); 
 
     // Create Component Threads
     boost::thread HR_sensor_thread(componentThread, &HR_sensor);

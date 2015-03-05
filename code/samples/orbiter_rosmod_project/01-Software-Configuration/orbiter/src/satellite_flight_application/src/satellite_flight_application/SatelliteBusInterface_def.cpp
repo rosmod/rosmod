@@ -256,6 +256,15 @@ void SatelliteBusInterface_def::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if ( boost::filesystem::exists(configFileName) )
+    {
+        groupParser.Parse(configFileName);
+	groupParser.Print();
+    }
+
     // Configure all provided services associated with this component
     // server: SatelliteState_server
     ros::AdvertiseServiceOptions SatelliteState_server_options;

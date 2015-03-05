@@ -31,9 +31,9 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    GroundInterface_def groundInterface_comp(nodeName, argc, argv); 
-    OrbitController_def orbitController_comp(nodeName, argc, argv); 
-    SatelliteBusInterface_def satBusIntf_comp(nodeName, argc, argv); 
+    GroundInterface_def groundInterface_comp(nodeName, "groundInterface_comp", argc, argv); 
+    OrbitController_def orbitController_comp(nodeName, "orbitController_comp", argc, argv); 
+    SatelliteBusInterface_def satBusIntf_comp(nodeName, "satBusIntf_comp", argc, argv); 
 
     // Create Component Threads
     boost::thread groundInterface_comp_thread(componentThread, &groundInterface_comp);

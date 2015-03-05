@@ -158,6 +158,15 @@ void GroundInterface_def::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if ( boost::filesystem::exists(configFileName) )
+    {
+        groupParser.Parse(configFileName);
+	groupParser.Print();
+    }
+
     // Configure all publishers associated with this component
     // publisher: gndCommandPub
     this->gndCommandPub = nh.advertise<satellite_flight_application::GroundCommand>

@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    TrajectoryPlanner_def trajectoryPlanner_comp(nodeName, argc, argv); 
+    TrajectoryPlanner_def trajectoryPlanner_comp(nodeName, "trajectoryPlanner_comp", argc, argv); 
 
     // Create Component Threads
     boost::thread trajectoryPlanner_comp_thread(componentThread, &trajectoryPlanner_comp);

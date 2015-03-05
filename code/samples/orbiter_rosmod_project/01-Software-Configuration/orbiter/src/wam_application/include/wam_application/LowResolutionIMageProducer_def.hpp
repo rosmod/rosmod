@@ -21,7 +21,7 @@ class LowResolutionIMageProducer_def : public Component
 {
     public:
         // Component LowResolutionIMageProducer_def Constructor
-        LowResolutionIMageProducer_def(std::string nodeName, int argc, char **argv) : Component(nodeName, argc, argv) {}
+        LowResolutionIMageProducer_def(std::string nodeName, std::string compName, int argc, char **argv) : Component(nodeName, compName, argc, argv) {}
 
         // These functions' business logic will be filled in by the user:
 

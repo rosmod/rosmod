@@ -87,6 +87,9 @@ ros_templates = os.path.realpath(os.path.abspath
 if ros_templates not in sys.path:
     sys.path.insert(0, ros_templates)
 from package_xml import *
+from rapidxml_hpp import *
+from rapidxml_utils_hpp import *
+from xmlParser_hpp import *
 from base_component_hpp import *
 from base_component_cpp import *
 from msg import *
@@ -830,6 +833,31 @@ class Workspace_Generator:
             with open(os.path.join(self.package_path, "package.xml"), 'w') as temp_file:
                 temp_file.write(self.package_xml)
 
+
+            # Create rapidxml.hpp, rapidxml_utils.hpp, and xmlParser.hpp
+            self.cpp = self.src + "/" + package.properties["name"]
+            self.hpp = self.include + "/" + package.properties["name"]
+
+            if not os.path.exists(self.hpp):
+                os.makedirs(self.hpp)
+            xml_namespace = {'hash_include': "#include", 
+                                      'package_name': package.properties["name"]}
+            # MAIN RAPIDXML FILE
+            t = rapidxml_hpp(searchList=[xml_namespace])
+            self.rapidxml_hpp = str(t)
+            with open(os.path.join(self.hpp, "rapidxml.hpp"), 'w') as temp_file:
+                temp_file.write(self.rapidxml_hpp)
+            # UTILS FILE
+            t = rapidxml_utils_hpp(searchList=[xml_namespace])
+            self.rapidxml_utils_hpp = str(t)
+            with open(os.path.join(self.hpp, "rapidxml_utils.hpp"), 'w') as temp_file:
+                temp_file.write(self.rapidxml_utils_hpp)
+            # XML PARSER FILE
+            t = xmlParser_hpp(searchList=[xml_namespace])
+            self.xmlParser_hpp = str(t)
+            with open(os.path.join(self.hpp, "xmlParser.hpp"), 'w') as temp_file:
+                temp_file.write(self.xmlParser_hpp)
+
             # Create Component.cpp and Component.hpp
             self.cpp = self.src + "/" + package.properties["name"]
             self.hpp = self.include + "/" + package.properties["name"]
@@ -847,7 +875,8 @@ class Workspace_Generator:
 
             if not os.path.exists(self.hpp):
                 os.makedirs(self.hpp)
-            base_hpp_namespace = {'hash_include': '#include'}
+            base_hpp_namespace = {'hash_include': "#include", 
+                                      'package_name': package.properties["name"]}
             # Populate Base Component hpp template
             t = base_component_hpp(searchList=[base_hpp_namespace])
             self.base_hpp = str(t)

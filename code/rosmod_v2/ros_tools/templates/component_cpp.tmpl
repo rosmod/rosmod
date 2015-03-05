@@ -131,6 +131,15 @@ void $component_name::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if ( boost::filesystem::exists(configFileName) )
+    {
+        groupParser.Parse(configFileName);
+	groupParser.Print();
+    }
+
     #if $len($subscribers) > 0 
     // Configure all subscribers associated with this component
     #for $sub in $subscribers

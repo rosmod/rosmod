@@ -54,6 +54,15 @@ void ImageProcessor_def::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if ( boost::filesystem::exists(configFileName) )
+    {
+        groupParser.Parse(configFileName);
+	groupParser.Print();
+    }
+
     // Configure all subscribers associated with this component
     // subscriber: HRsub
     ros::SubscribeOptions HRsub_options;

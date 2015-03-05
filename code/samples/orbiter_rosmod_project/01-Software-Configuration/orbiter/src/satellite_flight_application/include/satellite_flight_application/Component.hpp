@@ -3,6 +3,8 @@
 
 #include "ros/ros.h"
 
+#include "satellite_flight_application/xmlParser.hpp"
+
 // required for the callback queue
 #include <ros/callback_queue.h>
 
@@ -10,7 +12,7 @@ class Component
 {
     public:
         // Component Constructor
-        Component(std::string nodeName, int argc, char **argv);
+        Component(std::string nodeName, std::string compName, int argc, char **argv);
 
 	// StartUp will be completely generated
 	virtual void startUp() = 0;
@@ -26,6 +28,7 @@ class Component
 
     protected:
         std::string nodeName;
+        std::string compName;
         int node_argc;
         char **node_argv;
 	ros::Timer initOneShotTimer;  // timer for calling init
