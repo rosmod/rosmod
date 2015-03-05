@@ -86,19 +86,24 @@ void OrbitController_def::startUp()
 
     // Need to read in and parse the group configuration xml if it exists
     GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
     std::string configFileName = nodeName + "." + compName + ".xml";
-    if ( boost::filesystem::exists(configFileName) )
+    if (groupParser.Parse(configFileName))
     {
-        groupParser.Parse(configFileName);
-	groupParser.Print();
+	portGroupMap = &groupParser.portGroupMap;
     }
+
+    std::string advertiseName;
 
     // Configure all subscribers associated with this component
     // subscriber: targetOrbitSub
+    advertiseName = "TargetOrbit";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::SubscribeOptions targetOrbitSub_options;
     targetOrbitSub_options = 
 	ros::SubscribeOptions::create<cluster_flight_application::TargetOrbit>
-	    ("TargetOrbit",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&OrbitController_def::targetOrbitSub_OnOneData, this, _1),
 	     ros::VoidPtr(),
@@ -107,16 +112,25 @@ void OrbitController_def::startUp()
 
     // Configure all publishers associated with this component
     // publisher: satStatePub
+    advertiseName = "SatState";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     this->satStatePub = nh.advertise<satellite_flight_application::SatState>
-	("SatState", 1000);	
+	(advertiseName.c_str(), 1000);	
 
     // Configure all required services associated with this component
     // client: SatelliteState_client
+    advertiseName = "SatelliteState";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     this->SatelliteState_client = nh.serviceClient<satellite_flight_application::SatelliteState>
-	("SatelliteState"); 
+	(advertiseName.c_str()); 
     // client: ThrusterComm_client
+    advertiseName = "ThrusterComm";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     this->ThrusterComm_client = nh.serviceClient<satellite_flight_application::ThrusterComm>
-	("ThrusterComm"); 
+	(advertiseName.c_str()); 
 
     // Create Init Timer
     ros::TimerOptions timer_options;

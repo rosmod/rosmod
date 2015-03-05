@@ -56,29 +56,37 @@ void ImageProcessor_def::startUp()
 
     // Need to read in and parse the group configuration xml if it exists
     GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
     std::string configFileName = nodeName + "." + compName + ".xml";
-    if ( boost::filesystem::exists(configFileName) )
+    if (groupParser.Parse(configFileName))
     {
-        groupParser.Parse(configFileName);
-	groupParser.Print();
+	portGroupMap = &groupParser.portGroupMap;
     }
+
+    std::string advertiseName;
 
     // Configure all subscribers associated with this component
     // subscriber: HRsub
+    advertiseName = "HRImageVector";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::SubscribeOptions HRsub_options;
     HRsub_options = 
 	ros::SubscribeOptions::create<wam_application::HRImageVector>
-	    ("HRImageVector",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&ImageProcessor_def::HRsub_OnOneData, this, _1),
 	     ros::VoidPtr(),
              &this->compQueue);
     this->HRsub = nh.subscribe(HRsub_options);
     // subscriber: LRsub
+    advertiseName = "LRImageVector";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::SubscribeOptions LRsub_options;
     LRsub_options = 
 	ros::SubscribeOptions::create<wam_application::LRImageVector>
-	    ("LRImageVector",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&ImageProcessor_def::LRsub_OnOneData, this, _1),
 	     ros::VoidPtr(),

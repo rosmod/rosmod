@@ -60,29 +60,37 @@ void TrajectoryPlanner_def::startUp()
 
     // Need to read in and parse the group configuration xml if it exists
     GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
     std::string configFileName = nodeName + "." + compName + ".xml";
-    if ( boost::filesystem::exists(configFileName) )
+    if (groupParser.Parse(configFileName))
     {
-        groupParser.Parse(configFileName);
-	groupParser.Print();
+	portGroupMap = &groupParser.portGroupMap;
     }
+
+    std::string advertiseName;
 
     // Configure all subscribers associated with this component
     // subscriber: satStateSub
+    advertiseName = "SatState";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::SubscribeOptions satStateSub_options;
     satStateSub_options = 
 	ros::SubscribeOptions::create<satellite_flight_application::SatState>
-	    ("SatState",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&TrajectoryPlanner_def::satStateSub_OnOneData, this, _1),
 	     ros::VoidPtr(),
              &this->compQueue);
     this->satStateSub = nh.subscribe(satStateSub_options);
     // subscriber: satCommandSub
+    advertiseName = "GroundCommand";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::SubscribeOptions satCommandSub_options;
     satCommandSub_options = 
 	ros::SubscribeOptions::create<satellite_flight_application::GroundCommand>
-	    ("GroundCommand",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&TrajectoryPlanner_def::satCommandSub_OnOneData, this, _1),
 	     ros::VoidPtr(),
@@ -91,8 +99,11 @@ void TrajectoryPlanner_def::startUp()
 
     // Configure all publishers associated with this component
     // publisher: targetOrbitPub
+    advertiseName = "TargetOrbit";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     this->targetOrbitPub = nh.advertise<cluster_flight_application::TargetOrbit>
-	("TargetOrbit", 1000);	
+	(advertiseName.c_str(), 1000);	
 
     // Create Init Timer
     ros::TimerOptions timer_options;

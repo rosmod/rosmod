@@ -258,28 +258,36 @@ void SatelliteBusInterface_def::startUp()
 
     // Need to read in and parse the group configuration xml if it exists
     GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
     std::string configFileName = nodeName + "." + compName + ".xml";
-    if ( boost::filesystem::exists(configFileName) )
+    if (groupParser.Parse(configFileName))
     {
-        groupParser.Parse(configFileName);
-	groupParser.Print();
+	portGroupMap = &groupParser.portGroupMap;
     }
+
+    std::string advertiseName;
 
     // Configure all provided services associated with this component
     // server: SatelliteState_server
+    advertiseName = "SatelliteState";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::AdvertiseServiceOptions SatelliteState_server_options;
     SatelliteState_server_options = 
 	ros::AdvertiseServiceOptions::create<satellite_flight_application::SatelliteState>
-	    ("SatelliteState",
+	    (advertiseName.c_str(),
              boost::bind(&SatelliteBusInterface_def::SatelliteStateCallback, this, _1, _2),
 	     ros::VoidPtr(),
              &this->compQueue);
     this->SatelliteState_server = nh.advertiseService(SatelliteState_server_options);
     // server: ThrusterComm_server
+    advertiseName = "ThrusterComm";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName];
     ros::AdvertiseServiceOptions ThrusterComm_server_options;
     ThrusterComm_server_options = 
 	ros::AdvertiseServiceOptions::create<satellite_flight_application::ThrusterComm>
-	    ("ThrusterComm",
+	    (advertiseName.c_str(),
              boost::bind(&SatelliteBusInterface_def::ThrusterCommCallback, this, _1, _2),
 	     ros::VoidPtr(),
              &this->compQueue);
