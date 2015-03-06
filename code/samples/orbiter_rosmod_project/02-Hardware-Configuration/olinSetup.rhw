@@ -2,10 +2,10 @@
  * ROS Hardware Configurations Model
  */
 
-// Host - dkBBB
-host dkBBB
+// Host - vacBBB
+host vacBBB
 {
-    ip_address = "129.59.79.66";
+    ip_address = "129.59.79.21";
     architecture = "armv7l";
 }
 // Host - jetsonTK1

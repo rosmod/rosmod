@@ -981,7 +981,7 @@ class Example(wx.Frame):
                 newDeployment.properties['hardware_configuration_reference'] = newHW
                 self.project.deployments.append(newDeployment)
                 self.BuildAspectPages()
-                self.statusbar.SetStatusText('Created new project: {} in {}'.format(self.filename,self.project_path))
+                self.statusbar.SetStatusText('Created new project: {} in: {}'.format(self.filename,self.project_path))
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
@@ -996,10 +996,11 @@ class Example(wx.Frame):
             self.project_path = model_path
             self.project.open(self.project_path)
             self.BuildAspectPages()
-            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.project_path))
+            self.statusbar.SetStatusText('Loaded project: {} from: {}'.format(self.filename,self.project_path))
 
     def OnSave(self, e):
         self.project.save()
+        self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def OnSaveAs(self, e):
         dlgDict = OrderedDict([('name',self.project.project_name)])
@@ -1020,7 +1021,7 @@ class Example(wx.Frame):
                 self.project_path = project_path
                 self.project.save(self.filename,self.project_path)
                 self.BuildAspectPages()
-                self.statusbar.SetStatusText('Saved project as: {} in {}'.format(self.filename,self.project_path))
+                self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def UpdateUndo(self):
         self.undoList.append(copy.copy(self.project))
