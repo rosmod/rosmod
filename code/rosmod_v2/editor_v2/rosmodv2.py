@@ -10,10 +10,11 @@ tools through the use of toolbar buttons and subprocesses.
 
 import wx
 import wx.stc as stc
+from wx.lib.pubsub import Publisher as pub
 import os,sys
 import copy
 
-import multiprocessing
+import thread
 
 from fabric.api import *
 
@@ -137,6 +138,18 @@ class Example(wx.Frame):
         self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
         wx.EVT_TIMER(self, self.workTimerID, self.WorkFunction)  # call the on_timer function
 
+        self.hostDictTopic = "hostDictTopic"                      # used for updating the host Dict from fabric
+        self.monitorStatusTopic = "monitorStatusTopic"            # used for updating the gui from monitor
+        self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
+        pub.subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
+        pub.subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
+
+    def OnSubscribeMonitorStatus(self,message):
+        pass
+
+    def OnSubscribeHostDictChange(self,message):
+        self.hostDict = message.data
+
     '''
     This function is what handles the work of updating the gui by communicating with other processes
     that the gui has started, e.g. the deployment or monitoring processes.
@@ -149,27 +162,15 @@ class Example(wx.Frame):
 
     def MonitorWorkFunc(self,workItem):
         # for this function, data is the parallel multiprocess started for monitoring
-        if self.deployed != True and self.deploying != True:
+        if self.deployed != True:
             self.workQueue.remove(workItem)
             return
-        if not workItem.data.is_alive(): # process has terminated
+        if not workItem.data.is_alive(): # thread has terminated
             # update deployment overlays here
-            p = multiprocessing.Process(target=fabTest.monitorTest, args=(self.depQ,))
-            self.depQ.put(hostDict)
-            p.start()
-            workItem.data = p
-
-    def DeploymentWorkFunc(self,workItem):
-        # for this function, data is the parallel multiprocess started for deployment
-        if not workItem.data.is_alive(): # process has terminated
-            self.workQueue.remove(workItem)
-            self.deployed = True
-            self.deploying = False
-            p = multiprocessing.Process(target=fabTest.monitorTest, args=(self.depQ,))
-            self.depQ.put(hostDict)
-            p.start()
-            monitorWork = WorkItem(data=p,workFunc=self.MonitorWorkFunc)
-            self.workQueue.append(monitorWork)
+            thread.start_new_thread(fabTest.deployTest, (self.hostDict,
+                                                         self.hostDictTopic,
+                                                         self.deploymentProgressTopic))
+            workItem.data = None
             
     '''
     Build the output notebook for ROSMOD which holds:
@@ -755,43 +756,56 @@ class Example(wx.Frame):
             info = self.DeploymentAspectInfo.GetPageInfo(objName)
             dep = info.obj
             env.use_ssh_config = False
-            hostDict = {}
+            self.hostDict = {}
             env.hosts = []
+            numNodes = 0
             for host in dep.children:
                 nodeList = []
                 for node in host.children:
+                    numNodes += 1
                     nodeList.append(fabTest.deployed_node(
                         executable = node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
                         cmdArgs = node.properties['cmdline_arguments']
                     ))
                     nodeList[-1].cmdArgs += "-nodename {}".format(node.properties['name'])
-                hostDict[host.properties['name']] = fabTest.deployed_host(
+                self.hostDict[host.properties['name']] = fabTest.deployed_host(
                     userName = host.properties['username'],
                     ipAddress = host.properties['host_reference'].properties['ip_address'],
                     keyFile = host.properties['sshkey'],
                     nodes = nodeList,
                     envVars = copy.copy(host.properties['env_variables'])
                 )
-                hostDict[host.properties['name']].envVars.append(['ROS_MASTER_URI','http://129.59.79.169:11311/'])
-                hostDict[host.properties['name']].envVars.append(
+                self.hostDict[host.properties['name']].envVars.append(['ROS_MASTER_URI','http://127.0.0.1:11311/'])
+                self.hostDict[host.properties['name']].envVars.append(
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
                 env.hosts.append(host.properties['name'])
-            self.deploying = True
-            self.depQ = multiprocessing.Queue()
-            p = multiprocessing.Process(target=fabTest.deployTest, args=(self.depQ,))
-            self.depQ.put(hostDict)
-            p.start()
-            deploymentWork = WorkItem(data=p,workFunc=self.DeploymentWorkFunc)
-            self.workQueue.append(deploymentWork)
+            thread.start_new_thread(fabTest.deployTest, (self.hostDict,
+                                                         self.hostDictTopic,
+                                                         self.deploymentProgressTopic))
+            dialogs.ProgressBarDialog( frame=self,
+                                       title="Deployment Progress",
+                                       topic=self.deploymentProgressTopic,
+                                       numItems=numNodes)
+            self.deployed = True
         else:
             dialogs.ErrorDialog(self,"System is already running a deployment!")
 
     def OnDeploymentStop(self,e):
         if self.deployed == True: 
-            p = multiprocessing.Process(target=fabTest.stopTest, args=(self.depQ,))
-            p.start()
-            p.join()
+            numNodes = 0
+            for k,v in self.hostDict.iteritems():
+                for node in v.nodes:
+                    numNodes += 1
+            thread.start_new_thread(fabTest.stopTest, 
+                                    (self.hostDict,
+                                     self.hostDictTopic,
+                                     self.deploymentProgressTopic))
+            print "Stopping {} nodes!".format(numNodes)
+            dialogs.ProgressBarDialog( frame=self,
+                                       title="Stop Progress",
+                                       topic=self.deploymentProgressTopic,
+                                       numItems=numNodes)
             self.deployed = False
             self.deploying = False
         else:

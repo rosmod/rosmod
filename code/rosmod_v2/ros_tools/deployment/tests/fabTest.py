@@ -4,6 +4,8 @@ from fabric.api import *
 
 from collections import OrderedDict
 
+from wx.lib.pubsub import Publisher as pub
+
 env.use_ssh_config = False
 
 class deployed_node():
@@ -44,7 +46,7 @@ def getPIDsFromPS(psString, name):
     return pids
 
 @parallel
-def parallelDeploy(hostDict):
+def parallelDeploy(hostDict,topic):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "{}@{}".format(host.userName,host.ipAddress)
@@ -58,10 +60,11 @@ def parallelDeploy(hostDict):
             pgrep = run('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)
             node.pid = pids[0]
+            pub.sendMessage(topic,"Deployed node {}".format(node.executable))
     return host
 
 @parallel
-def parallelStop(hostDict):
+def parallelStop(hostDict,topic):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
@@ -69,28 +72,31 @@ def parallelStop(hostDict):
         if node.pid != -1:
             run('kill -9 {}'.format(node.pid))
             node.pid = -1
+    return host
 
 @parallel
-def parallelMonitor(hostDict):
+def parallelMonitor(hostDict,topic):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
     for node in host.nodes:
         if node.pid != -1:
-            run('ps -p {}'.format(node.pid))
+            status = run('ps -p {}'.format(node.pid))
+            print status
+    return host
 
-def deployTest(q):
-    hostDict = q.get()
-    newHosts = execute(parallelDeploy,hostDict)
+def deployTest(hostDict,host_topic,progress_topic):
+    newHosts = execute(parallelDeploy,hostDict,progress_topic)
     hostDict = newHosts
-    q.put(hostDict)
+    pub.sendMessage(host_topic,hostDict)
     return hostDict
 
-def stopTest(q):
-    hostDict = q.get()
-    retVals = execute(parallelStop,hostDict)
-    q.put(retVals)
-    return retVals
+def stopTest(hostDict,host_topic, progress_topic):
+    newHosts = execute(parallelStop,hostDict,progress_topic)
+    hostDict = newHosts
+    return hostDict
     
-    
-
+def monitorTest(hostDict, host_topic, progress_topic):
+    newHosts = execute(parallelMonitor,hostDict,progress_topic)
+    hostDict = newHosts
+    return hostDict
