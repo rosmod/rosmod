@@ -10,11 +10,11 @@ tools through the use of toolbar buttons and subprocesses.
 
 import wx
 import wx.stc as stc
-from wx.lib.pubsub import Publisher as pub
+from wx.lib.pubsub import Publisher
 import os,sys
 import copy
 
-import thread
+from threading import Thread
 
 from fabric.api import *
 
@@ -94,6 +94,22 @@ class WorkItem():
         self.data = data
         self.workFunc = workFunc
 
+class WorkerThread(Thread):
+    """Test Worker Thread Class."""
+ 
+    #----------------------------------------------------------------------
+    def __init__(self,func):
+        """Init Worker Thread Class."""
+        Thread.__init__(self)
+        self.func = func
+ 
+    #----------------------------------------------------------------------
+    def run(self):
+        """Run Worker Thread."""
+        # This is the code executing in the new thread.
+        self.func()
+ 
+
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(Example, self).__init__(*args,**kwargs)
@@ -141,8 +157,8 @@ class Example(wx.Frame):
         self.hostDictTopic = "hostDictTopic"                      # used for updating the host Dict from fabric
         self.monitorStatusTopic = "monitorStatusTopic"            # used for updating the gui from monitor
         self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
-        pub.subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
-        pub.subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
+        Publisher().subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
+        Publisher().subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
 
     def OnSubscribeMonitorStatus(self,message):
         pass
@@ -167,10 +183,12 @@ class Example(wx.Frame):
             return
         if not workItem.data.is_alive(): # thread has terminated
             # update deployment overlays here
-            thread.start_new_thread(fabTest.deployTest, (self.hostDict,
+            workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
                                                          self.hostDictTopic,
-                                                         self.deploymentProgressTopic))
-            workItem.data = None
+                                                         self.deploymentProgressTopic)
+            )
+            workerThread.start()
+            workItem.data = workerThread
             
     '''
     Build the output notebook for ROSMOD which holds:
@@ -780,9 +798,11 @@ class Example(wx.Frame):
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
                 env.hosts.append(host.properties['name'])
-            thread.start_new_thread(fabTest.deployTest, (self.hostDict,
-                                                         self.hostDictTopic,
-                                                         self.deploymentProgressTopic))
+            workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
+                                                                           self.hostDictTopic,
+                                                                           self.deploymentProgressTopic)
+            )
+            workerThread.start()
             dialogs.ProgressBarDialog( frame=self,
                                        title="Deployment Progress",
                                        topic=self.deploymentProgressTopic,
@@ -797,10 +817,12 @@ class Example(wx.Frame):
             for k,v in self.hostDict.iteritems():
                 for node in v.nodes:
                     numNodes += 1
-            thread.start_new_thread(fabTest.stopTest, 
-                                    (self.hostDict,
-                                     self.hostDictTopic,
-                                     self.deploymentProgressTopic))
+
+            workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
+                                                                         self.hostDictTopic,
+                                                                         self.deploymentProgressTopic)
+            )
+            workerThread.start()
             print "Stopping {} nodes!".format(numNodes)
             dialogs.ProgressBarDialog( frame=self,
                                        title="Stop Progress",

@@ -2,7 +2,7 @@
 
 import wx
 import wx.stc as stc
-from wx.lib.pubsub import Publisher as pub
+from wx.lib.pubsub import Publisher
 
 from collections import OrderedDict
 
@@ -35,16 +35,14 @@ class RMLProgressDialog(wx.Dialog):
         self.SetSizer(sizer)
         sizer.Fit(self)
         self.SetFocus()
-
-        pub.subscribe(self.OnSubscribe, topic)
+        
+        Publisher().subscribe(self.OnSubscribe, topic)
 
     def OnSubscribe(self, message):
         # data passed with your message is put in message.data.
-        # Any object can be passed to subscribers this way.
-        """Increases the gauge's progress."""
         print "GOT MESSAGE: {}".format(message.data)
         self.count += self.to_add
-        self.gauge.SetValue(self.count)
+        self.gauge.SetValue(100)
         if self.count >= self.numItems:
             print "quitting progress bar"
             self.on_cancel(None)
