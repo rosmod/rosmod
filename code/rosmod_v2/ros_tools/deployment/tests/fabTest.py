@@ -65,14 +65,19 @@ def parallelStop(hostDict):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
-    envVarStr = ""
-    for key,value in host.envVars:
-        envVarStr += " export {}={}".format(key,value)
-    with prefix(envVarStr):
-        for node in host.nodes:
-            if node.pid != -1:
-                run('kill -9 {}'.format(node.pid))
-                node.pid = -1
+    for node in host.nodes:
+        if node.pid != -1:
+            run('kill -9 {}'.format(node.pid))
+            node.pid = -1
+
+@parallel
+def parallelMonitor(hostDict):
+    host = hostDict[env.host_string]
+    env.key_filename = host.keyFile
+    env.host_string = "root@{}".format(host.ipAddress)
+    for node in host.nodes:
+        if node.pid != -1:
+            run('ps -p {}'.format(node.pid))
 
 def deployTest(q):
     hostDict = q.get()

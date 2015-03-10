@@ -89,10 +89,9 @@ class AspectInfo():
         self.pages.pop(name,None)
 
 class WorkItem():
-    def __init__(self,_type,process,obj):
-        self._type = _type
-        self.process = process
-        self.obj = obj
+    def __init__(self,data,workFunc):
+        self.data = data
+        self.workFunc = workFunc
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -146,8 +145,32 @@ class Example(wx.Frame):
         print "Work queue has {} items".format(len(self.workQueue))
         if len(self.workQueue) > 0:
             for workItem in self.workQueue:
-                print workItem
+                workItem.workFunc(workItem)
 
+    def MonitorWorkFunc(self,workItem):
+        # for this function, data is the parallel multiprocess started for monitoring
+        if self.deployed != True and self.deploying != True:
+            self.workQueue.remove(workItem)
+            return
+        if not workItem.data.is_alive(): # process has terminated
+            # update deployment overlays here
+            p = multiprocessing.Process(target=fabTest.monitorTest, args=(self.depQ,))
+            self.depQ.put(hostDict)
+            p.start()
+            workItem.data = p
+
+    def DeploymentWorkFunc(self,workItem):
+        # for this function, data is the parallel multiprocess started for deployment
+        if not workItem.data.is_alive(): # process has terminated
+            self.workQueue.remove(workItem)
+            self.deployed = True
+            self.deploying = False
+            p = multiprocessing.Process(target=fabTest.monitorTest, args=(self.depQ,))
+            self.depQ.put(hostDict)
+            p.start()
+            monitorWork = WorkItem(data=p,workFunc=self.MonitorWorkFunc)
+            self.workQueue.append(monitorWork)
+            
     '''
     Build the output notebook for ROSMOD which holds:
     * the program output
@@ -754,21 +777,18 @@ class Example(wx.Frame):
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
                 env.hosts.append(host.properties['name'])
-            self.workQueue.append("hello")
             self.deploying = True
             self.depQ = multiprocessing.Queue()
             p = multiprocessing.Process(target=fabTest.deployTest, args=(self.depQ,))
             self.depQ.put(hostDict)
             p.start()
-            p.join()
-            self.deployed = True
-            self.deploying = False
+            deploymentWork = WorkItem(data=p,workFunc=self.DeploymentWorkFunc)
+            self.workQueue.append(deploymentWork)
         else:
             dialogs.ErrorDialog(self,"System is already running a deployment!")
 
     def OnDeploymentStop(self,e):
-        if self.deployed == True:
-            self.workQueue.remove("hello")
+        if self.deployed == True: 
             p = multiprocessing.Process(target=fabTest.stopTest, args=(self.depQ,))
             p.start()
             p.join()
