@@ -20,14 +20,20 @@ class RMLProgressDialog(wx.Dialog):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.progress, 0, wx.EXPAND)
 
+        self.ok = wx.Button(self, wx.ID_OK)
+        self.ok.Bind(wx.EVT_BUTTON, self.on_cancel)
+        btnSizer = wx.StdDialogButtonSizer()
+        btnSizer.AddButton(self.ok)
+        self.ok.Disable()
+
         if cancellable:
-            cancel = wx.Button(self, wx.ID_CANCEL, _("&Cancel"))
+            cancel = wx.Button(self, wx.ID_CANCEL)
             cancel.SetDefault()
             cancel.Bind(wx.EVT_BUTTON, self.on_cancel)
-            btnSizer = wx.StdDialogButtonSizer()
             btnSizer.AddButton(cancel)
-            btnSizer.Realize()
-            sizer.Add(btnSizer, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 10)
+        
+        btnSizer.Realize()
+        sizer.Add(btnSizer, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 10)
 
         self.SetSizer(sizer)
 
@@ -39,12 +45,16 @@ class RMLProgressDialog(wx.Dialog):
         wx.EVT_TIMER(self, self.TIMER_ID, self.OnTimer)
 
     def OnTimer(self, event):
-        message = self.progress_q.get()
-        if message != None:
-            self.count += 1
-            self.progress.SetValue(self.count)
-            if self.count >= self.numItems:
-                self.on_cancel(None)
+        try:
+            message = self.progress_q.get(False)
+            if message != None:
+                self.count += 1
+                self.progress.SetValue(self.count)
+                if self.count >= self.numItems:
+                    self.ok.Enable()
+                    self.timer.Stop()
+        except:
+            pass
 
     def on_cancel(self, event):
         """Cancels the conversion process"""

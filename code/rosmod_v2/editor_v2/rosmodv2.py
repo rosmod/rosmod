@@ -102,6 +102,7 @@ class Example(wx.Frame):
         pass
 
     def OnSubscribeHostDictChange(self,message):
+        self.updatedHostDict = True
         self.hostDict = message.data
 
     '''
@@ -121,20 +122,24 @@ class Example(wx.Frame):
         # get data from queue
         try:
             nodes = self.runningDeployment.getChildrenByKind('node_instance')
+            nodeMap = {}
+            for n in nodes:
+                nodeMap[n.properties['name']] = n
             data = workItem.queue.get(False)
             while data != None:
+                print "GOT DATA: {}".format(data)
                 dataList = data.split(' ')
+                print dataList
                 nodeName = dataList[0]
-                node = [x for x in nodes if x.properites['name'] == nodeName]
+                node = nodeMap[nodeName]
                 if dataList[1] == "UP":
                     node.style.overlay['overlayColor']='GREEN'
                 else:
                     node.style.overlay['overlayColor']='RED'
-                #print "GOT DATA: {}".format(data)
                 data = workItem.queue.get(False)
-            self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         except:
-            pass
+            # if we get here, we've read everything from the q
+            self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         if not workItem.process.is_alive(): # process has terminated
             # update deployment overlays here
             workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
@@ -379,7 +384,7 @@ class Example(wx.Frame):
         canvas = info.canvas
         self.activeObject = Object.Name
 
-    def OnDeploymentLeftlick(self, Object):
+    def OnDeploymentLeftClick(self, Object):
         info = self.GetActivePanelInfo()
         dep = info.obj
         canvas = info.canvas
@@ -763,11 +768,15 @@ class Example(wx.Frame):
                                                                            self.hostDictTopic,
                                                                            deploymentProgressQ)
             )
+            self.updatedHostDict = False
             workerThread.start()
             dlg.ShowModal()
             self.runningDeployment = dep
             self.runningDeploymentCanvas = canvas
+            self.runningNodes = numNodes
             self.deployed = True
+            while not self.updatedHostDict:
+                pass
             # START MONITORING INFRASTRUCTURE
             #env.warn_only = True
             monitorQ = multiprocessing.Queue()
@@ -785,14 +794,10 @@ class Example(wx.Frame):
 
     def OnDeploymentStop(self,e):
         if self.deployed == True: 
-            numNodes = 0
-            for k,v in self.hostDict.iteritems():
-                for node in v.nodes:
-                    numNodes += 1
             deploymentProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
-                                            numItems=numNodes)
+                                            numItems=self.runningNodes)
             workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
                                                                          self.hostDictTopic,
                                                                          deploymentProgressQ)
@@ -801,6 +806,9 @@ class Example(wx.Frame):
             dlg.ShowModal()
             self.deployed = False
             self.deploying = False
+            self.runningNodes = 0
+            drawable.Configure(self.runningDeployment,self.styleDict)
+            self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         else:
             dialogs.ErrorDialog(self,"System is not running a deployment")
 

@@ -77,8 +77,7 @@ def parallelStop(hostDict,updateQ):
             try:
                 run('kill -9 {}'.format(node.pid))
             except SystemExit:
-                pass
-            node.pid = -1
+                node.pid = -1
         updateQ.put("Killed {}".format(node.name))
     return host
 
