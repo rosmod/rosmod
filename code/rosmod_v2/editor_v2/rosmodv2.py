@@ -798,15 +798,16 @@ class Example(wx.Frame):
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
                 env.hosts.append(host.properties['name'])
+            dlg = dialogs.RMLProgressDialog( title="Deployment Progress",
+                                             progress_topic=self.deploymentProgressTopic,
+                                             numItems=numNodes)
             workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
                                                                            self.hostDictTopic,
                                                                            self.deploymentProgressTopic)
             )
             workerThread.start()
-            dialogs.ProgressBarDialog( frame=self,
-                                       title="Deployment Progress",
-                                       topic=self.deploymentProgressTopic,
-                                       numItems=numNodes)
+            dlg.ShowModal()
+            dlg.Destroy()
             self.deployed = True
         else:
             dialogs.ErrorDialog(self,"System is already running a deployment!")
@@ -817,17 +818,17 @@ class Example(wx.Frame):
             for k,v in self.hostDict.iteritems():
                 for node in v.nodes:
                     numNodes += 1
-
+            print "Stopping {} nodes!".format(numNodes)
+            dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
+                                            progress_topic=self.deploymentProgressTopic,
+                                            numItems=numNodes)
             workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
                                                                          self.hostDictTopic,
                                                                          self.deploymentProgressTopic)
             )
             workerThread.start()
-            print "Stopping {} nodes!".format(numNodes)
-            dialogs.ProgressBarDialog( frame=self,
-                                       title="Stop Progress",
-                                       topic=self.deploymentProgressTopic,
-                                       numItems=numNodes)
+            dlg.ShowModal()
+            dlg.Destroy()
             self.deployed = False
             self.deploying = False
         else:

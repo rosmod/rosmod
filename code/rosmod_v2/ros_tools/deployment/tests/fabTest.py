@@ -92,12 +92,14 @@ def parallelMonitor(hostDict,topic,pub_lock):
     return host
 
 def deployTest(hostDict, host_topic, progress_topic):
+    Publisher().sendMessage(progress_topic, "HELLO WORLD")
     newHosts = execute(parallelDeploy,hostDict,progress_topic,thread.allocate_lock())
     hostDict = newHosts
     Publisher().sendMessage(host_topic,hostDict)
     return hostDict
 
 def stopTest(hostDict, host_topic, progress_topic):
+    Publisher().sendMessage(progress_topic, "HELLO WORLD")
     newHosts = execute(parallelStop,hostDict,progress_topic,thread.allocate_lock())
     hostDict = newHosts
     return hostDict

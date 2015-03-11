@@ -11,17 +11,14 @@ class RMLProgressDialog(wx.Dialog):
     Shows a Progres Gauge while an operation is taking place. May be cancellable
     which is possible when converting pdf/ps
     """
-    def __init__(self, parent, title, topic, to_add=1, numItems=100, cancellable=False):
+    def __init__(self, title, progress_topic, numItems=100, cancellable=False):
         """Defines a gauge and a timer which updates the gauge."""
-        wx.Dialog.__init__(self, parent, title=title,
-                          style=wx.CAPTION)
-        self.parent = parent
+        wx.Dialog.__init__(self, None, title=title)
         self.count = 0
-        self.to_add = to_add
         self.numItems = numItems
-        self.gauge = wx.Gauge(self, range=self.numItems, size=(180, 30))
+        self.progress = wx.Gauge(self, range=self.numItems)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.gauge, 0, wx.ALL, 10)
+        sizer.Add(self.progress, 0, wx.EXPAND)
 
         if cancellable:
             cancel = wx.Button(self, wx.ID_CANCEL, _("&Cancel"))
@@ -33,27 +30,25 @@ class RMLProgressDialog(wx.Dialog):
             sizer.Add(btnSizer, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 10)
 
         self.SetSizer(sizer)
-        sizer.Fit(self)
-        self.SetFocus()
-        
-        Publisher().subscribe(self.OnSubscribe, topic)
+
+        Publisher().subscribe(self.OnSubscribe, progress_topic)
 
     def OnSubscribe(self, message):
         # data passed with your message is put in message.data.
-        print "GOT MESSAGE: {}".format(message.data)
-        self.count += self.to_add
-        self.gauge.SetValue(100)
+        print 'GOT MESSAGE:'
+        print "\t{}".format(message.data)
+        self.count += 1
+        self.progress.SetValue(self.count)
         if self.count >= self.numItems:
             print "quitting progress bar"
             self.on_cancel(None)
 
     def on_cancel(self, event):
         """Cancels the conversion process"""
-        #wx.CallAfter(self.EndModal(0))
-        # do whatever
+        self.Destroy()
 
-def ProgressBarDialog(frame,title,topic,numItems,cancellable=False):
-    dlg = RMLProgressDialog(parent=frame,title=title,topic=topic,numItems=numItems,cancellable=cancellable)
+def ProgressBarDialog(title,topic,numItems,cancellable=False):
+    dlg = RMLProgressDialog(title=title,progress_topic=topic,numItems=numItems,cancellable=cancellable)
     dlg.ShowModal()
     dlg.Destroy()
 
