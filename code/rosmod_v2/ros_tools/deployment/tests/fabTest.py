@@ -1,12 +1,9 @@
 #!/usr/bin/python
 
-import thread
-
 from fabric.api import *
 
 from collections import OrderedDict
 
-import wx
 from wx.lib.pubsub import Publisher
 
 env.use_ssh_config = False
@@ -49,7 +46,7 @@ def getPIDsFromPS(psString, name):
     return pids
 
 @parallel
-def parallelDeploy(hostDict,topic,pub_lock):
+def parallelDeploy(hostDict,updateQ):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "{}@{}".format(host.userName,host.ipAddress)
@@ -58,10 +55,7 @@ def parallelDeploy(hostDict,topic,pub_lock):
         envVarStr += " export {}={}".format(key,value)
     with prefix(envVarStr):
         for node in host.nodes:
-            pub_lock.acquire()
-            Publisher().sendMessage(topic,"Deployed node {}".format(node.executable))
-            pub_lock.release()
-            print "SENT MESSAGE"
+            updateQ.put("Deployed {}".format(node.executable))
             executableString = '/home/{}/{}'.format(host.userName,node.executable)
             run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
             pgrep = run('ps aux | grep {}'.format(executableString))
@@ -70,18 +64,19 @@ def parallelDeploy(hostDict,topic,pub_lock):
     return host
 
 @parallel
-def parallelStop(hostDict,topic,pub_lock):
+def parallelStop(hostDict,updateQ):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
     for node in host.nodes:
+        updateQ.put("Killed {}".format(node.executable))
         if node.pid != -1:
             run('kill -9 {}'.format(node.pid))
             node.pid = -1
     return host
 
 @parallel
-def parallelMonitor(hostDict,topic,pub_lock):
+def parallelMonitor(hostDict,updateQ):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
@@ -91,20 +86,14 @@ def parallelMonitor(hostDict,topic,pub_lock):
             print status
     return host
 
-def deployTest(hostDict, host_topic, progress_topic):
-    #Publisher().sendMessage(progress_topic, "HELLO WORLD")
-    newHosts = execute(parallelDeploy,hostDict,progress_topic,thread.allocate_lock())
-    hostDict = newHosts
-    Publisher().sendMessage(host_topic,hostDict)
-    return hostDict
+def deployTest(hostDict, host_topic, progress_q):
+    newHosts = execute(parallelDeploy,hostDict,progress_q)
+    Publisher().sendMessage(host_topic,newHosts)
 
-def stopTest(hostDict, host_topic, progress_topic):
-    #Publisher().sendMessage(progress_topic, "HELLO WORLD")
-    newHosts = execute(parallelStop,hostDict,progress_topic,thread.allocate_lock())
-    hostDict = newHosts
-    return hostDict
+def stopTest(hostDict, host_topic, progress_q):
+    newHosts = execute(parallelStop,hostDict,progress_q)
+    Publisher().sendMessage(host_topic,newHosts)
     
-def monitorTest(hostDict,  host_topic, progress_topic):
-    newHosts = execute(parallelMonitor,hostDict,progress_topic,thread.allocate_lock())
-    hostDict = newHosts
-    return hostDict
+def monitorTest(hostDict,  host_topic, progress_q):
+    newHosts = execute(parallelMonitor,hostDict,progress_q)
+    Publisher().sendMessage(host_topic,newHosts)

@@ -11,7 +11,7 @@ class RMLProgressDialog(wx.Dialog):
     Shows a Progres Gauge while an operation is taking place. May be cancellable
     which is possible when converting pdf/ps
     """
-    def __init__(self, title, progress_topic, numItems=100, cancellable=False):
+    def __init__(self, title, progress_q, numItems=100, cancellable=False):
         """Defines a gauge and a timer which updates the gauge."""
         wx.Dialog.__init__(self, None, title=title)
         self.count = 0
@@ -31,20 +31,24 @@ class RMLProgressDialog(wx.Dialog):
 
         self.SetSizer(sizer)
 
-        Publisher().subscribe(self.OnSubscribe, progress_topic)
+        self.progress_q = progress_q
+        
+        self.TIMER_ID = wx.NewId()
+        self.timer = wx.Timer(self, self.TIMER_ID)
+        self.timer.Start(100)
+        wx.EVT_TIMER(self, self.TIMER_ID, self.OnTimer)
 
-    def OnSubscribe(self, message):
-        # data passed with your message is put in message.data.
-        print 'GOT MESSAGE:'
-        print "\t{}".format(message.data)
-        self.count += 1
-        self.progress.SetValue(self.count)
-        if self.count >= self.numItems:
-            print "quitting progress bar"
-            self.on_cancel(None)
+    def OnTimer(self, event):
+        message = self.progress_q.get()
+        if message != None:
+            self.count += 1
+            self.progress.SetValue(self.count)
+            if self.count >= self.numItems:
+                self.on_cancel(None)
 
     def on_cancel(self, event):
         """Cancels the conversion process"""
+        self.timer.Stop()
         wx.CallAfter(self.Destroy)
 
 def ProgressBarDialog(title,topic,numItems,cancellable=False):

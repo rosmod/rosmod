@@ -13,9 +13,8 @@ import wx.stc as stc
 from wx.lib.pubsub import Publisher
 import os,sys
 import copy
-
+import multiprocessing
 from threading import Thread
-
 from fabric.api import *
 
 sys.path.append("../ros_tools")
@@ -23,22 +22,15 @@ import ros_tools
 sys.path.append("../ros_tools/deployment/tests")
 import fabTest
 
-# for ordered dictionaries
 from collections import OrderedDict
-
-# flat notebook allows us to have scroll buttons and a close button
 import wx.lib.agw.flatnotebook as fnb
-
-# need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
 
 try:
     import numpy
     import numpy.random as RandomArray
     haveNumpy = True
-    #print "Using numpy, version:", N.__version__
 except ImportError:
-            # numpy isn't there
             haveNumpy = False
             errorText = (
             "The FloatCanvas requires the numpy module, version 1.* \n\n"
@@ -46,69 +38,13 @@ except ImportError:
             "http://numpy.scipy.org/\n\n"
             )
 
-# terminal allows us to have a terminal panel
+# THESE ARE ALL FROM OUR CODE
 from terminal import *
 import dialogs
 import drawable
+from aspect import *
+from worker import *
 from contextMenu import ContextMenu
-
-class TBInfo():
-    def __init__(self,name, obj):
-        self.name = name
-        self.obj = obj
-
-class AspectPageInfo():
-    def __init__(self, name, obj, canvas, msgWindow):
-        self.name = name
-        self.obj = obj
-        self.canvas = canvas
-        self.msgWindow = msgWindow
-
-class AspectInfo():
-    def __init__(self):
-        self.pages = OrderedDict()
-        self.toolbarButtons = OrderedDict()
-
-    def GetTBInfo(self,name):
-        if name in self.toolbarButtons.keys():
-            return self.toolbarButtons[name]
-        else:
-            return None
-    def AddTBInfo(self,tbInfo):
-        self.toolbarButtons[tbInfo.name] = tbInfo
-    def DelTBInfo(self,name):
-        self.toolbarButtons.pop(name,None)
-
-    def GetPageInfo(self,name):
-        if name in self.pages.keys():
-            return self.pages[name]
-        else:
-            return None
-    def AddPageInfo(self,pageInfo):
-        self.pages[pageInfo.name] = pageInfo
-    def DelPageInfo(self,name):
-        self.pages.pop(name,None)
-
-class WorkItem():
-    def __init__(self,data,workFunc):
-        self.data = data
-        self.workFunc = workFunc
-
-class WorkerThread(Thread):
-    """Test Worker Thread Class."""
- 
-    #----------------------------------------------------------------------
-    def __init__(self,func):
-        """Init Worker Thread Class."""
-        Thread.__init__(self)
-        self.func = func
- 
-    #----------------------------------------------------------------------
-    def run(self):
-        """Run Worker Thread."""
-        # This is the code executing in the new thread.
-        self.func()
- 
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -160,6 +96,8 @@ class Example(wx.Frame):
         Publisher().subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
         Publisher().subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
 
+        wx.EVT_CLOSE(self, self.OnQuit)
+
     def OnSubscribeMonitorStatus(self,message):
         pass
 
@@ -171,7 +109,6 @@ class Example(wx.Frame):
     that the gui has started, e.g. the deployment or monitoring processes.
     '''
     def WorkFunction(self,e):
-        print "Work queue has {} items".format(len(self.workQueue))
         if len(self.workQueue) > 0:
             for workItem in self.workQueue:
                 workItem.workFunc(workItem)
@@ -798,12 +735,13 @@ class Example(wx.Frame):
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
                 env.hosts.append(host.properties['name'])
+            deploymentProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( title="Deployment Progress",
-                                             progress_topic=self.deploymentProgressTopic,
+                                             progress_q = deploymentProgressQ,
                                              numItems=numNodes)
             workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
                                                                            self.hostDictTopic,
-                                                                           self.deploymentProgressTopic)
+                                                                           deploymentProgressQ)
             )
             workerThread.start()
             dlg.ShowModal()
@@ -818,12 +756,13 @@ class Example(wx.Frame):
                 for node in v.nodes:
                     numNodes += 1
             print "Stopping {} nodes!".format(numNodes)
+            deploymentProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
-                                            progress_topic=self.deploymentProgressTopic,
+                                            progress_q = deploymentProgressQ,
                                             numItems=numNodes)
             workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
                                                                          self.hostDictTopic,
-                                                                         self.deploymentProgressTopic)
+                                                                         deploymentProgressQ)
             )
             workerThread.start()
             dlg.ShowModal()
@@ -1006,7 +945,7 @@ class Example(wx.Frame):
     def OnQuit(self, e):
         if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
             self.workTimer.Stop()
-            self.Close()
+            exit()
 
     def OnNew(self, e):
         project_path = dialogs.RMLDirectoryDialog(
