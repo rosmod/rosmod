@@ -1,0 +1,9 @@
+#unicode utf8
+<?xml version="1.0" encoding="UTF-8"?>
+#for $group in $groups
+<group ID="${group.properties['name']}">
+#for $port in $group.children
+  <port ID="${port.properties['name']}"/>
+#end for
+</group>
+#end for
