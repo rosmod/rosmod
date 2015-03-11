@@ -807,7 +807,6 @@ class Example(wx.Frame):
             )
             workerThread.start()
             dlg.ShowModal()
-            dlg.Destroy()
             self.deployed = True
         else:
             dialogs.ErrorDialog(self,"System is already running a deployment!")
@@ -828,7 +827,6 @@ class Example(wx.Frame):
             )
             workerThread.start()
             dlg.ShowModal()
-            dlg.Destroy()
             self.deployed = False
             self.deploying = False
         else:

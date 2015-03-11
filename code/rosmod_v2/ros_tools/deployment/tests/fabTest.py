@@ -59,7 +59,7 @@ def parallelDeploy(hostDict,topic,pub_lock):
     with prefix(envVarStr):
         for node in host.nodes:
             pub_lock.acquire()
-            wx.CallAfter(Publisher().sendMessage,topic,"Deployed node {}".format(node.executable))
+            Publisher().sendMessage(topic,"Deployed node {}".format(node.executable))
             pub_lock.release()
             print "SENT MESSAGE"
             executableString = '/home/{}/{}'.format(host.userName,node.executable)
@@ -92,14 +92,14 @@ def parallelMonitor(hostDict,topic,pub_lock):
     return host
 
 def deployTest(hostDict, host_topic, progress_topic):
-    Publisher().sendMessage(progress_topic, "HELLO WORLD")
+    #Publisher().sendMessage(progress_topic, "HELLO WORLD")
     newHosts = execute(parallelDeploy,hostDict,progress_topic,thread.allocate_lock())
     hostDict = newHosts
     Publisher().sendMessage(host_topic,hostDict)
     return hostDict
 
 def stopTest(hostDict, host_topic, progress_topic):
-    Publisher().sendMessage(progress_topic, "HELLO WORLD")
+    #Publisher().sendMessage(progress_topic, "HELLO WORLD")
     newHosts = execute(parallelStop,hostDict,progress_topic,thread.allocate_lock())
     hostDict = newHosts
     return hostDict

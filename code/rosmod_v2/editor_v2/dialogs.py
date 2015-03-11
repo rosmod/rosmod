@@ -45,7 +45,7 @@ class RMLProgressDialog(wx.Dialog):
 
     def on_cancel(self, event):
         """Cancels the conversion process"""
-        self.Destroy()
+        wx.CallAfter(self.Destroy)
 
 def ProgressBarDialog(title,topic,numItems,cancellable=False):
     dlg = RMLProgressDialog(title=title,progress_topic=topic,numItems=numItems,cancellable=cancellable)
