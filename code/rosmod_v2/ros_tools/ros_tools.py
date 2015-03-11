@@ -273,6 +273,8 @@ class ROS_Port_Instance(Drawable_Object):
         self.properties['name'] = ""
         self.properties["port_reference_string"] = ""
         self.properties['port_reference'] = None
+        self.properties['node_instance_reference'] = None
+        self.properties['component_instance_reference'] = None
 
 class ROS_Group(Drawable_Object):
     # Initialize the group; children are port_instances
@@ -646,12 +648,14 @@ class ROS_Deployment_Builder(DeploymentListener):
         for ni in self.deployment.getChildrenByKind("node_instance"):
             if ni.properties['name'] == nodeInst:
                 nodeRef = ni.properties['node_reference']
+                self.port_instance.properties['node_instance_reference'] = ni
                 break
         if nodeRef != None:
             compRef = None
             for ci in nodeRef.children:
                 if ci.properties['name'] == compInst:
                     compRef = ci.properties['component_reference']
+                    self.port_instance.properties['component_instance_reference'] = ci
                     break
             if compRef != None:
                 portRef = None
@@ -661,6 +665,7 @@ class ROS_Deployment_Builder(DeploymentListener):
                         break
                 if portRef != None:
                     self.port_instance.properties['port_reference'] = portRef
+                    self.port_instance.properties['name'] = portRef.properties['name']
                     return
                 else:
                     print "ROSTOOLS::ERROR::Invalid Group Port Name {}".format(portInst)

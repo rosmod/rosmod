@@ -127,9 +127,8 @@ class Example(wx.Frame):
                 nodeMap[n.properties['name']] = n
             data = workItem.queue.get(False)
             while data != None:
-                print "GOT DATA: {}".format(data)
+                #print "GOT DATA: {}".format(data)
                 dataList = data.split(' ')
-                print dataList
                 nodeName = dataList[0]
                 node = nodeMap[nodeName]
                 if dataList[1] == "UP":
@@ -738,7 +737,7 @@ class Example(wx.Frame):
             env.hosts = []
             #env.warn_only = False
             numNodes = 0
-            for host in dep.children:
+            for host in dep.getChildrenByKind("host_instance"):
                 nodeList = []
                 for node in host.children:
                     numNodes += 1

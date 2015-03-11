@@ -234,10 +234,15 @@ class Drawable_Object:
                 retKids.extend(self.children)
         elif self.kind == 'deployment':
             if kind == 'node_instance':
-                for host in self.children:
+                hosts = [child for child in self.children if child.kind == 'host_instance']
+                for host in hosts:
                     retKids.extend(host.children)
-            elif kind == 'host_instance':
-                retKids.extend(self.children)
+            elif kind == 'port_instance':
+                groups = [child for child in self.children if child.kind == 'group']
+                for group in groups:
+                    retKids.extend(group.children)
+            elif kind == 'host_instance' or kind == 'group':
+                retKids.extend([child for child in self.children if child.kind == kind])
         else:
             return [child for child in self.children if child.kind == kind]
         return retKids
