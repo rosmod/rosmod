@@ -90,6 +90,7 @@ from package_xml import *
 from rapidxml_hpp import *
 from rapidxml_utils_hpp import *
 from xmlParser_hpp import *
+from node_groups_xml import *
 from base_component_hpp import *
 from base_component_cpp import *
 from msg import *
@@ -262,7 +263,23 @@ class ROS_Deployment(Drawable_Object):
         self.kind = "deployment"
         self.properties["name"] = ""
         self.properties["hardware_configuration_reference"] = None
-        self.connections = OrderedDict()
+        self.groups = OrderedDict()
+
+class ROS_Port_Instance(Drawable_Object):
+    # Initialize the port 
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "port_instance"
+        self.properties['name'] = ""
+        self.properties["port_reference_string"] = ""
+        self.properties['port_reference'] = None
+
+class ROS_Group(Drawable_Object):
+    # Initialize the group; children are port_instances
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "group"
+        self.properties['name'] = ""
 
 # Host Instances in a Deployment
 class ROS_Host_Instance(Drawable_Object):
@@ -604,6 +621,66 @@ class ROS_Deployment_Builder(DeploymentListener):
         self.all_hw_configs = hardware_configurations_object
         self.host_instance = None
         self.node_instance = None
+        self.port_instance = None
+        self.group = None
+
+    # Group Definitions
+    def enterGroup(self, ctx):
+        self.group = ROS_Group()
+
+    def enterGroup_id(self, ctx):
+        self.group.properties['name'] = ctx.getText()
+
+    def enterPort(self,ctx):
+        found = False
+        self.port_instance = ROS_Port_Instance()
+        self.port_instance.properties['name'] = ctx.getText()
+
+        self.node_instance.properties["port_reference_string"] = ctx.getText()
+        nodeInst = ctx.getText().split("/")[0]
+        compInst = ctx.getText().split("/")[1]
+        portInst = ctx.getText().split("/")[2]
+        found_comp = False
+        found_port = False
+        nodeRef = None
+        for ni in self.deployment.getChildrenByKind("node_instance"):
+            if ni.properties['name'] == nodeInst:
+                nodeRef = ni.properties['node_reference']
+                break
+        if nodeRef != None:
+            compRef = None
+            for ci in nodeRef.children:
+                if ci.properties['name'] == compInst:
+                    compRef = ci.properties['component_reference']
+                    break
+            if compRef != None:
+                portRef = None
+                for p in compRef.children:
+                    if p.properties['name'] == portInst:
+                        portRef = p
+                        break
+                if portRef != None:
+                    self.port_instance.properties['port_reference'] = portRef
+                    return
+                else:
+                    print "ROSTOOLS::ERROR::Invalid Group Port Name {}".format(portInst)
+            else:
+                print "ROSTOOLS::ERROR::Invalid Group Component Instance Name {}".format(compInst)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Group Node Instance Name {}".format(nodeInst)
+        self.port_instance = None
+
+    def exitPort(self, ctx):
+        if self.port_instance != None:
+            self.group.add(self.port_instance)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Port Instance used in Deployment"
+
+    def exitGroup(self, ctx):
+        if self.group != None:
+            self.deployment.groups[self.group.properties['name']] = self.group
+        else:
+            print "ROSTOOLS::ERROR::Invalid Group in Deployment"
 
     # Using hardware configuration
     def enterHardware(self, ctx):
@@ -613,6 +690,7 @@ class ROS_Deployment_Builder(DeploymentListener):
                 print "ROSTOOLS::Using Hardware Configuration:", ctx.getText()
                 self.deployment.properties["hardware_configuration_reference"] = config
                 found = True
+                break
         if found == False:
             print "ROSTOOLS::ERROR::Invalid Hardware Configuration used in Deployment"
 
@@ -634,6 +712,7 @@ class ROS_Deployment_Builder(DeploymentListener):
             for hardware in self.deployment.properties["hardware_configuration_reference"].children:
                 if hardware.properties["name"] == ctx.getText():
                     self.host_instance.properties["host_reference"] = hardware
+                    break
         else:
             print "ROSTOOLS::ERROR::Hardware Configuration Reference is set to None"
 
@@ -695,6 +774,7 @@ class ROS_Deployment_Builder(DeploymentListener):
                     if node_ref.properties["name"] == node:
                         self.node_instance.properties["node_reference"] = node_ref
                         found_node = True
+                        break
 
         if found_package != True or found_node != True:
             print "ROSTOOLS::ERROR::Invalid Package or Node Name"

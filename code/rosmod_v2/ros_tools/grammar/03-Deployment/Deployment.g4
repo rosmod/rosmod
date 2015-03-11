@@ -178,7 +178,7 @@ connections
 group
     :   'group' group_id
         '{'
-             (' ')* (IDENT (' ')* )*
+             (port)+
         '}'
     ;
 
@@ -190,10 +190,17 @@ group_id
     ;
 
 /*
+ * Properly Scoped Port String Reference for Group
+*/
+port
+    :   (IDENT)
+    ;
+
+/*
  * Valid ID
  */ 
 IDENT
-    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' | '~' )*
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' | '~' )+
     ;
 
 // Ignore whitespaces & escape sequences
