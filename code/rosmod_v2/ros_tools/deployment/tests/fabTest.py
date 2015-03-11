@@ -22,6 +22,10 @@ class deployed_host():
         self.nodes = nodes
         self.envVars = envVars
 
+def getStatusFromPS(psString, name):
+    pass
+    
+
 def getPIDsFromPS(psString, name):
     pids = []
     psString = psString.split('\n')
@@ -55,12 +59,12 @@ def parallelDeploy(hostDict,updateQ):
         envVarStr += " export {}={}".format(key,value)
     with prefix(envVarStr):
         for node in host.nodes:
-            updateQ.put("Deployed {}".format(node.executable))
             executableString = '/home/{}/{}'.format(host.userName,node.executable)
             run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
             pgrep = run('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)
             node.pid = pids[0]
+            updateQ.put("Deployed {}".format(node.executable))
     return host
 
 @parallel
@@ -69,10 +73,13 @@ def parallelStop(hostDict,updateQ):
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
     for node in host.nodes:
-        updateQ.put("Killed {}".format(node.executable))
         if node.pid != -1:
-            run('kill -9 {}'.format(node.pid))
+            try:
+                run('kill -9 {}'.format(node.pid))
+            except SystemExit:
+                pass
             node.pid = -1
+        updateQ.put("Killed {}".format(node.executable))
     return host
 
 @parallel
@@ -82,8 +89,12 @@ def parallelMonitor(hostDict,updateQ):
     env.host_string = "root@{}".format(host.ipAddress)
     for node in host.nodes:
         if node.pid != -1:
-            status = run('ps -p {}'.format(node.pid))
-            print status
+            try:
+                status = run('ps --no-headers -p {}'.format(node.pid))
+                updateQ.put("Node {} status : UP".format(node.executable))
+            except SystemExit:
+                updateQ.put("Node {} status : DOWN".format(node.executable))
+                node.pid = -1
     return host
 
 def deployTest(hostDict, host_topic, progress_q):

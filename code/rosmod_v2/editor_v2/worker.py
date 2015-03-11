@@ -33,8 +33,9 @@ class HostDictEvent(wx.PyEvent):
         self.data = data
 
 class WorkItem():
-    def __init__(self,data,workFunc):
-        self.data = data
+    def __init__(self,process,queue,workFunc):
+        self.queue = queue
+        self.process = process
         self.workFunc = workFunc
 
 class WorkerThread(Thread):

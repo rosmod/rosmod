@@ -118,11 +118,19 @@ class Example(wx.Frame):
         if self.deployed != True:
             self.workQueue.remove(workItem)
             return
-        if not workItem.data.is_alive(): # thread has terminated
+        # get data from queue
+        try:
+            data = workItem.queue.get(False)
+            while data != None:
+                print "GOT DATA: {}".format(data)
+                data = workItem.queue.get(False)
+        except:
+            pass
+        if not workItem.process.is_alive(): # process has terminated
             # update deployment overlays here
-            workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
-                                                         self.hostDictTopic,
-                                                         self.deploymentProgressTopic)
+            workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                                                                            self.hostDictTopic,
+                                                                            workItem.queue)
             )
             workerThread.start()
             workItem.data = workerThread
@@ -713,6 +721,7 @@ class Example(wx.Frame):
             env.use_ssh_config = False
             self.hostDict = {}
             env.hosts = []
+            #env.warn_only = False
             numNodes = 0
             for host in dep.children:
                 nodeList = []
@@ -746,6 +755,18 @@ class Example(wx.Frame):
             workerThread.start()
             dlg.ShowModal()
             self.deployed = True
+            # START MONITORING INFRASTRUCTURE
+            #env.warn_only = True
+            monitorQ = multiprocessing.Queue()
+            workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                                                                            self.hostDictTopic,
+                                                                            monitorQ)
+            )
+            monitorWorkItem = WorkItem(process = workerThread,
+                                       queue = monitorQ,
+                                       workFunc = self.MonitorWorkFunc)
+            self.workQueue.append(monitorWorkItem)
+            workerThread.start()
         else:
             dialogs.ErrorDialog(self,"System is already running a deployment!")
 
