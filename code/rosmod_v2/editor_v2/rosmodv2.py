@@ -120,10 +120,19 @@ class Example(wx.Frame):
             return
         # get data from queue
         try:
+            nodes = self.runningDeployment.getChildrenByKind('node_instance')
             data = workItem.queue.get(False)
             while data != None:
-                print "GOT DATA: {}".format(data)
+                dataList = data.split(' ')
+                nodeName = dataList[0]
+                node = [x for x in nodes if x.properites['name'] == nodeName]
+                if dataList[1] == "UP":
+                    node.style.overlay['overlayColor']='GREEN'
+                else:
+                    node.style.overlay['overlayColor']='RED'
+                #print "GOT DATA: {}".format(data)
                 data = workItem.queue.get(False)
+            self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         except:
             pass
         if not workItem.process.is_alive(): # process has terminated
@@ -370,7 +379,7 @@ class Example(wx.Frame):
         canvas = info.canvas
         self.activeObject = Object.Name
 
-    def OnDeploymentLeftClick(self, Object):
+    def OnDeploymentLeftlick(self, Object):
         info = self.GetActivePanelInfo()
         dep = info.obj
         canvas = info.canvas
@@ -718,6 +727,7 @@ class Example(wx.Frame):
             objName = self.DeploymentAspect.GetPageText(selectedPage)
             info = self.DeploymentAspectInfo.GetPageInfo(objName)
             dep = info.obj
+            canvas = info.canvas
             env.use_ssh_config = False
             self.hostDict = {}
             env.hosts = []
@@ -728,6 +738,7 @@ class Example(wx.Frame):
                 for node in host.children:
                     numNodes += 1
                     nodeList.append(fabTest.deployed_node(
+                        name = node.properties['name'],
                         executable = node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
                         cmdArgs = node.properties['cmdline_arguments']
                     ))
@@ -754,6 +765,8 @@ class Example(wx.Frame):
             )
             workerThread.start()
             dlg.ShowModal()
+            self.runningDeployment = dep
+            self.runningDeploymentCanvas = canvas
             self.deployed = True
             # START MONITORING INFRASTRUCTURE
             #env.warn_only = True
@@ -776,7 +789,6 @@ class Example(wx.Frame):
             for k,v in self.hostDict.iteritems():
                 for node in v.nodes:
                     numNodes += 1
-            print "Stopping {} nodes!".format(numNodes)
             deploymentProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,

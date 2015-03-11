@@ -9,7 +9,8 @@ from wx.lib.pubsub import Publisher
 env.use_ssh_config = False
 
 class deployed_node():
-    def __init__(self,executable,cmdArgs='',pid=-1):
+    def __init__(self,executable,name,cmdArgs='',pid=-1):
+        self.name = name
         self.executable = executable
         self.cmdArgs = cmdArgs
         self.pid = pid
@@ -24,7 +25,6 @@ class deployed_host():
 
 def getStatusFromPS(psString, name):
     pass
-    
 
 def getPIDsFromPS(psString, name):
     pids = []
@@ -64,7 +64,7 @@ def parallelDeploy(hostDict,updateQ):
             pgrep = run('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)
             node.pid = pids[0]
-            updateQ.put("Deployed {}".format(node.executable))
+            updateQ.put("Deployed {}".format(node.name))
     return host
 
 @parallel
@@ -79,7 +79,7 @@ def parallelStop(hostDict,updateQ):
             except SystemExit:
                 pass
             node.pid = -1
-        updateQ.put("Killed {}".format(node.executable))
+        updateQ.put("Killed {}".format(node.name))
     return host
 
 @parallel
@@ -91,9 +91,9 @@ def parallelMonitor(hostDict,updateQ):
         if node.pid != -1:
             try:
                 status = run('ps --no-headers -p {}'.format(node.pid))
-                updateQ.put("Node {} status : UP".format(node.executable))
+                updateQ.put("{} UP".format(node.name))
             except SystemExit:
-                updateQ.put("Node {} status : DOWN".format(node.executable))
+                updateQ.put("{} DOWN".format(node.name))
                 node.pid = -1
     return host
 
