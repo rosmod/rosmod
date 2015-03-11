@@ -1298,6 +1298,18 @@ class Example(wx.Frame):
                                        offset = pkgOffset,
                               placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict() )
+        PortInstStyle = drawable.Draw_Style(icon=None,
+                                            font=font, 
+                                            method=drawable.Draw_Method.ROUND_RECT, 
+                                            minSize = minSize,
+                                            placement=drawable.Text_Placement.RIGHT,
+                                            overlay = OrderedDict([('fillColor','BLUE')]) )
+        GroupStyle = drawable.Draw_Style(icon=None,
+                                         font=font, 
+                                         method=drawable.Draw_Method.ROUND_RECT, 
+                                         minSize = minSize,
+                                         placement=drawable.Text_Placement.TOP,
+                                         overlay = OrderedDict([('fillColor','GREEN')]) )
         NodeInstStyle = drawable.Draw_Style(icon=None,
                                font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 
@@ -1403,6 +1415,8 @@ class Example(wx.Frame):
         self.styleDict["hardware_configuration"] = HardwareStyle
         self.styleDict["host"] = HostStyle
         self.styleDict["deployment"] = DeploymentStyle
+        self.styleDict["group"] = GroupStyle
+        self.styleDict["port_instance"] = PortInstStyle
         self.styleDict["host_instance"] = HostInstStyle
         self.styleDict["node_instance"] = NodeInstStyle
 

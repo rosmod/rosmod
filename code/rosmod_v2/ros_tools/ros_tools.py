@@ -679,6 +679,7 @@ class ROS_Deployment_Builder(DeploymentListener):
     def exitGroup(self, ctx):
         if self.group != None:
             self.deployment.groups[self.group.properties['name']] = self.group
+            self.deployment.add(self.group)
         else:
             print "ROSTOOLS::ERROR::Invalid Group in Deployment"
 

@@ -30,6 +30,10 @@ def getConnectionPoint(objPos,objSize,objType):
         pass
     elif objType == "software_deployment":
         pass
+    elif objType == "group":
+        pass
+    elif objType == "port_instance":
+        pass
     conPos = None
     if x > 0 and y > 0:
         conPos = wx.Point(x,y)
@@ -314,7 +318,8 @@ def Layout(dObj, topLeftPos, canvas):
     if dObj.kind == "workspace" or \
        dObj.kind == "component" or \
        dObj.kind == "node" or \
-       dObj.kind == "host_instance":
+       dObj.kind == "host_instance" or \
+       dObj.kind == "group":
         maxWidth = 0
         for obj in dObj.children:
             w,h = Layout(obj,childPos,canvas)
@@ -392,7 +397,8 @@ def Layout(dObj, topLeftPos, canvas):
          dObj.kind == "subscriber" or \
          dObj.kind == "component_instance" or \
          dObj.kind == "host" or \
-         dObj.kind == "node_instance":
+         dObj.kind == "node_instance" or \
+         dObj.kind == "port_instance":
         pass
     dObj.width = maxObjWidth
     dObj.height = maxObjHeight
@@ -424,7 +430,8 @@ def Configure(dObj,styleDict):
        dObj.kind == "node" or \
        dObj.kind == "hardware_configuration" or \
        dObj.kind == "deployment" or \
-       dObj.kind == "host_instance":
+       dObj.kind == "host_instance" or \
+       dObj.kind == "group":
         for child in dObj.children:
             Configure(child,styleDict)
     else:
