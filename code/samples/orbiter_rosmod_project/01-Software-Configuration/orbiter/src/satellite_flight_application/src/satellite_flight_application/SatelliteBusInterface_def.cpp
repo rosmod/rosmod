@@ -69,7 +69,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
     int sentbytes=0,numbytes=0;
     char msgbuf[100];
     memset(msgbuf,0,100);
-    sprintf(msgbuf,"Ship:%s:Status2:1:1:1\r\n",nodeName.c_str());
+    sprintf(msgbuf,"Ship:%s:Status2:1:1:1\r\n",hostName.c_str());
     if ( numbytes = send(sockfd, msgbuf, strlen(msgbuf),0) == -1) {
       perror("send");
       return false;
@@ -95,7 +95,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
 
     satellite_flight_application::SatState state;
 
-    state.sat_id = nodeName;
+    state.sat_id = hostName;
 
     while (pch != NULL)
     {
@@ -136,7 +136,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
     }
 
     // Business Logic for SatelliteState_server Server providing SatelliteState Service
-  ROS_INFO("Returning the current satellite state vector for satellite %s.",nodeName.c_str());
+  ROS_INFO("Returning the current satellite state vector for satellite %s.",hostName.c_str());
   res.state = state;
     return true;
 }
@@ -188,7 +188,7 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 	int sentbytes=0,numbytes=0;
 	char msgbuf[100];
 	memset(msgbuf,0,100);
-	sprintf(msgbuf,"Ship:%s:SetEngineGrpLevel:0:%f\r\n",nodeName.c_str(),amount);
+	sprintf(msgbuf,"Ship:%s:SetEngineGrpLevel:0:%f\r\n",hostName.c_str(),amount);
 	if ( numbytes = send(sockfd, msgbuf, strlen(msgbuf),0) == -1) {
 		perror("send");
 		return false;
@@ -213,7 +213,7 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 	// SLEEP HERE
 
 	memset(msgbuf,0,100);
-	sprintf(msgbuf,"Ship:%s:SetEngineGrpLevel:0:0\r\n",nodeName.c_str());
+	sprintf(msgbuf,"Ship:%s:SetEngineGrpLevel:0:0\r\n",hostName.c_str());
 	if ( numbytes = send(sockfd, msgbuf, strlen(msgbuf),0) == -1) {
 		perror("send");
 		return false;
@@ -232,7 +232,7 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 
 	close(sockfd);
 
-  ROS_INFO("Activated the satellite thruster %d for satellite %s.",thruster_id,nodeName.c_str());
+  ROS_INFO("Activated the satellite thruster %d for satellite %s.",thruster_id,hostName.c_str());
   res.retVal = retVal;
     return true;
 }

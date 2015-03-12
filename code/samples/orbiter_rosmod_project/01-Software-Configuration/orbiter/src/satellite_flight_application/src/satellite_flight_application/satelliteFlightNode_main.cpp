@@ -20,10 +20,15 @@ void componentThread(Component* compPtr)
 int main(int argc, char **argv)
 {
     std::string nodeName = "satelliteFlightNode";
+    std::string hostName = "localhost";
 
     for(int i = 0; i < argc; i++)
+    {
         if(!strcmp(argv[i], "-nodename"))
             nodeName = argv[i+1];
+	if(!strcmp(argv[i], "-hostname"))
+	    hostName = argv[i+1];
+    }
 
     ros::init(argc, argv, nodeName.c_str());
 
@@ -31,9 +36,9 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    GroundInterface_def groundInterface_comp(nodeName, "groundInterface_comp", argc, argv); 
-    OrbitController_def orbitController_comp(nodeName, "orbitController_comp", argc, argv); 
-    SatelliteBusInterface_def satBusIntf_comp(nodeName, "satBusIntf_comp", argc, argv); 
+    GroundInterface_def groundInterface_comp(hostName, nodeName, "groundInterface_comp", argc, argv); 
+    OrbitController_def orbitController_comp(hostName, nodeName, "orbitController_comp", argc, argv); 
+    SatelliteBusInterface_def satBusIntf_comp(hostName, nodeName, "satBusIntf_comp", argc, argv); 
 
     // Create Component Threads
     boost::thread groundInterface_comp_thread(componentThread, &groundInterface_comp);

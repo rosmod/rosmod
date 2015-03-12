@@ -12,7 +12,7 @@ class Component
 {
     public:
         // Component Constructor
-        Component(std::string nodeName, std::string compName, int argc, char **argv);
+        Component(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv);
 
 	// StartUp will be completely generated
 	virtual void startUp() = 0;
@@ -27,6 +27,7 @@ class Component
 	~Component();
 
     protected:
+        std::string hostName;
         std::string nodeName;
         std::string compName;
         int node_argc;

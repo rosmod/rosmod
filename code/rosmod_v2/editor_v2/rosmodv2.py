@@ -855,6 +855,7 @@ class Example(wx.Frame):
                             cmdArgs = node.properties['cmdline_arguments']
                         ))
                         nodeList[-1].cmdArgs += "-nodename {}".format(node.properties['name'])
+                        nodeList[-1].cmdArgs += "-hostname {}".format(host.properties['name'])
                     self.hostDict[host.properties['name']] = fabTest.deployed_host(
                         userName = host.properties['username'],
                         ipAddress = host.properties['host_reference'].properties['ip_address'],

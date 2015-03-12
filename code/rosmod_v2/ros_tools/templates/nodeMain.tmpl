@@ -22,10 +22,15 @@ void componentThread(Component* compPtr)
 int main(int argc, char **argv)
 {
     std::string nodeName = "$node_name";
+    std::string hostName = "localhost";
 
     for(int i = 0; i < argc; i++)
+    {
         if(!strcmp(argv[i], "-nodename"))
             nodeName = argv[i+1];
+	if(!strcmp(argv[i], "-hostname"))
+	    hostName = argv[i+1];
+    }
 
     ros::init(argc, argv, nodeName.c_str());
 
@@ -35,7 +40,7 @@ int main(int argc, char **argv)
     // Create Component Objects
     #if $len($component_instances) > 0
     #for $instance in $component_instances
-    $instance.properties["component_reference"].properties["name"] ${instance.properties["name"]}(nodeName, "${instance.properties["name"]}", argc, argv); 
+    $instance.properties["component_reference"].properties["name"] ${instance.properties["name"]}(hostName, nodeName, "${instance.properties["name"]}", argc, argv); 
     #end for
 
     #end if
