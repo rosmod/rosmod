@@ -9,11 +9,11 @@ from wx.lib.pubsub import Publisher
 env.use_ssh_config = False
 
 class deployed_node():
-    def __init__(self,executable,name,cmdArgs='',pid=-1):
+    def __init__(self,executable,name,cmdArgs='',pids=[]):
         self.name = name
         self.executable = executable
         self.cmdArgs = cmdArgs
-        self.pid = pid
+        self.pids = pids
 
 class deployed_host():
     def __init__(self,userName,ipAddress,keyFile,nodes=[],envVars=OrderedDict()):
@@ -59,13 +59,13 @@ def parallelDeploy(hostDict,updateQ):
         envVarStr += " export {}={}".format(key,value)
     with prefix(envVarStr):
         for node in host.nodes:
-            executableString = '/home/{}/{}'.format(host.userName,node.executable)
-            if 'roscore' in node.executable:
-                executableString = node.executable
+            #executableString = '/home/{}/{}'.format(host.userName,node.executable)
+            #if 'roscore' in node.executable:
+            executableString = node.executable
             run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
             pgrep = run('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)
-            node.pid = pids[0]
+            node.pids = pids
             updateQ.put("Deployed {}".format(node.name))
     return host
 
@@ -75,12 +75,14 @@ def parallelStop(hostDict,updateQ):
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
     for node in host.nodes:
-        if node.pid != -1:
-            try:
-                run('kill -9 {}'.format(node.pid))
-            except SystemExit:
-                node.pid = -1
+        if node.pids != [] and len(node.pids) > 0:
+            for pid in node.pids:
+                try:
+                    run('kill -9 {}'.format(pid))
+                except SystemExit:
+                    pass
         updateQ.put("Killed {}".format(node.name))
+        node.pids = []
     return host
 
 @parallel
@@ -89,13 +91,14 @@ def parallelMonitor(hostDict,updateQ):
     env.key_filename = host.keyFile
     env.host_string = "root@{}".format(host.ipAddress)
     for node in host.nodes:
-        if node.pid != -1:
-            try:
-                status = run('ps --no-headers -p {}'.format(node.pid))
-                updateQ.put("{} UP".format(node.name))
-            except SystemExit:
-                updateQ.put("{} DOWN".format(node.name))
-                node.pid = -1
+        if node.pids != [] and len(node.pids) > 0:
+            for pid in node.pids:
+                try:
+                    status = run('ps --no-headers -p {}'.format(pid))
+                    updateQ.put("{} UP".format(node.name))
+                except SystemExit:
+                    updateQ.put("{} DOWN".format(node.name))
+                    node.pids = []
     return host
 
 def deployTest(hostDict, host_topic, progress_q):
