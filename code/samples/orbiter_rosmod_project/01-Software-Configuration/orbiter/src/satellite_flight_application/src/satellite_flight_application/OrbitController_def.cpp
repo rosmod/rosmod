@@ -25,9 +25,11 @@ void OrbitController_def::targetOrbitSub_OnOneData(const cluster_flight_applicat
 {
     // Business Logic for targetOrbitSub subscriber subscribing to topic TargetOrbit callback 
   ROS_INFO("I got a new target orbit!");
-  ROS_INFO("Activating satellite %s thrusters to achieve new orbit", nodeName.c_str());
+  ROS_INFO("Activating satellite %s thrusters to achieve new orbit", hostName.c_str());
 
   satellite_flight_application::ThrusterComm srv;
+  srv.request.amount = 1.0;
+  srv.request.duration = 1.0;
   if (ThrusterComm_client.call(srv))
     {
       ROS_INFO("Successfully activated satellite thrusters");
@@ -49,16 +51,16 @@ void OrbitController_def::Timer0Callback(const ros::TimerEvent& event)
       satellite_flight_application::SatelliteState srv;
       if (SatelliteState_client.call(srv))
 	{
-	  ROS_INFO("Got state vector from satellite %s bus", nodeName.c_str());
+	  ROS_INFO("Got state vector from satellite %s bus", hostName.c_str());
 	}
       else
 	{
-	  ROS_ERROR("Failed to get satellite state vector for satellite %s.", nodeName.c_str());
+	  ROS_ERROR("Failed to get satellite state vector for satellite %s.", hostName.c_str());
 	  SatelliteState_client.waitForExistence(ros::Duration(-1));
 	}
 
       satellite_flight_application::SatState satState;
-      satState.sat_id = nodeName;
+      satState.sat_id = hostName;
       satStatePub.publish(satState);
 }
 //# End Timer0Callback Marker

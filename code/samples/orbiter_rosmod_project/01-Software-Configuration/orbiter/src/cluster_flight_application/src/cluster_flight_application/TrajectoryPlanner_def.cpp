@@ -13,7 +13,7 @@
 void TrajectoryPlanner_def::Init(const ros::TimerEvent& event)
 {
     // Initialize Component
-    ROS_INFO("Ready to receive commands and determine new orbits; running on satellite %s", nodeName.c_str());
+    ROS_INFO("Ready to receive commands and determine new orbits; running on satellite %s", hostName.c_str());
     // Stop Init Timer
     initOneShotTimer.stop();
 }
