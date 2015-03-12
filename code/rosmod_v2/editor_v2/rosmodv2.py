@@ -804,6 +804,23 @@ class Example(wx.Frame):
             env.hosts = []
             #env.warn_only = False
             numNodes = 0
+            rosCoreIP = ""
+            newObj = ros_tools.ROS_Host_Instance()
+            newObj.properties = OrderedDict()
+            newObj.properties['host_reference'] = None
+            references = dep.properties['hardware_configuration_reference'].children
+            ed = dialogs.EditDialog(self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Select Host Instance for ROSCORE",
+                                    references = references,
+                                    style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                rosCoreIP = newObj.properties['host_reference'].properties['ip_address']
             for host in dep.getChildrenByKind("host_instance"):
                 nodeList = []
                 for node in host.children:
@@ -821,7 +838,8 @@ class Example(wx.Frame):
                     nodes = nodeList,
                     envVars = copy.copy(host.properties['env_variables'])
                 )
-                self.hostDict[host.properties['name']].envVars.append(['ROS_MASTER_URI','http://127.0.0.1:11311/'])
+                self.hostDict[host.properties['name']].envVars.append(
+                    ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
                 self.hostDict[host.properties['name']].envVars.append(
                     ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
                 )
