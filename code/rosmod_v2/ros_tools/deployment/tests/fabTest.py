@@ -60,6 +60,8 @@ def parallelDeploy(hostDict,updateQ):
     with prefix(envVarStr):
         for node in host.nodes:
             executableString = '/home/{}/{}'.format(host.userName,node.executable)
+            if 'roscore' in node.executable:
+                executableString = node.executable
             run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
             pgrep = run('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)

@@ -803,11 +803,13 @@ class Example(wx.Frame):
             self.hostDict = {}
             env.hosts = []
             #env.warn_only = False
-            numNodes = 0
+            numNodes = 1 # roscore
             rosCoreIP = ""
             newObj = ros_tools.ROS_Host_Instance()
             newObj.properties = OrderedDict()
             newObj.properties['host_reference'] = None
+            newObj.properties['username'] = ""
+            newObj.properties['sshkey'] = ""
             references = dep.properties['hardware_configuration_reference'].children
             ed = dialogs.EditDialog(self,
                                     editDict=newObj.properties,
@@ -821,58 +823,69 @@ class Example(wx.Frame):
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 rosCoreIP = newObj.properties['host_reference'].properties['ip_address']
-            for host in dep.getChildrenByKind("host_instance"):
-                nodeList = []
-                for node in host.children:
-                    numNodes += 1
-                    nodeList.append(fabTest.deployed_node(
-                        name = node.properties['name'],
-                        executable = node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
-                        cmdArgs = node.properties['cmdline_arguments']
-                    ))
-                    nodeList[-1].cmdArgs += "-nodename {}".format(node.properties['name'])
-                self.hostDict[host.properties['name']] = fabTest.deployed_host(
-                    userName = host.properties['username'],
-                    ipAddress = host.properties['host_reference'].properties['ip_address'],
-                    keyFile = host.properties['sshkey'],
-                    nodes = nodeList,
-                    envVars = copy.copy(host.properties['env_variables'])
+                self.hostDict['roscoreHost'] = fabTest.deployed_host(
+                    userName = newObj.properties['username'],
+                    ipAddress = rosCoreIP,
+                    keyFile = newObj.properties['sshkey'],
+                    nodes = [fabTest.deployed_node(
+                        name = 'roscore',
+                        executable = '/opt/ros/indigo/bin/roscore'
+                    )],
+                    envVars = [['ROS_IP',rosCoreIP]]
                 )
-                self.hostDict[host.properties['name']].envVars.append(
-                    ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
-                self.hostDict[host.properties['name']].envVars.append(
-                    ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
-                )
-                env.hosts.append(host.properties['name'])
-            deploymentProgressQ = multiprocessing.Queue()
-            dlg = dialogs.RMLProgressDialog( title="Deployment Progress",
-                                             progress_q = deploymentProgressQ,
-                                             numItems=numNodes)
-            workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
-                                                                           self.hostDictTopic,
-                                                                           deploymentProgressQ)
-            )
-            self.updatedHostDict = False
-            workerThread.start()
-            dlg.ShowModal()
-            self.runningDeployment = dep
-            self.runningDeploymentCanvas = canvas
-            self.runningNodes = numNodes
-            self.deployed = True
-            while not self.updatedHostDict:
-                pass
-            # START MONITORING INFRASTRUCTURE
-            #env.warn_only = True
-            monitorQ = multiprocessing.Queue()
-            workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
-                                                                            self.hostDictTopic,
-                                                                            monitorQ)
-            )
-            monitorWorkItem = WorkItem(process = workerThread,
-                                       queue = monitorQ,
-                                       workFunc = self.MonitorWorkFunc)
-            self.workQueue.append(monitorWorkItem)
-            workerThread.start()
+                env.hosts.append('roscoreHost')
+                for host in dep.getChildrenByKind("host_instance"):
+                    nodeList = []
+                    for node in host.children:
+                        numNodes += 1
+                        nodeList.append(fabTest.deployed_node(
+                            name = node.properties['name'],
+                            executable = node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
+                            cmdArgs = node.properties['cmdline_arguments']
+                        ))
+                        nodeList[-1].cmdArgs += "-nodename {}".format(node.properties['name'])
+                    self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                        userName = host.properties['username'],
+                        ipAddress = host.properties['host_reference'].properties['ip_address'],
+                        keyFile = host.properties['sshkey'],
+                        nodes = nodeList,
+                        envVars = copy.copy(host.properties['env_variables'])
+                    )
+                    self.hostDict[host.properties['name']].envVars.append(
+                        ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
+                    self.hostDict[host.properties['name']].envVars.append(
+                        ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
+                    )
+                    env.hosts.append(host.properties['name'])
+                deploymentProgressQ = multiprocessing.Queue()
+                dlg = dialogs.RMLProgressDialog( title="Deployment Progress",
+                                                 progress_q = deploymentProgressQ,
+                                                 numItems=numNodes)
+                workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
+                                                                               self.hostDictTopic,
+                                                                               deploymentProgressQ)
+                                        )
+                self.updatedHostDict = False
+                workerThread.start()
+                dlg.ShowModal()
+                self.runningDeployment = dep
+                self.runningDeploymentCanvas = canvas
+                self.runningNodes = numNodes
+                self.deployed = True
+                while not self.updatedHostDict:
+                    pass
+                # START MONITORING INFRASTRUCTURE
+                #env.warn_only = True
+                monitorQ = multiprocessing.Queue()
+                workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                                                                                self.hostDictTopic,
+                                                                                monitorQ)
+                                        )
+                monitorWorkItem = WorkItem(process = workerThread,
+                                           queue = monitorQ,
+                                           workFunc = self.MonitorWorkFunc)
+                self.workQueue.append(monitorWorkItem)
+                workerThread.start()
         else:
             dialogs.ErrorDialog(self,"System is already running a deployment!")
 
