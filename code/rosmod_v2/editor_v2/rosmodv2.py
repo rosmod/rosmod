@@ -492,6 +492,7 @@ class Example(wx.Frame):
         return cm
     def BuildHostInstanceContextMenu(self,cm):
         cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
+        cm['Open SSH Terminal'] = lambda _: self.SSHToHostInst(self.activeObject)
         return cm
     def BuildNodeInstanceContextMenu(self,cm):
         return cm
@@ -499,6 +500,19 @@ class Example(wx.Frame):
         return cm
     def BuildPortInstanceContextMenu(self,cm):
         return cm
+
+    def SSHToHostInst(self,hostInst):
+        self.shop.Check(True)
+        self.UpdateMainWindow(None)
+        command = "/usr/bin/ssh"
+        args = "-i {} {}@{}".format( hostInst.properties['sshkey'], 
+                                     hostInst.properties['username'],
+                                     hostInst.properties['host_reference'].properties['ip_address'])
+        self.output.AddPage(TermEmulatorDemo(self.output,
+                                             command=command,
+                                             args=args), 
+                            "SSH To {}".format(hostInst.properties['name']), 
+                            select=True)
 
     def GenericAdd(self,newObj,refs,parent):
         info = self.GetActivePanelInfo()
@@ -1114,7 +1128,7 @@ class Example(wx.Frame):
     def OnTerminal(self, e):
         self.shop.Check(True)
         self.UpdateMainWindow(e)
-        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
+        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal",select=True)
 
     '''
     Package Aspect Functions

@@ -25,7 +25,7 @@ def PrintStringAsAscii(s):
             print ord(ch), 
 
 class TermEmulatorDemo(wx.Panel):
-    def __init__(self,parent = None):
+    def __init__(self,parent = None, command = None, args = None):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -49,7 +49,7 @@ class TermEmulatorDemo(wx.Panel):
         self.b1 = wx.Button(self, wx.ID_ANY, "Run")
         hbox1.Add(self.b1, 0, wx.LEFT | wx.RIGHT, 10)
         self.b1.Bind(wx.EVT_BUTTON, self.OnRun, id = self.b1.GetId())
-        
+
         vbox.Add(hbox1, 0, wx.EXPAND | wx.HORIZONTAL | wx.TOP | wx.BOTTOM, 5)
         
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
@@ -121,6 +121,12 @@ class TermEmulatorDemo(wx.Panel):
         self.UpdateUI()
         
         self.Show(True)
+
+        if command != None:
+            self.tc1.SetValue(command)
+            if args != None:
+                self.tc2.SetValue(args)
+            self.OnRun(None)
         
     def FillScreen(self):
         """
