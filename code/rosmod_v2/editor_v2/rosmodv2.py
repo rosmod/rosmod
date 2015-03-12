@@ -54,6 +54,18 @@ class Example(wx.Frame):
     
     def InitUI(self):
 
+        self.activeAspect = None
+        self.activeAspectInfo = None
+        self.activeObject = None
+        self.deployed = False
+        self.deploying = False
+        self.runningDeployment = None
+        self.runningDeploymentCanvas = None
+        self.runningNodes = 0
+        self.hostDict = None
+        self.updatedHostDict = False
+        self.styleDict = None
+
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = ''
         self.project = ros_tools.ROS_Project()
@@ -84,7 +96,7 @@ class Example(wx.Frame):
         self.Show(True)
 
         self.workQueue = []
-        self.workTimerPeriod = 5.0
+        self.workTimerPeriod = 1.0
         self.workTimerID = wx.NewId()  # pick a number
         self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
         self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
@@ -120,6 +132,7 @@ class Example(wx.Frame):
             self.workQueue.remove(workItem)
             return
         # get data from queue
+        updateCanvas = False
         try:
             nodes = self.runningDeployment.getChildrenByKind('node_instance')
             nodeMap = {}
@@ -135,10 +148,12 @@ class Example(wx.Frame):
                     node.style.overlay['overlayColor']='GREEN'
                 else:
                     node.style.overlay['overlayColor']='RED'
+                updateCanvas = True
                 data = workItem.queue.get(False)
         except:
             # if we get here, we've read everything from the q
-            self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
+            if updateCanvas:
+                self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         if not workItem.process.is_alive(): # process has terminated
             # update deployment overlays here
             workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
@@ -184,6 +199,9 @@ class Example(wx.Frame):
         self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddHardwareAspectToolbar(self):
+        labelTBinfo = TBInfo( name="label",
+                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Hardware:"))
+        self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo(
             name="create",
             obj=self.toolbar.AddTool(wx.ID_ANY,
@@ -194,6 +212,7 @@ class Example(wx.Frame):
             obj=self.toolbar.AddTool(wx.ID_ANY,
                                      bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                      shortHelpString="Remove Hardware Configuration"))
+        self.HardwareAspectInfo.AddTBInfo(labelTBinfo)
         self.HardwareAspectInfo.AddTBInfo(createTBinfo)
         self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnHardwareCreate, createTBinfo.obj)
@@ -210,14 +229,15 @@ class Example(wx.Frame):
     node deployment onto hosts (and roscore deployment)
     '''        
     def BuildDeploymentAspect(self):
-        self.deployed = False
-        self.deploying = False
         self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
                                               agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
         self.DeploymentAspect.Hide()
         self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddDeploymentAspectToolbar(self):
+        labelTBinfo = TBInfo( name="label",
+                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Deployment:"))
+        self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo( name="create",
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
@@ -234,6 +254,7 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tstop.png'),
                                                         shortHelpString="Stop Deployed System"))
+        self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
@@ -261,6 +282,9 @@ class Example(wx.Frame):
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddPackageAspectToolbar(self):
+        labelTBinfo = TBInfo( name="label",
+                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Software:"))
+        self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo(
             name="create",
             obj=self.toolbar.AddTool(wx.ID_ANY,
@@ -271,6 +295,7 @@ class Example(wx.Frame):
             obj=self.toolbar.AddTool(wx.ID_ANY,
                                      bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                      shortHelpString="Remove Package"))
+        self.PackageAspectInfo.AddTBInfo(labelTBinfo)
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
         self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
@@ -342,7 +367,7 @@ class Example(wx.Frame):
         width,height = drawable.Layout(model,(0,0),canvas)
         model.Draw(canvas,self.OnLeftClick,self.OnRightClick,self.OnLeftDoubleClick)
         canvas.Draw()
-        canvas.ZoomToBB()
+        #canvas.ZoomToBB()
 
     def OnLeftClick(self, Object):
         if self.activeAspect == self.PackageAspect:
@@ -388,6 +413,8 @@ class Example(wx.Frame):
         dep = info.obj
         canvas = info.canvas
         self.activeObject = Object.Name
+        if dep == self.runningDeployment:
+            return # DO SOMETHING ELSE HERE?
         drawable.Configure(dep,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
         kind = self.activeObject.kind
@@ -431,6 +458,10 @@ class Example(wx.Frame):
             cm = self.BuildHostInstanceContextMenu(cm)
         elif obj.kind == 'node_instance':
             cm = self.BuildNodeInstanceContextMenu(cm)
+        elif obj.kind == 'group':
+            cm = self.BuildGroupContextMenu(cm)
+        elif obj.kind == 'port_instance':
+            cm = self.BuildPortInstanceContextMenu(cm)
         return cm
 
     def BuildCompContextMenu(self,cm):
@@ -463,6 +494,10 @@ class Example(wx.Frame):
         cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
         return cm
     def BuildNodeInstanceContextMenu(self,cm):
+        return cm
+    def BuildGroupContextMenu(self,cm):
+        return cm
+    def BuildPortInstanceContextMenu(self,cm):
         return cm
 
     def GenericAdd(self,newObj,refs,parent):
@@ -793,6 +828,8 @@ class Example(wx.Frame):
 
     def OnDeploymentStop(self,e):
         if self.deployed == True: 
+            self.deployed = False
+            self.deploying = False
             deploymentProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
@@ -803,8 +840,6 @@ class Example(wx.Frame):
             )
             workerThread.start()
             dlg.ShowModal()
-            self.deployed = False
-            self.deploying = False
             self.runningNodes = 0
             drawable.Configure(self.runningDeployment,self.styleDict)
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
