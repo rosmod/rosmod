@@ -495,6 +495,8 @@ class Example(wx.Frame):
         cm['Open SSH Terminal'] = lambda _: self.SSHToHostInst(self.activeObject)
         return cm
     def BuildNodeInstanceContextMenu(self,cm):
+        if self.deployed == True and self.activeObject.parent.parent == self.runningDeployment:
+            cm['Monitor Log'] = lambda _: self.MonitorNodeInstLog(self.activeObject)
         return cm
     def BuildGroupContextMenu(self,cm):
         return cm
@@ -512,6 +514,22 @@ class Example(wx.Frame):
                                              command=command,
                                              args=args), 
                             "SSH To {}".format(hostInst.properties['name']), 
+                            select=True)
+
+    def MonitorNodeInstLog(self,nodeInst):
+        self.shop.Check(True)
+        self.UpdateMainWindow(None)
+        command = "/usr/bin/ssh"
+        args = "-i {} {}@{} tail -f /home/{}/{}.log".format( 
+            nodeInst.parent.properties['sshkey'], 
+            nodeInst.parent.properties['username'],
+            nodeInst.parent.properties['host_reference'].properties['ip_address'],
+            nodeInst.parent.properties['username'],
+            nodeInst.properties['name'])
+        self.output.AddPage(TermEmulatorDemo(self.output,
+                                             command=command,
+                                             args=args), 
+                            "{} Log".format(nodeInst.properties['name']), 
                             select=True)
 
     def GenericAdd(self,newObj,refs,parent):
