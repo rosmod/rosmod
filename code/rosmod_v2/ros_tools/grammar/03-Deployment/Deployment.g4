@@ -176,7 +176,7 @@ connections
  * Groups/Associations between ports
  */
 group
-    :   'group' group_id
+    :   'group' (' ')* group_id (' ')*
         '{'
              (port)+
         '}'
