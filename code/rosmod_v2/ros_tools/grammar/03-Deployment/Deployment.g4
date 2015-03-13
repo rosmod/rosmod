@@ -186,14 +186,14 @@ group
  * Group ID of a set of connected ports
  */
 group_id 
-    :   (IDENT)
+    :   (' ')* (IDENT (' ')* )+
     ;
 
 /*
  * Properly Scoped Port String Reference for Group
 */
 port
-    :   (IDENT)
+    :   (' ')* (IDENT (' ')* )+
     ;
 
 /*

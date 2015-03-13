@@ -263,6 +263,7 @@ class ROS_Deployment(Drawable_Object):
         self.kind = "deployment"
         self.properties["name"] = ""
         self.properties["hardware_configuration_reference"] = None
+        self.properties["xml_list"] = []
         self.groups = OrderedDict()
 
 class ROS_Port_Instance(Drawable_Object):
@@ -281,7 +282,17 @@ class ROS_Group(Drawable_Object):
     def __init__(self):
         Drawable_Object.__init__(self)
         self.kind = "group"
-        self.properties['name'] = ""
+        self.properties["name"] = ""
+
+class ROS_Group_XML(Drawable_Object):
+    # Initialize a Node_Instance.Component_Instance.xml file
+    def __init__(self, node_instance, component_instance):
+        Drawable_Object.__init__(self)
+        self.kind = "group_xml"
+        self.properties["name"] = node_instance.properties["name"] + "." + component_instance.properties["name"] + ".xml"
+        self.properties["node_instance"] = node_instance
+        self.properties["component_instance"] = component_instance
+        self.properties["groups"] = []
 
 # Host Instances in a Deployment
 class ROS_Host_Instance(Drawable_Object):
@@ -849,7 +860,7 @@ class OrderedSet(collections.MutableSet):
 
 class Workspace_Generator:
     # Main Generate function
-    def generate(self, workspace, path):
+    def generate(self, workspace, path, deployments, xml_path):
         print "ROSTOOLS::Generating ROS Workspace..."
         # Make the workspace directory
         self.workspace_dir = os.path.join(path, workspace.properties["name"])
@@ -1117,6 +1128,59 @@ class Workspace_Generator:
             with open(os.path.join(self.package_path, "CMakeLists.txt"), 'w') as temp_file:
                 temp_file.write(self.cmake_lists)
 
+        for deployment in deployments:
+            create_folder = False
+            groups = []
+            xml_list = []
+            for child in deployment.children:
+                if child.kind == "group":
+                    create_folder = True
+                    groups.append(child)
+            if create_folder == True:
+                xml_folder_home = os.path.join(xml_path, deployment.properties["name"])
+                if not os.path.exists(xml_folder_home):
+                    os.makedirs(xml_folder_home)
+                
+                # For every group in deployment
+                for group in groups:
+                    # For every port in the group
+                    for port in group.children:
+                        # Create a new xml file if needed by obtaining the node_instance 
+                        # & component_instance of port
+                        node_instance_name = port.properties["node_instance_reference"].properties["name"]
+                        comp_instance_name = port.properties["component_instance_reference"].properties["name"]
+                        new_xml = ROS_Group_XML(port.properties["node_instance_reference"], 
+                                                port.properties["component_instance_reference"])
+                        new_xml.properties["node_instance"] = port.properties["node_instance_reference"]
+                        new_xml.properties["component_instance"] = port.properties["component_instance_reference"]
+
+                        # Add new xml to list if not already in list
+                        if new_xml not in xml_list:
+                            xml_list.append(new_xml)
+                        
+                        # Add the group to xml.groups
+                        for xml in xml_list:
+                            if xml.properties["name"] == new_xml.properties["name"]:
+                                xml_group = ROS_Group()
+                                xml_group.properties["name"] = group.properties["name"]
+                                for grp_port in group.children:
+                                    if grp_port.properties["node_instance_reference"].properties["name"] == xml.properties["node_instance"].properties["name"]:
+                                        if grp_port.properties["component_instance_reference"].properties["name"] == xml.properties["component_instance"].properties["name"]:
+                                            xml_group.children.append(grp_port)
+                                xml.properties["groups"].append(xml_group)
+                                print "xml.groups adding this group - " + xml_group.properties["name"]
+
+                    deployment.properties["xml_list"] = xml_list
+                    for xml in xml_list:
+                        print "---> XML: " + xml.properties["name"]
+                        xml_namespace = {'xml': xml}
+                        t = node_groups_xml(searchList=[xml_namespace])
+                        xml_str = str(t)
+                        # Write CMakeLists file
+                        with open(os.path.join(xml_folder_home, 
+                                               xml.properties["name"]), 'w') as temp_file:
+                            temp_file.write(xml_str)
+                
 class Workspace_Loader:
     # Load the business logic of component operations
     def load(self, workspace, path):
@@ -1662,7 +1726,7 @@ class ROS_Project:
         # Instantiate a Generator Object
         workspace = Workspace_Generator()
         # Use listener_object to generate ROS workspace
-        workspace.generate(self.workspace, self.workspace_path)
+        workspace.generate(self.workspace, self.workspace_path, self.deployments, self.deployment_path)
 
     # Generate a ROS model from a workspace object
     # Used to save an edited model
