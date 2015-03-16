@@ -163,14 +163,13 @@ class EditDialog(wx.Dialog):
             elif key == 'service_reference' or \
                  key == 'message_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                refNames = []
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
-                    name = ""
+                    refName = ""
                     if ref.parent != self.editObj.parent.parent:
-                        name += ref.parent.properties['name'] + '/'
-                    name += ref.properties['name']
-                    refNames.append(name)
-                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                        refName += ref.parent.properties['name'] + '/'
+                    refName += ref.properties['name']
+                    field.Append(refName,ref)
                 if value != None:
                     setName = ""
                     if value.parent != self.editObj.parent.parent:
@@ -184,38 +183,41 @@ class EditDialog(wx.Dialog):
                  key == 'node_reference' or \
                  key == 'node_instance_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                refNames = [x.properties['name'] for x in self.references]
-                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for ref in self.references:
+                    field.Append(ref.properties['name'],ref)
                 if value != None:
-                    field.SetValue(value.properties['name'])
+                    field.SetStringSelection(value.properties['name'])
+                field.Bind(wx.EVT_COMBOBOX,self.OnNodeInstanceComboBoxChanged)
                 self.inputs[key] = field
             elif key == 'component_instance_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                node_inst_ref_name = self.inputs['node_instance_reference'].GetValue()
-                node_inst_ref = [x for x in self.references if x.properties['name'] == node_inst_ref_name]
-                refNames = []
-                if node_inst_ref != []:
-                    node_inst_ref = node_inst_ref[0]
-                    refNames = [x.properties['name'] for x in node_inst_ref.properties['node_reference'].children]
-                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                refField = self.inputs['node_instance_reference']
+                node_inst_ref = refField.GetClientData(refField.GetSelection())
+                refs = []
+                if node_inst_ref != None:
+                    refs = node_inst_ref.properties['node_reference'].children
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for x in refs:
+                    field.Append(x.properties['name'],x)
                 if value != None:
-                    field.SetValue(value.properties['name'])
+                    field.SetStringSelection(value.properties['name'])
+                field.Bind(wx.EVT_COMBOBOX,self.OnComponentInstanceComboBoxChanged)
                 self.inputs[key] = field
             elif key == 'port_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                node_inst_ref_name = self.inputs['node_instance_reference'].GetValue()
-                comp_inst_ref_name = self.inputs['component_instance_reference'].GetValue()
-                node_inst_ref = [x for x in self.references if x.properties['name'] == node_inst_ref_name]
-                refNames = []
-                if node_inst_ref != []:
-                    node_inst_ref = node_inst_ref[0]
-                    comp_inst_ref = [x for x in node_inst_ref.properties['node_reference'].children if x.properties['name'] == comp_inst_ref_name]
-                    if comp_inst_ref != []:
-                        comp_inst_ref = comp_inst_ref[0]
-                        refNames = [x.properties['name'] for x in comp_inst_ref.properties['component_reference'].children]
-                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                refField = self.inputs['component_instance_reference']
+                comp_inst_ref = refField.GetClientData(refField.GetSelection())
+                refs = []
+                if comp_inst_ref != None:
+                    refs = comp_inst_ref.properties['component_reference'].children
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for x in refs:
+                    if x.kind != 'timer':
+                        field.Append(x.properties['name'],x)
                 if value != None:
-                    field.SetValue(value.properties['name'])
+                    field.SetStringSelection(value.properties['name'])
+                field.Bind(wx.EVT_COMBOBOX,self.OnPortComboBoxChanged)
                 self.inputs[key] = field
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
@@ -240,6 +242,32 @@ class EditDialog(wx.Dialog):
         
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
+
+    def OnNodeInstanceComboBoxChanged(self, e):
+        nodeInstField = self.inputs['node_instance_reference']
+        compInstField = self.inputs['component_instance_reference']
+        portField = self.inputs['port_reference']
+        compInstField.Clear()
+        portField.Clear()
+        for x in nodeInstField.GetClientData(e.GetSelection()).properties['node_reference'].children:
+            compInstField.Append(x.properties['name'],x)
+        compInstField.SetValue("")
+        portField.SetValue("")
+        compInstField.Refresh()
+        portField.Refresh()
+
+    def OnComponentInstanceComboBoxChanged(self, e):
+        compInstField = self.inputs['component_instance_reference']
+        portField = self.inputs['port_reference']
+        portField.Clear()
+        for x in compInstField.GetClientData(e.GetSelection()).properties['component_reference'].children:
+            if x.kind != 'timer':
+                portField.Append(x.properties['name'],x)
+        portField.SetValue("")
+        portField.Refresh()
+
+    def OnPortComboBoxChanged(self, e):
+        pass
 
     def GenerateFieldString(self,fieldsList):
         retStr = ""
@@ -289,23 +317,16 @@ class EditDialog(wx.Dialog):
                 retFields = self.ParseFields(fieldTxt)
                 self.returnDict[key] = retFields
             elif key == 'service_reference' or \
-                 key == 'message_reference':
-                objName = field.GetValue()
-                refList = objName.split('/')
-                for ref in self.references:
-                    if ref.properties['name'] == refList[-1]:
-                        if len(refList) == 1 or \
-                           (len(refList) > 1 and ref.parent.properties['name'] == refList[0]):
-                            obj = [ref]
-                            break
-                self.returnDict[key] = obj[0]
-            elif key == 'component_reference' or \
+                 key == 'message_reference' or \
+                 key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
-                 key == 'node_reference':
-                objName = field.GetValue()
-                obj = [x for x in self.references if x.properties['name'] == objName]
-                self.returnDict[key] = obj[0]
+                 key == 'node_reference' or \
+                 key == 'node_instance_reference' or \
+                 key == 'component_instance_reference' or \
+                 key == 'port_reference':
+                obj = field.GetClientData(field.GetSelection())
+                self.returnDict[key] = obj
 
     def GetInput(self):
         return self.returnDict

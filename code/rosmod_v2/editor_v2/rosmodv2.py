@@ -367,7 +367,7 @@ class Example(wx.Frame):
         width,height = drawable.Layout(model,(0,0),canvas)
         model.Draw(canvas,self.OnLeftClick,self.OnRightClick,self.OnLeftDoubleClick)
         canvas.Draw()
-        #canvas.ZoomToBB()
+        canvas.ZoomToBB()
 
     def OnLeftClick(self, Object):
         if self.activeAspect == self.PackageAspect:
