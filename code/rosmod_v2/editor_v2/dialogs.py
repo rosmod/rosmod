@@ -180,8 +180,15 @@ class EditDialog(wx.Dialog):
             elif key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
-                 key == 'node_reference' or \
-                 key == 'node_instance_reference':
+                 key == 'node_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for ref in self.references:
+                    field.Append(ref.properties['name'],ref)
+                if value != None:
+                    field.SetStringSelection(value.properties['name'])
+                self.inputs[key] = field
+            elif key == 'node_instance_reference':
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:

@@ -358,16 +358,20 @@ class Example(wx.Frame):
         canvas.InitAll()
         drawable.Configure(model,self.styleDict)
         self.DrawModel(model,canvas)
+        #canvas.ZoomToBB()
+        canvas.Zoom(1,model.textPosition)
 
     def DrawModel(self, model, canvas):
+        c = canvas.ViewPortCenter
         canvas.UnBindAll()
-        canvas.ClearAll()
+        canvas.ClearAll(ResetBB=False)
         canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
         width,height = drawable.Layout(model,(0,0),canvas)
         model.Draw(canvas,self.OnLeftClick,self.OnRightClick,self.OnLeftDoubleClick)
         canvas.Draw()
-        canvas.ZoomToBB()
+        if c != None:
+            canvas.Zoom(1,c)
 
     def OnLeftClick(self, Object):
         if self.activeAspect == self.PackageAspect:
@@ -413,7 +417,7 @@ class Example(wx.Frame):
         dep = info.obj
         canvas = info.canvas
         self.activeObject = Object.Name
-        if dep == self.runningDeployment:
+        if self.deployed == True and dep == self.runningDeployment:
             return # DO SOMETHING ELSE HERE?
         drawable.Configure(dep,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
@@ -1229,6 +1233,7 @@ class Example(wx.Frame):
             canvas = info.canvas
             drawable.Configure(pkg,self.styleDict)
             self.DrawModel(pkg,canvas)
+            #canvas.ZoomToBB()
         
     def OnPageChanged(self, event):
         self.pageChange(event)
