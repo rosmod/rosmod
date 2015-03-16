@@ -110,6 +110,8 @@ class EditDialog(wx.Dialog):
     def __init__(self, *args, **kw):
         self.editDict = kw.pop('editDict', OrderedDict())
         self.editObj = kw.pop('editObj', None)
+        if self.editObj.kind == 'port_instance':
+            del self.editDict['name']
         title = kw.pop('title', "ROSMOD V2")
         self.references = kw.pop('references',[])
         super(EditDialog, self).__init__(*args,**kw)
@@ -330,16 +332,25 @@ class EditDialog(wx.Dialog):
                  key == 'host_reference' or \
                  key == 'node_reference' or \
                  key == 'node_instance_reference' or \
-                 key == 'component_instance_reference' or \
-                 key == 'port_reference':
+                 key == 'component_instance_reference':
                 obj = field.GetClientData(field.GetSelection())
+                if obj == None:
+                    return False
                 self.returnDict[key] = obj
+            elif key == 'port_reference':
+                obj = field.GetClientData(field.GetSelection())
+                if obj == None:
+                    return False
+                self.returnDict[key] = obj                
+                self.returnDict['name'] = obj.properties['name']
+        return True
 
     def GetInput(self):
         return self.returnDict
 
     def OnOk(self,e):
-        self.UpdateInputs()
+        if self.UpdateInputs() == False:
+            return False
         self.Destroy()
 
     def OnClose(self, e):

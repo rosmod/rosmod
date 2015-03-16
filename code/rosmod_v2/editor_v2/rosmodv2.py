@@ -657,6 +657,7 @@ class Example(wx.Frame):
         newObj = None
         if kind == 'port_instance':
             newObj = ros_tools.ROS_Port_Instance()
+            del newObj.properties['name']
             references = group.parent.getChildrenByKind('node_instance')
         if newObj != None:
             self.GenericAdd(newObj,references,group)
@@ -684,6 +685,8 @@ class Example(wx.Frame):
             references = self.project.workspace.getChildrenByKind('node')
         elif self.activeObject.kind == 'port_instance':
             references = obj.getChildrenByKind('node_instance')
+
+        prevProps = copy.copy(self.activeObject.properties)
         ed = dialogs.EditDialog(canvas,
                                 editDict=self.activeObject.properties,
                                 editObj = self.activeObject,
@@ -691,7 +694,6 @@ class Example(wx.Frame):
                                 references = references,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
-        prevProps = copy.copy(self.activeObject.properties)
         inputs = ed.GetInput()
         if inputs != OrderedDict():
             self.UpdateUndo()
@@ -716,6 +718,8 @@ class Example(wx.Frame):
             selectedPage = self.activeAspect.GetSelection()
             self.activeAspect.SetPageText(selectedPage,obj.properties['name'])
             self.DrawModel(obj,canvas)
+        else:
+            self.activeObject.properties = prevProps
 
     def AspectDelete(self, e):
         info = self.GetActivePanelInfo()
