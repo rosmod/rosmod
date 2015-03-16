@@ -272,10 +272,10 @@ class ROS_Port_Instance(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "port_instance"
         self.properties['name'] = ""
-        self.properties["port_reference_string"] = ""
-        self.properties['port_reference'] = None
         self.properties['node_instance_reference'] = None
         self.properties['component_instance_reference'] = None
+        self.properties["port_reference_string"] = ""
+        self.properties['port_reference'] = None
 
 class ROS_Group(Drawable_Object):
     # Initialize the group; children are port_instances

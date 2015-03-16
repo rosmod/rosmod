@@ -489,6 +489,7 @@ class Example(wx.Frame):
         return cm
     def BuildDeploymentContextMenu(self,cm):
         cm['Add Host Instance'] = lambda evt : self.DeploymentAdd(evt,'host_instance')
+        cm['Add Group'] = lambda evt : self.DeploymentAdd(evt,'group')
         return cm
     def BuildHostInstanceContextMenu(self,cm):
         cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
@@ -499,6 +500,7 @@ class Example(wx.Frame):
             cm['Monitor Log'] = lambda _: self.MonitorNodeInstLog(self.activeObject)
         return cm
     def BuildGroupContextMenu(self,cm):
+        cm['Add Port Instance'] = lambda evt : self.GroupAdd(evt,'port_instance')
         return cm
     def BuildPortInstanceContextMenu(self,cm):
         return cm
@@ -630,6 +632,9 @@ class Example(wx.Frame):
         if kind == 'host_instance':
             newObj = ros_tools.ROS_Host_Instance()
             references = dep.properties['hardware_configuration_reference'].children
+        elif kind == 'group':
+            newObj = ros_tools.ROS_Group()
+            references = self.project.workspace.getChildrenByKind('node')
         if newObj != None:
             self.GenericAdd(newObj,references,dep)
 
@@ -643,9 +648,18 @@ class Example(wx.Frame):
         if newObj != None:
             self.GenericAdd(newObj,references,host)
 
+    def GroupAdd(self,e, kind):
+        group = self.activeObject
+        newObj = None
+        if kind == 'port_instance':
+            newObj = ros_tools.ROS_Port_Instance()
+            references = group.parent.getChildrenByKind('node_instance')
+        if newObj != None:
+            self.GenericAdd(newObj,references,group)
+
     def AspectEdit(self, e):
         info = self.GetActivePanelInfo()
-        pkg = info.obj
+        obj = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
         self.AspectLog(
@@ -661,9 +675,11 @@ class Example(wx.Frame):
         elif self.activeObject.kind == 'deployment':
             references = self.project.hardware_configurations
         elif self.activeObject.kind == 'host_instance':
-            references = pkg.properties['hardware_configuration_reference'].children
+            references = obj.properties['hardware_configuration_reference'].children
         elif self.activeObject.kind == 'node_instance':
             references = self.project.workspace.getChildrenByKind('node')
+        elif self.activeObject.kind == 'port_instance':
+            references = obj.getChildrenByKind('node_instance')
         ed = dialogs.EditDialog(canvas,
                                 editDict=self.activeObject.properties,
                                 editObj = self.activeObject,
@@ -692,10 +708,10 @@ class Example(wx.Frame):
                 newRef = self.activeObject.properties['hardware_configuration_reference']
                 if newRef != prevRef:
                     self.activeObject.children = []
-            drawable.Configure(pkg,self.styleDict)
+            drawable.Configure(obj,self.styleDict)
             selectedPage = self.activeAspect.GetSelection()
-            self.activeAspect.SetPageText(selectedPage,pkg.properties['name'])
-            self.DrawModel(pkg,canvas)
+            self.activeAspect.SetPageText(selectedPage,obj.properties['name'])
+            self.DrawModel(obj,canvas)
 
     def AspectDelete(self, e):
         info = self.GetActivePanelInfo()
@@ -854,8 +870,8 @@ class Example(wx.Frame):
                             executable = '/home/' + host.properties['username'] + '/' + node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
                             cmdArgs = node.properties['cmdline_arguments']
                         ))
-                        nodeList[-1].cmdArgs += "-nodename {}".format(node.properties['name'])
-                        nodeList[-1].cmdArgs += "-hostname {}".format(host.properties['name'])
+                        nodeList[-1].cmdArgs += " -nodename {}".format(node.properties['name'])
+                        nodeList[-1].cmdArgs += " -hostname {}".format(host.properties['name'])
                     self.hostDict[host.properties['name']] = fabTest.deployed_host(
                         userName = host.properties['username'],
                         ipAddress = host.properties['host_reference'].properties['ip_address'],

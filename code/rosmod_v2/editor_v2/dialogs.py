@@ -181,9 +181,38 @@ class EditDialog(wx.Dialog):
             elif key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
-                 key == 'node_reference':
+                 key == 'node_reference' or \
+                 key == 'node_instance_reference':
                 label = wx.StaticText(panel, label=key + ":")
                 refNames = [x.properties['name'] for x in self.references]
+                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                if value != None:
+                    field.SetValue(value.properties['name'])
+                self.inputs[key] = field
+            elif key == 'component_instance_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                node_inst_ref_name = self.inputs['node_instance_reference'].GetValue()
+                node_inst_ref = [x for x in self.references if x.properties['name'] == node_inst_ref_name]
+                refNames = []
+                if node_inst_ref != []:
+                    node_inst_ref = node_inst_ref[0]
+                    refNames = [x.properties['name'] for x in node_inst_ref.properties['node_reference'].children]
+                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                if value != None:
+                    field.SetValue(value.properties['name'])
+                self.inputs[key] = field
+            elif key == 'port_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                node_inst_ref_name = self.inputs['node_instance_reference'].GetValue()
+                comp_inst_ref_name = self.inputs['component_instance_reference'].GetValue()
+                node_inst_ref = [x for x in self.references if x.properties['name'] == node_inst_ref_name]
+                refNames = []
+                if node_inst_ref != []:
+                    node_inst_ref = node_inst_ref[0]
+                    comp_inst_ref = [x for x in node_inst_ref.properties['node_reference'].children if x.properties['name'] == comp_inst_ref_name]
+                    if comp_inst_ref != []:
+                        comp_inst_ref = comp_inst_ref[0]
+                        refNames = [x.properties['name'] for x in comp_inst_ref.properties['component_reference'].children]
                 field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
                 if value != None:
                     field.SetValue(value.properties['name'])
