@@ -147,8 +147,8 @@ void $component_name::startUp()
     #for $sub in $subscribers
     // subscriber: $sub.properties["name"]
     advertiseName = "${sub.properties["message_reference"].properties["name"]}";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("${sub.properties['name']}") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["${sub.properties['name']}"];
     ros::SubscribeOptions ${sub.properties["name"]}_options;
     ${sub.properties["name"]}_options = 
 	ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
@@ -166,8 +166,8 @@ void $component_name::startUp()
     #for $pub in $publishers
     // publisher: $pub.properties["name"]
     advertiseName = "${pub.properties["message_reference"].properties["name"]}";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("${pub.properties['name']}") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["${pub.properties['name']}"];
     this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>
 	(advertiseName.c_str(), 1000);	
     #end for
@@ -178,8 +178,8 @@ void $component_name::startUp()
     #for $server in $servers
     // server: $server.properties["name"]
     advertiseName = "$server.properties["service_reference"].properties["name"]";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("${server.properties["service_reference"].properties["name"]}_server") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["${server.properties["service_reference"].properties["name"]}_server"];
     ros::AdvertiseServiceOptions ${server.properties["service_reference"].properties["name"]}_server_options;
     ${server.properties["service_reference"].properties["name"]}_server_options = 
 	ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
@@ -196,8 +196,8 @@ void $component_name::startUp()
     #for $required in $required_services
     // client: ${required[1]}_client
     advertiseName = "$required[1]";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName+"_client") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName+"_client"];
     this->${required[1]}_client = nh.serviceClient<$required[0]::$required[1]>
 	(advertiseName.c_str()); 
     #end for
