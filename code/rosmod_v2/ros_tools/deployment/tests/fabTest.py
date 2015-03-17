@@ -70,6 +70,26 @@ def parallelDeploy(hostDict,updateQ):
     return host
 
 @parallel
+def parallelCopyXML(hostDict, deployment_folder_path):
+    host = hostDict[env.host_string]
+    env.key_filename = host.keyFile
+    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+
+    source = os.path.join(deployment_folder_path, "*.xml")
+    dest = "/home/" + host.userName + "/."
+    put(source, dest)
+
+@parallel
+def parallelCopyExec(hostDict, exec_folder_path):
+    host = hostDict[env.host_string]
+    env.key_filename = host.keyFile
+    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+
+    source = os.path.join(exec_folder_path, "*")
+    dest = "/home/" + host.userName + "/."
+    put(source, dest)
+
+@parallel
 def parallelStop(hostDict,updateQ):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
@@ -112,3 +132,9 @@ def stopTest(hostDict, host_topic, progress_q):
 def monitorTest(hostDict,  host_topic, progress_q):
     newHosts = execute(parallelMonitor,hostDict,progress_q)
     Publisher().sendMessage(host_topic,newHosts)
+
+def copyXMLTest(hostDict, xml_folder_path):
+    execute(parallelCopyXML, hostDict, xml_folder_path)
+
+def copyExecTest(hostDict, exec_folder_path):
+    execute(parallelCopyExec, hostDict, exec_folder_path)
