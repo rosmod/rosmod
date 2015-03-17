@@ -271,8 +271,8 @@ void SatelliteBusInterface_def::startUp()
     // Configure all provided services associated with this component
     // server: SatelliteState_server
     advertiseName = "SatelliteState";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("SatelliteState_server") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["SatelliteState_server"];
     ros::AdvertiseServiceOptions SatelliteState_server_options;
     SatelliteState_server_options = 
 	ros::AdvertiseServiceOptions::create<satellite_flight_application::SatelliteState>
@@ -283,8 +283,8 @@ void SatelliteBusInterface_def::startUp()
     this->SatelliteState_server = nh.advertiseService(SatelliteState_server_options);
     // server: ThrusterComm_server
     advertiseName = "ThrusterComm";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("ThrusterComm_server") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["ThrusterComm_server"];
     ros::AdvertiseServiceOptions ThrusterComm_server_options;
     ThrusterComm_server_options = 
 	ros::AdvertiseServiceOptions::create<satellite_flight_application::ThrusterComm>

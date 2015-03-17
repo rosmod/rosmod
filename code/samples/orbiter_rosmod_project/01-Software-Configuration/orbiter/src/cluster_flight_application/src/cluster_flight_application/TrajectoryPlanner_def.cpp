@@ -72,8 +72,8 @@ void TrajectoryPlanner_def::startUp()
     // Configure all subscribers associated with this component
     // subscriber: satStateSub
     advertiseName = "SatState";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("satStateSub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["satStateSub"];
     ros::SubscribeOptions satStateSub_options;
     satStateSub_options = 
 	ros::SubscribeOptions::create<satellite_flight_application::SatState>
@@ -85,8 +85,8 @@ void TrajectoryPlanner_def::startUp()
     this->satStateSub = nh.subscribe(satStateSub_options);
     // subscriber: satCommandSub
     advertiseName = "GroundCommand";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("satCommandSub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["satCommandSub"];
     ros::SubscribeOptions satCommandSub_options;
     satCommandSub_options = 
 	ros::SubscribeOptions::create<satellite_flight_application::GroundCommand>
@@ -100,8 +100,8 @@ void TrajectoryPlanner_def::startUp()
     // Configure all publishers associated with this component
     // publisher: targetOrbitPub
     advertiseName = "TargetOrbit";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("targetOrbitPub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["targetOrbitPub"];
     this->targetOrbitPub = nh.advertise<cluster_flight_application::TargetOrbit>
 	(advertiseName.c_str(), 1000);	
 

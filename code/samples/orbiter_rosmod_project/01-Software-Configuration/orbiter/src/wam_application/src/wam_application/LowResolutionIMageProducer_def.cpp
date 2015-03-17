@@ -67,8 +67,8 @@ void LowResolutionIMageProducer_def::startUp()
     // Configure all publishers associated with this component
     // publisher: lrImage_pub
     advertiseName = "LRImageVector";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("lrImage_pub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["lrImage_pub"];
     this->lrImage_pub = nh.advertise<wam_application::LRImageVector>
 	(advertiseName.c_str(), 1000);	
 
