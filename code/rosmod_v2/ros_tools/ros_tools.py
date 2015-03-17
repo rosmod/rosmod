@@ -1180,6 +1180,7 @@ class Workspace_Generator:
                         with open(os.path.join(xml_folder_home, 
                                                xml.properties["name"]), 'w') as temp_file:
                             temp_file.write(xml_str)
+        return self.workspace_dir
                 
 class Workspace_Loader:
     # Load the business logic of component operations
@@ -1459,6 +1460,7 @@ class ROS_Project:
         self.workspace = ROS_Workspace()
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software-Configuration")
+        self.workspace_dir = ""
         # Hardware Configurations Path
         self.hardware_configurations_path = os.path.join(self.project_path, "02-Hardware-Configuration")
         # Hardware Configurations - List of all rhw objects in Project
@@ -1726,7 +1728,7 @@ class ROS_Project:
         # Instantiate a Generator Object
         workspace = Workspace_Generator()
         # Use listener_object to generate ROS workspace
-        workspace.generate(self.workspace, self.workspace_path, self.deployments, self.deployment_path)
+        self.workspace_dir = workspace.generate(self.workspace, self.workspace_path, self.deployments, self.deployment_path)
 
     # Generate a ROS model from a workspace object
     # Used to save an edited model
