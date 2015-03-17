@@ -422,16 +422,28 @@ class Example(wx.Frame):
         drawable.Configure(dep,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
         kind = self.activeObject.kind
-        keys = []
-        if kind == 'node_instance':
-            keys = [['node_instance','node_reference']]
-        elif kind == 'host_instance':
-            keys = [['host_instance','host_reference']]
-        for key in keys:
-            children = dep.getChildrenByKind(key[0])
+        if kind == 'node_instance' or kind == 'host_instance':
+            keys = []
+            if kind == 'node_instance':
+                keys = [['node_instance','node_reference']]
+            elif kind == 'host_instance':
+                keys = [['host_instance','host_reference']]
+            for key in keys:
+                children = dep.getChildrenByKind(key[0])
+                for child in children:
+                    if child.properties[key[1]] == self.activeObject.properties[key[1]]:
+                        child.style.overlay['overlayColor']='RED'
+        elif kind == 'group':
+            children = dep.getChildrenByKind('node_instance')
+            myKeys = [x.properties['node_instance_reference'] for x in self.activeObject.children]
             for child in children:
-                if child.properties[key[1]] == self.activeObject.properties[key[1]]:
-                    child.style.overlay['overlayColor']='RED'
+                if child in myKeys:
+                    child.style.overlay['overlayColor'] = 'RED'
+        elif kind == 'port_instance':
+            children = dep.getChildrenByKind('node_instance')
+            for child in children:
+                if child == self.activeObject.properties['node_instance_reference']:
+                    child.style.overlay['overlayColor'] = 'RED'
         self.DrawModel(dep,canvas)
 
     def OnRightClick(self, Object):
