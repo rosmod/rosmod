@@ -1022,6 +1022,12 @@ class Example(wx.Frame):
         Rot = Rot / abs(Rot) * 0.1
         if event.ControlDown(): # move left-right
             canvas.MoveImage( (Rot, 0), "Panel" )
+        elif event.ShiftDown():
+            canvasPos = canvas.ViewPortCenter#event.GetCoords()
+            if Rot > 0:
+                canvas.Zoom(1.1,canvasPos)
+            else:
+                canvas.Zoom(0.9,canvasPos)
         else: # move up-down
             canvas.MoveImage( (0, -Rot), "Panel" )
     def OnRightUp(self,event):
