@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 
 from fabric.api import *
 
@@ -90,6 +91,20 @@ def parallelCopyExec(hostDict, exec_folder_path):
     put(source, dest)
 
 @parallel
+def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
+    host = hostDict[env.host_string]
+    env.key_filename = host.keyFile
+    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+
+    source = os.path.join(exec_folder_path, "*")
+    dest = "/home/" + host.userName + "/."
+    put(source, dest)    
+    source = os.path.join(deployment_folder_path, "*.xml")
+    dest = "/home/" + host.userName + "/."
+    put(source, dest)
+    updateQ.put("Copied files to {}".format(env.host_string))
+
+@parallel
 def parallelStop(hostDict,updateQ):
     host = hostDict[env.host_string]
     env.key_filename = host.keyFile
@@ -132,6 +147,9 @@ def stopTest(hostDict, host_topic, progress_q):
 def monitorTest(hostDict,  host_topic, progress_q):
     newHosts = execute(parallelMonitor,hostDict,progress_q)
     Publisher().sendMessage(host_topic,newHosts)
+
+def copyTest(hostDict, exec_folder_path, xml_folder_path, progress_q):
+    execute(parallelCopy, hostDict, exec_folder_path, xml_folder_path, progress_q)
 
 def copyXMLTest(hostDict, xml_folder_path):
     execute(parallelCopyXML, hostDict, xml_folder_path)

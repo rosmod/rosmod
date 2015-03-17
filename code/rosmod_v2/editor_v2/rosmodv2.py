@@ -246,6 +246,10 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                                         shortHelpString="Remove Deployment"))
+        moveTBinfo = TBInfo (name='coyp',
+                             obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                      bitmap = wx.Bitmap('icons/toolbar/tmove.png'),
+                                                      shortHelpString="Copy Deployment Files"))
         deployTBinfo = TBInfo( name='deploy',
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tdeploy.png'),
@@ -257,10 +261,12 @@ class Example(wx.Frame):
         self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(moveTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
         self.toolbar.Realize()
@@ -826,6 +832,40 @@ class Example(wx.Frame):
             self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
             self.DeploymentAspect.DeletePage(selectedPage)
             os.remove(self.project.deployment_path + '/' + obj.properties['name'] + '.rdp')
+
+    def OnDeploymentMove(self,e):
+        if self.deployed == False:
+            selectedPage = self.DeploymentAspect.GetSelection()
+            objName = self.DeploymentAspect.GetPageText(selectedPage)
+            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            dep = info.obj
+            canvas = info.canvas
+            env.use_ssh_config = False
+            self.hostDict = {}
+            env.hosts = []
+            for host in dep.getChildrenByKind("host_instance"):
+                nodeList = []
+                self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                    userName = host.properties['username'],
+                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    keyFile = host.properties['sshkey'],
+                    nodes = nodeList,
+                    envVars = copy.copy(host.properties['env_variables'])
+                )
+                env.hosts.append(host.properties['name'])
+            copyProgressQ = multiprocessing.Queue()
+            dlg = dialogs.RMLProgressDialog( title="Copy Progress",
+                                             progress_q = copyProgressQ,
+                                             numItems=len(self.hostDict))
+            workerThread = WorkerThread(func = lambda : fabTest.copyTest(self.hostDict,
+                                                                         self.project.workspace_dir + "/devel/lib/",
+                                                                         self.project.deployment_path +"/"+ dep.properties['name'],
+                                                                         copyProgressQ)
+                                    )
+            workerThread.start()
+            dlg.ShowModal()
+        else:
+            dialogs.ErrorDialog(self,"Can't copy deployment files when system is running a deployment!")
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
