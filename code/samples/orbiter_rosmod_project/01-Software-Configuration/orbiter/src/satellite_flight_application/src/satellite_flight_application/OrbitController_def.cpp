@@ -100,8 +100,8 @@ void OrbitController_def::startUp()
     // Configure all subscribers associated with this component
     // subscriber: targetOrbitSub
     advertiseName = "TargetOrbit";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("targetOrbitSub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["targetOrbitSub"];
     ros::SubscribeOptions targetOrbitSub_options;
     targetOrbitSub_options = 
 	ros::SubscribeOptions::create<cluster_flight_application::TargetOrbit>
@@ -115,22 +115,22 @@ void OrbitController_def::startUp()
     // Configure all publishers associated with this component
     // publisher: satStatePub
     advertiseName = "SatState";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("satStatePub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["satStatePub"];
     this->satStatePub = nh.advertise<satellite_flight_application::SatState>
 	(advertiseName.c_str(), 1000);	
 
     // Configure all required services associated with this component
     // client: SatelliteState_client
     advertiseName = "SatelliteState";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName+"_client") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName+"_client"];
     this->SatelliteState_client = nh.serviceClient<satellite_flight_application::SatelliteState>
 	(advertiseName.c_str()); 
     // client: ThrusterComm_client
     advertiseName = "ThrusterComm";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName+"_client") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName+"_client"];
     this->ThrusterComm_client = nh.serviceClient<satellite_flight_application::ThrusterComm>
 	(advertiseName.c_str()); 
 

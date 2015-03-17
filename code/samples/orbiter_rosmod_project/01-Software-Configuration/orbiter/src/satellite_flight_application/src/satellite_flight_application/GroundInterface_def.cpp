@@ -172,8 +172,8 @@ void GroundInterface_def::startUp()
     // Configure all publishers associated with this component
     // publisher: gndCommandPub
     advertiseName = "GroundCommand";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("gndCommandPub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["gndCommandPub"];
     this->gndCommandPub = nh.advertise<satellite_flight_application::GroundCommand>
 	(advertiseName.c_str(), 1000);	
 

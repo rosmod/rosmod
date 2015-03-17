@@ -68,8 +68,8 @@ void ImageProcessor_def::startUp()
     // Configure all subscribers associated with this component
     // subscriber: HRsub
     advertiseName = "HRImageVector";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("HRsub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["HRsub"];
     ros::SubscribeOptions HRsub_options;
     HRsub_options = 
 	ros::SubscribeOptions::create<wam_application::HRImageVector>
@@ -81,8 +81,8 @@ void ImageProcessor_def::startUp()
     this->HRsub = nh.subscribe(HRsub_options);
     // subscriber: LRsub
     advertiseName = "LRImageVector";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("LRsub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["LRsub"];
     ros::SubscribeOptions LRsub_options;
     LRsub_options = 
 	ros::SubscribeOptions::create<wam_application::LRImageVector>

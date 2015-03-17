@@ -67,8 +67,8 @@ void HighResolutionImageProducer_def::startUp()
     // Configure all publishers associated with this component
     // publisher: hrImage_pub
     advertiseName = "HRImageVector";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName) != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName];
+    if ( portGroupMap != NULL && portGroupMap->find("hrImage_pub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["hrImage_pub"];
     this->hrImage_pub = nh.advertise<wam_application::HRImageVector>
 	(advertiseName.c_str(), 1000);	
 
