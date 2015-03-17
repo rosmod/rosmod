@@ -210,7 +210,8 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 	int seconds = (int)duration;
 	int nanoseconds = (int)((duration-seconds)*1000000000);
 	ROS_INFO("Activating engine for %f = %d seconds and %d nanoseconds\r\n",duration,seconds,nanoseconds);
-	// SLEEP HERE
+	ros::Duration(duration).sleep();
+	ROS_INFO("Turning off engine now.");
 
 	memset(msgbuf,0,100);
 	sprintf(msgbuf,"Ship:%s:SetEngineGrpLevel:0:0\r\n",hostName.c_str());
