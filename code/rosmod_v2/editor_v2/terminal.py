@@ -25,7 +25,7 @@ def PrintStringAsAscii(s):
             print ord(ch), 
 
 class TermEmulatorDemo(wx.Panel):
-    def __init__(self,parent = None, command = None, args = None):
+    def __init__(self,parent = None, command = None, args = None, rows=24,cols=80):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -58,14 +58,14 @@ class TermEmulatorDemo(wx.Panel):
         hbox2.Add(self.st3, 0, wx.ALIGN_CENTER | wx.LEFT, 10)
         
         self.tc3 = wx.TextCtrl(self, wx.ID_ANY)
-        self.tc3.SetValue("24")
+        self.tc3.SetValue("{}".format(rows))
         hbox2.Add(self.tc3, 1, wx.ALIGN_CENTER)
 
         self.st4 = wx.StaticText(self, wx.ID_ANY, "Columns:")
         hbox2.Add(self.st4, 0, wx.ALIGN_CENTER | wx.LEFT, 10)
 
         self.tc4 = wx.TextCtrl(self, wx.ID_ANY)
-        self.tc4.SetValue("80")
+        self.tc4.SetValue("{}".format(cols))
         hbox2.Add(self.tc4, 1, wx.ALIGN_CENTER)
 
         self.b2 = wx.Button(self, wx.ID_ANY, "Resize")
@@ -96,8 +96,8 @@ class TermEmulatorDemo(wx.Panel):
         vbox.Add(self.txtCtrlTerminal, 1, wx.EXPAND | wx.ALL)
         self.SetSizer(vbox)
         
-        self.termRows = 24
-        self.termCols = 80
+        self.termRows = rows
+        self.termCols = cols
         
         self.FillScreen()
         

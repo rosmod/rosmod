@@ -24,7 +24,7 @@ void ImageProcessor_def::Init(const ros::TimerEvent& event)
 void ImageProcessor_def::HRsub_OnOneData(const wam_application::HRImageVector::ConstPtr& received_data)
 {
     // Business Logic for HRsub subscriber subscribing to topic HRImageVector callback 
-  ROS_INFO("Processing high-resolution image on satellite %s",nodeName.c_str());
+  ROS_INFO("Processing high-resolution image on satellite %s",hostName.c_str());
 }
 //# End HRsub_OnOneData Marker
 // OnOneData Subscription handler for LRsub subscriber
@@ -32,7 +32,7 @@ void ImageProcessor_def::HRsub_OnOneData(const wam_application::HRImageVector::C
 void ImageProcessor_def::LRsub_OnOneData(const wam_application::LRImageVector::ConstPtr& received_data)
 {
     // Business Logic for LRsub subscriber subscribing to topic LRImageVector callback 
-  ROS_INFO("Processing low-resolution image on satellite %s",nodeName.c_str());
+  ROS_INFO("Processing low-resolution image on satellite %s",hostName.c_str());
 }
 //# End LRsub_OnOneData Marker
 

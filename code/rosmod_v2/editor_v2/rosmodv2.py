@@ -538,15 +538,14 @@ class Example(wx.Frame):
         self.shop.Check(True)
         self.UpdateMainWindow(None)
         command = "/usr/bin/ssh"
-        args = "-i {} {}@{} tail -f /home/{}/{}.log".format( 
+        args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
             nodeInst.parent.properties['sshkey'], 
             nodeInst.parent.properties['username'],
-            nodeInst.parent.properties['host_reference'].properties['ip_address'],
-            nodeInst.parent.properties['username'],
-            nodeInst.properties['name'])
+            nodeInst.parent.properties['host_reference'].properties['ip_address'])
         self.output.AddPage(TermEmulatorDemo(self.output,
                                              command=command,
-                                             args=args), 
+                                             args=args,
+                                             cols=120),
                             "{} Log".format(nodeInst.properties['name']), 
                             select=True)
 
