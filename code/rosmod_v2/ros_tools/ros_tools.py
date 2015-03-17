@@ -1168,11 +1168,10 @@ class Workspace_Generator:
                                         if grp_port.properties["component_instance_reference"].properties["name"] == xml.properties["component_instance"].properties["name"]:
                                             xml_group.children.append(grp_port)
                                 xml.properties["groups"].append(xml_group)
-                                print "xml.groups adding this group - " + xml_group.properties["name"]
+                               
 
                     deployment.properties["xml_list"] = xml_list
                     for xml in xml_list:
-                        print "---> XML: " + xml.properties["name"]
                         xml_namespace = {'xml': xml}
                         t = node_groups_xml(searchList=[xml_namespace])
                         xml_str = str(t)
