@@ -96,7 +96,7 @@ class Example(wx.Frame):
         self.Show(True)
 
         self.workQueue = []
-        self.workTimerPeriod = 1.0
+        self.workTimerPeriod = 5.0
         self.workTimerID = wx.NewId()  # pick a number
         self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
         self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
