@@ -20,6 +20,9 @@ class RMLProgressDialog(wx.Dialog):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.progress, 0, wx.EXPAND)
 
+        self.progressText = wx.StaticText(self, wx.NewId())
+        sizer.Add(self.progressText, 0, wx.EXPAND)
+
         self.ok = wx.Button(self, wx.ID_OK)
         self.ok.Bind(wx.EVT_BUTTON, self.on_cancel)
         btnSizer = wx.StdDialogButtonSizer()
@@ -50,6 +53,7 @@ class RMLProgressDialog(wx.Dialog):
             if message != None:
                 self.count += 1
                 self.progress.SetValue(self.count)
+                self.progressText.SetLabel( message )
                 if self.count >= self.numItems:
                     self.ok.Enable()
                     self.timer.Stop()
@@ -138,7 +142,8 @@ class EditDialog(wx.Dialog):
                key == 'username' or \
                key == 'sshkey' or \
                key == 'init' or \
-               key == 'cmdline_arguments':
+               key == 'cmdline_arguments' or \
+               key == 'command':
                 # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
@@ -316,7 +321,8 @@ class EditDialog(wx.Dialog):
                key == 'username' or \
                key == 'sshkey' or \
                key == 'init' or \
-               key == 'cmdline_arguments':
+               key == 'cmdline_arguments' or \
+               key == 'command':
                 self.returnDict[key] = field.GetValue()
             elif key == 'fields' or \
                  key == 'request' or \

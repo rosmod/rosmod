@@ -246,7 +246,7 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                                         shortHelpString="Remove Deployment"))
-        moveTBinfo = TBInfo (name='coyp',
+        moveTBinfo = TBInfo (name='move',
                              obj=self.toolbar.AddTool(wx.ID_ANY,
                                                       bitmap = wx.Bitmap('icons/toolbar/tmove.png'),
                                                       shortHelpString="Copy Deployment Files"))
@@ -258,17 +258,23 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tstop.png'),
                                                         shortHelpString="Stop Deployed System"))
+        runTBinfo = TBInfo( name='run',
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/trun.png'),
+                                                        shortHelpString="Run <Command> on All Hosts"))
         self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(moveTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(runTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentRun, runTBinfo.obj)
         self.toolbar.Realize()
     def RemoveDeploymentAspectToolbar(self):
         for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
@@ -866,6 +872,51 @@ class Example(wx.Frame):
             dlg.ShowModal()
         else:
             dialogs.ErrorDialog(self,"Can't copy deployment files when system is running a deployment!")
+
+    def OnDeploymentRun(self,e):
+        newObj = drawable.Drawable_Object()
+        newObj.properties = OrderedDict()
+        newObj.properties['command'] = ""
+        ed = dialogs.EditDialog(self,
+                                editDict=newObj.properties,
+                                editObj = newObj,
+                                title="Input Command To Run",
+                                references = [],
+                                style=wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                newObj.properties[key] = value
+            command = newObj.properties['command']
+            selectedPage = self.DeploymentAspect.GetSelection()
+            objName = self.DeploymentAspect.GetPageText(selectedPage)
+            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            dep = info.obj
+            canvas = info.canvas
+            env.use_ssh_config = False
+            self.hostDict = {}
+            env.hosts = []
+            for host in dep.getChildrenByKind("host_instance"):
+                nodeList = []
+                self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                    userName = host.properties['username'],
+                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    keyFile = host.properties['sshkey'],
+                    nodes = nodeList,
+                    envVars = copy.copy(host.properties['env_variables'])
+                )
+                env.hosts.append(host.properties['name'])
+            copyProgressQ = multiprocessing.Queue()
+            dlg = dialogs.RMLProgressDialog( title="Copy Progress",
+                                             progress_q = copyProgressQ,
+                                             numItems=len(self.hostDict))
+            workerThread = WorkerThread(func = lambda : fabTest.runCommandTest(self.hostDict,
+                                                                               command,
+                                                                               copyProgressQ)
+                                    )
+            workerThread.start()
+            dlg.ShowModal()
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
