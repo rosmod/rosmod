@@ -770,8 +770,10 @@ class Example(wx.Frame):
 
     def OnHardwareCreate(self, e):
         newObj = ros_tools.ROS_HW()
+        newObj.properties = {}
         newObj.properties['name'] = "New Hardware Configuration"
         ed = dialogs.EditDialog(self,
+                                editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = [],
@@ -805,9 +807,11 @@ class Example(wx.Frame):
         
     def OnDeploymentCreate(self, e):
         newObj = ros_tools.ROS_Deployment()
+        newObj.properties = OrderedDict()
         newObj.properties['name'] = "New Deployment"
         references = self.project.hardware_configurations
         ed = dialogs.EditDialog(self,
+                                editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = references,
@@ -1049,8 +1053,10 @@ class Example(wx.Frame):
 
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
+        newPkg.properties = {}
         newPkg.properties['name'] = "New Package"
         ed = dialogs.EditDialog(self,
+                                editObj=newPkg,
                                 editDict=newPkg.properties,
                                 title="Edit "+newPkg.kind,
                                 references = [],
@@ -1236,9 +1242,12 @@ class Example(wx.Frame):
             path = self.project_path,
         )
         if project_path != None:
-            dlgDict = OrderedDict([('name','New Project')])
+            dlgObj = ros_tools.ROS_Project()
+            dlgObj.properties = OrderedDict()
+            dlgObj.properties['name'] = "New Project"
             ed = dialogs.EditDialog( self,
-                                     editDict = dlgDict,
+                                     editObj = dlgObj,
+                                     editDict = dlgObj.properties,
                                      title = 'Choose Project Name',
                                      style = wx.RESIZE_BORDER)
             ed.ShowModal()
@@ -1279,9 +1288,12 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def OnSaveAs(self, e):
-        dlgDict = OrderedDict([('name',self.project.project_name)])
+        dlgObj = ros_tools.ROS_Project()
+        dlgObj.properties = OrderedDict()
+        dlgObj.properties['name'] = self.project.project_name
         ed = dialogs.EditDialog( self,
-                                 editDict = dlgDict,
+                                 editObj = dlgObj,
+                                 editDict = dlgObj.properties,
                                  title = 'Choose New Project Name',
                                  style = wx.RESIZE_BORDER)
         ed.ShowModal()
