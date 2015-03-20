@@ -1448,9 +1448,10 @@ class Workspace_Loader:
                                     server.properties["business_logic"] = service_text
 
 # ROS Project class
-class ROS_Project:
+class ROS_Project(Drawable_Object):
     # Initialize ROS Project
     def __init__(self, **kwargs):
+        Drawable_Object.__init__(self)
         # Name of the ROS Project
         self.project_name = kwargs.pop("name", "")
         # Path to ROS Project
