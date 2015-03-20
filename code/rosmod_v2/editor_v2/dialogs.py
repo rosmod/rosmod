@@ -2,8 +2,73 @@
 
 import wx
 import wx.stc as stc
+from wx.lib.pubsub import Publisher
 
 from collections import OrderedDict
+
+class RMLProgressDialog(wx.Dialog):
+    """
+    Shows a Progres Gauge while an operation is taking place. May be cancellable
+    which is possible when converting pdf/ps
+    """
+    def __init__(self, title, progress_q, numItems=100, cancellable=False):
+        """Defines a gauge and a timer which updates the gauge."""
+        wx.Dialog.__init__(self, None, title=title)
+        self.count = 0
+        self.numItems = numItems
+        self.progress = wx.Gauge(self, range=self.numItems)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.progress, 0, wx.EXPAND)
+
+        self.progressText = wx.StaticText(self, wx.NewId())
+        sizer.Add(self.progressText, 0, wx.EXPAND)
+
+        self.ok = wx.Button(self, wx.ID_OK)
+        self.ok.Bind(wx.EVT_BUTTON, self.on_cancel)
+        btnSizer = wx.StdDialogButtonSizer()
+        btnSizer.AddButton(self.ok)
+        self.ok.Disable()
+
+        if cancellable:
+            cancel = wx.Button(self, wx.ID_CANCEL)
+            cancel.SetDefault()
+            cancel.Bind(wx.EVT_BUTTON, self.on_cancel)
+            btnSizer.AddButton(cancel)
+        
+        btnSizer.Realize()
+        sizer.Add(btnSizer, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 10)
+
+        self.SetSizer(sizer)
+
+        self.progress_q = progress_q
+        
+        self.TIMER_ID = wx.NewId()
+        self.timer = wx.Timer(self, self.TIMER_ID)
+        self.timer.Start(100)
+        wx.EVT_TIMER(self, self.TIMER_ID, self.OnTimer)
+
+    def OnTimer(self, event):
+        try:
+            message = self.progress_q.get(False)
+            if message != None:
+                self.count += 1
+                self.progress.SetValue(self.count)
+                self.progressText.SetLabel( message )
+                if self.count >= self.numItems:
+                    self.ok.Enable()
+                    self.timer.Stop()
+        except:
+            pass
+
+    def on_cancel(self, event):
+        """Cancels the conversion process"""
+        self.timer.Stop()
+        wx.CallAfter(self.Destroy)
+
+def ProgressBarDialog(title,topic,numItems,cancellable=False):
+    dlg = RMLProgressDialog(title=title,progress_topic=topic,numItems=numItems,cancellable=cancellable)
+    dlg.ShowModal()
+    dlg.Destroy()
 
 def RMLFileDialog(frame,fileTypes,path,prompt,fd_flags):
     modelPath = None
@@ -49,6 +114,8 @@ class EditDialog(wx.Dialog):
     def __init__(self, *args, **kw):
         self.editDict = kw.pop('editDict', OrderedDict())
         self.editObj = kw.pop('editObj', None)
+        if self.editObj.kind == 'port_instance':
+            del self.editDict['name']
         title = kw.pop('title', "ROSMOD V2")
         self.references = kw.pop('references',[])
         super(EditDialog, self).__init__(*args,**kw)
@@ -75,7 +142,8 @@ class EditDialog(wx.Dialog):
                key == 'username' or \
                key == 'sshkey' or \
                key == 'init' or \
-               key == 'cmdline_arguments':
+               key == 'cmdline_arguments' or \
+               key == 'command':
                 # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
@@ -102,14 +170,13 @@ class EditDialog(wx.Dialog):
             elif key == 'service_reference' or \
                  key == 'message_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                refNames = []
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
-                    name = ""
+                    refName = ""
                     if ref.parent != self.editObj.parent.parent:
-                        name += ref.parent.properties['name'] + '/'
-                    name += ref.properties['name']
-                    refNames.append(name)
-                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                        refName += ref.parent.properties['name'] + '/'
+                    refName += ref.properties['name']
+                    field.Append(refName,ref)
                 if value != None:
                     setName = ""
                     if value.parent != self.editObj.parent.parent:
@@ -122,10 +189,49 @@ class EditDialog(wx.Dialog):
                  key == 'host_reference' or \
                  key == 'node_reference':
                 label = wx.StaticText(panel, label=key + ":")
-                refNames = [x.properties['name'] for x in self.references]
-                field = wx.ComboBox(panel, choices = refNames, style=wx.CB_READONLY)
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for ref in self.references:
+                    field.Append(ref.properties['name'],ref)
                 if value != None:
-                    field.SetValue(value.properties['name'])
+                    field.SetStringSelection(value.properties['name'])
+                self.inputs[key] = field
+            elif key == 'node_instance_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for ref in self.references:
+                    field.Append(ref.properties['name'],ref)
+                if value != None:
+                    field.SetStringSelection(value.properties['name'])
+                field.Bind(wx.EVT_COMBOBOX,self.OnNodeInstanceComboBoxChanged)
+                self.inputs[key] = field
+            elif key == 'component_instance_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                refField = self.inputs['node_instance_reference']
+                node_inst_ref = refField.GetClientData(refField.GetSelection())
+                refs = []
+                if node_inst_ref != None:
+                    refs = node_inst_ref.properties['node_reference'].children
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for x in refs:
+                    field.Append(x.properties['name'],x)
+                if value != None:
+                    field.SetStringSelection(value.properties['name'])
+                field.Bind(wx.EVT_COMBOBOX,self.OnComponentInstanceComboBoxChanged)
+                self.inputs[key] = field
+            elif key == 'port_reference':
+                label = wx.StaticText(panel, label=key + ":")
+                refField = self.inputs['component_instance_reference']
+                comp_inst_ref = refField.GetClientData(refField.GetSelection())
+                refs = []
+                if comp_inst_ref != None:
+                    refs = comp_inst_ref.properties['component_reference'].children
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for x in refs:
+                    if x.kind != 'timer':
+                        field.Append(x.properties['name'],x)
+                if value != None:
+                    field.SetStringSelection(value.properties['name'])
+                field.Bind(wx.EVT_COMBOBOX,self.OnPortComboBoxChanged)
                 self.inputs[key] = field
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
@@ -150,6 +256,32 @@ class EditDialog(wx.Dialog):
         
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
+
+    def OnNodeInstanceComboBoxChanged(self, e):
+        nodeInstField = self.inputs['node_instance_reference']
+        compInstField = self.inputs['component_instance_reference']
+        portField = self.inputs['port_reference']
+        compInstField.Clear()
+        portField.Clear()
+        for x in nodeInstField.GetClientData(e.GetSelection()).properties['node_reference'].children:
+            compInstField.Append(x.properties['name'],x)
+        compInstField.SetValue("")
+        portField.SetValue("")
+        compInstField.Refresh()
+        portField.Refresh()
+
+    def OnComponentInstanceComboBoxChanged(self, e):
+        compInstField = self.inputs['component_instance_reference']
+        portField = self.inputs['port_reference']
+        portField.Clear()
+        for x in compInstField.GetClientData(e.GetSelection()).properties['component_reference'].children:
+            if x.kind != 'timer':
+                portField.Append(x.properties['name'],x)
+        portField.SetValue("")
+        portField.Refresh()
+
+    def OnPortComboBoxChanged(self, e):
+        pass
 
     def GenerateFieldString(self,fieldsList):
         retStr = ""
@@ -189,7 +321,8 @@ class EditDialog(wx.Dialog):
                key == 'username' or \
                key == 'sshkey' or \
                key == 'init' or \
-               key == 'cmdline_arguments':
+               key == 'cmdline_arguments' or \
+               key == 'command':
                 self.returnDict[key] = field.GetValue()
             elif key == 'fields' or \
                  key == 'request' or \
@@ -199,29 +332,31 @@ class EditDialog(wx.Dialog):
                 retFields = self.ParseFields(fieldTxt)
                 self.returnDict[key] = retFields
             elif key == 'service_reference' or \
-                 key == 'message_reference':
-                objName = field.GetValue()
-                refList = objName.split('/')
-                for ref in self.references:
-                    if ref.properties['name'] == refList[-1]:
-                        if len(refList) == 1 or \
-                           (len(refList) > 1 and ref.parent.properties['name'] == refList[0]):
-                            obj = [ref]
-                            break
-                self.returnDict[key] = obj[0]
-            elif key == 'component_reference' or \
+                 key == 'message_reference' or \
+                 key == 'component_reference' or \
                  key == 'hardware_configuration_reference' or \
                  key == 'host_reference' or \
-                 key == 'node_reference':
-                objName = field.GetValue()
-                obj = [x for x in self.references if x.properties['name'] == objName]
-                self.returnDict[key] = obj[0]
+                 key == 'node_reference' or \
+                 key == 'node_instance_reference' or \
+                 key == 'component_instance_reference':
+                obj = field.GetClientData(field.GetSelection())
+                if obj == None:
+                    return False
+                self.returnDict[key] = obj
+            elif key == 'port_reference':
+                obj = field.GetClientData(field.GetSelection())
+                if obj == None:
+                    return False
+                self.returnDict[key] = obj                
+                self.returnDict['name'] = obj.properties['name']
+        return True
 
     def GetInput(self):
         return self.returnDict
 
     def OnOk(self,e):
-        self.UpdateInputs()
+        if self.UpdateInputs() == False:
+            return False
         self.Destroy()
 
     def OnClose(self, e):

@@ -31,7 +31,7 @@ void LowResolutionIMageProducer_def::Timer0Callback(const ros::TimerEvent& event
 
       lrImage_pub.publish(lowResImgVec);
 
-      ROS_INFO("Published Low Resolution Image from satellite %s", nodeName.c_str());
+      ROS_INFO("Published Low Resolution Image from satellite %s", hostName.c_str());
 }
 //# End Timer0Callback Marker
 
@@ -53,10 +53,24 @@ void LowResolutionIMageProducer_def::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if (groupParser.Parse(configFileName))
+    {
+	portGroupMap = &groupParser.portGroupMap;
+    }
+
+    std::string advertiseName;
+
     // Configure all publishers associated with this component
     // publisher: lrImage_pub
+    advertiseName = "LRImageVector";
+    if ( portGroupMap != NULL && portGroupMap->find("lrImage_pub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["lrImage_pub"];
     this->lrImage_pub = nh.advertise<wam_application::LRImageVector>
-	("LRImageVector", 1000);	
+	(advertiseName.c_str(), 1000);	
 
     // Create Init Timer
     ros::TimerOptions timer_options;

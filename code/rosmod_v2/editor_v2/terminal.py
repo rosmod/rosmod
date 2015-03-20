@@ -25,7 +25,7 @@ def PrintStringAsAscii(s):
             print ord(ch), 
 
 class TermEmulatorDemo(wx.Panel):
-    def __init__(self,parent = None):
+    def __init__(self,parent = None, command = None, args = None, rows=24,cols=80):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -49,7 +49,7 @@ class TermEmulatorDemo(wx.Panel):
         self.b1 = wx.Button(self, wx.ID_ANY, "Run")
         hbox1.Add(self.b1, 0, wx.LEFT | wx.RIGHT, 10)
         self.b1.Bind(wx.EVT_BUTTON, self.OnRun, id = self.b1.GetId())
-        
+
         vbox.Add(hbox1, 0, wx.EXPAND | wx.HORIZONTAL | wx.TOP | wx.BOTTOM, 5)
         
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
@@ -58,14 +58,14 @@ class TermEmulatorDemo(wx.Panel):
         hbox2.Add(self.st3, 0, wx.ALIGN_CENTER | wx.LEFT, 10)
         
         self.tc3 = wx.TextCtrl(self, wx.ID_ANY)
-        self.tc3.SetValue("24")
+        self.tc3.SetValue("{}".format(rows))
         hbox2.Add(self.tc3, 1, wx.ALIGN_CENTER)
 
         self.st4 = wx.StaticText(self, wx.ID_ANY, "Columns:")
         hbox2.Add(self.st4, 0, wx.ALIGN_CENTER | wx.LEFT, 10)
 
         self.tc4 = wx.TextCtrl(self, wx.ID_ANY)
-        self.tc4.SetValue("80")
+        self.tc4.SetValue("{}".format(cols))
         hbox2.Add(self.tc4, 1, wx.ALIGN_CENTER)
 
         self.b2 = wx.Button(self, wx.ID_ANY, "Resize")
@@ -96,8 +96,8 @@ class TermEmulatorDemo(wx.Panel):
         vbox.Add(self.txtCtrlTerminal, 1, wx.EXPAND | wx.ALL)
         self.SetSizer(vbox)
         
-        self.termRows = 24
-        self.termCols = 80
+        self.termRows = rows
+        self.termCols = cols
         
         self.FillScreen()
         
@@ -121,6 +121,12 @@ class TermEmulatorDemo(wx.Panel):
         self.UpdateUI()
         
         self.Show(True)
+
+        if command != None:
+            self.tc1.SetValue(command)
+            if args != None:
+                self.tc2.SetValue(args)
+            self.OnRun(None)
         
     def FillScreen(self):
         """

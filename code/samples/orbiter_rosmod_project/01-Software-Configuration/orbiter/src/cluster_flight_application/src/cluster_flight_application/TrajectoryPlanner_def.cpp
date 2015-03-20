@@ -13,7 +13,7 @@
 void TrajectoryPlanner_def::Init(const ros::TimerEvent& event)
 {
     // Initialize Component
-    ROS_INFO("Ready to receive commands and determine new orbits; running on satellite %s", nodeName.c_str());
+    ROS_INFO("Ready to receive commands and determine new orbits; running on satellite %s", hostName.c_str());
     // Stop Init Timer
     initOneShotTimer.stop();
 }
@@ -58,22 +58,39 @@ void TrajectoryPlanner_def::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if (groupParser.Parse(configFileName))
+    {
+	portGroupMap = &groupParser.portGroupMap;
+    }
+
+    std::string advertiseName;
+
     // Configure all subscribers associated with this component
     // subscriber: satStateSub
+    advertiseName = "SatState";
+    if ( portGroupMap != NULL && portGroupMap->find("satStateSub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["satStateSub"];
     ros::SubscribeOptions satStateSub_options;
     satStateSub_options = 
 	ros::SubscribeOptions::create<satellite_flight_application::SatState>
-	    ("SatState",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&TrajectoryPlanner_def::satStateSub_OnOneData, this, _1),
 	     ros::VoidPtr(),
              &this->compQueue);
     this->satStateSub = nh.subscribe(satStateSub_options);
     // subscriber: satCommandSub
+    advertiseName = "GroundCommand";
+    if ( portGroupMap != NULL && portGroupMap->find("satCommandSub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["satCommandSub"];
     ros::SubscribeOptions satCommandSub_options;
     satCommandSub_options = 
 	ros::SubscribeOptions::create<satellite_flight_application::GroundCommand>
-	    ("GroundCommand",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&TrajectoryPlanner_def::satCommandSub_OnOneData, this, _1),
 	     ros::VoidPtr(),
@@ -82,8 +99,11 @@ void TrajectoryPlanner_def::startUp()
 
     // Configure all publishers associated with this component
     // publisher: targetOrbitPub
+    advertiseName = "TargetOrbit";
+    if ( portGroupMap != NULL && portGroupMap->find("targetOrbitPub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["targetOrbitPub"];
     this->targetOrbitPub = nh.advertise<cluster_flight_application::TargetOrbit>
-	("TargetOrbit", 1000);	
+	(advertiseName.c_str(), 1000);	
 
     // Create Init Timer
     ros::TimerOptions timer_options;

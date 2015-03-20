@@ -1,0 +1,11 @@
+#unicode utf8
+<?xml version="1.0" encoding="UTF-8"?>
+#if $xml.properties["groups"] != []
+#for $group in $xml.properties["groups"]
+<group ID="${group.properties["name"]}">
+#for $port in $group.children
+  <port ID="${port.properties['name']}"/>
+#end for
+</group>
+#end for
+#end if

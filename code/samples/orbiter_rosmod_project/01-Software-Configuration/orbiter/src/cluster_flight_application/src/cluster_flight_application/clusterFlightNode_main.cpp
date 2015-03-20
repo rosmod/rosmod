@@ -18,10 +18,15 @@ void componentThread(Component* compPtr)
 int main(int argc, char **argv)
 {
     std::string nodeName = "clusterFlightNode";
+    std::string hostName = "localhost";
 
     for(int i = 0; i < argc; i++)
+    {
         if(!strcmp(argv[i], "-nodename"))
             nodeName = argv[i+1];
+	if(!strcmp(argv[i], "-hostname"))
+	    hostName = argv[i+1];
+    }
 
     ros::init(argc, argv, nodeName.c_str());
 
@@ -29,7 +34,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    TrajectoryPlanner_def trajectoryPlanner_comp(nodeName, argc, argv); 
+    TrajectoryPlanner_def trajectoryPlanner_comp(hostName, nodeName, "trajectoryPlanner_comp", argc, argv); 
 
     // Create Component Threads
     boost::thread trajectoryPlanner_comp_thread(componentThread, &trajectoryPlanner_comp);

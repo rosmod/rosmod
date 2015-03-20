@@ -11,6 +11,7 @@ grammar Deployment;
 start
     :   (use_hardware_config)
         (deployment)
+	    (connections)
         EOF
     ;
 
@@ -165,10 +166,41 @@ node_alias
     ;
 
 /*
+ * Explicit Connections in Deployment
+ */
+connections
+    :   (group)*
+    ;
+
+/* 
+ * Groups/Associations between ports
+ */
+group
+    :   'group' (' ')* group_id (' ')*
+        '{'
+             (port)+
+        '}'
+    ;
+
+/*
+ * Group ID of a set of connected ports
+ */
+group_id 
+    :   IDENT
+    ;
+
+/*
+ * Properly Scoped Port String Reference for Group
+*/
+port
+    :   IDENT
+    ;
+
+/*
  * Valid ID
  */ 
 IDENT
-    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' | '~' )*
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '-' | '/' | '.' | '~' )+
     ;
 
 // Ignore whitespaces & escape sequences

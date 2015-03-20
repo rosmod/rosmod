@@ -87,6 +87,10 @@ ros_templates = os.path.realpath(os.path.abspath
 if ros_templates not in sys.path:
     sys.path.insert(0, ros_templates)
 from package_xml import *
+from rapidxml_hpp import *
+from rapidxml_utils_hpp import *
+from xmlParser_hpp import *
+from node_groups_xml import *
 from base_component_hpp import *
 from base_component_cpp import *
 from msg import *
@@ -259,6 +263,36 @@ class ROS_Deployment(Drawable_Object):
         self.kind = "deployment"
         self.properties["name"] = ""
         self.properties["hardware_configuration_reference"] = None
+        self.properties["xml_list"] = []
+        self.groups = OrderedDict()
+
+class ROS_Port_Instance(Drawable_Object):
+    # Initialize the port 
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "port_instance"
+        self.properties['name'] = ""
+        self.properties['node_instance_reference'] = None
+        self.properties['component_instance_reference'] = None
+        self.properties["port_reference_string"] = ""
+        self.properties['port_reference'] = None
+
+class ROS_Group(Drawable_Object):
+    # Initialize the group; children are port_instances
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "group"
+        self.properties["name"] = ""
+
+class ROS_Group_XML(Drawable_Object):
+    # Initialize a Node_Instance.Component_Instance.xml file
+    def __init__(self, node_instance, component_instance):
+        Drawable_Object.__init__(self)
+        self.kind = "group_xml"
+        self.properties["name"] = node_instance.properties["name"] + "." + component_instance.properties["name"] + ".xml"
+        self.properties["node_instance"] = node_instance
+        self.properties["component_instance"] = component_instance
+        self.properties["groups"] = []
 
 # Host Instances in a Deployment
 class ROS_Host_Instance(Drawable_Object):
@@ -600,6 +634,70 @@ class ROS_Deployment_Builder(DeploymentListener):
         self.all_hw_configs = hardware_configurations_object
         self.host_instance = None
         self.node_instance = None
+        self.port_instance = None
+        self.group = None
+
+    # Group Definitions
+    def enterGroup(self, ctx):
+        self.group = ROS_Group()
+
+    def enterGroup_id(self, ctx):
+        self.group.properties['name'] = ctx.getText()
+
+    def enterPort(self,ctx):
+        found = False
+        self.port_instance = ROS_Port_Instance()
+        self.port_instance.properties['name'] = ctx.getText()
+
+        self.node_instance.properties["port_reference_string"] = ctx.getText()
+        nodeInst = ctx.getText().split("/")[0]
+        compInst = ctx.getText().split("/")[1]
+        portInst = ctx.getText().split("/")[2]
+        found_comp = False
+        found_port = False
+        nodeRef = None
+        for ni in self.deployment.getChildrenByKind("node_instance"):
+            if ni.properties['name'] == nodeInst:
+                nodeRef = ni.properties['node_reference']
+                self.port_instance.properties['node_instance_reference'] = ni
+                break
+        if nodeRef != None:
+            compRef = None
+            for ci in nodeRef.children:
+                if ci.properties['name'] == compInst:
+                    compRef = ci.properties['component_reference']
+                    self.port_instance.properties['component_instance_reference'] = ci
+                    break
+            if compRef != None:
+                portRef = None
+                for p in compRef.children:
+                    if p.properties['name'] == portInst:
+                        portRef = p
+                        break
+                if portRef != None:
+                    self.port_instance.properties['port_reference'] = portRef
+                    self.port_instance.properties['name'] = portRef.properties['name']
+                    return
+                else:
+                    print "ROSTOOLS::ERROR::Invalid Group Port Name {}".format(portInst)
+            else:
+                print "ROSTOOLS::ERROR::Invalid Group Component Instance Name {}".format(compInst)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Group Node Instance Name {}".format(nodeInst)
+        self.port_instance = None
+
+    def exitPort(self, ctx):
+        if self.port_instance != None:
+            self.group.add(self.port_instance)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Port Instance used in Deployment"
+
+    def exitGroup(self, ctx):
+        if self.group != None:
+            self.deployment.groups[self.group.properties['name']] = self.group
+            self.deployment.add(self.group)
+        else:
+            print "ROSTOOLS::ERROR::Invalid Group in Deployment"
 
     # Using hardware configuration
     def enterHardware(self, ctx):
@@ -609,6 +707,7 @@ class ROS_Deployment_Builder(DeploymentListener):
                 print "ROSTOOLS::Using Hardware Configuration:", ctx.getText()
                 self.deployment.properties["hardware_configuration_reference"] = config
                 found = True
+                break
         if found == False:
             print "ROSTOOLS::ERROR::Invalid Hardware Configuration used in Deployment"
 
@@ -630,6 +729,7 @@ class ROS_Deployment_Builder(DeploymentListener):
             for hardware in self.deployment.properties["hardware_configuration_reference"].children:
                 if hardware.properties["name"] == ctx.getText():
                     self.host_instance.properties["host_reference"] = hardware
+                    break
         else:
             print "ROSTOOLS::ERROR::Hardware Configuration Reference is set to None"
 
@@ -691,6 +791,7 @@ class ROS_Deployment_Builder(DeploymentListener):
                     if node_ref.properties["name"] == node:
                         self.node_instance.properties["node_reference"] = node_ref
                         found_node = True
+                        break
 
         if found_package != True or found_node != True:
             print "ROSTOOLS::ERROR::Invalid Package or Node Name"
@@ -759,7 +860,7 @@ class OrderedSet(collections.MutableSet):
 
 class Workspace_Generator:
     # Main Generate function
-    def generate(self, workspace, path):
+    def generate(self, workspace, path, deployments, xml_path):
         print "ROSTOOLS::Generating ROS Workspace..."
         # Make the workspace directory
         self.workspace_dir = os.path.join(path, workspace.properties["name"])
@@ -829,6 +930,31 @@ class Workspace_Generator:
             with open(os.path.join(self.package_path, "package.xml"), 'w') as temp_file:
                 temp_file.write(self.package_xml)
 
+
+            # Create rapidxml.hpp, rapidxml_utils.hpp, and xmlParser.hpp
+            self.cpp = self.src + "/" + package.properties["name"]
+            self.hpp = self.include + "/" + package.properties["name"]
+
+            if not os.path.exists(self.hpp):
+                os.makedirs(self.hpp)
+            xml_namespace = {'hash_include': "#include", 
+                                      'package_name': package.properties["name"]}
+            # MAIN RAPIDXML FILE
+            t = rapidxml_hpp(searchList=[xml_namespace])
+            self.rapidxml_hpp = str(t)
+            with open(os.path.join(self.hpp, "rapidxml.hpp"), 'w') as temp_file:
+                temp_file.write(self.rapidxml_hpp)
+            # UTILS FILE
+            t = rapidxml_utils_hpp(searchList=[xml_namespace])
+            self.rapidxml_utils_hpp = str(t)
+            with open(os.path.join(self.hpp, "rapidxml_utils.hpp"), 'w') as temp_file:
+                temp_file.write(self.rapidxml_utils_hpp)
+            # XML PARSER FILE
+            t = xmlParser_hpp(searchList=[xml_namespace])
+            self.xmlParser_hpp = str(t)
+            with open(os.path.join(self.hpp, "xmlParser.hpp"), 'w') as temp_file:
+                temp_file.write(self.xmlParser_hpp)
+
             # Create Component.cpp and Component.hpp
             self.cpp = self.src + "/" + package.properties["name"]
             self.hpp = self.include + "/" + package.properties["name"]
@@ -846,7 +972,8 @@ class Workspace_Generator:
 
             if not os.path.exists(self.hpp):
                 os.makedirs(self.hpp)
-            base_hpp_namespace = {'hash_include': '#include'}
+            base_hpp_namespace = {'hash_include': "#include", 
+                                      'package_name': package.properties["name"]}
             # Populate Base Component hpp template
             t = base_component_hpp(searchList=[base_hpp_namespace])
             self.base_hpp = str(t)
@@ -1001,6 +1128,59 @@ class Workspace_Generator:
             with open(os.path.join(self.package_path, "CMakeLists.txt"), 'w') as temp_file:
                 temp_file.write(self.cmake_lists)
 
+        for deployment in deployments:
+            create_folder = False
+            groups = []
+            xml_list = []
+            for child in deployment.children:
+                if child.kind == "group":
+                    create_folder = True
+                    groups.append(child)
+            if create_folder == True:
+                xml_folder_home = os.path.join(xml_path, deployment.properties["name"])
+                if not os.path.exists(xml_folder_home):
+                    os.makedirs(xml_folder_home)
+                
+                # For every group in deployment
+                for group in groups:
+                    # For every port in the group
+                    for port in group.children:
+                        # Create a new xml file if needed by obtaining the node_instance 
+                        # & component_instance of port
+                        node_instance_name = port.properties["node_instance_reference"].properties["name"]
+                        comp_instance_name = port.properties["component_instance_reference"].properties["name"]
+                        new_xml = ROS_Group_XML(port.properties["node_instance_reference"], 
+                                                port.properties["component_instance_reference"])
+                        new_xml.properties["node_instance"] = port.properties["node_instance_reference"]
+                        new_xml.properties["component_instance"] = port.properties["component_instance_reference"]
+
+                        # Add new xml to list if not already in list
+                        if new_xml not in xml_list:
+                            xml_list.append(new_xml)
+                        
+                        # Add the group to xml.groups
+                        for xml in xml_list:
+                            if xml.properties["name"] == new_xml.properties["name"]:
+                                xml_group = ROS_Group()
+                                xml_group.properties["name"] = group.properties["name"]
+                                for grp_port in group.children:
+                                    if grp_port.properties["node_instance_reference"].properties["name"] == xml.properties["node_instance"].properties["name"]:
+                                        if grp_port.properties["component_instance_reference"].properties["name"] == xml.properties["component_instance"].properties["name"]:
+                                            xml_group.children.append(grp_port)
+                                xml.properties["groups"].append(xml_group)
+                               
+
+                    deployment.properties["xml_list"] = xml_list
+                    for xml in xml_list:
+                        xml_namespace = {'xml': xml}
+                        t = node_groups_xml(searchList=[xml_namespace])
+                        xml_str = str(t)
+                        # Write CMakeLists file
+                        with open(os.path.join(xml_folder_home, 
+                                               xml.properties["name"]), 'w') as temp_file:
+                            temp_file.write(xml_str)
+        return self.workspace_dir
+                
 class Workspace_Loader:
     # Load the business logic of component operations
     def load(self, workspace, path):
@@ -1086,9 +1266,6 @@ class Workspace_Loader:
                             tll_text = ""
                             start_marker = "## Start " + node.properties["name"] + " Target Link Libraries Marker"
                             end_marker = "## End " + node.properties["name"] + " Target Link Libraries Marker"
-
-## Start user_input
-
                             for num, line in enumerate(cmakelists, 1):
                                 if tll_marker == True and end_marker not in line:
                                     tll_text += line
@@ -1096,7 +1273,7 @@ class Workspace_Loader:
                                     tll_marker = True
                                 if tll_marker == True and end_marker in line:
                                     tll_marker = False
-                            node.properties["cmakelists_target_link_libraries"] = tll_text                     
+                            node.properties["cmakelists_target_link_libs"] = tll_text                     
 
                 if os.path.exists(self.package_path):
                     print "ROSTOOLS::Preserving code for Package: ", self.package_path
@@ -1282,6 +1459,7 @@ class ROS_Project:
         self.workspace = ROS_Workspace()
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software-Configuration")
+        self.workspace_dir = ""
         # Hardware Configurations Path
         self.hardware_configurations_path = os.path.join(self.project_path, "02-Hardware-Configuration")
         # Hardware Configurations - List of all rhw objects in Project
@@ -1549,7 +1727,7 @@ class ROS_Project:
         # Instantiate a Generator Object
         workspace = Workspace_Generator()
         # Use listener_object to generate ROS workspace
-        workspace.generate(self.workspace, self.workspace_path)
+        self.workspace_dir = workspace.generate(self.workspace, self.workspace_path, self.deployments, self.deployment_path)
 
     # Generate a ROS model from a workspace object
     # Used to save an edited model

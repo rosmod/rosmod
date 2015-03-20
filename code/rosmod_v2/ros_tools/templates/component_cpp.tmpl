@@ -131,14 +131,28 @@ void $component_name::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if (groupParser.Parse(configFileName))
+    {
+	portGroupMap = &groupParser.portGroupMap;
+    }
+
+    std::string advertiseName;
+
     #if $len($subscribers) > 0 
     // Configure all subscribers associated with this component
     #for $sub in $subscribers
     // subscriber: $sub.properties["name"]
+    advertiseName = "${sub.properties["message_reference"].properties["name"]}";
+    if ( portGroupMap != NULL && portGroupMap->find("${sub.properties['name']}") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["${sub.properties['name']}"];
     ros::SubscribeOptions ${sub.properties["name"]}_options;
     ${sub.properties["name"]}_options = 
 	ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
-	    ("${sub.properties["message_reference"].properties["name"]}",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
 	     ros::VoidPtr(),
@@ -151,8 +165,11 @@ void $component_name::startUp()
     // Configure all publishers associated with this component
     #for $pub in $publishers
     // publisher: $pub.properties["name"]
+    advertiseName = "${pub.properties["message_reference"].properties["name"]}";
+    if ( portGroupMap != NULL && portGroupMap->find("${pub.properties['name']}") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["${pub.properties['name']}"];
     this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>
-	("${pub.properties["message_reference"].properties["name"]}", 1000);	
+	(advertiseName.c_str(), 1000);	
     #end for
 
     #end if
@@ -160,10 +177,13 @@ void $component_name::startUp()
     // Configure all provided services associated with this component
     #for $server in $servers
     // server: $server.properties["name"]
+    advertiseName = "$server.properties["service_reference"].properties["name"]";
+    if ( portGroupMap != NULL && portGroupMap->find("${server.properties["service_reference"].properties["name"]}_server") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["${server.properties["service_reference"].properties["name"]}_server"];
     ros::AdvertiseServiceOptions ${server.properties["service_reference"].properties["name"]}_server_options;
     ${server.properties["service_reference"].properties["name"]}_server_options = 
 	ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
-	    ("$server.properties["service_reference"].properties["name"]",
+	    (advertiseName.c_str(),
              boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
 	     ros::VoidPtr(),
              &this->compQueue);
@@ -175,8 +195,11 @@ void $component_name::startUp()
     // Configure all required services associated with this component
     #for $required in $required_services
     // client: ${required[1]}_client
+    advertiseName = "$required[1]";
+    if ( portGroupMap != NULL && portGroupMap->find(advertiseName+"_client") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)[advertiseName+"_client"];
     this->${required[1]}_client = nh.serviceClient<$required[0]::$required[1]>
-	("$required[1]"); 
+	(advertiseName.c_str()); 
     #end for
 
     #end if

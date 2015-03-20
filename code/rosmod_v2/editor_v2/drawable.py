@@ -30,6 +30,10 @@ def getConnectionPoint(objPos,objSize,objType):
         pass
     elif objType == "software_deployment":
         pass
+    elif objType == "group":
+        pass
+    elif objType == "port_instance":
+        pass
     conPos = None
     if x > 0 and y > 0:
         conPos = wx.Point(x,y)
@@ -211,7 +215,6 @@ class Drawable_Object:
                     retKids.extend([child for child in node.children if child.kind == kind])
             else:
                 retKids.extend([child for child in self.children if child.kind == kind])
-            return retKids
         elif self.kind == 'workspace':
             if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
                 for pkg in self.children:
@@ -226,51 +229,57 @@ class Drawable_Object:
             else:
                 for pkg in self.children:
                     retKids.extend([child for child in pkg.children if child.kind == kind])
-            return retKids
         elif self.kind == 'hardware_configuration':
             if kind == 'host':
                 retKids.extend(self.children)
         elif self.kind == 'deployment':
             if kind == 'node_instance':
-                for host in self.children:
+                hosts = [child for child in self.children if child.kind == 'host_instance']
+                for host in hosts:
                     retKids.extend(host.children)
-            elif kind == 'host_instance':
-                retKids.extend(self.children)
+            elif kind == 'port_instance':
+                groups = [child for child in self.children if child.kind == 'group']
+                for group in groups:
+                    retKids.extend(group.children)
+            elif kind == 'host_instance' or kind == 'group':
+                retKids.extend([child for child in self.children if child.kind == kind])
         else:
             return [child for child in self.children if child.kind == kind]
+        return retKids
 
     '''
     Draw() is called after layout has been calculated
     Should receive the device context
     '''
-    def Draw(self, canvas, leftClickFunc, rightClickFunc):
+    def Draw(self, canvas, leftClickFunc, rightClickFunc, leftDClickFunc):
         x,y = self.topLeft.Get()
+        dObj = None
         if self.style.method == Draw_Method.ICON:
             if self.style.icon != None:
-                bmp = canvas.AddScaledBitmap(
+                dObj = canvas.AddScaledBitmap(
                     self.style.icon,
                     XY = (x,y),
                     Height = self.height,
                     Position = "tl")
-                bmp.HitFill = True
-                bmp.Name = self
-                bmp.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
-                bmp.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
+                dObj.HitFill = True
+                dObj.Name = self
         elif self.style.method == Draw_Method.RECT:
             pass
         elif self.style.method == Draw_Method.ROUND_RECT:
-            rect = canvas.AddRectangle(
+            dObj = canvas.AddRectangle(
                 (x,y-self.height),
                 (self.width,self.height),
                 FillColor = self.style.overlay["fillColor"],
                 InForeground = False
             )
-            rect.HitFill = True
-            rect.Name = self
-            rect.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
-            rect.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
+            dObj.HitFill = True
+            dObj.Name = self
         else:
             pass
+        if dObj != None:
+            dObj.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
+            dObj.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
+            dObj.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, leftDClickFunc)
         if 'overlayColor' in self.style.overlay.keys():
             rect = canvas.AddRectangle(
                 (x,y-self.height),
@@ -286,7 +295,7 @@ class Drawable_Object:
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
-            child.Draw(canvas,leftClickFunc,rightClickFunc)
+            child.Draw(canvas,leftClickFunc,rightClickFunc,leftDClickFunc)
 
 '''
 The Layout function takes a top-level
@@ -314,7 +323,8 @@ def Layout(dObj, topLeftPos, canvas):
     if dObj.kind == "workspace" or \
        dObj.kind == "component" or \
        dObj.kind == "node" or \
-       dObj.kind == "host_instance":
+       dObj.kind == "host_instance" or \
+       dObj.kind == "group":
         maxWidth = 0
         for obj in dObj.children:
             w,h = Layout(obj,childPos,canvas)
@@ -392,7 +402,8 @@ def Layout(dObj, topLeftPos, canvas):
          dObj.kind == "subscriber" or \
          dObj.kind == "component_instance" or \
          dObj.kind == "host" or \
-         dObj.kind == "node_instance":
+         dObj.kind == "node_instance" or \
+         dObj.kind == "port_instance":
         pass
     dObj.width = maxObjWidth
     dObj.height = maxObjHeight
@@ -424,7 +435,8 @@ def Configure(dObj,styleDict):
        dObj.kind == "node" or \
        dObj.kind == "hardware_configuration" or \
        dObj.kind == "deployment" or \
-       dObj.kind == "host_instance":
+       dObj.kind == "host_instance" or \
+       dObj.kind == "group":
         for child in dObj.children:
             Configure(child,styleDict)
     else:

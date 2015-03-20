@@ -18,10 +18,15 @@ void componentThread(Component* compPtr)
 int main(int argc, char **argv)
 {
     std::string nodeName = "imageProcessorNode";
+    std::string hostName = "localhost";
 
     for(int i = 0; i < argc; i++)
+    {
         if(!strcmp(argv[i], "-nodename"))
             nodeName = argv[i+1];
+	if(!strcmp(argv[i], "-hostname"))
+	    hostName = argv[i+1];
+    }
 
     ros::init(argc, argv, nodeName.c_str());
 
@@ -29,7 +34,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    ImageProcessor_def image_processor_comp(nodeName, argc, argv); 
+    ImageProcessor_def image_processor_comp(hostName, nodeName, "image_processor_comp", argc, argv); 
 
     // Create Component Threads
     boost::thread image_processor_comp_thread(componentThread, &image_processor_comp);

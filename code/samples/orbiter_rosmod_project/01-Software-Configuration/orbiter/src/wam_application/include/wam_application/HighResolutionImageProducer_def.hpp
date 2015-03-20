@@ -21,7 +21,7 @@ class HighResolutionImageProducer_def : public Component
 {
     public:
         // Component HighResolutionImageProducer_def Constructor
-        HighResolutionImageProducer_def(std::string nodeName, int argc, char **argv) : Component(nodeName, argc, argv) {}
+        HighResolutionImageProducer_def(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv) : Component(hostName, nodeName, compName, argc, argv) {}
 
         // These functions' business logic will be filled in by the user:
 

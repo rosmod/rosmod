@@ -2,233 +2,196 @@
  * ROS Hardware Configurations Model
  */
 
-// Host - BBB_001
-host BBB_001
-{
-    ip_address = "2001:470:489e::001";
-    architecture = "armv7l";
-}
-
-// Host - BBB_002
-host BBB_002
-{
-    ip_address = "2001:470:489e::002";
-    architecture = "armv7l";
-}
-
-// Host - BBB_003
-host BBB_003
-{
-    ip_address = "2001:470:489e::003";
-    architecture = "armv7l";
-}
-
-// Host - BBB_004
-host BBB_004
-{
-    ip_address = "2001:470:489e::004";
-    architecture = "armv7l";
-}
-
-// Host - BBB_010
-host BBB_010
-{
-    ip_address = "2001:470:489e::010";
-    architecture = "armv7l";
-}
-
-// Host - BBB_011
-host BBB_011
-{
-    ip_address = "2001:470:489e::011";
-    architecture = "armv7l";
-}
-
-// Host - BBB_012
-host BBB_012
-{
-    ip_address = "2001:470:489e::012";
-    architecture = "armv7l";
-}
-
-// Host - BBB_013
-host BBB_013
-{
-    ip_address = "2001:470:489e::0013";
-    architecture = "armv7l";
-}
-
-// Host - BBB_014
-host BBB_014
-{
-    ip_address = "2001:470:489e::014";
-    architecture = "armv7l";
-}
-
-// Host - BBB_101
-host BBB_101
-{
-    ip_address = "2001:470:489e::101";
-    architecture = "armv7l";
-}
-
-// Host - BBB_102
-host BBB_000
-{
-    ip_address = "2001:470:489e::000";
-    architecture = "armv7l";
-}
-
-// Host - BBB_103
-host BBB_103
-{
-    ip_address = "2001:470:489e::103";
-    architecture = "armv7l";
-}
-
-// Host - BBB_104
-host BBB_104
-{
-    ip_address = "2001:470:489e::104";
-    architecture = "armv7l";
-}
-
 // Host - BBB_111
 host BBB_111
 {
-    ip_address = "2001:470:489e::111";
+    ip_address = "10.1.1.1";
     architecture = "armv7l";
 }
-
 // Host - BBB_112
 host BBB_112
 {
-    ip_address = "2001:470:489e::112";
+    ip_address = "10.1.1.2";
     architecture = "armv7l";
 }
-
 // Host - BBB_113
 host BBB_113
 {
-    ip_address = "2001:470:489e::113";
+    ip_address = "10.1.1.3";
     architecture = "armv7l";
 }
-
 // Host - BBB_114
 host BBB_114
 {
-    ip_address = "2001:470:489e::114";
+    ip_address = "10.1.1.4";
     architecture = "armv7l";
 }
-
-// Host - BBB_201
-host BBB_201
+// Host - BBB_121
+host BBB_121
 {
-    ip_address = "2001:470:489e::201";
+    ip_address = "10.1.1.5";
     architecture = "armv7l";
 }
-
-// Host - BBB_202
-host BBB_202
+// Host - BBB_122
+host BBB_122
 {
-    ip_address = "2001:470:489e::202";
+    ip_address = "10.1.1.6";
     architecture = "armv7l";
 }
-
-// Host - BBB_203
-host BBB_203
+// Host - BBB_123
+host BBB_123
 {
-    ip_address = "2001:470:489e::203";
+    ip_address = "10.1.1.7";
     architecture = "armv7l";
 }
-
-// Host - BBB_204
-host BBB_204
+// Host - BBB_124
+host BBB_124
 {
-    ip_address = "2001:470:489e::204";
+    ip_address = "10.1.1.8";
     architecture = "armv7l";
 }
-
 // Host - BBB_211
 host BBB_211
 {
-    ip_address = "2001:470:489e::211";
+    ip_address = "10.1.1.9";
     architecture = "armv7l";
 }
-
 // Host - BBB_212
 host BBB_212
 {
-    ip_address = "2001:470:489e::212";
+    ip_address = "10.1.1.10";
     architecture = "armv7l";
 }
-
 // Host - BBB_213
 host BBB_213
 {
-    ip_address = "2001:470:489e::213";
+    ip_address = "10.1.1.11";
     architecture = "armv7l";
 }
-
 // Host - BBB_214
 host BBB_214
 {
-    ip_address = "2001:470:489e::214";
+    ip_address = "10.1.1.12";
     architecture = "armv7l";
 }
-
-// Host - BBB_301
-host BBB_301
+// Host - BBB_221
+host BBB_221
 {
-    ip_address = "2001:470:489e::301";
+    ip_address = "10.1.1.13";
     architecture = "armv7l";
 }
-
-// Host - BBB_302
-host BBB_302
+// Host - BBB_222
+host BBB_222
 {
-    ip_address = "2001:470:489e::302";
+    ip_address = "10.1.1.14";
     architecture = "armv7l";
 }
-
-// Host - BBB_303
-host BBB_303
+// Host - BBB_223
+host BBB_223
 {
-    ip_address = "2001:470:489e::303";
+    ip_address = "10.1.1.15";
     architecture = "armv7l";
 }
-
-// Host - BBB_304
-host BBB_304
+// Host - BBB_224
+host BBB_224
 {
-    ip_address = "2001:470:489e::304";
+    ip_address = "10.1.1.16";
     architecture = "armv7l";
 }
-
 // Host - BBB_311
 host BBB_311
 {
-    ip_address = "2001:470:489e::311";
+    ip_address = "10.1.1.17";
     architecture = "armv7l";
 }
-
 // Host - BBB_312
 host BBB_312
 {
-    ip_address = "2001:470:489e::312";
+    ip_address = "10.1.1.18";
     architecture = "armv7l";
 }
-
 // Host - BBB_313
 host BBB_313
 {
-    ip_address = "2001:470:489e::313";
+    ip_address = "10.1.1.19";
     architecture = "armv7l";
 }
-
 // Host - BBB_314
 host BBB_314
 {
-    ip_address = "2001:470:489e::314";
+    ip_address = "10.1.1.20";
     architecture = "armv7l";
 }
+// Host - BBB_321
+host BBB_321
+{
+    ip_address = "10.1.1.21";
+    architecture = "armv7l";
+}
+// Host - BBB_322
+host BBB_322
+{
+    ip_address = "10.1.1.22";
+    architecture = "armv7l";
+}
+// Host - BBB_323
+host BBB_323
+{
+    ip_address = "10.1.1.23";
+    architecture = "armv7l";
+}
+// Host - BBB_324
+host BBB_324
+{
+    ip_address = "10.1.1.24";
+    architecture = "armv7l";
+}
+// Host - BBB_411
+host BBB_411
+{
+    ip_address = "10.1.1.25";
+    architecture = "armv7l";
+}
+// Host - BBB_412
+host BBB_412
+{
+    ip_address = "10.1.1.26";
+    architecture = "armv7l";
+}
+// Host - BBB_413
+host BBB_413
+{
+    ip_address = "10.1.1.27";
+    architecture = "armv7l";
+}
+// Host - BBB_414
+host BBB_414
+{
+    ip_address = "10.1.1.28";
+    architecture = "armv7l";
+}
+// Host - BBB_421
+host BBB_421
+{
+    ip_address = "10.1.1.29";
+    architecture = "armv7l";
+}
+// Host - BBB_422
+host BBB_422
+{
+    ip_address = "10.1.1.30";
+    architecture = "armv7l";
+}
+// Host - BBB_423
+host BBB_423
+{
+    ip_address = "10.1.1.31";
+    architecture = "armv7l";
+}
+// Host - BBB_424
+host BBB_424
+{
+    ip_address = "10.1.1.32";
+    architecture = "armv7l";
+}
+

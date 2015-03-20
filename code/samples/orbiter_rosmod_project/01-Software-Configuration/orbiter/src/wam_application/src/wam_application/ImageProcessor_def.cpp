@@ -24,7 +24,7 @@ void ImageProcessor_def::Init(const ros::TimerEvent& event)
 void ImageProcessor_def::HRsub_OnOneData(const wam_application::HRImageVector::ConstPtr& received_data)
 {
     // Business Logic for HRsub subscriber subscribing to topic HRImageVector callback 
-  ROS_INFO("Processing high-resolution image on satellite %s",nodeName.c_str());
+  ROS_INFO("Processing high-resolution image on satellite %s",hostName.c_str());
 }
 //# End HRsub_OnOneData Marker
 // OnOneData Subscription handler for LRsub subscriber
@@ -32,7 +32,7 @@ void ImageProcessor_def::HRsub_OnOneData(const wam_application::HRImageVector::C
 void ImageProcessor_def::LRsub_OnOneData(const wam_application::LRImageVector::ConstPtr& received_data)
 {
     // Business Logic for LRsub subscriber subscribing to topic LRImageVector callback 
-  ROS_INFO("Processing low-resolution image on satellite %s",nodeName.c_str());
+  ROS_INFO("Processing low-resolution image on satellite %s",hostName.c_str());
 }
 //# End LRsub_OnOneData Marker
 
@@ -54,22 +54,39 @@ void ImageProcessor_def::startUp()
 {
     ros::NodeHandle nh;
 
+    // Need to read in and parse the group configuration xml if it exists
+    GroupXMLParser groupParser;
+    std::map<std::string,std::string> *portGroupMap = NULL;
+    std::string configFileName = nodeName + "." + compName + ".xml";
+    if (groupParser.Parse(configFileName))
+    {
+	portGroupMap = &groupParser.portGroupMap;
+    }
+
+    std::string advertiseName;
+
     // Configure all subscribers associated with this component
     // subscriber: HRsub
+    advertiseName = "HRImageVector";
+    if ( portGroupMap != NULL && portGroupMap->find("HRsub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["HRsub"];
     ros::SubscribeOptions HRsub_options;
     HRsub_options = 
 	ros::SubscribeOptions::create<wam_application::HRImageVector>
-	    ("HRImageVector",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&ImageProcessor_def::HRsub_OnOneData, this, _1),
 	     ros::VoidPtr(),
              &this->compQueue);
     this->HRsub = nh.subscribe(HRsub_options);
     // subscriber: LRsub
+    advertiseName = "LRImageVector";
+    if ( portGroupMap != NULL && portGroupMap->find("LRsub") != portGroupMap->end() )
+        advertiseName += "_" + (*portGroupMap)["LRsub"];
     ros::SubscribeOptions LRsub_options;
     LRsub_options = 
 	ros::SubscribeOptions::create<wam_application::LRImageVector>
-	    ("LRImageVector",
+	    (advertiseName.c_str(),
 	     1000,
 	     boost::bind(&ImageProcessor_def::LRsub_OnOneData, this, _1),
 	     ros::VoidPtr(),

@@ -18,10 +18,15 @@ void componentThread(Component* compPtr)
 int main(int argc, char **argv)
 {
     std::string nodeName = "lowResolutionImager";
+    std::string hostName = "localhost";
 
     for(int i = 0; i < argc; i++)
+    {
         if(!strcmp(argv[i], "-nodename"))
             nodeName = argv[i+1];
+	if(!strcmp(argv[i], "-hostname"))
+	    hostName = argv[i+1];
+    }
 
     ros::init(argc, argv, nodeName.c_str());
 
@@ -29,7 +34,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     // Create Component Objects
-    LowResolutionIMageProducer_def LR_sensor(nodeName, argc, argv); 
+    LowResolutionIMageProducer_def LR_sensor(hostName, nodeName, "LR_sensor", argc, argv); 
 
     // Create Component Threads
     boost::thread LR_sensor_thread(componentThread, &LR_sensor);

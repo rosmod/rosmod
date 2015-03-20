@@ -10,38 +10,27 @@ tools through the use of toolbar buttons and subprocesses.
 
 import wx
 import wx.stc as stc
+from wx.lib.pubsub import Publisher
 import os,sys
 import copy
+import multiprocessing
+from threading import Thread
+from fabric.api import *
 
 sys.path.append("../ros_tools")
 import ros_tools
+sys.path.append("../ros_tools/deployment/tests")
+import fabTest
 
-# for ordered dictionaries
 from collections import OrderedDict
-
-# proportional splitter should work for resizing window
-#from proportionalSplitter import ProportionalSplitter
-
-# flat notebook allows us to have scroll buttons and a close button
 import wx.lib.agw.flatnotebook as fnb
-
-# useful for drawing the model and having good scrolling of it
-import wx.lib.scrolledpanel as scrolled
-
-# need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
 
-from contextMenu import ContextMenu
-
-from dialogs import *
-
 try:
-    import numpy as N
+    import numpy
     import numpy.random as RandomArray
     haveNumpy = True
-    #print "Using numpy, version:", N.__version__
 except ImportError:
-            # numpy isn't there
             haveNumpy = False
             errorText = (
             "The FloatCanvas requires the numpy module, version 1.* \n\n"
@@ -49,51 +38,13 @@ except ImportError:
             "http://numpy.scipy.org/\n\n"
             )
 
-# terminal allows us to have a terminal panel
+# THESE ARE ALL FROM OUR CODE
 from terminal import *
-
-# the dialogs that we use (popups)
 import dialogs
-
-# to draw the objects of the model
 import drawable
-
-class TBInfo():
-    def __init__(self,name, obj):
-        self.name = name
-        self.obj = obj
-
-class AspectPageInfo():
-    def __init__(self, name, obj, canvas, msgWindow):
-        self.name = name
-        self.obj = obj
-        self.canvas = canvas
-        self.msgWindow = msgWindow
-
-class AspectInfo():
-    def __init__(self):
-        self.pages = OrderedDict()
-        self.toolbarButtons = OrderedDict()
-
-    def GetTBInfo(self,name):
-        if name in self.toolbarButtons.keys():
-            return self.toolbarButtons[name]
-        else:
-            return None
-    def AddTBInfo(self,tbInfo):
-        self.toolbarButtons[tbInfo.name] = tbInfo
-    def DelTBInfo(self,name):
-        self.toolbarButtons.pop(name,None)
-
-    def GetPageInfo(self,name):
-        if name in self.pages.keys():
-            return self.pages[name]
-        else:
-            return None
-    def AddPageInfo(self,pageInfo):
-        self.pages[pageInfo.name] = pageInfo
-    def DelPageInfo(self,name):
-        self.pages.pop(name,None)
+from aspect import *
+from worker import *
+from contextMenu import ContextMenu
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -103,10 +54,25 @@ class Example(wx.Frame):
     
     def InitUI(self):
 
+        self.activeAspect = None
+        self.activeAspectInfo = None
+        self.activeObject = None
+        self.deployed = False
+        self.deploying = False
+        self.runningDeployment = None
+        self.runningDeploymentCanvas = None
+        self.runningNodes = 0
+        self.hostDict = None
+        self.updatedHostDict = False
+        self.styleDict = None
+
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = ''
         self.project = ros_tools.ROS_Project()
         self.BuildStyleDict()
+
+        self.undoList = []
+        self.redoList = []
 
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
@@ -129,6 +95,74 @@ class Example(wx.Frame):
         self.Centre()
         self.Show(True)
 
+        self.workQueue = []
+        self.workTimerPeriod = 5.0
+        self.workTimerID = wx.NewId()  # pick a number
+        self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
+        self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
+        wx.EVT_TIMER(self, self.workTimerID, self.WorkFunction)  # call the on_timer function
+
+        self.hostDictTopic = "hostDictTopic"                      # used for updating the host Dict from fabric
+        self.monitorStatusTopic = "monitorStatusTopic"            # used for updating the gui from monitor
+        self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
+        Publisher().subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
+        Publisher().subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
+
+        wx.EVT_CLOSE(self, self.OnQuit)
+
+    def OnSubscribeMonitorStatus(self,message):
+        pass
+
+    def OnSubscribeHostDictChange(self,message):
+        self.updatedHostDict = True
+        self.hostDict = message.data
+
+    '''
+    This function is what handles the work of updating the gui by communicating with other processes
+    that the gui has started, e.g. the deployment or monitoring processes.
+    '''
+    def WorkFunction(self,e):
+        if len(self.workQueue) > 0:
+            for workItem in self.workQueue:
+                workItem.workFunc(workItem)
+
+    def MonitorWorkFunc(self,workItem):
+        # for this function, data is the parallel multiprocess started for monitoring
+        if self.deployed != True:
+            self.workQueue.remove(workItem)
+            return
+        # get data from queue
+        updateCanvas = False
+        try:
+            nodes = self.runningDeployment.getChildrenByKind('node_instance')
+            nodeMap = {}
+            for n in nodes:
+                nodeMap[n.properties['name']] = n
+            data = workItem.queue.get(False)
+            while data != None:
+                #print "GOT DATA: {}".format(data)
+                dataList = data.split(' ')
+                nodeName = dataList[0]
+                node = nodeMap[nodeName]
+                if dataList[1] == "UP":
+                    node.style.overlay['overlayColor']='GREEN'
+                else:
+                    node.style.overlay['overlayColor']='RED'
+                updateCanvas = True
+                data = workItem.queue.get(False)
+        except:
+            # if we get here, we've read everything from the q
+            if updateCanvas:
+                self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
+        if not workItem.process.is_alive(): # process has terminated
+            # update deployment overlays here
+            workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                                                                            self.hostDictTopic,
+                                                                            workItem.queue)
+            )
+            workerThread.start()
+            workItem.data = workerThread
+            
     '''
     Build the output notebook for ROSMOD which holds:
     * the program output
@@ -165,6 +199,9 @@ class Example(wx.Frame):
         self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddHardwareAspectToolbar(self):
+        labelTBinfo = TBInfo( name="label",
+                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Hardware:"))
+        self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo(
             name="create",
             obj=self.toolbar.AddTool(wx.ID_ANY,
@@ -175,6 +212,7 @@ class Example(wx.Frame):
             obj=self.toolbar.AddTool(wx.ID_ANY,
                                      bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                      shortHelpString="Remove Hardware Configuration"))
+        self.HardwareAspectInfo.AddTBInfo(labelTBinfo)
         self.HardwareAspectInfo.AddTBInfo(createTBinfo)
         self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnHardwareCreate, createTBinfo.obj)
@@ -197,6 +235,9 @@ class Example(wx.Frame):
         self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddDeploymentAspectToolbar(self):
+        labelTBinfo = TBInfo( name="label",
+                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Deployment:"))
+        self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo( name="create",
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
@@ -205,16 +246,35 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                                         shortHelpString="Remove Deployment"))
+        moveTBinfo = TBInfo (name='move',
+                             obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                      bitmap = wx.Bitmap('icons/toolbar/tmove.png'),
+                                                      shortHelpString="Copy Deployment Files"))
         deployTBinfo = TBInfo( name='deploy',
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap('icons/toolbar/tdeploy.png'),
                                                         shortHelpString="Deploy System"))
+        stopTBinfo = TBInfo( name='stop',
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/tstop.png'),
+                                                        shortHelpString="Stop Deployed System"))
+        runTBinfo = TBInfo( name='run',
+                               obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                        bitmap = wx.Bitmap('icons/toolbar/trun.png'),
+                                                        shortHelpString="Run <Command> on All Hosts"))
+        self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(moveTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(runTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentRun, runTBinfo.obj)
         self.toolbar.Realize()
     def RemoveDeploymentAspectToolbar(self):
         for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
@@ -234,6 +294,9 @@ class Example(wx.Frame):
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
     def AddPackageAspectToolbar(self):
+        labelTBinfo = TBInfo( name="label",
+                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Software:"))
+        self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo(
             name="create",
             obj=self.toolbar.AddTool(wx.ID_ANY,
@@ -244,6 +307,7 @@ class Example(wx.Frame):
             obj=self.toolbar.AddTool(wx.ID_ANY,
                                      bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
                                      shortHelpString="Remove Package"))
+        self.PackageAspectInfo.AddTBInfo(labelTBinfo)
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
         self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
@@ -306,16 +370,20 @@ class Example(wx.Frame):
         canvas.InitAll()
         drawable.Configure(model,self.styleDict)
         self.DrawModel(model,canvas)
+        #canvas.ZoomToBB()
+        canvas.Zoom(1,model.textPosition)
 
     def DrawModel(self, model, canvas):
+        c = canvas.ViewPortCenter
         canvas.UnBindAll()
-        canvas.ClearAll()
+        canvas.ClearAll(ResetBB=False)
         canvas.SetProjectionFun(None)
         self.BindCanvasMouseEvents(canvas)
         width,height = drawable.Layout(model,(0,0),canvas)
-        model.Draw(canvas,self.OnLeftClick,self.OnRightClick)
+        model.Draw(canvas,self.OnLeftClick,self.OnRightClick,self.OnLeftDoubleClick)
         canvas.Draw()
-        canvas.ZoomToBB()
+        if c != None:
+            canvas.Zoom(1,c)
 
     def OnLeftClick(self, Object):
         if self.activeAspect == self.PackageAspect:
@@ -324,6 +392,9 @@ class Example(wx.Frame):
             self.OnHWLeftClick(Object)
         elif self.activeAspect == self.DeploymentAspect:
             self.OnDeploymentLeftClick(Object)
+
+    def OnLeftDoubleClick(self, Object):
+        self.AspectEdit(None)
 
     def OnPkgLeftClick(self, Object):
         info = self.GetActivePanelInfo()
@@ -348,10 +419,44 @@ class Example(wx.Frame):
         self.DrawModel(pkg,canvas)
 
     def OnHWLeftClick(self, Object):
-        pass
+        info = self.GetActivePanelInfo()
+        dep = info.obj
+        canvas = info.canvas
+        self.activeObject = Object.Name
 
     def OnDeploymentLeftClick(self, Object):
-        pass
+        info = self.GetActivePanelInfo()
+        dep = info.obj
+        canvas = info.canvas
+        self.activeObject = Object.Name
+        if self.deployed == True and dep == self.runningDeployment:
+            return # DO SOMETHING ELSE HERE?
+        drawable.Configure(dep,self.styleDict)
+        self.activeObject.style.overlay['overlayColor']="RED"
+        kind = self.activeObject.kind
+        if kind == 'node_instance' or kind == 'host_instance':
+            keys = []
+            if kind == 'node_instance':
+                keys = [['node_instance','node_reference']]
+            elif kind == 'host_instance':
+                keys = [['host_instance','host_reference']]
+            for key in keys:
+                children = dep.getChildrenByKind(key[0])
+                for child in children:
+                    if child.properties[key[1]] == self.activeObject.properties[key[1]]:
+                        child.style.overlay['overlayColor']='RED'
+        elif kind == 'group':
+            children = dep.getChildrenByKind('node_instance')
+            myKeys = [x.properties['node_instance_reference'] for x in self.activeObject.children]
+            for child in children:
+                if child in myKeys:
+                    child.style.overlay['overlayColor'] = 'RED'
+        elif kind == 'port_instance':
+            children = dep.getChildrenByKind('node_instance')
+            for child in children:
+                if child == self.activeObject.properties['node_instance_reference']:
+                    child.style.overlay['overlayColor'] = 'RED'
+        self.DrawModel(dep,canvas)
 
     def OnRightClick(self, Object):
         info = self.GetActivePanelInfo()
@@ -381,6 +486,10 @@ class Example(wx.Frame):
             cm = self.BuildHostInstanceContextMenu(cm)
         elif obj.kind == 'node_instance':
             cm = self.BuildNodeInstanceContextMenu(cm)
+        elif obj.kind == 'group':
+            cm = self.BuildGroupContextMenu(cm)
+        elif obj.kind == 'port_instance':
+            cm = self.BuildPortInstanceContextMenu(cm)
         return cm
 
     def BuildCompContextMenu(self,cm):
@@ -408,12 +517,49 @@ class Example(wx.Frame):
         return cm
     def BuildDeploymentContextMenu(self,cm):
         cm['Add Host Instance'] = lambda evt : self.DeploymentAdd(evt,'host_instance')
+        cm['Add Group'] = lambda evt : self.DeploymentAdd(evt,'group')
         return cm
     def BuildHostInstanceContextMenu(self,cm):
         cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
+        cm['Open SSH Terminal'] = lambda _: self.SSHToHostInst(self.activeObject)
         return cm
     def BuildNodeInstanceContextMenu(self,cm):
+        if self.deployed == True and self.activeObject.parent.parent == self.runningDeployment:
+            cm['Monitor Log'] = lambda _: self.MonitorNodeInstLog(self.activeObject)
         return cm
+    def BuildGroupContextMenu(self,cm):
+        cm['Add Port Instance'] = lambda evt : self.GroupAdd(evt,'port_instance')
+        return cm
+    def BuildPortInstanceContextMenu(self,cm):
+        return cm
+
+    def SSHToHostInst(self,hostInst):
+        self.shop.Check(True)
+        self.UpdateMainWindow(None)
+        command = "/usr/bin/ssh"
+        args = "-i {} {}@{}".format( hostInst.properties['sshkey'], 
+                                     hostInst.properties['username'],
+                                     hostInst.properties['host_reference'].properties['ip_address'])
+        self.output.AddPage(TermEmulatorDemo(self.output,
+                                             command=command,
+                                             args=args), 
+                            "SSH To {}".format(hostInst.properties['name']), 
+                            select=True)
+
+    def MonitorNodeInstLog(self,nodeInst):
+        self.shop.Check(True)
+        self.UpdateMainWindow(None)
+        command = "/usr/bin/ssh"
+        args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
+            nodeInst.parent.properties['sshkey'], 
+            nodeInst.parent.properties['username'],
+            nodeInst.parent.properties['host_reference'].properties['ip_address'])
+        self.output.AddPage(TermEmulatorDemo(self.output,
+                                             command=command,
+                                             args=args,
+                                             cols=120),
+                            "{} Log".format(nodeInst.properties['name']), 
+                            select=True)
 
     def GenericAdd(self,newObj,refs,parent):
         info = self.GetActivePanelInfo()
@@ -423,15 +569,16 @@ class Example(wx.Frame):
         kind = newObj.kind
         if newObj != None:
             newObj.properties['name'] = "New" + kind
-            ed = EditDialog(self,
-                            editDict=newObj.properties,
-                            editObj = newObj,
-                            title="Edit "+newObj.kind,
-                            references = refs,
-                            style=wx.RESIZE_BORDER)
+            ed = dialogs.EditDialog(self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Edit "+newObj.kind,
+                                    references = refs,
+                                    style=wx.RESIZE_BORDER)
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
+                self.UpdateUndo()
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 parent.add(newObj)
@@ -512,6 +659,9 @@ class Example(wx.Frame):
         if kind == 'host_instance':
             newObj = ros_tools.ROS_Host_Instance()
             references = dep.properties['hardware_configuration_reference'].children
+        elif kind == 'group':
+            newObj = ros_tools.ROS_Group()
+            references = self.project.workspace.getChildrenByKind('node')
         if newObj != None:
             self.GenericAdd(newObj,references,dep)
 
@@ -525,9 +675,19 @@ class Example(wx.Frame):
         if newObj != None:
             self.GenericAdd(newObj,references,host)
 
+    def GroupAdd(self,e, kind):
+        group = self.activeObject
+        newObj = None
+        if kind == 'port_instance':
+            newObj = ros_tools.ROS_Port_Instance()
+            del newObj.properties['name']
+            references = group.parent.getChildrenByKind('node_instance')
+        if newObj != None:
+            self.GenericAdd(newObj,references,group)
+
     def AspectEdit(self, e):
         info = self.GetActivePanelInfo()
-        pkg = info.obj
+        obj = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
         self.AspectLog(
@@ -543,19 +703,23 @@ class Example(wx.Frame):
         elif self.activeObject.kind == 'deployment':
             references = self.project.hardware_configurations
         elif self.activeObject.kind == 'host_instance':
-            references = pkg.properties['hardware_configuration_reference'].children
+            references = obj.properties['hardware_configuration_reference'].children
         elif self.activeObject.kind == 'node_instance':
             references = self.project.workspace.getChildrenByKind('node')
-        ed = EditDialog(canvas,
-                        editDict=self.activeObject.properties,
-                        editObj = self.activeObject,
-                        title="Edit "+self.activeObject.kind,
-                        references = references,
-                        style=wx.RESIZE_BORDER)
-        ed.ShowModal()
+        elif self.activeObject.kind == 'port_instance':
+            references = obj.getChildrenByKind('node_instance')
+
         prevProps = copy.copy(self.activeObject.properties)
+        ed = dialogs.EditDialog(canvas,
+                                editDict=self.activeObject.properties,
+                                editObj = self.activeObject,
+                                title="Edit "+self.activeObject.kind,
+                                references = references,
+                                style=wx.RESIZE_BORDER)
+        ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
             if self.activeObject.kind == 'package' or \
@@ -573,10 +737,12 @@ class Example(wx.Frame):
                 newRef = self.activeObject.properties['hardware_configuration_reference']
                 if newRef != prevRef:
                     self.activeObject.children = []
-            drawable.Configure(pkg,self.styleDict)
+            drawable.Configure(obj,self.styleDict)
             selectedPage = self.activeAspect.GetSelection()
-            self.activeAspect.SetPageText(selectedPage,pkg.properties['name'])
-            self.DrawModel(pkg,canvas)
+            self.activeAspect.SetPageText(selectedPage,obj.properties['name'])
+            self.DrawModel(obj,canvas)
+        else:
+            self.activeObject.properties = prevProps
 
     def AspectDelete(self, e):
         info = self.GetActivePanelInfo()
@@ -591,7 +757,8 @@ class Example(wx.Frame):
             elif self.activeObject.kind == 'deployment':
                 wx.CallAfter(self.OnDeploymentDelete,e)
             else:
-                if ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+                if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+                    self.UpdateUndo()
                     self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                     self.activeObject.deleteAllRefs(self.project)
                     self.activeObject.delete()
@@ -604,14 +771,15 @@ class Example(wx.Frame):
     def OnHardwareCreate(self, e):
         newObj = ros_tools.ROS_HW()
         newObj.properties['name'] = "New Hardware Configuration"
-        ed = EditDialog(self,
-                        editDict=newObj.properties,
-                        title="Edit "+newObj.kind,
-                        references = [],
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(self,
+                                editDict=newObj.properties,
+                                title="Edit "+newObj.kind,
+                                references = [],
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
             self.project.hardware_configurations.append(newObj)
@@ -626,25 +794,28 @@ class Example(wx.Frame):
         objName = self.HardwareAspect.GetPageText(selectedPage)
         info = self.HardwareAspectInfo.GetPageInfo(objName)
         obj = info.obj
-        if ConfirmDialog(self,"Delete {}?".format(objName)):
+        if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
+            self.UpdateUndo()
             info.canvas.ClearAll()
             self.project.hardware_configurations = [x for x in self.project.hardware_configurations if x != obj]
             self.HardwareAspect.GetPage(selectedPage).DestroyChildren()
             self.HardwareAspectInfo.DelPageInfo(obj.properties['name'])
             self.HardwareAspect.DeletePage(selectedPage)
+            os.remove(self.project.hardware_configurations_path + '/' + obj.properties['name'] + '.rhw')
         
     def OnDeploymentCreate(self, e):
         newObj = ros_tools.ROS_Deployment()
         newObj.properties['name'] = "New Deployment"
         references = self.project.hardware_configurations
-        ed = EditDialog(self,
-                        editDict=newObj.properties,
-                        title="Edit "+newObj.kind,
-                        references = references,
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(self,
+                                editDict=newObj.properties,
+                                title="Edit "+newObj.kind,
+                                references = references,
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
             self.project.deployments.append(newObj)
@@ -656,31 +827,238 @@ class Example(wx.Frame):
                 
     def OnDeploymentDelete(self, e):
         selectedPage = self.DeploymentAspect.GetSelection()
-        numPages = self.DeploymentAspect.GetPageCount()
         objName = self.DeploymentAspect.GetPageText(selectedPage)
         info = self.DeploymentAspectInfo.GetPageInfo(objName)
         obj = info.obj
-        if ConfirmDialog(self,"Delete {}?".format(objName)):
+        if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
+            self.UpdateUndo()
             info.canvas.ClearAll()
             self.project.deployments = [x for x in self.project.deployments if x != obj]
             self.DeploymentAspect.GetPage(selectedPage).DestroyChildren()
             self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
             self.DeploymentAspect.DeletePage(selectedPage)
+            os.remove(self.project.deployment_path + '/' + obj.properties['name'] + '.rdp')
+
+    def OnDeploymentMove(self,e):
+        if self.deployed == False:
+            selectedPage = self.DeploymentAspect.GetSelection()
+            objName = self.DeploymentAspect.GetPageText(selectedPage)
+            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            dep = info.obj
+            canvas = info.canvas
+            env.use_ssh_config = False
+            self.hostDict = {}
+            env.hosts = []
+            for host in dep.getChildrenByKind("host_instance"):
+                nodeList = []
+                self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                    userName = host.properties['username'],
+                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    keyFile = host.properties['sshkey'],
+                    nodes = nodeList,
+                    envVars = copy.copy(host.properties['env_variables'])
+                )
+                env.hosts.append(host.properties['name'])
+            copyProgressQ = multiprocessing.Queue()
+            dlg = dialogs.RMLProgressDialog( title="Copy Progress",
+                                             progress_q = copyProgressQ,
+                                             numItems=len(self.hostDict))
+            workerThread = WorkerThread(func = lambda : fabTest.copyTest(self.hostDict,
+                                                                         self.project.workspace_dir + "/devel/lib/",
+                                                                         self.project.deployment_path +"/"+ dep.properties['name'],
+                                                                         copyProgressQ)
+                                    )
+            workerThread.start()
+            dlg.ShowModal()
+        else:
+            dialogs.ErrorDialog(self,"Can't copy deployment files when system is running a deployment!")
+
+    def OnDeploymentRun(self,e):
+        newObj = drawable.Drawable_Object()
+        newObj.properties = OrderedDict()
+        newObj.properties['command'] = ""
+        ed = dialogs.EditDialog(self,
+                                editDict=newObj.properties,
+                                editObj = newObj,
+                                title="Input Command To Run",
+                                references = [],
+                                style=wx.RESIZE_BORDER)
+        ed.ShowModal()
+        inputs = ed.GetInput()
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                newObj.properties[key] = value
+            command = newObj.properties['command']
+            selectedPage = self.DeploymentAspect.GetSelection()
+            objName = self.DeploymentAspect.GetPageText(selectedPage)
+            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            dep = info.obj
+            canvas = info.canvas
+            env.use_ssh_config = False
+            self.hostDict = {}
+            env.hosts = []
+            for host in dep.getChildrenByKind("host_instance"):
+                nodeList = []
+                self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                    userName = host.properties['username'],
+                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    keyFile = host.properties['sshkey'],
+                    nodes = nodeList,
+                    envVars = copy.copy(host.properties['env_variables'])
+                )
+                env.hosts.append(host.properties['name'])
+            copyProgressQ = multiprocessing.Queue()
+            dlg = dialogs.RMLProgressDialog( title="Copy Progress",
+                                             progress_q = copyProgressQ,
+                                             numItems=len(self.hostDict))
+            workerThread = WorkerThread(func = lambda : fabTest.runCommandTest(self.hostDict,
+                                                                               command,
+                                                                               copyProgressQ)
+                                    )
+            workerThread.start()
+            dlg.ShowModal()
 
     def OnDeploymentDeploy(self,e):
-        pass
+        if self.deployed == False:
+            selectedPage = self.DeploymentAspect.GetSelection()
+            objName = self.DeploymentAspect.GetPageText(selectedPage)
+            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            dep = info.obj
+            canvas = info.canvas
+            env.use_ssh_config = False
+            self.hostDict = {}
+            env.hosts = []
+            #env.warn_only = False
+            numNodes = 0 # 1 # roscore
+            rosCoreIP = ""
+            newObj = ros_tools.ROS_Host_Instance()
+            newObj.properties = OrderedDict()
+            newObj.properties['host_reference'] = None
+            '''
+            newObj.properties['username'] = ""
+            newObj.properties['sshkey'] = ""
+            '''
+            references = dep.properties['hardware_configuration_reference'].children
+            ed = dialogs.EditDialog(self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Select Cluster Leader",
+                                    references = references,
+                                    style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                rosCoreIP = newObj.properties['host_reference'].properties['ip_address']
+                '''
+                self.hostDict['roscoreHost'] = fabTest.deployed_host(
+                    userName = newObj.properties['username'],
+                    ipAddress = rosCoreIP,
+                    keyFile = newObj.properties['sshkey'],
+                    nodes = [fabTest.deployed_node(
+                        name = 'roscore',
+                        executable = '/opt/ros/indigo/bin/roscore'
+                    )],
+                    envVars = [['ROS_IMASTER_URI','http://{}:11311/'.format(rosCoreIP)],
+                               ['PATH','/opt/ros/indigo/bin/:$PATH'],
+                               ['PKG_CONFIG_PATH','/opt/ros/indigo/lib/pkgconfig:/opt/ros/indigo/lib/i386-linux-gnu/pkgconfig'],
+                               ['PYTHONPATH','/opt/ros/indigo/lib/python2.7/dist-packages'],
+                               ['ROS_DISTRO','indigo'],
+                               ['ROS_ETC_DIR','/opt/ros/indigo/etc/ros'],
+                               ['ROS_PACKAGE_PATH','/opt/ros/indigo/share:/opt/ros/indigo/stacks'],
+                               ['ROS_ROOT','/opt/ros/indigo/share/ros']]
+                )
+                env.hosts.append('roscoreHost')
+                '''
+                for host in dep.getChildrenByKind("host_instance"):
+                    nodeList = []
+                    for node in host.children:
+                        numNodes += 1
+                        nodeList.append(fabTest.deployed_node(
+                            name = node.properties['name'],
+                            executable = '/home/' + host.properties['username'] + '/' + node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
+                            cmdArgs = node.properties['cmdline_arguments']
+                        ))
+                        nodeList[-1].cmdArgs += " -nodename {}".format(node.properties['name'])
+                        nodeList[-1].cmdArgs += " -hostname {}".format(host.properties['name'])
+                    self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                        userName = host.properties['username'],
+                        ipAddress = host.properties['host_reference'].properties['ip_address'],
+                        keyFile = host.properties['sshkey'],
+                        nodes = nodeList,
+                        envVars = copy.copy(host.properties['env_variables'])
+                    )
+                    self.hostDict[host.properties['name']].envVars.append(
+                        ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
+                    self.hostDict[host.properties['name']].envVars.append(
+                        ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
+                    )
+                    env.hosts.append(host.properties['name'])
+                deploymentProgressQ = multiprocessing.Queue()
+                dlg = dialogs.RMLProgressDialog( title="Deployment Progress",
+                                                 progress_q = deploymentProgressQ,
+                                                 numItems=numNodes)
+                workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
+                                                                               self.hostDictTopic,
+                                                                               deploymentProgressQ)
+                                        )
+                self.updatedHostDict = False
+                workerThread.start()
+                dlg.ShowModal()
+                self.runningDeployment = dep
+                self.runningDeploymentCanvas = canvas
+                self.runningNodes = numNodes
+                self.deployed = True
+                while not self.updatedHostDict:
+                    pass
+                # START MONITORING INFRASTRUCTURE
+                #env.warn_only = True
+                monitorQ = multiprocessing.Queue()
+                workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                                                                                self.hostDictTopic,
+                                                                                monitorQ)
+                                        )
+                monitorWorkItem = WorkItem(process = workerThread,
+                                           queue = monitorQ,
+                                           workFunc = self.MonitorWorkFunc)
+                self.workQueue.append(monitorWorkItem)
+                workerThread.start()
+        else:
+            dialogs.ErrorDialog(self,"System is already running a deployment!")
+
+    def OnDeploymentStop(self,e):
+        if self.deployed == True: 
+            self.deployed = False
+            self.deploying = False
+            deploymentProgressQ = multiprocessing.Queue()
+            dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
+                                            progress_q = deploymentProgressQ,
+                                            numItems=self.runningNodes)
+            workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
+                                                                         self.hostDictTopic,
+                                                                         deploymentProgressQ)
+            )
+            workerThread.start()
+            dlg.ShowModal()
+            self.runningNodes = 0
+            drawable.Configure(self.runningDeployment,self.styleDict)
+            self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
+        else:
+            dialogs.ErrorDialog(self,"System is not running a deployment")
 
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
         newPkg.properties['name'] = "New Package"
-        ed = EditDialog(self,
-                        editDict=newPkg.properties,
-                        title="Edit "+newPkg.kind,
-                        references = [],
-                        style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(self,
+                                editDict=newPkg.properties,
+                                title="Edit "+newPkg.kind,
+                                references = [],
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
+            self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newPkg.properties[key] = value
             self.project.workspace.add(newPkg)
@@ -695,7 +1073,8 @@ class Example(wx.Frame):
         info = self.PackageAspectInfo.GetPageInfo(pkgName)
         pkg = info.obj
         if pkg.kind != 'workspace':
-            if ConfirmDialog(self,"Delete {}?".format(pkgName)):
+            if dialogs.ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                self.UpdateUndo()
                 info.canvas.ClearAll()
                 pkg.delete()
                 self.PackageAspect.GetPage(selectedPage).DestroyChildren()
@@ -733,6 +1112,12 @@ class Example(wx.Frame):
         Rot = Rot / abs(Rot) * 0.1
         if event.ControlDown(): # move left-right
             canvas.MoveImage( (Rot, 0), "Panel" )
+        elif event.ShiftDown():
+            canvasPos = canvas.ViewPortCenter#event.GetCoords()
+            if Rot > 0:
+                canvas.Zoom(1.1,canvasPos)
+            else:
+                canvas.Zoom(0.9,canvasPos)
         else: # move up-down
             canvas.MoveImage( (0, -Rot), "Panel" )
     def OnRightUp(self,event):
@@ -810,9 +1195,39 @@ class Example(wx.Frame):
     '''
     Toolbar and File Menubar Menu Functions
     '''
+    def OnPrint(self, e):
+        imgName, imgPath = dialogs.RMLFileDialog(
+            frame = self,
+            fileTypes = "PNG Images (*.png)|*.png",
+            path = self.project_path,
+            prompt = "Save Aspect View As Image...",
+            fd_flags = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
+        )
+        if imgName != None and imgPath != None:
+            info = self.GetActivePanelInfo()
+            canvas = info.canvas
+            model = info.obj
+            msgWindow = info.msgWindow
+            canvas.Scale = 1
+            canvas.SetToNewScale(False)
+            canvas._ResetBoundingBox()
+            box = canvas.BoundingBox
+            canvas.ViewPortCenter -= (canvas.PixelToWorld((0,0)) - numpy.array((box[0,0],box[1,1])))
+            bmp = wx.EmptyBitmap(box.Width,box.Height)
+            dc = wx.MemoryDC()
+            dc.SelectObject(bmp)
+            dc.Clear()
+            canvas._DrawObjects(dc,canvas._DrawList,dc,canvas.BoundingBox)
+            dc.SelectObject(wx.NullBitmap)
+            if imgName[-4:] != ".png":
+                imgName += ".png"
+            bmp.SaveFile(imgPath+'/'+imgName,wx.BITMAP_TYPE_PNG)
+            self.statusbar.SetStatusText('Saved {} to {}'.format(imgName,imgPath))
+
     def OnQuit(self, e):
-        if ConfirmDialog(self,"Really quit ROSMOD?"):
-            self.Close()
+        if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
+            self.workTimer.Stop()
+            exit()
 
     def OnNew(self, e):
         project_path = dialogs.RMLDirectoryDialog(
@@ -842,7 +1257,7 @@ class Example(wx.Frame):
                 newDeployment.properties['hardware_configuration_reference'] = newHW
                 self.project.deployments.append(newDeployment)
                 self.BuildAspectPages()
-                self.statusbar.SetStatusText('Created new project: {} in {}'.format(self.filename,self.project_path))
+                self.statusbar.SetStatusText('Created new project: {} in: {}'.format(self.filename,self.project_path))
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
@@ -857,10 +1272,11 @@ class Example(wx.Frame):
             self.project_path = model_path
             self.project.open(self.project_path)
             self.BuildAspectPages()
-            self.statusbar.SetStatusText('Loaded {} from {}'.format(self.filename,self.project_path))
+            self.statusbar.SetStatusText('Loaded project: {} from: {}'.format(self.filename,self.project_path))
 
     def OnSave(self, e):
         self.project.save()
+        self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def OnSaveAs(self, e):
         dlgDict = OrderedDict([('name',self.project.project_name)])
@@ -881,17 +1297,31 @@ class Example(wx.Frame):
                 self.project_path = project_path
                 self.project.save(self.filename,self.project_path)
                 self.BuildAspectPages()
-                self.statusbar.SetStatusText('Saved project as: {} in {}'.format(self.filename,self.project_path))
+                self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
+
+    def UpdateUndo(self):
+        self.undoList.append(copy.copy(self.project))
+        self.toolbar.EnableTool(wx.ID_UNDO, True)
 
     def OnUndo(self, e):
-        pass
+        if len(self.undoList) > 0:
+            self.project = self.undoList.pop()
+            self.redoList.append(self.project)
+            self.toolbar.EnableTool(wx.ID_REDO, True)
+            if len(self.undoList) == 0:
+                self.toolbar.EnableTool(wx.ID_UNDO, False)
     def OnRedo(self, e):
-        pass
+        if len(self.redoList) > 0:
+            self.project = self.redoList.pop()
+            self.undoList.append(self.project)
+            self.toolbar.EnableTool(wx.ID_UNDO, True)
+            if len(self.redoList) == 0:
+                self.toolbar.EnableTool(wx.ID_REDO, False)
 
     def OnTerminal(self, e):
         self.shop.Check(True)
         self.UpdateMainWindow(e)
-        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
+        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal",select=True)
 
     '''
     Package Aspect Functions
@@ -915,6 +1345,7 @@ class Example(wx.Frame):
             canvas = info.canvas
             drawable.Configure(pkg,self.styleDict)
             self.DrawModel(pkg,canvas)
+            #canvas.ZoomToBB()
         
     def OnPageChanged(self, event):
         self.pageChange(event)
@@ -1040,6 +1471,7 @@ class Example(wx.Frame):
         self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New")
         self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap('icons/toolbar/topen.png'), shortHelp="Open")
         self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap('icons/toolbar/tsave.png'), shortHelp="Save")
+        self.tb_print = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tprint.png'), shortHelp="Print Page to File")
         self.toolbar.AddSeparator()
         # undo/redo
         self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('icons/toolbar/tundo.png'), shortHelp="Undo")
@@ -1052,6 +1484,7 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
         self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
+        self.Bind(wx.EVT_TOOL, self.OnPrint, self.tb_print)
         self.Bind(wx.EVT_TOOL, self.OnUndo, self.tb_undo)
         self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
         self.Bind(wx.EVT_TOOL, self.OnTerminal, self.tb_term)
@@ -1069,7 +1502,7 @@ class Example(wx.Frame):
         self.styleDict = OrderedDict()
         font = OrderedDict()
         font['pointSize'] = 20
-        minSize = (30,30)
+        minSize = (50,50)
         padding = (10,10)
         pkgOffset = (50,50)
         msgIcon = wx.Bitmap('icons/model/msgIcon.png')
@@ -1107,6 +1540,18 @@ class Example(wx.Frame):
                                        offset = pkgOffset,
                               placement=drawable.Text_Placement.TOP,
                                        overlay = OrderedDict() )
+        PortInstStyle = drawable.Draw_Style(icon=None,
+                                            font=font, 
+                                            method=drawable.Draw_Method.ROUND_RECT, 
+                                            minSize = minSize,
+                                            placement=drawable.Text_Placement.RIGHT,
+                                            overlay = OrderedDict([('fillColor','BLUE')]) )
+        GroupStyle = drawable.Draw_Style(icon=None,
+                                         font=font, 
+                                         method=drawable.Draw_Method.ROUND_RECT, 
+                                         minSize = minSize,
+                                         placement=drawable.Text_Placement.TOP,
+                                         overlay = OrderedDict([('fillColor','GREEN')]) )
         NodeInstStyle = drawable.Draw_Style(icon=None,
                                font=font, 
                                method=drawable.Draw_Method.ROUND_RECT, 
@@ -1212,6 +1657,8 @@ class Example(wx.Frame):
         self.styleDict["hardware_configuration"] = HardwareStyle
         self.styleDict["host"] = HostStyle
         self.styleDict["deployment"] = DeploymentStyle
+        self.styleDict["group"] = GroupStyle
+        self.styleDict["port_instance"] = PortInstStyle
         self.styleDict["host_instance"] = HostInstStyle
         self.styleDict["node_instance"] = NodeInstStyle
 
