@@ -1,3 +1,9 @@
+/*
+ * ROSMOD Logger
+ * Author: Pranav Srinivar Kumar
+ * Date: 2015.03.21
+ */
+
 #include "Logger.hpp"
 
 Logger::Logger(){}
