@@ -10,7 +10,10 @@ void Component1::Timer0Callback(const ros::TimerEvent& event)
 { 
   multi_component_example::ComponentName compName;
   compName.name = "Component1";
-  ROS_INFO("COMPONENT 1 : Publishing component name %s from Timer0 callback",compName.name.c_str());
+
+  LOGGER.DEBUG("COMPONENT 1 : Publishing component name " + 
+	       compName.name + " from Timer0 callback");
+
   compNamePub.publish(compName); 
 }
 
@@ -19,7 +22,10 @@ bool Component1::ComponentServiceCallback(multi_component_example::ComponentServ
 {
   multi_component_example::ComponentName compName;
   compName.name = "Component1";
-  ROS_INFO("COMPONENT 1 : Publishing component name %s from compServ callback",compName.name.c_str());
+
+  LOGGER.DEBUG("COMPONENT 1 : Publishing component name " 
+	       + compName.name + " from compServ callback");
+
   compNamePub.publish(compName); 
   res.name = "Component1";
   return true;
@@ -70,4 +76,6 @@ void Component1::startUp()
 				     &this->compQueue
 				     );
   this->Timer0 = nh.createTimer(queueTimerOpts);
+
+  LOGGER.CREATE_FILE("/home/kelsier/Documents/Component1_log.txt");
 }
