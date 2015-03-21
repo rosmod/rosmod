@@ -17,9 +17,19 @@ import multiprocessing
 from threading import Thread
 from fabric.api import *
 
-sys.path.append("../ros_tools")
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+editorPath=head
+rootIconPath= editorPath + '/icons'
+modelIconPath= rootIconPath + '/model'
+toolbarIconPath= rootIconPath + '/toolbar'
+
+head,tail = os.path.split(editorPath)
+rosmodPath=head
+sys.path.append(rosmodPath+'/ros_tools')
 import ros_tools
-sys.path.append("../ros_tools/deployment/tests")
+sys.path.append(rosmodPath+"/ros_tools/deployment/tests")
 import fabTest
 
 from collections import OrderedDict
@@ -66,8 +76,15 @@ class Example(wx.Frame):
         self.updatedHostDict = False
         self.styleDict = None
 
+        self.PackageAspect = None
+        self.PackageAspectInfo = None
+        self.HardwareAspect = None
+        self.HardwareAspectInfo = None
+        self.DeploymentAspect = None
+        self.DeploymentAspectInfo = None
+
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
-        self.project_path = ''
+        self.project_path = os.getcwd()
         self.project = ros_tools.ROS_Project()
         self.BuildStyleDict()
 
@@ -205,12 +222,12 @@ class Example(wx.Frame):
         createTBinfo = TBInfo(
             name="create",
             obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                     bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
                                      shortHelpString="New Hardware Configuration"))
         deleteTBinfo = TBInfo(
             name="delete",
             obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                     bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
                                      shortHelpString="Remove Hardware Configuration"))
         self.HardwareAspectInfo.AddTBInfo(labelTBinfo)
         self.HardwareAspectInfo.AddTBInfo(createTBinfo)
@@ -240,27 +257,27 @@ class Example(wx.Frame):
         self.toolbar.AddControl(labelTBinfo.obj)
         createTBinfo = TBInfo( name="create",
                                obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                                        bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
                                                         shortHelpString="New Deployment"))
         deleteTBinfo = TBInfo( name="delete",
                                obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                                        bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
                                                         shortHelpString="Remove Deployment"))
         moveTBinfo = TBInfo (name='move',
                              obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                      bitmap = wx.Bitmap('icons/toolbar/tmove.png'),
+                                                      bitmap = wx.Bitmap(toolbarIconPath + '/tmove.png'),
                                                       shortHelpString="Copy Deployment Files"))
         deployTBinfo = TBInfo( name='deploy',
                                obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap('icons/toolbar/tdeploy.png'),
+                                                        bitmap = wx.Bitmap(toolbarIconPath + '/tdeploy.png'),
                                                         shortHelpString="Deploy System"))
         stopTBinfo = TBInfo( name='stop',
                                obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap('icons/toolbar/tstop.png'),
+                                                        bitmap = wx.Bitmap(toolbarIconPath + '/tstop.png'),
                                                         shortHelpString="Stop Deployed System"))
         runTBinfo = TBInfo( name='run',
                                obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap('icons/toolbar/trun.png'),
+                                                        bitmap = wx.Bitmap(toolbarIconPath + '/trun.png'),
                                                         shortHelpString="Run <Command> on All Hosts"))
         self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
@@ -300,12 +317,12 @@ class Example(wx.Frame):
         createTBinfo = TBInfo(
             name="create",
             obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap('icons/toolbar/tnew.png'), 
+                                     bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
                                      shortHelpString="New Package"))
         deleteTBinfo = TBInfo(
             name="delete",
             obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap('icons/toolbar/texit.png'), 
+                                     bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
                                      shortHelpString="Remove Package"))
         self.PackageAspectInfo.AddTBInfo(labelTBinfo)
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
@@ -770,11 +787,15 @@ class Example(wx.Frame):
 
     def OnHardwareCreate(self, e):
         newObj = ros_tools.ROS_HW()
+        newObj.properties = {}
         newObj.properties['name'] = "New Hardware Configuration"
+        existingNames = [x.properties['name'] for x in self.project.hardware_configurations.children]
         ed = dialogs.EditDialog(self,
+                                editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = [],
+                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -805,12 +826,16 @@ class Example(wx.Frame):
         
     def OnDeploymentCreate(self, e):
         newObj = ros_tools.ROS_Deployment()
+        newObj.properties = OrderedDict()
         newObj.properties['name'] = "New Deployment"
         references = self.project.hardware_configurations
+        existingNames = [x.properties['name'] for x in self.project.deployments.children]
         ed = dialogs.EditDialog(self,
+                                editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = references,
+                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -1049,11 +1074,15 @@ class Example(wx.Frame):
 
     def OnPackageCreate(self, e):
         newPkg = ros_tools.ROS_Package()
+        newPkg.properties = {}
         newPkg.properties['name'] = "New Package"
+        existingNames = [x.properties['name'] for x in self.project.workspace.children]
         ed = dialogs.EditDialog(self,
+                                editObj=newPkg,
                                 editDict=newPkg.properties,
                                 title="Edit "+newPkg.kind,
                                 references = [],
+                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -1236,9 +1265,12 @@ class Example(wx.Frame):
             path = self.project_path,
         )
         if project_path != None:
-            dlgDict = OrderedDict([('name','New Project')])
+            dlgObj = ros_tools.ROS_Project()
+            dlgObj.properties = OrderedDict()
+            dlgObj.properties['name'] = "New Project"
             ed = dialogs.EditDialog( self,
-                                     editDict = dlgDict,
+                                     editObj = dlgObj,
+                                     editDict = dlgObj.properties,
                                      title = 'Choose Project Name',
                                      style = wx.RESIZE_BORDER)
             ed.ShowModal()
@@ -1279,9 +1311,12 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def OnSaveAs(self, e):
-        dlgDict = OrderedDict([('name',self.project.project_name)])
+        dlgObj = ros_tools.ROS_Project()
+        dlgObj.properties = OrderedDict()
+        dlgObj.properties['name'] = self.project.project_name
         ed = dialogs.EditDialog( self,
-                                 editDict = dlgDict,
+                                 editObj = dlgObj,
+                                 editDict = dlgObj.properties,
                                  title = 'Choose New Project Name',
                                  style = wx.RESIZE_BORDER)
         ed.ShowModal()
@@ -1327,25 +1362,62 @@ class Example(wx.Frame):
     Package Aspect Functions
     '''
     def pageChange(self, event):
-        selectedAspect = self.activeAspect
-        selectedAspectInfo = self.activeAspectInfo
-        selectedAspect.Refresh()
-        sel = selectedAspect.GetSelection()
-        numPages = selectedAspect.GetPageCount()
+        self.activeAspect.Refresh()
+        if self.activeAspect == self.PackageAspect:
+            self.PackageAspectPageChange(event)
+        elif self.activeAspect == self.HardwareAspect:
+            self.HardwareAspectPageChange(event)
+        elif self.activeAspect == self.DeploymentAspect:
+            self.deploymentAspectPageChange(event)
+
+    def PackageAspectPageChange(self, event):
+        sel = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
         if sel >= 0:
-            deleteTBID = selectedAspectInfo.GetTBInfo("delete").obj.GetId()
+            deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
             if sel >= numPages - 1:
                 self.toolbar.EnableTool(deleteTBID, False)
             else:
                 self.toolbar.EnableTool(deleteTBID, True)
                 
-            pageName = selectedAspect.GetPageText(sel)
-            info = selectedAspectInfo.GetPageInfo(pageName)
+            pageName = self.activeAspect.GetPageText(sel)
+            info = self.activeAspectInfo.GetPageInfo(pageName)
             pkg = info.obj
             canvas = info.canvas
             drawable.Configure(pkg,self.styleDict)
             self.DrawModel(pkg,canvas)
-            #canvas.ZoomToBB()
+
+    def HardwareAspectPageChange(self, event):
+        sel = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
+        if numPages > 0:
+            self.toolbar.EnableTool(deleteTBID, True)
+        else:
+            self.toolbar.EnableTool(deleteTBID, False)
+        if sel >= 0:
+            pageName = self.activeAspect.GetPageText(sel)
+            info = self.activeAspectInfo.GetPageInfo(pageName)
+            hw = info.obj
+            canvas = info.canvas
+            drawable.Configure(hw,self.styleDict)
+            self.DrawModel(hw,canvas)
+
+    def DeploymentAspectPageChange(self, event):
+        sel = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
+        if numPages > 0:
+            self.toolbar.EnableTool(deleteTBID, True)
+        else:
+            self.toolbar.EnableTool(deleteTBID, False)
+        if sel >= 0:
+            pageName = self.activeAspect.GetPageText(sel)
+            info = self.activeAspectInfo.GetPageInfo(pageName)
+            dep = info.obj
+            canvas = info.canvas
+            drawable.Configure(dep,self.styleDict)
+            self.DrawModel(dep,canvas)
         
     def OnPageChanged(self, event):
         self.pageChange(event)
@@ -1468,18 +1540,18 @@ class Example(wx.Frame):
     def BuildToolbar(self):
         self.toolbar = self.CreateToolBar()
         # file operations
-        self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap('icons/toolbar/tnew.png'), shortHelp="New")
-        self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap('icons/toolbar/topen.png'), shortHelp="Open")
-        self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap('icons/toolbar/tsave.png'), shortHelp="Save")
-        self.tb_print = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tprint.png'), shortHelp="Print Page to File")
+        self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap(toolbarIconPath + '/tnew.png'), shortHelp="New")
+        self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap(toolbarIconPath + '/topen.png'), shortHelp="Open")
+        self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap(toolbarIconPath + '/tsave.png'), shortHelp="Save")
+        self.tb_print = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/tprint.png'), shortHelp="Print Page to File")
         self.toolbar.AddSeparator()
         # undo/redo
-        self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('icons/toolbar/tundo.png'), shortHelp="Undo")
-        self.tb_redo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('icons/toolbar/tredo.png'), shortHelp="Redo")
+        self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap(toolbarIconPath + '/tundo.png'), shortHelp="Undo")
+        self.tb_redo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap(toolbarIconPath + '/tredo.png'), shortHelp="Redo")
         self.toolbar.EnableTool(wx.ID_UNDO, False)
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.AddSeparator()
-        self.tb_term = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap('icons/toolbar/tterm.png'), shortHelp="Terminal")
+        self.tb_term = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/tterm.png'), shortHelp="Terminal")
         self.toolbar.AddSeparator()
         self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
         self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
@@ -1505,16 +1577,16 @@ class Example(wx.Frame):
         minSize = (50,50)
         padding = (10,10)
         pkgOffset = (50,50)
-        msgIcon = wx.Bitmap('icons/model/msgIcon.png')
-        srvIcon = wx.Bitmap('icons/model/srvIcon.png')
-        tmrIcon = wx.Bitmap('icons/model/tmrIcon.png')
-        pubIcon = wx.Bitmap('icons/model/pubIcon.png')
-        subIcon = wx.Bitmap('icons/model/subIcon.png')
-        clientIcon = wx.Bitmap('icons/model/clientIcon.png')
-        serverIcon = wx.Bitmap('icons/model/serverIcon.png')
-        compInstIcon = wx.Bitmap('icons/model/compInstIcon.png')
-        hostIcon = wx.Bitmap('icons/model/bbb.png')
-        hostInstIcon = wx.Bitmap('icons/model/bbb.png')
+        msgIcon = wx.Bitmap(modelIconPath + '/msgIcon.png')
+        srvIcon = wx.Bitmap(modelIconPath + '/srvIcon.png')
+        tmrIcon = wx.Bitmap(modelIconPath + '/tmrIcon.png')
+        pubIcon = wx.Bitmap(modelIconPath + '/pubIcon.png')
+        subIcon = wx.Bitmap(modelIconPath + '/subIcon.png')
+        clientIcon = wx.Bitmap(modelIconPath + '/clientIcon.png')
+        serverIcon = wx.Bitmap(modelIconPath + '/serverIcon.png')
+        compInstIcon = wx.Bitmap(modelIconPath + '/compInstIcon.png')
+        hostIcon = wx.Bitmap(modelIconPath + '/bbb.png')
+        hostInstIcon = wx.Bitmap(modelIconPath + '/bbb.png')
 
         '''
         STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
