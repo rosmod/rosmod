@@ -1,6 +1,7 @@
 /*
- * 
- *
+ * ROSMOD Logger
+ * Author: Pranav Srinivar Kumar
+ * Date: 2015.03.21
  */
 
 #ifndef LOGGER_HPP
