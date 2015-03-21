@@ -114,6 +114,7 @@ class EditDialog(wx.Dialog):
     def __init__(self, *args, **kw):
         self.editDict = kw.pop('editDict', OrderedDict())
         self.editObj = kw.pop('editObj', None)
+        self.invalidNames = kw.pop('invalidNames',[])
         if self.editObj.kind == 'port_instance':
             del self.editDict['name']
         title = kw.pop('title', "ROSMOD V2")
@@ -313,16 +314,20 @@ class EditDialog(wx.Dialog):
 
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
-            if key == 'name' or \
-               key == 'period' or \
-               key == 'unit' or \
-               key == 'ip_address' or \
-               key == 'architecture' or \
-               key == 'username' or \
-               key == 'sshkey' or \
-               key == 'init' or \
-               key == 'cmdline_arguments' or \
-               key == 'command':
+            if key == 'name':
+                if field.GetValue() in self.invalidNames:
+                    ErrorDialog(self, "Name must be unique!")
+                    return False
+                self.returnDict[key] = field.GetValue()
+            elif key == 'period' or \
+                 key == 'unit' or \
+                 key == 'ip_address' or \
+                 key == 'architecture' or \
+                 key == 'username' or \
+                 key == 'sshkey' or \
+                 key == 'init' or \
+                 key == 'cmdline_arguments' or \
+                 key == 'command':
                 self.returnDict[key] = field.GetValue()
             elif key == 'fields' or \
                  key == 'request' or \
@@ -341,11 +346,13 @@ class EditDialog(wx.Dialog):
                  key == 'component_instance_reference':
                 obj = field.GetClientData(field.GetSelection())
                 if obj == None:
+                    ErrorDialog(self, "You must select a reference object!")
                     return False
                 self.returnDict[key] = obj
             elif key == 'port_reference':
                 obj = field.GetClientData(field.GetSelection())
                 if obj == None:
+                    ErrorDialog(self, "You must select a reference object!")
                     return False
                 self.returnDict[key] = obj                
                 self.returnDict['name'] = obj.properties['name']
