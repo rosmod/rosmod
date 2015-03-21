@@ -10,19 +10,19 @@ void Component0::Init(const ros::TimerEvent& event)
 {
   multi_component_example::ComponentName compName;
   compName.name = "Component0";
-  ROS_INFO("COMPONENT 0 : Publishing component name %s",compName.name.c_str());
+  LOGGER.DEBUG("COMPONENT 0 : Publishing component name " + compName.name);
   compNamePub.publish(compName);
   initOneShotTimer.stop();
 }
 
 void Component0::OnOneData(const multi_component_example::ComponentName::ConstPtr& compName)
 {
-  ROS_INFO("COMPONENT 0 : Got component name %s",compName->name.c_str());
+  LOGGER.DEBUG("COMPONENT 0 : Got component name " + compName->name);
 }
 
 void Component0::Timer0Callback(const ros::TimerEvent& event)
 {
-  ROS_INFO("COMPONENT 0 : Timer0 callback has triggered!");
+  LOGGER.DEBUG("COMPONENT 0 : Timer0 callback has triggered!");
 }
 
 // ---------------------------------------------
@@ -80,4 +80,6 @@ void Component0::startUp()
 				     &this->compQueue
 				     );
   this->Timer0 = nh.createTimer(queueTimerOpts);
+
+  LOGGER.CREATE_FILE("/home/kelsier/Documents/Component0_log.txt");
 }

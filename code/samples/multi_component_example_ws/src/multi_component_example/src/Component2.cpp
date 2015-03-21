@@ -10,14 +10,14 @@ void Component2::Timer0Callback(const ros::TimerEvent& event)
 { 
   multi_component_example::ComponentService srv;
   srv.request.operation = "GetComponentName";
-  ROS_INFO("COMPONENT 2 : Invoking ComponentService from Timer0 callback");
+  LOGGER.DEBUG("COMPONENT 2 : Invoking ComponentService from Timer0 callback");
   if (compServClient.call(srv))
     {
-      ROS_INFO("COMPONENT 2 : Got name of other component: %s", srv.response.name.c_str());
+      LOGGER.DEBUG("COMPONENT 2 : Got name of other component: " + srv.response.name);
     }
   else
     {
-      ROS_ERROR("COMPONENT 2 : Failed to invoke operation");
+      LOGGER.ERROR("COMPONENT 2 : Failed to invoke operation");
       compServClient.waitForExistence(ros::Duration(-1));
     }
 }
@@ -57,4 +57,6 @@ void Component2::startUp()
 				     &this->compQueue
 				     );
   this->Timer0 = nh.createTimer(queueTimerOpts);
+
+  LOGGER.CREATE_FILE("/home/kelsier/Documents/Component2_log.txt");
 }
