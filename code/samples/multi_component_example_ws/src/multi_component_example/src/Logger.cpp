@@ -9,7 +9,7 @@
 Logger::Logger(){}
 
 Logger::Logger(const char * target_log_path) {
-  log_content = "ROSMOD::LOG::" + CLOCK_VALUE();
+  log_content = "--------------------------------------------------------------------------------";
   log_path = target_log_path;
   log_stream.open(log_path, ios::out | ios::app );
 }
@@ -22,7 +22,7 @@ Logger::~Logger() {
 bool Logger::CREATE_FILE(const char * target_log_path) {
   log_path = target_log_path;
   log_stream.open(log_path, ios::out | ios::app );  
-  log_content = "ROSMOD::LOG::" + CLOCK_VALUE();
+  log_content = "--------------------------------------------------------------------------------";
   return true;
 }
 
