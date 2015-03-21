@@ -76,6 +76,13 @@ class Example(wx.Frame):
         self.updatedHostDict = False
         self.styleDict = None
 
+        self.PackageAspect = None
+        self.PackageAspectInfo = None
+        self.HardwareAspect = None
+        self.HardwareAspectInfo = None
+        self.DeploymentAspect = None
+        self.DeploymentAspectInfo = None
+
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = os.getcwd()
         self.project = ros_tools.ROS_Project()
@@ -782,11 +789,13 @@ class Example(wx.Frame):
         newObj = ros_tools.ROS_HW()
         newObj.properties = {}
         newObj.properties['name'] = "New Hardware Configuration"
+        existingNames = [x.properties['name'] for x in self.project.hardware_configurations.children]
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = [],
+                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -820,11 +829,13 @@ class Example(wx.Frame):
         newObj.properties = OrderedDict()
         newObj.properties['name'] = "New Deployment"
         references = self.project.hardware_configurations
+        existingNames = [x.properties['name'] for x in self.project.deployments.children]
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = references,
+                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -1065,11 +1076,13 @@ class Example(wx.Frame):
         newPkg = ros_tools.ROS_Package()
         newPkg.properties = {}
         newPkg.properties['name'] = "New Package"
+        existingNames = [x.properties['name'] for x in self.project.workspace.children]
         ed = dialogs.EditDialog(self,
                                 editObj=newPkg,
                                 editDict=newPkg.properties,
                                 title="Edit "+newPkg.kind,
                                 references = [],
+                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -1349,25 +1362,62 @@ class Example(wx.Frame):
     Package Aspect Functions
     '''
     def pageChange(self, event):
-        selectedAspect = self.activeAspect
-        selectedAspectInfo = self.activeAspectInfo
-        selectedAspect.Refresh()
-        sel = selectedAspect.GetSelection()
-        numPages = selectedAspect.GetPageCount()
+        self.activeAspect.Refresh()
+        if self.activeAspect == self.PackageAspect:
+            self.PackageAspectPageChange(event)
+        elif self.activeAspect == self.HardwareAspect:
+            self.HardwareAspectPageChange(event)
+        elif self.activeAspect == self.DeploymentAspect:
+            self.deploymentAspectPageChange(event)
+
+    def PackageAspectPageChange(self, event):
+        sel = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
         if sel >= 0:
-            deleteTBID = selectedAspectInfo.GetTBInfo("delete").obj.GetId()
+            deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
             if sel >= numPages - 1:
                 self.toolbar.EnableTool(deleteTBID, False)
             else:
                 self.toolbar.EnableTool(deleteTBID, True)
                 
-            pageName = selectedAspect.GetPageText(sel)
-            info = selectedAspectInfo.GetPageInfo(pageName)
+            pageName = self.activeAspect.GetPageText(sel)
+            info = self.activeAspectInfo.GetPageInfo(pageName)
             pkg = info.obj
             canvas = info.canvas
             drawable.Configure(pkg,self.styleDict)
             self.DrawModel(pkg,canvas)
-            #canvas.ZoomToBB()
+
+    def HardwareAspectPageChange(self, event):
+        sel = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
+        if numPages > 0:
+            self.toolbar.EnableTool(deleteTBID, True)
+        else:
+            self.toolbar.EnableTool(deleteTBID, False)
+        if sel >= 0:
+            pageName = self.activeAspect.GetPageText(sel)
+            info = self.activeAspectInfo.GetPageInfo(pageName)
+            hw = info.obj
+            canvas = info.canvas
+            drawable.Configure(hw,self.styleDict)
+            self.DrawModel(hw,canvas)
+
+    def DeploymentAspectPageChange(self, event):
+        sel = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
+        if numPages > 0:
+            self.toolbar.EnableTool(deleteTBID, True)
+        else:
+            self.toolbar.EnableTool(deleteTBID, False)
+        if sel >= 0:
+            pageName = self.activeAspect.GetPageText(sel)
+            info = self.activeAspectInfo.GetPageInfo(pageName)
+            dep = info.obj
+            canvas = info.canvas
+            drawable.Configure(dep,self.styleDict)
+            self.DrawModel(dep,canvas)
         
     def OnPageChanged(self, event):
         self.pageChange(event)
