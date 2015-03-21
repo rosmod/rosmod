@@ -3,6 +3,9 @@
 
 #include "ros/ros.h"
 
+// Our logger
+#include "Logger.hpp"
+
 // required for the callback queue
 #include <ros/callback_queue.h>
 
@@ -24,6 +27,7 @@ public:
 protected:
   ros::Timer initOneShotTimer;  // timer for calling init
   ros::CallbackQueue compQueue; // single callbackQueue for the component
+  Logger LOGGER;
 };
 
 #endif

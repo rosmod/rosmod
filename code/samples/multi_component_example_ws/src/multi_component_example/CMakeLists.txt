@@ -164,6 +164,6 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(nodeMain src/nodeMain.cpp src/Component2.cpp src/Component1.cpp src/Component0.cpp src/Component.cpp)
+add_executable(nodeMain src/nodeMain.cpp src/Component2.cpp src/Component1.cpp src/Component0.cpp src/Component.cpp src/Logger.cpp)
 target_link_libraries(nodeMain ${catkin_LIBRARIES})
 add_dependencies(nodeMain multi_component_example_generate_messages_cpp)
