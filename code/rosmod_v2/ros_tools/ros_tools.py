@@ -97,6 +97,8 @@ from msg import *
 from srv import *
 from component_hpp import *
 from component_cpp import *
+from Logger_cpp import *
+from Logger_hpp import *
 from nodeMain import *
 from CMakeLists import *
 from rml import *
@@ -980,6 +982,20 @@ class Workspace_Generator:
             # Write Component.hpp
             with open(os.path.join(self.hpp, "Component.hpp"), 'w') as temp_file:
                 temp_file.write(self.base_hpp)
+
+            # Populate Logger cpp template
+            t = Logger_cpp(searchList=[base_cpp_namespace])
+            self.logger_cpp = str(t)
+            # Write Logger.cpp
+            with open(os.path.join(self.cpp, "Logger.cpp"), 'w') as temp_file:
+                temp_file.write(self.logger_cpp)
+
+            # Populate Logger hpp template
+            t = Logger_hpp(searchList=[base_hpp_namespace])
+            self.logger_hpp = str(t)
+            # Write Logger.hpp
+            with open(os.path.join(self.hpp, "Logger.hpp"), 'w') as temp_file:
+                temp_file.write(self.logger_hpp)
 
             # Create all package messages in msg folder
             for message in messages:
