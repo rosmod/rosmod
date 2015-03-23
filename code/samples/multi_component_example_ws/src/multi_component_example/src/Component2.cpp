@@ -13,7 +13,7 @@ void Component2::Timer0Callback(const ros::TimerEvent& event)
   LOGGER.DEBUG("COMPONENT 2 : Invoking ComponentService from Timer0 callback");
   if (compServClient.call(srv))
     {
-      LOGGER.DEBUG("COMPONENT 2 : Got name of other component: " + srv.response.name);
+      LOGGER.DEBUG("COMPONENT 2 : Got name of other component: %s", srv.response.name.c_str());
     }
   else
     {

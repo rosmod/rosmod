@@ -10,14 +10,14 @@ void Component0::Init(const ros::TimerEvent& event)
 {
   multi_component_example::ComponentName compName;
   compName.name = "Component0";
-  LOGGER.DEBUG("COMPONENT 0 : Publishing component name " + compName.name);
+  LOGGER.DEBUG("COMPONENT 0 : Publishing component name %s", compName.name.c_str());
   compNamePub.publish(compName);
   initOneShotTimer.stop();
 }
 
 void Component0::OnOneData(const multi_component_example::ComponentName::ConstPtr& compName)
 {
-  LOGGER.DEBUG("COMPONENT 0 : Got component name " + compName->name);
+  LOGGER.DEBUG("COMPONENT 0 : Got component name %s", compName->name.c_str());
 }
 
 void Component0::Timer0Callback(const ros::TimerEvent& event)

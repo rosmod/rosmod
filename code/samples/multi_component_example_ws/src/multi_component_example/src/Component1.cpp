@@ -11,8 +11,7 @@ void Component1::Timer0Callback(const ros::TimerEvent& event)
   multi_component_example::ComponentName compName;
   compName.name = "Component1";
 
-  LOGGER.DEBUG("COMPONENT 1 : Publishing component name " + 
-	       compName.name + " from Timer0 callback");
+  LOGGER.DEBUG("COMPONENT 1 : Publishing component name %s from Timer0 callback", compName.name.c_str());
 
   compNamePub.publish(compName); 
 }
@@ -23,8 +22,7 @@ bool Component1::ComponentServiceCallback(multi_component_example::ComponentServ
   multi_component_example::ComponentName compName;
   compName.name = "Component1";
 
-  LOGGER.DEBUG("COMPONENT 1 : Publishing component name " 
-	       + compName.name + " from compServ callback");
+  LOGGER.DEBUG("COMPONENT 1 : Publishing component name from compServ callback", compName.name.c_str());
 
   compNamePub.publish(compName); 
   res.name = "Component1";

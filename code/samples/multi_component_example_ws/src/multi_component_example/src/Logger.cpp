@@ -51,24 +51,38 @@ bool Logger::CHECK_LOG_SIZE() {
 /*
  * Create a debug log entry
  */
-bool Logger::DEBUG(string text) {
+bool Logger::DEBUG(const char * format, ...) {
+  va_list args;
+  va_start (args, format);
+  char log_entry[1024];
+  vsprintf (log_entry, format, args);
+  std::string log_entry_string(log_entry);
+  va_end (args);
+
   bool exceeded_limit = CHECK_LOG_SIZE();
   if (exceeded_limit == true)
-    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + text;
+    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
   else
-    log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + text;
+    log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
   return true;
 }
 
 /*
  * Create an error log entry
  */
-bool Logger::ERROR(string text) {
+bool Logger::ERROR(const char * format, ...) {
+  va_list args;
+  va_start (args, format);
+  char log_entry[1024];
+  vsprintf (log_entry, format, args);
+  std::string log_entry_string(log_entry);
+  va_end (args);
+
   bool exceeded_limit = CHECK_LOG_SIZE();
   if (exceeded_limit == true)
-    log_content += "ROSMOD::ERROR::" + CLOCK_VALUE() + "::" + text;
+    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
   else
-    log_content += "\nROSMOD::ERROR::" + CLOCK_VALUE() + "::" + text;
+    log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
   return true;
 }
 
