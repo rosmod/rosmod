@@ -8,6 +8,7 @@
 #define LOGGER_HPP
 
 #include <iostream>
+#include <stdarg.h>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -33,10 +34,10 @@ public:
   bool CHECK_LOG_SIZE();
 
   // Create a debug log entry
-  bool DEBUG(string text);
+  bool DEBUG(const char * format, ...);
 
   // Create an error log entry
-  bool ERROR(string text);
+  bool ERROR(const char * format, ...);
 
   // Get log entry size
   int SIZE_OF_LOG();
