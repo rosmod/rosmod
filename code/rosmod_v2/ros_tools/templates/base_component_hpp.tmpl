@@ -2,12 +2,12 @@
 ﻿#ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
+$hash_include <iostream>
+$hash_include <string>
 $hash_include "ros/ros.h"
-
-$hash_include "$package_name/xmlParser.hpp"
-
-// required for the callback queue
 $hash_include <ros/callback_queue.h>
+$hash_include "$package_name/xmlParser.hpp"
+$hash_include "$package_name/Logger.hpp"
 
 class Component
 {
@@ -35,6 +35,7 @@ class Component
         char **node_argv;
 	ros::Timer initOneShotTimer;  // timer for calling init
 	ros::CallbackQueue compQueue; // single callbackQueue for the component
+        Logger LOGGER;
 };
 
 #endif
