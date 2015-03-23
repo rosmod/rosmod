@@ -8,7 +8,6 @@ This directory contains code relevant to version 2 of ROSML editor and generator
 Setting up ROSML editor
 -----------------------
 The ROSML editor and generator can be setup by executing the `setup.py` script, which after executing -
-  * Creates aliases
   * Installs external python packages required for editor application, such as -
     - [wxPython](http://www.wxpython.org/)
     - [TermEmulator](https://pypi.python.org/pypi/TermEmulator)
