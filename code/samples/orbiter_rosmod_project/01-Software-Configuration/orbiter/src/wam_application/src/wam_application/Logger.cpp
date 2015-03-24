@@ -1,4 +1,4 @@
-$hash_include "$package_name/Logger.hpp"
+#include "wam_application/Logger.hpp"
 
 /*
  * Write remaining log contents to file

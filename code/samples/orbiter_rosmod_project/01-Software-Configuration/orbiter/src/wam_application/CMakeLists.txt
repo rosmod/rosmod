@@ -171,7 +171,7 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable( imageProcessorNode src/wam_application/imageProcessorNode_main.cpp src/wam_application/Component.cpp 
+add_executable( imageProcessorNode src/wam_application/imageProcessorNode_main.cpp src/wam_application/Component.cpp src/wam_application/Logger.cpp
                 src/wam_application/ImageProcessor_def.cpp  
 		## Start imageProcessorNode CPP Marker
 		## End imageProcessorNode CPP Marker
@@ -182,7 +182,7 @@ target_link_libraries(imageProcessorNode
                       ## End imageProcessorNode Target Link Libraries Marker
                       ${catkin_LIBRARIES})
 add_dependencies(imageProcessorNode wam_application_generate_messages_cpp)
-add_executable( lowResolutionImager src/wam_application/lowResolutionImager_main.cpp src/wam_application/Component.cpp 
+add_executable( lowResolutionImager src/wam_application/lowResolutionImager_main.cpp src/wam_application/Component.cpp src/wam_application/Logger.cpp
                 src/wam_application/LowResolutionIMageProducer_def.cpp  
 		## Start lowResolutionImager CPP Marker
 		## End lowResolutionImager CPP Marker
@@ -193,7 +193,7 @@ target_link_libraries(lowResolutionImager
                       ## End lowResolutionImager Target Link Libraries Marker
                       ${catkin_LIBRARIES})
 add_dependencies(lowResolutionImager wam_application_generate_messages_cpp)
-add_executable( highResolutionImager src/wam_application/highResolutionImager_main.cpp src/wam_application/Component.cpp 
+add_executable( highResolutionImager src/wam_application/highResolutionImager_main.cpp src/wam_application/Component.cpp src/wam_application/Logger.cpp
                 src/wam_application/HighResolutionImageProducer_def.cpp  
 		## Start highResolutionImager CPP Marker
 		## End highResolutionImager CPP Marker

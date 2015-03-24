@@ -178,7 +178,7 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable( satelliteFlightNode src/satellite_flight_application/satelliteFlightNode_main.cpp src/satellite_flight_application/Component.cpp 
+add_executable( satelliteFlightNode src/satellite_flight_application/satelliteFlightNode_main.cpp src/satellite_flight_application/Component.cpp src/satellite_flight_application/Logger.cpp
                 src/satellite_flight_application/GroundInterface_def.cpp  
                 src/satellite_flight_application/OrbitController_def.cpp  
                 src/satellite_flight_application/SatelliteBusInterface_def.cpp  

@@ -1,12 +1,12 @@
 ﻿#ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
+#include <iostream>
+#include <string>
 #include "ros/ros.h"
-
-#include "satellite_flight_application/xmlParser.hpp"
-
-// required for the callback queue
 #include <ros/callback_queue.h>
+#include "satellite_flight_application/xmlParser.hpp"
+#include "satellite_flight_application/Logger.hpp"
 
 class Component
 {
@@ -34,6 +34,7 @@ class Component
         char **node_argv;
 	ros::Timer initOneShotTimer;  // timer for calling init
 	ros::CallbackQueue compQueue; // single callbackQueue for the component
+        Logger LOGGER;
 };
 
 #endif
