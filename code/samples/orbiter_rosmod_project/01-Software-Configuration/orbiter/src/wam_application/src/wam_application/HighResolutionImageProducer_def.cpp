@@ -31,7 +31,7 @@ void HighResolutionImageProducer_def::Timer0Callback(const ros::TimerEvent& even
 
       hrImage_pub.publish(highResImgVec);
 
-      ROS_INFO("Published High Resolution Image from satellite %s", hostName.c_str());
+      LOGGER.DEBUG("Published High Resolution Image from satellite %s", hostName.c_str());
 }
 //# End Timer0Callback Marker
 
@@ -91,4 +91,19 @@ void HighResolutionImageProducer_def::startUp()
 	     &this->compQueue);
     this->Timer0 = nh.createTimer(timer_options);
 
+
+    std::string s = node_argv[0];
+    std::string exec_path = s;
+    std::string delimiter = "/";
+    std::string exec, pwd;
+    size_t pos = 0;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        exec = s.substr(0, pos);
+        s.erase(0, pos + delimiter.length());
+    }
+    exec = s.substr(0, pos);
+    pwd = exec_path.erase(exec_path.find(exec), exec.length());    
+    std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+
+    LOGGER.CREATE_FILE(log_file_path);
 }

@@ -61,7 +61,7 @@ int portno = 7777;
     char IP_prefix[16] = "191";
 
     if ((sockfd= socket(AF_INET, SOCK_DGRAM,0))< 0){
-      ROS_INFO("Failed to create socket!");
+      LOGGER.DEBUG("Failed to create socket!");
     }	
 
     struct sockaddr_in my_addr;
@@ -69,13 +69,13 @@ int portno = 7777;
     my_addr.sin_port = htons(portno);
     my_addr.sin_addr.s_addr = get_my_ip_with_prefix(IP_prefix); 
     if (my_addr.sin_addr.s_addr ==0) {
-      ROS_INFO("can not find matching IP!");
+      LOGGER.DEBUG("can not find matching IP!");
       close(sockfd);
       return;
     }
 
     if (bind(sockfd,(struct sockaddr *)&my_addr,sizeof(my_addr))<0){
-      ROS_INFO("Couldn't bind!");
+      LOGGER.DEBUG("Couldn't bind!");
       close(sockfd);
       return;
     }
@@ -84,7 +84,7 @@ int portno = 7777;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
-      ROS_INFO("Couldn't set sockopts!");
+      LOGGER.DEBUG("Couldn't set sockopts!");
       close(sockfd);
       return;
     }
@@ -108,11 +108,11 @@ void GroundInterface_def::Timer0Callback(const ros::TimerEvent& event)
     int numbytes, recvbytes=0;
 
     if ((numbytes = recvfrom(sockfd, buf, 1023,MSG_DONTWAIT, (struct sockaddr *) &peer_addr, &peer_addr_len)) == -1) {
-      ROS_INFO("Receive Timeout!\n");
+      LOGGER.DEBUG("Receive Timeout!");
       return;
     }
     else
-      ROS_INFO("Server receives %s : %d bytes\n",buf,numbytes);
+      LOGGER.DEBUG("Server receives %s : %d bytes",buf,numbytes);
 
     char * pch = NULL;
     pch = strtok (buf,",");
@@ -136,7 +136,7 @@ void GroundInterface_def::Timer0Callback(const ros::TimerEvent& event)
     }
 
   gndCommandPub.publish(gndCommand);
-  ROS_INFO("Published new GroundCommand");
+  LOGGER.DEBUG("Published new GroundCommand");
 }
 //# End Timer0Callback Marker
 
@@ -196,4 +196,19 @@ void GroundInterface_def::startUp()
 	     &this->compQueue);
     this->Timer0 = nh.createTimer(timer_options);
 
+
+    std::string s = node_argv[0];
+    std::string exec_path = s;
+    std::string delimiter = "/";
+    std::string exec, pwd;
+    size_t pos = 0;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        exec = s.substr(0, pos);
+        s.erase(0, pos + delimiter.length());
+    }
+    exec = s.substr(0, pos);
+    pwd = exec_path.erase(exec_path.find(exec), exec.length());    
+    std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+
+    LOGGER.CREATE_FILE(log_file_path);
 }

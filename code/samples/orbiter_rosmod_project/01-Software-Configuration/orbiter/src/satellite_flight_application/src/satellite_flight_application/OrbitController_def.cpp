@@ -24,15 +24,15 @@ void OrbitController_def::Init(const ros::TimerEvent& event)
 void OrbitController_def::targetOrbitSub_OnOneData(const cluster_flight_application::TargetOrbit::ConstPtr& received_data)
 {
     // Business Logic for targetOrbitSub subscriber subscribing to topic TargetOrbit callback 
-  ROS_INFO("I got a new target orbit!");
-  ROS_INFO("Activating satellite %s thrusters to achieve new orbit", hostName.c_str());
+  LOGGER.DEBUG("I got a new target orbit!");
+  LOGGER.DEBUG("Activating satellite %s thrusters to achieve new orbit", hostName.c_str());
 
   satellite_flight_application::ThrusterComm srv;
   srv.request.amount = 1.0;
   srv.request.duration = 1.0;
   if (ThrusterComm_client.call(srv))
     {
-      ROS_INFO("Successfully activated satellite thrusters");
+      LOGGER.DEBUG("Successfully activated satellite thrusters");
     }
   else
     {
@@ -51,7 +51,7 @@ void OrbitController_def::Timer0Callback(const ros::TimerEvent& event)
       satellite_flight_application::SatelliteState srv;
       if (SatelliteState_client.call(srv))
 	{
-	  ROS_INFO("Got state vector from satellite %s bus", hostName.c_str());
+	  LOGGER.DEBUG("Got state vector from satellite %s bus", hostName.c_str());
 	}
       else
 	{
@@ -153,4 +153,19 @@ void OrbitController_def::startUp()
 	     &this->compQueue);
     this->Timer0 = nh.createTimer(timer_options);
 
+
+    std::string s = node_argv[0];
+    std::string exec_path = s;
+    std::string delimiter = "/";
+    std::string exec, pwd;
+    size_t pos = 0;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        exec = s.substr(0, pos);
+        s.erase(0, pos + delimiter.length());
+    }
+    exec = s.substr(0, pos);
+    pwd = exec_path.erase(exec_path.find(exec), exec.length());    
+    std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+
+    LOGGER.CREATE_FILE(log_file_path);
 }

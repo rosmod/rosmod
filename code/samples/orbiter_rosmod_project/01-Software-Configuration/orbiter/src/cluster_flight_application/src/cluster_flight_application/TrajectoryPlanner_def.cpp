@@ -13,7 +13,7 @@
 void TrajectoryPlanner_def::Init(const ros::TimerEvent& event)
 {
     // Initialize Component
-    ROS_INFO("Ready to receive commands and determine new orbits; running on satellite %s", hostName.c_str());
+    LOGGER.DEBUG("Ready to receive commands and determine new orbits; running on satellite %s", hostName.c_str());
     // Stop Init Timer
     initOneShotTimer.stop();
 }
@@ -24,7 +24,7 @@ void TrajectoryPlanner_def::Init(const ros::TimerEvent& event)
 void TrajectoryPlanner_def::satStateSub_OnOneData(const satellite_flight_application::SatState::ConstPtr& received_data)
 {
     // Business Logic for satStateSub subscriber subscribing to topic SatState callback
-  ROS_INFO("I got a satellite state from satellite %s",received_data->sat_id.c_str()); 
+  LOGGER.DEBUG("I got a satellite state from satellite %s",received_data->sat_id.c_str()); 
 }
 //# End satStateSub_OnOneData Marker
 // OnOneData Subscription handler for satCommandSub subscriber
@@ -32,9 +32,9 @@ void TrajectoryPlanner_def::satStateSub_OnOneData(const satellite_flight_applica
 void TrajectoryPlanner_def::satCommandSub_OnOneData(const satellite_flight_application::GroundCommand::ConstPtr& received_data)
 {
     // Business Logic for satCommandSub subscriber subscribing to topic GroundCommand callback 
-  ROS_INFO("Calculating new orbit");
+  LOGGER.DEBUG("Calculating new orbit");
   cluster_flight_application::TargetOrbit orbit;
-  ROS_INFO("Publishing new target orbit");
+  LOGGER.DEBUG("Publishing new target orbit");
   targetOrbitPub.publish(orbit);
 }
 //# End satCommandSub_OnOneData Marker
@@ -115,4 +115,19 @@ void TrajectoryPlanner_def::startUp()
              true);
     this->initOneShotTimer = nh.createTimer(timer_options);  
   
+
+    std::string s = node_argv[0];
+    std::string exec_path = s;
+    std::string delimiter = "/";
+    std::string exec, pwd;
+    size_t pos = 0;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        exec = s.substr(0, pos);
+        s.erase(0, pos + delimiter.length());
+    }
+    exec = s.substr(0, pos);
+    pwd = exec_path.erase(exec_path.find(exec), exec.length());    
+    std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+
+    LOGGER.CREATE_FILE(log_file_path);
 }

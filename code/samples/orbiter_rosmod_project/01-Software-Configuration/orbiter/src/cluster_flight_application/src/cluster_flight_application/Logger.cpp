@@ -1,4 +1,4 @@
-$hash_include "$package_name/Logger.hpp"
+#include "cluster_flight_application/Logger.hpp"
 
 /*
  * Write remaining log contents to file

@@ -169,7 +169,7 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable( clusterFlightNode src/cluster_flight_application/clusterFlightNode_main.cpp src/cluster_flight_application/Component.cpp 
+add_executable( clusterFlightNode src/cluster_flight_application/clusterFlightNode_main.cpp src/cluster_flight_application/Component.cpp src/cluster_flight_application/Logger.cpp
                 src/cluster_flight_application/TrajectoryPlanner_def.cpp  
 		## Start clusterFlightNode CPP Marker
 		## End clusterFlightNode CPP Marker

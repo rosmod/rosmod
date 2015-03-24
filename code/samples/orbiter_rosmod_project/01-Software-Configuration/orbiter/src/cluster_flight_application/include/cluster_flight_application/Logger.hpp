@@ -1,13 +1,12 @@
-#unicode utf8
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-$hash_include <iostream>
-$hash_include <stdarg.h>
-$hash_include <fstream>
-$hash_include <string>
-$hash_include <sstream>
-$hash_include <chrono>
+#include <iostream>
+#include <stdarg.h>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <chrono>
 
 using namespace std;
 
