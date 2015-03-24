@@ -59,6 +59,17 @@ else:
                 p = subprocess.Popen(['rm', '-rf', 'Cheetah-2.4.4'])
                 p.wait()
                 os.chdir(setup_path)
+            elif "Fabric-1.10.1.tar.gz" in tar:
+                print "SETUP::Installing Fabric "
+                p = subprocess.Popen(['tar', '-xvzf', tar])
+                p.wait()
+                os.chdir(generator_ext_packages + "/Fabric-1.10.1")
+                p = subprocess.Popen(['python', 'setup.py', 'install'])
+                p.wait()
+                os.chdir(generator_ext_packages)
+                p = subprocess.Popen(['rm', '-rf', 'Fabric-1.10.1'])
+                p.wait()
+                os.chdir(setup_path)
 
     editor_ext_packages = os.path.join(editor_path, "python_packages")
     print "SETUP::Installing Python Packages at " + editor_ext_packages
