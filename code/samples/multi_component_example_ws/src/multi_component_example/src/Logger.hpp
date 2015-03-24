@@ -60,6 +60,8 @@ private:
 
   // High Resolution Clock
   chrono::high_resolution_clock clock;
+
+  
 };
 
 #endif

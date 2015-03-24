@@ -305,6 +305,9 @@ void SatelliteBusInterface_def::startUp()
     this->initOneShotTimer = nh.createTimer(timer_options);  
   
 
+    /*
+     * Identify present working directory of node executable
+     */
     std::string s = node_argv[0];
     std::string exec_path = s;
     std::string delimiter = "/";
@@ -315,8 +318,18 @@ void SatelliteBusInterface_def::startUp()
         s.erase(0, pos + delimiter.length());
     }
     exec = s.substr(0, pos);
-    pwd = exec_path.erase(exec_path.find(exec), exec.length());    
+    pwd = exec_path.erase(exec_path.find(exec), exec.length());
+    // Establish the log file name
     std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
 
+    // Create the log file & open file stream
     LOGGER.CREATE_FILE(log_file_path);
+
+    // Establish log levels of LOGGER
+    Log_Levels target_log_levels = {.DEBUG = false,
+				    .INFO = true,
+				    .WARNING = false,
+				    .ERROR = true,
+				    .CRITICAL = true};
+    LOGGER.SET_LOG_LEVELS(target_log_levels);
 }
