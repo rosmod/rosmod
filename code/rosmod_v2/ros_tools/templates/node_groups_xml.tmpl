@@ -1,5 +1,12 @@
 #unicode utf8
 <?xml version="1.0" encoding="UTF-8"?>
+<logging>
+  <debug>${xml.properties["logger"].properties["debug"]}</debug>
+  <info>${xml.properties["logger"].properties["info"]}</info>
+  <warning>${xml.properties["logger"].properties["warning"]}</warning>
+  <error>${xml.properties["logger"].properties["error"]}</error>
+  <critical>${xml.properties["logger"].properties["critical"]}</critical>
+</logging>
 #if $xml.properties["groups"] != []
 #for $group in $xml.properties["groups"]
 <group ID="${group.properties["name"]}">

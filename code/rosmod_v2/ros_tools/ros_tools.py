@@ -286,6 +286,22 @@ class ROS_Group(Drawable_Object):
         self.kind = "group"
         self.properties["name"] = ""
 
+# Logger Object
+# Values are set @ Deployment Time
+# Values propagate to each Component
+class ROS_Logger(Drawable_Object):
+    # Initialize Logger 
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "logger"
+        self.properties["name"] = "LOGGER"
+        # Log levels of Logger
+        self.properties["debug"] = "false"
+        self.properties["info"] = "true"
+        self.properties["warning"] = "false"
+        self.properties["error"] = "true"
+        self.properties["critical"] = "true"
+
 class ROS_Group_XML(Drawable_Object):
     # Initialize a Node_Instance.Component_Instance.xml file
     def __init__(self, node_instance, component_instance):
@@ -295,6 +311,7 @@ class ROS_Group_XML(Drawable_Object):
         self.properties["node_instance"] = node_instance
         self.properties["component_instance"] = component_instance
         self.properties["groups"] = []
+        self.properties["logger"] = ROS_Logger()
 
 # Host Instances in a Deployment
 class ROS_Host_Instance(Drawable_Object):
