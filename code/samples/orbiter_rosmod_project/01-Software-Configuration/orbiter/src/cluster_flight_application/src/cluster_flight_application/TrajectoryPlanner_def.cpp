@@ -13,7 +13,7 @@
 void TrajectoryPlanner_def::Init(const ros::TimerEvent& event)
 {
     // Initialize Component
-    LOGGER.DEBUG("Ready to receive commands and determine new orbits; running on satellite %s", hostName.c_str());
+    LOGGER.INFO("Ready to receive commands and determine new orbits; running on satellite %s", hostName.c_str());
     // Stop Init Timer
     initOneShotTimer.stop();
 }
@@ -24,7 +24,7 @@ void TrajectoryPlanner_def::Init(const ros::TimerEvent& event)
 void TrajectoryPlanner_def::satStateSub_OnOneData(const satellite_flight_application::SatState::ConstPtr& received_data)
 {
     // Business Logic for satStateSub subscriber subscribing to topic SatState callback
-  LOGGER.DEBUG("I got a satellite state from satellite %s",received_data->sat_id.c_str()); 
+  LOGGER.INFO("I got a satellite state from satellite %s",received_data->sat_id.c_str()); 
 }
 //# End satStateSub_OnOneData Marker
 // OnOneData Subscription handler for satCommandSub subscriber
@@ -32,9 +32,9 @@ void TrajectoryPlanner_def::satStateSub_OnOneData(const satellite_flight_applica
 void TrajectoryPlanner_def::satCommandSub_OnOneData(const satellite_flight_application::GroundCommand::ConstPtr& received_data)
 {
     // Business Logic for satCommandSub subscriber subscribing to topic GroundCommand callback 
-  LOGGER.DEBUG("Calculating new orbit");
+  LOGGER.INFO("Calculating new orbit");
   cluster_flight_application::TargetOrbit orbit;
-  LOGGER.DEBUG("Publishing new target orbit");
+  LOGGER.INFO("Publishing new target orbit");
   targetOrbitPub.publish(orbit);
 }
 //# End satCommandSub_OnOneData Marker

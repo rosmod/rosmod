@@ -31,7 +31,7 @@ void HighResolutionImageProducer_def::Timer0Callback(const ros::TimerEvent& even
 
       hrImage_pub.publish(highResImgVec);
 
-      LOGGER.DEBUG("Published High Resolution Image from satellite %s", hostName.c_str());
+      LOGGER.INFO("Published High Resolution Image from satellite %s", hostName.c_str());
 }
 //# End Timer0Callback Marker
 

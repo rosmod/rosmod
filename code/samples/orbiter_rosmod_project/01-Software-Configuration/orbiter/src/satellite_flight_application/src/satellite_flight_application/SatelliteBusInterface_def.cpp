@@ -59,7 +59,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
     tv.tv_sec = 1;
     tv.tv_usec = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
-      LOGGER.DEBUG("Couldn't set sockopts!");
+      LOGGER.INFO("Couldn't set sockopts!");
       close(sockfd);
       return false;
     }
@@ -74,7 +74,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
       perror("send");
       return false;
     }
-    LOGGER.DEBUG("Sent %s, #bytes = %d, return code = %d\n",
+    LOGGER.INFO("Sent %s, #bytes = %d, return code = %d\n",
 	     msgbuf,strlen(msgbuf),numbytes);
 	
     char recvbuf[1024];
@@ -84,7 +84,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
       perror("recv");
       return false;
     }
-    LOGGER.DEBUG("Received %s, #bytes = %d\n",
+    LOGGER.INFO("Received %s, #bytes = %d\n",
 	     recvbuf,bytesreceived);
 
     close(sockfd);
@@ -136,7 +136,7 @@ bool SatelliteBusInterface_def::SatelliteStateCallback(satellite_flight_applicat
     }
 
     // Business Logic for SatelliteState_server Server providing SatelliteState Service
-  LOGGER.DEBUG("Returning the current satellite state vector for satellite %s.",hostName.c_str());
+  LOGGER.INFO("Returning the current satellite state vector for satellite %s.",hostName.c_str());
   res.state = state;
     return true;
 }
@@ -193,7 +193,7 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 		perror("send");
 		return false;
 	}
-	LOGGER.DEBUG("Sent %s, #bytes = %d, return code = %d\n",
+	LOGGER.INFO("Sent %s, #bytes = %d, return code = %d\n",
 		 msgbuf,strlen(msgbuf),numbytes);
 
 	char recvbuf[1024];
@@ -203,15 +203,15 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 		perror("recv");
 		return false;
 	}
-	LOGGER.DEBUG("Received %s, #bytes = %d\n",
+	LOGGER.INFO("Received %s, #bytes = %d\n",
 		 recvbuf,bytesreceived);
 
 
 	int seconds = (int)duration;
 	int nanoseconds = (int)((duration-seconds)*1000000000);
-	LOGGER.DEBUG("Activating engine for %f = %d seconds and %d nanoseconds\r\n",duration,seconds,nanoseconds);
+	LOGGER.INFO("Activating engine for %f = %d seconds and %d nanoseconds\r\n",duration,seconds,nanoseconds);
 	ros::Duration(duration).sleep();
-	LOGGER.DEBUG("Turning off engine now.");
+	LOGGER.INFO("Turning off engine now.");
 
 	memset(msgbuf,0,100);
 	sprintf(msgbuf,"Ship:%s:SetEngineGrpLevel:0:0\r\n",hostName.c_str());
@@ -219,7 +219,7 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 		perror("send");
 		return false;
 	}
-	LOGGER.DEBUG("Sent %s, #bytes = %d, return code = %d\n",
+	LOGGER.INFO("Sent %s, #bytes = %d, return code = %d\n",
 		 msgbuf,strlen(msgbuf),numbytes);
 
 	memset(recvbuf,0,1024);
@@ -228,12 +228,12 @@ bool SatelliteBusInterface_def::ThrusterCommCallback(satellite_flight_applicatio
 		perror("recv");
 		return false;
 	}
-	LOGGER.DEBUG("Received %s, #bytes = %d\n",
+	LOGGER.INFO("Received %s, #bytes = %d\n",
 		 recvbuf,bytesreceived);
 
 	close(sockfd);
 
-  LOGGER.DEBUG("Activated the satellite thruster %d for satellite %s.",thruster_id,hostName.c_str());
+  LOGGER.INFO("Activated the satellite thruster %d for satellite %s.",thruster_id,hostName.c_str());
   res.retVal = retVal;
     return true;
 }

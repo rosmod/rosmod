@@ -24,15 +24,15 @@ void OrbitController_def::Init(const ros::TimerEvent& event)
 void OrbitController_def::targetOrbitSub_OnOneData(const cluster_flight_application::TargetOrbit::ConstPtr& received_data)
 {
     // Business Logic for targetOrbitSub subscriber subscribing to topic TargetOrbit callback 
-  LOGGER.DEBUG("I got a new target orbit!");
-  LOGGER.DEBUG("Activating satellite %s thrusters to achieve new orbit", hostName.c_str());
+  LOGGER.INFO("I got a new target orbit!");
+  LOGGER.INFO("Activating satellite %s thrusters to achieve new orbit", hostName.c_str());
 
   satellite_flight_application::ThrusterComm srv;
   srv.request.amount = 1.0;
   srv.request.duration = 1.0;
   if (ThrusterComm_client.call(srv))
     {
-      LOGGER.DEBUG("Successfully activated satellite thrusters");
+      LOGGER.INFO("Successfully activated satellite thrusters");
     }
   else
     {
@@ -51,7 +51,7 @@ void OrbitController_def::Timer0Callback(const ros::TimerEvent& event)
       satellite_flight_application::SatelliteState srv;
       if (SatelliteState_client.call(srv))
 	{
-	  LOGGER.DEBUG("Got state vector from satellite %s bus", hostName.c_str());
+	  LOGGER.INFO("Got state vector from satellite %s bus", hostName.c_str());
 	}
       else
 	{

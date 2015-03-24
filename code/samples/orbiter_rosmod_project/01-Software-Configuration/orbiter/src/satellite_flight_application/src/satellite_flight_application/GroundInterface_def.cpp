@@ -61,7 +61,7 @@ int portno = 7777;
     char IP_prefix[16] = "191";
 
     if ((sockfd= socket(AF_INET, SOCK_DGRAM,0))< 0){
-      LOGGER.DEBUG("Failed to create socket!");
+      LOGGER.INFO("Failed to create socket!");
     }	
 
     struct sockaddr_in my_addr;
@@ -69,13 +69,13 @@ int portno = 7777;
     my_addr.sin_port = htons(portno);
     my_addr.sin_addr.s_addr = get_my_ip_with_prefix(IP_prefix); 
     if (my_addr.sin_addr.s_addr ==0) {
-      LOGGER.DEBUG("can not find matching IP!");
+      LOGGER.INFO("can not find matching IP!");
       close(sockfd);
       return;
     }
 
     if (bind(sockfd,(struct sockaddr *)&my_addr,sizeof(my_addr))<0){
-      LOGGER.DEBUG("Couldn't bind!");
+      LOGGER.INFO("Couldn't bind!");
       close(sockfd);
       return;
     }
@@ -84,7 +84,7 @@ int portno = 7777;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
-      LOGGER.DEBUG("Couldn't set sockopts!");
+      LOGGER.INFO("Couldn't set sockopts!");
       close(sockfd);
       return;
     }
@@ -108,11 +108,11 @@ void GroundInterface_def::Timer0Callback(const ros::TimerEvent& event)
     int numbytes, recvbytes=0;
 
     if ((numbytes = recvfrom(sockfd, buf, 1023,MSG_DONTWAIT, (struct sockaddr *) &peer_addr, &peer_addr_len)) == -1) {
-      LOGGER.DEBUG("Receive Timeout!");
+      LOGGER.INFO("Receive Timeout!");
       return;
     }
     else
-      LOGGER.DEBUG("Server receives %s : %d bytes",buf,numbytes);
+      LOGGER.INFO("Server receives %s : %d bytes",buf,numbytes);
 
     char * pch = NULL;
     pch = strtok (buf,",");
@@ -136,7 +136,7 @@ void GroundInterface_def::Timer0Callback(const ros::TimerEvent& event)
     }
 
   gndCommandPub.publish(gndCommand);
-  LOGGER.DEBUG("Published new GroundCommand");
+  LOGGER.INFO("Published new GroundCommand");
 }
 //# End Timer0Callback Marker
 

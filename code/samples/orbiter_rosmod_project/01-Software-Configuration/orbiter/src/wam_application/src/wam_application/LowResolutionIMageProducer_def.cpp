@@ -31,7 +31,7 @@ void LowResolutionIMageProducer_def::Timer0Callback(const ros::TimerEvent& event
 
       lrImage_pub.publish(lowResImgVec);
 
-      LOGGER.DEBUG("Published Low Resolution Image from satellite %s", hostName.c_str());
+      LOGGER.INFO("Published Low Resolution Image from satellite %s", hostName.c_str());
 }
 //# End Timer0Callback Marker
 
