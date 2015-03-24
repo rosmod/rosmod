@@ -25,6 +25,14 @@ public:
       std::cout << it->first << " => " << it->second << '\n';
   }
 
+  bool Return_Boolean(std::string value) 
+  {
+    if (value == "true") 
+      return true;
+    else
+      return false;
+  }
+
   bool Parse(std::string fName)
   {
     if ( !boost::filesystem::exists(fName) )
@@ -37,11 +45,13 @@ public:
      * Establish log levels
      */
     xml_node<> *logger = doc.first_node("logging");
-    logging.DEBUG = logger->first_node("debug")->value();
-    logging.INFO = logger->first_node("info")->value();
-    logging.WARNING = logger->first_node("warning")->value();
-    logging.ERROR = logger->first_node("error")->value();
-    logging.CRITICAL = logger->first_node("critical")->value();
+    xml_node<> * debug = logger->first_node("debug");
+    
+    logging.DEBUG = Return_Boolean(logger->first_node("debug")->first_attribute()->value());
+    logging.INFO = Return_Boolean(logger->first_node("info")->first_attribute()->value());
+    logging.WARNING = Return_Boolean(logger->first_node("warning")->first_attribute()->value());
+    logging.ERROR = Return_Boolean(logger->first_node("error")->first_attribute()->value());
+    logging.CRITICAL = Return_Boolean(logger->first_node("critical")->first_attribute()->value());
 
     for (xml_node<> *node = doc.first_node("group"); node; node = node->next_sibling())
       {

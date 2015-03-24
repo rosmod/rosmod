@@ -1,11 +1,11 @@
 #unicode utf8
 <?xml version="1.0" encoding="UTF-8"?>
 <logging>
-  <debug>${xml.properties["logger"].properties["debug"]}</debug>
-  <info>${xml.properties["logger"].properties["info"]}</info>
-  <warning>${xml.properties["logger"].properties["warning"]}</warning>
-  <error>${xml.properties["logger"].properties["error"]}</error>
-  <critical>${xml.properties["logger"].properties["critical"]}</critical>
+  <debug setting="${xml.properties["logger"].properties["debug"]}"/>
+  <info setting="${xml.properties["logger"].properties["info"]}"/>
+  <warning setting="${xml.properties["logger"].properties["warning"]}"/>
+  <error setting="${xml.properties["logger"].properties["error"]}"/>
+  <critical setting="${xml.properties["logger"].properties["critical"]}"/>
 </logging>
 #if $xml.properties["groups"] != []
 #for $group in $xml.properties["groups"]
