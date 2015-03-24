@@ -64,7 +64,7 @@ bool Logger::DEBUG(const char * format, ...) {
 }
 
 /*
- * Create a INFO log entry
+ * Create a INFORMATION log entry
  */
 bool Logger::INFO(const char * format, ...) {
   if (log_levels.INFO == true) {

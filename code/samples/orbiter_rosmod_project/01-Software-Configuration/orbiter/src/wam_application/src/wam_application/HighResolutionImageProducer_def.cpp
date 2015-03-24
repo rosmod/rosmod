@@ -113,10 +113,5 @@ void HighResolutionImageProducer_def::startUp()
     LOGGER.CREATE_FILE(log_file_path);
 
     // Establish log levels of LOGGER
-    Log_Levels target_log_levels = {.DEBUG = false,
-				    .INFO = true,
-				    .WARNING = false,
-				    .ERROR = true,
-				    .CRITICAL = true};
-    LOGGER.SET_LOG_LEVELS(target_log_levels);
+    LOGGER.SET_LOG_LEVELS(groupParser.logging);
 }

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<logging>
+  <debug>false</debug>
+  <info>true</info>
+  <warning>false</warning>
+  <error>true</error>
+  <critical>true</critical>
+</logging>
 <group ID="Group_413">
   <port ID="SatelliteState_server"/>
   <port ID="ThrusterComm_server"/>

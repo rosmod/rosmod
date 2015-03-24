@@ -9,13 +9,14 @@
 
 #include "satellite_flight_application/rapidxml.hpp"
 #include "satellite_flight_application/rapidxml_utils.hpp"
-
+#include "satellite_flight_application/Logger.hpp"
 using namespace rapidxml;
 
 class GroupXMLParser
 {
 public:
   std::map<std::string,std::string> portGroupMap;
+  Log_Levels logging;
 
   void Print()
   {
@@ -31,6 +32,16 @@ public:
     rapidxml::file<> xmlFile(fName.c_str()); // Default template is char
     rapidxml::xml_document<> doc;
     doc.parse<0>(xmlFile.data());
+
+    /*
+     * Establish log levels
+     */
+    xml_node<> *logger = doc.first_node("logging");
+    logging.DEBUG = logger->first_node("debug")->value();
+    logging.INFO = logger->first_node("info")->value();
+    logging.WARNING = logger->first_node("warning")->value();
+    logging.ERROR = logger->first_node("error")->value();
+    logging.CRITICAL = logger->first_node("critical")->value();
 
     for (xml_node<> *node = doc.first_node("group"); node; node = node->next_sibling())
       {
