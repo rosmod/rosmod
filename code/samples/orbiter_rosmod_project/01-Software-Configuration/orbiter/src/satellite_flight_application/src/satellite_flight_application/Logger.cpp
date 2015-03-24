@@ -43,41 +43,119 @@ bool Logger::CHECK_LOG_SIZE() {
 }
 
 /*
- * Create a debug log entry
+ * Create a DEBUG log entry
  */
 bool Logger::DEBUG(const char * format, ...) {
-  va_list args;
-  va_start (args, format);
-  char log_entry[1024];
-  vsprintf (log_entry, format, args);
-  std::string log_entry_string(log_entry);
-  va_end (args);
+  if (log_levels.DEBUG == true) {
+    va_list args;
+    va_start (args, format);
+    char log_entry[1024];
+    vsprintf (log_entry, format, args);
+    std::string log_entry_string(log_entry);
+    va_end (args);
 
-  bool exceeded_limit = CHECK_LOG_SIZE();
-  if (exceeded_limit == true)
-    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
-  else
-    log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    bool exceeded_limit = CHECK_LOG_SIZE();
+    if (exceeded_limit == true)
+      log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
+    else
+      log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
+  }
   return true;
 }
 
 /*
- * Create an error log entry
+ * Create a INFO log entry
+ */
+bool Logger::INFO(const char * format, ...) {
+  if (log_levels.INFO == true) {
+    va_list args;
+    va_start (args, format);
+    char log_entry[1024];
+    vsprintf (log_entry, format, args);
+    std::string log_entry_string(log_entry);
+    va_end (args);
+
+    bool exceeded_limit = CHECK_LOG_SIZE();
+    if (exceeded_limit == true)
+      log_content += "ROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string;
+    else
+      log_content += "\nROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string; 
+  }
+  return true;
+}
+
+/*
+ * Create a WARNING log entry
+ */
+bool Logger::WARNING(const char * format, ...) {
+  if (log_levels.WARNING == true) {
+    va_list args;
+    va_start (args, format);
+    char log_entry[1024];
+    vsprintf (log_entry, format, args);
+    std::string log_entry_string(log_entry);
+    va_end (args);
+
+    bool exceeded_limit = CHECK_LOG_SIZE();
+    if (exceeded_limit == true)
+      log_content += "ROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string;
+    else
+      log_content += "\nROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string; 
+  }
+  return true;
+}
+
+/*
+ * Create an ERROR log entry
  */
 bool Logger::ERROR(const char * format, ...) {
-  va_list args;
-  va_start (args, format);
-  char log_entry[1024];
-  vsprintf (log_entry, format, args);
-  std::string log_entry_string(log_entry);
-  va_end (args);
+  if (log_levels.ERROR = true) {
+    va_list args;
+    va_start (args, format);
+    char log_entry[1024];
+    vsprintf (log_entry, format, args);
+    std::string log_entry_string(log_entry);
+    va_end (args);
 
-  bool exceeded_limit = CHECK_LOG_SIZE();
-  if (exceeded_limit == true)
-    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
-  else
-    log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    bool exceeded_limit = CHECK_LOG_SIZE();
+    if (exceeded_limit == true)
+      log_content += "ROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string;
+    else
+      log_content += "\nROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string; 
+  }
   return true;
+}
+
+/*
+ * Create a CRITICAL log entry
+ */
+bool Logger::CRITICAL(const char * format, ...) {
+  if (log_levels.CRITICAL == true) {
+    va_list args;
+    va_start (args, format);
+    char log_entry[1024];
+    vsprintf (log_entry, format, args);
+    std::string log_entry_string(log_entry);
+    va_end (args);
+
+    bool exceeded_limit = CHECK_LOG_SIZE();
+    if (exceeded_limit == true)
+      log_content += "ROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string;
+    else
+      log_content += "\nROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string; 
+  }
+  return true;
+}
+
+/*
+ * Set Log Levels 
+ */
+bool Logger::SET_LOG_LEVELS(Log_Levels target_log_levels) {
+  log_levels.DEBUG = target_log_levels.DEBUG;
+  log_levels.INFO = target_log_levels.INFO;
+  log_levels.WARNING = target_log_levels.WARNING;
+  log_levels.ERROR = target_log_levels.ERROR;
+  log_levels.CRITICAL = target_log_levels.CRITICAL;
 }
 
 /*
