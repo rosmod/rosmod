@@ -1137,6 +1137,7 @@ class Workspace_Generator:
                                            "${CATKIN_PACKAGE_INCLUDE_DESTINATION}",
                                      'CATKIN_PACKAGE_SHARE_DESTINATION':
                                            "${CATKIN_PACKAGE_SHARE_DESTINATION}",
+                                     'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
                                      'nodes': nodes}
             t = CMakeLists(searchList=[cmake_lists_namespace])
             self.cmake_lists = str(t)
