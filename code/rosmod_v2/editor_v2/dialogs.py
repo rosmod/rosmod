@@ -9,7 +9,7 @@ from collections import OrderedDict
 class RMLProgressDialog(wx.Dialog):
     """
     Shows a Progres Gauge while an operation is taking place. May be cancellable
-    which is possible when converting pdf/ps
+    which is possible when converting pdf/ps or loading models
     """
     def __init__(self, title, progress_q, numItems=100, cancellable=False):
         """Defines a gauge and a timer which updates the gauge."""
@@ -61,7 +61,6 @@ class RMLProgressDialog(wx.Dialog):
             pass
 
     def on_cancel(self, event):
-        """Cancels the conversion process"""
         self.timer.Stop()
         wx.CallAfter(self.Destroy)
 
