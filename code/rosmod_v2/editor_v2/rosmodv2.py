@@ -975,18 +975,16 @@ class Example(wx.Frame):
             #env.warn_only = False
             numNodes = 0 # 1 # roscore
             rosCoreIP = ""
-            newObj = ros_tools.ROS_Host_Instance()
+            testName = ""
+            newObj = ros_tools.Drawable_Object()
             newObj.properties = OrderedDict()
+            newObj.properties['name'] = testName
             newObj.properties['host_reference'] = None
-            '''
-            newObj.properties['username'] = ""
-            newObj.properties['sshkey'] = ""
-            '''
             references = dep.properties['hardware_configuration_reference'].children
             ed = dialogs.EditDialog(self,
                                     editDict=newObj.properties,
                                     editObj = newObj,
-                                    title="Select Cluster Leader",
+                                    title="Deployment Options",
                                     references = references,
                                     style=wx.RESIZE_BORDER)
             ed.ShowModal()
@@ -995,26 +993,7 @@ class Example(wx.Frame):
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 rosCoreIP = newObj.properties['host_reference'].properties['ip_address']
-                '''
-                self.hostDict['roscoreHost'] = fabTest.deployed_host(
-                    userName = newObj.properties['username'],
-                    ipAddress = rosCoreIP,
-                    keyFile = newObj.properties['sshkey'],
-                    nodes = [fabTest.deployed_node(
-                        name = 'roscore',
-                        executable = '/opt/ros/indigo/bin/roscore'
-                    )],
-                    envVars = [['ROS_IMASTER_URI','http://{}:11311/'.format(rosCoreIP)],
-                               ['PATH','/opt/ros/indigo/bin/:$PATH'],
-                               ['PKG_CONFIG_PATH','/opt/ros/indigo/lib/pkgconfig:/opt/ros/indigo/lib/i386-linux-gnu/pkgconfig'],
-                               ['PYTHONPATH','/opt/ros/indigo/lib/python2.7/dist-packages'],
-                               ['ROS_DISTRO','indigo'],
-                               ['ROS_ETC_DIR','/opt/ros/indigo/etc/ros'],
-                               ['ROS_PACKAGE_PATH','/opt/ros/indigo/share:/opt/ros/indigo/stacks'],
-                               ['ROS_ROOT','/opt/ros/indigo/share/ros']]
-                )
-                env.hosts.append('roscoreHost')
-                '''
+                testName = newObj.properties['name']
                 for host in dep.getChildrenByKind("host_instance"):
                     nodeList = []
                     for node in host.children:
