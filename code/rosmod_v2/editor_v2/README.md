@@ -1,6 +1,12 @@
-# ROSML Editor GUI V2
-=====================
-This codebase controls the graphical editor for generating *.rosml, *.roshw and *.rosdp files for your ROSML application based on the Component Model discussed earlier. It allows for the creation, alteration, and deletion of elements within a ROSML application such as - 
+# ROSML Editor V2
+=================
+
+A ROSML model can be viewed from three aspects -
+  * ROS Packages (have message definitions, service definitions, node definitions, ROSML components definitions)
+  * Hardware (has description of hardware platform(s) or **host(s)** on which instances of ROS package will run)
+  * Deployment (has information about which instance of ROS package will run on which hardware)
+
+  This codebase controls the graphical editor for generating *.rosml, *.roshw and *.rosdp files for your ROSML model. These files describe the three aspects of a ROSML model - **ROSML Packages**, **Hardware** and **Deployment** respectively. Thus, the editor allows for the creation, alteration, and deletion of elements within a ROSML model such as - 
 
   1. The Project
   2. The workspace
@@ -18,7 +24,9 @@ This codebase controls the graphical editor for generating *.rosml, *.roshw and 
   13. Hardware characteristics of host(s)
   14. Deployment of ROSML Components on host(s)
 
-Furthermore, the editor allows for the interpretation and analysis of the ROSML model.  Interpretation of the model involves generating component based skeleton code following the design of the model.  Analysis of the model entails either analyzing the model's network quality of service characteristics or analyzing the business logic model's timing and scheduling characteristics.  
+Furthermore, the editor allows for the interpretation and analysis of the ROSML model. Interpretation of the model involves generating component based skeleton code following the design of the model. Analysis of the model entails either analyzing the model's network quality of service characteristics or analyzing the business logic model's timing and scheduling characteristics.
+  
+This document gives guidelines to create a ROSML model in all the three aspects, generating the code and deploying it on the hosts. 
 
 ## Using the Editor
 -------------------
@@ -26,15 +34,17 @@ This section describes how to use the ROSML editor to create, open, edit, save, 
 
 The main operations covered in these subsections are
 
-  * [Starting the ROSML editor](#starting-the-editor)
-  * [Creating a New Model](#creating-a-model)
+  * [Starting the ROSML Editor](#starting-the-editor)
+  * [Creating a New Model in "Packages" Aspect](#creating-a-model-in-"Packages"-aspect)
+  * [Creating a New Model in "Hardware" Aspect](#creating-a-model-in-"Hardware"-aspect)
+  * [Creating a New Model ]
   * [Opening an Existing Model](#open-an-existing-model)
   * [Editing a Model](#editing-a-model)
   * [Saving a Model](#saving-a-model)
   * [Generating Code for a Model](#generating-code-for-a-model)
   * [Deploying a Model on Hardware](#deploying-a-model-on-hardware)
 
-### Starting the editor
+### Starting the Editor
 -----------------------
 Before starting the editor, you must [setup the ROSML editor](../README.md) in your system.
 
@@ -42,15 +52,15 @@ For starting the editor, execute the `rosmodv2.py` python script in a shell.
   
 Note: to initialize a model, you must either [Create a new model](#creating-a-model) or [Open an existing model](#open-an-existing-model).
 
-### Creating a Model
---------------------
+### Creating a Model in "Packages" Aspect
+-----------------------------------------
 
 A ROSML model can be viewed from three aspects -
-  * ROS Packages (have message definitions, service definitions, node definitions, ROSML components definitions)
-  * Hardware (has description of hardware platform(s) or **host(s)** on which instances of ROS package will run)
-  * Deployment (has information about which instance of ROS package will run on which hardware)
+  * ROS Packages
+  * Hardware
+  * Deployment 
   
-This subsection will guide you through creating various entities in a ROSML model.
+This subsection will guide you through creating various entities in a ROSML model in "Packages" aspect.
 
 #### Creating a Workspace
 -------------------------
@@ -162,6 +172,30 @@ For removing a component instance from a node in your ROSML model -
   2. Right-click on the highlighted component instance.
   3. Click on "Delete" option in the menu.
 
+### Creating a Model in "Hardware" Aspect
+-----------------------------------------
+
+A ROSML model can be viewed from three aspects -
+  * ROS Packages
+  * Hardware
+  * Deployment 
+  
+This subsection will guide you through creating various entities in a ROSML model in "Hardware" aspect.
+
+The **Hardware** aspect of a ROSML model specifies the hardware platforms available and attributes associated with them (such as their IP addresses and their architecture e.g. armv7l or x86). __TODO__
+
+### Creating a Model in "Deployment" Aspect
+-------------------------------------------
+
+A ROSML model can be viewed from three aspects -
+  * ROS Packages
+  * Hardware
+  * Deployment 
+  
+This subsection will guide you through creating various entities in a ROSML model in "Deployment" aspect.
+
+The **Deployment** aspect of the ROSML model declares instances of hardware platforms described in **Hardware** and binds instances of nodes described in **ROS Packages** with them. An instance of a hardware platform can run one or multiple instances of node(s). The **Deployment** aspect can also contain groups of ROS nodes instances running on hardware platform instances, to precisely describe which ROS nodes interact with which ones. This is to avoid ambiguity in communication between multiple instances of similar ROS nodes deployed across the system. __TODO__
+
 ### Opening an Existing Model
 -----------------------------
 
@@ -198,34 +232,56 @@ For generating ROS code for a ROSML model in the editor -
   2. Select the "Packages" aspect from "Aspects" dropdown menu.
   3. Go to "Tools" dropdown menu, and click on "Generate ROS code" (or alternatively use hotkey **Ctrl+G**).
   
-After completing the above steps, the confirmation box saying "Generated ROS Workspace" should appear. The generated code can be found in the "01-Software-Configuration" sub-directory in the Project directory. Previously, the "01-Software-Configuration" directory contained only .rml file describing the ROSML model. After completing the steps for generating the code, it should additionally contain another directory named after the name of the workspace (default name is "Workspace") which contains fully populated ROS workspace, as discussed in [here](http://wiki.ros.org/ROS/Tutorials/CreatingPackage#ROS.2BAC8-Tutorials.2BAC8-catkin.2BAC8-CreatingPackage.Packages_in_a_catkin_Workspace). The src sub-directory thus contains directories for individual packages which in turn have CMakeLists.txt (which serves as a toplevel CMake file for a ROS package), include directory (has .hpp files used in the package), msg directory (containing .msg files), srv directory (containing .srv files), package.xml file (which contains information about the package), src directory (containing source code for the package) etc. The overall folder structure looks like following -
+After completing the above steps, the confirmation box saying "Generated ROS Workspace" should appear. The generated code can be found in the "01-Software-Configuration" sub-directory in the Project directory. Previously, the "01-Software-Configuration" directory contained only .rml file describing the ROSML model. After completing the steps for generating the code, it should additionally contain another directory named after the name of the workspace (default name is "Workspace") which contains fully populated ROS workspace, as discussed in [here](http://wiki.ros.org/ROS/Tutorials/CreatingPackage#ROS.2BAC8-Tutorials.2BAC8-catkin.2BAC8-CreatingPackage.Packages_in_a_catkin_Workspace). 
+
+Above mentioned directory (named after ROSML workspace) contains sub-directory called "src" which has sourcecodes associated with all the ROS packages described in your ROSML model. The src sub-directory thus contains directories for individual packages which in turn have CMakeLists.txt (which serves as a toplevel CMake file for a ROS package), include directory (has .hpp files used in the package), msg directory (containing .msg files), srv directory (containing .srv files), package.xml file (which contains information about the package), src directory (containing source code for the package) etc. The overall folder structure looks like following -
 
 ```bash
 workspace_name
 └── src
-    └── package_1
-		├── CMakeLists.txt
-        ├── include
-        │   └── package_1
-        │       ├── component_1.hpp
-        │       ├── component_2.hpp
-        │       ├── Component.hpp
-        │       ├── Logger.hpp
-        │       ├── rapidxml.hpp
-        │       ├── rapidxml_utils.hpp
-        │       └── xmlParser.hpp
-        ├── msg
-        │   └── message_1.msg
-        ├── package.xml
-        └── src
-            └── package_1
-                ├── component_1.cpp
-                ├── component_2.cpp
-                ├── Component.cpp
-                ├── Logger.cpp
-                ├── pub_node_1_main.cpp
-                └── sub_node_1_main.cpp
+    ├── package_1
+	│	├── CMakeLists.txt
+    │   ├── include
+    │   │   └── package_1
+    │   │       ├── component_1.hpp
+    │   │       ├── component_2.hpp
+    │   │       ├── Component.hpp
+    │   │       ├── Logger.hpp
+    │   │       ├── rapidxml.hpp
+    │   │       ├── rapidxml_utils.hpp
+    │   │       └── xmlParser.hpp
+    │   ├── msg
+    │   │   └── message_1.msg
+    │   ├── package.xml
+    │   └── src
+    │       └── package_1
+    │           ├── component_1.cpp
+    │           ├── component_2.cpp
+    │           ├── Component.cpp
+    │           ├── Logger.cpp
+    │           ├── pub_node_1_main.cpp
+    │           └── sub_node_1_main.cpp
+	├── package_2
+	│	...
+	├── package_3
+	│	...
+	.
+	.
+	.
+	└── package_n
 ```
 
 ### Deploying a Model on Hardware
 ---------------------------------
+
+The generated code needs to be deployed on hardware platforms running ROS middleware, before which it needs to be built against the architecture of hardware platform on which it is to be deployed. For building the code against appropriate hardware platform, "Hardware" and "Deployment" aspects of a ROSML model play an important role.
+
+The **ROS Packages** aspect of a ROSML model defines the structure and business logic of the ROS packages which need to run on the targeted hardware platforms.
+
+The **Hardware** aspect of a ROSML model specifies the hardware platforms available and attributes associated with them (such as their IP addresses and their architecture e.g. armv7l or x86).
+
+The **Deployment** aspect of the ROSML model declares instances of hardware platforms described in **Hardware** and binds instances of nodes described in **ROS Packages** with them. After creating this binding, you can deploy your ROS packages (which are built against respective hardware platforms) using two-step mechanism -
+  1. Copy deployment files
+  2. Deploy system
+
+__TODO__
