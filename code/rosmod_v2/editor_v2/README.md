@@ -32,6 +32,7 @@ The main operations covered in these subsections are
   * [Editing a Model](#editing-a-model)
   * [Saving a Model](#saving-a-model)
   * [Generating Code for a Model](#generating-code-for-a-model)
+  * [Deploying a Model on Hardware](#deploying-a-model-on-hardware)
 
 ### Starting the editor
 -----------------------
@@ -45,13 +46,13 @@ Note: to initialize a model, you must either [Create a new model](#creating-a-mo
 --------------------
 
 A ROSML model can be viewed from three aspects -
-  * ROS Package (has message definitions, service definitions, node definitions, ROSML components definitions)
+  * ROS Packages (have message definitions, service definitions, node definitions, ROSML components definitions)
   * Hardware (has description of hardware platform(s) or **host(s)** on which instances of ROS package will run)
   * Deployment (has information about which instance of ROS package will run on which hardware)
   
 This subsection will guide you through creating various entities in a ROSML model.
 
-#### Creating a workspace
+#### Creating a Workspace
 -------------------------
 
 For creating a ROSML model, you must create a ROSML workspace which will serve as a platform to create ROSML components, describe the hardware platform(s) on which they are going to be deployed and deployment scheme which describes which node is deployed on which hardware. 
@@ -60,7 +61,7 @@ For creating a Workspace in ROSML editor -
   1. First, open the ROSML editor by executing `rosmodv2.py`.
   2. Click on "New" ![New icon](./icons/toolbar/tnew.png "New") button on toolbar.
   3. Browse the directory in which you want ROSML editor to create the new model.
-  4. Enter the name of the project.
+  4. Enter the name of the model.
 
 #### Creating and Removing Packages
 -----------------------------------
@@ -87,7 +88,6 @@ For adding a message (or a service) in your ROSML model -
   1. Right-click on the package pane.
   2. Click on the "Add Message" (or "Add Service") option in the menu.
   3. In the window that appears, give a name to the Message (Service) and specify the fields in your Message (or Service).
-  4. Click on "OK".
 
 For removing a message (or a service) from your ROSML model -
   1. Right-click on the Message (or the Service) that you want to remove.
@@ -102,7 +102,6 @@ For adding a component in your ROSML model -
   1. Right-click on the package pane.
   2. Click on the "Add Component Definition" option in the menu.
   3. In the window that appears, give a name to the component.
-  4. Click on "OK".
 
 For removing a component from your ROSML model -
   1. Right-click on the component that you want to remove.
@@ -120,18 +119,17 @@ ROSML components can contain 5 types of objects -
 
 For adding these objects to any component -
   1. First, select the component in which you want to add a new object by left-clicking on it. After left-clicking, it will be highlighted with red border.
-  2. Then right-click on the highlighted object.
+  2. Right-click on the highlighted object.
   3. Select the appropriate object type you want to add into that component.
   4. Give a name to the object which you want to add.
   5. Additionally -
 	* For Publishers and Subscribers, give reference to the message object with which you want to associate the Publisher/Subscriber.
 	* For Servers and Clients, give reference to the service object with which you want to associate the Server/Client.
 	* For Timers, give period value and unit of the period value.
-  6. Click on "OK".
 
 For removing the objects from any component -
   1. First, select the object which you want to remove from the component by left-clicking on it. After left-clicking, it will be highlighted with red border.
-  2. The right-click on the highlighted object.
+  2. Right-click on the highlighted object.
   3. Click on "Delete" option in the menu.
 
 #### Adding and Removing Nodes
@@ -143,11 +141,10 @@ For adding a node to your ROSML model -
   1. Right-click on the package pane.
   2. Click on the "Add Node" option in the menu.
   3. In the window that appears, give a name to the node.
-  4. Click on "OK".
 
 For removing a node from your ROSML model -
   1. First, select the node which you want to remove by left-clicking on it. After left-clicking, it will be highlighted with red border.
-  2. The right-click on the highlighted node.
+  2. Right-click on the highlighted node.
   3. Click on "Delete" option in the menu.
 
 ##### Adding and Removing Component Instances to and from Nodes
@@ -155,25 +152,46 @@ For removing a node from your ROSML model -
 
 For adding a component instance to a node in your ROSML model -
   1. First, select the node in which you want to add a component instance by left-clicking on it. After left-clicking, it will be highlighted with red border.
-  2. Then right-click on the highlighted node.
+  2. Right-click on the highlighted node.
   3. Click on "Add Component Instance" option in the menu.
   4. Give a name to the component instance that you want to add.
   5. Give the reference to the component object which you want to create instance of.
-  6. Click on "OK".
 
 For removing a component instance from a node in your ROSML model -
   1. First, select the component instance which you want to remove from the node by left-clicking on it. After left-clicking, it will be highlighted with red border.
-  2. Then right-click on the highlighted component instance.
+  2. Right-click on the highlighted component instance.
   3. Click on "Delete" option in the menu.
 
 ### Opening an Existing Model
 -----------------------------
 
+For opening an existing model in the ROSML editor -
+  1. First, open the ROSML editor by executing `rosmodv2.py`.
+  2. Click on "Open" ![Open icon](./icons/toolbar/topen.png "Open") button on toolbar.
+  3. Browse to the directory in which you have your existing ROSML model.
+  4. You should be able to see the following contents in the directory -
+	1. 01-Software-Configuration - The directory containing .rml files, which describe ROSML components in your model
+	2. 02-Hardware-Configuration - The directory containing .rhw files, which describe hardware on which you would want to run your ROSML model
+	3. 03-Deployment - The directory containing .rdp files, which describe mapping between ROSML components and hardware described in .rhw files
+	4. ROSMOD file - The file bearing the name of the project and having .rosmod extension
+  5. Select the file with .rosmod extension and click on "Open".
+
 ### Editing a Model
 -------------------
+
+For editing a model in ROSML editor, [create a new model](#creating-a-model) or [open an existing model](#open-an-existing-model) and add/remove/edit the ROSML components in the model as per your requirements.
 
 ### Saving a Model
 ------------------
 
+For saving a model in ROSML editor -
+  1. First, [create a new model](#creating-a-model) or [open an existing model](#open-an-existing-model).
+  2. Click on "Save" ![Save icon](./icons/toolbar/tsave.png "Save") button on toolbar.
+
 ### Generating code for a Model
 -------------------------------
+
+The ROSML editor can be used for not only developing ROSML models but also generating [ROS packages](http://wiki.ros.org/ROS/Tutorials/CreatingPackage) which can be run on a [ROS](http://wiki.ros.org/ROS) platform. This means that the ROSML projects are ultimately translated into C++ packages written in ROS (as we know, a ROS package can be developed in C++ or Python. For more info, see: [ROS packages](http://wiki.ros.org/ROS/Tutorials/CreatingPackage)). 
+
+### Deploying a Model on Hardware
+---------------------------------
