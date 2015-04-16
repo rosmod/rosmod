@@ -191,7 +191,41 @@ For saving a model in ROSML editor -
 ### Generating code for a Model
 -------------------------------
 
-The ROSML editor can be used for not only developing ROSML models but also generating [ROS packages](http://wiki.ros.org/ROS/Tutorials/CreatingPackage) which can be run on a [ROS](http://wiki.ros.org/ROS) platform. This means that the ROSML projects are ultimately translated into C++ packages written in ROS (as we know, a ROS package can be developed in C++ or Python. For more info, see: [ROS packages](http://wiki.ros.org/ROS/Tutorials/CreatingPackage)). 
+The ROSML editor can be used for not only developing ROSML models but also generating code which can be run on a [ROS](http://wiki.ros.org/ROS) platform. This means that the ROSML projects are ultimately translated into [ROS packages](http://wiki.ros.org/ROS/Tutorials/CreatingPackage) written in C++ (as we know, a ROS package can be developed in C++ or Python). The generated code can then be build against the target hardware platform, and be deployed on the same (discussed in the next section).
+
+For generating ROS code for a ROSML model in the editor -
+  1. First, [create a new model](#creating-a-model) or [open an existing model](#open-an-existing-model).
+  2. Select the "Packages" aspect from "Aspects" dropdown menu.
+  3. Go to "Tools" dropdown menu, and click on "Generate ROS code" (or alternatively use hotkey **Ctrl+G**).
+  
+After completing the above steps, the confirmation box saying "Generated ROS Workspace" should appear. The generated code can be found in the "01-Software-Configuration" sub-directory in the Project directory. The "01-Software-Configuration" directory previously contained .rml file describing the ROSML model. After completing the steps for generating the code, it should additionally contain another directory called "Workspace" which contains fully populated ROS workspace, as discussed in [here](http://wiki.ros.org/ROS/Tutorials/CreatingPackage#ROS.2BAC8-Tutorials.2BAC8-catkin.2BAC8-CreatingPackage.Packages_in_a_catkin_Workspace). The src sub-directory contains directories for individual packages which in turn have CMakeLists.txt (which serves as a toplevel CMake file for a ROS package), include directory (has .hpp files used in the package), msg directory (containing .msg files), srv directory (containing .srv files), package.xml file (which contains information about the package), src directory (containing source code for the package) etc. The overall folder structure looks like following -
+
+```bash
+Workspace
+└── src
+    └── package_1
+		├── CMakeLists.txt
+        ├── include
+        │   └── package_1
+        │       ├── component_1.hpp
+        │       ├── component_2.hpp
+        │       ├── Component.hpp
+        │       ├── Logger.hpp
+        │       ├── rapidxml.hpp
+        │       ├── rapidxml_utils.hpp
+        │       └── xmlParser.hpp
+        ├── msg
+        │   └── message_1.msg
+        ├── package.xml
+        └── src
+            └── package_1
+                ├── component_1.cpp
+                ├── component_2.cpp
+                ├── Component.cpp
+                ├── Logger.cpp
+                ├── pub_node_1_main.cpp
+                └── sub_node_1_main.cpp
+```
 
 ### Deploying a Model on Hardware
 ---------------------------------
