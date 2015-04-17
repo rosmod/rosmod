@@ -166,6 +166,14 @@ class ROS_Component(Drawable_Object):
         self.properties["user_private_variables"] = ""
         self.properties["destructor"] = ""
 
+# ROS I/O Component
+class ROS_IO_Component(Drawable_Object):
+    # Initialize IO Component
+    def __init__(self):
+        Drawable_Object.__init__(self)
+        self.kind = "io_component"
+        self.properties["name"] = ""
+
 # ROS Timer
 class ROS_Timer(Drawable_Object):
     # Initialize Timer
