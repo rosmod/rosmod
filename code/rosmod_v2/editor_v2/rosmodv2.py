@@ -234,6 +234,7 @@ class Example(wx.Frame):
         self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnHardwareCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnHardwareDelete, deleteTBinfo.obj)
+        self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
         self.toolbar.Realize()
     def RemoveHardwareAspectToolbar(self):
         for name,tbinfo in self.HardwareAspectInfo.toolbarButtons.iteritems():
@@ -263,6 +264,10 @@ class Example(wx.Frame):
                                obj=self.toolbar.AddTool(wx.ID_ANY,
                                                         bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
                                                         shortHelpString="Remove Deployment"))
+        generateTBinfo = TBInfo (name='generate',
+                                 obj=self.toolbar.AddTool(wx.ID_ANY,
+                                                          bitmap = wx.Bitmap(toolbarIconPath + '/tgenerate.png'),
+                                                          shortHelpString="Generate Deployment Files"))
         moveTBinfo = TBInfo (name='move',
                              obj=self.toolbar.AddTool(wx.ID_ANY,
                                                       bitmap = wx.Bitmap(toolbarIconPath + '/tmove.png'),
@@ -282,16 +287,19 @@ class Example(wx.Frame):
         self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
+        self.DeploymentAspectInfo.AddTBInfo(generateTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(moveTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
         self.DeploymentAspectInfo.AddTBInfo(runTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnDeploymentGenerate, generateTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnDeploymentRun, runTBinfo.obj)
+        self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
         self.toolbar.Realize()
     def RemoveDeploymentAspectToolbar(self):
         for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
@@ -324,11 +332,19 @@ class Example(wx.Frame):
             obj=self.toolbar.AddTool(wx.ID_ANY,
                                      bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
                                      shortHelpString="Remove Package"))
+        generateTBinfo = TBInfo(
+            name="generate",
+            obj=self.toolbar.AddTool(wx.ID_ANY,
+                                     bitmap = wx.Bitmap(toolbarIconPath + '/tgenerate.png'), 
+                                     shortHelpString="Generate Software"))
         self.PackageAspectInfo.AddTBInfo(labelTBinfo)
         self.PackageAspectInfo.AddTBInfo(createTBinfo)
         self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
+        self.PackageAspectInfo.AddTBInfo(generateTBinfo)
         self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
         self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
+        self.Bind(wx.EVT_TOOL, self.OnPackageGenerate, generateTBinfo.obj)
+        self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
         self.toolbar.Realize()
     def RemovePackageAspectToolbar(self):
         for name,tbinfo in self.PackageAspectInfo.toolbarButtons.iteritems():
@@ -864,6 +880,9 @@ class Example(wx.Frame):
             self.DeploymentAspect.DeletePage(selectedPage)
             os.remove(self.project.deployment_path + '/' + obj.properties['name'] + '.rdp')
 
+    def OnDeploymentGenerate(self,e):
+        pass
+
     def OnDeploymentMove(self,e):
         if self.deployed == False:
             selectedPage = self.DeploymentAspect.GetSelection()
@@ -956,18 +975,16 @@ class Example(wx.Frame):
             #env.warn_only = False
             numNodes = 0 # 1 # roscore
             rosCoreIP = ""
-            newObj = ros_tools.ROS_Host_Instance()
+            testName = ""
+            newObj = ros_tools.Drawable_Object()
             newObj.properties = OrderedDict()
+            newObj.properties['name'] = testName
             newObj.properties['host_reference'] = None
-            '''
-            newObj.properties['username'] = ""
-            newObj.properties['sshkey'] = ""
-            '''
             references = dep.properties['hardware_configuration_reference'].children
             ed = dialogs.EditDialog(self,
                                     editDict=newObj.properties,
                                     editObj = newObj,
-                                    title="Select Cluster Leader",
+                                    title="Deployment Options",
                                     references = references,
                                     style=wx.RESIZE_BORDER)
             ed.ShowModal()
@@ -976,26 +993,7 @@ class Example(wx.Frame):
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 rosCoreIP = newObj.properties['host_reference'].properties['ip_address']
-                '''
-                self.hostDict['roscoreHost'] = fabTest.deployed_host(
-                    userName = newObj.properties['username'],
-                    ipAddress = rosCoreIP,
-                    keyFile = newObj.properties['sshkey'],
-                    nodes = [fabTest.deployed_node(
-                        name = 'roscore',
-                        executable = '/opt/ros/indigo/bin/roscore'
-                    )],
-                    envVars = [['ROS_IMASTER_URI','http://{}:11311/'.format(rosCoreIP)],
-                               ['PATH','/opt/ros/indigo/bin/:$PATH'],
-                               ['PKG_CONFIG_PATH','/opt/ros/indigo/lib/pkgconfig:/opt/ros/indigo/lib/i386-linux-gnu/pkgconfig'],
-                               ['PYTHONPATH','/opt/ros/indigo/lib/python2.7/dist-packages'],
-                               ['ROS_DISTRO','indigo'],
-                               ['ROS_ETC_DIR','/opt/ros/indigo/etc/ros'],
-                               ['ROS_PACKAGE_PATH','/opt/ros/indigo/share:/opt/ros/indigo/stacks'],
-                               ['ROS_ROOT','/opt/ros/indigo/share/ros']]
-                )
-                env.hosts.append('roscoreHost')
-                '''
+                testName = newObj.properties['name']
                 for host in dep.getChildrenByKind("host_instance"):
                     nodeList = []
                     for node in host.children:
@@ -1111,6 +1109,9 @@ class Example(wx.Frame):
                 self.PackageAspect.DeletePage(selectedPage)
         else:
             dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
+
+    def OnPackageGenerate(self,e):
+        pass
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnMouseWheel)
@@ -1368,22 +1369,21 @@ class Example(wx.Frame):
         elif self.activeAspect == self.HardwareAspect:
             self.HardwareAspectPageChange(event)
         elif self.activeAspect == self.DeploymentAspect:
-            self.deploymentAspectPageChange(event)
+            self.DeploymentAspectPageChange(event)
 
     def PackageAspectPageChange(self, event):
         sel = self.activeAspect.GetSelection()
         numPages = self.activeAspect.GetPageCount()
         if sel >= 0:
-            deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-            if sel >= numPages - 1:
-                self.toolbar.EnableTool(deleteTBID, False)
-            else:
-                self.toolbar.EnableTool(deleteTBID, True)
-                
             pageName = self.activeAspect.GetPageText(sel)
             info = self.activeAspectInfo.GetPageInfo(pageName)
             pkg = info.obj
             canvas = info.canvas
+            deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
+            if pkg.kind == 'workspace':
+                self.toolbar.EnableTool(deleteTBID, False)
+            else:
+                self.toolbar.EnableTool(deleteTBID, True)
             drawable.Configure(pkg,self.styleDict)
             self.DrawModel(pkg,canvas)
 
@@ -1391,7 +1391,7 @@ class Example(wx.Frame):
         sel = self.activeAspect.GetSelection()
         numPages = self.activeAspect.GetPageCount()
         deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-        if numPages > 0:
+        if numPages > 1:
             self.toolbar.EnableTool(deleteTBID, True)
         else:
             self.toolbar.EnableTool(deleteTBID, False)
@@ -1407,7 +1407,7 @@ class Example(wx.Frame):
         sel = self.activeAspect.GetSelection()
         numPages = self.activeAspect.GetPageCount()
         deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-        if numPages > 0:
+        if numPages > 1:
             self.toolbar.EnableTool(deleteTBID, True)
         else:
             self.toolbar.EnableTool(deleteTBID, False)
