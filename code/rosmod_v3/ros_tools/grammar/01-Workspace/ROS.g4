@@ -188,7 +188,7 @@ components
  * (5) Timers
  */
 ros_component
-    :   'component' component_name
+    :   'component' component_name ':' component_type
         '{'
             ( ros_client_server
             | ros_pub_sub
@@ -200,6 +200,11 @@ ros_component
 // ROS Component Name
 component_name
     :   ID
+    ;
+
+// ROS Component Type
+component_type
+    :   ('base' | 'io')
     ;
 
 /*

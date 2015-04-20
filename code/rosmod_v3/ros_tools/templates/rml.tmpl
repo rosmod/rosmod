@@ -67,7 +67,7 @@ package $package.properties["name"]
     {
 #for $component in $package.getChildrenByKind("component")
         // ROS Component - $component.properties["name"]
-	component $component.properties["name"]
+	component $component.properties["name"] : $component.properties["type"]
 	{
 #if $component.getChildrenByKind("server") != []
 #for $server in $component.getChildrenByKind("server")

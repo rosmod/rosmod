@@ -159,20 +159,13 @@ class ROS_Component(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "component"
         self.properties["name"] = ""
+        self.properties["type"] = "base"
         self.properties["init_business_logic"] = ""
         self.properties["user_includes"] = ""
         self.properties["user_globals"] = ""
         self.properties["hpp_globals"] = ""
         self.properties["user_private_variables"] = ""
         self.properties["destructor"] = ""
-
-# ROS I/O Component
-class ROS_IO_Component(Drawable_Object):
-    # Initialize IO Component
-    def __init__(self):
-        Drawable_Object.__init__(self)
-        self.kind = "io_component"
-        self.properties["name"] = ""
 
 # ROS Timer
 class ROS_Timer(Drawable_Object):
@@ -478,6 +471,10 @@ class ROS_Workspace_Builder(ROSListener):
     # Save the name of the component
     def enterComponent_name(self, ctx):
         self.component.properties["name"] = ctx.getText()
+
+    # Save the type of the component
+    def enterComponent_type(self, ctx):
+        self.component.properties["type"] = ctx.getText()
 
     # Save all provided and required services
     def enterRos_client_server(self, ctx):
