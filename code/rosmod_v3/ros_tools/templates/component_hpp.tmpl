@@ -1,0 +1,131 @@
+#ifndef ${define_guard}_HPP
+#define ${define_guard}_HPP
+
+$hash_include "ros/ros.h"
+$hash_include "Component.hpp"
+
+// --------------------------------
+//      USER INCLUDES GO HERE
+// --------------------------------
+#if $user_includes == ""
+//# Start User Includes Marker
+
+//# End User Includes Marker
+#else
+//# Start User Includes Marker
+$user_includes//# End User Includes Marker
+#end if
+
+#for $topic in $topics
+$hash_include "$topic[0]/${topic[1]}.h"
+#end for
+#for $service in $services
+$hash_include "$service[0]/${service[1]}.h"
+#end for
+
+#if $hpp_globals == ""
+//# Start User Globals Marker
+
+//# End User Globals Marker
+#else
+//# Start User Globals Marker
+$hpp_globals//# End User Globals Marker
+#end if
+
+class $component_name : public Component
+{
+    public:
+        // Component $component_name Constructor
+        ${component_name}(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv) : Component(hostName, nodeName, compName, argc, argv) {}
+
+        // These functions' business logic will be filled in by the user:
+
+	// Init() is always generated
+	void Init(const ros::TimerEvent& event);
+
+	#if $len($subscribers) > 0
+	#for $sub in $subscribers
+	// OnOneData Subscription handler for $sub.properties["name"] subscriber 
+	void ${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
+ 
+	#end for
+
+	#end if
+	#if $len($provided_services) > 0
+	#for $server in $servers
+	// Component Service Callback
+	bool ${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request &req,
+		$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res);
+
+	#end for
+
+	#end if	
+	#if $len($timers) > 0
+	#for $timer in $timers
+	// Callback for $timer.properties["name"] timer
+	void ${timer.properties["name"]}Callback(const ros::TimerEvent& event);
+
+	#end for
+
+	#end if
+	// these functions' business logic will be auto-generated:
+
+	// startUp() is used to configure timers, publishers, & service providers
+	void startUp();
+
+	// required for clean shutdown
+	~${component_name}();
+
+    private:
+
+	#if $len($timers) > 0
+	#for $timer in $timers
+	// ROS Timer - $timer.properties["name"]
+	ros::Timer $timer.properties["name"];
+
+	#end for
+
+	#end if
+	#if $len($subscribers) > 0
+	#for $sub in $subscribers
+	// ROS Subscriber - $sub.properties["name"]
+	ros::Subscriber $sub.properties["name"]; 
+
+	#end for
+
+	#end if
+	#if $len($publishers) > 0
+	#for $pub in $publishers
+	// ROS Publisher - $pub.properties["name"]
+	ros::Publisher $pub.properties["name"];
+
+	#end for
+
+	#end if
+	#if $len($provided_services) > 0
+	#for $provided in $provided_services
+	// ROS Service Server - ${provided}_server
+	ros::ServiceServer ${provided}_server;
+
+	#end for
+
+	#end if
+	#if $len($required_services) > 0
+	#for $required in $required_services
+	// ROS Service Client - ${required[1]}_client
+	ros::ServiceClient ${required[1]}_client;
+
+	#end for
+	#end if
+	#if $user_private_variables == ""
+        //# Start User Private Variables Marker
+
+        //# End User Private Variables Marker
+	#else
+        //# Start User Private Variables Marker
+$user_private_variables        //# End User Private Variables Marker
+	#end if
+};
+
+
+#endif

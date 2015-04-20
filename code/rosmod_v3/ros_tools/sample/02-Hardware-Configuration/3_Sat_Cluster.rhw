@@ -1,0 +1,16 @@
+/*
+ * ROS Hardware Configurations Model
+ */
+
+// Host - Sat1
+host Sat1
+{
+    ip_address = "10.0.0.79";
+}
+// Host - Sat2
+host Sat2
+{
+    ip_address = "10.0.0.80";
+    architecture = "My_arch";
+}
+
