@@ -188,12 +188,9 @@ components
  * (5) Timers
  */
 ros_component
-    :   'component' component_name ':' component_type
+    :   'component' component_name ':' comp_type
         '{'
-            ( ros_client_server
-            | ros_pub_sub
-            | ros_timer
-            )*
+            (component_ports)*
         '}'
     ;   
 
@@ -203,23 +200,46 @@ component_name
     ;
 
 // ROS Component Type
-component_type
+comp_type
     :   ('base' | 'io')
     ;
 
 /*
+ * ROS Component Ports
+ */
+component_ports
+    :   ( ros_client_server
+        | ros_pub_sub
+        | ros_timer
+        )
+        '{'
+             (port_properties)
+        '}'
+    ;
+
+/*
  * ROS Service Specification - Can be either:
- * (1) Provision - Name of the provided service
- * (2) Requirement - Name of the required service
+ * (1) Server - Name of the provided service & Name of Server
+ * (2) Client - Name of the required service & Name of Client
  */
 ros_client_server
-    :   ( 'provides' service_name ';'
-        | 'requires' service_name ';'
+    :   ( 'client' '<' service '>' client_name ';'
+        | 'server' '<' service '>' server_name ';'
         )
     ;
 
 // Service Name
-service_name
+service
+    :   ID
+    ;
+
+// Client Name
+client_name
+    :   ID
+    ;
+
+// Server Name
+server_name
     :   ID
     ;
 
@@ -229,8 +249,8 @@ service_name
  * (2) Subscriber - port name and topic
  */
 ros_pub_sub
-    :   ( 'publisher''<'topic'>' publisher ';'
-        | 'subscriber''<'topic'>'subscriber ';'
+    :   ( 'publisher' '<' topic '>' publisher ';'
+        | 'subscriber' '<' topic '>' subscriber ';'
         )
     ;
 
@@ -257,14 +277,37 @@ topic
  */
 ros_timer
     :   'timer' timer_name
-        '{'
-            ('period' '=' timer_period period_unit ';')
-        '}'
     ;
 
 // Name of ROS Timer 
 timer_name
     :   ID
+    ;
+
+/*
+ * Port properties
+ */
+port_properties
+    :   (
+          'priority' '=' operation_priority ';' 
+        | 'deadline' '=' operation_deadline deadline_unit ';'
+        | 'period' '=' timer_period period_unit ';' 
+        )+
+    ;
+
+// Operation Priority
+operation_priority
+    :   INT
+    ;
+
+// Operation Deadline
+operation_deadline
+    :   DOUBLE
+    ;
+
+// Deadline Unit
+deadline_unit
+    :   ('s' | 'ms' | 'us' | 'ns')
     ;
 
 // Timer Period

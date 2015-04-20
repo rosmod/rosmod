@@ -11,159 +11,185 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\'\u0169\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
-        buf.write(u"\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t")
-        buf.write(u"\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22")
-        buf.write(u"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4")
-        buf.write(u"\30\t\30\4\31\t\31\4\32\t\32\4\33\t\33\4\34\t\34\4\35")
-        buf.write(u"\t\35\4\36\t\36\4\37\t\37\4 \t \4!\t!\4\"\t\"\4#\t#\4")
-        buf.write(u"$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\3\2")
-        buf.write(u"\6\2X\n\2\r\2\16\2Y\3\2\3\2\3\3\3\3\3\3\3\3\5\3b\n\3")
-        buf.write(u"\3\3\5\3e\n\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\7\5")
-        buf.write(u"p\n\5\f\5\16\5s\13\5\3\5\3\5\3\6\3\6\3\6\3\6\6\6{\n\6")
-        buf.write(u"\r\6\16\6|\3\6\3\6\3\7\3\7\3\b\3\b\3\b\3\b\5\b\u0087")
-        buf.write(u"\n\b\3\b\3\b\3\t\3\t\3\t\7\t\u008e\n\t\f\t\16\t\u0091")
-        buf.write(u"\13\t\3\t\3\t\5\t\u0095\n\t\3\t\7\t\u0098\n\t\f\t\16")
-        buf.write(u"\t\u009b\13\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\7\f\u00a4")
-        buf.write(u"\n\f\f\f\16\f\u00a7\13\f\3\f\3\f\3\r\3\r\3\r\3\r\3\r")
-        buf.write(u"\3\r\3\r\3\16\3\16\3\17\3\17\3\17\7\17\u00b7\n\17\f\17")
-        buf.write(u"\16\17\u00ba\13\17\3\17\3\17\3\20\3\20\3\20\3\20\5\20")
-        buf.write(u"\u00c2\n\20\3\20\3\20\3\21\3\21\3\21\7\21\u00c9\n\21")
-        buf.write(u"\f\21\16\21\u00cc\13\21\3\21\3\21\3\22\3\22\3\22\3\22")
-        buf.write(u"\5\22\u00d4\n\22\3\22\3\22\3\23\3\23\3\23\7\23\u00db")
-        buf.write(u"\n\23\f\23\16\23\u00de\13\23\3\23\3\23\5\23\u00e2\n\23")
-        buf.write(u"\3\23\5\23\u00e5\n\23\3\24\3\24\3\25\3\25\3\26\3\26\3")
-        buf.write(u"\26\7\26\u00ee\n\26\f\26\16\26\u00f1\13\26\3\26\3\26")
-        buf.write(u"\5\26\u00f5\n\26\3\26\5\26\u00f8\n\26\3\27\3\27\3\30")
-        buf.write(u"\3\30\3\31\3\31\3\31\6\31\u0101\n\31\r\31\16\31\u0102")
-        buf.write(u"\3\31\3\31\3\32\3\32\3\32\3\32\3\32\3\32\7\32\u010d\n")
-        buf.write(u"\32\f\32\16\32\u0110\13\32\3\32\3\32\3\33\3\33\3\34\3")
-        buf.write(u"\34\3\34\3\34\3\34\3\34\3\34\3\34\5\34\u011e\n\34\3\35")
-        buf.write(u"\3\35\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3")
-        buf.write(u"\36\3\36\3\36\3\36\3\36\5\36\u0130\n\36\3\37\3\37\3 ")
-        buf.write(u"\3 \3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"")
-        buf.write(u"\3#\3#\3$\3$\3%\3%\3&\3&\3&\6&\u014c\n&\r&\16&\u014d")
-        buf.write(u"\3&\3&\3\'\3\'\3\'\3\'\6\'\u0156\n\'\r\'\16\'\u0157\3")
-        buf.write(u"\'\3\'\3(\3(\3)\3)\3)\3)\3)\3)\3)\3*\3*\3+\3+\3+\2\2")
-        buf.write(u",\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60")
-        buf.write(u"\62\64\668:<>@BDFHJLNPRT\2\4\3\2!$\5\2\t\t\22\22\37 ")
-        buf.write(u"\u015a\2W\3\2\2\2\4]\3\2\2\2\6j\3\2\2\2\bl\3\2\2\2\n")
-        buf.write(u"v\3\2\2\2\f\u0080\3\2\2\2\16\u0082\3\2\2\2\20\u008a\3")
-        buf.write(u"\2\2\2\22\u009c\3\2\2\2\24\u009e\3\2\2\2\26\u00a0\3\2")
-        buf.write(u"\2\2\30\u00aa\3\2\2\2\32\u00b1\3\2\2\2\34\u00b3\3\2\2")
-        buf.write(u"\2\36\u00bd\3\2\2\2 \u00c5\3\2\2\2\"\u00cf\3\2\2\2$\u00d7")
-        buf.write(u"\3\2\2\2&\u00e6\3\2\2\2(\u00e8\3\2\2\2*\u00ea\3\2\2\2")
-        buf.write(u",\u00f9\3\2\2\2.\u00fb\3\2\2\2\60\u00fd\3\2\2\2\62\u0106")
-        buf.write(u"\3\2\2\2\64\u0113\3\2\2\2\66\u011d\3\2\2\28\u011f\3\2")
-        buf.write(u"\2\2:\u012f\3\2\2\2<\u0131\3\2\2\2>\u0133\3\2\2\2@\u0135")
-        buf.write(u"\3\2\2\2B\u0137\3\2\2\2D\u0142\3\2\2\2F\u0144\3\2\2\2")
-        buf.write(u"H\u0146\3\2\2\2J\u0148\3\2\2\2L\u0151\3\2\2\2N\u015b")
-        buf.write(u"\3\2\2\2P\u015d\3\2\2\2R\u0164\3\2\2\2T\u0166\3\2\2\2")
-        buf.write(u"VX\5\4\3\2WV\3\2\2\2XY\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z[")
-        buf.write(u"\3\2\2\2[\\\7\2\2\3\\\3\3\2\2\2]^\7\16\2\2^_\5\6\4\2")
-        buf.write(u"_a\7\20\2\2`b\5\b\5\2a`\3\2\2\2ab\3\2\2\2bd\3\2\2\2c")
-        buf.write(u"e\5\26\f\2dc\3\2\2\2de\3\2\2\2ef\3\2\2\2fg\5\60\31\2")
-        buf.write(u"gh\5J&\2hi\7\24\2\2i\5\3\2\2\2jk\7!\2\2k\7\3\2\2\2lm")
-        buf.write(u"\7\13\2\2mq\7\20\2\2np\5\n\6\2on\3\2\2\2ps\3\2\2\2qo")
-        buf.write(u"\3\2\2\2qr\3\2\2\2rt\3\2\2\2sq\3\2\2\2tu\7\24\2\2u\t")
-        buf.write(u"\3\2\2\2vw\7\6\2\2wx\5\f\7\2xz\7\20\2\2y{\5\16\b\2zy")
-        buf.write(u"\3\2\2\2{|\3\2\2\2|z\3\2\2\2|}\3\2\2\2}~\3\2\2\2~\177")
-        buf.write(u"\7\24\2\2\177\13\3\2\2\2\u0080\u0081\7!\2\2\u0081\r\3")
-        buf.write(u"\2\2\2\u0082\u0083\5\20\t\2\u0083\u0086\5\22\n\2\u0084")
-        buf.write(u"\u0085\7\25\2\2\u0085\u0087\5\24\13\2\u0086\u0084\3\2")
-        buf.write(u"\2\2\u0086\u0087\3\2\2\2\u0087\u0088\3\2\2\2\u0088\u0089")
-        buf.write(u"\7\27\2\2\u0089\17\3\2\2\2\u008a\u008f\7!\2\2\u008b\u008c")
-        buf.write(u"\7\36\2\2\u008c\u008e\7!\2\2\u008d\u008b\3\2\2\2\u008e")
-        buf.write(u"\u0091\3\2\2\2\u008f\u008d\3\2\2\2\u008f\u0090\3\2\2")
-        buf.write(u"\2\u0090\u0099\3\2\2\2\u0091\u008f\3\2\2\2\u0092\u0094")
-        buf.write(u"\7\7\2\2\u0093\u0095\7\"\2\2\u0094\u0093\3\2\2\2\u0094")
-        buf.write(u"\u0095\3\2\2\2\u0095\u0096\3\2\2\2\u0096\u0098\7\5\2")
-        buf.write(u"\2\u0097\u0092\3\2\2\2\u0098\u009b\3\2\2\2\u0099\u0097")
-        buf.write(u"\3\2\2\2\u0099\u009a\3\2\2\2\u009a\21\3\2\2\2\u009b\u0099")
-        buf.write(u"\3\2\2\2\u009c\u009d\7!\2\2\u009d\23\3\2\2\2\u009e\u009f")
-        buf.write(u"\t\2\2\2\u009f\25\3\2\2\2\u00a0\u00a1\7\f\2\2\u00a1\u00a5")
-        buf.write(u"\7\20\2\2\u00a2\u00a4\5\30\r\2\u00a3\u00a2\3\2\2\2\u00a4")
-        buf.write(u"\u00a7\3\2\2\2\u00a5\u00a3\3\2\2\2\u00a5\u00a6\3\2\2")
-        buf.write(u"\2\u00a6\u00a8\3\2\2\2\u00a7\u00a5\3\2\2\2\u00a8\u00a9")
-        buf.write(u"\7\24\2\2\u00a9\27\3\2\2\2\u00aa\u00ab\7\35\2\2\u00ab")
-        buf.write(u"\u00ac\5\32\16\2\u00ac\u00ad\7\20\2\2\u00ad\u00ae\5\34")
-        buf.write(u"\17\2\u00ae\u00af\5 \21\2\u00af\u00b0\7\24\2\2\u00b0")
-        buf.write(u"\31\3\2\2\2\u00b1\u00b2\7!\2\2\u00b2\33\3\2\2\2\u00b3")
-        buf.write(u"\u00b4\7\4\2\2\u00b4\u00b8\7\20\2\2\u00b5\u00b7\5\36")
-        buf.write(u"\20\2\u00b6\u00b5\3\2\2\2\u00b7\u00ba\3\2\2\2\u00b8\u00b6")
-        buf.write(u"\3\2\2\2\u00b8\u00b9\3\2\2\2\u00b9\u00bb\3\2\2\2\u00ba")
-        buf.write(u"\u00b8\3\2\2\2\u00bb\u00bc\7\24\2\2\u00bc\35\3\2\2\2")
-        buf.write(u"\u00bd\u00be\5$\23\2\u00be\u00c1\5&\24\2\u00bf\u00c0")
-        buf.write(u"\7\25\2\2\u00c0\u00c2\5(\25\2\u00c1\u00bf\3\2\2\2\u00c1")
-        buf.write(u"\u00c2\3\2\2\2\u00c2\u00c3\3\2\2\2\u00c3\u00c4\7\27\2")
-        buf.write(u"\2\u00c4\37\3\2\2\2\u00c5\u00c6\7\32\2\2\u00c6\u00ca")
-        buf.write(u"\7\20\2\2\u00c7\u00c9\5\"\22\2\u00c8\u00c7\3\2\2\2\u00c9")
-        buf.write(u"\u00cc\3\2\2\2\u00ca\u00c8\3\2\2\2\u00ca\u00cb\3\2\2")
-        buf.write(u"\2\u00cb\u00cd\3\2\2\2\u00cc\u00ca\3\2\2\2\u00cd\u00ce")
-        buf.write(u"\7\24\2\2\u00ce!\3\2\2\2\u00cf\u00d0\5*\26\2\u00d0\u00d3")
-        buf.write(u"\5,\27\2\u00d1\u00d2\7\25\2\2\u00d2\u00d4\5.\30\2\u00d3")
-        buf.write(u"\u00d1\3\2\2\2\u00d3\u00d4\3\2\2\2\u00d4\u00d5\3\2\2")
-        buf.write(u"\2\u00d5\u00d6\7\27\2\2\u00d6#\3\2\2\2\u00d7\u00dc\7")
-        buf.write(u"!\2\2\u00d8\u00d9\7\36\2\2\u00d9\u00db\7!\2\2\u00da\u00d8")
-        buf.write(u"\3\2\2\2\u00db\u00de\3\2\2\2\u00dc\u00da\3\2\2\2\u00dc")
-        buf.write(u"\u00dd\3\2\2\2\u00dd\u00e4\3\2\2\2\u00de\u00dc\3\2\2")
-        buf.write(u"\2\u00df\u00e1\7\7\2\2\u00e0\u00e2\7\"\2\2\u00e1\u00e0")
-        buf.write(u"\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2\u00e3\3\2\2\2\u00e3")
-        buf.write(u"\u00e5\7\5\2\2\u00e4\u00df\3\2\2\2\u00e4\u00e5\3\2\2")
-        buf.write(u"\2\u00e5%\3\2\2\2\u00e6\u00e7\7!\2\2\u00e7\'\3\2\2\2")
-        buf.write(u"\u00e8\u00e9\t\2\2\2\u00e9)\3\2\2\2\u00ea\u00ef\7!\2")
-        buf.write(u"\2\u00eb\u00ec\7\36\2\2\u00ec\u00ee\7!\2\2\u00ed\u00eb")
-        buf.write(u"\3\2\2\2\u00ee\u00f1\3\2\2\2\u00ef\u00ed\3\2\2\2\u00ef")
-        buf.write(u"\u00f0\3\2\2\2\u00f0\u00f7\3\2\2\2\u00f1\u00ef\3\2\2")
-        buf.write(u"\2\u00f2\u00f4\7\7\2\2\u00f3\u00f5\7\"\2\2\u00f4\u00f3")
-        buf.write(u"\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00f6\3\2\2\2\u00f6")
-        buf.write(u"\u00f8\7\5\2\2\u00f7\u00f2\3\2\2\2\u00f7\u00f8\3\2\2")
-        buf.write(u"\2\u00f8+\3\2\2\2\u00f9\u00fa\7!\2\2\u00fa-\3\2\2\2\u00fb")
-        buf.write(u"\u00fc\t\2\2\2\u00fc/\3\2\2\2\u00fd\u00fe\7\23\2\2\u00fe")
-        buf.write(u"\u0100\7\20\2\2\u00ff\u0101\5\62\32\2\u0100\u00ff\3\2")
-        buf.write(u"\2\2\u0101\u0102\3\2\2\2\u0102\u0100\3\2\2\2\u0102\u0103")
-        buf.write(u"\3\2\2\2\u0103\u0104\3\2\2\2\u0104\u0105\7\24\2\2\u0105")
-        buf.write(u"\61\3\2\2\2\u0106\u0107\7\3\2\2\u0107\u0108\5\64\33\2")
-        buf.write(u"\u0108\u010e\7\20\2\2\u0109\u010d\5\66\34\2\u010a\u010d")
-        buf.write(u"\5:\36\2\u010b\u010d\5B\"\2\u010c\u0109\3\2\2\2\u010c")
-        buf.write(u"\u010a\3\2\2\2\u010c\u010b\3\2\2\2\u010d\u0110\3\2\2")
-        buf.write(u"\2\u010e\u010c\3\2\2\2\u010e\u010f\3\2\2\2\u010f\u0111")
-        buf.write(u"\3\2\2\2\u0110\u010e\3\2\2\2\u0111\u0112\7\24\2\2\u0112")
-        buf.write(u"\63\3\2\2\2\u0113\u0114\7!\2\2\u0114\65\3\2\2\2\u0115")
-        buf.write(u"\u0116\7\21\2\2\u0116\u0117\58\35\2\u0117\u0118\7\27")
-        buf.write(u"\2\2\u0118\u011e\3\2\2\2\u0119\u011a\7\26\2\2\u011a\u011b")
-        buf.write(u"\58\35\2\u011b\u011c\7\27\2\2\u011c\u011e\3\2\2\2\u011d")
-        buf.write(u"\u0115\3\2\2\2\u011d\u0119\3\2\2\2\u011e\67\3\2\2\2\u011f")
-        buf.write(u"\u0120\7!\2\2\u01209\3\2\2\2\u0121\u0122\7\r\2\2\u0122")
-        buf.write(u"\u0123\7\n\2\2\u0123\u0124\5@!\2\u0124\u0125\7\33\2\2")
-        buf.write(u"\u0125\u0126\5<\37\2\u0126\u0127\7\27\2\2\u0127\u0130")
-        buf.write(u"\3\2\2\2\u0128\u0129\7\17\2\2\u0129\u012a\7\n\2\2\u012a")
-        buf.write(u"\u012b\5@!\2\u012b\u012c\7\33\2\2\u012c\u012d\5> \2\u012d")
-        buf.write(u"\u012e\7\27\2\2\u012e\u0130\3\2\2\2\u012f\u0121\3\2\2")
-        buf.write(u"\2\u012f\u0128\3\2\2\2\u0130;\3\2\2\2\u0131\u0132\7!")
-        buf.write(u"\2\2\u0132=\3\2\2\2\u0133\u0134\7!\2\2\u0134?\3\2\2\2")
-        buf.write(u"\u0135\u0136\7!\2\2\u0136A\3\2\2\2\u0137\u0138\7\31\2")
-        buf.write(u"\2\u0138\u0139\5D#\2\u0139\u013a\7\20\2\2\u013a\u013b")
-        buf.write(u"\7\34\2\2\u013b\u013c\7\25\2\2\u013c\u013d\5F$\2\u013d")
-        buf.write(u"\u013e\5H%\2\u013e\u013f\7\27\2\2\u013f\u0140\3\2\2\2")
-        buf.write(u"\u0140\u0141\7\24\2\2\u0141C\3\2\2\2\u0142\u0143\7!\2")
-        buf.write(u"\2\u0143E\3\2\2\2\u0144\u0145\7#\2\2\u0145G\3\2\2\2\u0146")
-        buf.write(u"\u0147\t\3\2\2\u0147I\3\2\2\2\u0148\u0149\7\30\2\2\u0149")
-        buf.write(u"\u014b\7\20\2\2\u014a\u014c\5L\'\2\u014b\u014a\3\2\2")
-        buf.write(u"\2\u014c\u014d\3\2\2\2\u014d\u014b\3\2\2\2\u014d\u014e")
-        buf.write(u"\3\2\2\2\u014e\u014f\3\2\2\2\u014f\u0150\7\24\2\2\u0150")
-        buf.write(u"K\3\2\2\2\u0151\u0152\7\b\2\2\u0152\u0153\5N(\2\u0153")
-        buf.write(u"\u0155\7\20\2\2\u0154\u0156\5P)\2\u0155\u0154\3\2\2\2")
-        buf.write(u"\u0156\u0157\3\2\2\2\u0157\u0155\3\2\2\2\u0157\u0158")
-        buf.write(u"\3\2\2\2\u0158\u0159\3\2\2\2\u0159\u015a\7\24\2\2\u015a")
-        buf.write(u"M\3\2\2\2\u015b\u015c\7!\2\2\u015cO\3\2\2\2\u015d\u015e")
-        buf.write(u"\7\3\2\2\u015e\u015f\7\n\2\2\u015f\u0160\5R*\2\u0160")
-        buf.write(u"\u0161\7\33\2\2\u0161\u0162\5T+\2\u0162\u0163\7\27\2")
-        buf.write(u"\2\u0163Q\3\2\2\2\u0164\u0165\7!\2\2\u0165S\3\2\2\2\u0166")
-        buf.write(u"\u0167\7!\2\2\u0167U\3\2\2\2\35Yadq|\u0086\u008f\u0094")
-        buf.write(u"\u0099\u00a5\u00b8\u00c1\u00ca\u00d3\u00dc\u00e1\u00e4")
-        buf.write(u"\u00ef\u00f4\u00f7\u0102\u010c\u010e\u011d\u012f\u014d")
-        buf.write(u"\u0157")
+        buf.write(u",\u01a1\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u"\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r")
+        buf.write(u"\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4")
+        buf.write(u"\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30")
+        buf.write(u"\t\30\4\31\t\31\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t")
+        buf.write(u"\35\4\36\t\36\4\37\t\37\4 \t \4!\t!\4\"\t\"\4#\t#\4$")
+        buf.write(u"\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4,\t")
+        buf.write(u",\4-\t-\4.\t.\4/\t/\4\60\t\60\4\61\t\61\4\62\t\62\4\63")
+        buf.write(u"\t\63\3\2\6\2h\n\2\r\2\16\2i\3\2\3\2\3\3\3\3\3\3\3\3")
+        buf.write(u"\5\3r\n\3\3\3\5\3u\n\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3")
+        buf.write(u"\5\3\5\7\5\u0080\n\5\f\5\16\5\u0083\13\5\3\5\3\5\3\6")
+        buf.write(u"\3\6\3\6\3\6\6\6\u008b\n\6\r\6\16\6\u008c\3\6\3\6\3\7")
+        buf.write(u"\3\7\3\b\3\b\3\b\3\b\5\b\u0097\n\b\3\b\3\b\3\t\3\t\3")
+        buf.write(u"\t\7\t\u009e\n\t\f\t\16\t\u00a1\13\t\3\t\3\t\5\t\u00a5")
+        buf.write(u"\n\t\3\t\7\t\u00a8\n\t\f\t\16\t\u00ab\13\t\3\n\3\n\3")
+        buf.write(u"\13\3\13\3\f\3\f\3\f\7\f\u00b4\n\f\f\f\16\f\u00b7\13")
+        buf.write(u"\f\3\f\3\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\16\3\16\3\17")
+        buf.write(u"\3\17\3\17\7\17\u00c7\n\17\f\17\16\17\u00ca\13\17\3\17")
+        buf.write(u"\3\17\3\20\3\20\3\20\3\20\5\20\u00d2\n\20\3\20\3\20\3")
+        buf.write(u"\21\3\21\3\21\7\21\u00d9\n\21\f\21\16\21\u00dc\13\21")
+        buf.write(u"\3\21\3\21\3\22\3\22\3\22\3\22\5\22\u00e4\n\22\3\22\3")
+        buf.write(u"\22\3\23\3\23\3\23\7\23\u00eb\n\23\f\23\16\23\u00ee\13")
+        buf.write(u"\23\3\23\3\23\5\23\u00f2\n\23\3\23\5\23\u00f5\n\23\3")
+        buf.write(u"\24\3\24\3\25\3\25\3\26\3\26\3\26\7\26\u00fe\n\26\f\26")
+        buf.write(u"\16\26\u0101\13\26\3\26\3\26\5\26\u0105\n\26\3\26\5\26")
+        buf.write(u"\u0108\n\26\3\27\3\27\3\30\3\30\3\31\3\31\3\31\6\31\u0111")
+        buf.write(u"\n\31\r\31\16\31\u0112\3\31\3\31\3\32\3\32\3\32\3\32")
+        buf.write(u"\3\32\3\32\7\32\u011d\n\32\f\32\16\32\u0120\13\32\3\32")
+        buf.write(u"\3\32\3\33\3\33\3\34\3\34\3\35\3\35\3\35\5\35\u012b\n")
+        buf.write(u"\35\3\35\3\35\3\35\3\35\3\36\3\36\3\36\3\36\3\36\3\36")
+        buf.write(u"\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\5\36\u013f\n")
+        buf.write(u"\36\3\37\3\37\3 \3 \3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\3\"")
+        buf.write(u"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\5\"\u0155\n\"\3#\3#\3$\3")
+        buf.write(u"$\3%\3%\3&\3&\3&\3\'\3\'\3(\3(\3(\3(\3(\3(\3(\3(\3(\3")
+        buf.write(u"(\3(\3(\3(\3(\3(\3(\3(\6(\u0173\n(\r(\16(\u0174\3)\3")
+        buf.write(u")\3*\3*\3+\3+\3,\3,\3-\3-\3.\3.\3.\6.\u0184\n.\r.\16")
+        buf.write(u".\u0185\3.\3.\3/\3/\3/\3/\6/\u018e\n/\r/\16/\u018f\3")
+        buf.write(u"/\3/\3\60\3\60\3\61\3\61\3\61\3\61\3\61\3\61\3\61\3\62")
+        buf.write(u"\3\62\3\63\3\63\3\63\2\2\64\2\4\6\b\n\f\16\20\22\24\26")
+        buf.write(u"\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\")
+        buf.write(u"^`bd\2\5\3\2&)\4\2\27\27\31\31\5\2\n\n\23\23$%\u018d")
+        buf.write(u"\2g\3\2\2\2\4m\3\2\2\2\6z\3\2\2\2\b|\3\2\2\2\n\u0086")
+        buf.write(u"\3\2\2\2\f\u0090\3\2\2\2\16\u0092\3\2\2\2\20\u009a\3")
+        buf.write(u"\2\2\2\22\u00ac\3\2\2\2\24\u00ae\3\2\2\2\26\u00b0\3\2")
+        buf.write(u"\2\2\30\u00ba\3\2\2\2\32\u00c1\3\2\2\2\34\u00c3\3\2\2")
+        buf.write(u"\2\36\u00cd\3\2\2\2 \u00d5\3\2\2\2\"\u00df\3\2\2\2$\u00e7")
+        buf.write(u"\3\2\2\2&\u00f6\3\2\2\2(\u00f8\3\2\2\2*\u00fa\3\2\2\2")
+        buf.write(u",\u0109\3\2\2\2.\u010b\3\2\2\2\60\u010d\3\2\2\2\62\u0116")
+        buf.write(u"\3\2\2\2\64\u0123\3\2\2\2\66\u0125\3\2\2\28\u012a\3\2")
+        buf.write(u"\2\2:\u013e\3\2\2\2<\u0140\3\2\2\2>\u0142\3\2\2\2@\u0144")
+        buf.write(u"\3\2\2\2B\u0154\3\2\2\2D\u0156\3\2\2\2F\u0158\3\2\2\2")
+        buf.write(u"H\u015a\3\2\2\2J\u015c\3\2\2\2L\u015f\3\2\2\2N\u0172")
+        buf.write(u"\3\2\2\2P\u0176\3\2\2\2R\u0178\3\2\2\2T\u017a\3\2\2\2")
+        buf.write(u"V\u017c\3\2\2\2X\u017e\3\2\2\2Z\u0180\3\2\2\2\\\u0189")
+        buf.write(u"\3\2\2\2^\u0193\3\2\2\2`\u0195\3\2\2\2b\u019c\3\2\2\2")
+        buf.write(u"d\u019e\3\2\2\2fh\5\4\3\2gf\3\2\2\2hi\3\2\2\2ig\3\2\2")
+        buf.write(u"\2ij\3\2\2\2jk\3\2\2\2kl\7\2\2\3l\3\3\2\2\2mn\7\20\2")
+        buf.write(u"\2no\5\6\4\2oq\7\21\2\2pr\5\b\5\2qp\3\2\2\2qr\3\2\2\2")
+        buf.write(u"rt\3\2\2\2su\5\26\f\2ts\3\2\2\2tu\3\2\2\2uv\3\2\2\2v")
+        buf.write(u"w\5\60\31\2wx\5Z.\2xy\7\25\2\2y\5\3\2\2\2z{\7&\2\2{\7")
+        buf.write(u"\3\2\2\2|}\7\f\2\2}\u0081\7\21\2\2~\u0080\5\n\6\2\177")
+        buf.write(u"~\3\2\2\2\u0080\u0083\3\2\2\2\u0081\177\3\2\2\2\u0081")
+        buf.write(u"\u0082\3\2\2\2\u0082\u0084\3\2\2\2\u0083\u0081\3\2\2")
+        buf.write(u"\2\u0084\u0085\7\25\2\2\u0085\t\3\2\2\2\u0086\u0087\7")
+        buf.write(u"\6\2\2\u0087\u0088\5\f\7\2\u0088\u008a\7\21\2\2\u0089")
+        buf.write(u"\u008b\5\16\b\2\u008a\u0089\3\2\2\2\u008b\u008c\3\2\2")
+        buf.write(u"\2\u008c\u008a\3\2\2\2\u008c\u008d\3\2\2\2\u008d\u008e")
+        buf.write(u"\3\2\2\2\u008e\u008f\7\25\2\2\u008f\13\3\2\2\2\u0090")
+        buf.write(u"\u0091\7&\2\2\u0091\r\3\2\2\2\u0092\u0093\5\20\t\2\u0093")
+        buf.write(u"\u0096\5\22\n\2\u0094\u0095\7\30\2\2\u0095\u0097\5\24")
+        buf.write(u"\13\2\u0096\u0094\3\2\2\2\u0096\u0097\3\2\2\2\u0097\u0098")
+        buf.write(u"\3\2\2\2\u0098\u0099\7\33\2\2\u0099\17\3\2\2\2\u009a")
+        buf.write(u"\u009f\7&\2\2\u009b\u009c\7#\2\2\u009c\u009e\7&\2\2\u009d")
+        buf.write(u"\u009b\3\2\2\2\u009e\u00a1\3\2\2\2\u009f\u009d\3\2\2")
+        buf.write(u"\2\u009f\u00a0\3\2\2\2\u00a0\u00a9\3\2\2\2\u00a1\u009f")
+        buf.write(u"\3\2\2\2\u00a2\u00a4\7\7\2\2\u00a3\u00a5\7\'\2\2\u00a4")
+        buf.write(u"\u00a3\3\2\2\2\u00a4\u00a5\3\2\2\2\u00a5\u00a6\3\2\2")
+        buf.write(u"\2\u00a6\u00a8\7\5\2\2\u00a7\u00a2\3\2\2\2\u00a8\u00ab")
+        buf.write(u"\3\2\2\2\u00a9\u00a7\3\2\2\2\u00a9\u00aa\3\2\2\2\u00aa")
+        buf.write(u"\21\3\2\2\2\u00ab\u00a9\3\2\2\2\u00ac\u00ad\7&\2\2\u00ad")
+        buf.write(u"\23\3\2\2\2\u00ae\u00af\t\2\2\2\u00af\25\3\2\2\2\u00b0")
+        buf.write(u"\u00b1\7\16\2\2\u00b1\u00b5\7\21\2\2\u00b2\u00b4\5\30")
+        buf.write(u"\r\2\u00b3\u00b2\3\2\2\2\u00b4\u00b7\3\2\2\2\u00b5\u00b3")
+        buf.write(u"\3\2\2\2\u00b5\u00b6\3\2\2\2\u00b6\u00b8\3\2\2\2\u00b7")
+        buf.write(u"\u00b5\3\2\2\2\u00b8\u00b9\7\25\2\2\u00b9\27\3\2\2\2")
+        buf.write(u"\u00ba\u00bb\7!\2\2\u00bb\u00bc\5\32\16\2\u00bc\u00bd")
+        buf.write(u"\7\21\2\2\u00bd\u00be\5\34\17\2\u00be\u00bf\5 \21\2\u00bf")
+        buf.write(u"\u00c0\7\25\2\2\u00c0\31\3\2\2\2\u00c1\u00c2\7&\2\2\u00c2")
+        buf.write(u"\33\3\2\2\2\u00c3\u00c4\7\4\2\2\u00c4\u00c8\7\21\2\2")
+        buf.write(u"\u00c5\u00c7\5\36\20\2\u00c6\u00c5\3\2\2\2\u00c7\u00ca")
+        buf.write(u"\3\2\2\2\u00c8\u00c6\3\2\2\2\u00c8\u00c9\3\2\2\2\u00c9")
+        buf.write(u"\u00cb\3\2\2\2\u00ca\u00c8\3\2\2\2\u00cb\u00cc\7\25\2")
+        buf.write(u"\2\u00cc\35\3\2\2\2\u00cd\u00ce\5$\23\2\u00ce\u00d1\5")
+        buf.write(u"&\24\2\u00cf\u00d0\7\30\2\2\u00d0\u00d2\5(\25\2\u00d1")
+        buf.write(u"\u00cf\3\2\2\2\u00d1\u00d2\3\2\2\2\u00d2\u00d3\3\2\2")
+        buf.write(u"\2\u00d3\u00d4\7\33\2\2\u00d4\37\3\2\2\2\u00d5\u00d6")
+        buf.write(u"\7\36\2\2\u00d6\u00da\7\21\2\2\u00d7\u00d9\5\"\22\2\u00d8")
+        buf.write(u"\u00d7\3\2\2\2\u00d9\u00dc\3\2\2\2\u00da\u00d8\3\2\2")
+        buf.write(u"\2\u00da\u00db\3\2\2\2\u00db\u00dd\3\2\2\2\u00dc\u00da")
+        buf.write(u"\3\2\2\2\u00dd\u00de\7\25\2\2\u00de!\3\2\2\2\u00df\u00e0")
+        buf.write(u"\5*\26\2\u00e0\u00e3\5,\27\2\u00e1\u00e2\7\30\2\2\u00e2")
+        buf.write(u"\u00e4\5.\30\2\u00e3\u00e1\3\2\2\2\u00e3\u00e4\3\2\2")
+        buf.write(u"\2\u00e4\u00e5\3\2\2\2\u00e5\u00e6\7\33\2\2\u00e6#\3")
+        buf.write(u"\2\2\2\u00e7\u00ec\7&\2\2\u00e8\u00e9\7#\2\2\u00e9\u00eb")
+        buf.write(u"\7&\2\2\u00ea\u00e8\3\2\2\2\u00eb\u00ee\3\2\2\2\u00ec")
+        buf.write(u"\u00ea\3\2\2\2\u00ec\u00ed\3\2\2\2\u00ed\u00f4\3\2\2")
+        buf.write(u"\2\u00ee\u00ec\3\2\2\2\u00ef\u00f1\7\7\2\2\u00f0\u00f2")
+        buf.write(u"\7\'\2\2\u00f1\u00f0\3\2\2\2\u00f1\u00f2\3\2\2\2\u00f2")
+        buf.write(u"\u00f3\3\2\2\2\u00f3\u00f5\7\5\2\2\u00f4\u00ef\3\2\2")
+        buf.write(u"\2\u00f4\u00f5\3\2\2\2\u00f5%\3\2\2\2\u00f6\u00f7\7&")
+        buf.write(u"\2\2\u00f7\'\3\2\2\2\u00f8\u00f9\t\2\2\2\u00f9)\3\2\2")
+        buf.write(u"\2\u00fa\u00ff\7&\2\2\u00fb\u00fc\7#\2\2\u00fc\u00fe")
+        buf.write(u"\7&\2\2\u00fd\u00fb\3\2\2\2\u00fe\u0101\3\2\2\2\u00ff")
+        buf.write(u"\u00fd\3\2\2\2\u00ff\u0100\3\2\2\2\u0100\u0107\3\2\2")
+        buf.write(u"\2\u0101\u00ff\3\2\2\2\u0102\u0104\7\7\2\2\u0103\u0105")
+        buf.write(u"\7\'\2\2\u0104\u0103\3\2\2\2\u0104\u0105\3\2\2\2\u0105")
+        buf.write(u"\u0106\3\2\2\2\u0106\u0108\7\5\2\2\u0107\u0102\3\2\2")
+        buf.write(u"\2\u0107\u0108\3\2\2\2\u0108+\3\2\2\2\u0109\u010a\7&")
+        buf.write(u"\2\2\u010a-\3\2\2\2\u010b\u010c\t\2\2\2\u010c/\3\2\2")
+        buf.write(u"\2\u010d\u010e\7\24\2\2\u010e\u0110\7\21\2\2\u010f\u0111")
+        buf.write(u"\5\62\32\2\u0110\u010f\3\2\2\2\u0111\u0112\3\2\2\2\u0112")
+        buf.write(u"\u0110\3\2\2\2\u0112\u0113\3\2\2\2\u0113\u0114\3\2\2")
+        buf.write(u"\2\u0114\u0115\7\25\2\2\u0115\61\3\2\2\2\u0116\u0117")
+        buf.write(u"\7\3\2\2\u0117\u0118\5\64\33\2\u0118\u0119\7\t\2\2\u0119")
+        buf.write(u"\u011a\5\66\34\2\u011a\u011e\7\21\2\2\u011b\u011d\58")
+        buf.write(u"\35\2\u011c\u011b\3\2\2\2\u011d\u0120\3\2\2\2\u011e\u011c")
+        buf.write(u"\3\2\2\2\u011e\u011f\3\2\2\2\u011f\u0121\3\2\2\2\u0120")
+        buf.write(u"\u011e\3\2\2\2\u0121\u0122\7\25\2\2\u0122\63\3\2\2\2")
+        buf.write(u"\u0123\u0124\7&\2\2\u0124\65\3\2\2\2\u0125\u0126\t\3")
+        buf.write(u"\2\2\u0126\67\3\2\2\2\u0127\u012b\5:\36\2\u0128\u012b")
+        buf.write(u"\5B\"\2\u0129\u012b\5J&\2\u012a\u0127\3\2\2\2\u012a\u0128")
+        buf.write(u"\3\2\2\2\u012a\u0129\3\2\2\2\u012b\u012c\3\2\2\2\u012c")
+        buf.write(u"\u012d\7\21\2\2\u012d\u012e\5N(\2\u012e\u012f\7\25\2")
+        buf.write(u"\2\u012f9\3\2\2\2\u0130\u0131\7 \2\2\u0131\u0132\7\13")
+        buf.write(u"\2\2\u0132\u0133\5<\37\2\u0133\u0134\7\37\2\2\u0134\u0135")
+        buf.write(u"\5> \2\u0135\u0136\7\33\2\2\u0136\u013f\3\2\2\2\u0137")
+        buf.write(u"\u0138\7\r\2\2\u0138\u0139\7\13\2\2\u0139\u013a\5<\37")
+        buf.write(u"\2\u013a\u013b\7\37\2\2\u013b\u013c\5@!\2\u013c\u013d")
+        buf.write(u"\7\33\2\2\u013d\u013f\3\2\2\2\u013e\u0130\3\2\2\2\u013e")
+        buf.write(u"\u0137\3\2\2\2\u013f;\3\2\2\2\u0140\u0141\7&\2\2\u0141")
+        buf.write(u"=\3\2\2\2\u0142\u0143\7&\2\2\u0143?\3\2\2\2\u0144\u0145")
+        buf.write(u"\7&\2\2\u0145A\3\2\2\2\u0146\u0147\7\17\2\2\u0147\u0148")
+        buf.write(u"\7\13\2\2\u0148\u0149\5H%\2\u0149\u014a\7\37\2\2\u014a")
+        buf.write(u"\u014b\5D#\2\u014b\u014c\7\33\2\2\u014c\u0155\3\2\2\2")
+        buf.write(u"\u014d\u014e\7\22\2\2\u014e\u014f\7\13\2\2\u014f\u0150")
+        buf.write(u"\5H%\2\u0150\u0151\7\37\2\2\u0151\u0152\5F$\2\u0152\u0153")
+        buf.write(u"\7\33\2\2\u0153\u0155\3\2\2\2\u0154\u0146\3\2\2\2\u0154")
+        buf.write(u"\u014d\3\2\2\2\u0155C\3\2\2\2\u0156\u0157\7&\2\2\u0157")
+        buf.write(u"E\3\2\2\2\u0158\u0159\7&\2\2\u0159G\3\2\2\2\u015a\u015b")
+        buf.write(u"\7&\2\2\u015bI\3\2\2\2\u015c\u015d\7\35\2\2\u015d\u015e")
+        buf.write(u"\5L\'\2\u015eK\3\2\2\2\u015f\u0160\7&\2\2\u0160M\3\2")
+        buf.write(u"\2\2\u0161\u0162\7\26\2\2\u0162\u0163\7\30\2\2\u0163")
+        buf.write(u"\u0164\5P)\2\u0164\u0165\7\33\2\2\u0165\u0173\3\2\2\2")
+        buf.write(u"\u0166\u0167\7\32\2\2\u0167\u0168\7\30\2\2\u0168\u0169")
+        buf.write(u"\5R*\2\u0169\u016a\5T+\2\u016a\u016b\7\33\2\2\u016b\u0173")
+        buf.write(u"\3\2\2\2\u016c\u016d\7\"\2\2\u016d\u016e\7\30\2\2\u016e")
+        buf.write(u"\u016f\5V,\2\u016f\u0170\5X-\2\u0170\u0171\7\33\2\2\u0171")
+        buf.write(u"\u0173\3\2\2\2\u0172\u0161\3\2\2\2\u0172\u0166\3\2\2")
+        buf.write(u"\2\u0172\u016c\3\2\2\2\u0173\u0174\3\2\2\2\u0174\u0172")
+        buf.write(u"\3\2\2\2\u0174\u0175\3\2\2\2\u0175O\3\2\2\2\u0176\u0177")
+        buf.write(u"\7\'\2\2\u0177Q\3\2\2\2\u0178\u0179\7(\2\2\u0179S\3\2")
+        buf.write(u"\2\2\u017a\u017b\t\4\2\2\u017bU\3\2\2\2\u017c\u017d\7")
+        buf.write(u"(\2\2\u017dW\3\2\2\2\u017e\u017f\t\4\2\2\u017fY\3\2\2")
+        buf.write(u"\2\u0180\u0181\7\34\2\2\u0181\u0183\7\21\2\2\u0182\u0184")
+        buf.write(u"\5\\/\2\u0183\u0182\3\2\2\2\u0184\u0185\3\2\2\2\u0185")
+        buf.write(u"\u0183\3\2\2\2\u0185\u0186\3\2\2\2\u0186\u0187\3\2\2")
+        buf.write(u"\2\u0187\u0188\7\25\2\2\u0188[\3\2\2\2\u0189\u018a\7")
+        buf.write(u"\b\2\2\u018a\u018b\5^\60\2\u018b\u018d\7\21\2\2\u018c")
+        buf.write(u"\u018e\5`\61\2\u018d\u018c\3\2\2\2\u018e\u018f\3\2\2")
+        buf.write(u"\2\u018f\u018d\3\2\2\2\u018f\u0190\3\2\2\2\u0190\u0191")
+        buf.write(u"\3\2\2\2\u0191\u0192\7\25\2\2\u0192]\3\2\2\2\u0193\u0194")
+        buf.write(u"\7&\2\2\u0194_\3\2\2\2\u0195\u0196\7\3\2\2\u0196\u0197")
+        buf.write(u"\7\13\2\2\u0197\u0198\5b\62\2\u0198\u0199\7\37\2\2\u0199")
+        buf.write(u"\u019a\5d\63\2\u019a\u019b\7\33\2\2\u019ba\3\2\2\2\u019c")
+        buf.write(u"\u019d\7&\2\2\u019dc\3\2\2\2\u019e\u019f\7&\2\2\u019f")
+        buf.write(u"e\3\2\2\2\37iqt\u0081\u008c\u0096\u009f\u00a4\u00a9\u00b5")
+        buf.write(u"\u00c8\u00d1\u00da\u00e3\u00ec\u00f1\u00f4\u00ff\u0104")
+        buf.write(u"\u0107\u0112\u011e\u012a\u013e\u0154\u0172\u0174\u0185")
+        buf.write(u"\u018f")
         return buf.getvalue()
 		
 
@@ -178,51 +204,57 @@ class ROSParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     EOF = Token.EOF
-    T__29=1
-    T__28=2
-    T__27=3
-    T__26=4
-    T__25=5
-    T__24=6
-    T__23=7
-    T__22=8
-    T__21=9
-    T__20=10
-    T__19=11
-    T__18=12
-    T__17=13
-    T__16=14
-    T__15=15
-    T__14=16
-    T__13=17
-    T__12=18
-    T__11=19
-    T__10=20
-    T__9=21
-    T__8=22
-    T__7=23
-    T__6=24
-    T__5=25
-    T__4=26
-    T__3=27
-    T__2=28
-    T__1=29
-    T__0=30
-    ID=31
-    INT=32
-    DOUBLE=33
-    BOOL=34
-    WS=35
-    COMMENT=36
-    LINE_COMMENT=37
+    T__34=1
+    T__33=2
+    T__32=3
+    T__31=4
+    T__30=5
+    T__29=6
+    T__28=7
+    T__27=8
+    T__26=9
+    T__25=10
+    T__24=11
+    T__23=12
+    T__22=13
+    T__21=14
+    T__20=15
+    T__19=16
+    T__18=17
+    T__17=18
+    T__16=19
+    T__15=20
+    T__14=21
+    T__13=22
+    T__12=23
+    T__11=24
+    T__10=25
+    T__9=26
+    T__8=27
+    T__7=28
+    T__6=29
+    T__5=30
+    T__4=31
+    T__3=32
+    T__2=33
+    T__1=34
+    T__0=35
+    ID=36
+    INT=37
+    DOUBLE=38
+    BOOL=39
+    WS=40
+    COMMENT=41
+    LINE_COMMENT=42
 
     tokenNames = [ u"<INVALID>", u"'component'", u"'request'", u"']'", u"'msg'", 
-                   u"'['", u"'node'", u"'s'", u"'<'", u"'messages'", u"'services'", 
-                   u"'publisher'", u"'package'", u"'subscriber'", u"'{'", 
-                   u"'provides'", u"'us'", u"'components'", u"'}'", u"'='", 
-                   u"'requires'", u"';'", u"'nodes'", u"'timer'", u"'response'", 
-                   u"'>'", u"'period'", u"'srv'", u"'/'", u"'ms'", u"'ns'", 
-                   u"ID", u"INT", u"DOUBLE", u"BOOL", u"WS", u"COMMENT", 
+                   u"'['", u"'node'", u"':'", u"'s'", u"'<'", u"'messages'", 
+                   u"'server'", u"'services'", u"'publisher'", u"'package'", 
+                   u"'{'", u"'subscriber'", u"'us'", u"'components'", u"'}'", 
+                   u"'priority'", u"'io'", u"'='", u"'base'", u"'deadline'", 
+                   u"';'", u"'nodes'", u"'timer'", u"'response'", u"'>'", 
+                   u"'client'", u"'srv'", u"'period'", u"'/'", u"'ms'", 
+                   u"'ns'", u"ID", u"INT", u"DOUBLE", u"BOOL", u"WS", u"COMMENT", 
                    u"LINE_COMMENT" ]
 
     RULE_start = 0
@@ -251,22 +283,30 @@ class ROSParser ( Parser ):
     RULE_components = 23
     RULE_ros_component = 24
     RULE_component_name = 25
-    RULE_ros_client_server = 26
-    RULE_service_name = 27
-    RULE_ros_pub_sub = 28
-    RULE_publisher = 29
-    RULE_subscriber = 30
-    RULE_topic = 31
-    RULE_ros_timer = 32
-    RULE_timer_name = 33
-    RULE_timer_period = 34
-    RULE_period_unit = 35
-    RULE_nodes = 36
-    RULE_ros_node = 37
-    RULE_node_name = 38
-    RULE_component_instances = 39
-    RULE_component_type = 40
-    RULE_component_instance = 41
+    RULE_comp_type = 26
+    RULE_component_ports = 27
+    RULE_ros_client_server = 28
+    RULE_service = 29
+    RULE_client_name = 30
+    RULE_server_name = 31
+    RULE_ros_pub_sub = 32
+    RULE_publisher = 33
+    RULE_subscriber = 34
+    RULE_topic = 35
+    RULE_ros_timer = 36
+    RULE_timer_name = 37
+    RULE_port_properties = 38
+    RULE_operation_priority = 39
+    RULE_operation_deadline = 40
+    RULE_deadline_unit = 41
+    RULE_timer_period = 42
+    RULE_period_unit = 43
+    RULE_nodes = 44
+    RULE_ros_node = 45
+    RULE_node_name = 46
+    RULE_component_instances = 47
+    RULE_component_type = 48
+    RULE_component_instance = 49
 
     ruleNames =  [ u"start", u"ros_packages", u"package_name", u"messages", 
                    u"ros_msg", u"msg_name", u"msg_field", u"msg_field_type", 
@@ -275,11 +315,13 @@ class ROSParser ( Parser ):
                    u"res_argument", u"req_field_type", u"req_field_name", 
                    u"req_field_value", u"res_field_type", u"res_field_name", 
                    u"res_field_value", u"components", u"ros_component", 
-                   u"component_name", u"ros_client_server", u"service_name", 
+                   u"component_name", u"comp_type", u"component_ports", 
+                   u"ros_client_server", u"service", u"client_name", u"server_name", 
                    u"ros_pub_sub", u"publisher", u"subscriber", u"topic", 
-                   u"ros_timer", u"timer_name", u"timer_period", u"period_unit", 
-                   u"nodes", u"ros_node", u"node_name", u"component_instances", 
-                   u"component_type", u"component_instance" ]
+                   u"ros_timer", u"timer_name", u"port_properties", u"operation_priority", 
+                   u"operation_deadline", u"deadline_unit", u"timer_period", 
+                   u"period_unit", u"nodes", u"ros_node", u"node_name", 
+                   u"component_instances", u"component_type", u"component_instance" ]
 
     def __init__(self, input):
         super(ROSParser, self).__init__(input)
@@ -326,19 +368,19 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 85 
+            self.state = 101 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 84 
+                self.state = 100 
                 self.ros_packages()
-                self.state = 87 
+                self.state = 103 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==ROSParser.T__18):
+                if not (_la==ROSParser.T__21):
                     break
 
-            self.state = 89
+            self.state = 105
             self.match(self.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -395,33 +437,33 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 91
-            self.match(self.T__18)
-            self.state = 92 
+            self.state = 107
+            self.match(self.T__21)
+            self.state = 108 
             self.package_name()
-            self.state = 93
-            self.match(self.T__16)
-            self.state = 95
+            self.state = 109
+            self.match(self.T__20)
+            self.state = 111
             _la = self._input.LA(1)
-            if _la==ROSParser.T__21:
-                self.state = 94 
+            if _la==ROSParser.T__25:
+                self.state = 110 
                 self.messages()
 
 
-            self.state = 98
+            self.state = 114
             _la = self._input.LA(1)
-            if _la==ROSParser.T__20:
-                self.state = 97 
+            if _la==ROSParser.T__23:
+                self.state = 113 
                 self.services()
 
 
-            self.state = 100 
+            self.state = 116 
             self.components()
 
-            self.state = 101 
+            self.state = 117 
             self.nodes()
-            self.state = 102
-            self.match(self.T__12)
+            self.state = 118
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -459,7 +501,7 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 4, self.RULE_package_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 104
+            self.state = 120
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -503,22 +545,22 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 106
-            self.match(self.T__21)
-            self.state = 107
-            self.match(self.T__16)
-            self.state = 111
+            self.state = 122
+            self.match(self.T__25)
+            self.state = 123
+            self.match(self.T__20)
+            self.state = 127
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ROSParser.T__26:
-                self.state = 108 
+            while _la==ROSParser.T__31:
+                self.state = 124 
                 self.ros_msg()
-                self.state = 113
+                self.state = 129
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 114
-            self.match(self.T__12)
+            self.state = 130
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -565,26 +607,26 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 116
-            self.match(self.T__26)
-            self.state = 117 
+            self.state = 132
+            self.match(self.T__31)
+            self.state = 133 
             self.msg_name()
-            self.state = 118
-            self.match(self.T__16)
-            self.state = 120 
+            self.state = 134
+            self.match(self.T__20)
+            self.state = 136 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 119 
+                self.state = 135 
                 self.msg_field()
-                self.state = 122 
+                self.state = 138 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (_la==ROSParser.ID):
                     break
 
-            self.state = 124
-            self.match(self.T__12)
+            self.state = 140
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -622,7 +664,7 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_msg_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 126
+            self.state = 142
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -671,21 +713,21 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 128 
+            self.state = 144 
             self.msg_field_type()
-            self.state = 129 
+            self.state = 145 
             self.msg_field_name()
-            self.state = 132
+            self.state = 148
             _la = self._input.LA(1)
-            if _la==ROSParser.T__11:
-                self.state = 130
-                self.match(self.T__11)
-                self.state = 131 
+            if _la==ROSParser.T__13:
+                self.state = 146
+                self.match(self.T__13)
+                self.state = 147 
                 self.msg_field_value()
 
 
-            self.state = 134
-            self.match(self.T__9)
+            self.state = 150
+            self.match(self.T__10)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -733,36 +775,36 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 136
+            self.state = 152
             self.match(self.ID)
-            self.state = 141
+            self.state = 157
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==ROSParser.T__2:
-                self.state = 137
+                self.state = 153
                 self.match(self.T__2)
-                self.state = 138
+                self.state = 154
                 self.match(self.ID)
-                self.state = 143
+                self.state = 159
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 151
+            self.state = 167
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ROSParser.T__25:
-                self.state = 144
-                self.match(self.T__25)
-                self.state = 146
+            while _la==ROSParser.T__30:
+                self.state = 160
+                self.match(self.T__30)
+                self.state = 162
                 _la = self._input.LA(1)
                 if _la==ROSParser.INT:
-                    self.state = 145
+                    self.state = 161
                     self.match(self.INT)
 
 
-                self.state = 148
-                self.match(self.T__27)
-                self.state = 153
+                self.state = 164
+                self.match(self.T__32)
+                self.state = 169
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -803,7 +845,7 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_msg_field_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 154
+            self.state = 170
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -852,7 +894,7 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 156
+            self.state = 172
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.ID) | (1 << self.INT) | (1 << self.DOUBLE) | (1 << self.BOOL))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -899,22 +941,22 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 158
+            self.state = 174
+            self.match(self.T__23)
+            self.state = 175
             self.match(self.T__20)
-            self.state = 159
-            self.match(self.T__16)
-            self.state = 163
+            self.state = 179
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ROSParser.T__3:
-                self.state = 160 
+            while _la==ROSParser.T__4:
+                self.state = 176 
                 self.ros_srv()
-                self.state = 165
+                self.state = 181
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 166
-            self.match(self.T__12)
+            self.state = 182
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -961,20 +1003,20 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 22, self.RULE_ros_srv)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 168
-            self.match(self.T__3)
-            self.state = 169 
+            self.state = 184
+            self.match(self.T__4)
+            self.state = 185 
             self.srv_name()
-            self.state = 170
-            self.match(self.T__16)
+            self.state = 186
+            self.match(self.T__20)
 
-            self.state = 171 
+            self.state = 187 
             self.request()
 
-            self.state = 172 
+            self.state = 188 
             self.response()
-            self.state = 173
-            self.match(self.T__12)
+            self.state = 189
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1012,7 +1054,7 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 24, self.RULE_srv_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 175
+            self.state = 191
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -1056,22 +1098,22 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 177
-            self.match(self.T__28)
-            self.state = 178
-            self.match(self.T__16)
-            self.state = 182
+            self.state = 193
+            self.match(self.T__33)
+            self.state = 194
+            self.match(self.T__20)
+            self.state = 198
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==ROSParser.ID:
-                self.state = 179 
+                self.state = 195 
                 self.req_argument()
-                self.state = 184
+                self.state = 200
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 185
-            self.match(self.T__12)
+            self.state = 201
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1119,21 +1161,21 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 187 
+            self.state = 203 
             self.req_field_type()
-            self.state = 188 
+            self.state = 204 
             self.req_field_name()
-            self.state = 191
+            self.state = 207
             _la = self._input.LA(1)
-            if _la==ROSParser.T__11:
-                self.state = 189
-                self.match(self.T__11)
-                self.state = 190 
+            if _la==ROSParser.T__13:
+                self.state = 205
+                self.match(self.T__13)
+                self.state = 206 
                 self.req_field_value()
 
 
-            self.state = 193
-            self.match(self.T__9)
+            self.state = 209
+            self.match(self.T__10)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1176,22 +1218,22 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 195
-            self.match(self.T__6)
-            self.state = 196
-            self.match(self.T__16)
-            self.state = 200
+            self.state = 211
+            self.match(self.T__7)
+            self.state = 212
+            self.match(self.T__20)
+            self.state = 216
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==ROSParser.ID:
-                self.state = 197 
+                self.state = 213 
                 self.res_argument()
-                self.state = 202
+                self.state = 218
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 203
-            self.match(self.T__12)
+            self.state = 219
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1239,21 +1281,21 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 205 
+            self.state = 221 
             self.res_field_type()
-            self.state = 206 
+            self.state = 222 
             self.res_field_name()
-            self.state = 209
+            self.state = 225
             _la = self._input.LA(1)
-            if _la==ROSParser.T__11:
-                self.state = 207
-                self.match(self.T__11)
-                self.state = 208 
+            if _la==ROSParser.T__13:
+                self.state = 223
+                self.match(self.T__13)
+                self.state = 224 
                 self.res_field_value()
 
 
-            self.state = 211
-            self.match(self.T__9)
+            self.state = 227
+            self.match(self.T__10)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1298,34 +1340,34 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 213
+            self.state = 229
             self.match(self.ID)
-            self.state = 218
+            self.state = 234
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==ROSParser.T__2:
-                self.state = 214
+                self.state = 230
                 self.match(self.T__2)
-                self.state = 215
+                self.state = 231
                 self.match(self.ID)
-                self.state = 220
+                self.state = 236
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 226
+            self.state = 242
             _la = self._input.LA(1)
-            if _la==ROSParser.T__25:
-                self.state = 221
-                self.match(self.T__25)
-                self.state = 223
+            if _la==ROSParser.T__30:
+                self.state = 237
+                self.match(self.T__30)
+                self.state = 239
                 _la = self._input.LA(1)
                 if _la==ROSParser.INT:
-                    self.state = 222
+                    self.state = 238
                     self.match(self.INT)
 
 
-                self.state = 225
-                self.match(self.T__27)
+                self.state = 241
+                self.match(self.T__32)
 
 
         except RecognitionException as re:
@@ -1365,7 +1407,7 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 36, self.RULE_req_field_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 228
+            self.state = 244
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -1414,7 +1456,7 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 230
+            self.state = 246
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.ID) | (1 << self.INT) | (1 << self.DOUBLE) | (1 << self.BOOL))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1463,34 +1505,34 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 232
+            self.state = 248
             self.match(self.ID)
-            self.state = 237
+            self.state = 253
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==ROSParser.T__2:
-                self.state = 233
+                self.state = 249
                 self.match(self.T__2)
-                self.state = 234
+                self.state = 250
                 self.match(self.ID)
-                self.state = 239
+                self.state = 255
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 245
+            self.state = 261
             _la = self._input.LA(1)
-            if _la==ROSParser.T__25:
-                self.state = 240
-                self.match(self.T__25)
-                self.state = 242
+            if _la==ROSParser.T__30:
+                self.state = 256
+                self.match(self.T__30)
+                self.state = 258
                 _la = self._input.LA(1)
                 if _la==ROSParser.INT:
-                    self.state = 241
+                    self.state = 257
                     self.match(self.INT)
 
 
-                self.state = 244
-                self.match(self.T__27)
+                self.state = 260
+                self.match(self.T__32)
 
 
         except RecognitionException as re:
@@ -1530,7 +1572,7 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 42, self.RULE_res_field_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 247
+            self.state = 263
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -1579,7 +1621,7 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 249
+            self.state = 265
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.ID) | (1 << self.INT) | (1 << self.DOUBLE) | (1 << self.BOOL))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1626,24 +1668,24 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 251
-            self.match(self.T__13)
-            self.state = 252
-            self.match(self.T__16)
-            self.state = 254 
+            self.state = 267
+            self.match(self.T__17)
+            self.state = 268
+            self.match(self.T__20)
+            self.state = 270 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 253 
+                self.state = 269 
                 self.ros_component()
-                self.state = 256 
+                self.state = 272 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==ROSParser.T__29):
+                if not (_la==ROSParser.T__34):
                     break
 
-            self.state = 258
-            self.match(self.T__12)
+            self.state = 274
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1658,29 +1700,19 @@ class ROSParser ( Parser ):
             super(ROSParser.Ros_componentContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def ros_pub_sub(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(ROSParser.Ros_pub_subContext)
-            else:
-                return self.getTypedRuleContext(ROSParser.Ros_pub_subContext,i)
-
-
-        def ros_client_server(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(ROSParser.Ros_client_serverContext)
-            else:
-                return self.getTypedRuleContext(ROSParser.Ros_client_serverContext,i)
+        def comp_type(self):
+            return self.getTypedRuleContext(ROSParser.Comp_typeContext,0)
 
 
         def component_name(self):
             return self.getTypedRuleContext(ROSParser.Component_nameContext,0)
 
 
-        def ros_timer(self, i=None):
+        def component_ports(self, i=None):
             if i is None:
-                return self.getTypedRuleContexts(ROSParser.Ros_timerContext)
+                return self.getTypedRuleContexts(ROSParser.Component_portsContext)
             else:
-                return self.getTypedRuleContext(ROSParser.Ros_timerContext,i)
+                return self.getTypedRuleContext(ROSParser.Component_portsContext,i)
 
 
         def getRuleIndex(self):
@@ -1704,39 +1736,28 @@ class ROSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 260
-            self.match(self.T__29)
-            self.state = 261 
+            self.state = 276
+            self.match(self.T__34)
+            self.state = 277 
             self.component_name()
-            self.state = 262
-            self.match(self.T__16)
-            self.state = 268
+            self.state = 278
+            self.match(self.T__28)
+            self.state = 279 
+            self.comp_type()
+            self.state = 280
+            self.match(self.T__20)
+            self.state = 284
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.T__19) | (1 << self.T__17) | (1 << self.T__15) | (1 << self.T__10) | (1 << self.T__7))) != 0):
-                self.state = 266
-                token = self._input.LA(1)
-                if token in [self.T__15, self.T__10]:
-                    self.state = 263 
-                    self.ros_client_server()
-
-                elif token in [self.T__19, self.T__17]:
-                    self.state = 264 
-                    self.ros_pub_sub()
-
-                elif token in [self.T__7]:
-                    self.state = 265 
-                    self.ros_timer()
-
-                else:
-                    raise NoViableAltException(self)
-
-                self.state = 270
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.T__24) | (1 << self.T__22) | (1 << self.T__19) | (1 << self.T__8) | (1 << self.T__5))) != 0):
+                self.state = 281 
+                self.component_ports()
+                self.state = 286
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 271
-            self.match(self.T__12)
+            self.state = 287
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1774,8 +1795,123 @@ class ROSParser ( Parser ):
         self.enterRule(localctx, 50, self.RULE_component_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 273
+            self.state = 289
             self.match(self.ID)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Comp_typeContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Comp_typeContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_comp_type
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterComp_type(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitComp_type(self)
+
+
+
+
+    def comp_type(self):
+
+        localctx = ROSParser.Comp_typeContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 52, self.RULE_comp_type)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 291
+            _la = self._input.LA(1)
+            if not(_la==ROSParser.T__14 or _la==ROSParser.T__12):
+                self._errHandler.recoverInline(self)
+            self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Component_portsContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Component_portsContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def ros_client_server(self):
+            return self.getTypedRuleContext(ROSParser.Ros_client_serverContext,0)
+
+
+        def port_properties(self):
+            return self.getTypedRuleContext(ROSParser.Port_propertiesContext,0)
+
+
+        def ros_pub_sub(self):
+            return self.getTypedRuleContext(ROSParser.Ros_pub_subContext,0)
+
+
+        def ros_timer(self):
+            return self.getTypedRuleContext(ROSParser.Ros_timerContext,0)
+
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_component_ports
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterComponent_ports(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitComponent_ports(self)
+
+
+
+
+    def component_ports(self):
+
+        localctx = ROSParser.Component_portsContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 54, self.RULE_component_ports)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 296
+            token = self._input.LA(1)
+            if token in [self.T__24, self.T__5]:
+                self.state = 293 
+                self.ros_client_server()
+
+            elif token in [self.T__22, self.T__19]:
+                self.state = 294 
+                self.ros_pub_sub()
+
+            elif token in [self.T__8]:
+                self.state = 295 
+                self.ros_timer()
+
+            else:
+                raise NoViableAltException(self)
+
+            self.state = 298
+            self.match(self.T__20)
+
+            self.state = 299 
+            self.port_properties()
+            self.state = 300
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1790,8 +1926,16 @@ class ROSParser ( Parser ):
             super(ROSParser.Ros_client_serverContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def service_name(self):
-            return self.getTypedRuleContext(ROSParser.Service_nameContext,0)
+        def service(self):
+            return self.getTypedRuleContext(ROSParser.ServiceContext,0)
+
+
+        def server_name(self):
+            return self.getTypedRuleContext(ROSParser.Server_nameContext,0)
+
+
+        def client_name(self):
+            return self.getTypedRuleContext(ROSParser.Client_nameContext,0)
 
 
         def getRuleIndex(self):
@@ -1811,26 +1955,38 @@ class ROSParser ( Parser ):
     def ros_client_server(self):
 
         localctx = ROSParser.Ros_client_serverContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 52, self.RULE_ros_client_server)
+        self.enterRule(localctx, 56, self.RULE_ros_client_server)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 283
+            self.state = 316
             token = self._input.LA(1)
-            if token in [self.T__15]:
-                self.state = 275
-                self.match(self.T__15)
-                self.state = 276 
-                self.service_name()
-                self.state = 277
-                self.match(self.T__9)
-
-            elif token in [self.T__10]:
-                self.state = 279
+            if token in [self.T__5]:
+                self.state = 302
+                self.match(self.T__5)
+                self.state = 303
+                self.match(self.T__26)
+                self.state = 304 
+                self.service()
+                self.state = 305
+                self.match(self.T__6)
+                self.state = 306 
+                self.client_name()
+                self.state = 307
                 self.match(self.T__10)
-                self.state = 280 
-                self.service_name()
-                self.state = 281
-                self.match(self.T__9)
+
+            elif token in [self.T__24]:
+                self.state = 309
+                self.match(self.T__24)
+                self.state = 310
+                self.match(self.T__26)
+                self.state = 311 
+                self.service()
+                self.state = 312
+                self.match(self.T__6)
+                self.state = 313 
+                self.server_name()
+                self.state = 314
+                self.match(self.T__10)
 
             else:
                 raise NoViableAltException(self)
@@ -1843,36 +1999,114 @@ class ROSParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class Service_nameContext(ParserRuleContext):
+    class ServiceContext(ParserRuleContext):
 
         def __init__(self, parser, parent=None, invokingState=-1):
-            super(ROSParser.Service_nameContext, self).__init__(parent, invokingState)
+            super(ROSParser.ServiceContext, self).__init__(parent, invokingState)
             self.parser = parser
 
         def ID(self):
             return self.getToken(ROSParser.ID, 0)
 
         def getRuleIndex(self):
-            return ROSParser.RULE_service_name
+            return ROSParser.RULE_service
 
         def enterRule(self, listener):
             if isinstance( listener, ROSListener ):
-                listener.enterService_name(self)
+                listener.enterService(self)
 
         def exitRule(self, listener):
             if isinstance( listener, ROSListener ):
-                listener.exitService_name(self)
+                listener.exitService(self)
 
 
 
 
-    def service_name(self):
+    def service(self):
 
-        localctx = ROSParser.Service_nameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 54, self.RULE_service_name)
+        localctx = ROSParser.ServiceContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 58, self.RULE_service)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 285
+            self.state = 318
+            self.match(self.ID)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Client_nameContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Client_nameContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(ROSParser.ID, 0)
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_client_name
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterClient_name(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitClient_name(self)
+
+
+
+
+    def client_name(self):
+
+        localctx = ROSParser.Client_nameContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 60, self.RULE_client_name)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 320
+            self.match(self.ID)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Server_nameContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Server_nameContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(ROSParser.ID, 0)
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_server_name
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterServer_name(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitServer_name(self)
+
+
+
+
+    def server_name(self):
+
+        localctx = ROSParser.Server_nameContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 62, self.RULE_server_name)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 322
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -1917,38 +2151,38 @@ class ROSParser ( Parser ):
     def ros_pub_sub(self):
 
         localctx = ROSParser.Ros_pub_subContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 56, self.RULE_ros_pub_sub)
+        self.enterRule(localctx, 64, self.RULE_ros_pub_sub)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 301
+            self.state = 338
             token = self._input.LA(1)
-            if token in [self.T__19]:
-                self.state = 287
-                self.match(self.T__19)
-                self.state = 288
+            if token in [self.T__22]:
+                self.state = 324
                 self.match(self.T__22)
-                self.state = 289 
+                self.state = 325
+                self.match(self.T__26)
+                self.state = 326 
                 self.topic()
-                self.state = 290
-                self.match(self.T__5)
-                self.state = 291 
+                self.state = 327
+                self.match(self.T__6)
+                self.state = 328 
                 self.publisher()
-                self.state = 292
-                self.match(self.T__9)
+                self.state = 329
+                self.match(self.T__10)
 
-            elif token in [self.T__17]:
-                self.state = 294
-                self.match(self.T__17)
-                self.state = 295
-                self.match(self.T__22)
-                self.state = 296 
+            elif token in [self.T__19]:
+                self.state = 331
+                self.match(self.T__19)
+                self.state = 332
+                self.match(self.T__26)
+                self.state = 333 
                 self.topic()
-                self.state = 297
-                self.match(self.T__5)
-                self.state = 298 
+                self.state = 334
+                self.match(self.T__6)
+                self.state = 335 
                 self.subscriber()
-                self.state = 299
-                self.match(self.T__9)
+                self.state = 336
+                self.match(self.T__10)
 
             else:
                 raise NoViableAltException(self)
@@ -1987,10 +2221,10 @@ class ROSParser ( Parser ):
     def publisher(self):
 
         localctx = ROSParser.PublisherContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 58, self.RULE_publisher)
+        self.enterRule(localctx, 66, self.RULE_publisher)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 303
+            self.state = 340
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -2026,10 +2260,10 @@ class ROSParser ( Parser ):
     def subscriber(self):
 
         localctx = ROSParser.SubscriberContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 60, self.RULE_subscriber)
+        self.enterRule(localctx, 68, self.RULE_subscriber)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 305
+            self.state = 342
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -2065,10 +2299,10 @@ class ROSParser ( Parser ):
     def topic(self):
 
         localctx = ROSParser.TopicContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 62, self.RULE_topic)
+        self.enterRule(localctx, 70, self.RULE_topic)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 307
+            self.state = 344
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -2084,16 +2318,8 @@ class ROSParser ( Parser ):
             super(ROSParser.Ros_timerContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def period_unit(self):
-            return self.getTypedRuleContext(ROSParser.Period_unitContext,0)
-
-
         def timer_name(self):
             return self.getTypedRuleContext(ROSParser.Timer_nameContext,0)
-
-
-        def timer_period(self):
-            return self.getTypedRuleContext(ROSParser.Timer_periodContext,0)
 
 
         def getRuleIndex(self):
@@ -2113,28 +2339,13 @@ class ROSParser ( Parser ):
     def ros_timer(self):
 
         localctx = ROSParser.Ros_timerContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 64, self.RULE_ros_timer)
+        self.enterRule(localctx, 72, self.RULE_ros_timer)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 309
-            self.match(self.T__7)
-            self.state = 310 
+            self.state = 346
+            self.match(self.T__8)
+            self.state = 347 
             self.timer_name()
-            self.state = 311
-            self.match(self.T__16)
-
-            self.state = 312
-            self.match(self.T__4)
-            self.state = 313
-            self.match(self.T__11)
-            self.state = 314 
-            self.timer_period()
-            self.state = 315 
-            self.period_unit()
-            self.state = 316
-            self.match(self.T__9)
-            self.state = 318
-            self.match(self.T__12)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2169,11 +2380,249 @@ class ROSParser ( Parser ):
     def timer_name(self):
 
         localctx = ROSParser.Timer_nameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 66, self.RULE_timer_name)
+        self.enterRule(localctx, 74, self.RULE_timer_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 320
+            self.state = 349
             self.match(self.ID)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Port_propertiesContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Port_propertiesContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def deadline_unit(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSParser.Deadline_unitContext)
+            else:
+                return self.getTypedRuleContext(ROSParser.Deadline_unitContext,i)
+
+
+        def operation_deadline(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSParser.Operation_deadlineContext)
+            else:
+                return self.getTypedRuleContext(ROSParser.Operation_deadlineContext,i)
+
+
+        def operation_priority(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSParser.Operation_priorityContext)
+            else:
+                return self.getTypedRuleContext(ROSParser.Operation_priorityContext,i)
+
+
+        def timer_period(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSParser.Timer_periodContext)
+            else:
+                return self.getTypedRuleContext(ROSParser.Timer_periodContext,i)
+
+
+        def period_unit(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSParser.Period_unitContext)
+            else:
+                return self.getTypedRuleContext(ROSParser.Period_unitContext,i)
+
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_port_properties
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterPort_properties(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitPort_properties(self)
+
+
+
+
+    def port_properties(self):
+
+        localctx = ROSParser.Port_propertiesContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 76, self.RULE_port_properties)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 368 
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while True:
+                self.state = 368
+                token = self._input.LA(1)
+                if token in [self.T__15]:
+                    self.state = 351
+                    self.match(self.T__15)
+                    self.state = 352
+                    self.match(self.T__13)
+                    self.state = 353 
+                    self.operation_priority()
+                    self.state = 354
+                    self.match(self.T__10)
+
+                elif token in [self.T__11]:
+                    self.state = 356
+                    self.match(self.T__11)
+                    self.state = 357
+                    self.match(self.T__13)
+                    self.state = 358 
+                    self.operation_deadline()
+                    self.state = 359 
+                    self.deadline_unit()
+                    self.state = 360
+                    self.match(self.T__10)
+
+                elif token in [self.T__3]:
+                    self.state = 362
+                    self.match(self.T__3)
+                    self.state = 363
+                    self.match(self.T__13)
+                    self.state = 364 
+                    self.timer_period()
+                    self.state = 365 
+                    self.period_unit()
+                    self.state = 366
+                    self.match(self.T__10)
+
+                else:
+                    raise NoViableAltException(self)
+
+                self.state = 370 
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.T__15) | (1 << self.T__11) | (1 << self.T__3))) != 0)):
+                    break
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Operation_priorityContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Operation_priorityContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def INT(self):
+            return self.getToken(ROSParser.INT, 0)
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_operation_priority
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterOperation_priority(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitOperation_priority(self)
+
+
+
+
+    def operation_priority(self):
+
+        localctx = ROSParser.Operation_priorityContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 78, self.RULE_operation_priority)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 372
+            self.match(self.INT)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Operation_deadlineContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Operation_deadlineContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def DOUBLE(self):
+            return self.getToken(ROSParser.DOUBLE, 0)
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_operation_deadline
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterOperation_deadline(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitOperation_deadline(self)
+
+
+
+
+    def operation_deadline(self):
+
+        localctx = ROSParser.Operation_deadlineContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 80, self.RULE_operation_deadline)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 374
+            self.match(self.DOUBLE)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Deadline_unitContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(ROSParser.Deadline_unitContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+
+        def getRuleIndex(self):
+            return ROSParser.RULE_deadline_unit
+
+        def enterRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.enterDeadline_unit(self)
+
+        def exitRule(self, listener):
+            if isinstance( listener, ROSListener ):
+                listener.exitDeadline_unit(self)
+
+
+
+
+    def deadline_unit(self):
+
+        localctx = ROSParser.Deadline_unitContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 82, self.RULE_deadline_unit)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 376
+            _la = self._input.LA(1)
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.T__27) | (1 << self.T__18) | (1 << self.T__1) | (1 << self.T__0))) != 0)):
+                self._errHandler.recoverInline(self)
+            self.consume()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2208,10 +2657,10 @@ class ROSParser ( Parser ):
     def timer_period(self):
 
         localctx = ROSParser.Timer_periodContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 68, self.RULE_timer_period)
+        self.enterRule(localctx, 84, self.RULE_timer_period)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 322
+            self.state = 378
             self.match(self.DOUBLE)
         except RecognitionException as re:
             localctx.exception = re
@@ -2245,13 +2694,13 @@ class ROSParser ( Parser ):
     def period_unit(self):
 
         localctx = ROSParser.Period_unitContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 70, self.RULE_period_unit)
+        self.enterRule(localctx, 86, self.RULE_period_unit)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 324
+            self.state = 380
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.T__23) | (1 << self.T__14) | (1 << self.T__1) | (1 << self.T__0))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << self.T__27) | (1 << self.T__18) | (1 << self.T__1) | (1 << self.T__0))) != 0)):
                 self._errHandler.recoverInline(self)
             self.consume()
         except RecognitionException as re:
@@ -2292,28 +2741,28 @@ class ROSParser ( Parser ):
     def nodes(self):
 
         localctx = ROSParser.NodesContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 72, self.RULE_nodes)
+        self.enterRule(localctx, 88, self.RULE_nodes)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 326
-            self.match(self.T__8)
-            self.state = 327
-            self.match(self.T__16)
-            self.state = 329 
+            self.state = 382
+            self.match(self.T__9)
+            self.state = 383
+            self.match(self.T__20)
+            self.state = 385 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 328 
+                self.state = 384 
                 self.ros_node()
-                self.state = 331 
+                self.state = 387 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==ROSParser.T__24):
+                if not (_la==ROSParser.T__29):
                     break
 
-            self.state = 333
-            self.match(self.T__12)
+            self.state = 389
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2356,30 +2805,30 @@ class ROSParser ( Parser ):
     def ros_node(self):
 
         localctx = ROSParser.Ros_nodeContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 74, self.RULE_ros_node)
+        self.enterRule(localctx, 90, self.RULE_ros_node)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 335
-            self.match(self.T__24)
-            self.state = 336 
+            self.state = 391
+            self.match(self.T__29)
+            self.state = 392 
             self.node_name()
-            self.state = 337
-            self.match(self.T__16)
-            self.state = 339 
+            self.state = 393
+            self.match(self.T__20)
+            self.state = 395 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 338 
+                self.state = 394 
                 self.component_instances()
-                self.state = 341 
+                self.state = 397 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==ROSParser.T__29):
+                if not (_la==ROSParser.T__34):
                     break
 
-            self.state = 343
-            self.match(self.T__12)
+            self.state = 399
+            self.match(self.T__16)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2414,10 +2863,10 @@ class ROSParser ( Parser ):
     def node_name(self):
 
         localctx = ROSParser.Node_nameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 76, self.RULE_node_name)
+        self.enterRule(localctx, 92, self.RULE_node_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 345
+            self.state = 401
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -2458,21 +2907,21 @@ class ROSParser ( Parser ):
     def component_instances(self):
 
         localctx = ROSParser.Component_instancesContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 78, self.RULE_component_instances)
+        self.enterRule(localctx, 94, self.RULE_component_instances)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 347
-            self.match(self.T__29)
-            self.state = 348
-            self.match(self.T__22)
-            self.state = 349 
+            self.state = 403
+            self.match(self.T__34)
+            self.state = 404
+            self.match(self.T__26)
+            self.state = 405 
             self.component_type()
-            self.state = 350
-            self.match(self.T__5)
-            self.state = 351 
+            self.state = 406
+            self.match(self.T__6)
+            self.state = 407 
             self.component_instance()
-            self.state = 352
-            self.match(self.T__9)
+            self.state = 408
+            self.match(self.T__10)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2507,10 +2956,10 @@ class ROSParser ( Parser ):
     def component_type(self):
 
         localctx = ROSParser.Component_typeContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 80, self.RULE_component_type)
+        self.enterRule(localctx, 96, self.RULE_component_type)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 354
+            self.state = 410
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
@@ -2546,10 +2995,10 @@ class ROSParser ( Parser ):
     def component_instance(self):
 
         localctx = ROSParser.Component_instanceContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 82, self.RULE_component_instance)
+        self.enterRule(localctx, 98, self.RULE_component_instance)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 356
+            self.state = 412
             self.match(self.ID)
         except RecognitionException as re:
             localctx.exception = re
