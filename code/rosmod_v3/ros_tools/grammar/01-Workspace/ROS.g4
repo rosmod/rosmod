@@ -209,12 +209,23 @@ comp_type
  */
 component_ports
     :   ( ros_client_server
-        | ros_pub_sub
-        | ros_timer
+          '{'
+                (ros_client_server_properties)
+          '}'
         )
-        '{'
-             (port_properties)
-        '}'
+        | 
+        ( ros_pub_sub
+          '{'
+                (ros_pub_sub_properties)
+           '}'
+        )
+        | 
+        ( ros_timer
+          '{'
+                (ros_timer_properties)
+           '}'
+        )
+
     ;
 
 /*
@@ -243,6 +254,28 @@ server_name
     :   ID
     ;
 
+ros_client_server_properties
+    :   (
+          'priority' '=' server_priority ';' 
+        | 'deadline' '=' server_deadline server_deadline_unit ';'
+        )+
+    ;
+
+// Operation Priority
+server_priority
+    :   INT
+    ;
+
+// Operation Deadline
+server_deadline
+    :   DOUBLE
+    ;
+
+// Deadline Unit
+server_deadline_unit
+    :   ('s' | 'ms' | 'us' | 'ns')
+    ;   
+
 /*
  * ROS Publish/Subscribe specification - can be either:
  * (1) Publisher - port name and topic
@@ -269,6 +302,28 @@ topic
     :   ID
     ;
 
+ros_pub_sub_properties
+    :   (
+          'priority' '=' subscriber_priority ';' 
+        | 'deadline' '=' subscriber_deadline subscriber_deadline_unit ';'
+        )+
+    ;
+
+// Operation Priority
+subscriber_priority
+    :   INT
+    ;
+
+// Operation Deadline
+subscriber_deadline
+    :   DOUBLE
+    ;
+
+// Deadline Unit
+subscriber_deadline_unit
+    :   ('s' | 'ms' | 'us' | 'ns')
+    ;
+
 /*
  * ROS Timer. Contains:
  * (1) Timer name
@@ -287,26 +342,26 @@ timer_name
 /*
  * Port properties
  */
-port_properties
+ros_timer_properties
     :   (
-          'priority' '=' operation_priority ';' 
-        | 'deadline' '=' operation_deadline deadline_unit ';'
+          'priority' '=' timer_priority ';' 
+        | 'deadline' '=' timer_deadline timer_deadline_unit ';'
         | 'period' '=' timer_period period_unit ';' 
         )+
     ;
 
 // Operation Priority
-operation_priority
+timer_priority
     :   INT
     ;
 
 // Operation Deadline
-operation_deadline
+timer_deadline
     :   DOUBLE
     ;
 
 // Deadline Unit
-deadline_unit
+timer_deadline_unit
     :   ('s' | 'ms' | 'us' | 'ns')
     ;
 

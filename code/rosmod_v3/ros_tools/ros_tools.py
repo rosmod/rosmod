@@ -173,6 +173,9 @@ class ROS_Timer(Drawable_Object):
     def __init__(self):
         Drawable_Object.__init__(self)
         self.kind = "timer"
+        self.properties["priority"] = "0"
+        self.properties["deadline"] = "0.0"
+        self.properties["deadline_unit"] = ""
         self.properties["name"] = ""
         self.properties["period"] = "0.0"
         self.properties["unit"] = ""
@@ -195,6 +198,9 @@ class ROS_Server(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "server"
         self.properties["name"] = ""
+        self.properties["priority"] = "0"
+        self.properties["deadline"] = "0.0"
+        self.properties["deadline_unit"] = ""
         self.properties["service_text"] = ""
         self.properties["service_reference"] = None
         self.properties["business_logic"] = ""
@@ -216,6 +222,9 @@ class ROS_Subscriber(Drawable_Object):
         Drawable_Object.__init__(self)
         self.kind = "subscriber"
         self.properties["name"] = ""
+        self.properties["priority"] = "0"
+        self.properties["deadline"] = "0.0"
+        self.properties["deadline_unit"] = ""
         self.properties["message_text"] = ""
         self.properties["message_reference"] = None
         self.properties["business_logic"] = ""
@@ -353,6 +362,9 @@ class ROS_Workspace_Builder(ROSListener):
         self.workspace = ROS_Workspace()
         self.workspace.parent = parent_project
         self.parent = parent_project
+        self.server = ROS_Server()
+        self.subscriber = ROS_Subscriber()
+        self.timer = ROS_Timer()
 
     # Create a new ROS Package object
     def enterRos_packages(self, ctx):
@@ -473,7 +485,7 @@ class ROS_Workspace_Builder(ROSListener):
         self.component.properties["name"] = ctx.getText()
 
     # Save the type of the component
-    def enterComponent_type(self, ctx):
+    def enterComp_type(self, ctx):
         self.component.properties["type"] = ctx.getText()
 
     # Save all provided and required services
@@ -497,7 +509,6 @@ class ROS_Workspace_Builder(ROSListener):
                     self.server.parent = self.component
                     if self.server.properties["service_reference"] == None:
                         self.parent.null_references.append(self.server)
-                    self.component.add(self.server)
         elif "requires" in ctx.getText():
             for child in ctx.getChildren():
                 context = str(type(child))
@@ -518,6 +529,22 @@ class ROS_Workspace_Builder(ROSListener):
                     if self.client.properties["service_reference"] == None:
                         self.parent.null_references.append(self.client)
                     self.component.add(self.client)
+
+    # Save server priority
+    def enterServer_priority(self, ctx):
+        self.server.properties["priority"] = ctx.getText()
+
+    # Save server deadline
+    def enterServer_deadline(self, ctx):
+        self.server.properties["deadline"] = ctx.getText()
+        
+    # Save server deadline unit
+    def enterServer_deadline_unit(self, ctx):
+        self.server.properties["deadline_unit"] = ctx.getText()
+
+    # Save server properties and add server to component
+    def exitRos_client_server_properties(self, ctx):
+        self.component.add(self.server)
 
     # Save all publishers and susbcribers
     def enterRos_pub_sub(self, ctx):
@@ -562,7 +589,22 @@ class ROS_Workspace_Builder(ROSListener):
             self.subscriber.parent = self.component
             if self.subscriber.properties["message_reference"] == None:
                 self.parent.null_references.append(self.subscriber)
-            self.component.add(self.subscriber)
+
+    # Save subscriber priority
+    def enterSubscriber_priority(self, ctx):
+        self.subscriber.properties["priority"] = ctx.getText()
+
+    # Save subscriber deadline
+    def enterSubscriber_deadline(self, ctx):
+        self.subscriber.properties["deadline"] = ctx.getText()
+        
+    # Save subscriber deadline unit
+    def enterSubscriber_deadline_unit(self, ctx):
+        self.subscriber.properties["deadline_unit"] = ctx.getText()
+
+    # Save subscriber properties and add subscriber to component
+    def exitRos_pub_sub_properties(self, ctx):
+        self.component.add(self.subscriber)
 
     # Save all component timers
     def enterRos_timer(self, ctx):
@@ -579,6 +621,21 @@ class ROS_Workspace_Builder(ROSListener):
         self.timer.properties["period"] = period
         self.timer.properties["unit"] = period_unit
         self.timer.parent = self.component
+
+    # Save timer priority
+    def enterTimer_priority(self, ctx):
+        self.timer.properties["priority"] = ctx.getText()
+
+    # Save subscriber deadline
+    def enterTimer_deadline(self, ctx):
+        self.timer.properties["deadline"] = ctx.getText()
+        
+    # Save subscriber deadline unit
+    def enterTimer_deadline_unit(self, ctx):
+        self.timer.properties["deadline_unit"] = ctx.getText()
+
+    # Save timer properties and add timer to component
+    def exitRos_Timer_properties(self, ctx):
         self.component.add(self.timer)
 
     # On exit, add component to list of components in package
