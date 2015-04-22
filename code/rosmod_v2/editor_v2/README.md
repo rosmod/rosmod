@@ -182,7 +182,22 @@ A ROSML model can be viewed from three aspects -
   
 This subsection will guide you through creating various entities in a ROSML model in "Hardware" aspect.
 
-The **Hardware** aspect of a ROSML model specifies the hardware platforms available and attributes associated with them (such as their IP addresses and their architecture e.g. armv7l or x86). __TODO__
+The **Hardware** aspect of a ROSML model specifies the hardware platforms available and attributes associated with them (such as their IP addresses and their architecture e.g. armv7l or x86).
+
+#### Adding and Removing Hosts in "Hardware" Aspect
+---------------------------------------------------
+
+For adding a host in "Hardware" aspect in a ROSML model -
+  1. First, select the "Hardware" aspect in the "Aspects" menu on top.
+  2. Right-click on the hardware pane (empty area of "Hardware" aspect).
+  3. Click on "Add Host" option in the menu.
+  4. Specify the attributes of the host such as Name, IP address and architecture in the window that will appear.
+     (The architecture type is going to be used for the compilation of package code using a cross-compiler installed on the system)
+
+For removing a host in "Hardware" aspect from a ROSML model -
+  1. First, select the "Hardware" aspect in the "Aspects" menu on top.
+  2. Right-click on the host that you want to delete.
+  3. Click on "Delete" option in the menu.
 
 ### Creating a Model in "Deployment" Aspect
 -------------------------------------------
@@ -194,7 +209,40 @@ A ROSML model can be viewed from three aspects -
   
 This subsection will guide you through creating various entities in a ROSML model in "Deployment" aspect.
 
-The **Deployment** aspect of the ROSML model declares instances of hardware platforms described in **Hardware** and binds instances of nodes described in **ROS Packages** with them. An instance of a hardware platform can run one or multiple instances of node(s). The **Deployment** aspect can also contain groups of ROS nodes instances running on hardware platform instances, to precisely describe which ROS nodes interact with which ones. This is to avoid ambiguity in communication between multiple instances of similar ROS nodes deployed across the system. __TODO__
+The **Deployment** aspect of the ROSML model declares instances of hardware platforms described in **Hardware** and binds instances of nodes described in **ROS Packages** with them. An instance of a hardware platform can run one or multiple instances of node(s). The **Deployment** aspect can also contain groups of ROS nodes instances running on hardware platform instances, to precisely describe which ROS nodes interact with which ones. This is to avoid ambiguity in communication between multiple instances of similar ROS nodes deployed across the system. E.g. Instance A and Instance B of a ROS publisher node named "pub" want to interact with Instance C and Instance D of a ROSML subscriber node named "sub" (of the same topic) respectively. But, they do not want to broadcast their messages to any other instances of ROSML subscriber node "sub". In implementing such a scenario, you would want to put Instance A and Instance C into one group, and Instance B and Instance D into another group.
+
+#### Adding and Removing Host Instances in "Deployment" Aspect
+--------------------------------------------------------------
+
+For adding a host instance in "Deployment" aspect in a ROSML model -
+  1. First, select the "Hardware" aspect in the "Aspects" menu on top.
+  2. Right-click on the hardware pane (empty area of "Deployment" aspect).
+  3. Click on "Add Host Instance" option in the menu.
+  4. There are several attributes of a host instance (other than 'name' and 'host_reference') which can be specified in the window that will appear -
+	1. username - Username of the user under which you want to run the node instances you are going to add in the next step
+	2. ssh_key - For running ROS nodes on the host, ROSML editor has to ssh to the node and run node processes. For that it will need the private ssh key of the host. In 'ssh_key' option, the absolute path to the private ssh key is provided.
+	3. init - __TODO__
+	4. env_variables - __TODO__
+	5. You can add one or more node instance(s) which can be run on this host instance by following the steps given below.
+	6. You can also launch an ssh terminal from the editor on the host instance by right-clicking on it and selecting the option "Open SSH Terminal".
+
+For removing a host instance in "Deployment" aspect from a ROSML model -
+  1. First, select the host instance which you want to remove by left-clicking on it. After left-clicking, it will be highlighted with red border.
+  2. Right-click on the highlighted host instance.
+  3. Click on "Delete" option in the menu.
+
+##### Adding and Removing Node Instances in Host Instances
+----------------------------------------------------------
+
+For adding a node instance in a host instance -
+  1. First, select the host instance by left-clicking on it. After left-clicking, it will be highlighted with red border.
+  2. Right-click on the highlighted host instance.
+  3. Select "Add Node Instance" to open a pop-up window, in which attributes such as name of the node instance, reference of the node and the command-line arguments which are to be provided while executing the node instance can be given.
+
+For removing a node instance from a host instance -
+  1. First, select the node instance which you want to remove by left-clicking on it. After left-clicking, it will be highlighted with red border.
+  2. Right-click on the highlighted node instance.
+  3. Click on "Delete" option in the menu.
 
 ### Opening an Existing Model
 -----------------------------
@@ -271,8 +319,8 @@ workspace_name
 	└── package_n
 ```
 
-### Deploying a Model on Hardware
----------------------------------
+### Deploying a ROSML Model 
+---------------------------
 
 The generated code needs to be deployed on hardware platforms running ROS middleware, before which it needs to be built against the architecture of hardware platform on which it is to be deployed. For building the code against appropriate hardware platform, "Hardware" and "Deployment" aspects of a ROSML model play an important role.
 
@@ -284,4 +332,6 @@ The **Deployment** aspect of the ROSML model declares instances of hardware plat
   1. Copy deployment files
   2. Deploy system
 
-__TODO__
+Copying deployment files will copy all the binaries of ROS packages (which are on the development machine) on the host on which they are going to be executed. This also copies the .xml files which are used to specify the groups of node instances on the hosts.
+
+Deploying system results in the ROSML editor executing ROS nodes on the respective hosts by ssh-ing on to the hosts (using the username and ssh keys provided while creating the host instance). While ROS nodes are executed on the respective hosts, command-line arguments specified while creating node instances are given. ROSML editor uses a python library called (Fabric)[http://www.fabfile.org/] to achieve all the deployment tasks.
