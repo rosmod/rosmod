@@ -20,7 +20,7 @@ name
     ;
 
 // Data Type
-type
+datatype
     :   ( ID ( '/' ID )* ) ( '[' (INT)? ']' )*
     ;
 
@@ -49,7 +49,7 @@ packages
 message
     :   'msg' name
         '{'
-        ( type name ( '=' value )? ';' )+
+        ( datatype name ( '=' value )? ';' )+
         '}'
     ;
 
@@ -66,7 +66,7 @@ service
 request
     :   'request'
         '{'
-        ( type name ( '=' value )? ';' )+
+        ( datatype name ( '=' value )? ';' )+
         '}'
     ;
 
@@ -74,13 +74,13 @@ request
 response
     :   'response'
         '{'
-        ( type name ( '=' value )? ';' )+
+        ( datatype name ( '=' value )? ';' )+
         '}'
     ;
 
 // ROS Component
 component
-    :   'component' name ':' type
+    :   'component' name ':' datatype
         '{'
         ( port | timer )*
         '}'
@@ -100,22 +100,22 @@ port
 
 // ROS Client
 client
-    :   'client' '<' type '>' name ';'
+    :   'client' '<' datatype '>' name ';'
     ;
 
 // ROS Server
 server
-    :   'server' '<' type '>' name
+    :   'server' '<' datatype '>' name
     ;
 
 // ROS Publisher
 publisher
-    :   'publisher' '<' type '>' name ';'
+    :   'publisher' '<' datatype '>' name ';'
     ;
 
 // ROS Subscriber
 subscriber
-    :   'subscriber' '<' type '>' name
+    :   'subscriber' '<' datatype '>' name
     ;
 
 // ROS Port Callback Priority
@@ -136,6 +136,11 @@ timer
             | 'priority' '=' priority ';'
             | 'deadline' '=' deadline unit ';' )+
         '}'
+    ;
+
+// Timer Period
+period
+    :   DOUBLE
     ;
 
 // Unit of provided metric
@@ -161,7 +166,7 @@ node
  * (2) Name of the component instance
  */
 component_instance
-    :   'component' '<' type '>' name ';'
+    :   'component' '<' datatype '>' name ';'
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
