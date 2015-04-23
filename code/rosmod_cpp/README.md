@@ -1,0 +1,1 @@
+This directory contains the C++ Implementation of ROSMOD. Copy this "rosmod" directory to the src/ directory of ROS-Indigo workspace and rebuild ROS from source to use rosmod as a library
