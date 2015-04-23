@@ -4,6 +4,19 @@
 
 import sys, os, inspect
 
+# Find ANTLR4 python runtime
+antlr4 = os.path.realpath(os.path.abspath
+                          (os.path.join
+                           (os.path.split
+                            (inspect.getfile
+                             (inspect.currentframe()
+                          )
+                         )[0], "/../Antlr4")
+                       ))
+if antlr4 not in sys.path:
+    sys.path.insert(0, antlr4)
+from antlr4 import *
+
 # Find Software Model 
 rosmod_software = os.path.realpath(os.path.abspath
                                (os.path.join

@@ -6,6 +6,6 @@
 
 from collections import OrderedDict
 from classes import *
-import grammar
+from grammar import *
 from Cheetah.Template import Template
 
