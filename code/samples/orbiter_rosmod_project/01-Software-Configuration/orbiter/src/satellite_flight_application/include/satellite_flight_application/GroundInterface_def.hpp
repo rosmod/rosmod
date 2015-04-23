@@ -66,7 +66,7 @@ class GroundInterface_def : public Component
 
 
         //# Start User Private Variables Marker
-  int sockfd;
+        int sockfd;
         //# End User Private Variables Marker
 };
 
