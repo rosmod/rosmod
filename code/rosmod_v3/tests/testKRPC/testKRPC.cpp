@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
     }
     /* set the timeout on the socket receive */
     struct timeval tv;
-    tv.tv_sec = 1;
+    tv.tv_sec = 10;
     tv.tv_usec = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
       perror("Couldn't set sockopts!");
@@ -166,19 +166,36 @@ int main(int argc, char* argv[]) {
     if (request.SerializeToString(&message))
       {
 	/* write the length of the serialized message */
-	char lenBuf[10];
-	ZeroCopyOutputStream* raw_output = new ArrayOutputStream(lenBuf,10);
+	std::cout << "Converting message length " << message.length() << " to Varint64" << endl;
+	unsigned char messageLen[10];
+	CodedOutputStream::WriteVarint64ToArray(message.length(), messageLen);
+	//coded_output->WriteVarint64(message.length());
+#if 0
+	string messageLen;
+	messageLen.reserve(10);
+	ZeroCopyOutputStream* raw_output = new ArrayOutputStream(&messageLen[0],10);
 	CodedOutputStream* coded_output = new CodedOutputStream(raw_output);
-	coded_output->WriteVarint64(message.length());
-	if ( numbytes = send(sockfd, lenBuf, strlen(lenBuf), 0) == -1) {
+	if ( numbytes = send(sockfd, messageLen.data(), messageLen.length(), 0) == -1) {
 	  perror("send");
 	}
-	std::cout << "Sent message length: " << lenBuf << endl;
+	std::cout << "Sent message length: " << messageLen << endl;
 	/* write the message */
 	if ( numbytes = send(sockfd, message.c_str(), message.length(),0) == -1) {
 	  perror("send");
 	}
 	std::cout << "Sent message: " << message << endl;
+
+	delete coded_output;
+	delete raw_output;
+#else
+	std::cout << messageLen << " : " << strlen((char *)messageLen) << endl;
+	std::cout << message << " : " << message.length() << endl;
+	string msg = string((const char *)messageLen) + message;
+	if ( numbytes = send(sockfd, msg.data(), msg.length(), 0) == -1) {
+	  perror("send");
+	}
+	std::cout << "Sent message: " << msg << endl;	
+#endif
 	/* receive the response from the server */
 	char recvbuf[1024];
 	memset(recvbuf,0,1024);
@@ -192,8 +209,8 @@ int main(int argc, char* argv[]) {
 	coded_input->ReadVarint64(&size);
 	std::cout << "Received a return message of length: " << size << std::endl;
 
-	delete coded_output;
-	delete raw_output;
+	krpc::Response response;
+
 	delete coded_input;
 	delete raw_input;
       } else
