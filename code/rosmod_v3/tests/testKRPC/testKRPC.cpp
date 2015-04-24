@@ -194,7 +194,8 @@ int main(int argc, char* argv[]) {
 
 	response.ParseFromString(recvbuf + (bytesreceived - size));
 	std::cout << "Response time: " << response.time() << endl;
-	std::cout << "Response error: " << response.error() << endl;
+	if ( response.has_error() )
+	  std::cout << "Response error: " << response.error() << endl;
 	std::cout << "Response return_value: " << response.return_value() << endl;
 
 	delete coded_input;
