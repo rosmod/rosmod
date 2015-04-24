@@ -38,11 +38,25 @@ void PromptForArgument(krpc::Argument* argument) {
   cin >> position;
   argument->set_position(position);
   cin.ignore(256, '\n');
-  
+
   cout << "Input value for the argument (as a string): ";
   string value;
   getline(cin, value);
-  argument->set_value(value);
+
+  cout << "Enter type of the argument: ";
+  string typeName;
+  getline(cin, typeName);
+  if (typeName == "uint64")
+    {
+      unsigned int val = atoi(value.c_str());
+      unsigned char varint[10];
+      CodedOutputStream::WriteVarint64ToArray(val, varint);
+      argument->set_value((const char *)varint);
+    } else
+    {
+      argument->set_value(value);
+    }
+  
 }
 
 // Main function:  Reads the entire address book from a file,
@@ -243,7 +257,9 @@ int main(int argc, char* argv[]) {
 		  }
 	      } else
 	      {
-		std::cout << "Response return_value: " << response.return_value() << endl;
+		int val = atoi(response.return_value().c_str());
+		std::cout << "Response return_value(string): " << response.return_value() << endl;		
+		std::cout << "Response return_value(int): " << val << endl;
 	      }
 	    delete coded_services;
 	    delete byte_input;
