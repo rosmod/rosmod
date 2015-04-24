@@ -29,6 +29,8 @@ using namespace google::protobuf::io;
 
 using namespace std;
 
+const int maxBufferSize = 65535;
+
 // This function fills in a Argument message based on user input.
 void PromptForArgument(krpc::Argument* argument) {
   unsigned int position;
@@ -150,7 +152,7 @@ int main(int argc, char* argv[]) {
     char clientID[16];
     while (!haveReceivedID)
       {
-	memset(clientID,0,1024);
+	memset(clientID,0,16);
 	int bytesreceived =0;
 	if ( (bytesreceived=recv(sockfd,clientID,16,0)) <= 0) {
 	  perror("recv");
@@ -161,7 +163,7 @@ int main(int argc, char* argv[]) {
 	}
       }
     string message;
-    message.reserve(1024);
+    message.reserve(maxBufferSize);
     uint64_t size;
     if (request.SerializeToString(&message))
       {
@@ -178,25 +180,39 @@ int main(int argc, char* argv[]) {
 	}
 	std::cout << "Sent message: " << msg << endl;	
 	/* receive the response from the server */
-	char recvbuf[1024];
-	memset(recvbuf,0,1024);
+	char buf[maxBufferSize];
+	memset(buf,0,maxBufferSize);
 	int bytesreceived =0;
-	if ( (bytesreceived=recv(sockfd,recvbuf,1023,0)) <= 0) {
+	if ( (bytesreceived=recv(sockfd,buf,maxBufferSize-1,0)) <= 0) {
 	  perror("recv");
 	}
 	std::cout << "Received " << bytesreceived << " bytes" << endl;
-	ZeroCopyInputStream* raw_input = new ArrayInputStream(recvbuf,1024);
+	ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
 	CodedInputStream* coded_input = new CodedInputStream(raw_input);
 	coded_input->ReadVarint64(&size);
 	std::cout << "Received a return message of length: " << size << std::endl;
+	std::cout << buf << endl;
 
 	krpc::Response response;
-
-	response.ParseFromString(recvbuf + (bytesreceived - size));
-	std::cout << "Response time: " << response.time() << endl;
-	if ( response.has_error() )
-	  std::cout << "Response error: " << response.error() << endl;
-	std::cout << "Response return_value: " << response.return_value() << endl;
+	krpc::Services services;
+	size_t dataOffset = bytesreceived - size;
+	if (response.ParseFromString(buf + dataOffset))
+	  {
+	    std::cout << "Got Response message" << endl;
+	    std::cout << "Response time: " << response.time() << endl;
+	    if ( response.has_error() )
+	      std::cout << "Response error: " << response.error() << endl;
+	    std::cout << "Response return_value: " << response.return_value() << endl;
+	  } else if (services.ParseFromString(buf + dataOffset))
+	  {
+	    std::cout << "Got Services message" << endl;	
+	    for (int i=0;i<services.services_size();i++)
+	      {
+		const krpc::Service& service = services.services(i);
+		std::cout << "Service " << i << ":" << endl;
+		std::cout << "\tName: " << service.name() << endl;
+	      }
+	  }
 
 	delete coded_input;
 	delete raw_input;
