@@ -4,84 +4,85 @@
 #include "KRPC.pb.h"
 using namespace std;
 
-// This function fills in a Person message based on user input.
-void PromptForAddress(tutorial::Person* person) {
-  cout << "Enter person ID number: ";
-  int id;
-  cin >> id;
-  person->set_id(id);
+// This function fills in a Argument message based on user input.
+void PromptForArgument(krpc::Argument* argument) {
+  unsigned int position;
+  cout << "Input position for argument: ";
+  cin >> position;
+  argument->set_position(position);
   cin.ignore(256, '\n');
-
-  cout << "Enter name: ";
-  getline(cin, *person->mutable_name());
-
-  cout << "Enter email address (blank for none): ";
-  string email;
-  getline(cin, email);
-  if (!email.empty()) {
-    person->set_email(email);
-  }
-
-  while (true) {
-    cout << "Enter a phone number (or leave blank to finish): ";
-    string number;
-    getline(cin, number);
-    if (number.empty()) {
-      break;
-    }
-
-    tutorial::Person::PhoneNumber* phone_number = person->add_phone();
-    phone_number->set_number(number);
-
-    cout << "Is this a mobile, home, or work phone? ";
-    string type;
-    getline(cin, type);
-    if (type == "mobile") {
-      phone_number->set_type(tutorial::Person::MOBILE);
-    } else if (type == "home") {
-      phone_number->set_type(tutorial::Person::HOME);
-    } else if (type == "work") {
-      phone_number->set_type(tutorial::Person::WORK);
-    } else {
-      cout << "Unknown phone type.  Using default." << endl;
-    }
-  }
+  
+  cout << "Input value for the argument (as a string): ";
+  string value;
+  getline(cin, value);
+  argument->set_value(value);
 }
 
 // Main function:  Reads the entire address book from a file,
-//   adds one person based on user input, then writes it back out to the same
+//   adds one argument based on user input, then writes it back out to the same
 //   file.
 int main(int argc, char* argv[]) {
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  if (argc != 1) {
-    cerr << "Usage:  " << argv[0] << endl; //  << " ADDRESS_BOOK_FILE" << endl;
+  if (argc != 2) {
+    cerr << "Usage:  " << argv[0]  << " REQUEST_FILE" << endl;
     return -1;
   }
 
-  tutorial::AddressBook address_book;
+  krpc::Request request;
 
   {
     // Read the existing address book.
     fstream input(argv[1], ios::in | ios::binary);
     if (!input) {
       cout << argv[1] << ": File not found.  Creating a new file." << endl;
-    } else if (!address_book.ParseFromIstream(&input)) {
-      cerr << "Failed to parse address book." << endl;
+      cout << "Enter service name: ";
+      string service;
+      getline(cin, service);
+      request.set_service(service);
+
+      cout << "Enter procedure name: ";
+      string procedure;
+      getline(cin, procedure);
+      request.set_procedure(procedure);
+    } else if (!request.ParseFromIstream(&input)) {
+      cerr << "Failed to parse request." << endl;
       return -1;
+    } else {
+      cout << "Service name: " << request.service() << endl;
+      cout << "Service procedure name: " << request.procedure() << endl;
+      for (int i=0; i < request.arguments_size(); i++)
+	{
+	  const krpc::Argument& argument = request.arguments(i);
+	  cout << "Argument position: " << argument.position() << endl;
+	  cout << "Argument value: " << argument.value() << endl;
+	}
     }
   }
 
   // Add an address.
-  PromptForAddress(address_book.add_person());
+
+  while (true)
+    {
+      cout << "Add argument (Y/N)? ";
+      char result;
+      cin >> result;
+      if (result == 'Y')
+	{
+	  cin.ignore(256, '\n');
+	  PromptForArgument(request.add_arguments());
+	}
+      else
+	break;
+    }
 
   {
-    // Write the new address book back to disk.
+    // Write the new request back to disk.
     fstream output(argv[1], ios::out | ios::trunc | ios::binary);
-    if (!address_book.SerializeToOstream(&output)) {
-      cerr << "Failed to write address book." << endl;
+    if (!request.SerializeToOstream(&output)) {
+      cerr << "Failed to write request." << endl;
       return -1;
     }
   }
