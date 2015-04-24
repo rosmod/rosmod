@@ -181,14 +181,12 @@ int main(int argc, char* argv[]) {
 	std::cout << "Converting message length " << message.length() << " to Varint64" << endl;
 	unsigned char messageLen[10];
 	CodedOutputStream::WriteVarint64ToArray(message.length(), messageLen);
-	std::cout << messageLen << " : " << strlen((char *)messageLen) << endl;
-	std::cout << message << " : " << message.length() << endl;
 	/* create the full data packet and send it */
 	string msg = string((const char *)messageLen) + message;
 	if ( numbytes = send(sockfd, msg.data(), msg.length(), 0) == -1) {
 	  perror("send");
 	}
-	std::cout << "Sent message: " << msg << endl;	
+	std::cout << "Sent message of length: " << msg.length() << endl;	
 	/* receive the response from the server */
 	char buf[maxBufferSize];
 	memset(buf,0,maxBufferSize);
