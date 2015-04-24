@@ -169,33 +169,14 @@ int main(int argc, char* argv[]) {
 	std::cout << "Converting message length " << message.length() << " to Varint64" << endl;
 	unsigned char messageLen[10];
 	CodedOutputStream::WriteVarint64ToArray(message.length(), messageLen);
-	//coded_output->WriteVarint64(message.length());
-#if 0
-	string messageLen;
-	messageLen.reserve(10);
-	ZeroCopyOutputStream* raw_output = new ArrayOutputStream(&messageLen[0],10);
-	CodedOutputStream* coded_output = new CodedOutputStream(raw_output);
-	if ( numbytes = send(sockfd, messageLen.data(), messageLen.length(), 0) == -1) {
-	  perror("send");
-	}
-	std::cout << "Sent message length: " << messageLen << endl;
-	/* write the message */
-	if ( numbytes = send(sockfd, message.c_str(), message.length(),0) == -1) {
-	  perror("send");
-	}
-	std::cout << "Sent message: " << message << endl;
-
-	delete coded_output;
-	delete raw_output;
-#else
 	std::cout << messageLen << " : " << strlen((char *)messageLen) << endl;
 	std::cout << message << " : " << message.length() << endl;
+	/* create the full data packet and send it */
 	string msg = string((const char *)messageLen) + message;
 	if ( numbytes = send(sockfd, msg.data(), msg.length(), 0) == -1) {
 	  perror("send");
 	}
 	std::cout << "Sent message: " << msg << endl;	
-#endif
 	/* receive the response from the server */
 	char recvbuf[1024];
 	memset(recvbuf,0,1024);
@@ -203,13 +184,18 @@ int main(int argc, char* argv[]) {
 	if ( (bytesreceived=recv(sockfd,recvbuf,1023,0)) <= 0) {
 	  perror("recv");
 	}
-
+	std::cout << "Received " << bytesreceived << " bytes" << endl;
 	ZeroCopyInputStream* raw_input = new ArrayInputStream(recvbuf,1024);
 	CodedInputStream* coded_input = new CodedInputStream(raw_input);
 	coded_input->ReadVarint64(&size);
 	std::cout << "Received a return message of length: " << size << std::endl;
 
 	krpc::Response response;
+
+	response.ParseFromString(recvbuf + (bytesreceived - size));
+	std::cout << "Response time: " << response.time() << endl;
+	std::cout << "Response error: " << response.error() << endl;
+	std::cout << "Response return_value: " << response.return_value() << endl;
 
 	delete coded_input;
 	delete raw_input;
