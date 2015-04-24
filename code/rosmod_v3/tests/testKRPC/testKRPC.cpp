@@ -137,6 +137,32 @@ int main(int argc, char* argv[]) {
     }
     /* send the message line to the server */
     int sentbytes=0,numbytes=0;
+    char hellobuf[] = {
+      0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x52, 0x50, 0x43, 0x00, 0x00, 0x00
+    };
+    if ( numbytes = send(sockfd, hellobuf, 12,0) == -1) {
+      perror("send");
+      return false;
+    }
+    char connID[32] = "testKRPC_program";
+    if ( numbytes = send(sockfd, connID, 32,0) == -1) {
+      perror("send");
+      return false;
+    }
+    bool haveReceivedID = false;
+    char clientID[16];
+    while (!haveReceivedID)
+      {
+	memset(clientID,0,1024);
+	int bytesreceived =0;
+	if ( (bytesreceived=recv(sockfd,clientID,16,0)) <= 0) {
+	  perror("recv");
+	}
+	else {
+	  std::cout << "RECEIVED UNIQUE CLIENT ID: " << clientID << endl;
+	  haveReceivedID = true;
+	}
+      }
     string message;
     if (!request.SerializeToString(&message))
       {
