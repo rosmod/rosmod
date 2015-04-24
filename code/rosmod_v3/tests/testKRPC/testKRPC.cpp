@@ -198,10 +198,11 @@ int main(int argc, char* argv[]) {
 	    std::cout << "Response time: " << response.time() << endl;
 	    if ( response.has_error() )
 	      std::cout << "Response error: " << response.error() << endl;
-	    //std::cout << "Response return_value: " << response.return_value() << endl;
+	    std::cout << "Response return_value length: " << response.return_value().length() << endl;
+	    ZeroCopyInputStream* byte_input = new ArrayInputStream(response.return_value().data(), response.return_value().length());
+	    CodedInputStream* coded_services = new CodedInputStream(byte_input);
 	    krpc::Services services;
-	
-	    if (services.ParseFromCodedStream(coded_input))
+	    if (services.ParseFromCodedStream(coded_services))
 	      {
 		std::cout << "Got Services message" << endl;
 		std::cout << "Got " << services.services_size() << " services" << endl;
@@ -210,8 +211,13 @@ int main(int argc, char* argv[]) {
 		    const krpc::Service& service = services.services(i);
 		    std::cout << "Service " << i << ":" << endl;
 		    std::cout << "\tName: " << service.name() << endl;
+		    std::cout << "\tProcedures Count: " << service.procedures_size() << endl;
+		    std::cout << "\tClasses Count: " << service.classes_size() << endl;
+		    std::cout << "\tEnumerations Count: " << service.enumerations_size() << endl;
 		  }
 	      }
+	    delete coded_services;
+	    delete byte_input;
 	  }
 
 	delete coded_input;
