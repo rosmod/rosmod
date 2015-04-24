@@ -53,18 +53,15 @@ int main(int argc, char* argv[]) {
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  if (argc != 2) {
-    cerr << "Usage:  " << argv[0]  << " REQUEST_FILE" << endl;
-    return -1;
-  }
-
   krpc::Request request;
-
+  string fileName;
+  if (argc == 2)
   {
+    fileName = argv[1];
     // Read the existing address book.
-    fstream input(argv[1], ios::in | ios::binary);
+    fstream input(fileName.c_str(), ios::in | ios::binary);
     if (!input) {
-      cout << argv[1] << ": File not found.  Creating a new file." << endl;
+      cout << fileName << ": File not found.  Creating a new file." << endl;
       cout << "Enter service name: ";
       string service;
       getline(cin, service);
@@ -87,9 +84,22 @@ int main(int argc, char* argv[]) {
 	  cout << "Argument value: " << argument.value() << endl;
 	}
     }
-  }
+  } 
+  else
+    {
+      cout << "Enter service name: ";
+      string service;
+      getline(cin, service);
+      request.set_service(service);
 
-  // Add an address.
+      cout << "Enter procedure name: ";
+      string procedure;
+      getline(cin, procedure);
+      request.set_procedure(procedure);
+      fileName = service + "." + procedure;
+    }
+
+  // Add an service.
 
   while (true)
     {
@@ -212,9 +222,30 @@ int main(int argc, char* argv[]) {
 		    std::cout << "Service " << i << ":" << endl;
 		    std::cout << "\tName: " << service.name() << endl;
 		    std::cout << "\tProcedures Count: " << service.procedures_size() << endl;
+		    for (int j=0;j<service.procedures_size();j++)
+		      {
+			const krpc::Procedure& procedure = service.procedures(j);
+			std::cout << "\tProcedure " << j << ":" << endl;
+			std::cout << "\t\tName: " << procedure.name() << endl;
+			std::cout << "\t\tParameters Count: " << procedure.parameters_size() << endl;
+			for (int k=0;k<procedure.parameters_size();k++)
+			  {
+			    const krpc::Parameter& parameter = procedure.parameters(k);
+			    std::cout << "\t\tParameter " << k << ":" << endl;
+			    std::cout << "\t\t\tName: " << parameter.name() << endl;
+			    std::cout << "\t\t\tType: " << parameter.type() << endl;
+			    if (parameter.has_default_argument())
+			      std::cout << "\t\t\tDefault Argument: " << parameter.default_argument() << endl;
+			  }
+			if (procedure.has_return_type())
+			  std::cout << "\t\tReturn Type: " << procedure.return_type() << endl;
+		      }
 		    std::cout << "\tClasses Count: " << service.classes_size() << endl;
 		    std::cout << "\tEnumerations Count: " << service.enumerations_size() << endl;
 		  }
+	      } else
+	      {
+		std::cout << "Response return_value: " << response.return_value() << endl;
 	      }
 	    delete coded_services;
 	    delete byte_input;
@@ -232,7 +263,7 @@ int main(int argc, char* argv[]) {
   
   {
     // Write the new request back to disk.
-    fstream output(argv[1], ios::out | ios::trunc | ios::binary);
+    fstream output(fileName.c_str(), ios::out | ios::trunc | ios::binary);
     if (!request.SerializeToOstream(&output)) {
       cerr << "Failed to write request." << endl;
       return -1;
