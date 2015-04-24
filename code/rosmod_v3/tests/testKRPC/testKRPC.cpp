@@ -133,7 +133,6 @@ int main(int argc, char* argv[]) {
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
       perror("Couldn't set sockopts!");
       close(sockfd);
-      return false;
     }
     /* send the message line to the server */
     int sentbytes=0,numbytes=0;
@@ -142,12 +141,10 @@ int main(int argc, char* argv[]) {
     };
     if ( numbytes = send(sockfd, hellobuf, 12,0) == -1) {
       perror("send");
-      return false;
     }
     char connID[32] = "testKRPC_program";
     if ( numbytes = send(sockfd, connID, 32,0) == -1) {
       perror("send");
-      return false;
     }
     bool haveReceivedID = false;
     char clientID[16];
@@ -164,25 +161,39 @@ int main(int argc, char* argv[]) {
 	}
       }
     string message;
-    if (!request.SerializeToString(&message))
+    message.reserve(1024);
+    uint64_t size;
+    request.SerializeToString(&message);
       {
+	/* write the length of the serialized message */
+	char lenBuf[10];
+	ZeroCopyOutputStream* raw_output = new ArrayOutputStream(lenBuf,10);
+	CodedOutputStream* coded_output = new CodedOutputStream(raw_output);
+	coded_output->WriteVarint64(message.length());
+	if ( numbytes = send(sockfd, lenBuf, strlen(lenBuf), 0) == -1) {
+	  perror("send");
+	}
+	std::cout << "Sent message length: " << lenBuf << endl;
+	/* write the message */
 	if ( numbytes = send(sockfd, message.c_str(), message.length(),0) == -1) {
 	  perror("send");
-	  return false;
 	}
+	std::cout << "Sent message: " << message << endl;
+	/* receive the response from the server */
 	char recvbuf[1024];
 	memset(recvbuf,0,1024);
 	int bytesreceived =0;
 	if ( (bytesreceived=recv(sockfd,recvbuf,1023,0)) <= 0) {
 	  perror("recv");
-	  return false;
 	}
 
 	ZeroCopyInputStream* raw_input = new ArrayInputStream(recvbuf,1024);
 	CodedInputStream* coded_input = new CodedInputStream(raw_input);
-	uint64_t size;
 	coded_input->ReadVarint64(&size);
 	std::cout << "Received a return message of length: " << size << std::endl;
+
+	delete coded_output;
+	delete raw_output;
 	delete coded_input;
 	delete raw_input;
       }
