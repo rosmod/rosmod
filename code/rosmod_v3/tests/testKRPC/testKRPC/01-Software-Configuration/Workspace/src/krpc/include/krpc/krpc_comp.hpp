@@ -8,14 +8,11 @@
 //      USER INCLUDES GO HERE
 // --------------------------------
 //# Start User Includes Marker
-#include "krpc/KRPC.pb.h"
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
+#include "krpc/krpc_client.hpp"
 //# End User Includes Marker
 
 
 //# Start User Globals Marker
-using boost::asio::ip::tcp;
 //# End User Globals Marker
 
 class krpc_comp : public Component
