@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
   {
     int sockfd;
     u_short server_portno = 50000;
-    char* server_ip_str = "127.0.0.1";
+    char server_ip_str[] = "127.0.0.1";
   
     /* socket: create the socket */
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) <0) {
@@ -191,26 +191,26 @@ int main(int argc, char* argv[]) {
 	CodedInputStream* coded_input = new CodedInputStream(raw_input);
 	coded_input->ReadVarint64(&size);
 	std::cout << "Received a return message of length: " << size << std::endl;
-	std::cout << buf << endl;
-
 	krpc::Response response;
-	krpc::Services services;
-	size_t dataOffset = bytesreceived - size;
-	if (response.ParseFromString(buf + dataOffset))
+	if (response.ParseFromCodedStream(coded_input))
 	  {
 	    std::cout << "Got Response message" << endl;
 	    std::cout << "Response time: " << response.time() << endl;
 	    if ( response.has_error() )
 	      std::cout << "Response error: " << response.error() << endl;
-	    std::cout << "Response return_value: " << response.return_value() << endl;
-	  } else if (services.ParseFromString(buf + dataOffset))
-	  {
-	    std::cout << "Got Services message" << endl;	
-	    for (int i=0;i<services.services_size();i++)
+	    //std::cout << "Response return_value: " << response.return_value() << endl;
+	    krpc::Services services;
+	
+	    if (services.ParseFromCodedStream(coded_input))
 	      {
-		const krpc::Service& service = services.services(i);
-		std::cout << "Service " << i << ":" << endl;
-		std::cout << "\tName: " << service.name() << endl;
+		std::cout << "Got Services message" << endl;
+		std::cout << "Got " << services.services_size() << " services" << endl;
+		for (int i=0;i<services.services_size();i++)
+		  {
+		    const krpc::Service& service = services.services(i);
+		    std::cout << "Service " << i << ":" << endl;
+		    std::cout << "\tName: " << service.name() << endl;
+		  }
 	      }
 	  }
 
