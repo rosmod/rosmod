@@ -163,7 +163,7 @@ int main(int argc, char* argv[]) {
     string message;
     message.reserve(1024);
     uint64_t size;
-    request.SerializeToString(&message);
+    if (request.SerializeToString(&message))
       {
 	/* write the length of the serialized message */
 	char lenBuf[10];
@@ -196,6 +196,9 @@ int main(int argc, char* argv[]) {
 	delete raw_output;
 	delete coded_input;
 	delete raw_input;
+      } else
+      {
+	std::cerr << "Couldn't serialize message!" << endl;
       }
 
     close(sockfd);
