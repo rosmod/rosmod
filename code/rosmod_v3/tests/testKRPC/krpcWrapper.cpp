@@ -7,7 +7,7 @@ KRPC_Client::KRPC_Client(string name, string ip, int port)
     ip_(ip),
     port_(port)
 {
-  name_.reserve(32);
+  name_.resize(32);
   timeout_ = 1;
 }
 
@@ -49,8 +49,8 @@ bool KRPC_Client::Connect()
     perror("send");
     return false;
   }
-  char connID[32] = "testKRPC_program";
-  if ( numbytes = send(socket_, connID, 32,0) == -1) {
+  //char connID[32] = "testKRPC_program";
+  if ( numbytes = send(socket_, name_.c_str(), 32,0) == -1) {
     perror("send");
     return false;
   }
