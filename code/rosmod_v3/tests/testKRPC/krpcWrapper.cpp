@@ -56,6 +56,7 @@ bool KRPC_Client::Connect()
   }
 
   bool haveReceivedID = false;
+  id_.resize(16);
   while (!haveReceivedID)
     {
       id_.clear();
