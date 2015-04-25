@@ -83,8 +83,10 @@ bool KRPC_Client::GetActiveVessel(int& id)
 {
   krpc::Request request;
   krpc::Response response;
+
   request.set_service("SpaceCenter");
   request.set_procedure("get_ActiveVessel");
+
   if (getResponseFromRequest(request,response))
     {
       if ( response.has_error() )
@@ -109,8 +111,10 @@ bool KRPC_Client::GetVessels(std::vector<int>& ids)
 {
   krpc::Request request;
   krpc::Response response;
+
   request.set_service("SpaceCenter");
   request.set_procedure("get_Vessels");
+
   if (getResponseFromRequest(request,response))
     {
       if ( response.has_error() )
@@ -141,10 +145,12 @@ bool KRPC_Client::GetVesselName(int vesselID, string& name)
 {
   krpc::Request request;
   krpc::Response response;
+  krpc::Argument* argument;
+
   request.set_service("SpaceCenter");
   request.set_procedure("Vessel_get_Name");
 
-  krpc::Argument* argument = request.add_arguments();
+  argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
@@ -206,10 +212,12 @@ bool KRPC_Client::SetTargetVessel(int vesselID)
 {
   krpc::Request request;
   krpc::Response response;
+  krpc::Argument* argument;
+
   request.set_service("SpaceCenter");
   request.set_procedure("set_TargetVessel");
 
-  krpc::Argument* argument = request.add_arguments();
+  argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
@@ -229,18 +237,21 @@ bool KRPC_Client::SetControlSAS(int vesselID, bool on)
 {
   krpc::Request request;
   krpc::Response response;
+  krpc::Argument* argument;
 
   request.set_service("SpaceCenter");
   request.set_procedure("Control_set_SAS");
 
-  krpc::Argument* argument = request.add_arguments();
+  argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_value()->push_back(1);
+  argument->mutable_value()->resize(1);
+  CodedOutputStream::WriteVarint64ToArray(on, (unsigned char *)argument->mutable_value()->data());
+
   if (getResponseFromRequest(request,response))
     {
       if ( response.has_error() )
@@ -256,18 +267,21 @@ bool KRPC_Client::SetControlRCS(int vesselID, bool on)
 {
   krpc::Request request;
   krpc::Response response;
+  krpc::Argument* argument;
 
   request.set_service("SpaceCenter");
   request.set_procedure("Control_set_RCS");
 
-  krpc::Argument* argument = request.add_arguments();
+  argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_value()->push_back(1);
+  argument->mutable_value()->resize(1);
+  CodedOutputStream::WriteVarint64ToArray(on, (unsigned char *)argument->mutable_value()->data());
+
   if (getResponseFromRequest(request,response))
     {
       if ( response.has_error() )
@@ -283,19 +297,22 @@ bool KRPC_Client::SetThrottle(int vesselID, float value)
 {
   krpc::Request request;
   krpc::Response response;
+  krpc::Argument* argument;
 
   request.set_service("SpaceCenter");
   request.set_procedure("Engine_set_Throttle");
 
-  krpc::Argument* argument = request.add_arguments();
+  argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_value()->resize(15);
-  CodedOutputStream::WriteRawToArray((char *)&value, 4, (unsigned char *)argument->mutable_value()->data());
+  argument->mutable_value()->resize(8);
+  double v = value;
+  CodedOutputStream::WriteRawToArray((char *)&v, 8, (unsigned char *)argument->mutable_value()->data());
+
   if (getResponseFromRequest(request,response))
     {
       if ( response.has_error() )

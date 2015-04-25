@@ -21,9 +21,9 @@ int main(int argc, char** argv)
       std::string vesselName;
       client.GetVesselName(vesselID,vesselName);
       std::cout << "Active vessel Name: " << vesselName << std::endl;
-      client.SetControlSAS(vesselID,false);
-      client.SetControlRCS(vesselID,false);
-      client.SetThrottle(vesselID,1.0);
+      //client.SetControlSAS(vesselID,false);
+      //client.SetControlRCS(vesselID,false);
+      //client.SetThrottle(vesselID,1.0);
     }
   client.Close();
 }
