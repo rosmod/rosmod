@@ -10,10 +10,10 @@ int main(int argc, char** argv)
       int numVessels;
       std::vector<int> vesselIDs;
       client.GetVessels(vesselIDs);
-      std::cout << "There are " << vesselIDs.size() << " vessels." << endl;
+      std::cout << "There are " << vesselIDs.size() << " vessel(s):" << endl;
       for (int i=0;i<vesselIDs.size();i++)
 	{
-	  std::cout << "ID " << i << " = " << vesselIDs[i] << endl;
+	  std::cout << "\tID #" << i+1 << " = " << vesselIDs[i] << endl;
 	}
       int vesselID;
       client.GetActiveVessel(vesselID);
@@ -21,6 +21,9 @@ int main(int argc, char** argv)
       std::string vesselName;
       client.GetVesselName(vesselID,vesselName);
       std::cout << "Active vessel Name: " << vesselName << std::endl;
+      client.SetControlSAS(vesselID,false);
+      client.SetControlRCS(vesselID,false);
+      client.SetThrottle(vesselID,1.0);
     }
   client.Close();
 }

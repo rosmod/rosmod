@@ -44,7 +44,20 @@ public:
   bool GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos);
   bool GetVesselVelocity(int vesselID, int refFrame, krpc::Tuple& vel);
   bool GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot);
+
+  bool GetApoapsis(int vesselID, double& apo);
+  bool GetPeriapsis(int vesselID, double& peri);
+  bool GetOrbitalSpeed(int vesselID, double& speed);
+  bool GetTimeToApoapsis(int vesselID, double& time);
+  bool GetTimeToPeriapsis(int vesselID, double& time);
+
   bool SetTargetVessel(int vesselID);
+  bool SetControlSAS(int vesselID, bool on);
+  bool SetControlRCS(int vesselID, bool on);
+  bool SetThrottle(int vesselID, float value);
+  bool SetPitch(int vesselID, float value);
+  bool SetRoll(int vesselID, float value);
+  bool SetYaw(int vesselID, float value);
 protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
