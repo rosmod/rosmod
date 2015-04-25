@@ -11,6 +11,11 @@ KRPC_Client::KRPC_Client(string name, string ip, int port)
   timeout_ = 1;
 }
 
+KRPC_Client::~KRPC_Client()
+{
+  Close();
+}
+
 bool KRPC_Client::Connect()
 {
   /* socket: create the socket */

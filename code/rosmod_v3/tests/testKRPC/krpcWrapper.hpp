@@ -34,6 +34,8 @@ class KRPC_Client
 {
 public:
   KRPC_Client(std::string name, std::string ip="127.0.0.1", int port=50000);
+  ~KRPC_Client();
+
   bool Connect();
   bool Close();
   bool GetActiveVessel(int& id);
