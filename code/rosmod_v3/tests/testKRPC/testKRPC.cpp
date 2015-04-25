@@ -51,12 +51,12 @@ void PromptForArgument(krpc::Argument* argument) {
       unsigned int val = atoi(value.c_str());
       unsigned char varint[10];
       CodedOutputStream::WriteVarint64ToArray(val, varint);
-      argument->set_value((const char *)varint);
+      argument->set_value((const char*)varint);
     } else
     {
       argument->set_value(value);
     }
-  
+  std::cout << "Value set to: " << argument->value() << endl;
 }
 
 // Main function:  Reads the entire address book from a file,
@@ -182,7 +182,7 @@ int main(int argc, char* argv[]) {
 	  perror("recv");
 	}
 	else {
-	  std::cout << "RECEIVED UNIQUE CLIENT ID: " << clientID << endl;
+	  std::cout << "Received Client ID" << endl;
 	  haveReceivedID = true;
 	}
       }
@@ -221,9 +221,14 @@ int main(int argc, char* argv[]) {
 	    if ( response.has_error() )
 	      std::cout << "Response error: " << response.error() << endl;
 	    std::cout << "Response return_value length: " << response.return_value().length() << endl;
+	    
+	    std::cout << "Response return_value(string): " << response.return_value() << endl;
 	    ZeroCopyInputStream* byte_input = new ArrayInputStream(response.return_value().data(), response.return_value().length());
 	    CodedInputStream* coded_services = new CodedInputStream(byte_input);
 	    krpc::Services services;
+	    long unsigned int len;
+	    coded_services->ReadVarint64(&len);
+	    std::cout << "Response length: " << len << endl;
 	    if (services.ParseFromCodedStream(coded_services))
 	      {
 		std::cout << "Got Services message" << endl;
