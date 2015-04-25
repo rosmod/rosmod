@@ -103,6 +103,34 @@ bool KRPC_Client::GetActiveVessel(int& id)
 
 bool KRPC_Client::GetVessels(std::vector<int>& ids)
 {
+  krpc::Request request;
+  krpc::Response response;
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_Vessels");
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      ZeroCopyInputStream* input = 
+	new ArrayInputStream(response.return_value().data(), response.return_value().length());
+      CodedInputStream* codeStream = 
+	new CodedInputStream(input);
+      krpc::List vesselList;
+      vesselList.ParseFromCodedStream(codeStream);
+      for (int i=0;i<vesselList.items_size();i++)
+	{
+	  uint64_t id;
+	  const string item = vesselList.items(i);
+	  CodedInputStream::ReadLittleEndian64FromArray((const unsigned char*)item.data(),&id);
+	  ids.push_back(id);
+	}
+      delete codeStream;
+      delete input;
+    }
+  return true;
 }
 
 bool KRPC_Client::GetVesselName(int vesselID, string& name)
@@ -148,8 +176,26 @@ bool KRPC_Client::GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot
 {
 }
 
-bool KRPC_Client::SetActiveVessel(int vesselID)
+bool KRPC_Client::SetTargetVessel(int vesselID)
 {
+  krpc::Request request;
+  krpc::Response response;
+  request.set_service("SpaceCenter");
+  request.set_procedure("set_TargetVessel");
+  krpc::Argument* argument = request.add_arguments();
+  argument->set_position(0);
+  unsigned char varint[10];
+  CodedOutputStream::WriteVarint64ToArray(vesselID, varint);
+  argument->set_value((const char*)varint);
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
 }
 
 bool KRPC_Client::createRequestString(krpc::Request req, std::string& str)
@@ -187,6 +233,7 @@ bool KRPC_Client::getResponseFromRequest(krpc::Request req, krpc::Response& res)
       int bytesreceived =0;
       if ( (bytesreceived=recv(socket_,buf,maxBufferSize-1,0)) <= 0) {
 	perror("recv");
+	return false;
       }
       ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
       CodedInputStream* coded_input = new CodedInputStream(raw_input);

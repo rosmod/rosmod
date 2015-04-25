@@ -42,7 +42,7 @@ public:
   bool GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos);
   bool GetVesselVelocity(int vesselID, int refFrame, krpc::Tuple& vel);
   bool GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot);
-  bool SetActiveVessel(int vesselID);
+  bool SetTargetVessel(int vesselID);
 protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
