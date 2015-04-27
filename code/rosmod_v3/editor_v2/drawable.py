@@ -154,12 +154,14 @@ Hardware, Deployments, and all of their
 sub-objects.
 '''
 class Drawable_Object:
+
+    # these are used by all generator classes:
+    parent = None
+    kind = ""
+    properties = OrderedDict()
+    children = []	
+
     def __init__(self):
-        # these are used by all generator classes:
-        self.parent = None
-        self.children = []
-        self.kind = ""
-        self.properties = OrderedDict()
 
         # these are configured (default or by user)
         self.style = Draw_Style()
