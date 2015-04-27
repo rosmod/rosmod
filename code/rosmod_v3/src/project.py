@@ -9,7 +9,6 @@ exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
 head,tail = os.path.split(head)
-sys.path.append(head + '/../editor_v2/')
 from drawable import Drawable_Object
 
 from builder import *

@@ -17,25 +17,9 @@ import multiprocessing
 from threading import Thread
 from fabric.api import *
 
-exeName = sys.argv[0]
-dirName = os.path.abspath(exeName)
-head,tail = os.path.split(dirName)
-editorPath=head
-rootIconPath= editorPath + '/icons'
-modelIconPath= rootIconPath + '/model'
-toolbarIconPath= rootIconPath + '/toolbar'
-
-head,tail = os.path.split(editorPath)
-rosmodPath=head
-sys.path.append(rosmodPath+'/ros_tools')
-import ros_tools
-sys.path.append(rosmodPath+"/ros_tools/deployment/tests")
-import fabTest
-
 from collections import OrderedDict
 import wx.lib.agw.flatnotebook as fnb
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
-
 try:
     import numpy
     import numpy.random as RandomArray
@@ -47,6 +31,19 @@ except ImportError:
             "You can get info about it at:\n"
             "http://numpy.scipy.org/\n\n"
             )
+
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+editorPath=head
+print editorPath
+rootIconPath= editorPath + '/icons'
+modelIconPath= rootIconPath + '/model'
+toolbarIconPath= rootIconPath + '/toolbar'
+deploymentPath = editorPath + '/deployment'
+
+import project
+import deployment
 
 # THESE ARE ALL FROM OUR CODE
 from terminal import *
@@ -85,7 +82,7 @@ class Example(wx.Frame):
 
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = os.getcwd()
-        self.project = ros_tools.ROS_Project()
+        self.project = project.ROS_Project()
         self.BuildStyleDict()
 
         self.undoList = []
@@ -628,21 +625,21 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         pkg = info.obj
         if kind == 'timer':
-            newObj = ros_tools.ROS_Timer()
+            newObj = project.ROS_Timer()
         elif kind == 'subscriber':
-            newObj = ros_tools.ROS_Subscriber()
+            newObj = project.ROS_Subscriber()
             newObj.parent = comp
             references = self.project.workspace.getChildrenByKind('message')
         elif kind == 'publisher':
-            newObj = ros_tools.ROS_Publisher()
+            newObj = project.ROS_Publisher()
             newObj.parent = comp
             references = self.project.workspace.getChildrenByKind('message')
         elif kind == 'server':
-            newObj = ros_tools.ROS_Server()
+            newObj = project.ROS_Server()
             newObj.parent = comp
             references = self.project.workspace.getChildrenByKind('service')
         elif kind == 'client':
-            newObj = ros_tools.ROS_Client()
+            newObj = project.ROS_Client()
             newObj.parent = comp
             references = self.project.workspace.getChildrenByKind('service')
         if newObj != None:
@@ -656,7 +653,7 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         pkg = info.obj
         if kind == 'component_instance':
-            newObj = ros_tools.ROS_Component_Instance()
+            newObj = project.ROS_Component_Instance()
             references = node.parent.getChildrenByKind('component')
         if newObj != None:
             self.GenericAdd(newObj,references,node)
@@ -666,13 +663,13 @@ class Example(wx.Frame):
         newObj = None
         references = []
         if kind == 'message':
-            newObj = ros_tools.ROS_Message()
+            newObj = project.ROS_Message()
         elif kind == 'service':
-            newObj = ros_tools.ROS_Service()
+            newObj = project.ROS_Service()
         elif kind == 'component':
-            newObj = ros_tools.ROS_Component()
+            newObj = project.ROS_Component()
         elif kind == 'node':
-            newObj = ros_tools.ROS_Node()
+            newObj = project.ROS_Node()
         if newObj != None:
             self.GenericAdd(newObj,references,package)
 
@@ -681,7 +678,7 @@ class Example(wx.Frame):
         newObj = None
         references = []
         if kind == 'host':
-            newObj = ros_tools.ROS_Host()
+            newObj = project.ROS_Host()
         if newObj != None:
             self.GenericAdd(newObj,references,hw)
 
@@ -690,10 +687,10 @@ class Example(wx.Frame):
         newObj = None
         references = []
         if kind == 'host_instance':
-            newObj = ros_tools.ROS_Host_Instance()
+            newObj = project.ROS_Host_Instance()
             references = dep.properties['hardware_configuration_reference'].children
         elif kind == 'group':
-            newObj = ros_tools.ROS_Group()
+            newObj = project.ROS_Group()
             references = self.project.workspace.getChildrenByKind('node')
         if newObj != None:
             self.GenericAdd(newObj,references,dep)
@@ -703,7 +700,7 @@ class Example(wx.Frame):
         newObj = None
         references = []
         if kind == 'node_instance':
-            newObj = ros_tools.ROS_Node_Instance()
+            newObj = project.ROS_Node_Instance()
             references = self.project.workspace.getChildrenByKind('node')
         if newObj != None:
             self.GenericAdd(newObj,references,host)
@@ -712,7 +709,7 @@ class Example(wx.Frame):
         group = self.activeObject
         newObj = None
         if kind == 'port_instance':
-            newObj = ros_tools.ROS_Port_Instance()
+            newObj = project.ROS_Port_Instance()
             del newObj.properties['name']
             references = group.parent.getChildrenByKind('node_instance')
         if newObj != None:
@@ -802,7 +799,7 @@ class Example(wx.Frame):
         self.activeObject = None
 
     def OnHardwareCreate(self, e):
-        newObj = ros_tools.ROS_HW()
+        newObj = project.ROS_HW()
         newObj.properties = {}
         newObj.properties['name'] = "New Hardware Configuration"
         existingNames = [x.properties['name'] for x in self.project.hardware_configurations.children]
@@ -841,7 +838,7 @@ class Example(wx.Frame):
             os.remove(self.project.hardware_configurations_path + '/' + obj.properties['name'] + '.rhw')
         
     def OnDeploymentCreate(self, e):
-        newObj = ros_tools.ROS_Deployment()
+        newObj = project.ROS_Deployment()
         newObj.properties = OrderedDict()
         newObj.properties['name'] = "New Deployment"
         references = self.project.hardware_configurations
@@ -976,7 +973,7 @@ class Example(wx.Frame):
             numNodes = 0 # 1 # roscore
             rosCoreIP = ""
             testName = ""
-            newObj = ros_tools.Drawable_Object()
+            newObj = project.Drawable_Object()
             newObj.properties = OrderedDict()
             newObj.properties['name'] = testName
             newObj.properties['host_reference'] = None
@@ -1071,7 +1068,7 @@ class Example(wx.Frame):
             dialogs.ErrorDialog(self,"System is not running a deployment")
 
     def OnPackageCreate(self, e):
-        newPkg = ros_tools.ROS_Package()
+        newPkg = project.ROS_Package()
         newPkg.properties = {}
         newPkg.properties['name'] = "New Package"
         existingNames = [x.properties['name'] for x in self.project.workspace.children]
@@ -1266,7 +1263,7 @@ class Example(wx.Frame):
             path = self.project_path,
         )
         if project_path != None:
-            dlgObj = ros_tools.ROS_Project()
+            dlgObj = project.ROS_Project()
             dlgObj.properties = OrderedDict()
             dlgObj.properties['name'] = "New Project"
             ed = dialogs.EditDialog( self,
@@ -1279,13 +1276,13 @@ class Example(wx.Frame):
             if inputs != OrderedDict():
                 self.filename = inputs['name']
                 self.project_path = project_path
-                self.project = ros_tools.ROS_Project()
+                self.project = project.ROS_Project()
                 self.project.new(self.filename,self.project_path)
                 self.project.workspace.properties['name'] = "Workspace"
-                newHW = ros_tools.ROS_HW()
+                newHW = project.ROS_HW()
                 newHW.properties['name'] = "Hardware"
                 self.project.hardware_configurations.append(newHW)
-                newDeployment = ros_tools.ROS_Deployment()
+                newDeployment = project.ROS_Deployment()
                 newDeployment.properties['name'] = "Deployment"
                 newDeployment.properties['hardware_configuration_reference'] = newHW
                 self.project.deployments.append(newDeployment)
@@ -1312,7 +1309,7 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def OnSaveAs(self, e):
-        dlgObj = ros_tools.ROS_Project()
+        dlgObj = project.ROS_Project()
         dlgObj.properties = OrderedDict()
         dlgObj.properties['name'] = self.project.project_name
         ed = dialogs.EditDialog( self,
