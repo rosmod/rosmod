@@ -10,23 +10,33 @@ grammar ROSMOD_Software;
  * This is the start of the Software Model
  */
 start
-    :   (packages)+
+    :   
+        (packages)+
         EOF
     ;
 
 // Name
 name
-    :   ID
+    :   
+        ( ID ( '/' ID )* )
     ;
 
 // Data Type
 datatype
-    :   ( ID ( '/' ID )* ) ( '[' (INT)? ']' )*
+    :   
+        ( ID ( '/' ID )* ) ( '[' (INT)? ']' )*
     ;
 
 // Value
 value 
-    :   ( ID | INT | DOUBLE | BOOL)
+    :   
+        ( ID | INT | DOUBLE | BOOL)
+    ;
+
+// Unit of provided metric
+unit
+    :   
+        ( 's' | 'ms' | 'us' | 'ns' )
     ;
 
 /*
@@ -39,7 +49,8 @@ value
  * (5) Set of nodes/actors
  */
 packages
-    :   'package' name
+    :   
+        'package' name
         '{'
         ( message | service | component | node )*
         '}'
@@ -47,40 +58,51 @@ packages
 
 // ROS Message
 message
-    :   'msg' name
+    :   
+        'msg' name
         '{'
-        ( datatype name ( '=' value )? ';' )+
+        (field)*
         '}'
+    ;
+
+// ROS Field
+field
+    :   
+        ( datatype name ( '=' value )? ';' )
     ;
 
 // ROS Service
 service
-    :   'srv' name
+    :   
+        'srv' name
         '{'
-        ( request )*
-        ( response )*
+        ( request )?
+        ( response )?
         '}'
     ;
 
 // ROS Service Request
 request
-    :   'request'
+    :   
+        'request'
         '{'
-        ( datatype name ( '=' value )? ';' )+
+        ( field )*
         '}'
     ;
 
 // ROS Service Response
 response
-    :   'response'
+    :   
+        'response'
         '{'
-        ( datatype name ( '=' value )? ';' )+
+        ( field )*
         '}'
     ;
 
 // ROS Component
 component
-    :   'component' name ':' datatype
+    :   
+        'component' name ':' datatype
         '{'
         ( port | timer )*
         '}'
@@ -88,64 +110,65 @@ component
 
 // ROS Component Port
 port
-    :   ( client | server | publisher | subscriber )
-
-        ( '{'
-            ( 'priority' '=' priority ';'
-            | 'deadline' '=' deadline unit ';' 
-            )+
-        '}' 
-        )?
+    :   
+        ( client | server | publisher | subscriber )
     ;
 
 // ROS Client
 client
-    :   'client' '<' datatype '>' name ';'
+    :   
+        'client' '<' datatype '>' name ';'
     ;
 
 // ROS Server
 server
-    :   'server' '<' datatype '>' name
+    :   
+        'server' '<' datatype '>' name
+        '{'
+        ( priority | deadline )+
+        '}'
     ;
 
 // ROS Publisher
 publisher
-    :   'publisher' '<' datatype '>' name ';'
+    :   
+        'publisher' '<' datatype '>' name ';'
     ;
 
 // ROS Subscriber
 subscriber
-    :   'subscriber' '<' datatype '>' name
-    ;
-
-// ROS Port Callback Priority
-priority
-    :   INT
-    ;
-
-// ROS Port Callback Deadline
-deadline
-    :   DOUBLE
+    :   
+        'subscriber' '<' datatype '>' name
+        '{'
+        ( priority | deadline )+
+        '}'
     ;
 
 // ROS Component Timer
 timer
-    :   'timer' name
+    :   
+        'timer' name
         '{'
-            ( 'period' '=' period unit ';'
-            | 'priority' '=' priority ';'
-            | 'deadline' '=' deadline unit ';' )+
+        ( period | priority | deadline )+
         '}'
     ;
 
 // Timer Period
 period
-    :   DOUBLE
+    :   
+        'period' '=' value unit ';'
     ;
 
-// Unit of provided metric
-unit
-    :   ( 's' | 'ms' | 'us' | 'ns' )
+// ROS Port Callback Priority
+priority
+    :   
+        'priority' '=' value ';'
+    ;
+
+// ROS Port Callback Deadline
+deadline
+    :   
+        'deadline' '=' value unit ';' 
     ;
 
 /*
@@ -154,7 +177,8 @@ unit
  * (2) One or more component instances
  */
 node
-    :   'node' name
+    :   
+        'node' name
         '{'
         ( component_instance )+
         '}'
@@ -166,38 +190,45 @@ node
  * (2) Name of the component instance
  */
 component_instance
-    :   'component' '<' datatype '>' name ';'
+    :   
+        'component' '<' datatype '>' name ';'
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
-    :   ('a'..'z' | 'A'..'Z' | '_')
-        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '/')*
+    :   
+        ('a'..'z' | 'A'..'Z' | '_')
+        ('a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
     ;
 
 // A digit - any number between 0 and 9
 fragment DIGIT
-    :   '0'..'9'
+    :   
+        '0'..'9'
     ;
 
 // An integer - one or more digits
 INT
-    :   DIGIT+
+    :   
+        DIGIT+
     ;
 
 // A double-precision floating point number
 DOUBLE
-    :   (DIGIT)+ '.' (DIGIT)*
+    :   
+        (DIGIT)+ '.' (DIGIT)*
     ;
 
 // A boolean variable - must be either true or false
 BOOL
-    :   ( 'true' | 'false')
+    :   
+        ( 'true' | 'false')
     ;
 
 // White spaces and escape codes are ignored
 WS
-    :   ( (' ')*
+    :   
+        ( (' ')*
         | '\t'
         | '\r'
         | '\n'
@@ -206,11 +237,13 @@ WS
 
 // Paragraph comments are ignored
 COMMENT
-    :   '/*' .*? '*/' -> skip
+    :   
+        '/*' .*? '*/' -> skip
     ;
 
 // Line comments are ignored
 LINE_COMMENT
-    :   '//' ~[\r\n]* -> skip
+    :   
+        '//' ~[\r\n]* -> skip
     ;
 
