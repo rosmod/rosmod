@@ -29,15 +29,20 @@ using namespace google::protobuf::io;
 
 const int maxBufferSize = 65535;
 const char helloMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x52, 0x50, 0x43, 0x00, 0x00, 0x00 };
+const char helloStreamMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x53, 0x54, 0x52, 0x45, 0x41, 0x4D };
+const char streamAck[] = { 0x4F, 0x4B };
 
 class KRPC_Client
 {
 public:
-  KRPC_Client(std::string name, std::string ip="127.0.0.1", int port=50000);
+  KRPC_Client(std::string name, std::string ip="127.0.0.1", int port=50000, int streamPort=50001);
   ~KRPC_Client();
 
   bool Connect();
   bool Close();
+
+  bool ConfigureRequestStream(krpc::Request& req);
+
   bool GetActiveVessel(int& id);
   bool GetVessels(std::vector<int>& ids);
   bool GetVesselName(int vesselID, std::string& name);
@@ -63,9 +68,11 @@ protected:
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
 private:
   int port_;
+  int streamPort_;
   std::string ip_;
   std::string id_;
   std::string name_;
   int socket_;
+  int streamSocket_;
   int timeout_;
 };

@@ -2,12 +2,14 @@
 
 using namespace std;
 
-KRPC_Client::KRPC_Client(string name, string ip, int port) 
+KRPC_Client::KRPC_Client(string name, string ip, int port, int streamPort) 
   : name_(name),
     ip_(ip),
-    port_(port)
+    port_(port),
+    streamPort_(streamPort)
 {
   name_.resize(32);
+  id_.resize(16);
   timeout_ = 1;
 }
 
@@ -60,7 +62,6 @@ bool KRPC_Client::Connect()
   }
   /* receive the unique ID from server for this client */
   bool haveReceivedID = false;
-  id_.resize(16);
   while (!haveReceivedID)
     {
       id_.clear();
@@ -71,12 +72,68 @@ bool KRPC_Client::Connect()
 	haveReceivedID = true;
       }
     }
+  // ****************************
+  // CONNECT TO THE STREAM SERVER
+  // ****************************
+  /* Open the stream socket */
+  if ((streamSocket_ = socket(AF_INET, SOCK_STREAM, 0)) <0) {
+    perror("ERROR opening stream socket");
+    return false;
+  }
+  /* build the server's Internet address */
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(streamPort_);
+  if (inet_pton(AF_INET, ip_.c_str(), &(server_addr.sin_addr)) !=1) {
+    perror("stream inet_pton");
+    return false;
+  }
+  /* set the address to zero */
+  memset(server_addr.sin_zero, 0, sizeof server_addr.sin_zero);
+  /* connect: create a connection with the server */
+  if (connect(streamSocket_, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+    perror("ERROR connecting to stream");
+    return false;
+  }
+  /* set the timeout on the socket receive */
+  tv.tv_sec = timeout_;
+  tv.tv_usec = 0;
+  if (setsockopt(streamSocket_, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
+    perror("Couldn't set sockopts!");
+    Close();
+    return false;
+  }
+  /* Send the stream Hello message */
+  sentbytes=0,numbytes=0;
+  if ( numbytes = send(streamSocket_, helloStreamMessage, 12,0) == -1) {
+    perror("send");
+    return false;
+  }
+  /* Send the client ID */
+  if ( numbytes = send(streamSocket_, id_.c_str(), 16,0) == -1) {
+    perror("send");
+    return false;
+  }
+  /* Receive the stream ACK */
+  bool haveReceivedAck = false;
+  char ack[2];
+  while (!haveReceivedAck)
+    {
+      memset(ack,0,2);
+      int bytesreceived =0;
+      if ( (bytesreceived=recv(streamSocket_,(void *)ack,2,0)) <= 0) {
+      }
+      else {
+	if ( strncmp(ack,streamAck,2) == 0 )
+	  haveReceivedAck = true;
+      }
+    }
   return true;
 }
 
 bool KRPC_Client::Close()
 {
   close(socket_);
+  close(streamSocket_);
 }
 
 bool KRPC_Client::GetActiveVessel(int& id)
