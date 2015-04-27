@@ -3,7 +3,6 @@
 # Date: 2015.04.22
 
 import sys, os
-from builder import *
 
 # Find Drawable_Object
 exeName = sys.argv[0]
@@ -12,6 +11,8 @@ head,tail = os.path.split(dirName)
 head,tail = os.path.split(head)
 sys.path.append(head + '/../editor_v2/')
 from drawable import Drawable_Object
+
+from builder import *
 
 # ROS Project class
 class ROS_Project(Drawable_Object):
@@ -26,7 +27,8 @@ class ROS_Project(Drawable_Object):
 
         # Create a ROS Workspace Object
         self.workspace = type("ROS_Workspace", 
-                              ( object, Drawable_Object, ), { })
+                              ( object, Drawable_Object, ), { })()
+        print self.workspace
 
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")

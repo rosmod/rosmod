@@ -73,9 +73,8 @@ class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
     __metaclass__ = Grammar_MetaClass
 
     def __init__(self, workspace, project):
-        self.active_objects = []
+        self.active_objects = [workspace]
         self.workspace = workspace
-        
 
 
 

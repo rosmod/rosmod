@@ -3,6 +3,7 @@
 # Date: 2015.04.27
 
 from collections import OrderedDict
+from drawable import Drawable_Object
 
 # Grammar Field class used to generate grammar field-specific listener functions
 class Grammar_Field:
@@ -15,41 +16,52 @@ class Grammar_Field:
 
 # Enter a Model class type while parsing
 # E.g. Package, Component, Timer etc.
-def enterModel(self, ctx, kind):
-    print "enterModel:: Kind = " + kind
-    print "enterModel:: Parsed Text = " + ctx.getText()
-    new_object = type( "ROS_" + kind, (object, Drawable_Object,), { })
-    self.active_objects.append(new_object)
-    print "Active Objects: " + self.active_objects
-    print type(new_object)
+def create_enterModel(kind):
+    def enterModel(self, ctx):
+        print "enterModel:: Kind = " + kind
+        print "enterModel:: Parsed Text = " + ctx.getText()
+        new_object = type( "ROS_" + kind, (object, Drawable_Object,), { })()
+        self.active_objects.append(new_object)
+        print "Active Objects: \n"
+        print self.active_objects
+        print type(new_object)
+    return enterModel
 
 # Exit a Model class type while parsing
-def exitModel(self, ctx):
-    child_object = self.active_objects.pop()
-    self.active_objects[-1].add(child_object)
-
+def create_exitModel():
+    def exitModel(self, ctx):
+        child_object = self.active_objects.pop()
+        print type(child_object)
+        print type(self.active_objects[-1])
+        self.active_objects[-1].add(child_object)
+    return exitModel
+    
 # Enter a Atom type while parsing
 # E.g. Name, Value, Period, Unit etc.
-def enterAtom(self, ctx, kind):
-    print "enterPropFunc:: Kind = " + kind
-    print "enterPropFunc:: Parsed Text = " + ctx.getText()
-    self.active_objects[-1].properties[kind] = ctx.getText()
+def create_enterAtom(kind):
+    def enterAtom(self, ctx):
+        print "enterPropFunc:: Kind = " + kind
+        print "enterPropFunc:: Parsed Text = " + ctx.getText()
+        self.active_objects[-1].properties[kind] = ctx.getText()
+    return enterAtom
 
 # Exit a Atom type while parsing
-def exitAtom(self, ctx):
-    pass
+def create_exitAtom():
+    def exitAtom(self, ctx):
+        pass
+    return exitAtom
 
 # Setup a Dictionary of recognized & parsed grammar fields
 # Use this dictionary to generate the listener functions per field inside the builder classes
 meta_class_dict = OrderedDict()
-meta_class_dict["Package"] = Grammar_Field("string", "Package", enterModel, exitModel)
-meta_class_dict["name"] = Grammar_Field("string", "Name", enterAtom, exitAtom)
-meta_class_dict["value"] = Grammar_Field("string", "Value", enterAtom, exitAtom)
-meta_class_dict["unit"] = Grammar_Field("string", "Unit", enterAtom, exitAtom)
-meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", enterAtom, exitAtom)
-meta_class_dict["Component"] = Grammar_Field("string", "Component", enterModel, exitModel)
-meta_class_dict["Timer"] = Grammar_Field("string", "Timer", enterModel, exitModel)
-meta_class_dict["period"] = Grammar_Field("string", "Period", enterAtom, exitAtom)
+meta_class_dict["Package"] = Grammar_Field("string", "Package", create_enterModel, create_exitModel)
+meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
+meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
+meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
+meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
+meta_class_dict["Component"] = Grammar_Field("string", "Component", create_enterModel, create_exitModel)
+meta_class_dict["Timer"] = Grammar_Field("string", "Timer", create_enterModel, create_exitModel)
+meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):
@@ -58,8 +70,8 @@ class Grammar_MetaClass(type):
         if name.startswith('None'):
             return None
         for key, value in meta_class_dict.iteritems():
-            attrs['enter' + value.name] = lambda s, ctx: value.entry_point(s, ctx, key)
-            attrs['exit' + value.name] = value.exit_point
+            attrs['enter' + value.name] = value.entry_point(key)
+            attrs['exit' + value.name] = value.exit_point()
         return super(Grammar_MetaClass, cls).__new__(cls, name, bases, attrs)
 
     # Initialize new class
