@@ -1,8 +1,10 @@
-# Find ROSMOD Grammar files & import classes
+# Find ROSMOD Grammar Listeners
 # Author: Pranav Srinivas Kumar
 # Date: 2015.04.22
 
 import sys, os, inspect
+from collections import OrderedDict
+from metaclass import *
 
 # Find ANTLR4 python runtime
 antlr4 = os.path.realpath(os.path.abspath
@@ -64,3 +66,16 @@ if rosmod_deployment not in sys.path:
 from ROSMOD_DeploymentLexer import ROSMOD_DeploymentLexer
 from ROSMOD_DeploymentParser import ROSMOD_DeploymentParser
 from ROSMOD_DeploymentListener import ROSMOD_DeploymentListener
+
+# Build ROS Workspace from Software Model
+# Use Metaclass to obtain listener functions
+class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
+    __metaclass__ = Grammar_MetaClass
+
+    def __init__(self, workspace, project):
+        self.active_objects = []
+        self.workspace = workspace
+        
+
+
+
