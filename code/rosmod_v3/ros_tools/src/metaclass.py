@@ -25,7 +25,6 @@ def enterContainer(self, ctx, kind):
 
 # Exit a Container class type while parsing
 def exitContainer(self, ctx):
-    pass
     child_object = self.active_objects.pop()
     self.active_objects[-1].add(child_object)
 

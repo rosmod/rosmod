@@ -6,7 +6,7 @@
 
 from collections import OrderedDict
 from project import *
-from grammar import *
+from builder import *
 from Cheetah.Template import Template
 
 if __name__ == "__main__":

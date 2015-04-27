@@ -3,7 +3,7 @@
 # Date: 2015.04.22
 
 import sys, os
-from grammar import *
+from builder import *
 
 # Find Drawable_Object
 exeName = sys.argv[0]

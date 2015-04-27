@@ -67,6 +67,8 @@ from ROSMOD_DeploymentLexer import ROSMOD_DeploymentLexer
 from ROSMOD_DeploymentParser import ROSMOD_DeploymentParser
 from ROSMOD_DeploymentListener import ROSMOD_DeploymentListener
 
+# Build ROS Workspace from Software Model
+# Use Metaclass to obtain listener functions
 class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
     __metaclass__ = Grammar_MetaClass
 
