@@ -4,6 +4,7 @@
 
 from collections import OrderedDict
 
+# Grammar Property class used to generate grammar field-specific listener functions
 class Grammar_Property:
     def __init__(self, kind = "", name = "", entry_point = None, exit_point = None, checker = None):
         self.kind = kind
@@ -12,7 +13,9 @@ class Grammar_Property:
         self.exit_point = exit_point
         self.checker = checker
 
-def enterContainerFunc(self, ctx, kind):
+# Enter a Container class type while parsing
+# E.g. Package, Component, Timer etc.
+def enterContainer(self, ctx, kind):
     print "enterContainerFunc:: Kind = " + kind
     print "enterContainerFunc:: Parsed Text = " + ctx.getText()
     new_object = type( "ROS_" + kind, (object, Drawable_Object,), { })
@@ -20,29 +23,36 @@ def enterContainerFunc(self, ctx, kind):
     print "Active Objects: " + self.active_objects
     print type(new_object)
 
-def exitContainerFunc(self, ctx):
+# Exit a Container class type while parsing
+def exitContainer(self, ctx):
     pass
     child_object = self.active_objects.pop()
     self.active_objects[-1].add(child_object)
 
-def enterPropFunc(self, ctx, kind):
+# Enter a Property type while parsing
+# E.g. Name, Value, Period, Unit etc.
+def enterProperty(self, ctx, kind):
     print "enterPropFunc:: Kind = " + kind
     print "enterPropFunc:: Parsed Text = " + ctx.getText()
     self.active_objects[-1].properties[kind] = ctx.getText()
 
-def exitPropFunc(self, ctx):
+# Exit a Property type while parsing
+def exitProperty(self, ctx):
     pass
 
+# Setup a Dictionary of Grammar fields that are recognized and visited while parsing input models
+# Use this dictionary to generate the listener functions inside the Builder classes
 meta_class_dict = OrderedDict()
-meta_class_dict["Package"] = Grammar_Property("string", "Package", enterContainerFunc, exitContainerFunc)
-meta_class_dict["name"] = Grammar_Property("string", "Name", enterPropFunc, exitPropFunc)
-meta_class_dict["value"] = Grammar_Property("string", "Value", enterPropFunc, exitPropFunc)
-meta_class_dict["unit"] = Grammar_Property("string", "Unit", enterPropFunc, exitPropFunc)
-meta_class_dict["datatype"] = Grammar_Property("string", "Datatype", enterPropFunc, exitPropFunc)
-meta_class_dict["Component"] = Grammar_Property("string", "Component", enterContainerFunc, exitContainerFunc)
-meta_class_dict["Timer"] = Grammar_Property("string", "Timer", enterContainerFunc, exitContainerFunc)
-meta_class_dict["period"] = Grammar_Property("string", "Period", enterPropFunc, exitPropFunc)
+meta_class_dict["Package"] = Grammar_Property("string", "Package", enterContainer, exitContainer)
+meta_class_dict["name"] = Grammar_Property("string", "Name", enterProperty, exitProperty)
+meta_class_dict["value"] = Grammar_Property("string", "Value", enterProperty, exitProperty)
+meta_class_dict["unit"] = Grammar_Property("string", "Unit", enterProperty, exitProperty)
+meta_class_dict["datatype"] = Grammar_Property("string", "Datatype", enterProperty, exitProperty)
+meta_class_dict["Component"] = Grammar_Property("string", "Component", enterContainer, exitContainer)
+meta_class_dict["Timer"] = Grammar_Property("string", "Timer", enterContainer, exitContainer)
+meta_class_dict["period"] = Grammar_Property("string", "Period", enterProperty, exitProperty)
 
+# Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):
     # Create new class
     def __new__(cls, name, bases, attrs):
