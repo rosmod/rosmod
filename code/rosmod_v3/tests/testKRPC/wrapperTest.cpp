@@ -21,6 +21,9 @@ int main(int argc, char** argv)
       std::string vesselName;
       client.GetVesselName(vesselID,vesselName);
       std::cout << "Active vessel Name: " << vesselName << std::endl;
+      int orbitalRefFrame;
+      client.GetVesselOrbitalReferenceFrame(vesselID, orbitalRefFrame);
+      std::cout << "Active vessel Orbital Reference Frame ID: " << orbitalRefFrame << std::endl;
       //client.SetControlSAS(vesselID,false);
       //client.SetControlRCS(vesselID,false);
       //client.SetThrottle(vesselID,1.0);
