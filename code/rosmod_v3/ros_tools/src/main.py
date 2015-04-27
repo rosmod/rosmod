@@ -5,7 +5,12 @@
 # Date: 2015.04.22
 
 from collections import OrderedDict
-from classes import *
+from project import *
 from grammar import *
 from Cheetah.Template import Template
 
+if __name__ == "__main__":
+
+    # Testing ROS Tools Features
+    My_Project = ROS_Project()
+    My_Project.parse_rml("/home/kelsier/Repositories/rosmod/code/rosmod_v3/tests/testKRPC/testKRPC/01-Software-Configuration/Workspace_v3.rml")
