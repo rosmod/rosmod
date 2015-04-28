@@ -13,6 +13,7 @@ head,tail = os.path.split(head)
 from drawable import Drawable_Object
 
 from builder import *
+from loader import *
 from generator import *
 
 def init(self):
@@ -198,10 +199,18 @@ class ROS_Project(Drawable_Object):
 
         self.resolve_references()
 
+    # Check workspace directory for existing code that may
+    # require preservation
+    def check_workspace(self):
+        # Instantiate a Loader Object
+        business_logic = ROSMOD_Loader()
+        # Use load to load existing business logic
+        business_logic.load(self.workspace, self.workspace_path)
+
     # Generate the ROS workspace corresponding to the input model
     def generate_workspace(self):
         # Check for an existing workspace in workspace_path
-        # self.check_workspace()
+        self.check_workspace()
         # Instantiate a Generator Object
         workspace_generator = ROSMOD_Generator()
         # Use listener_object to generate ROS workspace
@@ -217,7 +226,7 @@ class ROS_Project(Drawable_Object):
             for package_child in package.children:
                 if package_child.kind == "Component":
                     for port in package_child.children:
-                        if port.kind == "Client" or port.kind == "Service":
+                        if port.kind == "Client" or port.kind == "Server":
                             port.properties["service_reference"] = reference_dict[port.properties["reference"]]
                         elif port.kind == "Publisher" or port.kind == "Subscriber":
                             port.properties["message_reference"] = reference_dict[port.properties["reference"]]
@@ -233,14 +242,6 @@ class ROS_Project(Drawable_Object):
                         port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
 
 '''
-    # Check workspace directory for existing code that may
-    # require preservation
-    def check_workspace(self):
-        # Instantiate a Loader Object
-        business_logic = Workspace_Loader()
-        # Use load to load existing business logic
-        business_logic.load(self.workspace, self.workspace_path)
-
     # Generate a ROS model from a workspace object
     # Used to save an edited model
     def save_rml(self, path=""):

@@ -20,11 +20,11 @@ reference_dict = OrderedDict()
 # E.g. Package, Component, Timer etc.
 def create_enterModel(kind):
     def enterModel(self, ctx):
-        print "enterModel:: Model Type = " + kind
+        #print "enterModel:: Model Type = " + kind
         new_object = type( "ROS_" + kind, (object, Drawable_Object,), { '__init__' : Drawable_Object.__init__ })()
         new_object.kind = kind
         self.active_objects.append(new_object)
-        print "Created New Object: " + str(type(new_object))
+        #print "Created New Object: " + str(type(new_object))
     return enterModel
 
 # Exit a Model class type while parsing
@@ -41,8 +41,8 @@ def create_exitModel():
 # E.g. Name, Value, Period, Unit etc.
 def create_enterAtom(kind):
     def enterAtom(self, ctx):
-        print "enterAtom:: Property Type = " + kind
-        print "enterAtom:: Property Value = " + ctx.getText()
+        #print "enterAtom:: Property Type = " + kind
+        #print "enterAtom:: Property Value = " + ctx.getText()
         self.active_objects[-1].properties[kind] = ctx.getText()
     return enterAtom
 

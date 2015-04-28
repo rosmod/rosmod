@@ -15,4 +15,3 @@ if __name__ == "__main__":
     My_Project = ROS_Project()
     My_Project.open("/home/kelsier/Repositories/rosmod/code/rosmod_v3/tests/testKRPC/testKRPC")
     My_Project.generate_workspace()
-    print reference_dict

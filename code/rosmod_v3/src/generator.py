@@ -236,3 +236,215 @@ class ROSMOD_Generator:
 
             cmakelists_services = services
 
+            # Create a .hpp and .cpp per component definition in package
+            for component in components:
+                component_name  = component.properties["name"]
+                define_guard = component_name.upper()
+
+                # Categorize children of component
+                publishers = []
+                subscribers = []
+                clients = []
+                servers = []
+                timers = []
+                provided_services = []
+                required_services = []
+                for child in component.children:
+                    if child.kind == "Publisher":
+                        publishers.append(child)
+                    elif child.kind == "Subscriber":
+                        if "business_logic" not in child.properties.keys():
+                            child.properties["business_logic"] = ""
+                        subscribers.append(child)
+                    elif child.kind == "Client":
+                        clients.append(child)
+                        required_service = [child.properties["service_reference"].parent.properties["name"], child.properties["service_reference"].properties["name"]]
+                        if required_service not in required_services:
+                            required_services.append(required_service)
+                    elif child.kind == "Server":
+                        if "business_logic" not in child.properties.keys():
+                            child.properties["business_logic"] = ""
+                        servers.append(child)
+                        provided_service = child.properties["service_reference"].properties["name"]
+                        if provided_service not in provided_services:
+                            provided_services.append(provided_service)
+                    elif child.kind == "Timer":
+                        if "business_logic" not in child.properties.keys():
+                            child.properties["business_logic"] = ""
+                        timers.append(child)
+
+                topics = []
+                for publisher in publishers:
+                    topics.append([publisher.properties["message_reference"].parent.properties["name"], 
+                                   publisher.properties["message_reference"].properties["name"]])
+                for subscriber in subscribers:
+                    topics.append([subscriber.properties["message_reference"].parent.properties["name"], 
+                                   subscriber.properties["message_reference"].properties["name"]])
+                # topics = OrderedSet(topics)
+                services = []
+                for client in clients:
+                    services.append([client.properties["service_reference"].parent.properties["name"],
+                                     client.properties["service_reference"].properties["name"]])
+                for server in servers:
+                    services.append([server.properties["service_reference"].parent.properties["name"],
+                                    server.properties["service_reference"].properties["name"]])
+                # services = OrderedSet(services)
+                hash_include = "#include"
+
+                probably_uninitialized = ["init_business_logic", 
+                                          "user_includes", 
+                                          "user_globals", 
+                                          "hpp_globals", 
+                                          "user_private_variables", 
+                                          "destructor"]
+                for prop in probably_uninitialized:
+                    if prop not in component.properties.keys():
+                        component.properties[prop] = ""
+
+                component_namespace = {'define_guard': define_guard, 
+                                       'hash_include': hash_include, 
+                                       'package_name': package.properties["name"], 
+                                       'topics': topics, 
+                                       'services': services, 
+                                       'component_name': component.properties["name"],
+                                       'init_business_logic': component.properties["init_business_logic"],
+                                       'user_includes': component.properties["user_includes"],
+                                       'user_globals': component.properties["user_globals"],
+                                       'hpp_globals': component.properties["hpp_globals"],
+                                       'user_private_variables': component.properties["user_private_variables"],
+                                       'destructor': component.properties["destructor"],
+                                       'publishers': publishers, 
+                                       'subscribers': subscribers, 
+                                       'clients': clients,
+                                       'servers': servers,
+                                       'provided_services': provided_services, 
+                                       'required_services': required_services, 
+                                       'timers': timers}
+                t = component_hpp(searchList=[component_namespace])
+                self.component_hpp_str = str(t)
+                # Write the component hpp file
+                hpp_filename = component_name + ".hpp"
+
+                with open(os.path.join(self.hpp, hpp_filename), 'w') as temp_file_h:
+                    temp_file_h.write(self.component_hpp_str)
+
+                # GENERATING CPP FILES
+
+                t = component_cpp(searchList=[component_namespace])
+                self.component_cpp_str = str(t)
+                # Write the component cpp file
+                cpp_filename = component_name + ".cpp"
+
+                with open(os.path.join(self.cpp, cpp_filename), 'w') as temp_file:
+                    temp_file.write(self.component_cpp_str)
+
+            for node in nodes:
+
+                if "cmakelists_add_cpp" not in node.properties.keys():
+                    node.properties["cmakelists_add_cpp"] = ""
+                if "cmakelists_target_link_libs" not in node.properties.keys():
+                    node.properties["cmakelists_target_link_libs"] = ""
+
+
+                node_name = node.properties["name"]
+                hash_include = "#include"
+                node_namespace = {'hash_include': hash_include, 
+                                  'package_name': package.properties["name"],
+                                  'node_name': node_name, 
+                                  'component_instances': node.children}
+                t = nodeMain(searchList=[node_namespace])
+                self.nodeMain_str = str(t)
+                # Write node main.cpp file
+                node_filename = node_name + "_main.cpp"
+
+                with open(os.path.join(self.cpp, node_filename), 'w') as temp_file_nm:
+                    temp_file_nm.write(self.nodeMain_str)
+
+            package_uninitialized = ["cmakelists_packages",
+                                     "cmakelists_functions", 
+                                     "cmakelists_include_dirs"]
+            for prop in package_uninitialized:
+                if prop not in package.properties.keys():
+                    package.properties[prop] = ""
+
+            cmake_lists_namespace = {'package_name': package.properties["name"],
+                                     'packages': package.properties["cmakelists_packages"],
+                                     'functions': package.properties["cmakelists_functions"],
+                                     'include_dirs': package.properties["cmakelists_include_dirs"],
+                                     'messages': messages, 
+                                     'services': cmakelists_services, 
+                                     'catkin_INCLUDE_DIRS': "${catkin_INCLUDE_DIRS}",
+                                     'PROJECT_NAME': "${PROJECT_NAME}",
+                                     'catkin_LIBRARIES': '${catkin_LIBRARIES}',
+                                     'CATKIN_PACKAGE_BIN_DESTINATION':
+                                           "${CATKIN_PACKAGE_BIN_DESTINATION}",
+                                     'CATKIN_PACKAGE_LIB_DESTINATION': 
+                                           "${CATKIN_PACKAGE_LIB_DESTINATION}",
+                                     'CATKIN_PACKAGE_INCLUDE_DESTINATION':
+                                           "${CATKIN_PACKAGE_INCLUDE_DESTINATION}",
+                                     'CATKIN_PACKAGE_SHARE_DESTINATION':
+                                           "${CATKIN_PACKAGE_SHARE_DESTINATION}",
+                                     'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
+                                     'nodes': nodes}
+            t = CMakeLists(searchList=[cmake_lists_namespace])
+            self.cmake_lists = str(t)
+            # Write CMakeLists file
+            with open(os.path.join(self.package_path, "CMakeLists.txt"), 'w') as temp_file:
+                temp_file.write(self.cmake_lists)
+
+        return self.workspace_dir
+'''
+        for deployment in deployments:
+            create_folder = False
+            groups = []
+            xml_list = []
+            for child in deployment.children:
+                if child.kind == "group":
+                    create_folder = True
+                    groups.append(child)
+            if create_folder == True:
+                xml_folder_home = os.path.join(xml_path, deployment.properties["name"])
+                if not os.path.exists(xml_folder_home):
+                    os.makedirs(xml_folder_home)
+                
+                # For every group in deployment
+                for group in groups:
+                    # For every port in the group
+                    for port in group.children:
+                        # Create a new xml file if needed by obtaining the node_instance 
+                        # & component_instance of port
+                        node_instance_name = port.properties["node_instance_reference"].properties["name"]
+                        comp_instance_name = port.properties["component_instance_reference"].properties["name"]
+                        new_xml = ROS_Group_XML(port.properties["node_instance_reference"], 
+                                                port.properties["component_instance_reference"])
+                        new_xml.properties["node_instance"] = port.properties["node_instance_reference"]
+                        new_xml.properties["component_instance"] = port.properties["component_instance_reference"]
+
+                        # Add new xml to list if not already in list
+                        if new_xml not in xml_list:
+                            xml_list.append(new_xml)
+                        
+                        # Add the group to xml.groups
+                        for xml in xml_list:
+                            if xml.properties["name"] == new_xml.properties["name"]:
+                                xml_group = ROS_Group()
+                                xml_group.properties["name"] = group.properties["name"]
+                                for grp_port in group.children:
+                                    if grp_port.properties["node_instance_reference"].properties["name"] == xml.properties["node_instance"].properties["name"]:
+                                        if grp_port.properties["component_instance_reference"].properties["name"] == xml.properties["component_instance"].properties["name"]:
+                                            xml_group.children.append(grp_port)
+                                xml.properties["groups"].append(xml_group)
+                               
+
+                    deployment.properties["xml_list"] = xml_list
+                    for xml in xml_list:
+                        xml_namespace = {'xml': xml}
+                        t = node_groups_xml(searchList=[xml_namespace])
+                        xml_str = str(t)
+                        # Write CMakeLists file
+                        with open(os.path.join(xml_folder_home, 
+                                               xml.properties["name"]), 'w') as temp_file:
+                            temp_file.write(xml_str)
+
+        return self.workspace_dir
+'''
