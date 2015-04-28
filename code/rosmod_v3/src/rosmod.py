@@ -208,103 +208,6 @@ class Example(wx.Frame):
                 drawable.Configure(pkg,self.styleDict)
                 self.DrawModel(pkg,canvas)            
 
-    def CompAdd(self,e,kind):
-        comp = self.activeObject
-        newObj = None
-        references = []
-        info = self.GetActivePanelInfo()
-        pkg = info.obj
-        if kind == 'Timer':
-            newObj = project.ROS_Timer()
-        elif kind == 'Subscriber':
-            newObj = project.ROS_Subscriber()
-            newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('Message')
-        elif kind == 'Publisher':
-            newObj = project.ROS_Publisher()
-            newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('Message')
-        elif kind == 'Server':
-            newObj = project.ROS_Server()
-            newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('Service')
-        elif kind == 'Client':
-            newObj = project.ROS_Client()
-            newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('Service')
-        if newObj != None:
-            self.GenericAdd(newObj,references,comp)
-
-
-    def NodeAdd(self,e,kind):
-        node = self.activeObject
-        newObj = None
-        references = []
-        info = self.GetActivePanelInfo()
-        pkg = info.obj
-        if kind == 'Component_Instance':
-            newObj = project.ROS_Component_Instance()
-            references = node.parent.getChildrenByKind('Component')
-        if newObj != None:
-            self.GenericAdd(newObj,references,node)
-    
-    def PackageAdd(self,e,kind):
-        package = self.activeObject
-        newObj = None
-        references = []
-        if kind == 'message':
-            newObj = project.ROS_Message()
-        elif kind == 'service':
-            newObj = project.ROS_Service()
-        elif kind == 'component':
-            newObj = project.ROS_Component()
-        elif kind == 'node':
-            newObj = project.ROS_Node()
-        if newObj != None:
-            self.GenericAdd(newObj,references,package)
-
-    def HardwareAdd(self,e,kind):
-        hw = self.activeObject
-        newObj = None
-        references = []
-        if kind == 'Hardware':
-            newObj = project.ROS_Host()
-        if newObj != None:
-            self.GenericAdd(newObj,references,hw)
-
-    def DeploymentAdd(self,e,kind):
-        dep = self.activeObject
-        newObj = None
-        references = []
-        if kind == 'Hardware_Instance':
-            newObj = project.ROS_Host_Instance()
-            references = dep.properties['rdp_hardware'].children
-        elif kind == 'Group':
-            newObj = project.ROS_Group()
-            references = self.project.workspace.getChildrenByKind('Node')
-        if newObj != None:
-            self.GenericAdd(newObj,references,dep)
-
-    def HostInstAdd(self,e,kind):
-        host = self.activeObject
-        newObj = None
-        references = []
-        if kind == 'Node_Instance':
-            newObj = project.ROS_Node_Instance()
-            references = self.project.workspace.getChildrenByKind('Node')
-        if newObj != None:
-            self.GenericAdd(newObj,references,host)
-
-    def GroupAdd(self,e, kind):
-        group = self.activeObject
-        newObj = None
-        if kind == 'Port_Instance':
-            newObj = project.ROS_Port_Instance()
-            del newObj.properties['name']
-            references = group.parent.getChildrenByKind('Node_Instance')
-        if newObj != None:
-            self.GenericAdd(newObj,references,group)
-
     def AspectEdit(self, e):
         info = self.GetActivePanelInfo()
         obj = info.obj
@@ -836,7 +739,7 @@ class Example(wx.Frame):
                 self.project.hardware_files.append(newHW)
                 newDeployment = project.ROS_Deployment()
                 newDeployment.properties['name'] = "Deployment"
-                newDeployment.properties['hardware_configuration_reference'] = newHW
+                newDeployment.properties['rdp_hardware'] = newHW
                 self.project.deployments.append(newDeployment)
                 BuildAspectPages(self)
                 self.statusbar.SetStatusText('Created new project: {} in: {}'.format(self.filename,self.project_path))
@@ -1024,6 +927,104 @@ class Example(wx.Frame):
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
+
+
+
+def CompAdd(self,e,kind):
+    comp = self.activeObject
+    newObj = None
+    references = []
+    info = self.GetActivePanelInfo()
+    pkg = info.obj
+    if kind == 'Timer':
+        newObj = project.ROS_Timer()
+    elif kind == 'Subscriber':
+        newObj = project.ROS_Subscriber()
+        newObj.parent = comp
+        references = self.project.workspace.getChildrenByKind('Message')
+    elif kind == 'Publisher':
+        newObj = project.ROS_Publisher()
+        newObj.parent = comp
+        references = self.project.workspace.getChildrenByKind('Message')
+    elif kind == 'Server':
+        newObj = project.ROS_Server()
+        newObj.parent = comp
+        references = self.project.workspace.getChildrenByKind('Service')
+    elif kind == 'Client':
+        newObj = project.ROS_Client()
+        newObj.parent = comp
+        references = self.project.workspace.getChildrenByKind('Service')
+    if newObj != None:
+        self.GenericAdd(newObj,references,comp)
+
+def NodeAdd(self,e,kind):
+    node = self.activeObject
+    newObj = None
+    references = []
+    info = self.GetActivePanelInfo()
+    pkg = info.obj
+    if kind == 'Component_Instance':
+        newObj = project.ROS_Component_Instance()
+        references = node.parent.getChildrenByKind('Component')
+    if newObj != None:
+        self.GenericAdd(newObj,references,node)
+    
+def PackageAdd(self,e,kind):
+    package = self.activeObject
+    newObj = None
+    references = []
+    if kind == 'Message':
+        newObj = project.ROS_Message()
+    elif kind == 'Service':
+        newObj = project.ROS_Service()
+    elif kind == 'Component':
+        newObj = project.ROS_Component()
+    elif kind == 'Node':
+        newObj = project.ROS_Node()
+    if newObj != None:
+        self.GenericAdd(newObj,references,package)
+
+def HardwareAdd(self,e,kind):
+    hw = self.activeObject
+    newObj = None
+    references = []
+    if kind == 'Hardware':
+        newObj = project.ROS_Host()
+    if newObj != None:
+        self.GenericAdd(newObj,references,hw)
+
+def DeploymentAdd(self,e,kind):
+    dep = self.activeObject
+    newObj = None
+    references = []
+    if kind == 'Hardware_Instance':
+        newObj = project.ROS_Host_Instance()
+        references = dep.properties['rdp_hardware'].children
+    elif kind == 'Group':
+        newObj = project.ROS_Group()
+        references = self.project.workspace.getChildrenByKind('Node')
+    if newObj != None:
+        self.GenericAdd(newObj,references,dep)
+
+def HostInstAdd(self,e,kind):
+    host = self.activeObject
+    newObj = None
+    references = []
+    if kind == 'Node_Instance':
+        newObj = project.ROS_Node_Instance()
+        references = self.project.workspace.getChildrenByKind('Node')
+    if newObj != None:
+        self.GenericAdd(newObj,references,host)
+
+def GroupAdd(self,e, kind):
+    group = self.activeObject
+    newObj = None
+    if kind == 'Port_Instance':
+        newObj = project.ROS_Port_Instance()
+        del newObj.properties['name']
+        references = group.parent.getChildrenByKind('Node_Instance')
+    if newObj != None:
+        self.GenericAdd(newObj,references,group)
 
 def main():
     ex = wx.App()

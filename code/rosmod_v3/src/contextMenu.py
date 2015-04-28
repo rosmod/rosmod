@@ -6,6 +6,8 @@ import wx
 
 from collections import OrderedDict
 
+from rosmod import CompAdd, PackageAdd, NodeAdd, HardwareAdd, DeploymentAdd
+
 
 class ContextMenu(wx.Menu):
     
@@ -24,59 +26,59 @@ def AspectContextMenu(self, obj):
     cm = OrderedDict()
     cm['Edit'] = self.AspectEdit        # edits the object's properties (name, fields, etc.)
     cm['Delete'] = self.AspectDelete    # deletes the object and all references from the model
-    if obj.kind == 'component':
+    if obj.kind == 'Component':
         cm = BuildCompContextMenu(self,cm)
-    elif obj.kind == 'node':
+    elif obj.kind == 'Node':
         cm = BuildNodeContextMenu(self,cm)
-    elif obj.kind == 'package':
+    elif obj.kind == 'Package':
         cm = BuildPackageContextMenu(self,cm)
-    elif obj.kind == 'workspace':
+    elif obj.kind == 'Workspace':
         cm = BuildWorkspaceContextMenu(self,cm)
-    elif obj.kind == 'hardware_configuration':
+    elif obj.kind == 'rhw':
         cm = BuildHardwareContextMenu(self,cm)
-    elif obj.kind == 'host':
+    elif obj.kind == 'Hardware':
         cm = BuildHostContextMenu(self,cm)
-    elif obj.kind == 'deployment':
+    elif obj.kind == 'rdp':
         cm = BuildDeploymentContextMenu(self,cm)
-    elif obj.kind == 'host_instance':
+    elif obj.kind == 'Hardware_Instance':
         cm = BuildHostInstanceContextMenu(self,cm)
-    elif obj.kind == 'node_instance':
+    elif obj.kind == 'Node_Instance':
         cm = BuildNodeInstanceContextMenu(self,cm)
-    elif obj.kind == 'group':
+    elif obj.kind == 'Group':
         cm = BuildGroupContextMenu(self,cm)
-    elif obj.kind == 'port_instance':
+    elif obj.kind == 'Port_Instance':
         cm = BuildPortInstanceContextMenu(self,cm)
     return cm
 
 def BuildCompContextMenu(self,cm):
-    cm['Add Timer'] = lambda evt : CompAdd(self,evt,'timer')
-    cm['Add Subscriber'] = lambda evt :CompAdd(self,evt,'subscriber')
-    cm['Add Publisher'] = lambda evt : CompAdd(self,evt,'publisher')
-    cm['Add Client'] = lambda evt : CompAdd(self,evt,'client')
-    cm['Add Server'] = lambda evt : CompAdd(self,evt,'server')
+    cm['Add Timer'] = lambda evt : CompAdd(self,evt,'Timer')
+    cm['Add Subscriber'] = lambda evt :CompAdd(self,evt,'Subscriber')
+    cm['Add Publisher'] = lambda evt : CompAdd(self,evt,'Publisher')
+    cm['Add Client'] = lambda evt : CompAdd(self,evt,'Client')
+    cm['Add Server'] = lambda evt : CompAdd(self,evt,'Server')
     return cm
 def BuildNodeContextMenu(self,cm):
-    cm['Add Component Instance'] = lambda evt : NodeAdd(self,evt,'component_instance')
+    cm['Add Component Instance'] = lambda evt : NodeAdd(self,evt,'Component_Instance')
     return cm
 def BuildPackageContextMenu(self, cm):
-    cm['Add Message'] = lambda evt : PackageAdd(self,evt,'message')
-    cm['Add Service'] = lambda evt : PackageAdd(self,evt,'service')
-    cm['Add Component Definition'] = lambda evt : PackageAdd(self,evt,'component')
-    cm['Add Node'] = lambda evt : PackageAdd(self,evt,'node')
+    cm['Add Message'] = lambda evt : PackageAdd(self,evt,'Message')
+    cm['Add Service'] = lambda evt : PackageAdd(self,evt,'Service')
+    cm['Add Component Definition'] = lambda evt : PackageAdd(self,evt,'Component')
+    cm['Add Node'] = lambda evt : PackageAdd(self,evt,'Node')
     return cm
 def BuildWorkspaceContextMenu(self,cm):
     return cm
 def BuildHardwareContextMenu(self,cm):
-    cm['Add Host'] = lambda evt : HardwareAdd(self,evt,'host')
+    cm['Add Host'] = lambda evt : HardwareAdd(self,evt,'Hardware')
     return cm
 def BuildHostContextMenu(self,cm):
     return cm
 def BuildDeploymentContextMenu(self,cm):
-    cm['Add Host Instance'] = lambda evt : DeploymentAdd(self,evt,'host_instance')
-    cm['Add Group'] = lambda evt : DeploymentAdd(self,evt,'group')
+    cm['Add Host Instance'] = lambda evt : DeploymentAdd(self,evt,'Hardware_Instance')
+    cm['Add Group'] = lambda evt : DeploymentAdd(self,evt,'Group')
     return cm
 def BuildHostInstanceContextMenu(self,cm):
-    cm['Add Node Instance'] = lambda evt : HostInstAdd(self,evt,'node_instance')
+    cm['Add Node Instance'] = lambda evt : HostInstAdd(self,evt,'Node_Instance')
     cm['Open SSH Terminal'] = lambda _: SSHToHostInst(self,self.activeObject)
     return cm
 def BuildNodeInstanceContextMenu(self,cm):
@@ -84,7 +86,7 @@ def BuildNodeInstanceContextMenu(self,cm):
         cm['Monitor Log'] = lambda _: MonitorNodeInstLog(self,self.activeObject)
     return cm
 def BuildGroupContextMenu(self,cm):
-    cm['Add Port Instance'] = lambda evt : GroupAdd(self,evt,'port_instance')
+    cm['Add Port Instance'] = lambda evt : GroupAdd(self,evt,'Port_Instance')
     return cm
 def BuildPortInstanceContextMenu(self,cm):
     return cm
