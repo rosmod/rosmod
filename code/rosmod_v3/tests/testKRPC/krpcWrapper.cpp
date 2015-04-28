@@ -234,10 +234,110 @@ bool KRPC_Client::GetVesselName(int vesselID, string& name)
 
 bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos)
 {
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_Position");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(refFrame, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      ZeroCopyInputStream* input = 
+	new ArrayInputStream(response.return_value().data(), response.return_value().length());
+      CodedInputStream* codeStream = 
+	new CodedInputStream(input);
+      uint64_t len;
+      codeStream->ReadVarint64(&len);
+      delete codeStream;
+      delete input;
+    }
+  return true;
 }
 
 bool KRPC_Client::GetVesselVelocity(int vesselID, int refFrame, krpc::Tuple& vel)
 {
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_Velocity");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(refFrame, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      ZeroCopyInputStream* input = 
+	new ArrayInputStream(response.return_value().data(), response.return_value().length());
+      CodedInputStream* codeStream = 
+	new CodedInputStream(input);
+      uint64_t len;
+      codeStream->ReadVarint64(&len);
+      delete codeStream;
+      delete input;
+    }
+  return true;
+}
+
+bool KRPC_Client::GetVesselOrbitalReferenceFrame(int vesselID, int& refFrame)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_get_OrbitalReferenceFrame");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      ZeroCopyInputStream* input = 
+	new ArrayInputStream(response.return_value().data(), response.return_value().length());
+      CodedInputStream* codeStream = 
+	new CodedInputStream(input);
+      codeStream->ReadVarint64((uint64_t *)&refFrame);
+      delete codeStream;
+      delete input;
+    }
+  return true;
 }
 
 bool KRPC_Client::GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot)

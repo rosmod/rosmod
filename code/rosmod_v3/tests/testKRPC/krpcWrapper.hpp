@@ -49,6 +49,7 @@ public:
   bool GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos);
   bool GetVesselVelocity(int vesselID, int refFrame, krpc::Tuple& vel);
   bool GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot);
+  bool GetVesselOrbitalReferenceFrame(int vesselID, int& refFrame);
 
   bool GetApoapsis(int vesselID, double& apo);
   bool GetPeriapsis(int vesselID, double& peri);
