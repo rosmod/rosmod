@@ -212,6 +212,16 @@ class ROS_Project(Drawable_Object):
         print self.deployment_path
         self.workspace_dir = workspace_generator.generate(self.workspace, self.workspace_path, self.deployment_files, self.deployment_path)
 
+    # Resolving References in all workspace packages
+    def resolve_references(self):
+        print "ROSTOOLS::Fixing unresolved references"
+        for package in self.workspace.children:
+            for component in package.children:
+                if component.kind == "Component":
+                    for port in component.children:
+                        if port.kind == "Client":
+                            
+
 '''
     # Resolving Null references in all workspace packages
     def resolve_references(self):

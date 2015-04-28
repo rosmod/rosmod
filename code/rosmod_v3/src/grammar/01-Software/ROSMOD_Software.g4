@@ -27,6 +27,12 @@ datatype
         ( ID ( '/' ID )* ) ( '[' (INT)? ']' )*
     ;
 
+// Reference
+reference
+    :   
+        ( ID ( '/' ID )* )
+    ;
+
 // Value
 value 
     :   
@@ -117,13 +123,13 @@ port
 // ROS Client
 client
     :   
-        'client' '<' datatype '>' name ';'
+        'client' '<' reference '>' name ';'
     ;
 
 // ROS Server
 server
     :   
-        'server' '<' datatype '>' name
+        'server' '<' reference '>' name
         '{'
         ( 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
@@ -134,13 +140,13 @@ server
 // ROS Publisher
 publisher
     :   
-        'publisher' '<' datatype '>' name ';'
+        'publisher' '<' reference '>' name ';'
     ;
 
 // ROS Subscriber
 subscriber
     :   
-        'subscriber' '<' datatype '>' name
+        'subscriber' '<' reference '>' name
         '{'
         ( 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
@@ -198,7 +204,7 @@ node
  */
 component_instance
     :   
-        'component' '<' datatype '>' name ';'
+        'component' '<' reference '>' name ';'
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore

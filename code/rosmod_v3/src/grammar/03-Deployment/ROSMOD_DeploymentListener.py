@@ -58,12 +58,12 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#ref.
-    def enterRef(self, ctx):
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#reference.
+    def enterReference(self, ctx):
         pass
 
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#ref.
-    def exitRef(self, ctx):
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#reference.
+    def exitReference(self, ctx):
         pass
 
 

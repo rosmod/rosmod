@@ -90,16 +90,16 @@ env_var
 node_instance
     :   'node_instance' name
         '{'
-        ( 'ref' '=' '"' ref '"' ';' )
+        ( 'ref' '=' '"' reference '"' ';' )
         ( port_instance )*
         ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
         '}'
     ;
 
 // Reference to Node in Software Model
-ref
+reference
     :   
-        ID
+        ID ( '/' ID )*
     ;
 
 // Command line Arguments
@@ -113,7 +113,7 @@ port_instance
     :   
         'port_instance' name
         '{'
-        'ref' '=' '"' datatype '"' ';'
+        'ref' '=' '"' reference '"' ';'
         'group' '=' '"' group '"' ';' 
         '}'
     ;
