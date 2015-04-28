@@ -48,6 +48,40 @@ class ROS_Project(Drawable_Object):
         # Deployment Builder
         self.deployment_builder = ROS_Deployment_Builder(self.deployment_files, self)
 
+    # Open an existing ROSMOD Project
+    def open(self, project_path):
+        valid_project = False
+        project_directories = []
+        for prj_file in os.listdir(project_path):
+            if prj_file.endswith(".rosmod"):
+                print "ROSTOOLS::Opening ROSMOD Project:", project_path
+                valid_project = True
+
+        if valid_project == True:
+            print "ROSTOOLS::Project Name:", os.path.basename(project_path)
+            print "ROSTOOLS::Project Path:", project_path
+            sub_directories = [x[0] for x in os.walk(project_path)]
+            for sd in reversed(sub_directories):
+                project_directories.append(sd)
+            del project_directories[-1]
+            
+            # Find subdirectories
+            sd_count = 0
+            for pd in project_directories:
+                if "01-Software" in pd:
+                    sd_count += 1
+                elif "02-Hardware" in pd:
+                    sd_count += 1
+                elif "03-Deployment" in pd:
+                    sd_count += 1
+
+            # If all is well, reinitialize the project with the right name & path
+            if sd_count >= 3:
+                self.__init__(name=os.path.basename(project_path), path=project_path)
+                self.parse_models()
+            else:
+                print "ROSTOOLS::ERROR::Invalid Project!"
+
     # Parse .rml software model
     def parse_rml(self, filename):
 
@@ -70,7 +104,6 @@ class ROS_Project(Drawable_Object):
         walker.walk(self.workspace_builder, tree)
         self.workspace =  self.workspace_builder.workspace
         return self.workspace
-
 
     # Parse .rhw hardware configurations model
     def parse_rhw(self, filename):
@@ -121,7 +154,6 @@ class ROS_Project(Drawable_Object):
         self.deployment_files.append(self.deployment_builder.rdp)
         #return self.deployments
 
-'''
     # Parse all model files in all aspects of Project
     def parse_models(self):
         count = 0
@@ -135,12 +167,12 @@ class ROS_Project(Drawable_Object):
         elif count > 1:
             print "ROSTOOLS::ERROR::There can only be one .rml file in 01-ROS-Workspace!"
         else:
-            self.workspace = self.parse_rml(rml_file)
+            self.parse_rml(rml_file)
         count = 0
 
         for rhw in os.listdir(self.hardware_configurations_path):
             if rhw.endswith(".rhw"):
-                rhw_file = os.path.join(self.hardware_configurations_path, rhw)
+                rhw_file = os.path.join(self.hardware_path, rhw)
                 self.parse_rhw(rhw_file)
                 count += 1
 
@@ -158,8 +190,9 @@ class ROS_Project(Drawable_Object):
         if count == 0:
             print "ROSTOOLS::No ROS Deployment (.rdp) files found in", self.deployment_path
 
-        self.resolve_references()
+        #self.resolve_references()
 
+'''
     # Resolving Null references in all workspace packages
     def resolve_references(self):
         print "ROSTOOLS::Checking for unresolved references..."
