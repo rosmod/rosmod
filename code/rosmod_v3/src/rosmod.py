@@ -33,6 +33,7 @@ except ImportError:
 
 # THESE ARE ALL FROM OUR CODE
 import project
+import metaclass
 from terminal import *
 import dialogs
 import drawable
@@ -936,23 +937,17 @@ def CompAdd(self,e,kind):
     references = []
     info = self.GetActivePanelInfo()
     pkg = info.obj
-    if kind == 'Timer':
-        newObj = project.ROS_Timer()
-    elif kind == 'Subscriber':
-        newObj = project.ROS_Subscriber()
-        newObj.parent = comp
+    newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
+    testObj = metaclass.ROS_Component()
+    newObj.kind = kind
+    newObj.parent = comp
+    if kind == 'Subscriber':
         references = self.project.workspace.getChildrenByKind('Message')
     elif kind == 'Publisher':
-        newObj = project.ROS_Publisher()
-        newObj.parent = comp
         references = self.project.workspace.getChildrenByKind('Message')
     elif kind == 'Server':
-        newObj = project.ROS_Server()
-        newObj.parent = comp
         references = self.project.workspace.getChildrenByKind('Service')
     elif kind == 'Client':
-        newObj = project.ROS_Client()
-        newObj.parent = comp
         references = self.project.workspace.getChildrenByKind('Service')
     if newObj != None:
         self.GenericAdd(newObj,references,comp)
