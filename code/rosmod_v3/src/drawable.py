@@ -153,7 +153,8 @@ This includes Packages, Workspaces,
 Hardware, Deployments, and all of their
 sub-objects.
 '''
-class Drawable_Object:	
+
+class Drawable_Object:
 
     def __init__(self):
 

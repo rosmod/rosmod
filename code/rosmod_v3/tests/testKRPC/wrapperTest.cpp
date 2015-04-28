@@ -24,6 +24,8 @@ int main(int argc, char** argv)
       int orbitalRefFrame;
       client.GetVesselOrbitalReferenceFrame(vesselID, orbitalRefFrame);
       std::cout << "Active vessel Orbital Reference Frame ID: " << orbitalRefFrame << std::endl;
+      double position[3];
+      client.GetVesselPosition(vesselID, orbitalRefFrame, position);
       //client.SetControlSAS(vesselID,false);
       //client.SetControlRCS(vesselID,false);
       //client.SetThrottle(vesselID,1.0);

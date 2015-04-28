@@ -1,7 +1,23 @@
 
 import wx
 import wx.lib.agw.flatnotebook as fnb
+import wx.stc as stc
 from collections import OrderedDict
+
+from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
+try:
+    import numpy
+    import numpy.random as RandomArray
+    haveNumpy = True
+except ImportError:
+            haveNumpy = False
+            errorText = (
+            "The FloatCanvas requires the numpy module, version 1.* \n\n"
+            "You can get info about it at:\n"
+            "http://numpy.scipy.org/\n\n"
+            )
+
+import drawable
 
 class TBInfo():
     def __init__(self,name, obj):
@@ -52,6 +68,44 @@ def InitAspects(self):
     BuildAspects(self)
 
 '''
+Aspect Menubar Menu functions
+'''
+def HideAllAspects(self):
+    self.PackageAspect.Hide()
+    self.HardwareAspect.Hide()
+    self.DeploymentAspect.Hide()
+    RemovePackageAspectToolbar(self)
+    RemoveHardwareAspectToolbar(self)
+    RemoveDeploymentAspectToolbar(self)
+
+def ShowAspect(self,aspect):
+    if self.shvw.IsChecked():
+        aspect.Show()
+        self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
+        self.activeAspect = aspect
+
+def OnPackageAspect(self, e):
+    self.activeAspectInfo = self.PackageAspectInfo
+    HideAllAspects(self)
+    ShowAspect(self,self.PackageAspect)
+    AddPackageAspectToolbar(self)
+    pageChange(self,None)
+
+def OnHardwareAspect(self, e):
+    self.activeAspectInfo = self.HardwareAspectInfo
+    HideAllAspects(self)
+    ShowAspect(self,self.HardwareAspect)
+    AddHardwareAspectToolbar(self)
+    pageChange(self,None)
+
+def OnDeploymentAspect(self, e):
+    self.activeAspectInfo = self.DeploymentAspectInfo
+    HideAllAspects(self)
+    ShowAspect(self,self.DeploymentAspect)
+    AddDeploymentAspectToolbar(self)
+    pageChange(self,None)
+
+'''
 Build all the Aspects required for ROSMOD:
 * Packages aspect : used for setting up mgs,srv,comp,node,etc.
 * Hardware aspect : used for configure the system hardware (hosts)
@@ -100,30 +154,30 @@ def BuildPackageAspect(self):
 
 
 def BuildAspectPages(self):
-    self.BuildPackageAspectPages()
-    self.BuildHardwareAspectPages()
-    self.BuildDeploymentAspectPages()
+    BuildPackageAspectPages(self)
+    BuildHardwareAspectPages(self)
+    BuildDeploymentAspectPages(self)
 def BuildPackageAspectPages(self):
     self.PackageAspect.DeleteAllPages()
     for pkg in self.project.workspace.children:
-        self.BuildModelPage( parent = self.PackageAspect,
+        BuildModelPage(self, parent = self.PackageAspect,
                              model = pkg,
                              aspectInfo = self.PackageAspectInfo)
-    self.BuildModelPage( parent = self.PackageAspect,
+    BuildModelPage(self, parent = self.PackageAspect,
                          model = self.project.workspace,
                          aspectInfo = self.PackageAspectInfo)
     self.PackageAspect.AdvanceSelection()
 def BuildHardwareAspectPages(self):
     self.HardwareAspect.DeleteAllPages()
     for hw in self.project.hardware_configurations:
-        self.BuildModelPage( parent = self.HardwareAspect,
+        BuildModelPage(self, parent = self.HardwareAspect,
                              model = hw,
                              aspectInfo = self.HardwareAspectInfo)
     self.DeploymentAspect.AdvanceSelection()
 def BuildDeploymentAspectPages(self):
     self.DeploymentAspect.DeleteAllPages()
     for dep in self.project.deployments:
-        self.BuildModelPage( parent = self.DeploymentAspect,
+        BuildModelPage(self, parent = self.DeploymentAspect,
                              model = dep,
                              aspectInfo = self.DeploymentAspectInfo)
     self.DeploymentAspect.AdvanceSelection()
@@ -160,11 +214,11 @@ Package Aspect Functions
 def pageChange(self, event):
     self.activeAspect.Refresh()
     if self.activeAspect == self.PackageAspect:
-        self.PackageAspectPageChange(event)
+        PackageAspectPageChange(self,event)
     elif self.activeAspect == self.HardwareAspect:
-        self.HardwareAspectPageChange(event)
+        HardwareAspectPageChange(self,event)
     elif self.activeAspect == self.DeploymentAspect:
-        self.DeploymentAspectPageChange(event)
+        DeploymentAspectPageChange(self,event)
 
 def PackageAspectPageChange(self, event):
     sel = self.activeAspect.GetSelection()
@@ -215,9 +269,9 @@ def DeploymentAspectPageChange(self, event):
         self.DrawModel(dep,canvas)
         
 def OnPageChanged(self, event):
-    self.pageChange(event)
+    pageChange(self,event)
     event.Skip()
     
 def OnPageChanging(self, event):
-    self.pageChange(event)
+    pageChange(self,event)
     event.Skip()
