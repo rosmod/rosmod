@@ -118,7 +118,7 @@ class Draw_Method:
 class Draw_Style:
     def __init__(self, 
                  icon=None, 
-                 font=OrderedDict([('size',(10,20))]), 
+                 font=OrderedDict([('pointSize',20)]), 
                  method=Draw_Method.ICON, 
                  placement=Text_Placement.TOP,
                  overlay = OrderedDict(),
@@ -293,7 +293,7 @@ class Drawable_Object:
                 InForeground = False,
                 FillStyle = 'Transparent'
             )
-        if self.textPosition != None:
+        if self.textPosition != None and "name" in self.properties.keys():
             drawText(self.properties["name"],self.textPosition.Get(),self.style,canvas)
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
@@ -323,11 +323,11 @@ def Layout(dObj, topLeftPos, canvas):
     maxObjHeight = minSize[1]
     dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
     childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
-    if dObj.kind == "workspace" or \
-       dObj.kind == "component" or \
-       dObj.kind == "node" or \
-       dObj.kind == "host_instance" or \
-       dObj.kind == "group":
+    if dObj.kind == "rml" or \
+       dObj.kind == "Component" or \
+       dObj.kind == "Node" or \
+       dObj.kind == "Hardware_Instance" or \
+       dObj.kind == "Group":
         maxWidth = 0
         for obj in dObj.children:
             w,h = Layout(obj,childPos,canvas)
@@ -335,8 +335,8 @@ def Layout(dObj, topLeftPos, canvas):
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
-    elif dObj.kind == "deployment" or \
-         dObj.kind == "hardware_configuration":
+    elif dObj.kind == "rdp" or \
+         dObj.kind == "rhw":
         # lay out objects in a square
         sideLen = int(math.sqrt(len(dObj.children)))
         maxWidth = 0
@@ -354,19 +354,19 @@ def Layout(dObj, topLeftPos, canvas):
                 maxWidth = 0
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
-    elif dObj.kind == "package":
+    elif dObj.kind == "Package":
         messages = []
         services = []
         components = []
         nodes = []
         for obj in dObj.children:
-            if obj.kind == "message":
+            if obj.kind == "Message":
                 messages.append(obj)
-            elif obj.kind == "service":
+            elif obj.kind == "Service":
                 services.append(obj)
-            elif obj.kind == "component":
+            elif obj.kind == "Component":
                 components.append(obj)
-            elif obj.kind == "node":
+            elif obj.kind == "Node":
                 nodes.append(obj)
         maxWidth = 0
         # now Layout the Objects
@@ -396,17 +396,17 @@ def Layout(dObj, topLeftPos, canvas):
             maxWidth = max(w,maxWidth)
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth += maxWidth    
-    elif dObj.kind == "message" or \
-         dObj.kind == "service" or \
-         dObj.kind == "timer" or \
-         dObj.kind == "client" or \
-         dObj.kind == "server" or \
-         dObj.kind == "publisher" or \
-         dObj.kind == "subscriber" or \
-         dObj.kind == "component_instance" or \
-         dObj.kind == "host" or \
-         dObj.kind == "node_instance" or \
-         dObj.kind == "port_instance":
+    elif dObj.kind == "Message" or \
+         dObj.kind == "Service" or \
+         dObj.kind == "Timer" or \
+         dObj.kind == "Client" or \
+         dObj.kind == "Server" or \
+         dObj.kind == "Publisher" or \
+         dObj.kind == "Subscriber" or \
+         dObj.kind == "Component_Instance" or \
+         dObj.kind == "Hardware" or \
+         dObj.kind == "Node_Instance" or \
+         dObj.kind == "Port_Instance":
         pass
     dObj.width = maxObjWidth
     dObj.height = maxObjHeight
@@ -432,14 +432,14 @@ def Layout(dObj, topLeftPos, canvas):
 
 def Configure(dObj,styleDict):
     dObj.style.Copy(styleDict[dObj.kind])
-    if dObj.kind == "workspace" or \
-       dObj.kind == "package" or \
-       dObj.kind == "component" or \
-       dObj.kind == "node" or \
-       dObj.kind == "hardware_configuration" or \
-       dObj.kind == "deployment" or \
-       dObj.kind == "host_instance" or \
-       dObj.kind == "group":
+    if dObj.kind == "rml" or \
+       dObj.kind == "Package" or \
+       dObj.kind == "Component" or \
+       dObj.kind == "Node" or \
+       dObj.kind == "rhw" or \
+       dObj.kind == "rdp" or \
+       dObj.kind == "Hardware_Instance" or \
+       dObj.kind == "Port_Instance":
         for child in dObj.children:
             Configure(child,styleDict)
     else:
