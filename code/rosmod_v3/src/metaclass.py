@@ -87,6 +87,7 @@ meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, cr
 meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
+meta_class_dict["reference"] = Grammar_Field("string", "Reference", create_enterAtom, create_exitAtom)
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
 meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
