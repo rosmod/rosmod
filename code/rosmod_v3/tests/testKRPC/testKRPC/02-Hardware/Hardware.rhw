@@ -2,4 +2,12 @@
  * ROS Hardware Configurations Model
  */
 
+hardware BeagleboneBlack
+{
+    arch = armv7l;
+}
 
+hardware NVIDIA_JetsonTK1
+{
+    arch = arm;
+}

@@ -20,7 +20,7 @@ name
     ;
 
 // Type of Architecture
-arch_type
+arch
     :   ID
     ;
 
@@ -30,7 +30,7 @@ arch_type
 hardware
     :   'hardware' name
         '{'
-        ( 'arch' '=' arch_type ';' )
+        ( 'arch' '=' arch ';' )
         '}'
     ;
 

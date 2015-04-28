@@ -13,6 +13,15 @@ class ROSMOD_HardwareListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_HardwareParser#arch.
+    def enterArch(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_HardwareParser#arch.
+    def exitArch(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_HardwareParser#start.
     def enterStart(self, ctx):
         pass
@@ -28,15 +37,6 @@ class ROSMOD_HardwareListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSMOD_HardwareParser#name.
     def exitName(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_HardwareParser#arch_type.
-    def enterArch_type(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_HardwareParser#arch_type.
-    def exitArch_type(self, ctx):
         pass
 
 

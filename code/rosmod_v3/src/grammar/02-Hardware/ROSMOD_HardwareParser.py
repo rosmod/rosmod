@@ -51,10 +51,10 @@ class ROSMOD_HardwareParser ( Parser ):
 
     RULE_start = 0
     RULE_name = 1
-    RULE_arch_type = 2
+    RULE_arch = 2
     RULE_hardware = 3
 
-    ruleNames =  [ u"start", u"name", u"arch_type", u"hardware" ]
+    ruleNames =  [ u"start", u"name", u"arch", u"hardware" ]
 
     def __init__(self, input):
         super(ROSMOD_HardwareParser, self).__init__(input)
@@ -160,33 +160,33 @@ class ROSMOD_HardwareParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class Arch_typeContext(ParserRuleContext):
+    class ArchContext(ParserRuleContext):
 
         def __init__(self, parser, parent=None, invokingState=-1):
-            super(ROSMOD_HardwareParser.Arch_typeContext, self).__init__(parent, invokingState)
+            super(ROSMOD_HardwareParser.ArchContext, self).__init__(parent, invokingState)
             self.parser = parser
 
         def ID(self):
             return self.getToken(ROSMOD_HardwareParser.ID, 0)
 
         def getRuleIndex(self):
-            return ROSMOD_HardwareParser.RULE_arch_type
+            return ROSMOD_HardwareParser.RULE_arch
 
         def enterRule(self, listener):
             if isinstance( listener, ROSMOD_HardwareListener ):
-                listener.enterArch_type(self)
+                listener.enterArch(self)
 
         def exitRule(self, listener):
             if isinstance( listener, ROSMOD_HardwareListener ):
-                listener.exitArch_type(self)
+                listener.exitArch(self)
 
 
 
 
-    def arch_type(self):
+    def arch(self):
 
-        localctx = ROSMOD_HardwareParser.Arch_typeContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_arch_type)
+        localctx = ROSMOD_HardwareParser.ArchContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_arch)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 18
@@ -205,8 +205,8 @@ class ROSMOD_HardwareParser ( Parser ):
             super(ROSMOD_HardwareParser.HardwareContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def arch_type(self):
-            return self.getTypedRuleContext(ROSMOD_HardwareParser.Arch_typeContext,0)
+        def arch(self):
+            return self.getTypedRuleContext(ROSMOD_HardwareParser.ArchContext,0)
 
 
         def name(self):
@@ -245,7 +245,7 @@ class ROSMOD_HardwareParser ( Parser ):
             self.state = 24
             self.match(self.T__2)
             self.state = 25 
-            self.arch_type()
+            self.arch()
             self.state = 26
             self.match(self.T__0)
             self.state = 28

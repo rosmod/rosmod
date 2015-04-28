@@ -22,21 +22,21 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#packages.
-    def enterPackages(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#packages.
-    def exitPackages(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_SoftwareParser#client.
     def enterClient(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSMOD_SoftwareParser#client.
     def exitClient(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#package.
+    def enterPackage(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#package.
+    def exitPackage(self, ctx):
         pass
 
 

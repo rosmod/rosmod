@@ -11,7 +11,7 @@ grammar ROSMOD_Software;
  */
 start
     :   
-        (packages)+
+        (package)+
         EOF
     ;
 
@@ -48,7 +48,7 @@ unit
  * (4) Set of component definitions
  * (5) Set of nodes/actors
  */
-packages
+package
     :   
         'package' name
         '{'
@@ -125,7 +125,9 @@ server
     :   
         'server' '<' datatype '>' name
         '{'
-        ( priority | deadline )+
+        ( 'priority' '=' priority ';' 
+        | 'deadline' '=' deadline ';'
+        )+
         '}'
     ;
 
@@ -140,7 +142,9 @@ subscriber
     :   
         'subscriber' '<' datatype '>' name
         '{'
-        ( priority | deadline )+
+        ( 'priority' '=' priority ';' 
+        | 'deadline' '=' deadline ';'
+        )+
         '}'
     ;
 
@@ -149,26 +153,29 @@ timer
     :   
         'timer' name
         '{'
-        ( period | priority | deadline )+
+        ( 'period' '=' period ';'
+        | 'priority' '=' priority ';' 
+        | 'deadline' '=' deadline ';'
+        )+
         '}'
     ;
 
 // Timer Period
 period
     :   
-        'period' '=' value unit ';'
+        DOUBLE
     ;
 
 // ROS Port Callback Priority
 priority
     :   
-        'priority' '=' value ';'
+        INT
     ;
 
 // ROS Port Callback Deadline
 deadline
     :   
-        'deadline' '=' value unit ';' 
+        DOUBLE
     ;
 
 /*

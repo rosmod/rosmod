@@ -13,4 +13,5 @@ if __name__ == "__main__":
 
     # Testing ROS Tools Features
     My_Project = ROS_Project()
-    My_Project.parse_rml("/home/kelsier/Repositories/rosmod/code/rosmod_v3/tests/testKRPC/testKRPC/01-Software-Configuration/Workspace_v3.rml")
+    My_Project.parse_rml("/home/kelsier/Repositories/rosmod/code/rosmod_v3/tests/testKRPC/testKRPC/01-Software/Workspace.rml")
+    My_Project.parse_rhw("/home/kelsier/Repositories/rosmod/code/rosmod_v3/tests/testKRPC/testKRPC/02-Hardware/Hardware.rhw")

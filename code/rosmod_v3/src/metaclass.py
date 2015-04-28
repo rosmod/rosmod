@@ -18,21 +18,16 @@ class Grammar_Field:
 # E.g. Package, Component, Timer etc.
 def create_enterModel(kind):
     def enterModel(self, ctx):
-        print "enterModel:: Kind = " + kind
-        print "enterModel:: Parsed Text = " + ctx.getText()
+        print "enterModel:: Model Type = " + kind
         new_object = type( "ROS_" + kind, (object, Drawable_Object,), { })()
         self.active_objects.append(new_object)
-        print "Active Objects: \n"
-        print self.active_objects
-        print type(new_object)
+        print "Created New Object: " + str(type(new_object))
     return enterModel
 
 # Exit a Model class type while parsing
 def create_exitModel():
     def exitModel(self, ctx):
         child_object = self.active_objects.pop()
-        print type(child_object)
-        print type(self.active_objects[-1])
         self.active_objects[-1].add(child_object)
     return exitModel
     
@@ -40,8 +35,8 @@ def create_exitModel():
 # E.g. Name, Value, Period, Unit etc.
 def create_enterAtom(kind):
     def enterAtom(self, ctx):
-        print "enterPropFunc:: Kind = " + kind
-        print "enterPropFunc:: Parsed Text = " + ctx.getText()
+        print "enterAtom:: Property Type = " + kind
+        print "enterAtom:: Property Value = " + ctx.getText()
         self.active_objects[-1].properties[kind] = ctx.getText()
     return enterAtom
 
@@ -54,14 +49,40 @@ def create_exitAtom():
 # Setup a Dictionary of recognized & parsed grammar fields
 # Use this dictionary to generate the listener functions per field inside the builder classes
 meta_class_dict = OrderedDict()
+
+# Containers/Models
 meta_class_dict["Package"] = Grammar_Field("string", "Package", create_enterModel, create_exitModel)
+
+meta_class_dict["Message"] = Grammar_Field("string", "Message", create_enterModel, create_exitModel)
+meta_class_dict["Field"] = Grammar_Field("string", "Field", create_enterModel, create_exitModel)
+
+meta_class_dict["Service"] = Grammar_Field("string", "Service", create_enterModel, create_exitModel)
+meta_class_dict["Request"] = Grammar_Field("string", "Request", create_enterModel, create_exitModel)
+meta_class_dict["Response"] = Grammar_Field("string", "Response", create_enterModel, create_exitModel)
+
+meta_class_dict["Component"] = Grammar_Field("string", "Component", create_enterModel, create_exitModel)
+meta_class_dict["Client"] = Grammar_Field("string", "Client", create_enterModel, create_exitModel)
+meta_class_dict["Server"] = Grammar_Field("string", "Server", create_enterModel, create_exitModel)
+meta_class_dict["Publisher"] = Grammar_Field("string", "Publisher", create_enterModel, create_exitModel)
+meta_class_dict["Subscriber"] = Grammar_Field("string", "Subscriber", create_enterModel, create_exitModel)
+
+meta_class_dict["Node"] = Grammar_Field("string", "Node", create_enterModel, create_exitModel)
+meta_class_dict["Component_Instance"] = Grammar_Field("string", "Component_instance", create_enterModel, create_exitModel)
+meta_class_dict["Timer"] = Grammar_Field("string", "Timer", create_enterModel, create_exitModel)
+meta_class_dict["Hardware"] = Grammar_Field("string", "Hardware", create_enterModel, create_exitModel)
+
+# Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
+meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
-meta_class_dict["Component"] = Grammar_Field("string", "Component", create_enterModel, create_exitModel)
-meta_class_dict["Timer"] = Grammar_Field("string", "Timer", create_enterModel, create_exitModel)
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
+meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
+meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
+
+# Properties that are references
+meta_class_dict["component_instance_reference"] = Grammar_Field("reference")
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):
@@ -70,8 +91,10 @@ class Grammar_MetaClass(type):
         if name.startswith('None'):
             return None
         for key, value in meta_class_dict.iteritems():
-            attrs['enter' + value.name] = value.entry_point(key)
-            attrs['exit' + value.name] = value.exit_point()
+            if value.entry_point:
+                attrs['enter' + value.name] = value.entry_point(key)
+            if value.exit_point:
+                attrs['exit' + value.name] = value.exit_point()
         return super(Grammar_MetaClass, cls).__new__(cls, name, bases, attrs)
 
     # Initialize new class

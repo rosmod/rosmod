@@ -9,6 +9,7 @@ exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
 head,tail = os.path.split(head)
+#sys.path.append(head + '/editor_v2/')
 from drawable import Drawable_Object
 
 from builder import *
@@ -27,7 +28,6 @@ class ROS_Project(Drawable_Object):
         # Create a ROS Workspace Object
         self.workspace = type("ROS_Workspace", 
                               ( object, Drawable_Object, ), { })()
-        print self.workspace
 
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
@@ -35,6 +35,15 @@ class ROS_Project(Drawable_Object):
 
         # ROS Workspace Builder
         self.workspace_builder = ROS_Workspace_Builder(self.workspace, self)
+
+        # Hardware Configurations Path
+        self.hardware_path = os.path.join(self.project_path, "02-Hardware")
+
+        # Hardware Configurations - List of all rhw objects in Project
+        self.hardware_files = []
+
+        # Hardware Builder
+        self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
     # Parse .rml software model
     def parse_rml(self, filename):
@@ -52,42 +61,40 @@ class ROS_Project(Drawable_Object):
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
-
         self.workspace_builder.workspace.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading ROS Workspace:", self.workspace_builder.workspace.properties["name"]
-
         # Walk the parse tree
         walker.walk(self.workspace_builder, tree)
-
         self.workspace =  self.workspace_builder.workspace
-
         return self.workspace
 
-'''
+
     # Parse .rhw hardware configurations model
     def parse_rhw(self, filename):
+
         print "ROSTOOLS::Parsing File:", filename
         # Read the hardware configurations model
         model = FileStream(filename)
         # Instantiate the HostsLexer
-        lexer = HostsLexer(model)
+        lexer = ROSMOD_HardwareLexer(model)
         # Generate Tokens
         stream = CommonTokenStream(lexer)
         # Instantiate the HostsParser
-        parser = HostsParser(stream)
+        parser = ROSMOD_HardwareParser(stream)
         # Parse from starting point of grammar
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
 
         # Walk the parse tree
-        walker.walk(self.hardware, tree)
+        walker.walk(self.hardware_builder, tree)
 
-        self.hardware.hardware_configuration.properties["name"] = os.path.basename(filename.split(".")[0])
-        print "ROSTOOLS::Reading Hardware Configuration:", self.hardware.hardware_configuration.properties["name"]
-        self.hardware_configurations.append(self.hardware.hardware_configuration)
-        self.hardware = ROS_Hardware_Builder(self)
+        self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading Hardware Configuration:", self.hardware_builder.rhw.properties["name"]
+        self.hardware_files.append(self.hardware_builder.rhw)
+        self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
+'''
     # Parse .rdp software deployment model
     def parse_rdp(self, filename):
         print "ROSTOOLS::Parsing File:", filename

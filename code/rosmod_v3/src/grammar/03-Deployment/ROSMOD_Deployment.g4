@@ -100,12 +100,13 @@ group
 
 // Reference to a component port in Software Model
 port
-    :   ID
+    :   
+        name
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
-    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.')
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
         ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' )*
     ;
 

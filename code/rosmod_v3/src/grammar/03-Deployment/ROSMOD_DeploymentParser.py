@@ -47,8 +47,8 @@ def serializedATN():
         buf.write(u"\b\2\2qr\5\4\3\2rs\7\t\2\2su\3\2\2\2to\3\2\2\2tu\3\2")
         buf.write(u"\2\2u\33\3\2\2\2vw\7\7\2\2wx\5\4\3\2xz\7\r\2\2y{\5\36")
         buf.write(u"\20\2zy\3\2\2\2{|\3\2\2\2|z\3\2\2\2|}\3\2\2\2}~\3\2\2")
-        buf.write(u"\2~\177\7\21\2\2\177\35\3\2\2\2\u0080\u0081\7\23\2\2")
-        buf.write(u"\u0081\37\3\2\2\2\b$)8Et|")
+        buf.write(u"\2~\177\7\21\2\2\177\35\3\2\2\2\u0080\u0081\5\4\3\2\u0081")
+        buf.write(u"\37\3\2\2\2\b$)8Et|")
         return buf.getvalue()
 		
 
@@ -900,8 +900,9 @@ class ROSMOD_DeploymentParser ( Parser ):
             super(ROSMOD_DeploymentParser.PortContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def ID(self):
-            return self.getToken(ROSMOD_DeploymentParser.ID, 0)
+        def name(self):
+            return self.getTypedRuleContext(ROSMOD_DeploymentParser.NameContext,0)
+
 
         def getRuleIndex(self):
             return ROSMOD_DeploymentParser.RULE_port
@@ -923,8 +924,8 @@ class ROSMOD_DeploymentParser ( Parser ):
         self.enterRule(localctx, 28, self.RULE_port)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 126
-            self.match(self.ID)
+            self.state = 126 
+            self.name()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
