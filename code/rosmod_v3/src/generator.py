@@ -257,13 +257,12 @@ class ROSMOD_Generator:
                         servers.append(child)
                     elif child.kind == "timer":
                         timers.append(child)
-'''
                 topics = []
                 for publisher in publishers:
-                    topics.append([publisher.properties["message_reference"].parent.properties["name"], 
-                                   publisher.properties["message_reference"].properties["name"]])
+                    topics.append([publisher.parent.properties["name"], 
+                                   publisher.properties["datatype"])
                 for subscriber in subscribers:
-                    topics.append([subscriber.properties["message_reference"].parent.properties["name"], 
+                    topics.append([subscriber.parent.properties["name"], 
                                    subscriber.properties["message_reference"].properties["name"]])
                 # topics = OrderedSet(topics)
                 services = []

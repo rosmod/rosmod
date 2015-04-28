@@ -29,6 +29,7 @@ def create_enterModel(kind):
 def create_exitModel():
     def exitModel(self, ctx):
         child_object = self.active_objects.pop()
+        child_object.parent = self.active_objects[-1]
         self.active_objects[-1].add(child_object)
     return exitModel
     
