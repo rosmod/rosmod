@@ -9,6 +9,15 @@ from wx.lib.pubsub import Publisher
 
 env.use_ssh_config = False
 
+def InitDeployment(self):
+    self.deployed = False
+    self.deploying = False
+    self.runningDeployment = None
+    self.runningDeploymentCanvas = None
+    self.runningNodes = 0
+    self.hostDict = None
+    self.updatedHostDict = False
+
 class deployed_node():
     def __init__(self,executable,name,cmdArgs='',pids=[]):
         self.name = name
