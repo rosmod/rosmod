@@ -179,7 +179,7 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = Object.Name
-        self.PopupMenu(ContextMenu(canvas,self.AspectContextMenu(self.activeObject)))
+        self.PopupMenu(ContextMenu(canvas,AspectContextMenu(self,self.activeObject)))
 
     def GenericAdd(self,newObj,refs,parent):
         info = self.GetActivePanelInfo()
@@ -267,7 +267,7 @@ class Example(wx.Frame):
         hw = self.activeObject
         newObj = None
         references = []
-        if kind == 'host':
+        if kind == 'Hardware':
             newObj = project.ROS_Host()
         if newObj != None:
             self.GenericAdd(newObj,references,hw)
@@ -276,12 +276,12 @@ class Example(wx.Frame):
         dep = self.activeObject
         newObj = None
         references = []
-        if kind == 'host_instance':
+        if kind == 'Hardware_Instance':
             newObj = project.ROS_Host_Instance()
-            references = dep.properties['hardware_configuration_reference'].children
-        elif kind == 'group':
+            references = dep.properties['rdp_hardware'].children
+        elif kind == 'Group':
             newObj = project.ROS_Group()
-            references = self.project.workspace.getChildrenByKind('node')
+            references = self.project.workspace.getChildrenByKind('Node')
         if newObj != None:
             self.GenericAdd(newObj,references,dep)
 
@@ -289,19 +289,19 @@ class Example(wx.Frame):
         host = self.activeObject
         newObj = None
         references = []
-        if kind == 'node_instance':
+        if kind == 'Node_Instance':
             newObj = project.ROS_Node_Instance()
-            references = self.project.workspace.getChildrenByKind('node')
+            references = self.project.workspace.getChildrenByKind('Node')
         if newObj != None:
             self.GenericAdd(newObj,references,host)
 
     def GroupAdd(self,e, kind):
         group = self.activeObject
         newObj = None
-        if kind == 'port_instance':
+        if kind == 'Port_Instance':
             newObj = project.ROS_Port_Instance()
             del newObj.properties['name']
-            references = group.parent.getChildrenByKind('node_instance')
+            references = group.parent.getChildrenByKind('Node_Instance')
         if newObj != None:
             self.GenericAdd(newObj,references,group)
 
@@ -314,20 +314,20 @@ class Example(wx.Frame):
             "Editing {} of type {}".format(self.activeObject.properties['name'],self.activeObject.kind),
             msgWindow)
         references = []
-        if self.activeObject.kind == 'publisher' or self.activeObject.kind == 'subscriber':
-            references = self.project.workspace.getChildrenByKind('message')
-        elif self.activeObject.kind == 'server' or self.activeObject.kind == 'client':
-            references = self.project.workspace.getChildrenByKind('service')
-        elif self.activeObject.kind == 'component_instance':
-            references = self.activeObject.parent.parent.getChildrenByKind('component')
-        elif self.activeObject.kind == 'deployment':
+        if self.activeObject.kind == 'Publisher' or self.activeObject.kind == 'Subscriber':
+            references = self.project.workspace.getChildrenByKind('Message')
+        elif self.activeObject.kind == 'Server' or self.activeObject.kind == 'Client':
+            references = self.project.workspace.getChildrenByKind('Service')
+        elif self.activeObject.kind == 'Component_Instance':
+            references = self.activeObject.parent.parent.getChildrenByKind('Component')
+        elif self.activeObject.kind == 'rdp':
             references = self.project.hardware_configurations
-        elif self.activeObject.kind == 'host_instance':
-            references = obj.properties['hardware_configuration_reference'].children
-        elif self.activeObject.kind == 'node_instance':
-            references = self.project.workspace.getChildrenByKind('node')
-        elif self.activeObject.kind == 'port_instance':
-            references = obj.getChildrenByKind('node_instance')
+        elif self.activeObject.kind == 'Hardware_Instance':
+            references = obj.properties['rdp_hardware'].children
+        elif self.activeObject.kind == 'Node_Instance':
+            references = self.project.workspace.getChildrenByKind('Node')
+        elif self.activeObject.kind == 'Port_Instance':
+            references = obj.getChildrenByKind('Node_Instance')
 
         prevProps = copy.copy(self.activeObject.properties)
         ed = dialogs.EditDialog(canvas,
@@ -342,19 +342,19 @@ class Example(wx.Frame):
             self.UpdateUndo()
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
-            if self.activeObject.kind == 'package' or \
-               self.activeObject.kind == 'workspace' or \
-               self.activeObject.kind == 'hardware_configuration' or \
-               self.activeObject.kind == 'deployment':
+            if self.activeObject.kind == 'Package' or \
+               self.activeObject.kind == 'rml' or \
+               self.activeObject.kind == 'rhw' or \
+               self.activeObject.kind == 'rdp':
                 newName = self.activeObject.properties['name']
                 prevName = prevProps['name']
                 info.name = newName
                 self.activeAspectInfo.AddPageInfo(info)
                 if newName != prevName:
                     self.activeAspectInfo.DelPageInfo(prevName)
-            if self.activeObject.kind == 'deployment':
-                prevRef = prevProps['hardware_configuration_reference']
-                newRef = self.activeObject.properties['hardware_configuration_reference']
+            if self.activeObject.kind == 'rdp':
+                prevRef = prevProps['rdp_hardware']
+                newRef = self.activeObject.properties['rdp_hardware']
                 if newRef != prevRef:
                     self.activeObject.children = []
             drawable.Configure(obj,self.styleDict)
@@ -369,12 +369,12 @@ class Example(wx.Frame):
         model = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
-        if model.kind != 'workspace':
-            if self.activeObject.kind == 'package':
+        if model.kind != 'rml':
+            if self.activeObject.kind == 'Package':
                 wx.CallAfter(self.OnPackageDelete,e)
-            elif self.activeObject.kind == 'hardware_configuration':
+            elif self.activeObject.kind == 'rhw':
                 wx.CallAfter(self.OnHardwareDelete,e)
-            elif self.activeObject.kind == 'deployment':
+            elif self.activeObject.kind == 'rdp':
                 wx.CallAfter(self.OnDeploymentDelete,e)
             else:
                 if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
@@ -741,7 +741,7 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = info.obj
-        self.PopupMenu(ContextMenu(canvas,self.AspectContextMenu(self.activeObject)))
+        self.PopupMenu(ContextMenu(canvas,AspectContextMenu(self,self.activeObject)))
         
     '''
     View Menu Functions

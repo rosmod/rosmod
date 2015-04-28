@@ -165,14 +165,14 @@ def BuildPackageAspectPages(self):
     self.PackageAspect.AdvanceSelection()
 def BuildHardwareAspectPages(self):
     self.HardwareAspect.DeleteAllPages()
-    for hw in self.project.hardware_configurations:
+    for hw in self.project.hardware_files:
         BuildModelPage(self, parent = self.HardwareAspect,
                              model = hw,
                              aspectInfo = self.HardwareAspectInfo)
     self.DeploymentAspect.AdvanceSelection()
 def BuildDeploymentAspectPages(self):
     self.DeploymentAspect.DeleteAllPages()
-    for dep in self.project.deployments:
+    for dep in self.project.deployment_files:
         BuildModelPage(self, parent = self.DeploymentAspect,
                              model = dep,
                              aspectInfo = self.DeploymentAspectInfo)

@@ -31,18 +31,18 @@ def BuildStyleDict(self):
     '''
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
     '''
-    HardwareStyle = drawable.Draw_Style(icon=None, 
+    rhwStyle = drawable.Draw_Style(icon=None, 
+                                   font=font, 
+                                   method=drawable.Draw_Method.ICON, 
+                                   offset = pkgOffset,
+                                   placement=drawable.Text_Placement.TOP,
+                                   overlay = OrderedDict() )
+    HardwareStyle = drawable.Draw_Style(icon=hostIcon,
                                         font=font, 
                                         method=drawable.Draw_Method.ICON, 
-                                        offset = pkgOffset,
+                                        minSize = minSize,
                                         placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict() )
-    HostStyle = drawable.Draw_Style(icon=hostIcon,
-                                    font=font, 
-                                    method=drawable.Draw_Method.ICON, 
-                                    minSize = minSize,
-                                    placement=drawable.Text_Placement.TOP,
-                                    overlay = OrderedDict() )
     '''
     STYLES USED FOR DEPLOYMENT CONFIGURATION OBJECTS
     '''
@@ -70,7 +70,7 @@ def BuildStyleDict(self):
                                         minSize = minSize,
                                         placement=drawable.Text_Placement.RIGHT,
                                         overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-    HostInstStyle = drawable.Draw_Style(icon=None,
+    HardwareInstStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
                                         method=drawable.Draw_Method.ROUND_RECT, 
                                         minSize = minSize,
@@ -154,22 +154,32 @@ def BuildStyleDict(self):
                                         placement=drawable.Text_Placement.RIGHT,
                                         overlay = OrderedDict() )
 
-    self.styleDict["Workspace"] = WrkStyle
+    self.styleDict["rml"] = WrkStyle
+
     self.styleDict["Package"] = PkgStyle
+
     self.styleDict["Message"] = MsgStyle
+    self.styleDict["Field"] = MsgStyle
+
     self.styleDict["Service"] = SrvStyle
+    self.styleDict["Request"] = SrvStyle
+    self.styleDict["Response"] = SrvStyle
+
     self.styleDict["Component"] = CompStyle
     self.styleDict["Timer"] = TmrStyle
     self.styleDict["Publisher"] = PubStyle
     self.styleDict["Subscriber"] = SubStyle
     self.styleDict["Client"] = CliStyle
     self.styleDict["Server"] = SerStyle
+
     self.styleDict["Node"] = NodeStyle
-    self.styleDict["Component_instance"] = CompInstStyle
-    self.styleDict["hardware_configuration"] = HardwareStyle
-    self.styleDict["host"] = HostStyle
-    self.styleDict["deployment"] = DeploymentStyle
-    self.styleDict["group"] = GroupStyle
-    self.styleDict["port_instance"] = PortInstStyle
-    self.styleDict["host_instance"] = HostInstStyle
-    self.styleDict["node_instance"] = NodeInstStyle
+    self.styleDict["Component_Instance"] = CompInstStyle
+
+    self.styleDict["rhw"] = rhwStyle
+    self.styleDict["Hardware"] = HardwareStyle
+
+    self.styleDict["rdp"] = DeploymentStyle
+    self.styleDict["Group"] = GroupStyle
+    self.styleDict["Port"] = PortInstStyle
+    self.styleDict["Hardware_Instance"] = HardwareInstStyle
+    self.styleDict["Node_Instance"] = NodeInstStyle
