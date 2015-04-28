@@ -225,6 +225,13 @@ class ROS_Project(Drawable_Object):
                     for comp_instance in package_child.children:
                         comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 
+        for rdp in self.deployment_files:
+            for hardware_instance in rdp.children:
+                for node_instance in hardware_instance.children:
+                    node_instance.properties["node_reference"] = reference_dict[node_instance.properties["reference"]]
+                    for port_instance in node_instance.children:
+                        port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
+
 '''
     # Check workspace directory for existing code that may
     # require preservation

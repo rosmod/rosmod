@@ -31,7 +31,9 @@ package krpc
     component krpc_comp : base
     {
 
-        client <krpc/some_msg> my_client;
+        client <krpc/some_srv> my_client;
+
+	publisher <krpc/some_msg> my_publisher;
 
 	timer timer0
 	{
