@@ -159,10 +159,10 @@ class Drawable_Object:
     def __init__(self):
 
         # these are used by all generator classes:
-        parent = None
-        kind = ""
-        properties = OrderedDict()
-        children = []
+        self.parent = None
+        self.kind = ""
+        self.properties = OrderedDict()
+        self.children = []
 
         # these are configured (default or by user)
         self.style = Draw_Style()

@@ -31,7 +31,7 @@ class ROS_Project(Drawable_Object):
 
         # Create a ROS Workspace Object
         self.workspace = type("ROS_Workspace", 
-                              ( object, Drawable_Object, ), { '__init__' : init })()
+                              ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.workspace_dir = ""

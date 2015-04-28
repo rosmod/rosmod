@@ -1,7 +1,7 @@
 import wx
 import os,sys
 
-from aspect import *
+#from aspect import *
 
 exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
@@ -9,6 +9,12 @@ head,tail = os.path.split(dirName)
 editorPath=head
 rootIconPath= editorPath + '/icons'
 toolbarIconPath= rootIconPath + '/toolbar'
+
+
+class TBInfo():
+    def __init__(self,name, obj):
+        self.name = name
+        self.obj = obj
 
 def BuildToolbar(self):
     self.toolbar = self.CreateToolBar()

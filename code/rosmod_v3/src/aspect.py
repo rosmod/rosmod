@@ -18,11 +18,7 @@ except ImportError:
             )
 
 import drawable
-
-class TBInfo():
-    def __init__(self,name, obj):
-        self.name = name
-        self.obj = obj
+from toolbar import *
 
 class AspectPageInfo():
     def __init__(self, name, obj, canvas, msgWindow):

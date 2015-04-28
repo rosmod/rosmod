@@ -83,9 +83,7 @@ class ROS_Hardware_Builder(ROSMOD_HardwareListener):
     def __init__(self, hardware_files, project):
         # Create a ROS Deployment Object
         self.rhw = type("ROS_Hardware", 
-                        ( object, Drawable_Object, ), { })()
-        self.rhw.properties = OrderedDict()
-        self.rhw.children = []
+                        ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.rhw.parent = project
         self.active_objects = [self.rhw]
 
@@ -98,9 +96,7 @@ class ROS_Deployment_Builder(ROSMOD_DeploymentListener):
     def __init__(self, deployment_files, project):
         # Create a ROS Deployment Object
         self.rdp = type("ROS_Deployment",
-                        ( object, Drawable_Object, ), { })()
-        self.rdp.properties = OrderedDict()
-        self.rdp.children = []
+                        ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.rdp.parent = project
         self.active_objects = [self.rdp]
 
