@@ -36,14 +36,12 @@ exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
 editorPath=head
-print editorPath
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 toolbarIconPath= rootIconPath + '/toolbar'
 deploymentPath = editorPath + '/deployment'
 
 import project
-import deployment
 
 # THESE ARE ALL FROM OUR CODE
 from terminal import *
@@ -51,7 +49,10 @@ import dialogs
 import drawable
 from aspect import *
 from worker import *
+from toolbar import *
+from deployment import *
 from contextMenu import ContextMenu
+from style import *
 
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -61,33 +62,18 @@ class Example(wx.Frame):
     
     def InitUI(self):
 
-        self.activeAspect = None
-        self.activeAspectInfo = None
         self.activeObject = None
-        self.deployed = False
-        self.deploying = False
-        self.runningDeployment = None
-        self.runningDeploymentCanvas = None
-        self.runningNodes = 0
-        self.hostDict = None
-        self.updatedHostDict = False
-        self.styleDict = None
-
-        self.PackageAspect = None
-        self.PackageAspectInfo = None
-        self.HardwareAspect = None
-        self.HardwareAspectInfo = None
-        self.DeploymentAspect = None
-        self.DeploymentAspectInfo = None
 
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = os.getcwd()
         self.project = project.ROS_Project()
-        self.BuildStyleDict()
 
         self.undoList = []
         self.redoList = []
 
+        self.InitAspects()
+        self.InitDeployment()
+        self.BuildStyleDict()
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
         self.BuildToolbar()
@@ -96,8 +82,8 @@ class Example(wx.Frame):
         # build the main frame (holds viewer in the top and the output in the bottom)
         self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,
                                               style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
-        self.BuildAspects()
         self.BuildOutput()
+        self.AddPackageAspectToolbar()
         self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-100)
         self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
@@ -109,299 +95,10 @@ class Example(wx.Frame):
         self.Centre()
         self.Show(True)
 
-        self.workQueue = []
-        self.workTimerPeriod = 5.0
-        self.workTimerID = wx.NewId()  # pick a number
-        self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
-        self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
-        wx.EVT_TIMER(self, self.workTimerID, self.WorkFunction)  # call the on_timer function
-
-        self.hostDictTopic = "hostDictTopic"                      # used for updating the host Dict from fabric
-        self.monitorStatusTopic = "monitorStatusTopic"            # used for updating the gui from monitor
-        self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
-        Publisher().subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
-        Publisher().subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
+        self.InitWorkQueue()
 
         wx.EVT_CLOSE(self, self.OnQuit)
 
-    def OnSubscribeMonitorStatus(self,message):
-        pass
-
-    def OnSubscribeHostDictChange(self,message):
-        self.updatedHostDict = True
-        self.hostDict = message.data
-
-    '''
-    This function is what handles the work of updating the gui by communicating with other processes
-    that the gui has started, e.g. the deployment or monitoring processes.
-    '''
-    def WorkFunction(self,e):
-        if len(self.workQueue) > 0:
-            for workItem in self.workQueue:
-                workItem.workFunc(workItem)
-
-    def MonitorWorkFunc(self,workItem):
-        # for this function, data is the parallel multiprocess started for monitoring
-        if self.deployed != True:
-            self.workQueue.remove(workItem)
-            return
-        # get data from queue
-        updateCanvas = False
-        try:
-            nodes = self.runningDeployment.getChildrenByKind('node_instance')
-            nodeMap = {}
-            for n in nodes:
-                nodeMap[n.properties['name']] = n
-            data = workItem.queue.get(False)
-            while data != None:
-                #print "GOT DATA: {}".format(data)
-                dataList = data.split(' ')
-                nodeName = dataList[0]
-                node = nodeMap[nodeName]
-                if dataList[1] == "UP":
-                    node.style.overlay['overlayColor']='GREEN'
-                else:
-                    node.style.overlay['overlayColor']='RED'
-                updateCanvas = True
-                data = workItem.queue.get(False)
-        except:
-            # if we get here, we've read everything from the q
-            if updateCanvas:
-                self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
-        if not workItem.process.is_alive(): # process has terminated
-            # update deployment overlays here
-            workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
-                                                                            self.hostDictTopic,
-                                                                            workItem.queue)
-            )
-            workerThread.start()
-            workItem.data = workerThread
-            
-    '''
-    Build the output notebook for ROSMOD which holds:
-    * the program output
-    * a terminal
-    * any logs requested from deployment
-    '''
-    def BuildOutput(self):
-        self.output = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY)
-        self.output.AddPage(wx.Panel(self.output), "Console Output")
-        self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
-        
-    '''
-    Build all the Aspects required for ROSMOD:
-    * Packages aspect : used for setting up mgs,srv,comp,node,etc.
-    * Hardware aspect : used for configure the system hardware (hosts)
-    * Deployment aspect : used for assigning nodes to hosts
-    '''
-    def BuildAspects(self):
-        self.PackageAspectInfo = AspectInfo()
-        self.HardwareAspectInfo = AspectInfo()
-        self.DeploymentAspectInfo = AspectInfo()
-        self.BuildPackageAspect()
-        self.BuildHardwareAspect()
-        self.BuildDeploymentAspect()
-        self.activeAspect = self.PackageAspect
-        self.activeAspectInfo = self.PackageAspectInfo
-    '''
-    Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
-    '''
-    def BuildHardwareAspect(self):
-        self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
-                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-        self.HardwareAspect.Hide()
-        self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-    def AddHardwareAspectToolbar(self):
-        labelTBinfo = TBInfo( name="label",
-                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Hardware:"))
-        self.toolbar.AddControl(labelTBinfo.obj)
-        createTBinfo = TBInfo(
-            name="create",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
-                                     shortHelpString="New Hardware Configuration"))
-        deleteTBinfo = TBInfo(
-            name="delete",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
-                                     shortHelpString="Remove Hardware Configuration"))
-        self.HardwareAspectInfo.AddTBInfo(labelTBinfo)
-        self.HardwareAspectInfo.AddTBInfo(createTBinfo)
-        self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
-        self.Bind(wx.EVT_TOOL, self.OnHardwareCreate, createTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnHardwareDelete, deleteTBinfo.obj)
-        self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
-        self.toolbar.Realize()
-    def RemoveHardwareAspectToolbar(self):
-        for name,tbinfo in self.HardwareAspectInfo.toolbarButtons.iteritems():
-            self.toolbar.RemoveTool(tbinfo.obj.GetId())
-            self.HardwareAspectInfo.DelTBInfo(name)
-        self.toolbar.Realize()
-
-    '''
-    Deployment Aspect: panel with toolbar and notebook for configuring and managing
-    node deployment onto hosts (and roscore deployment)
-    '''        
-    def BuildDeploymentAspect(self):
-        self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
-                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-        self.DeploymentAspect.Hide()
-        self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-    def AddDeploymentAspectToolbar(self):
-        labelTBinfo = TBInfo( name="label",
-                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Deployment:"))
-        self.toolbar.AddControl(labelTBinfo.obj)
-        createTBinfo = TBInfo( name="create",
-                               obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
-                                                        shortHelpString="New Deployment"))
-        deleteTBinfo = TBInfo( name="delete",
-                               obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
-                                                        shortHelpString="Remove Deployment"))
-        generateTBinfo = TBInfo (name='generate',
-                                 obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                          bitmap = wx.Bitmap(toolbarIconPath + '/tgenerate.png'),
-                                                          shortHelpString="Generate Deployment Files"))
-        moveTBinfo = TBInfo (name='move',
-                             obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                      bitmap = wx.Bitmap(toolbarIconPath + '/tmove.png'),
-                                                      shortHelpString="Copy Deployment Files"))
-        deployTBinfo = TBInfo( name='deploy',
-                               obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap(toolbarIconPath + '/tdeploy.png'),
-                                                        shortHelpString="Deploy System"))
-        stopTBinfo = TBInfo( name='stop',
-                               obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap(toolbarIconPath + '/tstop.png'),
-                                                        shortHelpString="Stop Deployed System"))
-        runTBinfo = TBInfo( name='run',
-                               obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                        bitmap = wx.Bitmap(toolbarIconPath + '/trun.png'),
-                                                        shortHelpString="Run <Command> on All Hosts"))
-        self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(generateTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(moveTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
-        self.DeploymentAspectInfo.AddTBInfo(runTBinfo)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentGenerate, generateTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnDeploymentRun, runTBinfo.obj)
-        self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
-        self.toolbar.Realize()
-    def RemoveDeploymentAspectToolbar(self):
-        for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
-            self.toolbar.RemoveTool(tbinfo.obj.GetId())
-            self.DeploymentAspectInfo.DelTBInfo(name)
-        self.toolbar.Realize()
-
-    '''
-    Package Aspect: panel with toolbar and notebook for managing packages
-    '''
-    def BuildPackageAspect(self):
-        self.BuildPackageAspectNotebook()
-        self.AddPackageAspectToolbar()
-    def BuildPackageAspectNotebook(self):
-        self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
-                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-        self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
-    def AddPackageAspectToolbar(self):
-        labelTBinfo = TBInfo( name="label",
-                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Software:"))
-        self.toolbar.AddControl(labelTBinfo.obj)
-        createTBinfo = TBInfo(
-            name="create",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
-                                     shortHelpString="New Package"))
-        deleteTBinfo = TBInfo(
-            name="delete",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
-                                     shortHelpString="Remove Package"))
-        generateTBinfo = TBInfo(
-            name="generate",
-            obj=self.toolbar.AddTool(wx.ID_ANY,
-                                     bitmap = wx.Bitmap(toolbarIconPath + '/tgenerate.png'), 
-                                     shortHelpString="Generate Software"))
-        self.PackageAspectInfo.AddTBInfo(labelTBinfo)
-        self.PackageAspectInfo.AddTBInfo(createTBinfo)
-        self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
-        self.PackageAspectInfo.AddTBInfo(generateTBinfo)
-        self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
-        self.Bind(wx.EVT_TOOL, self.OnPackageGenerate, generateTBinfo.obj)
-        self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
-        self.toolbar.Realize()
-    def RemovePackageAspectToolbar(self):
-        for name,tbinfo in self.PackageAspectInfo.toolbarButtons.iteritems():
-            self.toolbar.RemoveTool(tbinfo.obj.GetId())
-            self.PackageAspectInfo.DelTBInfo(name)
-        self.toolbar.Realize()
-
-    def BuildAspectPages(self):
-        self.BuildPackageAspectPages()
-        self.BuildHardwareAspectPages()
-        self.BuildDeploymentAspectPages()
-    def BuildPackageAspectPages(self):
-        self.PackageAspect.DeleteAllPages()
-        for pkg in self.project.workspace.children:
-            self.BuildModelPage( parent = self.PackageAspect,
-                                 model = pkg,
-                                 aspectInfo = self.PackageAspectInfo)
-        self.BuildModelPage( parent = self.PackageAspect,
-                             model = self.project.workspace,
-                             aspectInfo = self.PackageAspectInfo)
-        self.PackageAspect.AdvanceSelection()
-    def BuildHardwareAspectPages(self):
-        self.HardwareAspect.DeleteAllPages()
-        for hw in self.project.hardware_configurations:
-            self.BuildModelPage( parent = self.HardwareAspect,
-                                 model = hw,
-                                 aspectInfo = self.HardwareAspectInfo)
-        self.DeploymentAspect.AdvanceSelection()
-    def BuildDeploymentAspectPages(self):
-        self.DeploymentAspect.DeleteAllPages()
-        for dep in self.project.deployments:
-            self.BuildModelPage( parent = self.DeploymentAspect,
-                                 model = dep,
-                                 aspectInfo = self.DeploymentAspectInfo)
-        self.DeploymentAspect.AdvanceSelection()
-
-    def BuildModelPage(self,parent,model,aspectInfo,insertPos=-1):
-        newPage = wx.Panel(parent)
-        navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "BEIGE")
-        canvas = navCanvas.Canvas
-        msgWindow = stc.StyledTextCtrl(newPage,wx.ID_ANY,
-                                style= wx.SUNKEN_BORDER)
-        msgWindow.SetReadOnly(True)
-        panelSizer = wx.BoxSizer(wx.VERTICAL)
-        panelSizer.Add(navCanvas, 5, wx.EXPAND | wx.ALIGN_TOP )
-        panelSizer.Add(msgWindow, 1, wx.EXPAND | wx.ALL | wx.ALIGN_BOTTOM ) 
-        newPage.SetSizer(panelSizer)
-
-        pageInfo = AspectPageInfo(name=model.properties['name'],obj=model,canvas=canvas,msgWindow=msgWindow)
-        aspectInfo.AddPageInfo(pageInfo)
-        if insertPos == -1:
-            parent.AddPage( newPage, model.properties['name'] )
-        else:
-            parent.InsertPage( insertPos, newPage, model.properties["name"])
-        parent.AdvanceSelection()
-        canvas.InitAll()
-        drawable.Configure(model,self.styleDict)
-        self.DrawModel(model,canvas)
-        #canvas.ZoomToBB()
-        canvas.Zoom(1,model.textPosition)
 
     def DrawModel(self, model, canvas):
         c = canvas.ViewPortCenter
@@ -1357,74 +1054,6 @@ class Example(wx.Frame):
         self.output.AddPage(TermEmulatorDemo(self.output), "Terminal",select=True)
 
     '''
-    Package Aspect Functions
-    '''
-    def pageChange(self, event):
-        self.activeAspect.Refresh()
-        if self.activeAspect == self.PackageAspect:
-            self.PackageAspectPageChange(event)
-        elif self.activeAspect == self.HardwareAspect:
-            self.HardwareAspectPageChange(event)
-        elif self.activeAspect == self.DeploymentAspect:
-            self.DeploymentAspectPageChange(event)
-
-    def PackageAspectPageChange(self, event):
-        sel = self.activeAspect.GetSelection()
-        numPages = self.activeAspect.GetPageCount()
-        if sel >= 0:
-            pageName = self.activeAspect.GetPageText(sel)
-            info = self.activeAspectInfo.GetPageInfo(pageName)
-            pkg = info.obj
-            canvas = info.canvas
-            deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-            if pkg.kind == 'workspace':
-                self.toolbar.EnableTool(deleteTBID, False)
-            else:
-                self.toolbar.EnableTool(deleteTBID, True)
-            drawable.Configure(pkg,self.styleDict)
-            self.DrawModel(pkg,canvas)
-
-    def HardwareAspectPageChange(self, event):
-        sel = self.activeAspect.GetSelection()
-        numPages = self.activeAspect.GetPageCount()
-        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-        if numPages > 1:
-            self.toolbar.EnableTool(deleteTBID, True)
-        else:
-            self.toolbar.EnableTool(deleteTBID, False)
-        if sel >= 0:
-            pageName = self.activeAspect.GetPageText(sel)
-            info = self.activeAspectInfo.GetPageInfo(pageName)
-            hw = info.obj
-            canvas = info.canvas
-            drawable.Configure(hw,self.styleDict)
-            self.DrawModel(hw,canvas)
-
-    def DeploymentAspectPageChange(self, event):
-        sel = self.activeAspect.GetSelection()
-        numPages = self.activeAspect.GetPageCount()
-        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-        if numPages > 1:
-            self.toolbar.EnableTool(deleteTBID, True)
-        else:
-            self.toolbar.EnableTool(deleteTBID, False)
-        if sel >= 0:
-            pageName = self.activeAspect.GetPageText(sel)
-            info = self.activeAspectInfo.GetPageInfo(pageName)
-            dep = info.obj
-            canvas = info.canvas
-            drawable.Configure(dep,self.styleDict)
-            self.DrawModel(dep,canvas)
-        
-    def OnPageChanged(self, event):
-        self.pageChange(event)
-        event.Skip()
- 
-    def OnPageChanging(self, event):
-        self.pageChange(event)
-        event.Skip()
-
-    '''
     Tools Menubar Menu Functions
     '''
     def GenerateCode(self, e):
@@ -1533,32 +1162,6 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.ToggleOutputView, self.shop)
 
     '''
-    '''
-    def BuildToolbar(self):
-        self.toolbar = self.CreateToolBar()
-        # file operations
-        self.tb_new = self.toolbar.AddLabelTool(wx.ID_NEW, '', wx.Bitmap(toolbarIconPath + '/tnew.png'), shortHelp="New")
-        self.tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, '', wx.Bitmap(toolbarIconPath + '/topen.png'), shortHelp="Open")
-        self.tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, '', wx.Bitmap(toolbarIconPath + '/tsave.png'), shortHelp="Save")
-        self.tb_print = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/tprint.png'), shortHelp="Print Page to File")
-        self.toolbar.AddSeparator()
-        # undo/redo
-        self.tb_undo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap(toolbarIconPath + '/tundo.png'), shortHelp="Undo")
-        self.tb_redo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap(toolbarIconPath + '/tredo.png'), shortHelp="Redo")
-        self.toolbar.EnableTool(wx.ID_UNDO, False)
-        self.toolbar.EnableTool(wx.ID_REDO, False)
-        self.toolbar.AddSeparator()
-        self.tb_term = self.toolbar.AddLabelTool(wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/tterm.png'), shortHelp="Terminal")
-        self.toolbar.AddSeparator()
-        self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
-        self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
-        self.Bind(wx.EVT_TOOL, self.OnSave, self.tb_save)
-        self.Bind(wx.EVT_TOOL, self.OnPrint, self.tb_print)
-        self.Bind(wx.EVT_TOOL, self.OnUndo, self.tb_undo)
-        self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
-        self.Bind(wx.EVT_TOOL, self.OnTerminal, self.tb_term)
-
-    '''
     Build the Statusbar which provides extra information about
     all the objects and menus in ROSMOD.  It also displays short
     info from the output about results of operations.
@@ -1566,170 +1169,6 @@ class Example(wx.Frame):
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
-
-    def BuildStyleDict(self):
-        self.styleDict = OrderedDict()
-        font = OrderedDict()
-        font['pointSize'] = 20
-        minSize = (50,50)
-        padding = (10,10)
-        pkgOffset = (50,50)
-        msgIcon = wx.Bitmap(modelIconPath + '/msgIcon.png')
-        srvIcon = wx.Bitmap(modelIconPath + '/srvIcon.png')
-        tmrIcon = wx.Bitmap(modelIconPath + '/tmrIcon.png')
-        pubIcon = wx.Bitmap(modelIconPath + '/pubIcon.png')
-        subIcon = wx.Bitmap(modelIconPath + '/subIcon.png')
-        clientIcon = wx.Bitmap(modelIconPath + '/clientIcon.png')
-        serverIcon = wx.Bitmap(modelIconPath + '/serverIcon.png')
-        compInstIcon = wx.Bitmap(modelIconPath + '/compInstIcon.png')
-        hostIcon = wx.Bitmap(modelIconPath + '/bbb.png')
-        hostInstIcon = wx.Bitmap(modelIconPath + '/bbb.png')
-
-        '''
-        STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
-        '''
-        HardwareStyle = drawable.Draw_Style(icon=None, 
-                              font=font, 
-                                       method=drawable.Draw_Method.ICON, 
-                                       offset = pkgOffset,
-                              placement=drawable.Text_Placement.TOP,
-                                       overlay = OrderedDict() )
-        HostStyle = drawable.Draw_Style(icon=hostIcon,
-                                   font=font, 
-                                   method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                                   placement=drawable.Text_Placement.TOP,
-                                   overlay = OrderedDict() )
-        '''
-        STYLES USED FOR DEPLOYMENT CONFIGURATION OBJECTS
-        '''
-        DeploymentStyle = drawable.Draw_Style(icon=None, 
-                              font=font, 
-                                       method=drawable.Draw_Method.ICON, 
-                                       offset = pkgOffset,
-                              placement=drawable.Text_Placement.TOP,
-                                       overlay = OrderedDict() )
-        PortInstStyle = drawable.Draw_Style(icon=None,
-                                            font=font, 
-                                            method=drawable.Draw_Method.ROUND_RECT, 
-                                            minSize = minSize,
-                                            placement=drawable.Text_Placement.RIGHT,
-                                            overlay = OrderedDict([('fillColor','BLUE')]) )
-        GroupStyle = drawable.Draw_Style(icon=None,
-                                         font=font, 
-                                         method=drawable.Draw_Method.ROUND_RECT, 
-                                         minSize = minSize,
-                                         placement=drawable.Text_Placement.TOP,
-                                         overlay = OrderedDict([('fillColor','GREEN')]) )
-        NodeInstStyle = drawable.Draw_Style(icon=None,
-                               font=font, 
-                               method=drawable.Draw_Method.ROUND_RECT, 
-                                       minSize = minSize,
-                               placement=drawable.Text_Placement.RIGHT,
-                                        overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-        HostInstStyle = drawable.Draw_Style(icon=None,
-                                   font=font, 
-                                   method=drawable.Draw_Method.ROUND_RECT, 
-                                       minSize = minSize,
-                                   placement=drawable.Text_Placement.TOP,
-                                            overlay = OrderedDict([('fillColor','WHITE')]) )
-        '''
-        STYLES USED FOR SOFTWARE CONFIGURATION OBJECTS
-        '''
-        WrkStyle = drawable.Draw_Style(icon=None, 
-                              font=font, 
-                                       method=drawable.Draw_Method.ICON, 
-                                       offset = pkgOffset,
-                              placement=drawable.Text_Placement.TOP,
-                                       overlay = OrderedDict() )
-        PkgStyle = drawable.Draw_Style(icon=None, 
-                                       font=font, 
-                                       method=drawable.Draw_Method.ICON, 
-                                       placement=drawable.Text_Placement.TOP,
-                                       overlay = OrderedDict(),
-                                       minSize = minSize,
-                                       padding = (50,25),
-                                       offset = pkgOffset )
-        MsgStyle = drawable.Draw_Style(icon=msgIcon, 
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                              placement=drawable.Text_Placement.TOP,
-                                       minSize = minSize,
-                              overlay = OrderedDict() )
-        SrvStyle = drawable.Draw_Style(icon=srvIcon,
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                              placement=drawable.Text_Placement.TOP,
-                                       minSize = minSize,
-                              overlay = OrderedDict() )
-        CompStyle = drawable.Draw_Style(icon=None,
-                               font=font, 
-                               method=drawable.Draw_Method.ROUND_RECT, 
-                               placement=drawable.Text_Placement.TOP,
-                                       minSize = minSize,
-                                        overlay = OrderedDict([('fillColor','STEEL BLUE')]) )
-        TmrStyle = drawable.Draw_Style(icon=tmrIcon,
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                              placement=drawable.Text_Placement.RIGHT,
-                              overlay = OrderedDict() )
-        PubStyle = drawable.Draw_Style(icon=pubIcon,
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                              placement=drawable.Text_Placement.RIGHT,
-                              overlay = OrderedDict() )
-        SubStyle = drawable.Draw_Style(icon=subIcon,
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                              placement=drawable.Text_Placement.RIGHT,
-                              overlay = OrderedDict() )
-        CliStyle = drawable.Draw_Style(icon=clientIcon,
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                              placement=drawable.Text_Placement.RIGHT,
-                              overlay = OrderedDict() )
-        SerStyle = drawable.Draw_Style(icon=serverIcon,
-                              font=font, 
-                              method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                              placement=drawable.Text_Placement.RIGHT,
-                                       overlay = OrderedDict() )
-        NodeStyle = drawable.Draw_Style(icon=None,
-                               font=font, 
-                               method=drawable.Draw_Method.ROUND_RECT, 
-                                       minSize = minSize,
-                               placement=drawable.Text_Placement.TOP,
-                                        overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-        CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
-                                   font=font, 
-                                   method=drawable.Draw_Method.ICON, 
-                                       minSize = minSize,
-                                   placement=drawable.Text_Placement.RIGHT,
-                                   overlay = OrderedDict() )
-
-        self.styleDict["workspace"] = WrkStyle
-        self.styleDict["package"] = PkgStyle
-        self.styleDict["message"] = MsgStyle
-        self.styleDict["service"] = SrvStyle
-        self.styleDict["component"] = CompStyle
-        self.styleDict["timer"] = TmrStyle
-        self.styleDict["publisher"] = PubStyle
-        self.styleDict["subscriber"] = SubStyle
-        self.styleDict["client"] = CliStyle
-        self.styleDict["server"] = SerStyle
-        self.styleDict["node"] = NodeStyle
-        self.styleDict["component_instance"] = CompInstStyle
-        self.styleDict["hardware_configuration"] = HardwareStyle
-        self.styleDict["host"] = HostStyle
-        self.styleDict["deployment"] = DeploymentStyle
-        self.styleDict["group"] = GroupStyle
-        self.styleDict["port_instance"] = PortInstStyle
-        self.styleDict["host_instance"] = HostInstStyle
-        self.styleDict["node_instance"] = NodeInstStyle
 
 def main():
     ex = wx.App()
