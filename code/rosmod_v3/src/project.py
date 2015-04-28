@@ -170,14 +170,14 @@ class ROS_Project(Drawable_Object):
             self.parse_rml(rml_file)
         count = 0
 
-        for rhw in os.listdir(self.hardware_configurations_path):
+        for rhw in os.listdir(self.hardware_path):
             if rhw.endswith(".rhw"):
                 rhw_file = os.path.join(self.hardware_path, rhw)
                 self.parse_rhw(rhw_file)
                 count += 1
 
         if count == 0:
-            print "ROSTOOLS::No ROS Hardware Configurations (.rhw) files found in", self.hardware_configurations_path
+            print "ROSTOOLS::No ROS Hardware Configurations (.rhw) files found in", self.hardware_path
 
         count = 0
 
