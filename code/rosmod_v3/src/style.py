@@ -1,5 +1,15 @@
+import wx
+import os,sys
+from collections import OrderedDict
 
+import drawable
 
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+editorPath=head
+rootIconPath= editorPath + '/icons'
+modelIconPath= rootIconPath + '/model'
 
 def BuildStyleDict(self):
     self.styleDict = OrderedDict()

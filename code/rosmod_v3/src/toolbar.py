@@ -1,6 +1,15 @@
+import wx
+import os,sys
 
-'''
-'''
+from aspect import *
+
+exeName = sys.argv[0]
+dirName = os.path.abspath(exeName)
+head,tail = os.path.split(dirName)
+editorPath=head
+rootIconPath= editorPath + '/icons'
+toolbarIconPath= rootIconPath + '/toolbar'
+
 def BuildToolbar(self):
     self.toolbar = self.CreateToolBar()
     # file operations

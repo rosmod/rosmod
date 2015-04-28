@@ -1,3 +1,6 @@
+
+import wx
+import wx.lib.agw.flatnotebook as fnb
 from collections import OrderedDict
 
 class TBInfo():
@@ -46,7 +49,7 @@ def InitAspects(self):
     self.HardwareAspectInfo = None
     self.DeploymentAspect = None
     self.DeploymentAspectInfo = None
-    self.BuildAspects()
+    BuildAspects(self)
 
 '''
 Build all the Aspects required for ROSMOD:
@@ -58,9 +61,9 @@ def BuildAspects(self):
     self.PackageAspectInfo = AspectInfo()
     self.HardwareAspectInfo = AspectInfo()
     self.DeploymentAspectInfo = AspectInfo()
-    self.BuildPackageAspect()
-    self.BuildHardwareAspect()
-    self.BuildDeploymentAspect()
+    BuildPackageAspect(self)
+    BuildHardwareAspect(self)
+    BuildDeploymentAspect(self)
     self.activeAspect = self.PackageAspect
     self.activeAspectInfo = self.PackageAspectInfo
 
@@ -71,8 +74,8 @@ def BuildHardwareAspect(self):
     self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
                                            agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
     self.HardwareAspect.Hide()
-    self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-    self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+    self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
+    self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
     
 '''
 Deployment Aspect: panel with toolbar and notebook for configuring and managing
@@ -82,8 +85,8 @@ def BuildDeploymentAspect(self):
     self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
                                              agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
     self.DeploymentAspect.Hide()
-    self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-    self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+    self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
+    self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
 
 '''
 Package Aspect: panel with toolbar and notebook for managing packages
@@ -91,8 +94,8 @@ Package Aspect: panel with toolbar and notebook for managing packages
 def BuildPackageAspect(self):
     self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
                                           agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-    self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-    self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
+    self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
+    self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
 
 
 

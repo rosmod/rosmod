@@ -60,13 +60,13 @@ def InitWorkQueue(self):
     self.workTimerID = wx.NewId()  # pick a number
     self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
     self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
-    wx.EVT_TIMER(self, self.workTimerID, self.WorkFunction)  # call the on_timer function
+    wx.EVT_TIMER(self, self.workTimerID, lambda e : WorkFunction(self,e))  # call the on_timer function
 
     self.hostDictTopic = "hostDictTopic"                      # used for updating the host Dict from fabric
     self.monitorStatusTopic = "monitorStatusTopic"            # used for updating the gui from monitor
     self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
-    Publisher().subscribe(self.OnSubscribeMonitorStatus, self.monitorStatusTopic)
-    Publisher().subscribe(self.OnSubscribeHostDictChange, self.hostDictTopic)
+    Publisher().subscribe(lambda e : OnSubscribeMonitorStatus(self,e), self.monitorStatusTopic)
+    Publisher().subscribe(lambda e : OnSubscribeHostDictChange(self,e), self.hostDictTopic)
 
 
 def OnSubscribeMonitorStatus(self,message):

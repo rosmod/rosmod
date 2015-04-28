@@ -18,7 +18,6 @@ from threading import Thread
 from fabric.api import *
 
 from collections import OrderedDict
-import wx.lib.agw.flatnotebook as fnb
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
 try:
     import numpy
@@ -32,15 +31,6 @@ except ImportError:
             "http://numpy.scipy.org/\n\n"
             )
 
-exeName = sys.argv[0]
-dirName = os.path.abspath(exeName)
-head,tail = os.path.split(dirName)
-editorPath=head
-rootIconPath= editorPath + '/icons'
-modelIconPath= rootIconPath + '/model'
-toolbarIconPath= rootIconPath + '/toolbar'
-deploymentPath = editorPath + '/deployment'
-
 import project
 
 # THESE ARE ALL FROM OUR CODE
@@ -48,6 +38,7 @@ from terminal import *
 import dialogs
 import drawable
 from aspect import *
+from output import *
 from worker import *
 from toolbar import *
 from deployment import *
@@ -71,19 +62,19 @@ class Example(wx.Frame):
         self.undoList = []
         self.redoList = []
 
-        self.InitAspects()
-        self.InitDeployment()
-        self.BuildStyleDict()
-        # build the MenuBar,Toolbar, and Statusbar
-        self.BuildMenu()
-        self.BuildToolbar()
-        self.BuildStatusbar()
-
         # build the main frame (holds viewer in the top and the output in the bottom)
         self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,
                                               style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
-        self.BuildOutput()
-        self.AddPackageAspectToolbar()
+        InitAspects(self)
+        InitDeployment(self)
+        BuildStyleDict(self)
+        # build the MenuBar,Toolbar, and Statusbar
+        self.BuildMenu()
+        BuildToolbar(self)
+        self.BuildStatusbar()
+
+        BuildOutput(self)
+        AddPackageAspectToolbar(self)
         self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-100)
         self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
@@ -95,7 +86,7 @@ class Example(wx.Frame):
         self.Centre()
         self.Show(True)
 
-        self.InitWorkQueue()
+        InitWorkQueue(self)
 
         wx.EVT_CLOSE(self, self.OnQuit)
 

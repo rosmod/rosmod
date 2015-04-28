@@ -1,6 +1,7 @@
-from collections import OrderedDict
+import wx
+import wx.lib.agw.flatnotebook as fnb
+from terminal import *            
 
-            
 '''
 Build the output notebook for ROSMOD which holds:
 * the program output
