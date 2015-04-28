@@ -113,3 +113,7 @@ class Grammar_MetaClass(type):
     # Initialize new class
     def __init__(self, name, bases, attrs):
         super(Grammar_MetaClass, self).__init__(name, bases, attrs)
+
+
+resolve_reference_dict = OrderedDict()
+#resolve_reference_dict["Type"] = Resolution
