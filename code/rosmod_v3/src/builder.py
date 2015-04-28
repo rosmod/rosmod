@@ -82,21 +82,23 @@ class ROS_Hardware_Builder(ROSMOD_HardwareListener):
     __metaclass__ = Grammar_MetaClass
 
     def __init__(self, hardware_files, project):
-        # Create a ROS Workspace Object
+        # Create a ROS Deployment Object
         self.rhw = type("ROS_Hardware", 
                         ( object, Drawable_Object, ), { })()
         self.rhw.parent = project
         self.active_objects = [self.rhw]
 
-'''
-# Build ROS Workspace from Software Model
+
+# Build ROS Deployment from Deployment Model
 # Use Metaclass to obtain listener functions
-class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
+class ROS_Deployment_Builder(ROSMOD_DeploymentListener):
     __metaclass__ = Grammar_MetaClass
 
-    def __init__(self, workspace, project):
-        self.active_objects = [workspace]
-        self.workspace = workspace
-'''
+    def __init__(self, deployment_files, project):
+        # Create a ROS Deployment Object
+        self.rdp = type("ROS_Deployment",
+                        ( object, Drawable_Object, ), { })()
+        self.rdp.parent = project
+        self.active_objects = [self.rdp]
 
 

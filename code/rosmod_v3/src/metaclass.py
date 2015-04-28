@@ -70,6 +70,10 @@ meta_class_dict["Node"] = Grammar_Field("string", "Node", create_enterModel, cre
 meta_class_dict["Component_Instance"] = Grammar_Field("string", "Component_instance", create_enterModel, create_exitModel)
 meta_class_dict["Timer"] = Grammar_Field("string", "Timer", create_enterModel, create_exitModel)
 meta_class_dict["Hardware"] = Grammar_Field("string", "Hardware", create_enterModel, create_exitModel)
+meta_class_dict["Hardware_Instance"] = Grammar_Field("string", "Hardware_instance", create_enterModel, create_exitModel)
+meta_class_dict["Node_Instance"] = Grammar_Field("string", "Node_instance", create_enterModel, create_exitModel)
+meta_class_dict["Group"] = Grammar_Field("string", "Group", create_enterModel, create_exitModel)
+meta_class_dict["Port"] = Grammar_Field("string", "Port", create_enterModel, create_exitModel)
 
 # Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
@@ -80,6 +84,13 @@ meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAt
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
 meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
+meta_class_dict["rdp_hardware"] = Grammar_Field("string", "Rdp_hardware", create_enterAtom, create_exitAtom)
+meta_class_dict["ip_address"] = Grammar_Field("string", "Ip_address", create_enterAtom, create_exitAtom)
+meta_class_dict["username"] = Grammar_Field("string", "Username", create_enterAtom, create_exitAtom)
+meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, create_exitAtom)
+meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, create_exitAtom)
+meta_class_dict["ref"] = Grammar_Field("string", "Ref", create_enterAtom, create_exitAtom)
+meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
 
 # Properties that are references
 meta_class_dict["component_instance_reference"] = Grammar_Field("reference")

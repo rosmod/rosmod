@@ -10,7 +10,7 @@ grammar ROSMOD_Deployment;
  * This is the start of the deployment model
  */
 start
-    :   ( hardware )
+    :   ( 'using' rdp_hardware ';' )
         ( hardware_instance )+
         ( group )+
     ;
@@ -21,8 +21,9 @@ name
     ;
 
 // Hardware model being used
-hardware
-    :   'using' name ';'
+rdp_hardware
+    :   
+        ID
     ;
 
 // Node Hardware Map
@@ -38,56 +39,63 @@ hardware_instance
 hardware_instance_properties
     :   'properties'
         '{'
-        ( ip_address )
-        ( username )
-        ( sshkey )
-        ( init )
-        ( env_var )*
+        ( 'ip_address' '=' '"' ip_address '"' ';'  )
+        ( 'username' '=' '"' username '"' ';' )
+        ( 'sshkey' '=' '"' sshkey '"' ';'  )
+        ( 'init' '=' '"' init '"' ';')?
+//        ( 'env_var' '=' env_var )*
         '}'
     ;
 
 // IP Address of Hardware Instance
 ip_address
-    :   'ip_address' '=' name ';'
+    :   
+        ID
     ;
 
 // Username of App User
 username
-    :   'username' '=' name ';'
+    :   
+        ID
     ;
 
 // Full path to SSH Key
 sshkey
-    :   'sshkey' '=' name ';'
+    :   
+        ID
     ;
 
 // Full path to Init Script
 init
-    :   'init' '=' name ';'
+    :   
+        ID
     ;
 
 // Environment Variables
 env_var
-    :   'env_var' '=' name ';'
+    :   
+        ID
     ;
 
 // Node Instances in Hardware Instance
 node_instance
     :   'node_instance' name
         '{'
-        ( reference )
-        ( cmd_args )
+        ( 'ref' '=' '"' ref '"' ';' )
+        ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
         '}'
     ;
 
 // Reference to Node in Software Model
-reference
-    :   'ref' '=' name ';'
+ref
+    :   
+        ID
     ;
 
 // Command line Arguments
 cmd_args
-    :   ( 'cmd_args' '=' name ';' )?
+    :   
+        ID
     ;
 
 // Group/Associations between component ports
@@ -107,7 +115,7 @@ port
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
     :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' )*
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
     ;
 
 // White spaces and escape codes are ignored

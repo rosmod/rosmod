@@ -13,21 +13,21 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#hardware.
-    def enterHardware(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#hardware.
-    def exitHardware(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_DeploymentParser#init.
     def enterInit(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSMOD_DeploymentParser#init.
     def exitInit(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#rdp_hardware.
+    def enterRdp_hardware(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#rdp_hardware.
+    def exitRdp_hardware(self, ctx):
         pass
 
 
@@ -58,21 +58,21 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#reference.
-    def enterReference(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#reference.
-    def exitReference(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_DeploymentParser#node_instance.
     def enterNode_instance(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSMOD_DeploymentParser#node_instance.
     def exitNode_instance(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#ref.
+    def enterRef(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#ref.
+    def exitRef(self, ctx):
         pass
 
 

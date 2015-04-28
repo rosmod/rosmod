@@ -28,22 +28,25 @@ class ROS_Project(Drawable_Object):
         # Create a ROS Workspace Object
         self.workspace = type("ROS_Workspace", 
                               ( object, Drawable_Object, ), { })()
-
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.workspace_dir = ""
-
         # ROS Workspace Builder
         self.workspace_builder = ROS_Workspace_Builder(self.workspace, self)
 
         # Hardware Configurations Path
         self.hardware_path = os.path.join(self.project_path, "02-Hardware")
-
         # Hardware Configurations - List of all rhw objects in Project
         self.hardware_files = []
-
         # Hardware Builder
         self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
+
+        # Deployment Path
+        self.deployment_path = os.path.join(self.project_path, "03-Deployment")
+        # Deployment Configurations - List of all rdp objects in Project
+        self.deployment_files = []
+        # Deployment Builder
+        self.deployment_builder = ROS_Deployment_Builder(self.deployment_files, self)
 
     # Parse .rml software model
     def parse_rml(self, filename):
@@ -90,38 +93,35 @@ class ROS_Project(Drawable_Object):
         walker.walk(self.hardware_builder, tree)
 
         self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
-        print "ROSTOOLS::Reading Hardware Configuration:", self.hardware_builder.rhw.properties["name"]
+        print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
         self.hardware_files.append(self.hardware_builder.rhw)
-        self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
+        #self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
-'''
     # Parse .rdp software deployment model
     def parse_rdp(self, filename):
         print "ROSTOOLS::Parsing File:", filename
         # Read the hardware configurations model
         model = FileStream(filename)
         # Instantiate the DeploymentLexer
-        lexer = DeploymentLexer(model)
+        lexer = ROSMOD_DeploymentLexer(model)
         # Generate Tokens
         stream = CommonTokenStream(lexer)
         # Instantiate the DeploymentParser
-        parser = DeploymentParser(stream)
+        parser = ROSMOD_DeploymentParser(stream)
         # Parse from starting point of grammar
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()    
 
-        # Create a deployment builder using the 
-        # update workspace & hardware configurations objects
-        deployment_name = os.path.basename(filename.split(".")[0])
-        self.deployment_builder = ROS_Deployment_Builder(self.workspace, self.hardware_configurations, deployment_name, self)
-
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
 
-        self.deployments.append(self.deployment_builder.deployment)
-        return self.deployments
+        self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
+        self.deployment_files.append(self.deployment_builder.rdp)
+        #return self.deployments
 
+'''
     # Parse all model files in all aspects of Project
     def parse_models(self):
         count = 0
