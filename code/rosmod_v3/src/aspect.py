@@ -1,7 +1,23 @@
 
 import wx
 import wx.lib.agw.flatnotebook as fnb
+import wx.stc as stc
 from collections import OrderedDict
+
+from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
+try:
+    import numpy
+    import numpy.random as RandomArray
+    haveNumpy = True
+except ImportError:
+            haveNumpy = False
+            errorText = (
+            "The FloatCanvas requires the numpy module, version 1.* \n\n"
+            "You can get info about it at:\n"
+            "http://numpy.scipy.org/\n\n"
+            )
+
+import drawable
 
 class TBInfo():
     def __init__(self,name, obj):
@@ -100,30 +116,30 @@ def BuildPackageAspect(self):
 
 
 def BuildAspectPages(self):
-    self.BuildPackageAspectPages()
-    self.BuildHardwareAspectPages()
-    self.BuildDeploymentAspectPages()
+    BuildPackageAspectPages(self)
+    BuildHardwareAspectPages(self)
+    BuildDeploymentAspectPages(self)
 def BuildPackageAspectPages(self):
     self.PackageAspect.DeleteAllPages()
     for pkg in self.project.workspace.children:
-        self.BuildModelPage( parent = self.PackageAspect,
+        BuildModelPage(self, parent = self.PackageAspect,
                              model = pkg,
                              aspectInfo = self.PackageAspectInfo)
-    self.BuildModelPage( parent = self.PackageAspect,
+    BuildModelPage(self, parent = self.PackageAspect,
                          model = self.project.workspace,
                          aspectInfo = self.PackageAspectInfo)
     self.PackageAspect.AdvanceSelection()
 def BuildHardwareAspectPages(self):
     self.HardwareAspect.DeleteAllPages()
     for hw in self.project.hardware_configurations:
-        self.BuildModelPage( parent = self.HardwareAspect,
+        BuildModelPage(self, parent = self.HardwareAspect,
                              model = hw,
                              aspectInfo = self.HardwareAspectInfo)
     self.DeploymentAspect.AdvanceSelection()
 def BuildDeploymentAspectPages(self):
     self.DeploymentAspect.DeleteAllPages()
     for dep in self.project.deployments:
-        self.BuildModelPage( parent = self.DeploymentAspect,
+        BuildModelPage(self, parent = self.DeploymentAspect,
                              model = dep,
                              aspectInfo = self.DeploymentAspectInfo)
     self.DeploymentAspect.AdvanceSelection()

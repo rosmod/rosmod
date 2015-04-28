@@ -232,7 +232,7 @@ bool KRPC_Client::GetVesselName(int vesselID, string& name)
   return true;
 }
 
-bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos)
+bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, double* pos)
 {
   krpc::Request request;
   krpc::Response response;
@@ -258,19 +258,27 @@ bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      std::cout << "Return value length: " << response.return_value().length() << endl;
       ZeroCopyInputStream* input = 
 	new ArrayInputStream(response.return_value().data(), response.return_value().length());
       CodedInputStream* codeStream = 
 	new CodedInputStream(input);
       uint64_t len;
       codeStream->ReadVarint64(&len);
+      std::cout << "Length received: " << len << endl;
+      krpc::Tuple tuple;
+      tuple.ParseFromCodedStream(codeStream);
+      delete codeStream;
+      delete input;
+      input = new ArrayInputStream(tuple.items().data(), tuple.items().length());
+      codeStream = new CodedInputStream(input);
       delete codeStream;
       delete input;
     }
   return true;
 }
 
-bool KRPC_Client::GetVesselVelocity(int vesselID, int refFrame, krpc::Tuple& vel)
+bool KRPC_Client::GetVesselVelocity(int vesselID, int refFrame, double* vel)
 {
   krpc::Request request;
   krpc::Response response;
@@ -340,7 +348,7 @@ bool KRPC_Client::GetVesselOrbitalReferenceFrame(int vesselID, int& refFrame)
   return true;
 }
 
-bool KRPC_Client::GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot)
+bool KRPC_Client::GetVesselRotation(int vesselID, int refFrame, double* rot)
 {
 }
 

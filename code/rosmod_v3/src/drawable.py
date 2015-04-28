@@ -159,12 +159,12 @@ class Drawable_Object:
     parent = None
     kind = ""
     properties = OrderedDict()
-    children = []	
+    children = []
+
+    # these are configured (default or by user)
+    style = Draw_Style()	
 
     def __init__(self):
-
-        # these are configured (default or by user)
-        self.style = Draw_Style()
 
         # these are calculated by the Layout() function
         self.topLeft = wx.Point()

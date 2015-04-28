@@ -31,9 +31,8 @@ except ImportError:
             "http://numpy.scipy.org/\n\n"
             )
 
-import project
-
 # THESE ARE ALL FROM OUR CODE
+import project
 from terminal import *
 import dialogs
 import drawable
@@ -877,7 +876,7 @@ class Example(wx.Frame):
                 newDeployment.properties['name'] = "Deployment"
                 newDeployment.properties['hardware_configuration_reference'] = newHW
                 self.project.deployments.append(newDeployment)
-                self.BuildAspectPages()
+                BuildAspectPages(self)
                 self.statusbar.SetStatusText('Created new project: {} in: {}'.format(self.filename,self.project_path))
 
     def OnOpen(self, e):
@@ -892,7 +891,7 @@ class Example(wx.Frame):
             self.filename = filename
             self.project_path = model_path
             self.project.open(self.project_path)
-            self.BuildAspectPages()
+            BuildAspectPages(self)
             self.statusbar.SetStatusText('Loaded project: {} from: {}'.format(self.filename,self.project_path))
 
     def OnSave(self, e):
@@ -920,7 +919,7 @@ class Example(wx.Frame):
                 self.filename = inputs['name']
                 self.project_path = project_path
                 self.project.save(self.filename,self.project_path)
-                self.BuildAspectPages()
+                BuildAspectPages(self)
                 self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def UpdateUndo(self):

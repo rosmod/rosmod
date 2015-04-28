@@ -46,9 +46,9 @@ public:
   bool GetActiveVessel(int& id);
   bool GetVessels(std::vector<int>& ids);
   bool GetVesselName(int vesselID, std::string& name);
-  bool GetVesselPosition(int vesselID, int refFrame, krpc::Tuple& pos);
-  bool GetVesselVelocity(int vesselID, int refFrame, krpc::Tuple& vel);
-  bool GetVesselRotation(int vesselID, int refFrame, krpc::Tuple& rot);
+  bool GetVesselPosition(int vesselID, int refFrame, double* pos);
+  bool GetVesselVelocity(int vesselID, int refFrame, double* vel);
+  bool GetVesselRotation(int vesselID, int refFrame, double* rot);
   bool GetVesselOrbitalReferenceFrame(int vesselID, int& refFrame);
 
   bool GetApoapsis(int vesselID, double& apo);
