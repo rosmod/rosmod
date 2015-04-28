@@ -3,8 +3,8 @@
 # Date: 2015.02.20
 
 from Cheetah.Template import Template
-import os, sys
-'''
+import os, sys, inspect
+
 # Template Compile Step -- Compiling tmpl files in templates
 # Generate template python files
 generator_dir = os.path.dirname(os.path.realpath(__file__))
@@ -23,9 +23,12 @@ ros_templates = os.path.realpath(os.path.abspath
 if ros_templates not in sys.path:
     sys.path.insert(0, ros_templates)
 from package_xml import *
+
 from rapidxml_hpp import *
 from rapidxml_utils_hpp import *
 from xmlParser_hpp import *
+from Logger_cpp import *
+from Logger_hpp import *
 from node_groups_xml import *
 from base_component_hpp import *
 from base_component_cpp import *
@@ -33,14 +36,11 @@ from msg import *
 from srv import *
 from component_hpp import *
 from component_cpp import *
-from Logger_cpp import *
-from Logger_hpp import *
 from nodeMain import *
 from CMakeLists import *
 from rml import *
 from rhw import *
 from rdp import *
-'''
 
 class ROSMOD_Generator:
     # Main Generate Function
@@ -67,10 +67,7 @@ class ROSMOD_Generator:
 
         # For each package in the ros model
         for package in workspace.children:
-            print "Packages in Workspace:"
-            print package.properties["name"]
-            print str(type(package))
-'''
+
             # Create the package directory
             self.package_path = os.path.join(self.src_path, package.properties["name"])
             print "ROSTOOLS::" + package.properties["name"] + " Path: " + self.package_path
@@ -92,13 +89,13 @@ class ROSMOD_Generator:
             components = []
             nodes = []
             for child in package.children:
-                if child.kind == "message":
+                if child.kind == "Message":
                     messages.append(child)
-                elif child.kind == "service":
+                elif child.kind == "Service":
                     services.append(child)
-                elif child.kind == "component":
+                elif child.kind == "Component":
                     components.append(child)
-                elif child.kind == "node":
+                elif child.kind == "Node":
                     nodes.append(child)
 
             if (len(messages) > 0):
@@ -118,7 +115,6 @@ class ROSMOD_Generator:
             self.package_xml = str(t)
             with open(os.path.join(self.package_path, "package.xml"), 'w') as temp_file:
                 temp_file.write(self.package_xml)
-
 
             # Create rapidxml.hpp, rapidxml_utils.hpp, and xmlParser.hpp
             self.cpp = self.src + "/" + package.properties["name"]
@@ -186,7 +182,16 @@ class ROSMOD_Generator:
 
             # Create all package messages in msg folder
             for message in messages:
-                msg_namespace = {'fields': message.properties["fields"]}
+                temp_fields = []
+                for child in message.children:
+                    if "value" in child.properties.keys():
+                        temp_fields.append([child.properties["datatype"],
+                                            child.properties["name"],
+                                            child.properties["value"]])
+                    else:
+                        temp_fields.append([child.properties["datatype"],
+                                            child.properties["name"]])
+                msg_namespace = {'fields': temp_fields}
                 msg_filename = message.properties["name"] + ".msg"
                 t = msg(searchList=[msg_namespace])
                 self.msg_fields = str(t)
@@ -197,8 +202,29 @@ class ROSMOD_Generator:
             # Create all package services in srv folder
             for service in services:
                 srv_filename = service.properties["name"] + ".srv"
-                srv_namespace = {'request_fields': service.properties["request"], 
-                                 'response_fields': service.properties["response"]}
+                temp_request = []
+                temp_response = []
+                for child in service.children:
+                    if child.kind == "Request":
+                        for field in child.children:
+                            if "value" in field.properties.keys():
+                                temp_request.append([field.properties["datatype"],
+                                                     field.properties["name"],
+                                                     field.properties["value"]])
+                            else:
+                                temp_request.append([field.properties["datatype"],
+                                                     field.properties["name"]])                 
+                    elif child.kind == "Response":
+                        for field in child.children:
+                            if "value" in child.properties.keys():
+                                temp_response.append([field.properties["datatype"],
+                                                      field.properties["name"],
+                                                      field.properties["value"]])
+                            else:
+                                temp_response.append([field.properties["datatype"],
+                                                      field.properties["name"]])                 
+                srv_namespace = {'request_fields': temp_request, 
+                                 'response_fields': temp_response}
                 t = srv(searchList=[srv_namespace])
                 self.srv_fields = str(t)
                 # Write the srv file
@@ -221,23 +247,17 @@ class ROSMOD_Generator:
                 provided_services = []
                 required_services = []
                 for child in component.children:
-                    if child.kind == "publisher":
+                    if child.kind == "Publisher":
                         publishers.append(child)
-                    elif child.kind == "subscriber":
+                    elif child.kind == "Subscriber":
                         subscribers.append(child)
-                    elif child.kind == "client":
+                    elif child.kind == "Client":
                         clients.append(child)
-                        required_service = [child.properties["service_reference"].parent.properties["name"], child.properties["service_reference"].properties["name"]]
-                        if required_service not in required_services:
-                            required_services.append(required_service)
-                    elif child.kind == "server":
+                    elif child.kind == "Server":
                         servers.append(child)
-                        provided_service = child.properties["service_reference"].properties["name"]
-                        if provided_service not in provided_services:
-                            provided_services.append(provided_service)
                     elif child.kind == "timer":
                         timers.append(child)
-
+'''
                 topics = []
                 for publisher in publishers:
                     topics.append([publisher.properties["message_reference"].parent.properties["name"], 

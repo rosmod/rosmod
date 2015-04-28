@@ -1,0 +1,17 @@
+/*
+ * ROS Hardware Configurations Model
+ */
+
+#if $hardware.getChildrenByKind("host") != []
+#for $host in $hardware.children
+// Host - $host.properties["name"]
+host $host.properties["name"]
+{
+    ip_address = "$host.properties["ip_address"]";
+#if $host.properties["architecture"] != ""
+    architecture = "$host.properties["architecture"]";
+#end if
+}
+#end for
+#end if
+

@@ -6,7 +6,28 @@
 package krpc
 {
 
-        // ROS Component - krpc_comp
+    msg some_msg
+    {
+        string car_name;
+        float max_speed = 294.50;
+    }
+
+    srv some_srv
+    {
+        request
+        {
+            int request_field1;
+            string request_field2;
+        }
+
+        response
+        {
+            bool response_result1;
+            double response_result2;
+        }
+    }
+    
+    // ROS Component - krpc_comp
 	component krpc_comp : base
 	{
 	    timer timer0
