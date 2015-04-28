@@ -258,20 +258,19 @@ bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, double* pos)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      std::cout << "Return value length: " << response.return_value().length() << endl;
       ZeroCopyInputStream* input = 
 	new ArrayInputStream(response.return_value().data(), response.return_value().length());
       CodedInputStream* codeStream = 
 	new CodedInputStream(input);
-      uint64_t len;
-      codeStream->ReadVarint64(&len);
-      std::cout << "Length received: " << len << endl;
       krpc::Tuple tuple;
       tuple.ParseFromCodedStream(codeStream);
-      delete codeStream;
-      delete input;
-      input = new ArrayInputStream(tuple.items().data(), tuple.items().length());
-      codeStream = new CodedInputStream(input);
+      for (int i=0;i<tuple.items_size();i++)
+	{
+	  char buf[8];
+	  codeStream->ReadRaw(buf,8);
+	  double val = *&buf[0];
+	  pos[i] = val;
+	}
       delete codeStream;
       delete input;
     }
