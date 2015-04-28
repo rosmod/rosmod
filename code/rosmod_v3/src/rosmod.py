@@ -42,7 +42,7 @@ from output import *
 from worker import *
 from toolbar import *
 from deployment import *
-from contextMenu import ContextMenu
+from contextMenu import *
 from style import *
 
 class Example(wx.Frame):
@@ -181,103 +181,6 @@ class Example(wx.Frame):
         canvas = info.canvas
         self.activeObject = Object.Name
         self.PopupMenu(ContextMenu(canvas,self.AspectContextMenu(self.activeObject)))
-
-    def AspectContextMenu(self, obj):
-        cm = OrderedDict()
-        cm['Edit'] = self.AspectEdit        # edits the object's properties (name, fields, etc.)
-        cm['Delete'] = self.AspectDelete    # deletes the object and all references from the model
-        if obj.kind == 'component':
-            cm = self.BuildCompContextMenu(cm)
-        elif obj.kind == 'node':
-            cm = self.BuildNodeContextMenu(cm)
-        elif obj.kind == 'package':
-            cm = self.BuildPackageContextMenu(cm)
-        elif obj.kind == 'workspace':
-            cm = self.BuildWorkspaceContextMenu(cm)
-        elif obj.kind == 'hardware_configuration':
-            cm = self.BuildHardwareContextMenu(cm)
-        elif obj.kind == 'host':
-            cm = self.BuildHostContextMenu(cm)
-        elif obj.kind == 'deployment':
-            cm = self.BuildDeploymentContextMenu(cm)
-        elif obj.kind == 'host_instance':
-            cm = self.BuildHostInstanceContextMenu(cm)
-        elif obj.kind == 'node_instance':
-            cm = self.BuildNodeInstanceContextMenu(cm)
-        elif obj.kind == 'group':
-            cm = self.BuildGroupContextMenu(cm)
-        elif obj.kind == 'port_instance':
-            cm = self.BuildPortInstanceContextMenu(cm)
-        return cm
-
-    def BuildCompContextMenu(self,cm):
-        cm['Add Timer'] = lambda evt : self.CompAdd(evt,'timer')
-        cm['Add Subscriber'] = lambda evt :self.CompAdd(evt,'subscriber')
-        cm['Add Publisher'] = lambda evt : self.CompAdd(evt,'publisher')
-        cm['Add Client'] = lambda evt : self.CompAdd(evt,'client')
-        cm['Add Server'] = lambda evt : self.CompAdd(evt,'server')
-        return cm
-    def BuildNodeContextMenu(self,cm):
-        cm['Add Component Instance'] = lambda evt : self.NodeAdd(evt,'component_instance')
-        return cm
-    def BuildPackageContextMenu(self, cm):
-        cm['Add Message'] = lambda evt : self.PackageAdd(evt,'message')
-        cm['Add Service'] = lambda evt : self.PackageAdd(evt,'service')
-        cm['Add Component Definition'] = lambda evt : self.PackageAdd(evt,'component')
-        cm['Add Node'] = lambda evt : self.PackageAdd(evt,'node')
-        return cm
-    def BuildWorkspaceContextMenu(self,cm):
-        return cm
-    def BuildHardwareContextMenu(self,cm):
-        cm['Add Host'] = lambda evt : self.HardwareAdd(evt,'host')
-        return cm
-    def BuildHostContextMenu(self,cm):
-        return cm
-    def BuildDeploymentContextMenu(self,cm):
-        cm['Add Host Instance'] = lambda evt : self.DeploymentAdd(evt,'host_instance')
-        cm['Add Group'] = lambda evt : self.DeploymentAdd(evt,'group')
-        return cm
-    def BuildHostInstanceContextMenu(self,cm):
-        cm['Add Node Instance'] = lambda evt : self.HostInstAdd(evt,'node_instance')
-        cm['Open SSH Terminal'] = lambda _: self.SSHToHostInst(self.activeObject)
-        return cm
-    def BuildNodeInstanceContextMenu(self,cm):
-        if self.deployed == True and self.activeObject.parent.parent == self.runningDeployment:
-            cm['Monitor Log'] = lambda _: self.MonitorNodeInstLog(self.activeObject)
-        return cm
-    def BuildGroupContextMenu(self,cm):
-        cm['Add Port Instance'] = lambda evt : self.GroupAdd(evt,'port_instance')
-        return cm
-    def BuildPortInstanceContextMenu(self,cm):
-        return cm
-
-    def SSHToHostInst(self,hostInst):
-        self.shop.Check(True)
-        self.UpdateMainWindow(None)
-        command = "/usr/bin/ssh"
-        args = "-i {} {}@{}".format( hostInst.properties['sshkey'], 
-                                     hostInst.properties['username'],
-                                     hostInst.properties['host_reference'].properties['ip_address'])
-        self.output.AddPage(TermEmulatorDemo(self.output,
-                                             command=command,
-                                             args=args), 
-                            "SSH To {}".format(hostInst.properties['name']), 
-                            select=True)
-
-    def MonitorNodeInstLog(self,nodeInst):
-        self.shop.Check(True)
-        self.UpdateMainWindow(None)
-        command = "/usr/bin/ssh"
-        args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
-            nodeInst.parent.properties['sshkey'], 
-            nodeInst.parent.properties['username'],
-            nodeInst.parent.properties['host_reference'].properties['ip_address'])
-        self.output.AddPage(TermEmulatorDemo(self.output,
-                                             command=command,
-                                             args=args,
-                                             cols=120),
-                            "{} Log".format(nodeInst.properties['name']), 
-                            select=True)
 
     def GenericAdd(self,newObj,refs,parent):
         info = self.GetActivePanelInfo()
