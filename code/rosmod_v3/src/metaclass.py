@@ -14,6 +14,8 @@ class Grammar_Field:
         self.exit_point = exit_point
         self.syntax_checker = syntax_checker
 
+reference_dict = OrderedDict()
+
 # Enter a Model class type while parsing
 # E.g. Package, Component, Timer etc.
 def create_enterModel(kind):
@@ -30,6 +32,8 @@ def create_exitModel():
     def exitModel(self, ctx):
         child_object = self.active_objects.pop()
         child_object.parent = self.active_objects[-1]
+        if "name" in child_object.properties.keys() and "name" in self.active_objects[-1].properties.keys():
+            reference_dict[str(self.active_objects[-1].properties["name"]) + "/" + str(child_object.properties["name"])] = child_object
         self.active_objects[-1].add(child_object)
     return exitModel
     
@@ -115,5 +119,3 @@ class Grammar_MetaClass(type):
         super(Grammar_MetaClass, self).__init__(name, bases, attrs)
 
 
-resolve_reference_dict = OrderedDict()
-#resolve_reference_dict["Type"] = Resolution
