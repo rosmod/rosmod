@@ -3,6 +3,7 @@
 # Date: 2015.02.20
 
 from Cheetah.Template import Template
+import os, sys
 '''
 # Template Compile Step -- Compiling tmpl files in templates
 # Generate template python files
@@ -66,6 +67,10 @@ class ROSMOD_Generator:
 
         # For each package in the ros model
         for package in workspace.children:
+            print "Packages in Workspace:"
+            print package.properties["name"]
+            print str(type(package))
+'''
             # Create the package directory
             self.package_path = os.path.join(self.src_path, package.properties["name"])
             print "ROSTOOLS::" + package.properties["name"] + " Path: " + self.package_path
@@ -329,7 +334,7 @@ class ROSMOD_Generator:
 
 
 
-'''
+
 class Workspace_Generator:
     # Main Generate function
     def generate(self, workspace, path, deployments, xml_path):

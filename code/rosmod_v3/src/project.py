@@ -13,6 +13,10 @@ head,tail = os.path.split(head)
 from drawable import Drawable_Object
 
 from builder import *
+from generator import *
+
+def init(self):
+    Drawable_Object.__init__(self)
 
 # ROS Project class
 class ROS_Project(Drawable_Object):
@@ -27,7 +31,7 @@ class ROS_Project(Drawable_Object):
 
         # Create a ROS Workspace Object
         self.workspace = type("ROS_Workspace", 
-                              ( object, Drawable_Object, ), { })()
+                              ( object, Drawable_Object, ), { '__init__' : init })()
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.workspace_dir = ""
@@ -98,11 +102,12 @@ class ROS_Project(Drawable_Object):
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
-        self.workspace_builder.workspace.properties["name"] = os.path.basename(filename.split(".")[0])
-        print "ROSTOOLS::Reading ROS Workspace:", self.workspace_builder.workspace.properties["name"]
+        self.workspace.properties = OrderedDict()
+        self.workspace.children = []
+        self.workspace.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading ROS Workspace:", self.workspace.properties["name"]
         # Walk the parse tree
         walker.walk(self.workspace_builder, tree)
-        self.workspace =  self.workspace_builder.workspace
         return self.workspace
 
     # Parse .rhw hardware configurations model
@@ -192,6 +197,20 @@ class ROS_Project(Drawable_Object):
 
         #self.resolve_references()
 
+    # Generate the ROS workspace corresponding to the input model
+    def generate_workspace(self):
+        # Check for an existing workspace in workspace_path
+        # self.check_workspace()
+        # Instantiate a Generator Object
+        workspace_generator = ROSMOD_Generator()
+        # Use listener_object to generate ROS workspace
+        print "_________________BEFORE GENERATION"
+        print self.workspace.children
+        print self.workspace_path
+        print self.deployment_files
+        print self.deployment_path
+        self.workspace_dir = workspace_generator.generate(self.workspace, self.workspace_path, self.deployment_files, self.deployment_path)
+
 '''
     # Resolving Null references in all workspace packages
     def resolve_references(self):
@@ -256,15 +275,6 @@ class ROS_Project(Drawable_Object):
         business_logic = Workspace_Loader()
         # Use load to load existing business logic
         business_logic.load(self.workspace, self.workspace_path)
-    
-    # Generate the ROS workspace corresponding to the input model
-    def generate_workspace(self):
-        # Check for an existing workspace in workspace_path
-        self.check_workspace()
-        # Instantiate a Generator Object
-        workspace = Workspace_Generator()
-        # Use listener_object to generate ROS workspace
-        self.workspace_dir = workspace.generate(self.workspace, self.workspace_path, self.deployments, self.deployment_path)
 
     # Generate a ROS model from a workspace object
     # Used to save an edited model

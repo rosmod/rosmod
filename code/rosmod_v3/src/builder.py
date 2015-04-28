@@ -74,7 +74,6 @@ class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
 
     def __init__(self, workspace, project):
         self.active_objects = [workspace]
-        self.workspace = workspace
 
 # Build ROS Hardware from Hardware Model
 # Use Metaclass to obtain listener functions
@@ -85,6 +84,8 @@ class ROS_Hardware_Builder(ROSMOD_HardwareListener):
         # Create a ROS Deployment Object
         self.rhw = type("ROS_Hardware", 
                         ( object, Drawable_Object, ), { })()
+        self.rhw.properties = OrderedDict()
+        self.rhw.children = []
         self.rhw.parent = project
         self.active_objects = [self.rhw]
 
@@ -98,6 +99,8 @@ class ROS_Deployment_Builder(ROSMOD_DeploymentListener):
         # Create a ROS Deployment Object
         self.rdp = type("ROS_Deployment",
                         ( object, Drawable_Object, ), { })()
+        self.rdp.properties = OrderedDict()
+        self.rdp.children = []
         self.rdp.parent = project
         self.active_objects = [self.rdp]
 
