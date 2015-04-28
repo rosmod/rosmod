@@ -742,44 +742,6 @@ class Example(wx.Frame):
         canvas = info.canvas
         self.activeObject = info.obj
         self.PopupMenu(ContextMenu(canvas,self.AspectContextMenu(self.activeObject)))
-
-    '''
-    Aspect Menubar Menu functions
-    '''
-    def HideAllAspects(self):
-        self.PackageAspect.Hide()
-        self.HardwareAspect.Hide()
-        self.DeploymentAspect.Hide()
-        self.RemovePackageAspectToolbar()
-        self.RemoveHardwareAspectToolbar()
-        self.RemoveDeploymentAspectToolbar()
-
-    def ShowAspect(self,aspect):
-        if self.shvw.IsChecked():
-            aspect.Show()
-            self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
-            self.activeAspect = aspect
-
-    def OnPackageAspect(self, e):
-        self.activeAspectInfo = self.PackageAspectInfo
-        self.HideAllAspects()
-        self.ShowAspect(self.PackageAspect)
-        self.AddPackageAspectToolbar()
-        self.pageChange(None)
-
-    def OnHardwareAspect(self, e):
-        self.activeAspectInfo = self.HardwareAspectInfo
-        self.HideAllAspects()
-        self.ShowAspect(self.HardwareAspect)
-        self.AddHardwareAspectToolbar()
-        self.pageChange(None)
-
-    def OnDeploymentAspect(self, e):
-        self.activeAspectInfo = self.DeploymentAspectInfo
-        self.HideAllAspects()
-        self.ShowAspect(self.DeploymentAspect)
-        self.AddDeploymentAspectToolbar()
-        self.pageChange(None)
         
     '''
     View Menu Functions
@@ -1041,9 +1003,9 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnSaveAs, self.saveAsMI)
         self.Bind(wx.EVT_MENU, self.OnQuit, self.quitMI)
         # aspect menu
-        self.Bind(wx.EVT_MENU, self.OnPackageAspect, self.packageAMI)
-        self.Bind(wx.EVT_MENU, self.OnHardwareAspect, self.hardwareAMI)
-        self.Bind(wx.EVT_MENU, self.OnDeploymentAspect, self.deploymentAMI)
+        self.Bind(wx.EVT_MENU, lambda e : OnPackageAspect(self,e), self.packageAMI)
+        self.Bind(wx.EVT_MENU, lambda e : OnHardwareAspect(self,e), self.hardwareAMI)
+        self.Bind(wx.EVT_MENU, lambda e : OnDeploymentAspect(self,e), self.deploymentAMI)
         # tools menu
         self.Bind(wx.EVT_MENU, self.GenerateCode, self.generateMI)
         self.Bind(wx.EVT_MENU, self.AnalyzeNetwork, self.networkQoSMI)

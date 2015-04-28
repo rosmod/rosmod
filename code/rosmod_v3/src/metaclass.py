@@ -20,6 +20,7 @@ def create_enterModel(kind):
     def enterModel(self, ctx):
         print "enterModel:: Model Type = " + kind
         new_object = type( "ROS_" + kind, (object, Drawable_Object,), { })()
+        new_object.kind = kind
         self.active_objects.append(new_object)
         print "Created New Object: " + str(type(new_object))
     return enterModel

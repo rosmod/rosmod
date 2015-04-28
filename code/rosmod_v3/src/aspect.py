@@ -68,6 +68,44 @@ def InitAspects(self):
     BuildAspects(self)
 
 '''
+Aspect Menubar Menu functions
+'''
+def HideAllAspects(self):
+    self.PackageAspect.Hide()
+    self.HardwareAspect.Hide()
+    self.DeploymentAspect.Hide()
+    RemovePackageAspectToolbar(self)
+    RemoveHardwareAspectToolbar(self)
+    RemoveDeploymentAspectToolbar(self)
+
+def ShowAspect(self,aspect):
+    if self.shvw.IsChecked():
+        aspect.Show()
+        self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
+        self.activeAspect = aspect
+
+def OnPackageAspect(self, e):
+    self.activeAspectInfo = self.PackageAspectInfo
+    HideAllAspects(self)
+    ShowAspect(self,self.PackageAspect)
+    AddPackageAspectToolbar(self)
+    pageChange(self,None)
+
+def OnHardwareAspect(self, e):
+    self.activeAspectInfo = self.HardwareAspectInfo
+    HideAllAspects(self)
+    ShowAspect(self,self.HardwareAspect)
+    AddHardwareAspectToolbar(self)
+    pageChange(self,None)
+
+def OnDeploymentAspect(self, e):
+    self.activeAspectInfo = self.DeploymentAspectInfo
+    HideAllAspects(self)
+    ShowAspect(self,self.DeploymentAspect)
+    AddDeploymentAspectToolbar(self)
+    pageChange(self,None)
+
+'''
 Build all the Aspects required for ROSMOD:
 * Packages aspect : used for setting up mgs,srv,comp,node,etc.
 * Hardware aspect : used for configure the system hardware (hosts)
@@ -176,11 +214,11 @@ Package Aspect Functions
 def pageChange(self, event):
     self.activeAspect.Refresh()
     if self.activeAspect == self.PackageAspect:
-        self.PackageAspectPageChange(event)
+        PackageAspectPageChange(self,event)
     elif self.activeAspect == self.HardwareAspect:
-        self.HardwareAspectPageChange(event)
+        HardwareAspectPageChange(self,event)
     elif self.activeAspect == self.DeploymentAspect:
-        self.DeploymentAspectPageChange(event)
+        DeploymentAspectPageChange(self,event)
 
 def PackageAspectPageChange(self, event):
     sel = self.activeAspect.GetSelection()
@@ -231,9 +269,9 @@ def DeploymentAspectPageChange(self, event):
         self.DrawModel(dep,canvas)
         
 def OnPageChanged(self, event):
-    self.pageChange(event)
+    pageChange(self,event)
     event.Skip()
     
 def OnPageChanging(self, event):
-    self.pageChange(event)
+    pageChange(self,event)
     event.Skip()
