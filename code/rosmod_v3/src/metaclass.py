@@ -74,13 +74,13 @@ meta_class_dict["Timer"] = Grammar_Field("string", "Timer", create_enterModel, c
 meta_class_dict["Hardware"] = Grammar_Field("string", "Hardware", create_enterModel, create_exitModel)
 meta_class_dict["Hardware_Instance"] = Grammar_Field("string", "Hardware_instance", create_enterModel, create_exitModel)
 meta_class_dict["Node_Instance"] = Grammar_Field("string", "Node_instance", create_enterModel, create_exitModel)
-meta_class_dict["Group"] = Grammar_Field("string", "Group", create_enterModel, create_exitModel)
-meta_class_dict["Port"] = Grammar_Field("string", "Port", create_enterModel, create_exitModel)
+meta_class_dict["Port_Instance"] = Grammar_Field("string", "Port_instance", create_enterModel, create_exitModel)
 
 # Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
 meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
+meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)

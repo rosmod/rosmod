@@ -4,15 +4,6 @@ from antlr4 import *
 # This class defines a complete listener for a parse tree produced by ROSMOD_DeploymentParser.
 class ROSMOD_DeploymentListener(ParseTreeListener):
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#port.
-    def enterPort(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#port.
-    def exitPort(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_DeploymentParser#init.
     def enterInit(self, ctx):
         pass
@@ -58,12 +49,12 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#node_instance.
-    def enterNode_instance(self, ctx):
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#port_instance.
+    def enterPort_instance(self, ctx):
         pass
 
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#node_instance.
-    def exitNode_instance(self, ctx):
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#port_instance.
+    def exitPort_instance(self, ctx):
         pass
 
 
@@ -73,6 +64,15 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSMOD_DeploymentParser#ref.
     def exitRef(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#node_instance.
+    def enterNode_instance(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#node_instance.
+    def exitNode_instance(self, ctx):
         pass
 
 
@@ -118,6 +118,15 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSMOD_DeploymentParser#hardware_instance_properties.
     def exitHardware_instance_properties(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#datatype.
+    def enterDatatype(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#datatype.
+    def exitDatatype(self, ctx):
         pass
 
 

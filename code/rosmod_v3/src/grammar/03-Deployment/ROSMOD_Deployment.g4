@@ -12,11 +12,20 @@ grammar ROSMOD_Deployment;
 start
     :   ( 'using' rdp_hardware ';' )
         ( hardware_instance )+
-        ( group )+
     ;
 
 // Name
 name
+    :   ID
+    ;
+
+// Datatype
+datatype
+    :   ID
+    ;
+
+// Name of Group that contains the port
+group
     :   ID
     ;
 
@@ -82,6 +91,7 @@ node_instance
     :   'node_instance' name
         '{'
         ( 'ref' '=' '"' ref '"' ';' )
+        ( port_instance )*
         ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
         '}'
     ;
@@ -98,18 +108,14 @@ cmd_args
         ID
     ;
 
-// Group/Associations between component ports
-group
-    :   'group' name
-        '{'
-        ( port )+
-        '}'
-    ;
-
 // Reference to a component port in Software Model
-port
+port_instance 
     :   
-        name
+        'port_instance' name
+        '{'
+        'ref' '=' '"' datatype '"' ';'
+        'group' '=' '"' group '"' ';' 
+        '}'
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore

@@ -1,0 +1,11 @@
+node_instance Finger_111
+{
+    ref = Package/Node;
+
+    port_instance name //name
+    {
+        'ref =' Comp/Port ';' //datatype
+        'group =' value ';' //value
+    }
+
+}
