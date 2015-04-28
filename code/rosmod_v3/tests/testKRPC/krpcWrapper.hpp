@@ -13,6 +13,8 @@
 #include <google/protobuf/io/coded_stream.h>
 using namespace google::protobuf::io;
 
+#include <boost/thread.hpp>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,7 +43,8 @@ public:
   bool Connect();
   bool Close();
 
-  bool ConfigureRequestStream(krpc::Request& req);
+  bool CreateStream(std::string streamName, krpc::Request req);
+  bool GetLatestStreamData(std::string streamName, krpc::Response& res);
 
   bool GetActiveVessel(int& id);
   bool GetVessels(std::vector<int>& ids);
@@ -67,7 +70,10 @@ public:
 protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
+  void streamThreadFunc();
 private:
+  std::map<std::string,krpc::Response> activeStreams_;
+
   int port_;
   int streamPort_;
   std::string ip_;

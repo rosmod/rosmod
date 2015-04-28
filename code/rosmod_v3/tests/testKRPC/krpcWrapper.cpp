@@ -136,6 +136,28 @@ bool KRPC_Client::Close()
   close(streamSocket_);
 }
 
+bool KRPC_Client::CreateStream(std::string streamName, krpc::Request req)
+{
+  string message;
+  message.reserve(40);
+  bool retVal = true;
+  if ( createRequestString(req,message) )
+    {
+      int numBytes;
+      if ( (numBytes = send(streamSocket_, message.data(), message.length(), 0)) == -1 )
+	{
+	  perror("sending request");
+	  return false;
+	}
+      activeStreams_[streamName];
+    } else
+    {
+      std::cerr << "Couldn't serialize request!" << std::endl;
+      retVal = false;
+    }
+  return retVal;
+}
+
 bool KRPC_Client::GetActiveVessel(int& id)
 {
   krpc::Request request;
@@ -517,7 +539,6 @@ bool KRPC_Client::createRequestString(krpc::Request req, std::string& str)
     }
   return true;
 }
-
 
 bool KRPC_Client::getResponseFromRequest(krpc::Request req, krpc::Response& res)
 {
