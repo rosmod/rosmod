@@ -28,21 +28,23 @@ package krpc
     }
     
     // ROS Component - krpc_comp
-	component krpc_comp : base
+    component krpc_comp : base
+    {
+
+        client <krpc/some_msg> my_client;
+
+	timer timer0
 	{
-	    timer timer0
-	    {
-	        period = 1.0;
-		priority = 55;
-		deadline = 0.0002;
-	    }
+	    period = 1.0;
+            priority = 55;
+	    deadline = 0.0002;
 	}
+    }
 
     // Set of ROS Nodes in this package
     node krcp_node 
-	{
+    {
         // Instantiating components in ROS node
-        component<krpc_comp> krcp_comp_inst;
-        component<Finger> Chris;
-	}
+        component<krpc/krpc_comp> krcp_comp_inst;
+    }
 }

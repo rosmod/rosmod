@@ -196,7 +196,7 @@ class ROS_Project(Drawable_Object):
         if count == 0:
             print "ROSTOOLS::No ROS Deployment (.rdp) files found in", self.deployment_path
 
-        #self.resolve_references()
+        self.resolve_references()
 
     # Generate the ROS workspace corresponding to the input model
     def generate_workspace(self):
@@ -205,80 +205,27 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Generator Object
         workspace_generator = ROSMOD_Generator()
         # Use listener_object to generate ROS workspace
-        print "_________________BEFORE GENERATION"
-        print self.workspace.children
-        print self.workspace_path
-        print self.deployment_files
-        print self.deployment_path
-        self.workspace_dir = workspace_generator.generate(self.workspace, self.workspace_path, self.deployment_files, self.deployment_path)
+        self.workspace_dir = workspace_generator.generate(self.workspace, 
+                                                          self.workspace_path, 
+                                                          self.deployment_files, 
+                                                          self.deployment_path)
 
     # Resolving References in all workspace packages
     def resolve_references(self):
         print "ROSTOOLS::Fixing unresolved references"
         for package in self.workspace.children:
-            for component in package.children:
-                if component.kind == "Component":
-                    for port in component.children:
-                        if port.kind == "Client":
-                            
+            for package_child in package.children:
+                if package_child.kind == "Component":
+                    for port in package_child.children:
+                        if port.kind == "Client" or port.kind == "Service":
+                            port.properties["service_reference"] = reference_dict[port.properties["reference"]]
+                        elif port.kind == "Publisher" or port.kind == "Subscriber":
+                            port.properties["message_reference"] = reference_dict[port.properties["reference"]]
+                elif package_child.kind == "Node":
+                    for comp_instance in package_child.children:
+                        comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 
 '''
-    # Resolving Null references in all workspace packages
-    def resolve_references(self):
-        print "ROSTOOLS::Checking for unresolved references..."
-        object_kind = ""
-        remove_list = []
-        for obj in self.null_references:
-            if "publisher" in obj.kind or "subscriber" in obj.kind:
-                package = obj.properties["message_text"].split('/')[0]
-                reference = obj.properties["message_text"].split('/')[-1]
-                # First, find the package
-                for child in self.workspace.children:
-                    if child.properties["name"] == package:
-                        # Get all its messages
-                        for msg in child.getChildrenByKind("message"):
-                            if msg.properties["name"] == reference:
-                                obj.properties["message_reference"] = msg
-                                remove_list.append(obj)
-            if "client" in obj.kind or "server" in obj.kind:
-                package = obj.properties["service_text"].split('/')[0]
-                reference = obj.properties["service_text"].split('/')[-1]
-                # First, find the package
-                for child in self.workspace.children:
-                    if child.properties["name"] == package:
-                        # Get all its services
-                        for srv in child.getChildrenByKind("service"):
-                            if srv.properties["name"] == reference:
-                                obj.properties["service_reference"] = srv
-                                remove_list.append(obj)
-            if "component_instance" in obj.kind:
-                package = obj.properties["component_text"].split('/')[0]
-                reference = obj.properties["component_text"].split('/')[-1]
-                # First, find the package
-                for child in self.workspace.children:
-                    if child.properties["name"] == package:
-                        # Get all components
-                        for comp in child.getChildrenByKind("component"):
-                            if comp.properties["name"] == reference:
-                                obj.properties["component_reference"] = comp
-                                remove_list.append(obj)
-
-        # Removed not-null references from list
-        for obj in remove_list:
-            self.null_references.remove(obj)
-        # Check for remaining null references
-        if len(self.null_references) > 0 and self.checked_references == False:
-            print self.null_references
-            print "ROSTOOLS::ERROR::Unable to resolve all null references"
-            for obj in self.null_references:
-                if obj.kind == "publisher" or obj.kind == "subscriber":
-                    print "ROSTOOLS::ERROR::Invalid Reference " + obj.properties["message_text"] + " used when defining " +  obj.kind + " " + obj.properties["name"]
-                if obj.kind == "client" or obj.kind == "server":
-                    print "ROSTOOLS::ERROR::Invalid Reference " + obj.properties["service_text"] + " used when defining " +  obj.kind + " " + obj.properties["name"]
-                if obj.kind == "component_instance":
-                    print "ROSTOOLS::ERROR::Invalid Reference " + obj.properties["component_text"] + " used when defining " +  obj.kind + " " + obj.properties["name"]
-        self.checked_references = True
-
     # Check workspace directory for existing code that may
     # require preservation
     def check_workspace(self):
