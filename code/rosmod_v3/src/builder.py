@@ -13,7 +13,7 @@ antlr4 = os.path.realpath(os.path.abspath
                             (inspect.getfile
                              (inspect.currentframe()
                           )
-                         )[0], "/../Antlr4")
+                         )[0], "Antlr4")
                        ))
 if antlr4 not in sys.path:
     sys.path.insert(0, antlr4)
@@ -26,7 +26,7 @@ rosmod_software = os.path.realpath(os.path.abspath
                                  (inspect.getfile
                                   (inspect.currentframe()
                                )
-                              )[0], "../grammar/01-Software/")
+                              )[0], "grammar/01-Software/")
                             ))
 
 if rosmod_software not in sys.path:
@@ -42,7 +42,7 @@ rosmod_hardware = os.path.realpath(os.path.abspath
                                  (inspect.getfile
                                   (inspect.currentframe()
                                )
-                              )[0], "../grammar/02-Hardware/")
+                              )[0], "grammar/02-Hardware/")
                             ))
 
 if rosmod_hardware not in sys.path:
@@ -58,7 +58,7 @@ rosmod_deployment = os.path.realpath(os.path.abspath
                                  (inspect.getfile
                                   (inspect.currentframe()
                                )
-                              )[0], "../grammar/03-Deployment/")
+                              )[0], "grammar/03-Deployment/")
                             ))
 
 if rosmod_deployment not in sys.path:

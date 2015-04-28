@@ -11,7 +11,9 @@ package krpc
 	{
 	    timer timer0
 	    {
-	        period = 1.0s;
+	        period = 1.0;
+		priority = 55;
+		deadline = 0.0002;
 	    }
 	}
 
@@ -20,5 +22,6 @@ package krpc
 	{
         // Instantiating components in ROS node
         component<krpc_comp> krcp_comp_inst;
+        component<Finger> Chris;
 	}
 }
