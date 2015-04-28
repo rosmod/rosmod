@@ -122,12 +122,12 @@ class Example(wx.Frame):
         self.activeObject.style.overlay['overlayColor']="RED"
         kind = self.activeObject.kind
         keys = []
-        if kind == 'message':
-            keys = [['publisher','message_reference'],['subscriber','message_reference']]
-        elif kind == 'service':
-            keys = [['server','service_reference'],['client','service_reference']]
-        elif kind == 'component':
-            keys = [['component_instance','component_reference']]
+        if kind == 'Message':
+            keys = [['Publisher','datatype'],['Subscriber','datatype']]
+        elif kind == 'Service':
+            keys = [['Server','datatype'],['Client','datatype']]
+        elif kind == 'Component':
+            keys = [['Component_Instance','Component_Reference']]
         for key in keys:
             children = pkg.getChildrenByKind(key[0])
             for child in children:
@@ -151,27 +151,27 @@ class Example(wx.Frame):
         drawable.Configure(dep,self.styleDict)
         self.activeObject.style.overlay['overlayColor']="RED"
         kind = self.activeObject.kind
-        if kind == 'node_instance' or kind == 'host_instance':
+        if kind == 'Node_Instance' or kind == 'Hardware_Instance':
             keys = []
-            if kind == 'node_instance':
-                keys = [['node_instance','node_reference']]
-            elif kind == 'host_instance':
-                keys = [['host_instance','host_reference']]
+            if kind == 'Node_Instance':
+                keys = [['Node_Instance','Node_Reference']]
+            elif kind == 'Hardware_Instance':
+                keys = [['Hardware_Instance','Hardware_Reference']]
             for key in keys:
                 children = dep.getChildrenByKind(key[0])
                 for child in children:
                     if child.properties[key[1]] == self.activeObject.properties[key[1]]:
                         child.style.overlay['overlayColor']='RED'
-        elif kind == 'group':
-            children = dep.getChildrenByKind('node_instance')
-            myKeys = [x.properties['node_instance_reference'] for x in self.activeObject.children]
+        elif kind == 'Group':
+            children = dep.getChildrenByKind('Node_Instance')
+            myKeys = [x.properties['Node_Instance_Reference'] for x in self.activeObject.children]
             for child in children:
                 if child in myKeys:
                     child.style.overlay['overlayColor'] = 'RED'
-        elif kind == 'port_instance':
-            children = dep.getChildrenByKind('node_instance')
+        elif kind == 'Port_Instance':
+            children = dep.getChildrenByKind('Node_Instance')
             for child in children:
-                if child == self.activeObject.properties['node_instance_reference']:
+                if child == self.activeObject.properties['Node_Instance_Reference']:
                     child.style.overlay['overlayColor'] = 'RED'
         self.DrawModel(dep,canvas)
 
@@ -214,24 +214,24 @@ class Example(wx.Frame):
         references = []
         info = self.GetActivePanelInfo()
         pkg = info.obj
-        if kind == 'timer':
+        if kind == 'Timer':
             newObj = project.ROS_Timer()
-        elif kind == 'subscriber':
+        elif kind == 'Subscriber':
             newObj = project.ROS_Subscriber()
             newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('message')
-        elif kind == 'publisher':
+            references = self.project.workspace.getChildrenByKind('Message')
+        elif kind == 'Publisher':
             newObj = project.ROS_Publisher()
             newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('message')
-        elif kind == 'server':
+            references = self.project.workspace.getChildrenByKind('Message')
+        elif kind == 'Server':
             newObj = project.ROS_Server()
             newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('service')
-        elif kind == 'client':
+            references = self.project.workspace.getChildrenByKind('Service')
+        elif kind == 'Client':
             newObj = project.ROS_Client()
             newObj.parent = comp
-            references = self.project.workspace.getChildrenByKind('service')
+            references = self.project.workspace.getChildrenByKind('Service')
         if newObj != None:
             self.GenericAdd(newObj,references,comp)
 
@@ -242,9 +242,9 @@ class Example(wx.Frame):
         references = []
         info = self.GetActivePanelInfo()
         pkg = info.obj
-        if kind == 'component_instance':
+        if kind == 'Component_Instance':
             newObj = project.ROS_Component_Instance()
-            references = node.parent.getChildrenByKind('component')
+            references = node.parent.getChildrenByKind('Component')
         if newObj != None:
             self.GenericAdd(newObj,references,node)
     
@@ -321,7 +321,7 @@ class Example(wx.Frame):
         elif self.activeObject.kind == 'Component_Instance':
             references = self.activeObject.parent.parent.getChildrenByKind('Component')
         elif self.activeObject.kind == 'rdp':
-            references = self.project.hardware_configurations
+            references = self.project.hardware_files
         elif self.activeObject.kind == 'Hardware_Instance':
             references = obj.properties['rdp_hardware'].children
         elif self.activeObject.kind == 'Node_Instance':
@@ -392,7 +392,7 @@ class Example(wx.Frame):
         newObj = project.ROS_HW()
         newObj.properties = {}
         newObj.properties['name'] = "New Hardware Configuration"
-        existingNames = [x.properties['name'] for x in self.project.hardware_configurations.children]
+        existingNames = [x.properties['name'] for x in self.project.hardware_files.children]
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
@@ -406,7 +406,7 @@ class Example(wx.Frame):
             self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
-            self.project.hardware_configurations.append(newObj)
+            self.project.hardware_files.append(newObj)
             numPages = self.HardwareAspect.GetPageCount()
             if numPages <= 0:
                 numPages = 1
@@ -421,17 +421,17 @@ class Example(wx.Frame):
         if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
             self.UpdateUndo()
             info.canvas.ClearAll()
-            self.project.hardware_configurations = [x for x in self.project.hardware_configurations if x != obj]
+            self.project.hardware_files = [x for x in self.project.hardware_files if x != obj]
             self.HardwareAspect.GetPage(selectedPage).DestroyChildren()
             self.HardwareAspectInfo.DelPageInfo(obj.properties['name'])
             self.HardwareAspect.DeletePage(selectedPage)
-            os.remove(self.project.hardware_configurations_path + '/' + obj.properties['name'] + '.rhw')
+            os.remove(self.project.hardware_files_path + '/' + obj.properties['name'] + '.rhw')
         
     def OnDeploymentCreate(self, e):
         newObj = project.ROS_Deployment()
         newObj.properties = OrderedDict()
         newObj.properties['name'] = "New Deployment"
-        references = self.project.hardware_configurations
+        references = self.project.hardware_files
         existingNames = [x.properties['name'] for x in self.project.deployments.children]
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
@@ -480,7 +480,7 @@ class Example(wx.Frame):
             env.use_ssh_config = False
             self.hostDict = {}
             env.hosts = []
-            for host in dep.getChildrenByKind("host_instance"):
+            for host in dep.getChildrenByKind("Hardware_Instance"):
                 nodeList = []
                 self.hostDict[host.properties['name']] = fabTest.deployed_host(
                     userName = host.properties['username'],
@@ -528,7 +528,7 @@ class Example(wx.Frame):
             env.use_ssh_config = False
             self.hostDict = {}
             env.hosts = []
-            for host in dep.getChildrenByKind("host_instance"):
+            for host in dep.getChildrenByKind("Hardware_Instance"):
                 nodeList = []
                 self.hostDict[host.properties['name']] = fabTest.deployed_host(
                     userName = host.properties['username'],
@@ -566,7 +566,7 @@ class Example(wx.Frame):
             newObj = project.Drawable_Object()
             newObj.properties = OrderedDict()
             newObj.properties['name'] = testName
-            newObj.properties['host_reference'] = None
+            newObj.properties['hardware_reference'] = None
             references = dep.properties['hardware_configuration_reference'].children
             ed = dialogs.EditDialog(self,
                                     editDict=newObj.properties,
@@ -686,7 +686,7 @@ class Example(wx.Frame):
         pkgName = self.PackageAspect.GetPageText(selectedPage)
         info = self.PackageAspectInfo.GetPageInfo(pkgName)
         pkg = info.obj
-        if pkg.kind != 'workspace':
+        if pkg.kind != 'rml':
             if dialogs.ConfirmDialog(self,"Delete {}?".format(pkgName)):
                 self.UpdateUndo()
                 info.canvas.ClearAll()
@@ -833,7 +833,7 @@ class Example(wx.Frame):
                 self.project.workspace.properties['name'] = "Workspace"
                 newHW = project.ROS_HW()
                 newHW.properties['name'] = "Hardware"
-                self.project.hardware_configurations.append(newHW)
+                self.project.hardware_files.append(newHW)
                 newDeployment = project.ROS_Deployment()
                 newDeployment.properties['name'] = "Deployment"
                 newDeployment.properties['hardware_configuration_reference'] = newHW
