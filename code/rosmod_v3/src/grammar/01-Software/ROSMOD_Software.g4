@@ -133,6 +133,7 @@ server
         '{'
         ( 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
+        | 'business_logic' '{' abl '}'
         )+
         '}'
     ;
@@ -150,6 +151,7 @@ subscriber
         '{'
         ( 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
+        | 'business_logic' '{' abl '}'
         )+
         '}'
     ;
@@ -162,6 +164,7 @@ timer
         ( 'period' '=' period ';'
         | 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
+        | 'business_logic' '{' abl '}'
         )+
         '}'
     ;
@@ -182,6 +185,11 @@ priority
 deadline
     :   
         DOUBLE
+    ;
+
+// Business Logic of Port
+abl
+    :   ID
     ;
 
 /*

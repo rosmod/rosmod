@@ -80,6 +80,7 @@ meta_class_dict["Hardware"] = Grammar_Field("object", "Hardware", create_enterMo
 meta_class_dict["Hardware_Instance"] = Grammar_Field("object", "Hardware_instance", create_enterModel, create_exitModel)
 meta_class_dict["Node_Instance"] = Grammar_Field("object", "Node_instance", create_enterModel, create_exitModel)
 meta_class_dict["Port_Instance"] = Grammar_Field("object", "Port_instance", create_enterModel, create_exitModel)
+meta_class_dict["step"] = Grammar_Field("object", "Port_instance", create_enterModel, create_exitModel)
 
 # Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
@@ -88,6 +89,7 @@ meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, cr
 meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
+meta_class_dict["abl"] = Grammar_Field("string", "Abl", create_enterAtom, create_exitAtom)
 meta_class_dict["reference"] = Grammar_Field("string", "Reference", create_enterAtom, create_exitAtom)
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
