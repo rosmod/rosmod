@@ -16,14 +16,13 @@ from builder import *
 from loader import *
 from generator import *
 
-def init(self):
-    Drawable_Object.__init__(self)
-
 # ROS Project class
 class ROS_Project(Drawable_Object):
     # Initialize ROS Project
     def __init__(self, **kwargs):
         Drawable_Object.__init__(self)
+        
+        self.kind = "Project"
 
         # Name of the ROS Project
         self.project_name = kwargs.pop("name", "")
@@ -34,6 +33,7 @@ class ROS_Project(Drawable_Object):
         self.workspace = type("ROS_Workspace", 
                               ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.workspace.kind = "rml"
+        self.children.append(self.workspace)
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.workspace_dir = ""

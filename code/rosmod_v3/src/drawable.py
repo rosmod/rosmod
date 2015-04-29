@@ -156,7 +156,10 @@ class Drawable_Object:
         for refObjType in referringObjectTypes:
             refObjs = project.getChildrenByKind(refObjType)
             for refObj in refObjs:
-                refObj.parent.children = [x for x in refObj.parent.children if reference_dict[x.properties['reference']] != self]
+                if reference_dict[refObj.properties['reference']] == self:
+                    myRefDictKey = refObj.properties['reference']
+                    refObj.delete()
+                    del refObj
         if myRefDictKey != None:
             reference_dict.pop(myRefDictKey, None)
 
