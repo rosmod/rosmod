@@ -14,7 +14,10 @@ class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
 
 class Child_Arrangement:
-    ROW, COLUMN, STACK, LINE, SQUARE = range(5)
+    ROWS, COLUMNS, STACK, LINE, SQUARE = range(5)
+
+class Draw_Method:
+    RECT, ROUND_RECT, ICON = range(3)
 
 def drawText(text,pos,style,canvas):
     if style.textPlacement != Text_Placement.NONE:
@@ -84,9 +87,6 @@ def getTextPos(option,txtString,objPos,objSize,font):
         pass
     txtPos = wx.Point(x,y)
     return txtPos
-
-class Draw_Method:
-    RECT, ROUND_RECT, ICON = range(3)
 
 class Draw_Style:
     def __init__(self, 
@@ -172,9 +172,7 @@ class Drawable_Object:
         else:
             retKids = []
             for child in self.children:
-                kidList = child.getChildrenByKind(kind)
-                if kidList != []:
-                    retKids.append(*kidList)
+                retKids.extend(child.getChildrenByKind(kind))
             return retKids
 
     '''

@@ -55,14 +55,15 @@ def MakeAdd(self,kind):
         msgWindow = info.msgWindow
 
         newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
+        for prop in model_dict[kind].properties:
+            newObj.properties[prop] = ""
         newObj.kind = kind
         newObj.parent = self.activeObject
         parent = self.activeObject
         # SET REFERENCES
         refObjectTypes = model_dict[kind].out_refs
         for refObjType in refObjectTypes:
-            refObjs = self.project.getChildrenByKind(refObjType)
-            references.append(*refObjs)
+            references.extend(self.project.getChildrenByKind(refObjType))
         if newObj != None:
             newObj.properties['name'] = "New" + kind
             ed = dialogs.EditDialog(self,
