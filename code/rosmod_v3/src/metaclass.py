@@ -83,7 +83,11 @@ meta_class_dict["Hardware"] = Grammar_Field("object", "Hardware", create_enterMo
 meta_class_dict["Hardware_Instance"] = Grammar_Field("object", "Hardware_instance", create_enterModel, create_exitModel)
 meta_class_dict["Node_Instance"] = Grammar_Field("object", "Node_instance", create_enterModel, create_exitModel)
 meta_class_dict["Port_Instance"] = Grammar_Field("object", "Port_instance", create_enterModel, create_exitModel)
-meta_class_dict["step"] = Grammar_Field("object", "Port_instance", create_enterModel, create_exitModel)
+meta_class_dict["Step"] = Grammar_Field("object", "Step", create_enterModel, create_exitModel)
+meta_class_dict["Local_Code_Block"] = Grammar_Field("object", "Local_code_block", create_enterModel, create_exitModel)
+meta_class_dict["Client_Using_Srv"] = Grammar_Field("object", "Client_using_srv", create_enterModel, create_exitModel)
+meta_class_dict["Publish_Using_Msg"] = Grammar_Field("object", "Publish_using_msg", create_enterModel, create_exitModel)
+meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, create_exitModel)
 
 # Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)

@@ -21,6 +21,12 @@ name
         ( ID ( '/' ID )* )
     ;
 
+// Value
+value
+    :
+        DOUBLE
+    ;
+
 /*
  * Each operation step in a component operation can be:
  * (1) Fragment of code taking integer amount of time
@@ -43,7 +49,7 @@ step
  */
 local_code_block
     :
-        name '.' 'local' '(' DOUBLE ')' ';'
+        name '.' 'local' '(' value ')' ';'
     ;
 
 /*
