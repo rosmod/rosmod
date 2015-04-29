@@ -93,12 +93,30 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.TOP,
                                    minSize = minSize,
                                    overlay = OrderedDict() )
+    FieldStyle = drawable.Draw_Style(icon=None, 
+                                     font=font, 
+                                     method=drawable.Draw_Method.ROUND_RECT, 
+                                     placement=drawable.Text_Placement.TOP,
+                                     minSize = minSize,
+                                     overlay = OrderedDict([('fillColor','GREEN')]) )
     SrvStyle = drawable.Draw_Style(icon=srvIcon,
                                    font=font, 
                                    method=drawable.Draw_Method.ICON, 
                                    placement=drawable.Text_Placement.TOP,
                                    minSize = minSize,
                                    overlay = OrderedDict() )
+    RequestStyle = drawable.Draw_Style(icon=None,
+                                       font=font, 
+                                       method=drawable.Draw_Method.ROUND_RECT, 
+                                       placement=drawable.Text_Placement.TOP,
+                                       minSize = minSize,
+                                       overlay = OrderedDict([('fillColor','BLUE')]) )
+    ResponseStyle = drawable.Draw_Style(icon=None,
+                                        font=font, 
+                                        method=drawable.Draw_Method.ROUND_RECT, 
+                                        placement=drawable.Text_Placement.TOP,
+                                        minSize = minSize,
+                                        overlay = OrderedDict([('fillColor','BLUE')]) )
     CompStyle = drawable.Draw_Style(icon=None,
                                     font=font, 
                                     method=drawable.Draw_Method.ROUND_RECT, 
@@ -153,11 +171,11 @@ def BuildStyleDict(self):
     self.styleDict["Package"] = PkgStyle
 
     self.styleDict["Message"] = MsgStyle
-    self.styleDict["Field"] = MsgStyle
+    self.styleDict["Field"] = FieldStyle
 
     self.styleDict["Service"] = SrvStyle
-    self.styleDict["Request"] = SrvStyle
-    self.styleDict["Response"] = SrvStyle
+    self.styleDict["Request"] = RequestStyle
+    self.styleDict["Response"] = ResponseStyle
 
     self.styleDict["Component"] = CompStyle
     self.styleDict["Timer"] = TmrStyle

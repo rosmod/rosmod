@@ -6,6 +6,9 @@ from wx.lib.pubsub import Publisher
 
 from collections import OrderedDict
 
+from metaclass import meta_class_dict
+from metaModel import reference_dict,model_dict
+
 class RMLProgressDialog(wx.Dialog):
     """
     Shows a Progres Gauge while an operation is taking place. May be cancellable
@@ -114,8 +117,6 @@ class EditDialog(wx.Dialog):
         self.editDict = kw.pop('editDict', OrderedDict())
         self.editObj = kw.pop('editObj', None)
         self.invalidNames = kw.pop('invalidNames',[])
-        if self.editObj.kind == 'port_instance':
-            del self.editDict['name']
         title = kw.pop('title', "ROSMOD V2")
         self.references = kw.pop('references',[])
         super(EditDialog, self).__init__(*args,**kw)
@@ -134,31 +135,19 @@ class EditDialog(wx.Dialog):
         for key,value in self.editDict.iteritems():
             label = None
             field = None
-            if key == 'name' or \
-               key == 'period' or \
-               key == 'unit' or \
-               key == 'ip_address' or \
-               key == 'architecture' or \
-               key == 'username' or \
-               key == 'sshkey' or \
-               key == 'init' or \
-               key == 'cmdline_arguments' or \
-               key == 'command':
+            if meta_class_dict[key].kind == "string":
                 # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
                 self.inputs[key] = field
-            elif key == 'fields' or \
-                 key == 'request' or \
-                 key == 'response' or \
-                 key == 'env_variables':
+            elif meta_class_dict[key].kind == "code":
                 # anything that takes a multi-line string
                 # supports code completion and syntax highlighting
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
-                fieldStr = ''
+                fieldStr = value
                 if value != None and value != []:
                     fieldStr = self.GenerateFieldString(value)
                 field.SetText(fieldStr)
@@ -167,71 +156,16 @@ class EditDialog(wx.Dialog):
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
                 pbox.AddGrowableRow(rNum,1)
                 self.inputs[key] = field
-            elif key == 'service_reference' or \
-                 key == 'message_reference':
-                label = wx.StaticText(panel, label=key + ":")
-                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
-                for ref in self.references:
-                    refName = ""
-                    if ref.parent != self.editObj.parent.parent:
-                        refName += ref.parent.properties['name'] + '/'
-                    refName += ref.properties['name']
-                    field.Append(refName,ref)
-                if value != None:
-                    setName = ""
-                    if value.parent != self.editObj.parent.parent:
-                        setName += value.parent.properties['name'] + '/'
-                    setName += value.properties['name']
-                    field.SetValue(setName)
-                self.inputs[key] = field
-            elif key == 'component_reference' or \
-                 key == 'hardware_configuration_reference' or \
-                 key == 'host_reference' or \
-                 key == 'node_reference':
+            elif meta_class_dict[key].kind == 'reference':
+                refObjTypes = model_dict[self.editObj.kind].out_refs
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
                     field.Append(ref.properties['name'],ref)
                 if value != None:
                     field.SetStringSelection(value.properties['name'])
-                self.inputs[key] = field
-            elif key == 'node_instance_reference':
-                label = wx.StaticText(panel, label=key + ":")
-                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
-                for ref in self.references:
-                    field.Append(ref.properties['name'],ref)
-                if value != None:
-                    field.SetStringSelection(value.properties['name'])
-                field.Bind(wx.EVT_COMBOBOX,self.OnNodeInstanceComboBoxChanged)
-                self.inputs[key] = field
-            elif key == 'component_instance_reference':
-                label = wx.StaticText(panel, label=key + ":")
-                refField = self.inputs['node_instance_reference']
-                node_inst_ref = refField.GetClientData(refField.GetSelection())
-                refs = []
-                if node_inst_ref != None:
-                    refs = node_inst_ref.properties['node_reference'].children
-                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
-                for x in refs:
-                    field.Append(x.properties['name'],x)
-                if value != None:
-                    field.SetStringSelection(value.properties['name'])
-                field.Bind(wx.EVT_COMBOBOX,self.OnComponentInstanceComboBoxChanged)
-                self.inputs[key] = field
-            elif key == 'port_reference':
-                label = wx.StaticText(panel, label=key + ":")
-                refField = self.inputs['component_instance_reference']
-                comp_inst_ref = refField.GetClientData(refField.GetSelection())
-                refs = []
-                if comp_inst_ref != None:
-                    refs = comp_inst_ref.properties['component_reference'].children
-                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
-                for x in refs:
-                    if x.kind != 'timer':
-                        field.Append(x.properties['name'],x)
-                if value != None:
-                    field.SetStringSelection(value.properties['name'])
-                field.Bind(wx.EVT_COMBOBOX,self.OnPortComboBoxChanged)
+                else:
+                    field.SetSelection(0)
                 self.inputs[key] = field
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
@@ -256,32 +190,6 @@ class EditDialog(wx.Dialog):
         
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
-
-    def OnNodeInstanceComboBoxChanged(self, e):
-        nodeInstField = self.inputs['node_instance_reference']
-        compInstField = self.inputs['component_instance_reference']
-        portField = self.inputs['port_reference']
-        compInstField.Clear()
-        portField.Clear()
-        for x in nodeInstField.GetClientData(e.GetSelection()).properties['node_reference'].children:
-            compInstField.Append(x.properties['name'],x)
-        compInstField.SetValue("")
-        portField.SetValue("")
-        compInstField.Refresh()
-        portField.Refresh()
-
-    def OnComponentInstanceComboBoxChanged(self, e):
-        compInstField = self.inputs['component_instance_reference']
-        portField = self.inputs['port_reference']
-        portField.Clear()
-        for x in compInstField.GetClientData(e.GetSelection()).properties['component_reference'].children:
-            if x.kind != 'timer':
-                portField.Append(x.properties['name'],x)
-        portField.SetValue("")
-        portField.Refresh()
-
-    def OnPortComboBoxChanged(self, e):
-        pass
 
     def GenerateFieldString(self,fieldsList):
         retStr = ""
@@ -313,48 +221,18 @@ class EditDialog(wx.Dialog):
 
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
-            if key == 'name':
-                if field.GetValue() in self.invalidNames:
-                    ErrorDialog(self, "Name must be unique!")
-                    return False
+            if meta_class_dict[key].kind == "string":
                 self.returnDict[key] = field.GetValue()
-            elif key == 'period' or \
-                 key == 'unit' or \
-                 key == 'ip_address' or \
-                 key == 'architecture' or \
-                 key == 'username' or \
-                 key == 'sshkey' or \
-                 key == 'init' or \
-                 key == 'cmdline_arguments' or \
-                 key == 'command':
-                self.returnDict[key] = field.GetValue()
-            elif key == 'fields' or \
-                 key == 'request' or \
-                 key == 'response' or \
-                 key == 'env_variables':
+            elif meta_class_dict[key].kind == "code":
                 fieldTxt = field.GetText()
                 retFields = self.ParseFields(fieldTxt)
                 self.returnDict[key] = retFields
-            elif key == 'service_reference' or \
-                 key == 'message_reference' or \
-                 key == 'component_reference' or \
-                 key == 'hardware_configuration_reference' or \
-                 key == 'host_reference' or \
-                 key == 'node_reference' or \
-                 key == 'node_instance_reference' or \
-                 key == 'component_instance_reference':
+            elif meta_class_dict[key].kind == "reference":
                 obj = field.GetClientData(field.GetSelection())
                 if obj == None:
                     ErrorDialog(self, "You must select a reference object!")
                     return False
                 self.returnDict[key] = obj
-            elif key == 'port_reference':
-                obj = field.GetClientData(field.GetSelection())
-                if obj == None:
-                    ErrorDialog(self, "You must select a reference object!")
-                    return False
-                self.returnDict[key] = obj                
-                self.returnDict['name'] = obj.properties['name']
         return True
 
     def GetInput(self):

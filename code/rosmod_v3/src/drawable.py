@@ -13,6 +13,9 @@ from metaModel import model_dict,reference_dict
 class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
 
+class Child_Arrangement:
+    ROW, COLUMN, STACK, LINE, SQUARE = range(5)
+
 def drawText(text,pos,style,canvas):
     if style.textPlacement != Text_Placement.NONE:
         posStr = "cc"
