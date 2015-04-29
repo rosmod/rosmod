@@ -135,6 +135,8 @@ class ROS_Project(Drawable_Object):
         self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
         self.hardware_files.append(self.hardware_builder.rhw)
+        for h_file in self.hardware_files:
+            self.children.append(h_file)
         #self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
     # Parse .rdp software deployment model
@@ -159,6 +161,8 @@ class ROS_Project(Drawable_Object):
         self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
         self.deployment_files.append(self.deployment_builder.rdp)
+        for d_file in self.deployment_files:
+            self.children.append(d_file)
         #return self.deployments
 
     # Parse all model files in all aspects of Project
