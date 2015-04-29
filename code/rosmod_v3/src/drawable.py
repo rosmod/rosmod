@@ -8,40 +8,10 @@ import copy
 # need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
 
-def getConnectionPoint(objPos,objSize,objType):
-    x = -1
-    y = -1
-    if objType == "message" or objType == "service" or objType == "component":
-        x = objPos[0] + objSize[0]
-        y = objPos[1] + objSize[1] / 2
-        pass
-    elif objType == "timer" or objType == "publisher" or objType == "subscriber" or objType == "client" or objType == "server" or objType == "component_instance":
-        x = objPos[0]
-        y = objPos[1] + objSize[1] / 2
-    elif objType == "node":
-        pass
-    elif objType == "package":
-        pass
-    elif objType == "workspace":
-        pass
-    elif objType == "host":
-        pass
-    elif objType == "hardware_configuration":
-        pass
-    elif objType == "software_deployment":
-        pass
-    elif objType == "group":
-        pass
-    elif objType == "port_instance":
-        pass
-    conPos = None
-    if x > 0 and y > 0:
-        conPos = wx.Point(x,y)
-    return conPos
+from metaModel import model_dict,reference_dict
 
 class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
-
 
 def drawText(text,pos,style,canvas):
     if style.textPlacement != Text_Placement.NONE:
@@ -172,7 +142,6 @@ class Drawable_Object:
         self.height = 0
         self.width = 0
         self.textPosition = wx.Point()
-        self.connectionPoint = wx.Point()
         
     def add(self, child):
         child.parent = self
@@ -182,73 +151,25 @@ class Drawable_Object:
         self.parent.children = [x for x in self.parent.children if x != self]
 
     def deleteAllRefs(self,project):
-        if self.kind == 'host':
-            deployments = project.deployments
-            for dep in deployments:
-                dep.children = [x for x in dep.children if x.properties['host_reference'] != self]
-        elif self.kind == 'node':
-            deployments = project.deployments
-            for dep in deployments:
-                for HI in dep.children:
-                    HI.children = [x for x in HI.children if x.properties['node_reference'] != self]
-        elif self.kind == 'component':
-            nodes = self.parent.getChildrenByKind('node')
-            for node in nodes:
-                node.children = [x for x in node.children if x.properties['component_reference'] != self]
-        elif self.kind == 'message':
-            comps = self.parent.getChildrenByKind('component')
-            for comp in comps:
-                comp.children = [x for x in comp.children if 'message_reference' not in x.properties.keys() or x.properties['message_reference'] != self]
-        elif self.kind == 'service':
-            comps = self.parent.getChildrenByKind('component')
-            for comp in comps:
-                comp.children = [x for x in comp.children if 'service_reference' not in x.properties.keys() or x.properties['service_reference'] != self]
+        referringObjectTypes = model_dict[self.kind].in_refs
+        myRefDictKey = None
+        for refObjType in referringObjectTypes:
+            refObjs = project.getChildrenByKind(refObjType)
+            for refObj in refObjs:
+                refObj.parent.children = [x for x in refObj.parent.children if reference_dict[x.properties['reference']] != self]
+        if myRefDictKey != None:
+            reference_dict.pop(myRefDictKey, None)
 
-    # REFACTOR THIS TO BE RECURSIVE SO IT WILL BE CLEANER
     def getChildrenByKind(self,kind):
-        retKids = []
-        if self.kind == 'package':
-            if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
-                comps = [child for child in self.children if child.kind == 'component']
-                for comp in comps:
-                    retKids.extend([child for child in comp.children if child.kind == kind])                
-            elif kind == 'component_instance':
-                nodes = [child for child in self.children if child.kind == 'node']
-                for node in nodes:
-                    retKids.extend([child for child in node.children if child.kind == kind])
-            else:
-                retKids.extend([child for child in self.children if child.kind == kind])
-        elif self.kind == 'workspace':
-            if kind == 'publisher' or kind == 'subscriber' or kind == 'client' or kind == 'server':
-                for pkg in self.children:
-                    comps = [child for child in pkg.children if child.kind == 'component']
-                    for comp in comps:
-                        retKids.extend([child for child in comp.children if child.kind == kind])                
-            elif kind == 'component_instance':
-                for pkg in self.children:
-                    nodes = [child for child in pkg.children if child.kind == 'node']
-                    for node in nodes:
-                        retKids.extend([child for child in node.children if child.kind == kind])
-            else:
-                for pkg in self.children:
-                    retKids.extend([child for child in pkg.children if child.kind == kind])
-        elif self.kind == 'hardware_configuration':
-            if kind == 'host':
-                retKids.extend(self.children)
-        elif self.kind == 'deployment':
-            if kind == 'node_instance':
-                hosts = [child for child in self.children if child.kind == 'host_instance']
-                for host in hosts:
-                    retKids.extend(host.children)
-            elif kind == 'port_instance':
-                groups = [child for child in self.children if child.kind == 'group']
-                for group in groups:
-                    retKids.extend(group.children)
-            elif kind == 'host_instance' or kind == 'group':
-                retKids.extend([child for child in self.children if child.kind == kind])
+        if self.kind == kind:
+            return [self]
         else:
-            return [child for child in self.children if child.kind == kind]
-        return retKids
+            retKids = []
+            for child in self.children:
+                kidList = child.getChildrenByKind(kind)
+                if kidList != []:
+                    retKids.append(*kidList)
+            return retKids
 
     '''
     Draw() is called after layout has been calculated
@@ -410,11 +331,6 @@ def Layout(dObj, topLeftPos, canvas):
         pass
     dObj.width = maxObjWidth
     dObj.height = maxObjHeight
-    dObj.connectionPoint = getConnectionPoint(
-        objPos = dObj.topLeft.Get(),
-        objSize = (dObj.width,dObj.height),
-        objType = dObj.kind
-    )
     dObj.textPosition = getTextPos(
         option = dObj.style.textPlacement,
         txtString = dObj.properties["name"],

@@ -34,6 +34,7 @@ except ImportError:
 # THESE ARE ALL FROM OUR CODE
 import project
 import metaclass
+from metaModel import model_dict,reference_dict
 from terminal import *
 import dialogs
 import drawable
@@ -104,77 +105,23 @@ class Example(wx.Frame):
             canvas.Zoom(1,c)
 
     def OnLeftClick(self, Object):
-        if self.activeAspect == self.PackageAspect:
-            self.OnPkgLeftClick(Object)
-        elif self.activeAspect == self.HardwareAspect:
-            self.OnHWLeftClick(Object)
-        elif self.activeAspect == self.DeploymentAspect:
-            self.OnDeploymentLeftClick(Object)
+        info = self.GetActivePanelInfo()
+        model = info.obj
+        canvas = info.canvas
+        self.activeObject = Object.Name
+        drawable.Configure(model,self.styleDict)
+        self.activeObject.style.overlay['overlayColor']="RED"
+        kind = self.activeObject.kind
+        referringObjectTypes = model_dict[kind].in_refs
+        for refObjType in referringObjectTypes:
+            refObjs = model.getChildrenByKind(refObjType)
+            for refObj in refObjs:
+                if reference_dict[refObj.properties['reference']] == self.activeObject:
+                    refObj.style.overlay['overlayColor']='RED'
+        self.DrawModel(model,canvas)
 
     def OnLeftDoubleClick(self, Object):
         self.AspectEdit(None)
-
-    def OnPkgLeftClick(self, Object):
-        info = self.GetActivePanelInfo()
-        pkg = info.obj
-        canvas = info.canvas
-        self.activeObject = Object.Name
-        drawable.Configure(pkg,self.styleDict)
-        self.activeObject.style.overlay['overlayColor']="RED"
-        kind = self.activeObject.kind
-        keys = []
-        if kind == 'Message':
-            keys = [['Publisher','datatype'],['Subscriber','datatype']]
-        elif kind == 'Service':
-            keys = [['Server','datatype'],['Client','datatype']]
-        elif kind == 'Component':
-            keys = [['Component_Instance','Component_Reference']]
-        for key in keys:
-            children = pkg.getChildrenByKind(key[0])
-            for child in children:
-                if child.properties[key[1]] == self.activeObject:
-                    child.style.overlay['overlayColor']='RED'
-        self.DrawModel(pkg,canvas)
-
-    def OnHWLeftClick(self, Object):
-        info = self.GetActivePanelInfo()
-        dep = info.obj
-        canvas = info.canvas
-        self.activeObject = Object.Name
-
-    def OnDeploymentLeftClick(self, Object):
-        info = self.GetActivePanelInfo()
-        dep = info.obj
-        canvas = info.canvas
-        self.activeObject = Object.Name
-        if self.deployed == True and dep == self.runningDeployment:
-            return # DO SOMETHING ELSE HERE?
-        drawable.Configure(dep,self.styleDict)
-        self.activeObject.style.overlay['overlayColor']="RED"
-        kind = self.activeObject.kind
-        if kind == 'Node_Instance' or kind == 'Hardware_Instance':
-            keys = []
-            if kind == 'Node_Instance':
-                keys = [['Node_Instance','Node_Reference']]
-            elif kind == 'Hardware_Instance':
-                keys = [['Hardware_Instance','Hardware_Reference']]
-            for key in keys:
-                children = dep.getChildrenByKind(key[0])
-                for child in children:
-                    if child.properties[key[1]] == self.activeObject.properties[key[1]]:
-                        child.style.overlay['overlayColor']='RED'
-        elif kind == 'Group':
-            children = dep.getChildrenByKind('Node_Instance')
-            myKeys = [x.properties['Node_Instance_Reference'] for x in self.activeObject.children]
-            for child in children:
-                if child in myKeys:
-                    child.style.overlay['overlayColor'] = 'RED'
-        elif kind == 'Port_Instance':
-            children = dep.getChildrenByKind('Node_Instance')
-            for child in children:
-                if child == self.activeObject.properties['Node_Instance_Reference']:
-                    child.style.overlay['overlayColor'] = 'RED'
-        self.DrawModel(dep,canvas)
 
     def OnRightClick(self, Object):
         info = self.GetActivePanelInfo()
@@ -1010,16 +957,6 @@ def HostInstAdd(self,e,kind):
         references = self.project.workspace.getChildrenByKind('Node')
     if newObj != None:
         self.GenericAdd(newObj,references,host)
-
-def GroupAdd(self,e, kind):
-    group = self.activeObject
-    newObj = None
-    if kind == 'Port_Instance':
-        newObj = project.ROS_Port_Instance()
-        del newObj.properties['name']
-        references = group.parent.getChildrenByKind('Node_Instance')
-    if newObj != None:
-        self.GenericAdd(newObj,references,group)
 
 def main():
     ex = wx.App()
