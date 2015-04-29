@@ -56,7 +56,7 @@ def MakeAdd(self,kind):
 
         newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
         for prop in model_dict[kind].properties:
-            newObj.properties[prop] = ""
+            newObj.properties[prop] = None
         newObj.kind = kind
         newObj.parent = self.activeObject
         parent = self.activeObject
@@ -82,6 +82,9 @@ def MakeAdd(self,kind):
                 self.AspectLog(
                     "Added child {} to parent {}".format(newObj.properties['name'],parent.properties['name']),
                     msgWindow)
+                if model_dict[newObj.kind].in_refs != []:
+                    reference_dict[newObj.parent.properties["name"] + "/" + newObj.properties["name"]] = newObj
+                    print "added {} to reference dict".format(newObj.parent.properties["name"] + "/" + newObj.properties["name"])
                 drawable.Configure(model,self.styleDict)
                 self.DrawModel(model,canvas) 
     return GenericAdd
