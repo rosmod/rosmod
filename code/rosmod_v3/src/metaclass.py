@@ -3,7 +3,7 @@
 # Date: 2015.04.27
 
 from collections import OrderedDict
-from metaModel import reference_dict,model_dict
+from metaModel import model_dict
 from drawable import Drawable_Object
 
 # Grammar Field class used to generate grammar field-specific listener functions
@@ -53,6 +53,9 @@ def create_exitAtom():
         pass
     return exitAtom
 
+
+reference_dict = OrderedDict()
+
 # Setup a Dictionary of recognized & parsed grammar fields
 # Use this dictionary to generate the listener functions per field inside the builder classes
 meta_class_dict = OrderedDict()
@@ -90,7 +93,7 @@ meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, cr
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
 meta_class_dict["abl"] = Grammar_Field("string", "Abl", create_enterAtom, create_exitAtom)
-meta_class_dict["reference"] = Grammar_Field("string", "Reference", create_enterAtom, create_exitAtom)
+meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enterAtom, create_exitAtom)
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
 meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
@@ -108,6 +111,7 @@ meta_class_dict["message_reference"] = Grammar_Field("reference")
 meta_class_dict["service_reference"] = Grammar_Field("reference")
 meta_class_dict["component_reference"] = Grammar_Field("reference")
 meta_class_dict["node_reference"] = Grammar_Field("reference")
+meta_class_dict["port_reference"] = Grammar_Field("reference")
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):

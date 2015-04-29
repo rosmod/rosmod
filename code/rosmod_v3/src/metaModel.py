@@ -10,9 +10,6 @@ class Meta_Entity:
         self.in_refs = in_refs
         self.out_refs = out_refs
 
-
-reference_dict = OrderedDict()
-
 # Set up a dictionary which desribes the meta-model
 # for each entity in the metamodel:
 #  the types of its children
@@ -77,25 +74,25 @@ model_dict["Component"] = Meta_Entity(
 model_dict["Client"] = Meta_Entity(
     "Component", 
     [], 
-    ["name","reference"],
+    ["name","service_reference","reference"],
     ["Port_Instance"], 
     ["Service"])
 model_dict["Server"] = Meta_Entity(
     "Component", 
     [],
-    ["name","reference","priority","deadline"],
+    ["name","service_reference","reference","priority","deadline"],
     ["Port_Instance"], 
     ["Service"])
 model_dict["Publisher"] = Meta_Entity(
     "Component", 
     [], 
-    ["name","reference"],
+    ["name","message_reference","reference"],
     ["Port_Instance"], 
     ["Message"])
 model_dict["Subscriber"] = Meta_Entity(
     "Component", 
     [],
-    ["name","reference","priority","deadline"],
+    ["name","message_reference","reference","priority","deadline"],
     ["Port_Instance"], 
     ["Message"])
 model_dict["Timer"] = Meta_Entity(
@@ -114,7 +111,7 @@ model_dict["Node"] = Meta_Entity(
 model_dict["Component_Instance"] = Meta_Entity(
     "Node", 
     [], 
-    ["name","reference"],
+    ["name","component_reference","reference"],
     [], 
     ["Component"])
 
@@ -144,12 +141,12 @@ model_dict["Hardware_Instance"] = Meta_Entity(
 model_dict["Node_Instance"] = Meta_Entity(
     "Hardware_Instance", 
     ["Port_Instance"], 
-    ["name","reference","cmd_args"],
+    ["name","node_reference","reference","cmd_args"],
     [], 
     ["Node"])
 model_dict["Port_Instance"] = Meta_Entity(
     "Node_Instance", 
     [], 
-    ["name","reference","group"],
+    ["name","port_reference","reference","group"],
     [], 
     ["Client","Server","Publisher","Subscriber","Timer"])

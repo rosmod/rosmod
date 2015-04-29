@@ -34,7 +34,7 @@ except ImportError:
 # THESE ARE ALL FROM OUR CODE
 import project
 import metaclass
-from metaModel import model_dict,reference_dict
+from metaModel import model_dict
 from terminal import *
 import dialogs
 import drawable
@@ -56,7 +56,7 @@ def MakeAdd(self,kind):
 
         newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
         for prop in model_dict[kind].properties:
-            newObj.properties[prop] = ""
+            newObj.properties[prop] = None
         newObj.kind = kind
         newObj.parent = self.activeObject
         parent = self.activeObject
@@ -156,7 +156,7 @@ class Example(wx.Frame):
         for refObjType in referringObjectTypes:
             refObjs = model.getChildrenByKind(refObjType)
             for refObj in refObjs:
-                if reference_dict[refObj.properties['reference']] == self.activeObject:
+                if refObj.properties[kind.lower()+'_reference'] == self.activeObject:
                     refObj.style.overlay['overlayColor']='RED'
         self.DrawModel(model,canvas)
 

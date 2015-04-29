@@ -95,7 +95,7 @@ def BuildStyleDict(self):
                                    overlay = OrderedDict() )
     FieldStyle = drawable.Draw_Style(icon=None, 
                                      font=font, 
-                                     method=drawable.Draw_Method.ROUND_RECT, 
+                                     method=drawable.Draw_Method.HIDDEN, 
                                      placement=drawable.Text_Placement.TOP,
                                      minSize = minSize,
                                      overlay = OrderedDict([('fillColor','GREEN')]) )
@@ -107,13 +107,13 @@ def BuildStyleDict(self):
                                    overlay = OrderedDict() )
     RequestStyle = drawable.Draw_Style(icon=None,
                                        font=font, 
-                                       method=drawable.Draw_Method.ROUND_RECT, 
+                                       method=drawable.Draw_Method.HIDDEN, 
                                        placement=drawable.Text_Placement.TOP,
                                        minSize = minSize,
                                        overlay = OrderedDict([('fillColor','BLUE')]) )
     ResponseStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
-                                        method=drawable.Draw_Method.ROUND_RECT, 
+                                        method=drawable.Draw_Method.HIDDEN, 
                                         placement=drawable.Text_Placement.TOP,
                                         minSize = minSize,
                                         overlay = OrderedDict([('fillColor','BLUE')]) )

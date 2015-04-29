@@ -8,16 +8,16 @@ import copy
 # need float canvas for new style of rendering
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
 
-from metaModel import model_dict,reference_dict
+from metaModel import model_dict
 
 class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
 
-class Child_Arrangement:
+class Child_Layout:
     ROWS, COLUMNS, STACK, LINE, SQUARE = range(5)
 
 class Draw_Method:
-    RECT, ROUND_RECT, ICON = range(3)
+    RECT, ROUND_RECT, ICON, HIDDEN = range(4)
 
 def drawText(text,pos,style,canvas):
     if style.textPlacement != Text_Placement.NONE:
@@ -155,16 +155,12 @@ class Drawable_Object:
 
     def deleteAllRefs(self,project):
         referringObjectTypes = model_dict[self.kind].in_refs
-        myRefDictKey = None
         for refObjType in referringObjectTypes:
             refObjs = project.getChildrenByKind(refObjType)
             for refObj in refObjs:
-                if reference_dict[refObj.properties['reference']] == self:
-                    myRefDictKey = refObj.properties['reference']
+                if refObj.properties[self.kind.lower()+'_reference'] == self:
                     refObj.delete()
                     del refObj
-        if myRefDictKey != None:
-            reference_dict.pop(myRefDictKey, None)
 
     def getChildrenByKind(self,kind):
         if self.kind == kind:
@@ -180,6 +176,8 @@ class Drawable_Object:
     Should receive the device context
     '''
     def Draw(self, canvas, leftClickFunc, rightClickFunc, leftDClickFunc):
+        if self.style.method == Draw_Method.HIDDEN:
+            return
         x,y = self.topLeft.Get()
         dObj = None
         if self.style.method == Draw_Method.ICON:
@@ -240,41 +238,44 @@ necessarily, as the text may extend beyond the object
 and this would capture the extent of the text
 '''
 def Layout(dObj, topLeftPos, canvas):
-    # configure things that will be returned
-    padding = dObj.style.padding
-    minSize = dObj.style.minSize
-    offset = dObj.style.offset
-    maxObjWidth = minSize[0]
-    maxObjHeight = minSize[1]
-    dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
-    childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
-    childTypes = model_dict[dObj.kind].children
-    for childType in childTypes:
-        children = dObj.getChildrenByKind(childType)
-        maxWidth = 0
-        for child in children:
-            w,h = Layout(child,childPos,canvas)
-            childPos[1] -= (padding[1] + h)
-            maxWidth = max(w,maxWidth)
-        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
-        maxObjWidth += maxWidth
-        childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
-    dObj.width = maxObjWidth
-    dObj.height = maxObjHeight
-    dObj.textPosition = getTextPos(
-        option = dObj.style.textPlacement,
-        txtString = dObj.properties["name"],
-        objPos = dObj.topLeft.Get(),
-        objSize = (dObj.width,dObj.height),
-        font = dObj.style.font
-    )
-    maxObjWidth, maxObjHeight = getWidthWithText(
-        objSize = (dObj.width,dObj.height),
-        style = dObj.style,
-        objName = dObj.properties["name"],
-        canvas = canvas
-    )
-    return maxObjWidth,maxObjHeight
+    if dObj.style.method != Draw_Method.HIDDEN:
+        # configure things that will be returned
+        padding = dObj.style.padding
+        minSize = dObj.style.minSize
+        offset = dObj.style.offset
+        maxObjWidth = minSize[0]
+        maxObjHeight = minSize[1]
+        dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
+        childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
+        childTypes = model_dict[dObj.kind].children
+        for childType in childTypes:
+            children = dObj.getChildrenByKind(childType)
+            maxWidth = 0
+            for child in children:
+                w,h = Layout(child,childPos,canvas)
+                childPos[1] -= (padding[1] + h)
+                maxWidth = max(w,maxWidth)
+            maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
+            maxObjWidth += maxWidth
+            childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
+        dObj.width = maxObjWidth
+        dObj.height = maxObjHeight
+        dObj.textPosition = getTextPos(
+            option = dObj.style.textPlacement,
+            txtString = dObj.properties["name"],
+            objPos = dObj.topLeft.Get(),
+            objSize = (dObj.width,dObj.height),
+            font = dObj.style.font
+        )
+        maxObjWidth, maxObjHeight = getWidthWithText(
+            objSize = (dObj.width,dObj.height),
+            style = dObj.style,
+            objName = dObj.properties["name"],
+            canvas = canvas
+        )
+        return maxObjWidth,maxObjHeight
+    else:
+        return 0,0
 
 def Configure(dObj,styleDict):
     dObj.style.Copy(styleDict[dObj.kind])
