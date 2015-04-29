@@ -7,7 +7,7 @@ from wx.lib.pubsub import Publisher
 from collections import OrderedDict
 
 from metaclass import meta_class_dict
-from metaModel import reference_dict,model_dict
+from metaModel import model_dict
 
 class RMLProgressDialog(wx.Dialog):
     """
@@ -233,6 +233,7 @@ class EditDialog(wx.Dialog):
                     ErrorDialog(self, "You must select a reference object!")
                     return False
                 self.returnDict[key] = obj
+                self.returnDict["reference"] = obj.parent.properties["name"] + "/" + obj.properties["name"]
         return True
 
     def GetInput(self):

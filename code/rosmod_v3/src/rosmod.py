@@ -34,7 +34,7 @@ except ImportError:
 # THESE ARE ALL FROM OUR CODE
 import project
 import metaclass
-from metaModel import model_dict,reference_dict
+from metaModel import model_dict
 from terminal import *
 import dialogs
 import drawable
@@ -82,9 +82,6 @@ def MakeAdd(self,kind):
                 self.AspectLog(
                     "Added child {} to parent {}".format(newObj.properties['name'],parent.properties['name']),
                     msgWindow)
-                if model_dict[newObj.kind].in_refs != []:
-                    reference_dict[newObj.parent.properties["name"] + "/" + newObj.properties["name"]] = newObj
-                    print "added {} to reference dict".format(newObj.parent.properties["name"] + "/" + newObj.properties["name"])
                 drawable.Configure(model,self.styleDict)
                 self.DrawModel(model,canvas) 
     return GenericAdd
@@ -159,7 +156,7 @@ class Example(wx.Frame):
         for refObjType in referringObjectTypes:
             refObjs = model.getChildrenByKind(refObjType)
             for refObj in refObjs:
-                if reference_dict[refObj.properties['reference']] == self.activeObject:
+                if refObj.properties[kind.lower()+'_reference'] == self.activeObject:
                     refObj.style.overlay['overlayColor']='RED'
         self.DrawModel(model,canvas)
 
