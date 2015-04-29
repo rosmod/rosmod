@@ -22,6 +22,8 @@ def create_enterModel(kind):
         #print "enterModel:: Model Type = " + kind
         new_object = type( "ROS_" + kind, (object, Drawable_Object,), { '__init__' : Drawable_Object.__init__ })()
         new_object.kind = kind
+        for prop in model_dict[kind].properties:
+            new_object.properties[prop] = ""
         self.active_objects.append(new_object)
         #print "Created New Object: " + str(type(new_object))
     return enterModel

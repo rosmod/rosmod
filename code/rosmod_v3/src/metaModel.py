@@ -57,14 +57,14 @@ model_dict["Service"] = Meta_Entity(
     [])
 model_dict["Request"] = Meta_Entity(
     "Service",
-    [],
-    ["datatype","name","value"],
+    ["Field"],
+    ["name"],
     [], 
     [])
 model_dict["Response"] = Meta_Entity(
     "Service", 
-    [],
-    ["datatype","name","value"],
+    ["Field"],
+    ["name"],
     [], 
     [])
 

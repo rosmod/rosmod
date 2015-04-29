@@ -58,12 +58,6 @@ def BuildStyleDict(self):
                                         minSize = minSize,
                                         placement=drawable.Text_Placement.RIGHT,
                                         overlay = OrderedDict([('fillColor','BLUE')]) )
-    GroupStyle = drawable.Draw_Style(icon=None,
-                                     font=font, 
-                                     method=drawable.Draw_Method.ROUND_RECT, 
-                                     minSize = minSize,
-                                     placement=drawable.Text_Placement.TOP,
-                                     overlay = OrderedDict([('fillColor','GREEN')]) )
     NodeInstStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
                                         method=drawable.Draw_Method.ROUND_RECT, 
@@ -179,7 +173,6 @@ def BuildStyleDict(self):
     self.styleDict["Hardware"] = HardwareStyle
 
     self.styleDict["rdp"] = DeploymentStyle
-    self.styleDict["Group"] = GroupStyle
-    self.styleDict["Port"] = PortInstStyle
+    self.styleDict["Port_Instance"] = PortInstStyle
     self.styleDict["Hardware_Instance"] = HardwareInstStyle
     self.styleDict["Node_Instance"] = NodeInstStyle
