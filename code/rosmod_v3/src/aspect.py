@@ -225,7 +225,7 @@ def PackageAspectPageChange(self, event):
         pkg = info.obj
         canvas = info.canvas
         deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-        if pkg.kind == 'workspace':
+        if pkg.kind == 'rml':
             self.toolbar.EnableTool(deleteTBID, False)
         else:
             self.toolbar.EnableTool(deleteTBID, True)

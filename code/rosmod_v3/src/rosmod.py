@@ -46,6 +46,45 @@ from deployment import *
 from contextMenu import *
 from style import *
 
+def MakeAdd(self,kind):
+    def GenericAdd(e):
+        references = []
+        info = self.GetActivePanelInfo()
+        model = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
+
+        newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
+        newObj.kind = kind
+        newObj.parent = self.activeObject
+        parent = self.activeObject
+        # SET REFERENCES
+        refObjectTypes = model_dict[kind].out_refs
+        for refObjType in refObjectTypes:
+            refObjs = self.project.getChildrenByKind(refObjType)
+            references.append(*refObjs)
+        if newObj != None:
+            newObj.properties['name'] = "New" + kind
+            ed = dialogs.EditDialog(self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Edit "+newObj.kind,
+                                    references = references,
+                                    style=wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                self.UpdateUndo()
+                for key,value in inputs.iteritems():
+                    newObj.properties[key] = value
+                parent.add(newObj)
+                self.AspectLog(
+                    "Added child {} to parent {}".format(newObj.properties['name'],parent.properties['name']),
+                    msgWindow)
+                drawable.Configure(model,self.styleDict)
+                self.DrawModel(model,canvas) 
+    return GenericAdd
+
 class Example(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(Example, self).__init__(*args,**kwargs)
@@ -127,34 +166,7 @@ class Example(wx.Frame):
         info = self.GetActivePanelInfo()
         canvas = info.canvas
         self.activeObject = Object.Name
-        self.PopupMenu(ContextMenu(canvas,AspectContextMenu(self,self.activeObject)))
-
-    def GenericAdd(self,newObj,refs,parent):
-        info = self.GetActivePanelInfo()
-        pkg = info.obj
-        canvas = info.canvas
-        msgWindow = info.msgWindow
-        kind = newObj.kind
-        if newObj != None:
-            newObj.properties['name'] = "New" + kind
-            ed = dialogs.EditDialog(self,
-                                    editDict=newObj.properties,
-                                    editObj = newObj,
-                                    title="Edit "+newObj.kind,
-                                    references = refs,
-                                    style=wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
-            if inputs != OrderedDict():
-                self.UpdateUndo()
-                for key,value in inputs.iteritems():
-                    newObj.properties[key] = value
-                parent.add(newObj)
-                self.AspectLog(
-                    "Added child {} to parent {}".format(newObj.properties['name'],parent.properties['name']),
-                    msgWindow)
-                drawable.Configure(pkg,self.styleDict)
-                self.DrawModel(pkg,canvas)            
+        self.PopupMenu(ContextMenu(canvas,AspectContextMenu(self,self.activeObject)))           
 
     def AspectEdit(self, e):
         info = self.GetActivePanelInfo()
@@ -875,88 +887,6 @@ class Example(wx.Frame):
     def BuildStatusbar(self):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText('Ready')
-
-
-
-def CompAdd(self,e,kind):
-    comp = self.activeObject
-    newObj = None
-    references = []
-    info = self.GetActivePanelInfo()
-    pkg = info.obj
-    newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
-    testObj = metaclass.ROS_Component()
-    newObj.kind = kind
-    newObj.parent = comp
-    if kind == 'Subscriber':
-        references = self.project.workspace.getChildrenByKind('Message')
-    elif kind == 'Publisher':
-        references = self.project.workspace.getChildrenByKind('Message')
-    elif kind == 'Server':
-        references = self.project.workspace.getChildrenByKind('Service')
-    elif kind == 'Client':
-        references = self.project.workspace.getChildrenByKind('Service')
-    if newObj != None:
-        self.GenericAdd(newObj,references,comp)
-
-def NodeAdd(self,e,kind):
-    node = self.activeObject
-    newObj = None
-    references = []
-    info = self.GetActivePanelInfo()
-    pkg = info.obj
-    if kind == 'Component_Instance':
-        newObj = project.ROS_Component_Instance()
-        references = node.parent.getChildrenByKind('Component')
-    if newObj != None:
-        self.GenericAdd(newObj,references,node)
-    
-def PackageAdd(self,e,kind):
-    package = self.activeObject
-    newObj = None
-    references = []
-    if kind == 'Message':
-        newObj = project.ROS_Message()
-    elif kind == 'Service':
-        newObj = project.ROS_Service()
-    elif kind == 'Component':
-        newObj = project.ROS_Component()
-    elif kind == 'Node':
-        newObj = project.ROS_Node()
-    if newObj != None:
-        self.GenericAdd(newObj,references,package)
-
-def HardwareAdd(self,e,kind):
-    hw = self.activeObject
-    newObj = None
-    references = []
-    if kind == 'Hardware':
-        newObj = project.ROS_Host()
-    if newObj != None:
-        self.GenericAdd(newObj,references,hw)
-
-def DeploymentAdd(self,e,kind):
-    dep = self.activeObject
-    newObj = None
-    references = []
-    if kind == 'Hardware_Instance':
-        newObj = project.ROS_Host_Instance()
-        references = dep.properties['rdp_hardware'].children
-    elif kind == 'Group':
-        newObj = project.ROS_Group()
-        references = self.project.workspace.getChildrenByKind('Node')
-    if newObj != None:
-        self.GenericAdd(newObj,references,dep)
-
-def HostInstAdd(self,e,kind):
-    host = self.activeObject
-    newObj = None
-    references = []
-    if kind == 'Node_Instance':
-        newObj = project.ROS_Node_Instance()
-        references = self.project.workspace.getChildrenByKind('Node')
-    if newObj != None:
-        self.GenericAdd(newObj,references,host)
 
 def main():
     ex = wx.App()
