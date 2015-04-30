@@ -12,11 +12,12 @@ rootIconPath= editorPath + '/icons'
 toolbarIconPath= rootIconPath + '/toolbar'
 
 class TBItem:
-    def __init__(self, name, icon, helpStr, func):
+    def __init__(self, name, icon, helpStr, func, _id = wx.ID_ANY):
         self.name = name
         self.icon = icon
         self.helpStr = helpStr
         self.func = func
+        self._id = _id
 
 aspectToolbarDict = OrderedDict()
 
@@ -82,7 +83,7 @@ def AddAspectToolbar(self,kind):
     self.AspectInfos[kind].AddTBInfo(tbi)
     for item in aspectToolbarDict[kind]:
         tbi = TBInfo( name = item.name,
-                      obj = self.toolbar.AddTool( wx.ID_ANY,
+                      obj = self.toolbar.AddTool( item._id,
                                                   bitmap = wx.Bitmap(toolbarIconPath + item.icon),
                                                   shortHelpString = item.helpStr))
         self.AspectInfos[kind].AddTBInfo(tbi)

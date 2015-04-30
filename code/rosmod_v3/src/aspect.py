@@ -21,15 +21,17 @@ import drawable
 from toolbar import *
 
 class AspectPageInfo():
-    def __init__(self, name, obj, canvas, msgWindow):
+    def __init__(self, name, obj, canvas, msgWindow, deletable=True):
         self.name = name
         self.obj = obj
         self.canvas = canvas
         self.msgWindow = msgWindow
+        self.deletable = deletable
 
 class AspectInfo():
-    def __init__(self, kind):
+    def __init__(self, kind, deletableTypes):
         self.kind = kind
+        self.deletableTypes = deletableTypes
         self.pages = OrderedDict()
         self.toolbarButtons = OrderedDict()
 
@@ -93,9 +95,9 @@ def BuildAspects(self):
     self.AspectTypes["Hardware"] = ["rhw"]
     self.AspectTypes["Deployment"] = ["rdp"]
 
-    self.AspectInfos["Software"] = AspectInfo("Software")
-    self.AspectInfos["Hardware"] = AspectInfo("Hardware")
-    self.AspectInfos["Deployment"] = AspectInfo("Deployment")
+    self.AspectInfos["Software"] = AspectInfo("Software",["Package"])
+    self.AspectInfos["Hardware"] = AspectInfo("Hardware",["rhw"])
+    self.AspectInfos["Deployment"] = AspectInfo("Deployment",["rdp"])
     for key in self.AspectInfos.keys():
         BuildAspect(self,key)
     self.activeAspect = self.Aspects["Software"]
@@ -132,6 +134,8 @@ def BuildModelPage(self,parent,model,aspectInfo,insertPos=-1):
     newPage.SetSizer(panelSizer)
 
     pageInfo = AspectPageInfo(name=model.properties['name'],obj=model,canvas=canvas,msgWindow=msgWindow)
+    if model.kind not in aspectInfo.deletableTypes:
+        pageInfo.deletable = False
     aspectInfo.AddPageInfo(pageInfo)
     if insertPos == -1:
         parent.AddPage( newPage, model.properties['name'] )
@@ -156,17 +160,18 @@ def AspectPageChange(self,kind,event):
     sel = self.activeAspect.GetSelection()
     numPages = self.activeAspect.GetPageCount()
     deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-    if numPages > 1:
-        self.toolbar.EnableTool(deleteTBID, True)
-    else:
-        self.toolbar.EnableTool(deleteTBID, False)
+    info = None
     if sel >= 0:
         pageName = self.activeAspect.GetPageText(sel)
         info = self.activeAspectInfo.GetPageInfo(pageName)
-        hw = info.obj
+        model = info.obj
         canvas = info.canvas
-        drawable.Configure(hw,self.styleDict)
-        self.DrawModel(hw,canvas)
+        drawable.Configure(model,self.styleDict)
+        self.DrawModel(model,canvas)
+    if numPages > 1 and info != None and info.deletable == True:
+        self.toolbar.EnableTool(deleteTBID, True)
+    else:
+        self.toolbar.EnableTool(deleteTBID, False)
 
 def PackageAspectPageChange(self, event):
     sel = self.activeAspect.GetSelection()
