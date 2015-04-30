@@ -224,7 +224,7 @@ class ROSMOD_SoftwareParser ( Parser ):
     RULE_period = 19
     RULE_priority = 20
     RULE_deadline = 21
-    RULE_abl = 22
+    RULE_abstract_business_logic = 22
     RULE_node = 23
     RULE_component_instance = 24
 
@@ -232,7 +232,8 @@ class ROSMOD_SoftwareParser ( Parser ):
                    u"unit", u"package", u"message", u"field", u"service", 
                    u"request", u"response", u"component", u"port", u"client", 
                    u"server", u"publisher", u"subscriber", u"timer", u"period", 
-                   u"priority", u"deadline", u"abl", u"node", u"component_instance" ]
+                   u"priority", u"deadline", u"abstract_business_logic", 
+                   u"node", u"component_instance" ]
 
     def __init__(self, input):
         super(ROSMOD_SoftwareParser, self).__init__(input)
@@ -1220,18 +1221,18 @@ class ROSMOD_SoftwareParser ( Parser ):
             super(ROSMOD_SoftwareParser.ServerContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def abl(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(ROSMOD_SoftwareParser.AblContext)
-            else:
-                return self.getTypedRuleContext(ROSMOD_SoftwareParser.AblContext,i)
-
-
         def deadline(self, i=None):
             if i is None:
                 return self.getTypedRuleContexts(ROSMOD_SoftwareParser.DeadlineContext)
             else:
                 return self.getTypedRuleContext(ROSMOD_SoftwareParser.DeadlineContext,i)
+
+
+        def abstract_business_logic(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSMOD_SoftwareParser.Abstract_business_logicContext)
+            else:
+                return self.getTypedRuleContext(ROSMOD_SoftwareParser.Abstract_business_logicContext,i)
 
 
         def priority(self, i=None):
@@ -1314,7 +1315,7 @@ class ROSMOD_SoftwareParser ( Parser ):
                     self.state = 203
                     self.match(self.T__17)
                     self.state = 204 
-                    self.abl()
+                    self.abstract_business_logic()
                     self.state = 205
                     self.match(self.T__14)
 
@@ -1397,18 +1398,18 @@ class ROSMOD_SoftwareParser ( Parser ):
             super(ROSMOD_SoftwareParser.SubscriberContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def abl(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(ROSMOD_SoftwareParser.AblContext)
-            else:
-                return self.getTypedRuleContext(ROSMOD_SoftwareParser.AblContext,i)
-
-
         def deadline(self, i=None):
             if i is None:
                 return self.getTypedRuleContexts(ROSMOD_SoftwareParser.DeadlineContext)
             else:
                 return self.getTypedRuleContext(ROSMOD_SoftwareParser.DeadlineContext,i)
+
+
+        def abstract_business_logic(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSMOD_SoftwareParser.Abstract_business_logicContext)
+            else:
+                return self.getTypedRuleContext(ROSMOD_SoftwareParser.Abstract_business_logicContext,i)
 
 
         def priority(self, i=None):
@@ -1491,7 +1492,7 @@ class ROSMOD_SoftwareParser ( Parser ):
                     self.state = 237
                     self.match(self.T__17)
                     self.state = 238 
-                    self.abl()
+                    self.abstract_business_logic()
                     self.state = 239
                     self.match(self.T__14)
 
@@ -1520,18 +1521,18 @@ class ROSMOD_SoftwareParser ( Parser ):
             super(ROSMOD_SoftwareParser.TimerContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def abl(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(ROSMOD_SoftwareParser.AblContext)
-            else:
-                return self.getTypedRuleContext(ROSMOD_SoftwareParser.AblContext,i)
-
-
         def deadline(self, i=None):
             if i is None:
                 return self.getTypedRuleContexts(ROSMOD_SoftwareParser.DeadlineContext)
             else:
                 return self.getTypedRuleContext(ROSMOD_SoftwareParser.DeadlineContext,i)
+
+
+        def abstract_business_logic(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(ROSMOD_SoftwareParser.Abstract_business_logicContext)
+            else:
+                return self.getTypedRuleContext(ROSMOD_SoftwareParser.Abstract_business_logicContext,i)
 
 
         def priority(self, i=None):
@@ -1621,7 +1622,7 @@ class ROSMOD_SoftwareParser ( Parser ):
                     self.state = 266
                     self.match(self.T__17)
                     self.state = 267 
-                    self.abl()
+                    self.abstract_business_logic()
                     self.state = 268
                     self.match(self.T__14)
 
@@ -1761,33 +1762,33 @@ class ROSMOD_SoftwareParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class AblContext(ParserRuleContext):
+    class Abstract_business_logicContext(ParserRuleContext):
 
         def __init__(self, parser, parent=None, invokingState=-1):
-            super(ROSMOD_SoftwareParser.AblContext, self).__init__(parent, invokingState)
+            super(ROSMOD_SoftwareParser.Abstract_business_logicContext, self).__init__(parent, invokingState)
             self.parser = parser
 
         def ID(self):
             return self.getToken(ROSMOD_SoftwareParser.ID, 0)
 
         def getRuleIndex(self):
-            return ROSMOD_SoftwareParser.RULE_abl
+            return ROSMOD_SoftwareParser.RULE_abstract_business_logic
 
         def enterRule(self, listener):
             if isinstance( listener, ROSMOD_SoftwareListener ):
-                listener.enterAbl(self)
+                listener.enterAbstract_business_logic(self)
 
         def exitRule(self, listener):
             if isinstance( listener, ROSMOD_SoftwareListener ):
-                listener.exitAbl(self)
+                listener.exitAbstract_business_logic(self)
 
 
 
 
-    def abl(self):
+    def abstract_business_logic(self):
 
-        localctx = ROSMOD_SoftwareParser.AblContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 44, self.RULE_abl)
+        localctx = ROSMOD_SoftwareParser.Abstract_business_logicContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 44, self.RULE_abstract_business_logic)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 282

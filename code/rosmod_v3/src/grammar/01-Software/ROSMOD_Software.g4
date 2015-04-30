@@ -133,7 +133,7 @@ server
         '{'
         ( 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
-        | 'business_logic' '{' abl '}'
+        | 'business_logic' '{' abstract_business_logic '}'
         )+
         '}'
     ;
@@ -151,7 +151,7 @@ subscriber
         '{'
         ( 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
-        | 'business_logic' '{' abl '}'
+        | 'business_logic' '{' abstract_business_logic '}'
         )+
         '}'
     ;
@@ -164,7 +164,7 @@ timer
         ( 'period' '=' period ';'
         | 'priority' '=' priority ';' 
         | 'deadline' '=' deadline ';'
-        | 'business_logic' '{' abl '}'
+        | 'business_logic' '{' abstract_business_logic '}'
         )+
         '}'
     ;
@@ -188,7 +188,7 @@ deadline
     ;
 
 // Business Logic of Port
-abl
+abstract_business_logic
     :   ID
     ;
 
