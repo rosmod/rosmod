@@ -55,6 +55,8 @@ class AspectInfo():
 def InitAspects(self):
     self.activeAspect = None
     self.activeAspectInfo = None
+    self.Aspects = OrderedDict()
+    self.AspectInfos = OrderedDict()
     self.PackageAspect = None
     self.PackageAspectInfo = None
     self.HardwareAspect = None

@@ -280,8 +280,7 @@ class Example(wx.Frame):
         modelName = self.activeAspect.GetPageText(selectedPage)
         info = self.activeAspectInfo.GetPageInfo(modelName)
         model = info.obj
-        if model.kind != 'rml' and\
-           dialogs.ConfirmDialog(self,"Delete {}?".format(modelName)):
+        if dialogs.ConfirmDialog(self,"Delete {}?".format(modelName)):
             self.UpdateUndo()
             info.canvas.ClearAll()
             model.deleteAllRefs(self.project)
@@ -291,10 +290,10 @@ class Example(wx.Frame):
             self.activeAspect.DeletePage(selectedPage)
             
     def OnPackageGenerate(self,e):
-        pass
+        self.GenerateCode(e)
 
     def OnDeploymentGenerate(self,e):
-        pass
+        self.GenerateCode(e)
 
     def OnDeploymentMove(self,e):
         if self.deployed == False:

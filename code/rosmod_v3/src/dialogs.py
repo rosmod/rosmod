@@ -129,19 +129,23 @@ class EditDialog(wx.Dialog):
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
         pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
-
+        pbox.SetFlexibleDirection(wx.BOTH)
+        pbox.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_ALL)
         rNum = 0
         self.inputs = OrderedDict()
+        growRow = False
         for key,value in self.editDict.iteritems():
             label = None
             field = None
             if meta_class_dict[key].kind == "string":
+                growRow = False
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
                 self.inputs[key] = field
             elif meta_class_dict[key].kind == "code":
+                growRow=True
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
                 fieldStr = value
@@ -151,9 +155,9 @@ class EditDialog(wx.Dialog):
                 field.EmptyUndoBuffer()
                 field.Colourise(0,-1)
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
-                pbox.AddGrowableRow(rNum,1)
                 self.inputs[key] = field
             elif meta_class_dict[key].kind == 'reference':
+                growRow=False
                 refObjTypes = model_dict[self.editObj.kind].out_refs
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
@@ -166,8 +170,11 @@ class EditDialog(wx.Dialog):
                 self.inputs[key] = field
             if label != None and field != None:
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
-            rNum += 1
-
+                if growRow:
+                    pbox.AddGrowableRow(rNum,1)
+                else:
+                    pbox.RemoveGrowableRow(rNum)
+                rNum += 1
         pbox.AddGrowableCol(1,1)
 
         panel.SetSizer(pbox)
