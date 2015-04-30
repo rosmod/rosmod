@@ -80,7 +80,7 @@ class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
 class ROS_Hardware_Builder(ROSMOD_HardwareListener):
     __metaclass__ = Grammar_MetaClass
 
-    def __init__(self, hardware_files, project):
+    def __init__(self, project):
         # Create a ROS Deployment Object
         self.rhw = type("ROS_RHW", 
                         ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
@@ -94,7 +94,7 @@ class ROS_Hardware_Builder(ROSMOD_HardwareListener):
 class ROS_Deployment_Builder(ROSMOD_DeploymentListener):
     __metaclass__ = Grammar_MetaClass
 
-    def __init__(self, deployment_files, project):
+    def __init__(self, project):
         # Create a ROS Deployment Object
         self.rdp = type("ROS_RDP",
                         ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()

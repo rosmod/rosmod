@@ -136,15 +136,12 @@ class EditDialog(wx.Dialog):
             label = None
             field = None
             if meta_class_dict[key].kind == "string":
-                # anything that takes a string and shouldn't have a newline
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
                 self.inputs[key] = field
             elif meta_class_dict[key].kind == "code":
-                # anything that takes a multi-line string
-                # supports code completion and syntax highlighting
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
                 fieldStr = value

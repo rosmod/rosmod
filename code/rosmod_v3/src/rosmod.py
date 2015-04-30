@@ -153,10 +153,10 @@ class Example(wx.Frame):
         self.activeObject.style.overlay['overlayColor']="RED"
         kind = self.activeObject.kind
         referringObjectTypes = model_dict[kind].in_refs
-        for refObjType in referringObjectTypes:
+        for refObjType,refName in referringObjectTypes:
             refObjs = model.getChildrenByKind(refObjType)
             for refObj in refObjs:
-                if refObj.properties[kind.lower()+'_reference'] == self.activeObject:
+                if refObj.properties[refName] == self.activeObject:
                     refObj.style.overlay['overlayColor']='RED'
         self.DrawModel(model,canvas)
 
@@ -223,24 +223,21 @@ class Example(wx.Frame):
         model = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
-        if model.kind != 'rml':
-            if self.activeObject.kind == 'Package':
-                wx.CallAfter(self.OnPackageDelete,e)
-            elif self.activeObject.kind == 'rhw':
-                wx.CallAfter(self.OnHardwareDelete,e)
-            elif self.activeObject.kind == 'rdp':
-                wx.CallAfter(self.OnDeploymentDelete,e)
-            else:
-                if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
-                    self.UpdateUndo()
-                    self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
-                    self.activeObject.deleteAllRefs(self.project)
-                    self.activeObject.delete()
-                    drawable.Configure(model,self.styleDict)
-                    self.DrawModel(model,canvas)
-        else:
+        if self.activeObject.kind == 'rml':
             dialogs.ErrorDialog(self,"Cannot delete workspace!")
-        self.activeObject = None
+        elif self.activeObject.kind == 'Package' or \
+             self.activeObject.kind == 'rhw' or \
+             self.activeObject.kind == 'rdp':
+            wx.CallAfter(self.OnAspectDelete,e)
+        else:
+            if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+                self.UpdateUndo()
+                self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
+                self.activeObject.deleteAllRefs(self.project)
+                self.activeObject.delete()
+                drawable.Configure(model,self.styleDict)
+                self.DrawModel(model,canvas)
+            self.activeObject = None
 
     def OnAspectCreate(self,kind,e):
         info = self.GetActivePanelInfo()

@@ -37,7 +37,7 @@ model_dict["Message"] = Meta_Entity(
     "Package", 
     ["Field"], 
     ["name"],
-    ["Publisher","Subscriber"], 
+    [["Publisher","message_reference"],["Subscriber","message_reference"]], 
     [])
 model_dict["Field"] = Meta_Entity(
     "Message", 
@@ -50,7 +50,7 @@ model_dict["Service"] = Meta_Entity(
     "Package", 
     ["Request","Response"],
     ["name"],
-    ["Server","Client"], 
+    [["Server","service_reference"],["Client","service_reference"]], 
     [])
 model_dict["Request"] = Meta_Entity(
     "Service",
@@ -69,31 +69,31 @@ model_dict["Component"] = Meta_Entity(
     "Package", 
     ["Timer","Publisher","Subscriber","Client","Server"], 
     ["name"],
-    ["Component_Instance"], 
+    [["Component_Instance","component_reference"]], 
     [])
 model_dict["Client"] = Meta_Entity(
     "Component", 
     [], 
     ["name","service_reference","reference"],
-    ["Port_Instance"], 
+    [["Port_Instance","port_reference"]], 
     ["Service"])
 model_dict["Server"] = Meta_Entity(
     "Component", 
     [],
     ["name","service_reference","reference","priority","deadline"],
-    ["Port_Instance"], 
+    [["Port_Instance","port_reference"]], 
     ["Service"])
 model_dict["Publisher"] = Meta_Entity(
     "Component", 
     [], 
     ["name","message_reference","reference"],
-    ["Port_Instance"], 
+    [["Port_Instance","port_reference"]], 
     ["Message"])
 model_dict["Subscriber"] = Meta_Entity(
     "Component", 
     [],
     ["name","message_reference","reference","priority","deadline"],
-    ["Port_Instance"], 
+    [["Port_Instance","port_reference"]], 
     ["Message"])
 model_dict["Timer"] = Meta_Entity(
     "Component", 
@@ -106,7 +106,7 @@ model_dict["Node"] = Meta_Entity(
     "Package", 
     ["Component_Instance"], 
     ["name"],
-    ["Node_Instance"], 
+    [["Node_Instance","node_reference"]], 
     [])
 model_dict["Component_Instance"] = Meta_Entity(
     "Node", 
@@ -119,13 +119,13 @@ model_dict["rhw"] = Meta_Entity(
     "Project", 
     ["Hardware"], 
     ["name"],
-    ["rdp"], 
+    [["rdp","rhw_reference"]], 
     [])
 model_dict["Hardware"] = Meta_Entity(
     "rhw", 
     [], 
     ["name","arch"],
-    ["Hardware_Instance"], 
+    [["Hardware_Instance","hardware_reference"]], 
     [])
 
 model_dict["rdp"] = Meta_Entity(

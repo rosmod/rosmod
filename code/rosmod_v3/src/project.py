@@ -43,15 +43,11 @@ class ROS_Project(Drawable_Object):
         self.hardware_path = os.path.join(self.project_path, "02-Hardware")
         # Hardware Configurations - List of all rhw objects in Project
         self.hardware_files = []
-        # Hardware Builder
-        self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
         # Deployment Path
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
         # Deployment Configurations - List of all rdp objects in Project
         self.deployment_files = []
-        # Deployment Builder
-        self.deployment_builder = ROS_Deployment_Builder(self.deployment_files, self)
 
     # Open an existing ROSMOD Project
     def open(self, project_path):
@@ -129,6 +125,8 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
 
+        # Hardware Builder
+        self.hardware_builder = ROS_Hardware_Builder(self)
         self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
 
@@ -156,6 +154,8 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()    
 
+        # Deployment Builder
+        self.deployment_builder = ROS_Deployment_Builder(self)
         self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
         print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
 
