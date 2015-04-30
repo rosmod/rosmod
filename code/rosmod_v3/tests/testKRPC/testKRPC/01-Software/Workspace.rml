@@ -8,21 +8,21 @@ package krpc
 
     msg some_msg
     {
-        string car_name;
+        string car_name
     }
 
     srv some_srv
     {
         request
         {
-            int32 request_field1;
-            string request_field2;
+            int32 request_field1
+            string request_field2
         }
 
         response
         {
-            bool response_result1;
-            float64 response_result2;
+            bool response_result1
+            float64 response_result2
         }
     }
     
