@@ -10,7 +10,6 @@ editorPath=head
 rootIconPath= editorPath + '/icons'
 toolbarIconPath= rootIconPath + '/toolbar'
 
-
 class TBInfo():
     def __init__(self,name, obj):
         self.name = name
@@ -64,7 +63,7 @@ def AddHardwareAspectToolbar(self):
     self.HardwareAspectInfo.AddTBInfo(labelTBinfo)
     self.HardwareAspectInfo.AddTBInfo(createTBinfo)
     self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
-    self.Bind(wx.EVT_TOOL, self.OnHardwareCreate, createTBinfo.obj)
+    self.Bind(wx.EVT_TOOL, lambda e : self.OnAspectCreate("rhw",e), createTBinfo.obj)
     self.Bind(wx.EVT_TOOL, self.OnHardwareDelete, deleteTBinfo.obj)
     self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
     self.toolbar.Realize()
@@ -116,7 +115,7 @@ def AddDeploymentAspectToolbar(self):
     self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
     self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
     self.DeploymentAspectInfo.AddTBInfo(runTBinfo)
-    self.Bind(wx.EVT_TOOL, self.OnDeploymentCreate, createTBinfo.obj)
+    self.Bind(wx.EVT_TOOL, lambda e : self.OnAspectCreate("rdp",e), createTBinfo.obj)
     self.Bind(wx.EVT_TOOL, self.OnDeploymentDelete, deleteTBinfo.obj)
     self.Bind(wx.EVT_TOOL, self.OnDeploymentGenerate, generateTBinfo.obj)
     self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
@@ -156,7 +155,7 @@ def AddPackageAspectToolbar(self):
     self.PackageAspectInfo.AddTBInfo(createTBinfo)
     self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
     self.PackageAspectInfo.AddTBInfo(generateTBinfo)
-    self.Bind(wx.EVT_TOOL, self.OnPackageCreate, createTBinfo.obj)
+    self.Bind(wx.EVT_TOOL, lambda e : self.OnAspectCreate("Package",e), createTBinfo.obj)
     self.Bind(wx.EVT_TOOL, self.OnPackageDelete, deleteTBinfo.obj)
     self.Bind(wx.EVT_TOOL, self.OnPackageGenerate, generateTBinfo.obj)
     self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)

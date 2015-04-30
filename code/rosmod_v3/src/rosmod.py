@@ -174,24 +174,14 @@ class Example(wx.Frame):
         obj = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
+        kind = self.activeObject.kind
         self.AspectLog(
-            "Editing {} of type {}".format(self.activeObject.properties['name'],self.activeObject.kind),
+            "Editing {} of type {}".format(self.activeObject.properties['name'],kind),
             msgWindow)
         references = []
-        if self.activeObject.kind == 'Publisher' or self.activeObject.kind == 'Subscriber':
-            references = self.project.workspace.getChildrenByKind('Message')
-        elif self.activeObject.kind == 'Server' or self.activeObject.kind == 'Client':
-            references = self.project.workspace.getChildrenByKind('Service')
-        elif self.activeObject.kind == 'Component_Instance':
-            references = self.activeObject.parent.parent.getChildrenByKind('Component')
-        elif self.activeObject.kind == 'rdp':
-            references = self.project.hardware_files
-        elif self.activeObject.kind == 'Hardware_Instance':
-            references = obj.properties['rdp_hardware'].children
-        elif self.activeObject.kind == 'Node_Instance':
-            references = self.project.workspace.getChildrenByKind('Node')
-        elif self.activeObject.kind == 'Port_Instance':
-            references = obj.getChildrenByKind('Node_Instance')
+        referringObjectTypes = model_dict[kind].out_refs
+        for refObjType in refObjectTypes:
+            references.extend(self.project.getChildrenByKind(refObjType))
 
         prevProps = copy.copy(self.activeObject.properties)
         ed = dialogs.EditDialog(canvas,
@@ -252,17 +242,27 @@ class Example(wx.Frame):
             dialogs.ErrorDialog(self,"Cannot delete workspace!")
         self.activeObject = None
 
-    def OnHardwareCreate(self, e):
-        newObj = project.ROS_HW()
-        newObj.properties = {}
-        newObj.properties['name'] = "New Hardware Configuration"
-        existingNames = [x.properties['name'] for x in self.project.hardware_files.children]
+    def OnAspectCreate(self,kind,e):
+        info = self.GetActivePanelInfo()
+        model = info.obj
+        canvas = info.canvas
+        msgWindow = info.msgWindow
+
+        newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
+        newObj.kind = kind
+        for prop in model_dict[kind].properties:
+            newObj.properties[prop] = None
+
+        if model.kind == model_dict[kind].parent:
+            newObj.parent = model
+        elif model.kind == kind:
+            newObj.parent = model.parent
+
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = [],
-                                invalidNames = existingNames,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
@@ -270,12 +270,30 @@ class Example(wx.Frame):
             self.UpdateUndo()
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
-            self.project.hardware_files.append(newObj)
-            numPages = self.HardwareAspect.GetPageCount()
+            newObj.parent.add(newObj)
+            numPages = self.activeAspect.GetPageCount()
             if numPages <= 0:
                 numPages = 1
-            self.BuildModelPage(self.HardwareAspect,newObj,self.HardwareAspectInfo,numPages-1)
-            self.HardwareAspect.SetSelection(numPages - 1)
+            BuildModelPage(self,self.activeAspect,newObj,self.activeAspectInfo,numPages-1)
+            self.activeAspect.SetSelection(numPages - 1)
+            
+    def OnPackageDelete(self, e):
+        selectedPage = self.PackageAspect.GetSelection()
+        numPages = self.PackageAspect.GetPageCount()
+        pkgName = self.PackageAspect.GetPageText(selectedPage)
+        info = self.PackageAspectInfo.GetPageInfo(pkgName)
+        pkg = info.obj
+        if pkg.kind != 'rml':
+            if dialogs.ConfirmDialog(self,"Delete {}?".format(pkgName)):
+                self.UpdateUndo()
+                info.canvas.ClearAll()
+                pkg.delete()
+                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
+                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
+                self.PackageAspect.DeletePage(selectedPage)
+        else:
+            dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
+
     def OnHardwareDelete(self, e):
         selectedPage = self.HardwareAspect.GetSelection()
         numPages = self.HardwareAspect.GetPageCount()
@@ -291,32 +309,6 @@ class Example(wx.Frame):
             self.HardwareAspect.DeletePage(selectedPage)
             os.remove(self.project.hardware_files_path + '/' + obj.properties['name'] + '.rhw')
         
-    def OnDeploymentCreate(self, e):
-        newObj = project.ROS_Deployment()
-        newObj.properties = OrderedDict()
-        newObj.properties['name'] = "New Deployment"
-        references = self.project.hardware_files
-        existingNames = [x.properties['name'] for x in self.project.deployments.children]
-        ed = dialogs.EditDialog(self,
-                                editObj=newObj,
-                                editDict=newObj.properties,
-                                title="Edit "+newObj.kind,
-                                references = references,
-                                invalidNames = existingNames,
-                                style=wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
-        if inputs != OrderedDict():
-            self.UpdateUndo()
-            for key,value in inputs.iteritems():
-                newObj.properties[key] = value
-            self.project.deployments.append(newObj)
-            numPages = self.DeploymentAspect.GetPageCount()
-            if numPages <= 0:
-                numPages = 1
-            self.BuildModelPage(self.DeploymentAspect,newObj,self.DeploymentAspectInfo,numPages-1)
-            self.DeploymentAspect.SetSelection(numPages - 1)
-                
     def OnDeploymentDelete(self, e):
         selectedPage = self.DeploymentAspect.GetSelection()
         objName = self.DeploymentAspect.GetPageText(selectedPage)
@@ -330,6 +322,9 @@ class Example(wx.Frame):
             self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
             self.DeploymentAspect.DeletePage(selectedPage)
             os.remove(self.project.deployment_path + '/' + obj.properties['name'] + '.rdp')
+
+    def OnPackageGenerate(self,e):
+        pass
 
     def OnDeploymentGenerate(self,e):
         pass
@@ -520,49 +515,6 @@ class Example(wx.Frame):
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         else:
             dialogs.ErrorDialog(self,"System is not running a deployment")
-
-    def OnPackageCreate(self, e):
-        newPkg = project.ROS_Package()
-        newPkg.properties = {}
-        newPkg.properties['name'] = "New Package"
-        existingNames = [x.properties['name'] for x in self.project.workspace.children]
-        ed = dialogs.EditDialog(self,
-                                editObj=newPkg,
-                                editDict=newPkg.properties,
-                                title="Edit "+newPkg.kind,
-                                references = [],
-                                invalidNames = existingNames,
-                                style=wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
-        if inputs != OrderedDict():
-            self.UpdateUndo()
-            for key,value in inputs.iteritems():
-                newPkg.properties[key] = value
-            self.project.workspace.add(newPkg)
-            numPages = self.PackageAspect.GetPageCount()
-            self.BuildModelPage(self.PackageAspect,newPkg,self.PackageAspectInfo,numPages-1)
-            self.PackageAspect.SetSelection(numPages - 1)
-    
-    def OnPackageDelete(self, e):
-        selectedPage = self.PackageAspect.GetSelection()
-        numPages = self.PackageAspect.GetPageCount()
-        pkgName = self.PackageAspect.GetPageText(selectedPage)
-        info = self.PackageAspectInfo.GetPageInfo(pkgName)
-        pkg = info.obj
-        if pkg.kind != 'rml':
-            if dialogs.ConfirmDialog(self,"Delete {}?".format(pkgName)):
-                self.UpdateUndo()
-                info.canvas.ClearAll()
-                pkg.delete()
-                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
-                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
-                self.PackageAspect.DeletePage(selectedPage)
-        else:
-            dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
-
-    def OnPackageGenerate(self,e):
-        pass
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnMouseWheel)
