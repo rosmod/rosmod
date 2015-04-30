@@ -193,34 +193,6 @@ class EditDialog(wx.Dialog):
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
 
-    def GenerateFieldString(self,fieldsList):
-        retStr = ""
-        for field in fieldsList:
-            fStr = ""
-            if len(field) == 2:
-                fStr = ' '.join(field)
-            elif len(field) == 3:
-                fStr = '{} {} = {}'.format(field[0],field[1],field[2])
-            if fStr != "":
-                retStr += fStr + '\n'
-        return retStr
-
-    def ParseFieldLine(self,fieldLine):
-        retField = []
-        tmp = fieldLine.split(" ")
-        if len(tmp) >= 2:
-            retField = [x for x in tmp if x != "="]
-        return retField
-
-    def ParseFields(self,fieldStr):
-        retFields = []
-        fields = fieldStr.split('\n')
-        for field in fields:
-            fLst = self.ParseFieldLine(field)
-            if fLst != []:
-                retFields.append(fLst)
-        return retFields
-
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
             if meta_class_dict[key].kind == "string":

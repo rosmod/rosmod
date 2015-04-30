@@ -274,7 +274,6 @@ def Layout(dObj, topLeftPos, canvas):
                 maxWidth = max(w,maxWidth)
             maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
             maxObjWidth += maxWidth
-            #childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
         elif dObj.style.childLayout == Child_Layout.SQUARE:
             sideLen = int(math.sqrt(len(dObj.children)))
             maxWidth = 0
@@ -290,6 +289,10 @@ def Layout(dObj, topLeftPos, canvas):
                     maxObjWidth += maxWidth
                     childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
                     maxWidth = 0
+        elif dObj.style.childLayout == Child_Layout.LINE:
+            pass # unimplemented
+        elif dObj.style.childLayout == Child_Layout.ROWS:
+            pass # unimplemented
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
 
