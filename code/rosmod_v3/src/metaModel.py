@@ -131,7 +131,7 @@ model_dict["Hardware"] = Meta_Entity(
 model_dict["rdp"] = Meta_Entity(
     "Project", 
     ["Hardware_Instance"], 
-    ["name","rdp_hardware"],
+    ["name","rhw_reference"],
     [], 
     ["rhw"])
 model_dict["Hardware_Instance"] = Meta_Entity(

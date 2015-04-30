@@ -179,7 +179,7 @@ class Example(wx.Frame):
             "Editing {} of type {}".format(self.activeObject.properties['name'],kind),
             msgWindow)
         references = []
-        referringObjectTypes = model_dict[kind].out_refs
+        refObjectTypes = model_dict[kind].out_refs
         for refObjType in refObjectTypes:
             references.extend(self.project.getChildrenByKind(refObjType))
 
@@ -276,53 +276,23 @@ class Example(wx.Frame):
                 numPages = 1
             BuildModelPage(self,self.activeAspect,newObj,self.activeAspectInfo,numPages-1)
             self.activeAspect.SetSelection(numPages - 1)
+
+    def OnAspectDelete(self, e):
+        selectedPage = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        modelName = self.activeAspect.GetPageText(selectedPage)
+        info = self.activeAspectInfo.GetPageInfo(modelName)
+        model = info.obj
+        if model.kind != 'rml' and\
+           dialogs.ConfirmDialog(self,"Delete {}?".format(modelName)):
+            self.UpdateUndo()
+            info.canvas.ClearAll()
+            model.deleteAllRefs(self.project)
+            model.delete()
+            self.activeAspect.GetPage(selectedPage).DestroyChildren()
+            self.activeAspectInfo.DelPageInfo(modelName)
+            self.activeAspect.DeletePage(selectedPage)
             
-    def OnPackageDelete(self, e):
-        selectedPage = self.PackageAspect.GetSelection()
-        numPages = self.PackageAspect.GetPageCount()
-        pkgName = self.PackageAspect.GetPageText(selectedPage)
-        info = self.PackageAspectInfo.GetPageInfo(pkgName)
-        pkg = info.obj
-        if pkg.kind != 'rml':
-            if dialogs.ConfirmDialog(self,"Delete {}?".format(pkgName)):
-                self.UpdateUndo()
-                info.canvas.ClearAll()
-                pkg.delete()
-                self.PackageAspect.GetPage(selectedPage).DestroyChildren()
-                self.PackageAspectInfo.DelPageInfo(pkg.properties['name'])
-                self.PackageAspect.DeletePage(selectedPage)
-        else:
-            dialogs.ErrorDialog(self,"Cannot Delete Workspace!")
-
-    def OnHardwareDelete(self, e):
-        selectedPage = self.HardwareAspect.GetSelection()
-        numPages = self.HardwareAspect.GetPageCount()
-        objName = self.HardwareAspect.GetPageText(selectedPage)
-        info = self.HardwareAspectInfo.GetPageInfo(objName)
-        obj = info.obj
-        if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
-            self.UpdateUndo()
-            info.canvas.ClearAll()
-            self.project.hardware_files = [x for x in self.project.hardware_files if x != obj]
-            self.HardwareAspect.GetPage(selectedPage).DestroyChildren()
-            self.HardwareAspectInfo.DelPageInfo(obj.properties['name'])
-            self.HardwareAspect.DeletePage(selectedPage)
-            os.remove(self.project.hardware_files_path + '/' + obj.properties['name'] + '.rhw')
-        
-    def OnDeploymentDelete(self, e):
-        selectedPage = self.DeploymentAspect.GetSelection()
-        objName = self.DeploymentAspect.GetPageText(selectedPage)
-        info = self.DeploymentAspectInfo.GetPageInfo(objName)
-        obj = info.obj
-        if dialogs.ConfirmDialog(self,"Delete {}?".format(objName)):
-            self.UpdateUndo()
-            info.canvas.ClearAll()
-            self.project.deployments = [x for x in self.project.deployments if x != obj]
-            self.DeploymentAspect.GetPage(selectedPage).DestroyChildren()
-            self.DeploymentAspectInfo.DelPageInfo(obj.properties['name'])
-            self.DeploymentAspect.DeletePage(selectedPage)
-            os.remove(self.project.deployment_path + '/' + obj.properties['name'] + '.rdp')
-
     def OnPackageGenerate(self,e):
         pass
 

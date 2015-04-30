@@ -233,7 +233,6 @@ class EditDialog(wx.Dialog):
                     ErrorDialog(self, "You must select a reference object!")
                     return False
                 self.returnDict[key] = obj
-                self.returnDict["reference"] = obj.parent.properties["name"] + "/" + obj.properties["name"]
         return True
 
     def GetInput(self):

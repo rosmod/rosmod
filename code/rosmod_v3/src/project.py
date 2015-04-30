@@ -33,7 +33,6 @@ class ROS_Project(Drawable_Object):
         self.workspace = type("ROS_Workspace", 
                               ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.workspace.kind = "rml"
-        self.children.append(self.workspace)
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.workspace_dir = ""
@@ -110,6 +109,7 @@ class ROS_Project(Drawable_Object):
         print "ROSTOOLS::Reading ROS Workspace:", self.workspace.properties["name"]
         # Walk the parse tree
         walker.walk(self.workspace_builder, tree)
+        self.children.append(self.workspace)
         return self.workspace
 
     # Parse .rhw hardware configurations model
@@ -129,14 +129,15 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
 
+        self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
+
         # Walk the parse tree
         walker.walk(self.hardware_builder, tree)
 
-        self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
-        print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
         self.hardware_files.append(self.hardware_builder.rhw)
-        for h_file in self.hardware_files:
-            self.children.append(h_file)
+        self.children.append(self.hardware_builder.rhw)
+        reference_dict[self.children[-1].properties["name"]] = self.children[-1]
         #self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
     # Parse .rdp software deployment model
@@ -155,14 +156,14 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()    
 
+        self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
+
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
 
-        self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
-        print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
         self.deployment_files.append(self.deployment_builder.rdp)
-        for d_file in self.deployment_files:
-            self.children.append(d_file)
+        self.children.append(self.deployment_builder.rdp)
         #return self.deployments
 
     # Parse all model files in all aspects of Project
@@ -239,6 +240,7 @@ class ROS_Project(Drawable_Object):
                         comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 
         for rdp in self.deployment_files:
+            rdp.properties["rhw_reference"] = reference_dict[rdp.properties["rdp_hardware"]]
             for hardware_instance in rdp.children:
                 for node_instance in hardware_instance.children:
                     node_instance.properties["node_reference"] = reference_dict[node_instance.properties["reference"]]

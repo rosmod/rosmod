@@ -33,8 +33,11 @@ def create_exitModel():
     def exitModel(self, ctx):
         child_object = self.active_objects.pop()
         child_object.parent = self.active_objects[-1]
-        if "name" in child_object.properties.keys() and "name" in self.active_objects[-1].properties.keys():
-            reference_dict[str(self.active_objects[-1].properties["name"]) + "/" + str(child_object.properties["name"])] = child_object
+        if model_dict[child_object.kind].in_refs != []:
+            scopeStr = ""
+            if "name" in self.active_objects[-1].properties.keys():
+                scopeStr += self.active_objects[-1].properties["name"] + "/"
+            reference_dict[scopeStr + str(child_object.properties["name"])] = child_object
         self.active_objects[-1].add(child_object)
     return exitModel
     
@@ -101,7 +104,7 @@ meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enter
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
 meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
-meta_class_dict["rdp_hardware"] = Grammar_Field("reference", "Rdp_hardware", create_enterAtom, create_exitAtom)
+meta_class_dict["rdp_hardware"] = Grammar_Field("hidden", "Rdp_hardware", create_enterAtom, create_exitAtom)
 meta_class_dict["ip_address"] = Grammar_Field("string", "Ip_address", create_enterAtom, create_exitAtom)
 meta_class_dict["username"] = Grammar_Field("string", "Username", create_enterAtom, create_exitAtom)
 meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, create_exitAtom)
@@ -116,6 +119,7 @@ meta_class_dict["service_reference"] = Grammar_Field("reference")
 meta_class_dict["component_reference"] = Grammar_Field("reference")
 meta_class_dict["node_reference"] = Grammar_Field("reference")
 meta_class_dict["port_reference"] = Grammar_Field("reference")
+meta_class_dict["rhw_reference"] = Grammar_Field("reference")
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):
