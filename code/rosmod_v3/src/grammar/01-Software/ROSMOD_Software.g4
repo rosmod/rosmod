@@ -273,12 +273,12 @@ WS
 // Paragraph comments are ignored
 COMMENT
     :   
-        '/*' .*? '*/' -> skip
+        WS_NL '/*' WS_NL .*? WS_NL '*/' WS_NL -> skip
     ;
 
 // Line comments are ignored
 LINE_COMMENT
     :   
-        '//' ~[\r\n]* -> skip
+        WS_NL '//' WS_NL ~[\r\n]* WS_NL -> skip
     ;
 
