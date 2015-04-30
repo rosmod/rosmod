@@ -189,7 +189,8 @@ deadline
 
 // Business Logic of Port
 abstract_business_logic
-    :   ID ( ' ' ID )*
+    :   
+        ID 
     ;
 
 /*
