@@ -67,7 +67,6 @@ meta_class_dict = OrderedDict()
 meta_class_dict["Package"] = Grammar_Field("object", "Package", create_enterModel, create_exitModel)
 
 meta_class_dict["Message"] = Grammar_Field("object", "Message", create_enterModel, create_exitModel)
-meta_class_dict["Field"] = Grammar_Field("code", "Field", create_enterModel, create_exitModel)
 
 meta_class_dict["Service"] = Grammar_Field("object", "Service", create_enterModel, create_exitModel)
 meta_class_dict["Request"] = Grammar_Field("code", "Request", create_enterModel, create_exitModel)
@@ -94,6 +93,9 @@ meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, cre
 
 # Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
+meta_class_dict["field"] = Grammar_Field("code", "Field", create_enterModel, create_exitModel)
+meta_class_dict["request_field"] = Grammar_Field("code", "Request_field", create_enterModel, create_exitModel)
+meta_class_dict["response_field"] = Grammar_Field("code", "Response_field", create_enterModel, create_exitModel)
 meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
 meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)

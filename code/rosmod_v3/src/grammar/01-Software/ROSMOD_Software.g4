@@ -11,7 +11,9 @@ grammar ROSMOD_Software;
  */
 start
     :   
+        WS_NL
         (package)+
+        WS_NL
         EOF
     ;
 
@@ -56,62 +58,66 @@ unit
  */
 package
     :   
-        'package' name
-        '{'
+        WS_NL
+        'package' WS_NL name
+        WS_NL '{' WS_NL
         ( message | service | component | node )*
-        '}'
+        WS_NL '}' WS_NL
     ;
 
 // ROS Message
 message
     :   
-        'msg' name
-        '{'
-        (field)*
-        '}'
+        WS_NL 'msg' WS_NL name
+        WS_NL '{' WS_NL
+        ( field )
+        WS_NL '}' WS_NL
     ;
 
 // ROS Field
 field
     :   
-        ( datatype name ( '=' value )? ';' )
+        ( ID ( ' ' | '\n' ) )*
     ;
 
 // ROS Service
 service
     :   
-        'srv' name
-        '{'
-        ( request )?
-        ( response )?
-        '}'
+        WS_NL 'srv' WS_NL name
+        WS_NL '{' WS_NL
+        ( WS_NL 'request' WS_NL
+        WS_NL '{' WS_NL 
+            ( request_field  ) 
+            WS_NL '}' WS_NL
+        )?
+        ( WS_NL 'response' WS_NL
+        WS_NL '{' WS_NL 
+            ( response_field  ) 
+            WS_NL '}' WS_NL
+        )?
+        WS_NL '}' WS_NL
     ;
 
 // ROS Service Request
-request
+request_field
     :   
-        'request'
-        '{'
-        ( field )*
-        '}'
+        ( ID ( WS_NL ) )*
     ;
 
 // ROS Service Response
-response
+response_field
     :   
-        'response'
-        '{'
-        ( field )*
-        '}'
+        ( ID ( WS_NL ) )*
     ;
 
 // ROS Component
 component
     :   
-        'component' name ':' datatype
-        '{'
+        WS_NL
+        'component' WS_NL name WS_NL ':' WS_NL datatype
+        WS_NL '{' WS_NL
         ( port | timer )*
-        '}'
+        WS_NL '}' WS_NL
     ;
 
 // ROS Component Port
@@ -123,48 +129,48 @@ port
 // ROS Client
 client
     :   
-        'client' '<' reference '>' name ';'
+        WS_NL 'client' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL ';'
     ;
 
 // ROS Server
 server
     :   
-        'server' '<' reference '>' name
-        '{'
-        ( 'priority' '=' priority ';' 
-        | 'deadline' '=' deadline ';'
-        | 'business_logic' '{' abstract_business_logic '}'
+        WS_NL 'server' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name
+        WS_NL '{' WS_NL
+        ( WS_NL 'priority' WS_NL '=' WS_NL priority WS_NL ';' WS_NL 
+        | WS_NL 'deadline' WS_NL '=' WS_NL deadline WS_NL ';' WS_NL
+        | WS_NL 'business_logic' WS_NL '{' WS_NL abstract_business_logic WS_NL '}' WS_NL
         )+
-        '}'
+        WS_NL '}' WS_NL
     ;
 
 // ROS Publisher
 publisher
     :   
-        'publisher' '<' reference '>' name ';'
+        WS_NL 'publisher' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL ';' WS_NL
     ;
 
 // ROS Subscriber
 subscriber
     :   
-        'subscriber' '<' reference '>' name
-        '{'
-        ( 'priority' '=' priority ';' 
-        | 'deadline' '=' deadline ';'
-        | 'business_logic' '{' abstract_business_logic '}'
+        WS_NL 'subscriber' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL
+        WS_NL '{' WS_NL
+        ( WS_NL 'priority' WS_NL '=' WS_NL priority WS_NL ';' WS_NL 
+        | WS_NL 'deadline' WS_NL '=' WS_NL deadline WS_NL ';' WS_NL
+        | WS_NL 'business_logic' WS_NL '{' WS_NL abstract_business_logic WS_NL '}' WS_NL
         )+
-        '}'
+        WS_NL '}' WS_NL
     ;
 
 // ROS Component Timer
 timer
     :   
-        'timer' name
-        '{'
-        ( 'period' '=' period ';'
-        | 'priority' '=' priority ';' 
-        | 'deadline' '=' deadline ';'
-        | 'business_logic' '{' abstract_business_logic '}'
+        WS_NL 'timer' WS_NL name WS_NL
+        WS_NL '{' WS_NL
+        ( WS_NL 'period' WS_NL '=' WS_NL period WS_NL ';' WS_NL
+        | WS_NL 'priority' WS_NL '=' WS_NL priority WS_NL ';' WS_NL 
+        | WS_NL 'deadline' WS_NL '=' WS_NL deadline WS_NL ';' WS_NL
+        | WS_NL 'business_logic' WS_NL '{' WS_NL abstract_business_logic WS_NL '}' WS_NL
         )+
         '}'
     ;
@@ -190,7 +196,7 @@ deadline
 // Business Logic of Port
 abstract_business_logic
     :   
-        ID 
+        ( ID ( ' ' | '\n' ) )*
     ;
 
 /*
@@ -200,8 +206,8 @@ abstract_business_logic
  */
 node
     :   
-        'node' name
-        '{'
+        WS_NL 'node' WS_NL name WS_NL
+        WS_NL '{' WS_NL
         ( component_instance )+
         '}'
     ;
@@ -213,7 +219,7 @@ node
  */
 component_instance
     :   
-        'component' '<' reference '>' name ';'
+        WS_NL 'component' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL ';' WS_NL
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
@@ -247,7 +253,13 @@ BOOL
         ( 'true' | 'false')
     ;
 
+WS_NL
+    :
+        ( ' ' | '\n' | '\t' )*
+    ;
+
 // White spaces and escape codes are ignored
+/*
 WS
     :   
         ( (' ')*
@@ -256,6 +268,7 @@ WS
         | '\n'
         ) -> channel(HIDDEN)
     ;
+*/
 
 // Paragraph comments are ignored
 COMMENT
