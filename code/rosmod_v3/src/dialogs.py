@@ -149,8 +149,6 @@ class EditDialog(wx.Dialog):
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
                 fieldStr = value
-                if value != None and value != []:
-                    fieldStr = self.GenerateFieldString(value)
                 field.SetText(fieldStr)
                 field.EmptyUndoBuffer()
                 field.Colourise(0,-1)
