@@ -115,7 +115,7 @@ class Example(wx.Frame):
         self.BuildStatusbar()
 
         BuildOutput(self)
-        AddPackageAspectToolbar(self)
+        AddAspectToolbar(self,"Software")
         self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-100)
         self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
@@ -786,9 +786,9 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnSaveAs, self.saveAsMI)
         self.Bind(wx.EVT_MENU, self.OnQuit, self.quitMI)
         # aspect menu
-        self.Bind(wx.EVT_MENU, lambda e : OnPackageAspect(self,e), self.packageAMI)
-        self.Bind(wx.EVT_MENU, lambda e : OnHardwareAspect(self,e), self.hardwareAMI)
-        self.Bind(wx.EVT_MENU, lambda e : OnDeploymentAspect(self,e), self.deploymentAMI)
+        self.Bind(wx.EVT_MENU, lambda e : OnAspect(self,"Software",e), self.packageAMI)
+        self.Bind(wx.EVT_MENU, lambda e : OnAspect(self,"Hardware",e), self.hardwareAMI)
+        self.Bind(wx.EVT_MENU, lambda e : OnAspect(self,"Deployment",e), self.deploymentAMI)
         # tools menu
         self.Bind(wx.EVT_MENU, self.GenerateCode, self.generateMI)
         self.Bind(wx.EVT_MENU, self.AnalyzeNetwork, self.networkQoSMI)

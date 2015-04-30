@@ -28,7 +28,8 @@ class AspectPageInfo():
         self.msgWindow = msgWindow
 
 class AspectInfo():
-    def __init__(self):
+    def __init__(self, kind):
+        self.kind = kind
         self.pages = OrderedDict()
         self.toolbarButtons = OrderedDict()
 
@@ -57,24 +58,15 @@ def InitAspects(self):
     self.activeAspectInfo = None
     self.Aspects = OrderedDict()
     self.AspectInfos = OrderedDict()
-    self.PackageAspect = None
-    self.PackageAspectInfo = None
-    self.HardwareAspect = None
-    self.HardwareAspectInfo = None
-    self.DeploymentAspect = None
-    self.DeploymentAspectInfo = None
     BuildAspects(self)
 
 '''
 Aspect Menubar Menu functions
 '''
 def HideAllAspects(self):
-    self.PackageAspect.Hide()
-    self.HardwareAspect.Hide()
-    self.DeploymentAspect.Hide()
-    RemovePackageAspectToolbar(self)
-    RemoveHardwareAspectToolbar(self)
-    RemoveDeploymentAspectToolbar(self)
+    for key,value in self.Aspects.iteritems():
+        value.Hide()
+        RemoveAspectToolbar(self,key)
 
 def ShowAspect(self,aspect):
     if self.shvw.IsChecked():
@@ -82,25 +74,11 @@ def ShowAspect(self,aspect):
         self.viewSplitter.ReplaceWindow(self.activeAspect,aspect)
         self.activeAspect = aspect
 
-def OnPackageAspect(self, e):
-    self.activeAspectInfo = self.PackageAspectInfo
+def OnAspect(self,kind,e):
+    self.activeAspectInfo = self.AspectInfos[kind]
     HideAllAspects(self)
-    ShowAspect(self,self.PackageAspect)
-    AddPackageAspectToolbar(self)
-    pageChange(self,None)
-
-def OnHardwareAspect(self, e):
-    self.activeAspectInfo = self.HardwareAspectInfo
-    HideAllAspects(self)
-    ShowAspect(self,self.HardwareAspect)
-    AddHardwareAspectToolbar(self)
-    pageChange(self,None)
-
-def OnDeploymentAspect(self, e):
-    self.activeAspectInfo = self.DeploymentAspectInfo
-    HideAllAspects(self)
-    ShowAspect(self,self.DeploymentAspect)
-    AddDeploymentAspectToolbar(self)
+    ShowAspect(self,self.Aspects[kind])
+    AddAspectToolbar(self,kind)
     pageChange(self,None)
 
 '''
@@ -110,75 +88,36 @@ Build all the Aspects required for ROSMOD:
 * Deployment aspect : used for assigning nodes to hosts
 '''
 def BuildAspects(self):
-    self.PackageAspectInfo = AspectInfo()
-    self.HardwareAspectInfo = AspectInfo()
-    self.DeploymentAspectInfo = AspectInfo()
-    BuildPackageAspect(self)
-    BuildHardwareAspect(self)
-    BuildDeploymentAspect(self)
-    self.activeAspect = self.PackageAspect
-    self.activeAspectInfo = self.PackageAspectInfo
+    self.AspectTypes = OrderedDict()
+    self.AspectTypes["Software"] = ["Package","rml"]
+    self.AspectTypes["Hardware"] = ["rhw"]
+    self.AspectTypes["Deployment"] = ["rdp"]
 
-'''
-Hardware Aspect: panel with toolbar for configuring system hardware (hosts)
-'''
-def BuildHardwareAspect(self):
-    self.HardwareAspect = fnb.FlatNotebook(self.viewSplitter,
-                                           agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-    self.HardwareAspect.Hide()
-    self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
-    self.HardwareAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
-    
-'''
-Deployment Aspect: panel with toolbar and notebook for configuring and managing
-node deployment onto hosts (and roscore deployment)
-'''        
-def BuildDeploymentAspect(self):
-    self.DeploymentAspect = fnb.FlatNotebook(self.viewSplitter,
-                                             agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-    self.DeploymentAspect.Hide()
-    self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
-    self.DeploymentAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
+    self.AspectInfos["Software"] = AspectInfo("Software")
+    self.AspectInfos["Hardware"] = AspectInfo("Hardware")
+    self.AspectInfos["Deployment"] = AspectInfo("Deployment")
+    for key in self.AspectInfos.keys():
+        BuildAspect(self,key)
+    self.activeAspect = self.Aspects["Software"]
+    self.activeAspectInfo = self.AspectInfos["Software"]
 
-'''
-Package Aspect: panel with toolbar and notebook for managing packages
-'''
-def BuildPackageAspect(self):
-    self.PackageAspect = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY,
+def BuildAspect(self,kind):
+    self.Aspects[kind] = fnb.FlatNotebook(self.viewSplitter,
                                           agwStyle=fnb.FNB_NODRAG|fnb.FNB_NO_X_BUTTON)
-    self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
-    self.PackageAspect.Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
-
-
+    self.Aspects[kind].Hide()
+    self.Aspects[kind].Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGED, lambda e : OnPageChanged(self,e))
+    self.Aspects[kind].Bind(fnb.EVT_FLATNOTEBOOK_PAGE_CHANGING, lambda e : OnPageChanging(self,e))
 
 def BuildAspectPages(self):
-    BuildPackageAspectPages(self)
-    BuildHardwareAspectPages(self)
-    BuildDeploymentAspectPages(self)
-def BuildPackageAspectPages(self):
-    self.PackageAspect.DeleteAllPages()
-    for pkg in self.project.getChildrenByKind("Package"):
-        BuildModelPage(self, parent = self.PackageAspect,
-                             model = pkg,
-                             aspectInfo = self.PackageAspectInfo)
-    BuildModelPage(self, parent = self.PackageAspect,
-                         model = self.project.getChildrenByKind("rml")[0],
-                         aspectInfo = self.PackageAspectInfo)
-    self.PackageAspect.AdvanceSelection()
-def BuildHardwareAspectPages(self):
-    self.HardwareAspect.DeleteAllPages()
-    for hw in self.project.getChildrenByKind("rhw"):
-        BuildModelPage(self, parent = self.HardwareAspect,
-                             model = hw,
-                             aspectInfo = self.HardwareAspectInfo)
-    self.DeploymentAspect.AdvanceSelection()
-def BuildDeploymentAspectPages(self):
-    self.DeploymentAspect.DeleteAllPages()
-    for dep in self.project.getChildrenByKind("rdp"):
-        BuildModelPage(self, parent = self.DeploymentAspect,
-                             model = dep,
-                             aspectInfo = self.DeploymentAspectInfo)
-    self.DeploymentAspect.AdvanceSelection()
+    for key in self.Aspects.keys():
+        kinds = self.AspectTypes[key]
+        for kind in kinds:
+            pages = self.project.getChildrenByKind(kind)
+            for page in pages:
+                BuildModelPage(self, parent = self.Aspects[key],
+                               model = page,
+                               aspectInfo = self.AspectInfos[key])
+        self.Aspects[key].AdvanceSelection()
 
 def BuildModelPage(self,parent,model,aspectInfo,insertPos=-1):
     newPage = wx.Panel(parent)
@@ -211,12 +150,23 @@ Package Aspect Functions
 '''
 def pageChange(self, event):
     self.activeAspect.Refresh()
-    if self.activeAspect == self.PackageAspect:
-        PackageAspectPageChange(self,event)
-    elif self.activeAspect == self.HardwareAspect:
-        HardwareAspectPageChange(self,event)
-    elif self.activeAspect == self.DeploymentAspect:
-        DeploymentAspectPageChange(self,event)
+    AspectPageChange(self,self.activeAspectInfo.kind,event)
+
+def AspectPageChange(self,kind,event):
+    sel = self.activeAspect.GetSelection()
+    numPages = self.activeAspect.GetPageCount()
+    deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
+    if numPages > 1:
+        self.toolbar.EnableTool(deleteTBID, True)
+    else:
+        self.toolbar.EnableTool(deleteTBID, False)
+    if sel >= 0:
+        pageName = self.activeAspect.GetPageText(sel)
+        info = self.activeAspectInfo.GetPageInfo(pageName)
+        hw = info.obj
+        canvas = info.canvas
+        drawable.Configure(hw,self.styleDict)
+        self.DrawModel(hw,canvas)
 
 def PackageAspectPageChange(self, event):
     sel = self.activeAspect.GetSelection()
@@ -233,38 +183,6 @@ def PackageAspectPageChange(self, event):
             self.toolbar.EnableTool(deleteTBID, True)
         drawable.Configure(pkg,self.styleDict)
         self.DrawModel(pkg,canvas)
-
-def HardwareAspectPageChange(self, event):
-    sel = self.activeAspect.GetSelection()
-    numPages = self.activeAspect.GetPageCount()
-    deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-    if numPages > 1:
-        self.toolbar.EnableTool(deleteTBID, True)
-    else:
-        self.toolbar.EnableTool(deleteTBID, False)
-    if sel >= 0:
-        pageName = self.activeAspect.GetPageText(sel)
-        info = self.activeAspectInfo.GetPageInfo(pageName)
-        hw = info.obj
-        canvas = info.canvas
-        drawable.Configure(hw,self.styleDict)
-        self.DrawModel(hw,canvas)
-
-def DeploymentAspectPageChange(self, event):
-    sel = self.activeAspect.GetSelection()
-    numPages = self.activeAspect.GetPageCount()
-    deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-    if numPages > 1:
-        self.toolbar.EnableTool(deleteTBID, True)
-    else:
-        self.toolbar.EnableTool(deleteTBID, False)
-    if sel >= 0:
-        pageName = self.activeAspect.GetPageText(sel)
-        info = self.activeAspectInfo.GetPageInfo(pageName)
-        dep = info.obj
-        canvas = info.canvas
-        drawable.Configure(dep,self.styleDict)
-        self.DrawModel(dep,canvas)
         
 def OnPageChanged(self, event):
     pageChange(self,event)

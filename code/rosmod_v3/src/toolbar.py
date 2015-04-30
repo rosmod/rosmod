@@ -1,5 +1,6 @@
 import wx
 import os,sys
+from collections import OrderedDict
 
 #from aspect import *
 
@@ -10,12 +11,40 @@ editorPath=head
 rootIconPath= editorPath + '/icons'
 toolbarIconPath= rootIconPath + '/toolbar'
 
+class TBItem:
+    def __init__(self, name, icon, helpStr, func):
+        self.name = name
+        self.icon = icon
+        self.helpStr = helpStr
+        self.func = func
+
+aspectToolbarDict = OrderedDict()
+
 class TBInfo():
     def __init__(self,name, obj):
         self.name = name
         self.obj = obj
 
 def BuildToolbar(self):
+    aspectToolbarDict["Software"] = [
+        TBItem("create","/tnew.png","New Package",lambda e : self.OnAspectCreate("Package",e)),
+        TBItem("delete","/texit.png","Remove Package", self.OnAspectDelete),
+        TBItem("generate","/tgenerate.png","Generate Executable Files", self.OnPackageGenerate)
+    ]
+    aspectToolbarDict["Hardware"] = [
+        TBItem("create","/tnew.png","New Hardware",lambda e : self.OnAspectCreate("rhw",e)),
+        TBItem("delete","/texit.png","Remove Hardware", self.OnAspectDelete),
+    ]
+    aspectToolbarDict["Deployment"] = [
+        TBItem("create","/tnew.png","New Deployment",lambda e : OnAspectCreate("rdp",e)),
+        TBItem("delete","/texit.png","Remove Deployment", self.OnAspectDelete),
+        TBItem("generate","/tgenerate.png","Generate Deployment Files", self.OnDeploymentGenerate),
+        TBItem("move","/tmove.png","Copy Deployment Files", self.OnDeploymentMove),
+        TBItem("deploy","/tdeploy.png","Deploy onto System", self.OnDeploymentDeploy),
+        TBItem("stop","/tstop.png","Stop Deployed System", self.OnDeploymentStop),
+        TBItem("run","/trun.png","Run <Command> on All Hosts", self.OnDeploymentRun)
+    ]
+
     self.toolbar = self.CreateToolBar()
     # file operations
     self.tb_new = self.toolbar.AddLabelTool(
@@ -46,122 +75,23 @@ def BuildToolbar(self):
     self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
     self.Bind(wx.EVT_TOOL, self.OnTerminal, self.tb_term)
 
-def AddHardwareAspectToolbar(self):
-    labelTBinfo = TBInfo( name="label",
-                          obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Hardware:"))
-    self.toolbar.AddControl(labelTBinfo.obj)
-    createTBinfo = TBInfo(
-        name="create",
-        obj=self.toolbar.AddTool(wx.ID_ANY,
-                                 bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
-                                 shortHelpString="New Hardware Configuration"))
-    deleteTBinfo = TBInfo(
-        name="delete",
-        obj=self.toolbar.AddTool(wx.ID_ANY,
-                                 bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
-                                 shortHelpString="Remove Hardware Configuration"))
-    self.HardwareAspectInfo.AddTBInfo(labelTBinfo)
-    self.HardwareAspectInfo.AddTBInfo(createTBinfo)
-    self.HardwareAspectInfo.AddTBInfo(deleteTBinfo)
-    self.Bind(wx.EVT_TOOL, lambda e : self.OnAspectCreate("rhw",e), createTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnAspectDelete, deleteTBinfo.obj)
-    self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
+def AddAspectToolbar(self,kind):
+    tbi = TBInfo( name="label",
+                  obj = wx.StaticText( self.toolbar, wx.ID_ANY, kind+":"))
+    self.toolbar.AddControl(tbi.obj)
+    self.AspectInfos[kind].AddTBInfo(tbi)
+    for item in aspectToolbarDict[kind]:
+        tbi = TBInfo( name = item.name,
+                      obj = self.toolbar.AddTool( wx.ID_ANY,
+                                                  bitmap = wx.Bitmap(toolbarIconPath + item.icon),
+                                                  shortHelpString = item.helpStr))
+        self.AspectInfos[kind].AddTBInfo(tbi)
+        self.Bind(wx.EVT_TOOL, item.func, tbi.obj)
     self.toolbar.Realize()
 
-def RemoveHardwareAspectToolbar(self):
-    for name,tbinfo in self.HardwareAspectInfo.toolbarButtons.iteritems():
+def RemoveAspectToolbar(self,kind):
+    for name,tbinfo in self.AspectInfos[kind].toolbarButtons.iteritems():
         self.toolbar.RemoveTool(tbinfo.obj.GetId())
-        self.HardwareAspectInfo.DelTBInfo(name)
+        self.AspectInfos[kind].DelTBInfo(name)
     self.toolbar.Realize()
 
-
-def AddDeploymentAspectToolbar(self):
-    labelTBinfo = TBInfo( name="label",
-                              obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Deployment:"))
-    self.toolbar.AddControl(labelTBinfo.obj)
-    createTBinfo = TBInfo( name="create",
-                           obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                    bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
-                                                    shortHelpString="New Deployment"))
-    deleteTBinfo = TBInfo( name="delete",
-                           obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                    bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
-                                                    shortHelpString="Remove Deployment"))
-    generateTBinfo = TBInfo (name='generate',
-                             obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                      bitmap = wx.Bitmap(toolbarIconPath + '/tgenerate.png'),
-                                                      shortHelpString="Generate Deployment Files"))
-    moveTBinfo = TBInfo (name='move',
-                         obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                  bitmap = wx.Bitmap(toolbarIconPath + '/tmove.png'),
-                                                  shortHelpString="Copy Deployment Files"))
-    deployTBinfo = TBInfo( name='deploy',
-                           obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                    bitmap = wx.Bitmap(toolbarIconPath + '/tdeploy.png'),
-                                                    shortHelpString="Deploy System"))
-    stopTBinfo = TBInfo( name='stop',
-                         obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                  bitmap = wx.Bitmap(toolbarIconPath + '/tstop.png'),
-                                                  shortHelpString="Stop Deployed System"))
-    runTBinfo = TBInfo( name='run',
-                        obj=self.toolbar.AddTool(wx.ID_ANY,
-                                                 bitmap = wx.Bitmap(toolbarIconPath + '/trun.png'),
-                                                 shortHelpString="Run <Command> on All Hosts"))
-    self.DeploymentAspectInfo.AddTBInfo(labelTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(createTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(deleteTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(generateTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(moveTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(deployTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(stopTBinfo)
-    self.DeploymentAspectInfo.AddTBInfo(runTBinfo)
-    self.Bind(wx.EVT_TOOL, lambda e : self.OnAspectCreate("rdp",e), createTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnAspectDelete, deleteTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnDeploymentGenerate, generateTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnDeploymentMove, moveTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnDeploymentDeploy, deployTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnDeploymentStop, stopTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnDeploymentRun, runTBinfo.obj)
-    self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
-    self.toolbar.Realize()
-
-def RemoveDeploymentAspectToolbar(self):
-    for name,tbinfo in self.DeploymentAspectInfo.toolbarButtons.iteritems():
-        self.toolbar.RemoveTool(tbinfo.obj.GetId())
-        self.DeploymentAspectInfo.DelTBInfo(name)
-    self.toolbar.Realize()
-
-
-def AddPackageAspectToolbar(self):
-    labelTBinfo = TBInfo( name="label",
-                          obj = wx.StaticText( self.toolbar, wx.ID_ANY, "Software:"))
-    self.toolbar.AddControl(labelTBinfo.obj)
-    createTBinfo = TBInfo(
-        name="create",
-        obj=self.toolbar.AddTool(wx.ID_ANY,
-                                 bitmap = wx.Bitmap(toolbarIconPath + '/tnew.png'), 
-                                 shortHelpString="New Package"))
-    deleteTBinfo = TBInfo(
-        name="delete",
-        obj=self.toolbar.AddTool(wx.ID_ANY,
-                                 bitmap = wx.Bitmap(toolbarIconPath + '/texit.png'), 
-                                 shortHelpString="Remove Package"))
-    generateTBinfo = TBInfo(
-        name="generate",
-        obj=self.toolbar.AddTool(wx.ID_ANY,
-                                 bitmap = wx.Bitmap(toolbarIconPath + '/tgenerate.png'), 
-                                 shortHelpString="Generate Software"))
-    self.PackageAspectInfo.AddTBInfo(labelTBinfo)
-    self.PackageAspectInfo.AddTBInfo(createTBinfo)
-    self.PackageAspectInfo.AddTBInfo(deleteTBinfo)
-    self.PackageAspectInfo.AddTBInfo(generateTBinfo)
-    self.Bind(wx.EVT_TOOL, lambda e : self.OnAspectCreate("Package",e), createTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnAspectDelete, deleteTBinfo.obj)
-    self.Bind(wx.EVT_TOOL, self.OnPackageGenerate, generateTBinfo.obj)
-    self.toolbar.EnableTool(deleteTBinfo.obj.GetId(),False)
-    self.toolbar.Realize()
-def RemovePackageAspectToolbar(self):
-    for name,tbinfo in self.PackageAspectInfo.toolbarButtons.iteritems():
-        self.toolbar.RemoveTool(tbinfo.obj.GetId())
-        self.PackageAspectInfo.DelTBInfo(name)
-    self.toolbar.Realize()
