@@ -159,7 +159,6 @@ def pageChange(self, event):
 def AspectPageChange(self,kind,event):
     sel = self.activeAspect.GetSelection()
     numPages = self.activeAspect.GetPageCount()
-    deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
     info = None
     if sel >= 0:
         pageName = self.activeAspect.GetPageText(sel)
@@ -168,26 +167,11 @@ def AspectPageChange(self,kind,event):
         canvas = info.canvas
         drawable.Configure(model,self.styleDict)
         self.DrawModel(model,canvas)
+    deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
     if numPages > 1 and info != None and info.deletable == True:
         self.toolbar.EnableTool(deleteTBID, True)
     else:
         self.toolbar.EnableTool(deleteTBID, False)
-
-def PackageAspectPageChange(self, event):
-    sel = self.activeAspect.GetSelection()
-    numPages = self.activeAspect.GetPageCount()
-    if sel >= 0:
-        pageName = self.activeAspect.GetPageText(sel)
-        info = self.activeAspectInfo.GetPageInfo(pageName)
-        pkg = info.obj
-        canvas = info.canvas
-        deleteTBID = self.activeAspectInfo.GetTBInfo("delete").obj.GetId()
-        if pkg.kind == 'rml':
-            self.toolbar.EnableTool(deleteTBID, False)
-        else:
-            self.toolbar.EnableTool(deleteTBID, True)
-        drawable.Configure(pkg,self.styleDict)
-        self.DrawModel(pkg,canvas)
         
 def OnPageChanged(self, event):
     pageChange(self,event)

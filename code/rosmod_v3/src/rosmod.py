@@ -196,10 +196,7 @@ class Example(wx.Frame):
             self.UpdateUndo()
             for key,value in inputs.iteritems():
                 self.activeObject.properties[key] = value
-            if self.activeObject.kind == 'Package' or \
-               self.activeObject.kind == 'rml' or \
-               self.activeObject.kind == 'rhw' or \
-               self.activeObject.kind == 'rdp':
+            if self.activeObject == obj:
                 newName = self.activeObject.properties['name']
                 prevName = prevProps['name']
                 info.name = newName
@@ -207,8 +204,8 @@ class Example(wx.Frame):
                 if newName != prevName:
                     self.activeAspectInfo.DelPageInfo(prevName)
             if self.activeObject.kind == 'rdp':
-                prevRef = prevProps['rdp_hardware']
-                newRef = self.activeObject.properties['rdp_hardware']
+                prevRef = prevProps['rhw_reference']
+                newRef = self.activeObject.properties['rhw_reference']
                 if newRef != prevRef:
                     self.activeObject.children = []
             drawable.Configure(obj,self.styleDict)
@@ -223,12 +220,11 @@ class Example(wx.Frame):
         model = info.obj
         canvas = info.canvas
         msgWindow = info.msgWindow
-        if self.activeObject.kind == 'rml':
-            dialogs.ErrorDialog(self,"Cannot delete workspace!")
-        elif self.activeObject.kind == 'Package' or \
-             self.activeObject.kind == 'rhw' or \
-             self.activeObject.kind == 'rdp':
-            wx.CallAfter(self.OnAspectDelete,e)
+        if model == self.activeObject:
+            if info.deletable and self.activeAspect.GetPageCount() > 1:
+                wx.CallAfter(self.OnAspectDelete,e)
+            else:
+                dialogs.ErrorDialog(self, "Cannot delete {}".format(model.properties["name"]))
         else:
             if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
                 self.UpdateUndo()
@@ -288,6 +284,7 @@ class Example(wx.Frame):
             self.activeAspect.GetPage(selectedPage).DestroyChildren()
             self.activeAspectInfo.DelPageInfo(modelName)
             self.activeAspect.DeletePage(selectedPage)
+            self.activeObject = None
             
     def OnPackageGenerate(self,e):
         self.GenerateCode(e)
