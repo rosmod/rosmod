@@ -154,6 +154,8 @@ class Drawable_Object:
         self.parent.children = [x for x in self.parent.children if x != self]
 
     def deleteAllRefs(self,project):
+        for child in self.children:
+            child.deleteAllRefs(project)
         referringObjectTypes = model_dict[self.kind].in_refs
         for refObjType,refName in referringObjectTypes:
             refObjs = project.getChildrenByKind(refObjType)
