@@ -72,8 +72,13 @@ from ROSMOD_DeploymentListener import ROSMOD_DeploymentListener
 class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
     __metaclass__ = Grammar_MetaClass
 
-    def __init__(self, workspace, project):
-        self.active_objects = [workspace]
+    def __init__(self, project):
+        # Create a ROS Workspace Object
+        self.rml = type("ROS_RML", 
+                              ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
+        self.rml.parent = project
+        self.rml.kind = "rml"
+        self.active_objects = [self.rml]
 
 # Build ROS Hardware from Hardware Model
 # Use Metaclass to obtain listener functions

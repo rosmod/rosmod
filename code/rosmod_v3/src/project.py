@@ -29,15 +29,9 @@ class ROS_Project(Drawable_Object):
         # Path to ROS Project
         self.project_path = kwargs.pop("path", "")
 
-        # Create a ROS Workspace Object
-        self.workspace = type("ROS_Workspace", 
-                              ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
-        self.workspace.kind = "rml"
         # Workspace Path
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.workspace_dir = ""
-        # ROS Workspace Builder
-        self.workspace_builder = ROS_Workspace_Builder(self.workspace, self)
 
         # Hardware Configurations Path
         self.hardware_path = os.path.join(self.project_path, "02-Hardware")
@@ -48,6 +42,10 @@ class ROS_Project(Drawable_Object):
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
         # Deployment Configurations - List of all rdp objects in Project
         self.deployment_files = []
+    
+    # Create a new ROSMOD Project
+    def new(self):
+        pass
 
     # Open an existing ROSMOD Project
     def open(self, project_path):
@@ -99,14 +97,15 @@ class ROS_Project(Drawable_Object):
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
-        self.workspace.properties = OrderedDict()
-        self.workspace.children = []
-        self.workspace.properties["name"] = os.path.basename(filename.split(".")[0])
-        print "ROSTOOLS::Reading ROS Workspace:", self.workspace.properties["name"]
+        
+        self.workspace_builder = ROS_Workspace_Builder(self)
+        self.workspace_builder.rml.properties["name"] = os.path.basename(filename.split(".")[0])
+        print "ROSTOOLS::Reading ROS Workspace:", self.workspace_builder.rml.properties["name"]
+
         # Walk the parse tree
         walker.walk(self.workspace_builder, tree)
-        self.children.append(self.workspace)
-        return self.workspace
+
+        self.children.append(self.workspace_builder.rml)
 
     # Parse .rhw hardware configurations model
     def parse_rhw(self, filename):
@@ -136,7 +135,6 @@ class ROS_Project(Drawable_Object):
         self.hardware_files.append(self.hardware_builder.rhw)
         self.children.append(self.hardware_builder.rhw)
         reference_dict[self.children[-1].properties["name"]] = self.children[-1]
-        #self.hardware_builder = ROS_Hardware_Builder(self.hardware_files, self)
 
     # Parse .rdp software deployment model
     def parse_rdp(self, filename):
@@ -164,7 +162,6 @@ class ROS_Project(Drawable_Object):
 
         self.deployment_files.append(self.deployment_builder.rdp)
         self.children.append(self.deployment_builder.rdp)
-        #return self.deployments
 
     # Parse all model files in all aspects of Project
     def parse_models(self):
@@ -210,7 +207,7 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Loader Object
         business_logic = ROSMOD_Loader()
         # Use load to load existing business logic
-        business_logic.load(self.workspace, self.workspace_path)
+        business_logic.load(self.workspace_builder.rml, self.workspace_path)
 
     # Generate the ROS workspace corresponding to the input model
     def generate_workspace(self):
@@ -219,7 +216,7 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Generator Object
         workspace_generator = ROSMOD_Generator()
         # Use listener_object to generate ROS workspace
-        self.workspace_dir = workspace_generator.generate(self.workspace, 
+        self.workspace_dir = workspace_generator.generate(self.workspace_builder.rml, 
                                                           self.workspace_path, 
                                                           self.deployment_files, 
                                                           self.deployment_path)
@@ -227,7 +224,7 @@ class ROS_Project(Drawable_Object):
     # Resolving References in all workspace packages
     def resolve_references(self):
         print "ROSTOOLS::Fixing unresolved references"
-        for package in self.workspace.children:
+        for package in self.workspace_builder.rml.children:
             for package_child in package.children:
                 if package_child.kind == "Component":
                     for port in package_child.children:
@@ -240,8 +237,9 @@ class ROS_Project(Drawable_Object):
                         comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 
         for rdp in self.deployment_files:
-            rdp.properties["rhw_reference"] = reference_dict[rdp.properties["rdp_hardware"]]
+            rdp.properties["rhw_reference"] = reference_dict[rdp.properties["reference"]]
             for hardware_instance in rdp.children:
+                hardware_instance.properties["hardware_reference"] = reference_dict[hardware_instance.properties["reference"]]
                 for node_instance in hardware_instance.children:
                     node_instance.properties["node_reference"] = reference_dict[node_instance.properties["reference"]]
                     for port_instance in node_instance.children:

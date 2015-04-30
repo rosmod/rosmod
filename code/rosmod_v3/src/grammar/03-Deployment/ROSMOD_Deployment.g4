@@ -10,7 +10,7 @@ grammar ROSMOD_Deployment;
  * This is the start of the deployment model
  */
 start
-    :   ( 'using' rdp_hardware ';' )
+    :   ( 'using' reference ';' )
         ( hardware_instance )+
     ;
 
@@ -48,6 +48,7 @@ hardware_instance
 hardware_instance_properties
     :   'properties'
         '{'
+        ( 'ref' '=' '"' reference '"' ';' )
         ( 'ip_address' '=' '"' ip_address '"' ';'  )
         ( 'username' '=' '"' username '"' ';' )
         ( 'sshkey' '=' '"' sshkey '"' ';'  )

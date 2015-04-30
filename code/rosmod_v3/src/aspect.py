@@ -155,24 +155,24 @@ def BuildAspectPages(self):
     BuildDeploymentAspectPages(self)
 def BuildPackageAspectPages(self):
     self.PackageAspect.DeleteAllPages()
-    for pkg in self.project.workspace.children:
+    for pkg in self.project.getChildrenByKind("Package"):
         BuildModelPage(self, parent = self.PackageAspect,
                              model = pkg,
                              aspectInfo = self.PackageAspectInfo)
     BuildModelPage(self, parent = self.PackageAspect,
-                         model = self.project.workspace,
+                         model = self.project.getChildrenByKind("rml")[0],
                          aspectInfo = self.PackageAspectInfo)
     self.PackageAspect.AdvanceSelection()
 def BuildHardwareAspectPages(self):
     self.HardwareAspect.DeleteAllPages()
-    for hw in self.project.hardware_files:
+    for hw in self.project.getChildrenByKind("rhw"):
         BuildModelPage(self, parent = self.HardwareAspect,
                              model = hw,
                              aspectInfo = self.HardwareAspectInfo)
     self.DeploymentAspect.AdvanceSelection()
 def BuildDeploymentAspectPages(self):
     self.DeploymentAspect.DeleteAllPages()
-    for dep in self.project.deployment_files:
+    for dep in self.project.getChildrenByKind("rdp"):
         BuildModelPage(self, parent = self.DeploymentAspect,
                              model = dep,
                              aspectInfo = self.DeploymentAspectInfo)

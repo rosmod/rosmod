@@ -120,6 +120,7 @@ meta_class_dict["component_reference"] = Grammar_Field("reference")
 meta_class_dict["node_reference"] = Grammar_Field("reference")
 meta_class_dict["port_reference"] = Grammar_Field("reference")
 meta_class_dict["rhw_reference"] = Grammar_Field("reference")
+meta_class_dict["hardware_reference"] = Grammar_Field("reference")
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):

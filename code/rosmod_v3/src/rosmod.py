@@ -611,8 +611,9 @@ class Example(wx.Frame):
             if inputs != OrderedDict():
                 self.filename = inputs['name']
                 self.project_path = project_path
-                self.project = project.ROS_Project()
-                self.project.new(self.filename,self.project_path)
+                self.project = project.ROS_Project(name = self.filename,
+                                                   project_path = self.project_path)
+                self.project.new()
                 self.project.workspace.properties['name'] = "Workspace"
                 newHW = project.ROS_HW()
                 newHW.properties['name'] = "Hardware"
