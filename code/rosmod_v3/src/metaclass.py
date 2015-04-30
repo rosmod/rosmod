@@ -105,7 +105,6 @@ meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enter
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
 meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
-meta_class_dict["rdp_hardware"] = Grammar_Field("hidden", "Rdp_hardware", create_enterAtom, create_exitAtom)
 meta_class_dict["ip_address"] = Grammar_Field("string", "Ip_address", create_enterAtom, create_exitAtom)
 meta_class_dict["username"] = Grammar_Field("string", "Username", create_enterAtom, create_exitAtom)
 meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, create_exitAtom)
