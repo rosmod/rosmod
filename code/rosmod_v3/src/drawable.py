@@ -14,7 +14,7 @@ class Text_Placement:
     TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
 
 class Child_Layout:
-    ROWS, COLUMNS, STACK, LINE, SQUARE = range(5)
+    ROWS, COLUMNS, STACK, LINE, SQUARE, HIDDEN = range(6)
 
 class Draw_Method:
     RECT, ROUND_RECT, ICON, HIDDEN = range(4)
@@ -93,6 +93,7 @@ class Draw_Style:
                  icon=None, 
                  font=OrderedDict([('pointSize',20)]), 
                  method=Draw_Method.ICON, 
+                 childLayout = Child_Layout.STACK,
                  placement=Text_Placement.TOP,
                  overlay = OrderedDict(),
                  padding = (10,10),
@@ -103,6 +104,7 @@ class Draw_Style:
         self.font = font
         self.method = method
         self.textPlacement = placement
+        self.childLayout = childLayout
         self.overlay = overlay
         self.padding = padding
         self.offset = offset
@@ -112,6 +114,7 @@ class Draw_Style:
         self.icon = other.icon
         self.font = copy.deepcopy(other.font)
         self.method = copy.deepcopy(other.method)
+        self.childLayout = copy.deepcopy(other.childLayout)
         self.textPlacement = copy.deepcopy(other.textPlacement)
         self.overlay = copy.deepcopy(other.overlay)
         self.padding = copy.deepcopy(other.padding)
@@ -251,16 +254,45 @@ def Layout(dObj, topLeftPos, canvas):
         dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
         childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
         childTypes = model_dict[dObj.kind].children
-        for childType in childTypes:
-            children = dObj.getChildrenByKind(childType)
+        maxWidth = 0
+        if dObj.style.childLayout == Child_Layout.COLUMNS:
+            for childType in childTypes:
+                children = dObj.getChildrenByKind(childType)
+                maxWidth = 0
+                for child in children:
+                    w,h = Layout(child,childPos,canvas)
+                    childPos[1] -= (padding[1] + h)
+                    maxWidth = max(w,maxWidth)
+                maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
+                maxObjWidth += maxWidth
+                childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
+        elif dObj.style.childLayout == Child_Layout.STACK:
             maxWidth = 0
-            for child in children:
+            for child in dObj.children:
                 w,h = Layout(child,childPos,canvas)
                 childPos[1] -= (padding[1] + h)
                 maxWidth = max(w,maxWidth)
             maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
             maxObjWidth += maxWidth
-            childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
+            #childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
+        elif dObj.style.childLayout == Child_Layout.SQUARE:
+            sideLen = int(math.sqrt(len(dObj.children)))
+            maxWidth = 0
+            numDone = 0
+            while numDone < len(dObj.children):
+                obj = dObj.children[numDone]
+                w,h = Layout(obj,childPos,canvas)
+                childPos[1] -= (padding[1] + h)
+                maxWidth = max(w,maxWidth)
+                numDone += 1
+                if (numDone % sideLen) == 0:
+                    maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
+                    maxObjWidth += maxWidth
+                    childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
+                    maxWidth = 0
+        maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
+        maxObjWidth = max(maxObjWidth, maxWidth)
+
         dObj.width = maxObjWidth
         dObj.height = maxObjHeight
         dObj.textPosition = getTextPos(
