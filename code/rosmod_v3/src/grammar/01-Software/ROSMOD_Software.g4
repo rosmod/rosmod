@@ -66,7 +66,7 @@ component
 // Component Scheduling Scheme
 scheduling_scheme
     :
-        ID
+        ( 'FIFO' | 'PFIFO' | 'EDF' )
     ;
 
 // ROS Component Port
