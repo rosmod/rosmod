@@ -252,3 +252,23 @@ class EditDialog(wx.Dialog):
     def OnClose(self, e):
         self.returnDict = OrderedDict()
         self.Destroy()
+
+class Wizard:
+    def __init__(self, parent, propDictDict):
+        self.parent = parent
+        self.propDictDict = propDictDict
+
+    def GetInput(self):
+        for objName,propDict in self.propDictDict.iteritems():
+            ed = EditDialog( self.parent,
+                             editObj = None,
+                             editDict = propDict,
+                             title = "Configure {}".format(objName),
+                             style = wx.RESIZE_BORDER)
+            ed.ShowModal()
+            inputs = ed.GetInput()
+            if inputs != OrderedDict():
+                self.propDictDict[objName] = inputs
+            else:
+                return None
+        return self.propDictDict

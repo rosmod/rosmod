@@ -594,30 +594,22 @@ class Example(wx.Frame):
             path = self.project_path,
         )
         if project_path != None:
-            dlgObj = project.ROS_Project()
-            dlgObj.properties = OrderedDict()
-            dlgObj.properties['name'] = "New Project"
-            ed = dialogs.EditDialog( self,
-                                     editObj = dlgObj,
-                                     editDict = dlgObj.properties,
-                                     title = 'Choose Project Name',
-                                     style = wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
-            if inputs != OrderedDict():
-                self.filename = inputs['name']
-                self.project_path = project_path
-                self.project = project.ROS_Project(name = self.filename,
-                                                   project_path = self.project_path)
-                self.project.new()
-                self.project.workspace.properties['name'] = "Workspace"
-                newHW = project.ROS_HW()
-                newHW.properties['name'] = "Hardware"
-                self.project.hardware_files.append(newHW)
-                newDeployment = project.ROS_Deployment()
-                newDeployment.properties['name'] = "Deployment"
-                newDeployment.properties['rdp_hardware'] = newHW
-                self.project.deployments.append(newDeployment)
+            self.project_path = project_path
+            propertiesDict = OrderedDict()
+            propertiesDict['Project'] = OrderedDict()
+            propertiesDict['Project']['name'] = "NewProject"
+            propertiesDict['Workspace'] = OrderedDict()
+            propertiesDict['Workspace']['name'] = "NewWorkspace"
+            propertiesDict['Hardware'] = OrderedDict()
+            propertiesDict['Hardware']['name'] = "NewHardware"
+            propertiesDict['Deployment'] = OrderedDict()
+            propertiesDict['Deployment']['name'] = "NewDeployment"
+            w = dialogs.Wizard(self,propertiesDict)
+            inputs = w.GetInput()
+            if inputs != None:
+                self.filename = inputs['Project']['name']
+                self.project.new(project_name = self.filename,
+                                 project_path = self.project_path)
                 BuildAspectPages(self)
                 self.statusbar.SetStatusText('Created new project: {} in: {}'.format(self.filename,self.project_path))
 
