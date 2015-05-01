@@ -67,10 +67,7 @@ meta_class_dict = OrderedDict()
 meta_class_dict["Package"] = Grammar_Field("object", "Package", create_enterModel, create_exitModel)
 
 meta_class_dict["Message"] = Grammar_Field("object", "Message", create_enterModel, create_exitModel)
-
 meta_class_dict["Service"] = Grammar_Field("object", "Service", create_enterModel, create_exitModel)
-meta_class_dict["Request"] = Grammar_Field("code", "Request", create_enterModel, create_exitModel)
-meta_class_dict["Response"] = Grammar_Field("code", "Response", create_enterModel, create_exitModel)
 
 meta_class_dict["Component"] = Grammar_Field("object", "Component", create_enterModel, create_exitModel)
 meta_class_dict["Client"] = Grammar_Field("object", "Client", create_enterModel, create_exitModel)
@@ -93,16 +90,12 @@ meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, cre
 
 # Properties/Atoms
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
-meta_class_dict["field"] = Grammar_Field("code", "Field", create_enterModel, create_exitModel)
-meta_class_dict["request_field"] = Grammar_Field("code", "Request_field", create_enterModel, create_exitModel)
-meta_class_dict["response_field"] = Grammar_Field("code", "Response_field", create_enterModel, create_exitModel)
 meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
 meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
 meta_class_dict["abstract_business_logic"] = Grammar_Field("code", "Abstract_business_logic", create_enterAtom, create_exitAtom)
-meta_class_dict["business_logic"] = Grammar_Field("code")
 meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enterAtom, create_exitAtom)
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
 meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
@@ -113,6 +106,8 @@ meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, 
 meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, create_exitAtom)
 meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom)
 meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
+
+meta_class_dict["definition"] = Grammar_Field("code")
 
 # Properties that are references
 meta_class_dict["component_instance_reference"] = Grammar_Field("reference")

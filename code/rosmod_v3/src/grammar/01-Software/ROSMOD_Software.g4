@@ -11,9 +11,7 @@ grammar ROSMOD_Software;
  */
 start
     :   
-        WS_NL
         (package)+
-        WS_NL
         EOF
     ;
 
@@ -58,66 +56,20 @@ unit
  */
 package
     :   
-        WS_NL
-        'package' WS_NL name
-        WS_NL '{' WS_NL
-        ( message | service | component | node )*
-        WS_NL '}' WS_NL
+        'package' name
+        '{' 
+        ( component | node )*
+        '}'
     ;
 
-// ROS Message
-message
-    :   
-        WS_NL 'msg' WS_NL name
-        WS_NL '{' WS_NL
-        ( field )
-        WS_NL '}' WS_NL
-    ;
-
-// ROS Field
-field
-    :   
-        ( ID ( ' ' | '\n' ) )*
-    ;
-
-// ROS Service
-service
-    :   
-        WS_NL 'srv' WS_NL name
-        WS_NL '{' WS_NL
-        ( WS_NL 'request' WS_NL
-        WS_NL '{' WS_NL 
-            ( request_field  ) 
-            WS_NL '}' WS_NL
-        )?
-        ( WS_NL 'response' WS_NL
-        WS_NL '{' WS_NL 
-            ( response_field  ) 
-            WS_NL '}' WS_NL
-        )?
-        WS_NL '}' WS_NL
-    ;
-
-// ROS Service Request
-request_field
-    :   
-        ( ID ( WS_NL ) )*
-    ;
-
-// ROS Service Response
-response_field
-    :   
-        ( ID ( WS_NL ) )*
-    ;
 
 // ROS Component
 component
     :   
-        WS_NL
-        'component' WS_NL name WS_NL ':' WS_NL datatype
-        WS_NL '{' WS_NL
+        'component' name ':' datatype
+        '{'
         ( port | timer )*
-        WS_NL '}' WS_NL
+        '}' 
     ;
 
 // ROS Component Port
@@ -129,48 +81,45 @@ port
 // ROS Client
 client
     :   
-        WS_NL 'client' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL ';'
+         'client'  '<'  reference  '>'  name  ';'
     ;
 
 // ROS Server
 server
     :   
-        WS_NL 'server' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name
-        WS_NL '{' WS_NL
-        ( WS_NL 'priority' WS_NL '=' WS_NL priority WS_NL ';' WS_NL 
-        | WS_NL 'deadline' WS_NL '=' WS_NL deadline WS_NL ';' WS_NL
-        | WS_NL 'business_logic' WS_NL '{' WS_NL abstract_business_logic WS_NL '}' WS_NL
+         'server'  '<'  reference  '>'  name
+         '{' 
+        (  'priority'  '='  priority  ';'  
+        |  'deadline'  '='  deadline  ';' 
         )+
-        WS_NL '}' WS_NL
+         '}' 
     ;
 
 // ROS Publisher
 publisher
     :   
-        WS_NL 'publisher' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL ';' WS_NL
+         'publisher'  '<'  reference  '>'  name  ';' 
     ;
 
 // ROS Subscriber
 subscriber
     :   
-        WS_NL 'subscriber' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL
-        WS_NL '{' WS_NL
-        ( WS_NL 'priority' WS_NL '=' WS_NL priority WS_NL ';' WS_NL 
-        | WS_NL 'deadline' WS_NL '=' WS_NL deadline WS_NL ';' WS_NL
-        | WS_NL 'business_logic' WS_NL '{' WS_NL abstract_business_logic WS_NL '}' WS_NL
+         'subscriber'  '<'  reference  '>'  name 
+         '{' 
+        (  'priority'  '='  priority  ';'  
+        |  'deadline'  '='  deadline  ';' 
         )+
-        WS_NL '}' WS_NL
+         '}' 
     ;
 
 // ROS Component Timer
 timer
     :   
-        WS_NL 'timer' WS_NL name WS_NL
-        WS_NL '{' WS_NL
-        ( WS_NL 'period' WS_NL '=' WS_NL period WS_NL ';' WS_NL
-        | WS_NL 'priority' WS_NL '=' WS_NL priority WS_NL ';' WS_NL 
-        | WS_NL 'deadline' WS_NL '=' WS_NL deadline WS_NL ';' WS_NL
-        | WS_NL 'business_logic' WS_NL '{' WS_NL abstract_business_logic WS_NL '}' WS_NL
+         'timer'  name 
+         '{' 
+        (  'period'  '='  period  ';' 
+        |  'priority'  '='  priority  ';'  
+        |  'deadline'  '='  deadline  ';' 
         )+
         '}'
     ;
@@ -193,12 +142,6 @@ deadline
         DOUBLE
     ;
 
-// Business Logic of Port
-abstract_business_logic
-    :   
-        ( ID ( ' ' | '\n' ) )*
-    ;
-
 /*
  * Each ROS Node consists of:
  * (1) Node name
@@ -206,8 +149,8 @@ abstract_business_logic
  */
 node
     :   
-        WS_NL 'node' WS_NL name WS_NL
-        WS_NL '{' WS_NL
+         'node'  name 
+         '{' 
         ( component_instance )+
         '}'
     ;
@@ -219,7 +162,7 @@ node
  */
 component_instance
     :   
-        WS_NL 'component' WS_NL '<' WS_NL reference WS_NL '>' WS_NL name WS_NL ';' WS_NL
+         'component'  '<'  reference  '>'  name  ';' 
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
@@ -253,11 +196,6 @@ BOOL
         ( 'true' | 'false')
     ;
 
-WS_NL
-    :
-        ( ' ' | '\n' | '\t' )*
-    ;
-
 // White spaces and escape codes are ignored
 /*
 WS
@@ -273,12 +211,12 @@ WS
 // Paragraph comments are ignored
 COMMENT
     :   
-        WS_NL '/*' WS_NL .*? WS_NL '*/' WS_NL -> skip
+         '/*'  .*?  '*/'  -> skip
     ;
 
 // Line comments are ignored
 LINE_COMMENT
     :   
-        WS_NL '//' WS_NL ~[\r\n]* WS_NL -> skip
+         '//'  ~[\r\n]*  -> skip
     ;
 

@@ -1,6 +1,18 @@
 import wx
 import wx.lib.agw.flatnotebook as fnb
+import wx.stc as stc
 from terminal import *            
+
+class RedirectText(object):
+    def __init__(self,aWxTextCtrl):
+        self.out=aWxTextCtrl
+
+    def write(self,string):
+        self.out.SetReadOnly(False)
+        self.out.AddText(string)
+        #self.out.SaveFile("output.txt")
+        self.out.LineScroll(0,10)
+        self.out.SetReadOnly(True)
 
 '''
 Build the output notebook for ROSMOD which holds:
@@ -10,7 +22,18 @@ Build the output notebook for ROSMOD which holds:
 '''
 def BuildOutput(self):
     self.output = fnb.FlatNotebook(self.viewSplitter, wx.ID_ANY)
-    self.output.AddPage(wx.Panel(self.output), "Console Output")
+
+    panel = wx.Panel(self.output)
+    vbox = wx.BoxSizer(wx.VERTICAL)
+    tc = stc.StyledTextCtrl(panel)
+    tc.SetReadOnly(True)
+    vbox.Add(tc, proportion=1, flag=wx.EXPAND)
+    redir=RedirectText(tc)
+    sys.stdout=redir
+    sys.stderr=redir
+    panel.SetSizer(vbox)
+
+    self.output.AddPage(panel, "Console Output")
     self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
 
 

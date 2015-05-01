@@ -35,34 +35,15 @@ model_dict["Package"] = Meta_Entity(
 
 model_dict["Message"] = Meta_Entity(
     "Package", 
-    ["Field"], 
-    ["name"],
+    [], 
+    ["name","definition"],
     [["Publisher","message_reference"],["Subscriber","message_reference"]], 
     [])
-model_dict["Field"] = Meta_Entity(
-    "Message", 
-    [], 
-    ["datatype","name","value"],
-    [], 
-    [])
-
 model_dict["Service"] = Meta_Entity(
     "Package", 
-    ["Request","Response"],
-    ["name"],
+    [],
+    ["name","definition"],
     [["Server","service_reference"],["Client","service_reference"]], 
-    [])
-model_dict["Request"] = Meta_Entity(
-    "Service",
-    ["Field"],
-    ["name"],
-    [], 
-    [])
-model_dict["Response"] = Meta_Entity(
-    "Service", 
-    ["Field"],
-    ["name"],
-    [], 
     [])
 
 model_dict["Component"] = Meta_Entity(
@@ -80,7 +61,7 @@ model_dict["Client"] = Meta_Entity(
 model_dict["Server"] = Meta_Entity(
     "Component", 
     [],
-    ["name","service_reference","reference","priority","deadline","business_logic"],
+    ["name","service_reference","reference","priority","deadline","abstract_business_logic"],
     [["Port_Instance","port_reference"]], 
     ["Service"])
 model_dict["Publisher"] = Meta_Entity(
@@ -92,7 +73,7 @@ model_dict["Publisher"] = Meta_Entity(
 model_dict["Subscriber"] = Meta_Entity(
     "Component", 
     [],
-    ["name","message_reference","reference","priority","deadline","business_logic"],
+    ["name","message_reference","reference","priority","deadline","abstract_business_logic"],
     [["Port_Instance","port_reference"]], 
     ["Message"])
 model_dict["Timer"] = Meta_Entity(

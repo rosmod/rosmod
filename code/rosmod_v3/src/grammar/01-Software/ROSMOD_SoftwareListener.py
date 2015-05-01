@@ -67,24 +67,6 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#message.
-    def enterMessage(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#message.
-    def exitMessage(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#field.
-    def enterField(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#field.
-    def exitField(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_SoftwareParser#unit.
     def enterUnit(self, ctx):
         pass
@@ -103,24 +85,6 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#abstract_business_logic.
-    def enterAbstract_business_logic(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#abstract_business_logic.
-    def exitAbstract_business_logic(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#component.
-    def enterComponent(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#component.
-    def exitComponent(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_SoftwareParser#start.
     def enterStart(self, ctx):
         pass
@@ -130,12 +94,12 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#response_field.
-    def enterResponse_field(self, ctx):
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#component.
+    def enterComponent(self, ctx):
         pass
 
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#response_field.
-    def exitResponse_field(self, ctx):
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#component.
+    def exitComponent(self, ctx):
         pass
 
 
@@ -175,15 +139,6 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#service.
-    def enterService(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#service.
-    def exitService(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_SoftwareParser#server.
     def enterServer(self, ctx):
         pass
@@ -199,15 +154,6 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSMOD_SoftwareParser#datatype.
     def exitDatatype(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#request_field.
-    def enterRequest_field(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#request_field.
-    def exitRequest_field(self, ctx):
         pass
 
 
