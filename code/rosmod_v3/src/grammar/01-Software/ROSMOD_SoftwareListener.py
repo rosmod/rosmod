@@ -139,6 +139,15 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#scheduling_scheme.
+    def enterScheduling_scheme(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#scheduling_scheme.
+    def exitScheduling_scheme(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_SoftwareParser#deadline.
     def enterDeadline(self, ctx):
         pass

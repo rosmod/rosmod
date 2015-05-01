@@ -329,12 +329,16 @@ class ROS_Project(Drawable_Object):
         for package in self.workspace_builder.rml.children:
             for package_child in package.children:
                 if package_child.kind == "Component":
+                    if "scheduling_scheme" not in package_child.properties.keys():
+                        package_child.properties["scheduling_scheme"] = ""
                     for port in package_child.children:
                         if port.kind == "Client" or port.kind == "Server":
                             port.properties["service_reference"] = reference_dict[port.properties["reference"]]
                         elif port.kind == "Publisher" or port.kind == "Subscriber":
                             port.properties["message_reference"] = reference_dict[port.properties["reference"]]
                 elif package_child.kind == "Node":
+                    if "priority" not in package_child.properties.keys():
+                        package_child.properties["priority"] = ""
                     for comp_instance in package_child.children:
                         comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 

@@ -53,8 +53,20 @@ component
     :   
         'component' name ':' datatype
         '{'
+        (
+           'properties'
+            '{'
+            ( 'scheduling_scheme' '=' scheduling_scheme ';' ) 
+            '}'
+        )?
         ( port | timer )*
         '}'
+    ;
+
+// Component Scheduling Scheme
+scheduling_scheme
+    :
+        ID
     ;
 
 // ROS Component Port
@@ -136,6 +148,12 @@ node
     :   
         'node' name
         '{'
+        ( 
+            'properties'
+            '{'
+            ( 'priority' '=' priority ';' ) 
+            '}'
+        )?
         ( component_instance )+
         '}'
     ;

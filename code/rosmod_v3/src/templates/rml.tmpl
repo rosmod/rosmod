@@ -12,6 +12,12 @@ package $package.properties["name"]
     // ROSMOD Component - $component.properties["name"]
     component $component.properties["name"] : $component.properties["datatype"] 
     {
+#if $component.properties["scheduling_scheme"] != ""
+        properties
+        {
+	    scheduling_scheme = $component.properties["scheduling_scheme"];
+        }
+#end if
 #if $component.getChildrenByKind("Server") != []
 #for $server in $component.getChildrenByKind("Server")
         // ROSMOD Server - $server.properties["name"]
@@ -77,6 +83,12 @@ package $package.properties["name"]
     // ROSMOD Node - $node.properties["name"]
     node $node.properties["name"] 
     {
+#if $node.properties["priority"] != ""
+        properties
+        {
+            priority = $node.properties["priority"];
+        }
+#end if
 #if $node.getChildrenByKind("Component_Instance") != []
 #for $instance in $node.getChildrenByKind("Component_Instance")
         // ROSMOD Component Instance - $instance.properties["name"]

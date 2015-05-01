@@ -48,14 +48,14 @@ model_dict["Service"] = Meta_Entity(
 
 model_dict["Component"] = Meta_Entity(
     "Package", 
-    ["Timer","Publisher","Subscriber","Client","Server"], 
+    ["scheduling_scheme", "Timer","Publisher","Subscriber","Client","Server"], 
     ["name"],
     [["Component_Instance","component_reference"]], 
     [])
 model_dict["Client"] = Meta_Entity(
     "Component", 
     [], 
-    ["name","service_reference","reference"],
+    ["name","service_reference","reference", "port_network_profile"],
     [["Port_Instance","port_reference"]], 
     ["Service"])
 model_dict["Server"] = Meta_Entity(
@@ -67,7 +67,7 @@ model_dict["Server"] = Meta_Entity(
 model_dict["Publisher"] = Meta_Entity(
     "Component", 
     [], 
-    ["name","message_reference","reference"],
+    ["name","message_reference","reference", "port_network_profile"],
     [["Port_Instance","port_reference"]], 
     ["Message"])
 model_dict["Subscriber"] = Meta_Entity(
@@ -85,7 +85,7 @@ model_dict["Timer"] = Meta_Entity(
 
 model_dict["Node"] = Meta_Entity(
     "Package", 
-    ["Component_Instance"], 
+    ["priority", "Component_Instance"], 
     ["name"],
     [["Node_Instance","node_reference"]], 
     [])
