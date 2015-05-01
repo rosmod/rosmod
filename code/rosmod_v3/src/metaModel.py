@@ -79,7 +79,7 @@ model_dict["Subscriber"] = Meta_Entity(
 model_dict["Timer"] = Meta_Entity(
     "Component", 
     [],
-    ["name","period","priority","deadline"],
+    ["name","period","priority","deadline","abstract_business_logic"],
     [], 
     [])
 
