@@ -11,7 +11,7 @@ grammar ROSMOD_Deployment;
  */
 start
     :   ( 'using' reference ';' )
-        ( hardware_instance )+
+        ( hardware_instance )*
     ;
 
 // Name

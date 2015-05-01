@@ -46,7 +46,10 @@ class ROS_Project(Drawable_Object):
     # Create a new ROSMOD Project
     def new(self, 
             project_name = "",
-            project_path = ""):
+            project_path = "",
+            workspace_name = "",
+            hardware_name = "",
+            deployment_name = ""):
 
         # Check provided project name and path
         if project_name != "":
@@ -57,7 +60,7 @@ class ROS_Project(Drawable_Object):
             self.project_path = project_path
         else:
             print "ROSTOOLS::ERROR::Invalid Project Path"
-        self.project_path = os.path.join(os.project_path, self.project_name)
+        self.project_path = os.path.join(self.project_path, self.project_name)
 
         # Notify user
         print "ROSTOOLS::Creating Project " + project_name + " at " + project_path
@@ -75,13 +78,75 @@ class ROS_Project(Drawable_Object):
         self.hardware_path = os.path.join(self.project_path, "02-Hardware")
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
 
-        # Create the directory structure
+        # Create the directory structure & relevant objects
         if not os.path.exists(os.path.join(self.project_path, "01-Software")):
             os.makedirs(self.workspace_path)
+
+        # Create sub directories in Software
+        software_dirs = ["msg", "srv", "abl", "pnp"]
+        for sub_dir in software_dirs:
+            if not os.path.exists(os.path.join(self.workspace_path, sub_dir)):
+                os.makedirs(os.path.join(self.workspace_path, sub_dir))
+                
+        # Create a Workspace Builder Object - and therefore a workspace object
+        self.workspace_builder = ROS_Workspace_Builder(self)
+        
+        # Initialize Workspace name and create a template .rml file
+        if workspace_name != "":
+            self.workspace_builder.rml.properties["name"] = workspace_name
+            with open(os.path.join(self.workspace_path, workspace_name + ".rml"), 'w') as temp_file:
+                temp_file.write("/*\n * ROSMOD Software Model\n */\n\npackage NewPackage\n{\n\n}")
+        else:
+            self.workspace_builder.rml.properties["name"] = "New_Workspace"
+            with open(os.path.join(self.workspace_path, "New_Workspace.rml"), 'w') as temp_file:
+                temp_file.write("/*\n * ROSMOD Software Model\n */\n\npackage New_Package\n{\n\n}")
+
+        # Create a new package in workspace and assign package as child of workspace
+        new_package = type("ROS_Package", 
+                           ( object, Drawable_Object, ), 
+                           { '__init__' : Drawable_Object.__init__ })()
+        new_package.properties["name"] = "New_Package"
+        new_package.parent = self.workspace_builder.rml
+        self.workspace_builder.rml.add(new_package)
+        
         if not os.path.exists(os.path.join(self.project_path, "02-Hardware")):
             os.makedirs(self.hardware_path)
+
+        # Create a hardware builder object - ready to ready new hardware models
+        self.hardware_builder = ROS_Hardware_Builder(self)
+
+        # Create a new template .rhw file
+        if hardware_name != "":
+            self.hardware_builder.rhw.properties["name"] = hardware_name
+            with open(os.path.join(self.hardware_path, hardware_name + ".rhw"), 'w') as temp_file:
+                temp_file.write("/*\n * ROSMOD Hardware Model\n */") 
+        else:
+            self.hardware_builder.rhw.properties["name"] = "New_Hardware"
+            with open(os.path.join(self.hardware_path, "New_Hardware" + ".rhw"), 'w') as temp_file:
+                temp_file.write("/*\n * ROSMOD Hardware Model\n */")                 
+
         if not os.path.exists(os.path.join(self.project_path, "03-Deployment")):
-            os.makedirs(self.deployment_path)   
+            os.makedirs(self.deployment_path)
+
+        # Create a deployment builder object - ready to ready new deployment models
+        self.deployment_builder = ROS_Deployment_Builder(self)
+
+        # Create a new template .rdp file
+        if deployment_name != "":
+            self.deployment_builder.rdp.properties["name"] = deployment_name
+            with open(os.path.join(self.deployment_path, deployment_name + ".rdp"), 'w') as temp_file:
+                if hardware_name == "":
+                    temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - Hardware\nusing New_Hardware;") 
+                else:
+                    temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - " + hardware_name + "\nusing " + hardware_name + ";") 
+        else:
+            self.deployment_builder.rdp.properties["name"] = "New_Deployment"
+            with open(os.path.join(self.deployment_path, "New_Deployment" + ".rdp"), 'w') as temp_file:
+                if hardware_name == "":
+                    temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - Hardware\nusing New_Hardware;") 
+                else:
+                    temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - " + hardware_name + "\nusing " + hardware_name + ";") 
+
 
     # Open an existing ROSMOD Project
     def open(self, project_path):
@@ -318,10 +383,10 @@ class ROS_Project(Drawable_Object):
         # Instantiate a Generator Object
         workspace_generator = ROSMOD_Generator()
         # Use listener_object to generate ROS workspace
-        self.workspace_dir = workspace_generator.generate(self.workspace_builder.rml, 
-                                                          self.workspace_path, 
-                                                          self.deployment_files, 
-                                                          self.deployment_path)
+        self.workspace_dir = workspace_generator.generate_workspace(self.workspace_builder.rml, 
+                                                                    self.workspace_path, 
+                                                                    self.deployment_files, 
+                                                                    self.deployment_path)
 
     # Resolving References in all workspace packages
     def resolve_references(self):
