@@ -3,16 +3,77 @@ import wx.lib.agw.flatnotebook as fnb
 import wx.stc as stc
 from terminal import *            
 
-class RedirectText(object):
-    def __init__(self,aWxTextCtrl):
-        self.out=aWxTextCtrl
+class Log(stc.StyledTextCtrl):
+    """
+    Subclass the StyledTextCtrl to provide  additions
+    and initializations to make it useful as a log window.
 
-    def write(self,string):
-        self.out.SetReadOnly(False)
-        self.out.AddText(string)
-        #self.out.SaveFile("output.txt")
-        self.out.LineScroll(0,10)
-        self.out.SetReadOnly(True)
+    """
+    def __init__(self, parent, style=wx.SIMPLE_BORDER):
+        """
+        Constructor
+        
+        """
+        stc.StyledTextCtrl.__init__(self, parent, style=style)
+        self._styles = [None]*32
+        self._free = 1
+        
+    def getStyle(self, c='black'):
+        """
+        Returns a style for a given colour if one exists.  If no style
+        exists for the colour, make a new style.
+        
+        If we run out of styles, (only 32 allowed here) we go to the top
+        of the list and reuse previous styles.
+
+        """
+        free = self._free
+        if c and isinstance(c, (str, unicode)):
+            c = c.lower()
+        else:
+            c = 'black'
+        
+        try:
+            style = self._styles.index(c)
+            return style
+            
+        except ValueError:
+            style = free
+            self._styles[style] = c
+            self.StyleSetForeground(style, wx.NamedColour(c))
+
+            free += 1
+            if free >31:
+                free = 0
+            self._free = free
+            return style
+
+    def write(self, text, c=None):
+        """
+        Add the text to the end of the control using colour c which
+        should be suitable for feeding directly to wx.NamedColour.
+        
+        'text' should be a unicode string or contain only ascii data.
+        """
+        self.SetReadOnly(False)
+        style = self.getStyle(c)
+        lenText = len(text.encode('utf8'))
+        end = self.GetLength()
+        self.AddText(text)
+        self.StartStyling(end, 31)
+        self.SetStyling(lenText, style)
+        self.EnsureCaretVisible()
+        self.SetReadOnly(True)
+
+    __call__ = write
+
+class log_Wrapper(object):
+    def __init__(self,log,color):
+        self.color = color
+        self.log = log
+    def write(self,text):
+        self.log.write(text,self.color)
+    __call__ = write
 
 '''
 Build the output notebook for ROSMOD which holds:
@@ -25,12 +86,13 @@ def BuildOutput(self):
 
     panel = wx.Panel(self.output)
     vbox = wx.BoxSizer(wx.VERTICAL)
-    tc = stc.StyledTextCtrl(panel)
-    tc.SetReadOnly(True)
-    vbox.Add(tc, proportion=1, flag=wx.EXPAND)
-    redir=RedirectText(tc)
-    sys.stdout=redir
-    sys.stderr=redir
+    redir = Log(panel)
+    redir.SetReadOnly(True)
+    vbox.Add(redir, proportion=1, flag=wx.EXPAND)
+    stdout_log = log_Wrapper(redir,'black')
+    stderr_log = log_Wrapper(redir,'red')
+    sys.stdout=stdout_log
+    sys.stderr=stderr_log
     panel.SetSizer(vbox)
 
     self.output.AddPage(panel, "Console Output")
