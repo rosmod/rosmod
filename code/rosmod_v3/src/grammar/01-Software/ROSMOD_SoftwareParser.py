@@ -11,7 +11,7 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"\33\u00c7\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
+        buf.write(u"\34\u00c7\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
         buf.write(u"\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t")
         buf.write(u"\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22")
         buf.write(u"\3\2\6\2&\n\2\r\2\16\2\'\3\2\3\2\3\3\3\3\3\3\7\3/\n\3")
@@ -122,14 +122,16 @@ class ROSMOD_SoftwareParser ( Parser ):
     INT=21
     DOUBLE=22
     BOOL=23
-    COMMENT=24
-    LINE_COMMENT=25
+    WS=24
+    COMMENT=25
+    LINE_COMMENT=26
 
     tokenNames = [ u"<INVALID>", u"'component'", u"'priority'", u"'node'", 
                    u"':'", u"'<'", u"'='", u"'deadline'", u"'server'", u"';'", 
                    u"'publisher'", u"'timer'", u"'package'", u"'>'", u"'{'", 
                    u"'subscriber'", u"'client'", u"'period'", u"'/'", u"'}'", 
-                   u"ID", u"INT", u"DOUBLE", u"BOOL", u"COMMENT", u"LINE_COMMENT" ]
+                   u"ID", u"INT", u"DOUBLE", u"BOOL", u"WS", u"COMMENT", 
+                   u"LINE_COMMENT" ]
 
     RULE_start = 0
     RULE_name = 1
