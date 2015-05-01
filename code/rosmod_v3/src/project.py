@@ -84,22 +84,58 @@ class ROS_Project(Drawable_Object):
     # Go through dirname and load in all .msg files into message objects
     # load them into the ref dict according to their filename pkgName.msgName.msg
     def parse_msg(self, dirname):
-        print "Parsing message files!"
+        print "ROSTOOLS::Parsing Message Files!"
+        for filename in os.listdir(dirname):
+            if filename.endswith('.msg'):
+                package_name = filename.split('.')[0]
+                msg_name = filename.split('.')[1]
+                msg_file = open(os.path.join(dirname, filename), 'r')
+                msg = type("ROS_Message",
+                           ( object, Drawable_Object, ), 
+                           { '__init__' : Drawable_Object.__init__ })()
+                msg.properties["name"] = msg_name
+                msg.properties["definition"]= msg_file.read()
+                msg.kind = "Message"
+                for package in self.workspace_builder.rml.children:
+                    if package.properties["name"] == package_name:
+                        msg.parent = package
+                        package.add(msg)
+                        reference_dict[package.properties["name"] + "/" + msg.properties["name"]] = msg
     
     # Go through dirname and load in all .srv files into service objects
     # load them into the ref dict according to their filename pkgName.srvName.srv
     def parse_srv(self, dirname):
-        print "Parsing service files!"
+        print "ROSTOOLS::Parsing Service Files!"
+        for filename in os.listdir(dirname):
+            if filename.endswith('.srv'):
+                package_name = filename.split('.')[0]
+                srv_name = filename.split('.')[1]
+                srv_file = open(os.path.join(dirname, filename), 'r')
+                srv = type("ROS_Service",
+                           ( object, Drawable_Object, ), 
+                           { '__init__' : Drawable_Object.__init__ })()
+                srv.properties["name"] = srv_name
+                srv.properties["definition"]= srv_file.read()
+                srv.kind = "Service"
+                for package in self.workspace_builder.rml.children:
+                    if package.properties["name"] == package_name:
+                        srv.parent = package
+                        package.add(srv)
+                        reference_dict[package.properties["name"] + "/" + srv.properties["name"]] = srv
 
     # Go through dirname and load in all .abl files into business_logic properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.abl
     def parse_abl(self, dirname):
-        print "Parsing abstract business logic files!"
+        print "ROSTOOLS::Parsing Abstract Business Logic Model Files!"
+        for filename in os.listdir(dirname):
+            print filename
 
     # Go through dirname and load in all .pnp files into network profile properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.pnp
     def parse_pnp(self, dirname):
-        print "Parsing port network profiles files!"
+        print "Parsing Port Network Profiles!"
+        for filename in os.listdir(dirname):
+            print filename
 
     # Parse .rml software model
     def parse_rml(self, filename):
@@ -200,14 +236,14 @@ class ROS_Project(Drawable_Object):
         count = 0
 
         objNames = os.listdir(self.workspace_path)
-        if "MSG" in objNames:
-            self.parse_msg(self.workspace_path + "/MSG")
-        if "SRV" in objNames:
-            self.parse_srv(self.workspace_path + "/SRV")
-        if "ABL" in objNames:
-            self.parse_abl(self.workspace_path + "/ABL")
-        if "PNP" in objNames:
-            self.parse_pnp(self.workspace_path + "/PNP")
+        if "msg" in objNames:
+            self.parse_msg(self.workspace_path + "/msg")
+        if "srv" in objNames:
+            self.parse_srv(self.workspace_path + "/srv")
+        if "abl" in objNames:
+            self.parse_abl(self.workspace_path + "/abl")
+        if "pnp" in objNames:
+            self.parse_pnp(self.workspace_path + "/pnp")
 
         for rhw in os.listdir(self.hardware_path):
             if rhw.endswith(".rhw"):

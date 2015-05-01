@@ -185,16 +185,7 @@ class ROSMOD_Generator:
 
             # Create all package messages in msg folder
             for message in messages:
-                temp_fields = []
-                for child in message.children:
-                    if "value" in child.properties.keys():
-                        temp_fields.append([child.properties["datatype"],
-                                            child.properties["name"],
-                                            child.properties["value"]])
-                    else:
-                        temp_fields.append([child.properties["datatype"],
-                                            child.properties["name"]])
-                msg_namespace = {'fields': temp_fields}
+                msg_namespace = {'definition': message.properties["definition"]}
                 msg_filename = message.properties["name"] + ".msg"
                 t = msg(searchList=[msg_namespace])
                 self.msg_fields = str(t)
@@ -205,29 +196,7 @@ class ROSMOD_Generator:
             # Create all package services in srv folder
             for service in services:
                 srv_filename = service.properties["name"] + ".srv"
-                temp_request = []
-                temp_response = []
-                for child in service.children:
-                    if child.kind == "Request":
-                        for field in child.children:
-                            if "value" in field.properties.keys():
-                                temp_request.append([field.properties["datatype"],
-                                                     field.properties["name"],
-                                                     field.properties["value"]])
-                            else:
-                                temp_request.append([field.properties["datatype"],
-                                                     field.properties["name"]])                 
-                    elif child.kind == "Response":
-                        for field in child.children:
-                            if "value" in child.properties.keys():
-                                temp_response.append([field.properties["datatype"],
-                                                      field.properties["name"],
-                                                      field.properties["value"]])
-                            else:
-                                temp_response.append([field.properties["datatype"],
-                                                      field.properties["name"]])                 
-                srv_namespace = {'request_fields': temp_request, 
-                                 'response_fields': temp_response}
+                srv_namespace = {'definition' : service.properties["definition"]}
                 t = srv(searchList=[srv_namespace])
                 self.srv_fields = str(t)
                 # Write the srv file
