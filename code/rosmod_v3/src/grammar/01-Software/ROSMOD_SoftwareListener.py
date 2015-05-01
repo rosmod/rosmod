@@ -67,15 +67,6 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#unit.
-    def enterUnit(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#unit.
-    def exitUnit(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_SoftwareParser#node.
     def enterNode(self, ctx):
         pass
@@ -127,15 +118,6 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSMOD_SoftwareParser#name.
     def exitName(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_SoftwareParser#value.
-    def enterValue(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_SoftwareParser#value.
-    def exitValue(self, ctx):
         pass
 
 

@@ -85,19 +85,21 @@ class ROS_Project(Drawable_Object):
     # load them into the ref dict according to their filename pkgName.msgName.msg
     def parse_msg(self, dirname):
         print "Parsing message files!"
-        pass
     
-    # Go through dirname and load in all .srv files into message objects
+    # Go through dirname and load in all .srv files into service objects
     # load them into the ref dict according to their filename pkgName.srvName.srv
     def parse_srv(self, dirname):
         print "Parsing service files!"
-        pass
 
-    # Go through dirname and load in all .abl files into message objects
+    # Go through dirname and load in all .abl files into business_logic properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.abl
     def parse_abl(self, dirname):
-        print "Parsing abstracti business logic files!"
-        pass
+        print "Parsing abstract business logic files!"
+
+    # Go through dirname and load in all .pnp files into network profile properties for their ports
+    # load them into the ref dict according to their filename pkgName.compName.portName.pnp
+    def parse_pnp(self, dirname):
+        print "Parsing port network profiles files!"
 
     # Parse .rml software model
     def parse_rml(self, filename):
@@ -115,14 +117,6 @@ class ROS_Project(Drawable_Object):
         tree = parser.start()
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
-
-        objNames = os.listdir(self.workspace_path)
-        if "MSG" in objNames:
-            self.parse_msg(self.workspace_path + "/MSG")
-        if "SRV" in objNames:
-            self.parse_srv(self.workspace_path + "/SRV")
-        if "ABL" in objNames:
-            self.parse_abl(self.workspace_path + "/ABL")
         
         self.workspace_builder = ROS_Workspace_Builder(self)
         self.workspace_builder.rml.properties["name"] = os.path.basename(filename.split(".")[0])
@@ -204,6 +198,16 @@ class ROS_Project(Drawable_Object):
         else:
             self.parse_rml(rml_file)
         count = 0
+
+        objNames = os.listdir(self.workspace_path)
+        if "MSG" in objNames:
+            self.parse_msg(self.workspace_path + "/MSG")
+        if "SRV" in objNames:
+            self.parse_srv(self.workspace_path + "/SRV")
+        if "ABL" in objNames:
+            self.parse_abl(self.workspace_path + "/ABL")
+        if "PNP" in objNames:
+            self.parse_pnp(self.workspace_path + "/PNP")
 
         for rhw in os.listdir(self.hardware_path):
             if rhw.endswith(".rhw"):

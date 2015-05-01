@@ -5,27 +5,6 @@
 // ROS Package - krpc
 package krpc
 {
-
-    msg some_msg
-    {
-        string car_name
-    }
-
-    srv some_srv
-    {
-        request
-        {
-            int32 request_field1
-            string request_field2
-        }
-
-        response
-        {
-            bool response_result1
-            float64 response_result2
-        }
-    }
-    
     // ROS Component - krpc_comp
     component krpc_comp : base
     {

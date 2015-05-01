@@ -24,25 +24,13 @@ name
 // Data Type
 datatype
     :   
-        ( ID ( '/' ID )* ) ( '[' (INT)? ']' )*
+        ID 
     ;
 
 // Reference
 reference
     :   
         ( ID ( '/' ID )* )
-    ;
-
-// Value
-value 
-    :   
-        ( ID | INT | DOUBLE | BOOL)
-    ;
-
-// Unit of provided metric
-unit
-    :   
-        ( 's' | 'ms' | 'us' | 'ns' )
     ;
 
 /*
