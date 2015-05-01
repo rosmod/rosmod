@@ -116,14 +116,14 @@ class Example(wx.Frame):
 
         BuildOutput(self)
         AddAspectToolbar(self,"Software")
-        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-100)
+        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
         self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
         self.toolbar.Realize()
         self.Layout()
         
         self.SetSize((800, 600))
-        self.SetTitle('ROSMOD Editor V2')
+        self.SetTitle('ROSMOD Editor')
         self.Centre()
         self.Show(True)
 

@@ -148,11 +148,44 @@ class EditDialog(wx.Dialog):
                 growRow=True
                 label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
-                fieldStr = value
-                field.SetText(fieldStr)
-                field.EmptyUndoBuffer()
-                field.Colourise(0,-1)
+
+                kwList = ["int32","string","int64","bool","float32","float64"]
+                field.SetSizeHints(400, 400)
+                field.SetLexer(stc.STC_LEX_CPP)
+                field.SetKeyWords(0, " ".join(kwList))
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
+                # Python styles
+                field.StyleSetSpec(wx.stc.STC_P_DEFAULT, 'fore:#000000')
+                # Comments
+                field.StyleSetSpec(wx.stc.STC_P_COMMENTLINE,  'fore:#008000,back:#F0FFF0')
+                field.StyleSetSpec(wx.stc.STC_P_COMMENTBLOCK, 'fore:#008000,back:#F0FFF0')
+                # Numbers
+                field.StyleSetSpec(wx.stc.STC_P_NUMBER, 'fore:#008080')
+                # Strings and characters
+                field.StyleSetSpec(wx.stc.STC_P_STRING, 'fore:#800080')
+                field.StyleSetSpec(wx.stc.STC_P_CHARACTER, 'fore:#800080')
+                # Keywords
+                field.StyleSetSpec(wx.stc.STC_P_WORD, 'fore:#000080,bold')
+                # Triple quotes
+                field.StyleSetSpec(wx.stc.STC_P_TRIPLE, 'fore:#800080,back:#FFFFEA')
+                field.StyleSetSpec(wx.stc.STC_P_TRIPLEDOUBLE, 'fore:#800080,back:#FFFFEA')
+                # Class names
+                field.StyleSetSpec(wx.stc.STC_P_CLASSNAME, 'fore:#0000FF,bold')
+                # Function names
+                field.StyleSetSpec(wx.stc.STC_P_DEFNAME, 'fore:#008080,bold')
+                # Operators
+                field.StyleSetSpec(wx.stc.STC_P_OPERATOR, 'fore:#800000,bold')
+                # Identifiers. I leave this as not bold because everything seems
+                # to be an identifier if it doesn't match the above criterae
+                field.StyleSetSpec(wx.stc.STC_P_IDENTIFIER, 'fore:#000000')
+                # Caret color
+                field.SetCaretForeground("BLUE")
+                # Selection background
+                field.SetSelBackground(1, '#66CCFF')
+
+                fieldStr = value
+                if (fieldStr!=None):
+                    field.SetText(fieldStr.encode("utf8"))
                 self.inputs[key] = field
             elif meta_class_dict[key].kind == 'reference':
                 growRow=False
@@ -199,8 +232,7 @@ class EditDialog(wx.Dialog):
                 self.returnDict[key] = field.GetValue()
             elif meta_class_dict[key].kind == "code":
                 fieldTxt = field.GetText()
-                retFields = self.ParseFields(fieldTxt)
-                self.returnDict[key] = retFields
+                self.returnDict[key] = fieldTxt
             elif meta_class_dict[key].kind == "reference":
                 obj = field.GetClientData(field.GetSelection())
                 if obj == None:
