@@ -1,15 +1,1 @@
-#for $req_field in $request_fields
-#if $len(req_field) > 2
-$req_field[0] $req_field[1]=$req_field[2]
-#else
-$req_field[0] $req_field[1]
-#end if
-#end for
----
-#for $res_field in $response_fields
-#if $len(res_field) > 2
-$res_field[0] $res_field[1]=$res_field[2]
-#else
-$res_field[0] $res_field[1]
-#end if
-#end for
+$definition
