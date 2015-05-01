@@ -44,8 +44,44 @@ class ROS_Project(Drawable_Object):
         self.deployment_files = []
     
     # Create a new ROSMOD Project
-    def new(self):
-        pass
+    def new(self, 
+            project_name = "",
+            project_path = ""):
+
+        # Check provided project name and path
+        if project_name != "":
+            self.project_name = project_name
+        else:
+            print "ROSTOOLS::ERROR::Invalid Project Name"
+        if project_path != "":
+            self.project_path = project_path
+        else:
+            print "ROSTOOLS::ERROR::Invalid Project Path"
+        self.project_path = os.path.join(os.project_path, self.project_name)
+
+        # Notify user
+        print "ROSTOOLS::Creating Project " + project_name + " at " + project_path
+
+        # Create the .rosmod file
+        if not os.path.exists(self.project_path):
+            os.makedirs(self.project_path)
+        project = project_name + ".rosmod"
+        with open(os.path.join(self.project_path, project), 'w') as temp_file:
+            temp_file.write("This is a ROSMOD Project")
+            temp_file.close() 
+
+        # Establish the paths to directory structure for new project
+        self.workspace_path = os.path.join(self.project_path, "01-Software")
+        self.hardware_path = os.path.join(self.project_path, "02-Hardware")
+        self.deployment_path = os.path.join(self.project_path, "03-Deployment")
+
+        # Create the directory structure
+        if not os.path.exists(os.path.join(self.project_path, "01-Software")):
+            os.makedirs(self.workspace_path)
+        if not os.path.exists(os.path.join(self.project_path, "02-Hardware")):
+            os.makedirs(self.hardware_path)
+        if not os.path.exists(os.path.join(self.project_path, "03-Deployment")):
+            os.makedirs(self.deployment_path)   
 
     # Open an existing ROSMOD Project
     def open(self, project_path):
@@ -311,44 +347,43 @@ class ROS_Project(Drawable_Object):
                     for port_instance in node_instance.children:
                         port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
 
-'''
     # Generate a ROS model from a workspace object
     # Used to save an edited model
     def save_rml(self, path=""):
         if path == "":
             path = self.workspace_path
-        rml_namespace = {'workspace': self.workspace}
+        rml_namespace = {'workspace': self.workspace_builder.rml}
         t = rml(searchList=[rml_namespace])
         self.rml = str(t)
-        with open(os.path.join(path, self.workspace.properties["name"] + ".rml"), 'w') as temp_file:
+        with open(os.path.join(path, self.workspace_builder.rml.properties["name"] + ".rml"), 'w') as temp_file:
             temp_file.write(self.rml)
-        print "ROSTOOLS::Saving " + self.workspace.properties["name"] + ".rml " + "at " + path
+        print "ROSTOOLS::Saving " + self.workspace_builder.rml.properties["name"] + ".rml " + "at " + path
 
     # Generate a ROS Hardware Configurations model (.rhw file) from a ROS_HW Object
     def save_rhw(self, path=""):
         if path == "":
-            path = self.hardware_configurations_path
-        for hw in self.hardware_configurations:
-            rhw_namespace = {'hardware' : hw}
-            t = rhw(searchList=[rhw_namespace])
+            path = self.hardware_path
+        for rhw in self.hardware_files:
+            rhw_namespace = {'rhw' : rhw}
+            t = rhw_template.rhw(searchList=[rhw_namespace])
             self.rhw = str(t)
-            with open(os.path.join(path, hw.properties["name"] + ".rhw"), 'w') as temp_file:
+            with open(os.path.join(path, rhw.properties["name"] + ".rhw"), 'w') as temp_file:
                 temp_file.write(self.rhw)
                 temp_file.close()
-            print "ROSTOOLS::Saving " + hw.properties["name"] + ".rhw " + "at " + path
+            print "ROSTOOLS::Saving " + rhw.properties["name"] + ".rhw " + "at " + path
 
     # Generate a ROS Deployment model (.rdp file) from a ROS_Deployment Object
     def save_rdp(self, path=""):
         if path == "":
             path = self.deployment_path
-        for dp in self.deployments:
-            rdp_namespace = {'deployment' : dp}
-            t = rdp(searchList=[rdp_namespace])
+        for rdp in self.deployment_files:
+            rdp_namespace = {'deployment' : rdp}
+            t = rdp_template.rdp(searchList=[rdp_namespace])
             self.rdp = str(t)
-            with open(os.path.join(path, dp.properties["name"] + ".rdp"), 'w') as temp_file:
+            with open(os.path.join(path, rdp.properties["name"] + ".rdp"), 'w') as temp_file:
                 temp_file.write(self.rdp)
                 temp_file.close()
-            print "ROSTOOLS::Saving " + dp.properties["name"] + ".rdp " + "at " + path   
+            print "ROSTOOLS::Saving " + rdp.properties["name"] + ".rdp " + "at " + path   
 
     # Save the entire project
     def save(self, project_name = "", project_path = ""):
@@ -363,5 +398,3 @@ class ROS_Project(Drawable_Object):
         self.save_rhw()
         # Save the ROS Deployment Model
         self.save_rdp()
-
-'''

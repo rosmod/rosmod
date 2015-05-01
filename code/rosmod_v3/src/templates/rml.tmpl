@@ -1,142 +1,90 @@
 /*
- * ROS Workspace Model
+ * ROSMOD Software Model
  */
 
 #if $workspace.children != []
 #for $package in $workspace.children
-// ROS Package - $package.properties["name"]
+// ROSMOD Package - $package.properties["name"]
 package $package.properties["name"]
 {
-#if $package.getChildrenByKind("message") != []
-    // Set of ROS Messages
-    messages 
+#if $package.getChildrenByKind("Component") != []
+#for $component in $package.getChildrenByKind("Component")
+    // ROSMOD Component - $component.properties["name"]
+    component $component.properties["name"] : $component.properties["datatype"] 
     {
-#for $message in $package.getChildrenByKind("message")
-        // ROS msg - $message.properties["name"]
-        msg $message.properties["name"]
+#if $component.getChildrenByKind("Server") != []
+#for $server in $component.getChildrenByKind("Server")
+        // ROSMOD Server - $server.properties["name"]
+        server <$server.properties["service_reference"].parent.properties["name"]/$server.properties["service_reference"].properties["name"]> $server.properties["name"] 
         {
-#for $field in $message.properties["fields"]            
-#if $len(field) > 2
-            $field[0] $field[1]=$field[2];
-#else
-            $field[0] $field[1];
+#if $server.properties["priority"] != ""
+            priority = $server.properties["priority"];
 #end if
-#end for        
-        } 
+#if $server.properties["deadline"] != ""
+            deadline = $server.properties["deadline"];
+#end if
+        }       
 #end for
-    }
 #end if
-
-#if $package.getChildrenByKind("service") != []	
-    // Set of ROS Services
-    services
-    {
-#for $service in $package.getChildrenByKind("service")
-        // ROS srv - $service.properties["name"]
-        srv $service.properties["name"]
+#if $component.getChildrenByKind("Client") != []
+#for $client in $component.getChildrenByKind("Client")
+        // ROSMOD Client - $client.properties["name"]
+        client <$client.properties["service_reference"].parent.properties["name"]/$client.properties["service_reference"].properties["name"]> $client.properties["name"];
+#end for
+#end if
+#if $component.getChildrenByKind("Publisher") != []
+#for $pub in $component.getChildrenByKind("Publisher")
+        // ROSMOD Publisher - $pub.properties["name"]
+        publisher <$pub.properties["message_reference"].parent.properties["name"]/$pub.properties["message_reference"].properties["name"]> $pub.properties["name"];
+#end for
+#end if
+#if $component.getChildrenByKind("Subscriber") != []
+#for $sub in $component.getChildrenByKind("Subscriber")
+        // ROSMOD Subscriber - $sub.properties["name"]
+        subscriber <$sub.properties["message_reference"].parent.properties["name"]/$sub.properties["message_reference"].properties["name"]> $sub.properties["name"] 
         {
-            request
-            {
-#for $req_field in $service.properties["request"]
-#if $len(req_field) > 2
-                $req_field[0] $req_field[1]=$req_field[2];
-#else
-                $req_field[0] $req_field[1];
+#if $sub.properties["priority"] != ""
+            priority = $sub.properties["priority"];
 #end if
-#end for
-            }
-
-            response
-            {
-#for $res_field in $service.properties["response"]
-#if $len(res_field) > 2
-                $res_field[0] $res_field[1]=$res_field[2];
-#else
-                $res_field[0] $res_field[1];
+#if $sub.properties["deadline"] != ""
+            deadline = $sub.properties["deadline"];
 #end if
+        }       
 #end for
-            }
-        }
+#end if
+#if $component.getChildrenByKind("Timer") != []
+#for $timer in $component.getChildrenByKind("Timer")
+        // ROSMOD Timer - $timer.properties["name"]
+        timer $timer.properties["name"] 
+        {
+#if $timer.properties["period"] != ""
+            period = $timer.properties["period"];
+#end if
+#if $timer.properties["priority"] != ""
+            priority = $timer.properties["priority"];
+#end if
+#if $timer.properties["deadline"] != ""
+            deadline = $timer.properties["deadline"];
+#end if
+        }       
 #end for
+#end if
     }
+#end for
 #end if
-
-#if $package.getChildrenByKind("component") != []
-    // Set of ROS Components
-    components
+#if $package.getChildrenByKind("Node") != []
+#for $node in $package.getChildrenByKind("Node")
+    // ROSMOD Node - $node.properties["name"]
+    node $node.properties["name"] 
     {
-#for $component in $package.getChildrenByKind("component")
-        // ROS Component - $component.properties["name"]
-	component $component.properties["name"]
-	{
-#if $component.getChildrenByKind("server") != []
-#for $server in $component.getChildrenByKind("server")
-#if $server.properties["service_reference"].parent.properties["name"] == $package.properties["name"]
-            provides $server.properties["service_reference"].properties["name"];
-#else
-	    provides $server.properties["service_reference"].parent.properties["name"]/$server.properties["service_reference"].properties["name"];
-#end if
-#end for
-#end if	
-#if $component.getChildrenByKind("client") != []
-#for $client in $component.getChildrenByKind("client")
-#if $client.properties["service_reference"].parent.properties["name"] == $package.properties["name"]
-	    requires $client.properties["service_reference"].properties["name"];
-#else
-	    requires $client.properties["service_reference"].parent.properties["name"]/$client.properties["service_reference"].properties["name"];
-#end if
-#end for
-#end if	
-#if $component.getChildrenByKind("publisher") != []
-#for $pb in $component.getChildrenByKind("publisher")
-#if $pb.properties["message_reference"].parent.properties["name"] == $package.properties["name"]
-	    publisher<$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];
-#else
-	    publisher<$pb.properties["message_reference"].parent.properties["name"]/$pb.properties["message_reference"].properties["name"]> $pb.properties["name"];
-#end if
-#end for
-#end if	
-#if $component.getChildrenByKind("subscriber") != []
-#for $sb in $component.getChildrenByKind("subscriber")
-#if $sb.properties["message_reference"].parent.properties["name"] == $package.properties["name"]
-     	    subscriber<$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];
-#else
-	    subscriber<$sb.properties["message_reference"].parent.properties["name"]/$sb.properties["message_reference"].properties["name"]> $sb.properties["name"];
-#end if
-#end for
-#end if	
-#if $component.getChildrenByKind("timer") != []
-#for $timer in $component.getChildrenByKind("timer")
-	    timer $timer.properties["name"]
-	    {
-	        period = $timer.properties["period"]$timer.properties["unit"];
-	    }#end for
-#end if	    
-	}
-#end for
-    }
-#end if
-
-#if $package.getChildrenByKind("node") != []
-    // Set of ROS Nodes in this package
-    nodes
-    {
-#for $node in $package.getChildrenByKind("node")
-        node $node.properties["name"] 
-	{
-#if $node.getChildrenByKind("component_instance") != []
-            // Instantiating components in ROS node
-#for $instance in $node.getChildrenByKind("component_instance")
-#if $instance.properties["component_reference"].parent.properties["name"] == $package.properties["name"]
-     	    component<$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
-#else
-	    component<$instance.properties["component_reference"].parent.properties["name"]/$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
-#end if
+#if $node.getChildrenByKind("Component_Instance") != []
+#for $instance in $node.getChildrenByKind("Component_Instance")
+        // ROSMOD Component Instance - $instance.properties["name"]
+        component<$instance.properties["component_reference"].parent.properties["name"]/$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
 #end for             						 
 #end if    	     
-	}
-#end for
     }
+#end for
 #end if
 }
 #end for

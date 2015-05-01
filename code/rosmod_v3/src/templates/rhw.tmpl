@@ -1,15 +1,14 @@
 /*
- * ROS Hardware Configurations Model
+ * ROSMOD Hardware Model
  */
 
-#if $hardware.getChildrenByKind("host") != []
-#for $host in $hardware.children
-// Host - $host.properties["name"]
-host $host.properties["name"]
+#if $rhw.children != []
+#for $hardware in $rhw.children
+// Hardware - $hardware.properties["name"]
+hardware $hardware.properties["name"]
 {
-    ip_address = "$host.properties["ip_address"]";
-#if $host.properties["architecture"] != ""
-    architecture = "$host.properties["architecture"]";
+#if $hardware.properties["arch"] != ""
+    arch = $hardware.properties["arch"];
 #end if
 }
 #end for

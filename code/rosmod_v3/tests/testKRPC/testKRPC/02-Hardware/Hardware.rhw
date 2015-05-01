@@ -1,13 +1,15 @@
 /*
- * ROS Hardware Configurations Model
+ * ROSMOD Hardware Model
  */
 
+// Hardware - BeagleboneBlack
 hardware BeagleboneBlack
 {
     arch = armv7l;
 }
-
+// Hardware - NVIDIA_JetsonTK1
 hardware NVIDIA_JetsonTK1
 {
     arch = arm;
 }
+

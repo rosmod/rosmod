@@ -1,34 +1,33 @@
 /*
- * ROS Workspace Model
+ * ROSMOD Software Model
  */
 
-// ROS Package - krpc
+// ROSMOD Package - krpc
 package krpc
 {
-    // ROS Component - krpc_comp
-    component krpc_comp : base
+    // ROSMOD Component - krpc_comp
+    component krpc_comp : base 
     {
-
-        server <krpc/some_srv> my_server
-	{
-	    priority = 60;
-	    deadline = 0.0001;
-	}
-	
-	publisher <krpc/some_msg> my_publisher;
-
-	timer timer0
-	{
-	    period = 1.0;
+        // ROSMOD Server - my_server
+        server <krpc/some_srv> my_server 
+        {
+            priority = 60;
+            deadline = 0.0001;
+        }       
+        // ROSMOD Publisher - my_publisher
+        publisher <krpc/some_msg> my_publisher;
+        // ROSMOD Timer - timer0
+        timer timer0 
+        {
+            period = 1.0;
             priority = 55;
-	    deadline = 0.0002;
-	}
+            deadline = 0.0002;
+        }       
     }
-
-    // Set of ROS Nodes in this package
+    // ROSMOD Node - krcp_node
     node krcp_node 
     {
-        // Instantiating components in ROS node
+        // ROSMOD Component Instance - krcp_comp_inst
         component<krpc/krpc_comp> krcp_comp_inst;
     }
 }

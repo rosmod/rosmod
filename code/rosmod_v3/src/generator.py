@@ -39,8 +39,8 @@ from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
 from rml import *
-from rhw import *
-from rdp import *
+import rhw as rhw_template
+import rdp as rdp_template
 
 class ROSMOD_Generator:
     # Main Generate Function

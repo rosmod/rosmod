@@ -1,52 +1,47 @@
 /*
- * ROS Deployment Model
+ * ROSMOD Deployment Model
  */
 
-using $deployment.properties["hardware_configuration_reference"].properties["name"];
+// ROSMOD Hardware Model - $deployment.properties["rhw_reference"].properties["name"]
+using $deployment.properties["rhw_reference"].properties["name"];
+
 #if $deployment.children != []
-#for $host_instance in $deployment.getChildrenByKind("host_instance")
-// ROS Host Instance - $host_instance.properties["name"]
-host_instance $host_instance.properties["name"]
+#for $hardware_instance in $deployment.getChildrenByKind("Hardware_Instance")
+// ROSMOD Hardware Instance - $hardware_instance.properties["name"]
+hardware_instance $hardware_instance.properties["name"]
 {
     properties
     {
-        username = "$host_instance.properties["username"]";
-	sshkey = "$host_instance.properties["sshkey"]";
-#if $host_instance.properties["init"] != ""
-	init = "$host_instance.properties["init"]";
-#end if
-#if $host_instance.properties["env_variables"] != []
-#for $env in $host_instance.properties["env_variables"]
-        ENV $env[0] = "$env[1]";
-#end for
+        ref = "${deployment.properties["rhw_reference"].properties["name"]}/$hardware_instance.properties["hardware_reference"].properties["name"]";
+        ip_address = "$hardware_instance.properties["ip_address"]";
+        username = "$hardware_instance.properties["username"]";
+	sshkey = "$hardware_instance.properties["sshkey"]";
+#if $hardware_instance.properties["init"] != ""
+	init = "$hardware_instance.properties["init"]";
 #end if
     }
-
-#if $host_instance.children != []
-    nodes
+#if $hardware_instance.children != []
+#for $node_instance in $hardware_instance.children
+    // ROSMOD Node Instance - $node_instance.properties["name"] 
+    node_instance $node_instance.properties["name"]
     {
-#for $node_instance in $host_instance.children
-        // ROS Node Instance - $node_instance.properties["name"] 
-        node_instance $node_instance.properties["name"]
-	{
-	    reference = "$node_instance.properties["node_reference"].parent.properties["name"]/$node_instance.properties["node_reference"].properties["name"]";
-#if $node_instance.properties["cmdline_arguments"] != ""
-    	    cmdline_arguments = "$node_instance.properties["cmdline_arguments"]";		   
+	ref = "$node_instance.properties["node_reference"].parent.properties["name"]/$node_instance.properties["node_reference"].properties["name"]";
+#if $node_instance.properties["cmd_args"] != ""
+    	cmd_args = "$node_instance.properties["cmd_args"]";		   
 #end if
+#if $node_instance.children != []
+#for $port_instance in $node_instance.children
+        port_instance $port_instance.properties["name"]
+	{
+            ref = "$port_instance.properties["port_reference"].parent.properties["name"]/$port_instance.properties["port_reference"].properties["name"]";
+            group = "$port_instance.properties["group"]";
 	}
+#end for
+#end if
 #end for
     }
 #end if
 }
 #end for 
-#for $group in $deployment.getChildrenByKind("group")
-// ROS Group - $group.properties['name']
-group $group.properties['name']
-{
-#for $port in $group.children
-    ${port.properties['node_instance_reference'].properties['name']}/${port.properties['component_instance_reference'].properties['name']}/${port.properties['name']}
-#end for
-}
-#end for
 #end if
 
