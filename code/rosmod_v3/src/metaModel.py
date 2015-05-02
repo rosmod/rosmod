@@ -12,8 +12,8 @@ class Meta_Entity:
 
 # Set up a dictionary which desribes the meta-model
 # for each entity in the metamodel:
-#  the types of its children
 #  the type of its parent
+#  the types of its children
 #  the properties it has
 #  the types of objects which can refer to it
 #  the types of objects to which it can refer
