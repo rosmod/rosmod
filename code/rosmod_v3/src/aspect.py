@@ -44,6 +44,8 @@ class AspectInfo():
         self.toolbarButtons[tbInfo.name] = tbInfo
     def DelTBInfo(self,name):
         self.toolbarButtons.pop(name,None)
+    def ClearTBInfo(self):
+        self.toolbarButtons.clear()
 
     def GetPageInfo(self,name):
         if name in self.pages.keys():
@@ -54,12 +56,12 @@ class AspectInfo():
         self.pages[pageInfo.name] = pageInfo
     def DelPageInfo(self,name):
         self.pages.pop(name,None)
+    def ClearPageInfo(self):
+        self.pages.clear()
 
 def InitAspects(self):
     self.activeAspect = None
     self.activeAspectInfo = None
-    self.Aspects = OrderedDict()
-    self.AspectInfos = OrderedDict()
     BuildAspects(self)
 
 '''
@@ -83,6 +85,11 @@ def OnAspect(self,kind,e):
     AddAspectToolbar(self,kind)
     pageChange(self,None)
 
+def ClearAspects(self):
+    for kind,aspect in self.Aspects.iteritems():
+        aspect.DeleteAllPages()
+        self.AspectInfos[kind].ClearPageInfo()
+
 '''
 Build all the Aspects required for ROSMOD:
 * Packages aspect : used for setting up mgs,srv,comp,node,etc.
@@ -95,11 +102,15 @@ def BuildAspects(self):
     self.AspectTypes["Hardware"] = ["rhw"]
     self.AspectTypes["Deployment"] = ["rdp"]
 
+    self.AspectInfos = OrderedDict()
     self.AspectInfos["Software"] = AspectInfo("Software",["Package"])
     self.AspectInfos["Hardware"] = AspectInfo("Hardware",["rhw"])
     self.AspectInfos["Deployment"] = AspectInfo("Deployment",["rdp"])
+
+    self.Aspects = OrderedDict()
     for key in self.AspectInfos.keys():
         BuildAspect(self,key)
+
     self.activeAspect = self.Aspects["Software"]
     self.activeAspectInfo = self.AspectInfos["Software"]
 

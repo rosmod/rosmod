@@ -609,7 +609,11 @@ class Example(wx.Frame):
             if inputs != None:
                 self.filename = inputs['Project']['name']
                 self.project.new(project_name = self.filename,
-                                 project_path = self.project_path)
+                                 project_path = self.project_path,
+                                 workspace_name = inputs['Workspace']['name'],
+                                 hardware_name = inputs['Hardware']['name'],
+                                 deployment_name = inputs['Deployment']['name'])
+                ClearAspects(self)
                 BuildAspectPages(self)
                 self.statusbar.SetStatusText('Created new project: {} in: {}'.format(self.filename,self.project_path))
 
@@ -625,6 +629,7 @@ class Example(wx.Frame):
             self.filename = filename
             self.project_path = model_path
             self.project.open(self.project_path)
+            ClearAspects(self)
             BuildAspectPages(self)
             self.statusbar.SetStatusText('Loaded project: {} from: {}'.format(self.filename,self.project_path))
 
@@ -653,7 +658,6 @@ class Example(wx.Frame):
                 self.filename = inputs['name']
                 self.project_path = project_path
                 self.project.save(self.filename,self.project_path)
-                BuildAspectPages(self)
                 self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def UpdateUndo(self):

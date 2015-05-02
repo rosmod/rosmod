@@ -62,6 +62,10 @@ class ROS_Project(Drawable_Object):
             print "ROSTOOLS::ERROR::Invalid Project Path"
         self.project_path = os.path.join(self.project_path, self.project_name)
 
+        self.children = []
+        self.hardware_files = []
+        self.deployment_files = []
+
         # Notify user
         print "ROSTOOLS::Creating Project " + project_name + " at " + project_path
 
@@ -105,9 +109,14 @@ class ROS_Project(Drawable_Object):
         new_package = type("ROS_Package", 
                            ( object, Drawable_Object, ), 
                            { '__init__' : Drawable_Object.__init__ })()
+        new_package.kind = "Package"
+        for prop in model_dict["Package"].properties:
+            new_package.properties[prop] = ""
         new_package.properties["name"] = "New_Package"
         new_package.parent = self.workspace_builder.rml
         self.workspace_builder.rml.add(new_package)
+
+        self.children.append(self.workspace_builder.rml)
         
         if not os.path.exists(os.path.join(self.project_path, "02-Hardware")):
             os.makedirs(self.hardware_path)
@@ -123,7 +132,11 @@ class ROS_Project(Drawable_Object):
         else:
             self.hardware_builder.rhw.properties["name"] = "New_Hardware"
             with open(os.path.join(self.hardware_path, "New_Hardware" + ".rhw"), 'w') as temp_file:
-                temp_file.write("/*\n * ROSMOD Hardware Model\n */")                 
+                temp_file.write("/*\n * ROSMOD Hardware Model\n */")         
+
+
+        self.hardware_files.append(self.hardware_builder.rhw)
+        self.children.append(self.hardware_builder.rhw)        
 
         if not os.path.exists(os.path.join(self.project_path, "03-Deployment")):
             os.makedirs(self.deployment_path)
@@ -147,9 +160,15 @@ class ROS_Project(Drawable_Object):
                 else:
                     temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - " + hardware_name + "\nusing " + hardware_name + ";") 
 
+        self.deployment_files.append(self.deployment_builder.rdp)
+        self.children.append(self.deployment_builder.rdp)
+
 
     # Open an existing ROSMOD Project
     def open(self, project_path):
+        self.children = []
+        self.hardware_files = []
+        self.deployment_files = []
         valid_project = False
         project_directories = []
         for prj_file in os.listdir(project_path):
@@ -234,7 +253,7 @@ class ROS_Project(Drawable_Object):
     # Go through dirname and load in all .pnp files into network profile properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.pnp
     def parse_pnp(self, dirname):
-        print "Parsing Port Network Profiles!"
+        print "ROSTOOLS::Parsing Port Network Profiles!"
         for filename in os.listdir(dirname):
             print filename
 
