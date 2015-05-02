@@ -628,8 +628,6 @@ class Example(wx.Frame):
         if filename != None and model_path != None:
             self.filename = filename
             self.project_path = model_path
-            #self.project.open(self.project_path)
-            
             openProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( title="Open Project Progress",
                                              progress_q = openProgressQ,
@@ -647,12 +645,11 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Saved project as: {} in: {}'.format(self.filename,self.project_path))
 
     def OnSaveAs(self, e):
-        dlgObj = project.ROS_Project()
-        dlgObj.properties = OrderedDict()
-        dlgObj.properties['name'] = self.project.project_name
+        properties = OrderedDict()
+        properties['name'] = self.project.project_name
         ed = dialogs.EditDialog( self,
-                                 editObj = dlgObj,
-                                 editDict = dlgObj.properties,
+                                 editObj = None,
+                                 editDict = properties,
                                  title = 'Choose New Project Name',
                                  style = wx.RESIZE_BORDER)
         ed.ShowModal()

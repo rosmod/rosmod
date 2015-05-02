@@ -48,8 +48,8 @@ model_dict["Service"] = Meta_Entity(
 
 model_dict["Component"] = Meta_Entity(
     "Package", 
-    ["scheduling_scheme", "Timer","Publisher","Subscriber","Client","Server"], 
-    ["name"],
+    ["Timer","Publisher","Subscriber","Client","Server"], 
+    ["name","datatype","scheduling_scheme"],
     [["Component_Instance","component_reference"]], 
     [])
 model_dict["Client"] = Meta_Entity(
@@ -85,8 +85,8 @@ model_dict["Timer"] = Meta_Entity(
 
 model_dict["Node"] = Meta_Entity(
     "Package", 
-    ["priority", "Component_Instance"], 
-    ["name"],
+    ["Component_Instance"], 
+    ["name","priority"],
     [["Node_Instance","node_reference"]], 
     [])
 model_dict["Component_Instance"] = Meta_Entity(
