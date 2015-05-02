@@ -116,7 +116,7 @@ class Example(wx.Frame):
 
         BuildOutput(self)
         AddAspectToolbar(self,"Software")
-        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output)
+        self.viewSplitter.SplitHorizontally(self.activeAspect,self.output,-250)
         self.viewSplitter.Bind(wx.EVT_SPLITTER_DCLICK,self.OnSplitterDClick)
         
         self.toolbar.Realize()
@@ -628,7 +628,16 @@ class Example(wx.Frame):
         if filename != None and model_path != None:
             self.filename = filename
             self.project_path = model_path
-            self.project.open(self.project_path)
+            #self.project.open(self.project_path)
+            
+            openProgressQ = multiprocessing.Queue()
+            dlg = dialogs.RMLProgressDialog( title="Open Project Progress",
+                                             progress_q = openProgressQ,
+                                             numItems=11)
+            workerThread = WorkerThread(func = lambda : self.project.open(self.project_path,
+                                                                          openProgressQ) )
+            workerThread.start()
+            dlg.ShowModal()
             ClearAspects(self)
             BuildAspectPages(self)
             self.statusbar.SetStatusText('Loaded project: {} from: {}'.format(self.filename,self.project_path))
@@ -666,15 +675,15 @@ class Example(wx.Frame):
 
     def OnUndo(self, e):
         if len(self.undoList) > 0:
+            self.redoList.append(copy.copy(self.project))
             self.project = self.undoList.pop()
-            self.redoList.append(self.project)
             self.toolbar.EnableTool(wx.ID_REDO, True)
             if len(self.undoList) == 0:
                 self.toolbar.EnableTool(wx.ID_UNDO, False)
     def OnRedo(self, e):
         if len(self.redoList) > 0:
+            self.undoList.append(copy.copy(self.project))
             self.project = self.redoList.pop()
-            self.undoList.append(self.project)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             if len(self.redoList) == 0:
                 self.toolbar.EnableTool(wx.ID_REDO, False)

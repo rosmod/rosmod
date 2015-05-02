@@ -57,6 +57,7 @@ class RMLProgressDialog(wx.Dialog):
                 self.count += 1
                 self.progress.SetValue(self.count)
                 self.progressText.SetLabel( message )
+                print message
                 if self.count >= self.numItems:
                     self.ok.Enable()
                     self.timer.Stop()

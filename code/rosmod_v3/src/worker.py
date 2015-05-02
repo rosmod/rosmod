@@ -56,6 +56,9 @@ class WorkerThread(Thread):
 
 def InitWorkQueue(self):
     self.workQueue = []
+
+    self.updatedHostDict = False
+
     self.workTimerPeriod = 5.0
     self.workTimerID = wx.NewId()  # pick a number
     self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
@@ -67,7 +70,6 @@ def InitWorkQueue(self):
     self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
     Publisher().subscribe(lambda e : OnSubscribeMonitorStatus(self,e), self.monitorStatusTopic)
     Publisher().subscribe(lambda e : OnSubscribeHostDictChange(self,e), self.hostDictTopic)
-
 
 def OnSubscribeMonitorStatus(self,message):
     pass

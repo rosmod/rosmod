@@ -148,6 +148,17 @@ class Drawable_Object:
         self.height = 0
         self.width = 0
         self.textPosition = wx.Point()
+
+    def Copy(self,other):
+        #self.parent = other.parent
+        #self.kind = other.kind
+        self.properties = copy.deepcopy(other.properties)
+        self.children = copy.deepcopy(other.children)
+        self.style = copy.deepcopy(other.style)
+        self.topLeft = copy.deepcopy(other.topLeft)
+        self.height = copy.copy(other.height)
+        self.width = copy.copy(other.width)
+        self.textPosition = copy.deepcopy(other.textPosition)
         
     def add(self, child):
         child.parent = self
