@@ -457,7 +457,7 @@ class ROS_Project(Drawable_Object):
         for package in self.workspace_builder.rml.children:
             for msg in package.getChildrenByKind("Message"):
                 self.save_msg(msg)
-            for srv in package.getChildrenByKind("Hardware"):
+            for srv in package.getChildrenByKind("Service"):
                 self.save_srv(srv)
 
     # Generate a ROS Hardware Configurations model (.rhw file) from a ROS_HW Object
@@ -492,7 +492,7 @@ class ROS_Project(Drawable_Object):
         if not os.path.exists(path):
             os.makedirs(path)
         msg_namespace = {'definition': msg_object.properties["definition"]}
-        t = msg(searchList=[msg_namespace])
+        t = msg_template.msg(searchList=[msg_namespace])
         msg = str(t)
         with open(os.path.join(path, msg_object.parent.properties["name"] + "." + msg_object.properties["name"] + ".msg"), 'w') as temp_file:
             temp_file.write(msg)
@@ -504,7 +504,7 @@ class ROS_Project(Drawable_Object):
         if not os.path.exists(path):
             os.makedirs(path)
         srv_namespace = {'definition': srv_object.properties["definition"]}
-        t = srv(searchList=[srv_namespace])
+        t = srv_template.srv(searchList=[srv_namespace])
         srv = str(t)
         with open(os.path.join(path, srv_object.parent.properties["name"] + "." + srv_object.properties["name"] + ".srv"), 'w') as temp_file:
             temp_file.write(srv)
