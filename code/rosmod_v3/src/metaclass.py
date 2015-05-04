@@ -93,13 +93,13 @@ meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, cre
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
 meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
-meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom
+meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
 
-meta_class_dict["logging_debug"] = Grammar_Field("string", "Logging_debug", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_info"] = Grammar_Field("string", "Logging_info", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_warning"] = Grammar_Field("string", "Logging_warning", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_error"] = Grammar_Field("string", "Logging_error", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_critical"] = Grammar_Field("string", "Logging_critical", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_debug"] = Grammar_Field("boolean", "Logging_debug", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_info"] = Grammar_Field("boolean", "Logging_info", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_warning"] = Grammar_Field("boolean", "Logging_warning", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_error"] = Grammar_Field("boolean", "Logging_error", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_critical"] = Grammar_Field("boolean", "Logging_critical", create_enterAtom, create_exitAtom)
 
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
@@ -116,10 +116,6 @@ meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, 
 meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, create_exitAtom)
 meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom)
 meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
-
-meta_class_dict["logging_info"] = Grammar_Field("boolean")
-meta_class_dict["logging_debug"] = Grammar_Field("boolean")
-meta_class_dict["logging_error"] = Grammar_Field("boolean")
 
 meta_class_dict["definition"] = Grammar_Field("code")
 
