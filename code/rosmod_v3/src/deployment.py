@@ -76,7 +76,7 @@ def parallelDeploy(hostDict,updateQ):
             pgrep = run('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)
             node.pids = pids
-            updateQ.put("Deployed {}".format(node.name))
+            updateQ.put(["Deployed {}".format(node.name),1])
     return host
 
 @parallel
@@ -91,7 +91,7 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
     source = os.path.join(deployment_folder_path, "*.xml")
     dest = "/home/" + host.userName + "/."
     put(source, dest)
-    updateQ.put("Copied files to {}".format(env.host_string))
+    updateQ.put(["Copied files to {}".format(env.host_string),1])
 
 @parallel
 def parallelCommand(hostDict, command, updateQ):
@@ -99,7 +99,7 @@ def parallelCommand(hostDict, command, updateQ):
     env.key_filename = host.keyFile
     env.host_string = "{}@{}".format(host.userName,host.ipAddress)
     run(command)
-    updateQ.put("Ran {} on host {}".format(command,env.host_string))
+    updateQ.put(["Ran {} on host {}".format(command,env.host_string),1])
 
 @parallel
 def parallelStop(hostDict,updateQ):
@@ -113,7 +113,7 @@ def parallelStop(hostDict,updateQ):
                     run('kill -9 {}'.format(pid))
                 except SystemExit:
                     pass
-        updateQ.put("Killed {}".format(node.name))
+        updateQ.put(["Killed {}".format(node.name),1])
         node.pids = []
     return host
 
@@ -127,9 +127,9 @@ def parallelMonitor(hostDict,updateQ):
             for pid in node.pids:
                 try:
                     status = run('ps --no-headers -p {}'.format(pid))
-                    updateQ.put("{} UP".format(node.name))
+                    updateQ.put(["{} UP".format(node.name),1])
                 except SystemExit:
-                    updateQ.put("{} DOWN".format(node.name))
+                    updateQ.put(["{} DOWN".format(node.name),1])
                     node.pids = []
     return host
 

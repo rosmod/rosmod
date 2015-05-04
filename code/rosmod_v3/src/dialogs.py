@@ -54,11 +54,21 @@ class RMLProgressDialog(wx.Dialog):
         try:
             message = self.progress_q.get(False)
             if message != None:
-                self.count += 1
-                self.progress.SetValue(self.count)
-                self.progressText.SetLabel( message )
-                print message
-                if self.count >= self.numItems:
+                if len(message) == 1:
+                    self.progressText.SetLabel( message[0] )
+                    self.count += 1
+                elif len(message) == 2:
+                    self.progressText.SetLabel( message[0] )
+                    self.count += message[0]
+                    self.progress.SetValue(self.count)
+                elif len(message) == 3:
+                    self.progressText.SetLabel( message[0] )
+                    self.progress.SetRange( message[2] )
+                    self.progress.SetValue( message[1] )
+                    self.count = message[1]
+                print message[1]
+                if self.count >= self.progress.GetRange():
+                    self.progress.SetValue(self.progress.GetRange())
                     self.ok.Enable()
                     self.timer.Stop()
         except:
