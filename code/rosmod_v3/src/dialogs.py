@@ -54,19 +54,18 @@ class RMLProgressDialog(wx.Dialog):
         try:
             message = self.progress_q.get(False)
             if message != None:
+                self.progressText.SetLabel( message[0] )
                 if len(message) == 1:
-                    self.progressText.SetLabel( message[0] )
                     self.count += 1
+                    self.progress.SetValue(self.count)
                 elif len(message) == 2:
-                    self.progressText.SetLabel( message[0] )
-                    self.count += message[0]
+                    self.count += message[1]
                     self.progress.SetValue(self.count)
                 elif len(message) == 3:
-                    self.progressText.SetLabel( message[0] )
                     self.progress.SetRange( message[2] )
                     self.progress.SetValue( message[1] )
                     self.count = message[1]
-                print message[1]
+                print message[0]
                 if self.count >= self.progress.GetRange():
                     self.progress.SetValue(self.progress.GetRange())
                     self.ok.Enable()
@@ -155,6 +154,13 @@ class EditDialog(wx.Dialog):
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
                 self.inputs[key] = field
+            elif meta_class_dict[key].kind == "boolean":
+                label = wx.StaticText(panel, label=key + ":")
+                field = wx.CheckBox(panel)
+                if type(value) is bool:
+                    field.SetValue(value)
+                else:
+                    field.SetValue(False)
             elif meta_class_dict[key].kind == "code":
                 growRow=True
                 label = wx.StaticText(panel, label=key + ":")
@@ -240,6 +246,8 @@ class EditDialog(wx.Dialog):
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
             if meta_class_dict[key].kind == "string":
+                self.returnDict[key] = field.GetValue()
+            elif meta_class_dict[key].kind == "boolean":
                 self.returnDict[key] = field.GetValue()
             elif meta_class_dict[key].kind == "code":
                 fieldTxt = field.GetText()

@@ -110,6 +110,10 @@ meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, crea
 meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom)
 meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
 
+meta_class_dict["logging_info"] = Grammar_Field("boolean")
+meta_class_dict["logging_debug"] = Grammar_Field("boolean")
+meta_class_dict["logging_error"] = Grammar_Field("boolean")
+
 meta_class_dict["definition"] = Grammar_Field("code")
 
 # Properties that are references
