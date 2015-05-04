@@ -282,14 +282,27 @@ bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, double* pos)
 	}
       ZeroCopyInputStream* input = 
 	new ArrayInputStream(response.return_value().data(), response.return_value().length());
+      std::cout << "length = " << response.return_value().length() << endl;
       CodedInputStream* codeStream = 
 	new CodedInputStream(input);
       krpc::Tuple tuple;
       tuple.ParseFromCodedStream(codeStream);
+      std::cout << "Got a tuple of length: " << tuple.items_size() << endl;
+
       for (int i=0;i<tuple.items_size();i++)
 	{
-	  char buf[8];
-	  codeStream->ReadRaw(buf,8);
+	  delete codeStream;
+	  delete input;
+	  input = new ArrayInputStream(tuple.items(i).data(), tuple.items(i).length());
+	  codeStream = new CodedInputStream(input);
+	  char buf[10];
+	  bool test = codeStream->ReadRaw(buf,8);
+	  std::cout << test << endl;
+	  cout.setf(ios::hex, ios::basefield);
+	  for (int j =0;j++;j<8)
+	    printf("%d\n",buf[j]);
+	  cout.unsetf(ios::hex);
+
 	  double val = *&buf[0];
 	  pos[i] = val;
 	}
@@ -560,6 +573,7 @@ bool KRPC_Client::getResponseFromRequest(krpc::Request req, krpc::Response& res)
 	perror("recv");
 	return false;
       }
+      //std::cout << "Socket received # bytes = " << bytesreceived << endl;
       ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
       CodedInputStream* coded_input = new CodedInputStream(raw_input);
       uint64_t size;
