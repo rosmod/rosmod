@@ -40,24 +40,10 @@ class ROS_Project(Drawable_Object):
 
         # Hardware Configurations Path
         self.hardware_path = os.path.join(self.project_path, "02-Hardware")
-        # Hardware Configurations - List of all rhw objects in Project
-        self.hardware_files = type("ROS_Hardware_Files",
-                                   ( object, Drawable_Object, ), 
-                                   { '__init__' : Drawable_Object.__init__ })()
-        self.hardware_files.kind = "hardware_files"
 
         # Deployment Path
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
-        # Deployment Configurations - List of all rdp objects in Project
-        self.deployment_files = type("ROS_Deployment_Files",
-                                   ( object, Drawable_Object, ), 
-                                   { '__init__' : Drawable_Object.__init__ })()
-        self.hardware_files.kind = "deployment_files"
 
-        # Add hardware_files & deployment files as children of project
-        self.children.append(self.hardware_files)
-        self.children.append(self.deployment_files)
-    
     # Create a new ROSMOD Project
     def new(self, 
             project_name = "",
@@ -79,18 +65,6 @@ class ROS_Project(Drawable_Object):
         self.project_path = os.path.join(self.project_path, self.project_name)
 
         self.children = []
-        self.hardware_files = type("ROS_Hardware_Files",
-                                   ( object, Drawable_Object, ), 
-                                   { '__init__' : Drawable_Object.__init__ })()
-        self.hardware_files.kind = "hardware_files"
-        self.deployment_files = type("ROS_Deployment_Files",
-                                   ( object, Drawable_Object, ), 
-                                   { '__init__' : Drawable_Object.__init__ })()
-        self.hardware_files.kind = "deployment_files"
-
-        # Add hardware_files & deployment files as children of project
-        self.children.append(self.hardware_files)
-        self.children.append(self.deployment_files)
 
         # Notify user
         ros_tools_log(q, "ROSTOOLS::Creating Project " + project_name + " at " + project_path)
@@ -161,7 +135,7 @@ class ROS_Project(Drawable_Object):
                 temp_file.write("/*\n * ROSMOD Hardware Model\n */")         
 
 
-        self.hardware_files.add(self.hardware_builder.rhw)
+        self.add(self.hardware_builder.rhw)
 
         if not os.path.exists(os.path.join(self.project_path, "03-Deployment")):
             os.makedirs(self.deployment_path)
@@ -185,22 +159,11 @@ class ROS_Project(Drawable_Object):
                 else:
                     temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - " + hardware_name + "\nusing " + hardware_name + ";") 
 
-        self.deployment_files.add(self.deployment_builder.rdp)
+        self.add(self.deployment_builder.rdp)
 
     # Open an existing ROSMOD Project
     def open(self, project_path, progressQ = None):
         self.children = []
-        self.hardware_files = type("ROS_Hardware_Files",
-                                   ( object, Drawable_Object, ), 
-                                   { '__init__' : Drawable_Object.__init__ })()
-        self.hardware_files.kind = "hardware_files"
-        self.deployment_files = type("ROS_Deployment_Files",
-                                   ( object, Drawable_Object, ), 
-                                   { '__init__' : Drawable_Object.__init__ })()
-        self.hardware_files.kind = "deployment_files"
-        self.children.append(self.hardware_files)
-        self.children.append(self.deployment_files)
-
         valid_project = False
         project_directories = []
         for prj_file in os.listdir(project_path):
@@ -341,7 +304,7 @@ class ROS_Project(Drawable_Object):
         # Walk the parse tree
         walker.walk(self.hardware_builder, tree)
 
-        self.hardware_files.add(self.hardware_builder.rhw)
+        self.add(self.hardware_builder.rhw)
         reference_dict[self.children[-1].properties["name"]] = self.children[-1]
 
     # Parse .rdp software deployment model
@@ -368,7 +331,7 @@ class ROS_Project(Drawable_Object):
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
 
-        self.deployment_files.add(self.deployment_builder.rdp)
+        self.add(self.deployment_builder.rdp)
 
     # Parse all model files in all aspects of Project
     def parse_models(self, progressQ = None):
@@ -447,7 +410,7 @@ class ROS_Project(Drawable_Object):
         # Use listener_object to generate ROS workspace
         self.workspace_dir = workspace_generator.generate_workspace(self.workspace_builder.rml, 
                                                                     self.workspace_path, 
-                                                                    self.deployment_files, 
+                                                                    self.getChildrenByKind("rdp"), 
                                                                     self.deployment_path)
 
     # Resolving References in all workspace packages
@@ -469,7 +432,7 @@ class ROS_Project(Drawable_Object):
                     for comp_instance in package_child.children:
                         comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 
-        for rdp in self.deployment_files.children:
+        for rdp in self.getChildrenByKind("rdp"):
             rdp.properties["rhw_reference"] = reference_dict[rdp.properties["reference"]]
             for hardware_instance in rdp.children:
                 hardware_instance.properties["hardware_reference"] = reference_dict[hardware_instance.properties["reference"]]
@@ -494,7 +457,7 @@ class ROS_Project(Drawable_Object):
     def save_rhw(self, path=""):
         if path == "":
             path = self.hardware_path
-        for rhw in self.hardware_files.children:
+        for rhw in self.getChildrenByKind("rhw"):
             rhw_namespace = {'rhw' : rhw}
             t = rhw_template.rhw(searchList=[rhw_namespace])
             self.rhw = str(t)
@@ -507,7 +470,7 @@ class ROS_Project(Drawable_Object):
     def save_rdp(self, path=""):
         if path == "":
             path = self.deployment_path
-        for rdp in self.deployment_files.children:
+        for rdp in self.getChildrenByKind("rdp"):
             rdp_namespace = {'deployment' : rdp}
             t = rdp_template.rdp(searchList=[rdp_namespace])
             self.rdp = str(t)

@@ -96,14 +96,8 @@ model_dict["Component_Instance"] = Meta_Entity(
     [], 
     ["Component"])
 
-model_dict["hardware_files"] = Meta_Entity(
-    "Project", 
-    ["rhw"], 
-    [],
-    [], 
-    [])
 model_dict["rhw"] = Meta_Entity(
-    "hardware_files", 
+    "Project", 
     ["Hardware"], 
     ["name"],
     [["rdp","rhw_reference"]], 
@@ -114,14 +108,8 @@ model_dict["Hardware"] = Meta_Entity(
     ["name","arch"],
     [["Hardware_Instance","hardware_reference"]], 
     [])
-model_dict["deployment_files"] = Meta_Entity(
-    "Project", 
-    ["rdp"], 
-    [],
-    [], 
-    [])
 model_dict["rdp"] = Meta_Entity(
-    "deployment_files", 
+    "Project", 
     ["Hardware_Instance"], 
     ["name","rhw_reference"],
     [], 
