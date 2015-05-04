@@ -15,9 +15,12 @@ from builder import *
 from loader import *
 from generator import *
 
-def ros_tools_log(q,logStr):
+def ros_tools_log(q,logStr,amount=1,total=None):
     if q:
-        q.put(logStr)
+        if total:
+            q.put([logStr,amount,total])
+        else:
+            q.put([logStr,amount])            
     else:
         print logStr
 
