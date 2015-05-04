@@ -247,14 +247,40 @@ class ROS_Project(Drawable_Object):
     def parse_abl(self, dirname):
         #print "ROSTOOLS::Parsing Abstract Business Logic Model Files!"
         for filename in os.listdir(dirname):
-            pass
+            if len(filename.split('.')) == 3:
+                package_name = filename.split('.')[0]
+                comp_name = filename.split('.')[1]
+                port_name = filename.split('.')[2]
+                abl_file = open(os.path.join(dirname, filename), 'r')
+                for package in self.workspace_builder.rml.children:
+                    if package.properties["name"] == package_name:
+                        for comp in package.getChildrenByKind("Component"):
+                            if comp.properties["name"] == comp_name:
+                                for port in comp.children:
+                                    if port.properties["name"] == port_name:
+                                        if "abstract_business_logic" not in port.properties.keys():
+                                            port.properties["abstract_business_logic"] = ""
+                                        port.properties["abstract_business_logic"] = abl_file.read()
 
     # Go through dirname and load in all .pnp files into network profile properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.pnp
     def parse_pnp(self, dirname):
         #print "ROSTOOLS::Parsing Port Network Profiles!"
         for filename in os.listdir(dirname):
-            pass
+            if len(filename.split('.')) == 3:
+                package_name = filename.split('.')[0]
+                comp_name = filename.split('.')[1]
+                port_name = filename.split('.')[2]
+                pnp_file = open(os.path.join(dirname, filename), 'r')
+                for package in self.workspace_builder.rml.children:
+                    if package.properties["name"] == package_name:
+                        for comp in package.getChildrenByKind("Component"):
+                            if comp.properties["name"] == comp_name:
+                                for port in comp.children:
+                                    if port.properties["name"] == port_name:
+                                        if "port_network_profile" not in port.properties.keys():
+                                            port.properties["port_network_profile"] = ""
+                                        port.properties["port_network_profile"] = pnp_file.read()
 
     # Parse .rml software model
     def parse_rml(self, filename):
@@ -514,12 +540,24 @@ class ROS_Project(Drawable_Object):
         print "ROSTOOLS::Saving " + srv_object.properties["name"] + ".srv " + "at " + path
 
     # Save Abstract Business Logic files
-    def save_abl(self, path=""):
-        pass
+    def save_abl(self, port_object):
+        if "abstract_business_logic" in port_object.properties.keys():
+            path = self.workspace_path + "/abl"
+            if not os.path.exists(path):
+                os.makedirs(path)
+            filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + port_object.properties["name"] + ".abl"
+            with open(os.path.join(path, filename), 'w') as temp_file:
+                temp_file.write(port_object.properties["abstract_business_logic"])
         
     # Save Port Network Profiles
-    def save_pnp(self, path=""):
-        pass
+    def save_pnp(self, port_object):
+        if "port_network_profile" in port_object.properties.keys():
+            path = self.workspace_path + "/pnp"
+            if not os.path.exists(path):
+                os.makedirs(path)
+            filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + port_object.properties["name"] + ".pnp"
+            with open(os.path.join(path, filename), 'w') as temp_file:
+                temp_file.write(port_object.properties["port_network_profile"])
 
     # Save the entire project
     def save(self, project_name = "", project_path = ""):
