@@ -342,7 +342,6 @@ class ROS_Project(Drawable_Object):
         walker.walk(self.hardware_builder, tree)
 
         self.hardware_files.add(self.hardware_builder.rhw)
-        self.children.append(self.hardware_builder.rhw)
         reference_dict[self.children[-1].properties["name"]] = self.children[-1]
 
     # Parse .rdp software deployment model
@@ -370,7 +369,6 @@ class ROS_Project(Drawable_Object):
         walker.walk(self.deployment_builder, tree)
 
         self.deployment_files.add(self.deployment_builder.rdp)
-        self.children.append(self.deployment_builder.rdp)
 
     # Parse all model files in all aspects of Project
     def parse_models(self, progressQ = None):
@@ -520,6 +518,13 @@ class ROS_Project(Drawable_Object):
 
     # Save Message files
     def save_msg(self, path=""):
+        path = self.workspace_path + "/msg"
+        msg_namespace = {'workspace': self.workspace_builder.rml}
+        t = rml(searchList=[rml_namespace])
+        self.rml = str(t)
+        with open(os.path.join(path, self.workspace_builder.rml.properties["name"] + ".rml"), 'w') as temp_file:
+            temp_file.write(self.rml)
+        print "ROSTOOLS::Saving " + self.workspace_builder.rml.properties["name"] + ".rml " + "at " + path
         pass
         
     # Save Service files
