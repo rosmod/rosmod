@@ -187,7 +187,7 @@ class ROSMOD_Generator:
             for message in messages:
                 msg_namespace = {'definition': message.properties["definition"]}
                 msg_filename = message.properties["name"] + ".msg"
-                t = msg(searchList=[msg_namespace])
+                t = msg_template.msg(searchList=[msg_namespace])
                 self.msg_fields = str(t)
                 # Write msg file
                 with open(os.path.join(self.msg, msg_filename), 'w') as temp_file:
@@ -197,7 +197,7 @@ class ROSMOD_Generator:
             for service in services:
                 srv_filename = service.properties["name"] + ".srv"
                 srv_namespace = {'definition' : service.properties["definition"]}
-                t = srv(searchList=[srv_namespace])
+                t = srv_template.srv(searchList=[srv_namespace])
                 self.srv_fields = str(t)
                 # Write the srv file
                 with open(os.path.join(self.srv, srv_filename), 'w') as temp_file:
