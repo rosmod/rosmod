@@ -13,6 +13,15 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#logging_warning.
+    def enterLogging_warning(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#logging_warning.
+    def exitLogging_warning(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_SoftwareParser#component_instance.
     def enterComponent_instance(self, ctx):
         pass
@@ -67,12 +76,30 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#logging_info.
+    def enterLogging_info(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#logging_info.
+    def exitLogging_info(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_SoftwareParser#node.
     def enterNode(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSMOD_SoftwareParser#node.
     def exitNode(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#logging_critical.
+    def enterLogging_critical(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#logging_critical.
+    def exitLogging_critical(self, ctx):
         pass
 
 
@@ -112,12 +139,30 @@ class ROSMOD_SoftwareListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#logging_error.
+    def enterLogging_error(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#logging_error.
+    def exitLogging_error(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_SoftwareParser#name.
     def enterName(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSMOD_SoftwareParser#name.
     def exitName(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_SoftwareParser#logging_debug.
+    def enterLogging_debug(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_SoftwareParser#logging_debug.
+    def exitLogging_debug(self, ctx):
         pass
 
 

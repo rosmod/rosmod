@@ -16,6 +16,34 @@ package $package.properties["name"]
         properties
         {
 	    scheduling_scheme = $component.properties["scheduling_scheme"];
+	    logging
+	    {
+#if $component.properties["logging_debug"] != False
+	        DEBUG = true;
+#else
+	        DEBUG = false;
+#end if
+#if $component.properties["logging_info"] != False
+	        INFO = true;
+#else
+	        INFO = false;
+#end if
+#if $component.properties["logging_warning"] != False
+	        WARNING = true;
+#else
+	        WARNING = false;
+#end if
+#if $component.properties["logging_error"] != False
+	        ERROR = true;
+#else
+	        ERROR = false;
+#end if
+#if $component.properties["logging_critical"] != False
+                CRITICAL = true;
+#else
+	        CRITICAL = false;
+#end if
+	    }
         }
 #end if
 #if $component.getChildrenByKind("Server") != []
