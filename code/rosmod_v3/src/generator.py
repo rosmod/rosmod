@@ -11,7 +11,7 @@ generator_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(generator_dir + "/templates")
 
 # Recursively compile on template files in templates directory
-os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl > /dev/null 2>&1")
+os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl")# > /dev/null 2>&1")
 ros_templates = os.path.realpath(os.path.abspath
                                  (os.path.join
                                   (os.path.split
@@ -32,8 +32,8 @@ from Logger_hpp import *
 from node_groups_xml import *
 from base_component_hpp import *
 from base_component_cpp import *
-from msg import *
-from srv import *
+import msg as msg_template
+import srv as srv_template
 from component_hpp import *
 from component_cpp import *
 from nodeMain import *
