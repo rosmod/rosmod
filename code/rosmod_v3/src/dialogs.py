@@ -3,6 +3,7 @@
 import wx
 import wx.stc as stc
 from wx.lib.pubsub import Publisher
+from wx.lib.scrolledpanel import ScrolledPanel
 
 from collections import OrderedDict
 
@@ -135,8 +136,8 @@ class EditDialog(wx.Dialog):
         self.SetTitle(title)
 
     def InitUI(self):
-        
-        panel = wx.Panel(self)
+        panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)#wx.Panel(self)
+        panel.SetupScrolling()
         vbox = wx.BoxSizer(wx.VERTICAL)
         pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
         pbox.SetFlexibleDirection(wx.BOTH)
