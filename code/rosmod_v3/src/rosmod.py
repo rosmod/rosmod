@@ -54,6 +54,13 @@ def MakeAdd(self,kind):
         canvas = info.canvas
         msgWindow = info.msgWindow
 
+        # need to call aspect function if this should add a new tab 
+        # e.g. adding a package to a workspace
+        for k,v in self.AspectTypes.iteritems():
+            if kind in v:
+                self.OnAspectCreate(kind,None)
+                return
+
         newObj = type( "ROS_" + kind, (object, drawable.Drawable_Object,), { '__init__' : drawable.Drawable_Object.__init__ })()
         for prop in model_dict[kind].properties:
             newObj.properties[prop] = None
@@ -245,17 +252,24 @@ class Example(wx.Frame):
         newObj.kind = kind
         for prop in model_dict[kind].properties:
             newObj.properties[prop] = None
+        newObj.properties["name"] = "New_"+ kind
 
         if model.kind == model_dict[kind].parent:
             newObj.parent = model
         elif model.kind == kind:
             newObj.parent = model.parent
 
+        # SET REFERENCES
+        references = []
+        refObjectTypes = model_dict[kind].out_refs
+        for refObjType in refObjectTypes:
+            references.extend(self.project.getChildrenByKind(refObjType))
+
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
-                                references = [],
+                                references = references,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
