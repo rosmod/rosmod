@@ -44,7 +44,7 @@ import rdp as rdp_template
 
 class ROSMOD_Generator:
     # Main Generate Function
-    def generate(self, workspace, path, deployments, xml_path):
+    def generate_workspace(self, workspace, path, deployments, xml_path):
         print "ROSTOOLS::Generating ROS Workspace..."
         # Make the workspace directory
         # Make the workspace directory
