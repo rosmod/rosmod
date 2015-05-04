@@ -154,7 +154,6 @@ class EditDialog(wx.Dialog):
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
-                self.inputs[key] = field
             elif meta_class_dict[key].kind == "boolean":
                 label = wx.StaticText(panel, label=key + ":")
                 field = wx.CheckBox(panel)
@@ -204,7 +203,6 @@ class EditDialog(wx.Dialog):
                 fieldStr = value
                 if (fieldStr!=None):
                     field.SetText(fieldStr.encode("utf8"))
-                self.inputs[key] = field
             elif meta_class_dict[key].kind == 'reference':
                 growRow=False
                 refObjTypes = model_dict[self.editObj.kind].out_refs
@@ -216,8 +214,8 @@ class EditDialog(wx.Dialog):
                     field.SetStringSelection(value.properties['name'])
                 else:
                     field.SetSelection(0)
-                self.inputs[key] = field
             if label != None and field != None:
+                self.inputs[key] = field
                 pbox.AddMany([(label),(field,1,wx.EXPAND)])
                 if growRow:
                     pbox.AddGrowableRow(rNum,1)
