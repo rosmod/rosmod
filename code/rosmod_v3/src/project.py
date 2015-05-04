@@ -455,6 +455,13 @@ class ROS_Project(Drawable_Object):
         with open(os.path.join(path, self.workspace_builder.rml.properties["name"] + ".rml"), 'w') as temp_file:
             temp_file.write(self.rml)
         print "ROSTOOLS::Saving " + self.workspace_builder.rml.properties["name"] + ".rml " + "at " + path
+        
+        # Save all messages and services in respective folders
+        for package in self.workspace_builder.rml.children:
+            for msg in package.getChildrenByKind("Message"):
+                self.save_msg(msg)
+            for srv in package.getChildrenByKind("Hardware"):
+                self.save_srv(srv)
 
     # Generate a ROS Hardware Configurations model (.rhw file) from a ROS_HW Object
     def save_rhw(self, path=""):
@@ -483,19 +490,28 @@ class ROS_Project(Drawable_Object):
             print "ROSTOOLS::Saving " + rdp.properties["name"] + ".rdp " + "at " + path  
 
     # Save Message files
-    def save_msg(self, path=""):
+    def save_msg(self, msg_object):
         path = self.workspace_path + "/msg"
-        msg_namespace = {'workspace': self.workspace_builder.rml}
-        t = rml(searchList=[rml_namespace])
-        self.rml = str(t)
-        with open(os.path.join(path, self.workspace_builder.rml.properties["name"] + ".rml"), 'w') as temp_file:
-            temp_file.write(self.rml)
-        print "ROSTOOLS::Saving " + self.workspace_builder.rml.properties["name"] + ".rml " + "at " + path
-        pass
+        if not os.path.exists(path):
+            os.makedirs(path)
+        msg_namespace = {'definition': msg_object.properties["definition"]}
+        t = msg(searchList=[msg_namespace])
+        msg = str(t)
+        with open(os.path.join(path, msg_object.parent.properties["name"] + "." + msg_object.properties["name"] + ".msg"), 'w') as temp_file:
+            temp_file.write(msg)
+        print "ROSTOOLS::Saving " + msg_object.properties["name"] + ".msg " + "at " + path
         
     # Save Service files
-    def save_srv(self, path=""):
-        pass
+    def save_srv(self, srv_object):
+        path = self.workspace_path + "/srv"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        srv_namespace = {'definition': srv_object.properties["definition"]}
+        t = srv(searchList=[srv_namespace])
+        srv = str(t)
+        with open(os.path.join(path, srv_object.parent.properties["name"] + "." + srv_object.properties["name"] + ".srv"), 'w') as temp_file:
+            temp_file.write(srv)
+        print "ROSTOOLS::Saving " + srv_object.properties["name"] + ".srv " + "at " + path
 
     # Save Abstract Business Logic files
     def save_abl(self, path=""):
