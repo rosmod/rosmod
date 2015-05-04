@@ -44,6 +44,7 @@ class ROS_Project(Drawable_Object):
         self.hardware_files = type("ROS_Hardware_Files",
                                    ( object, Drawable_Object, ), 
                                    { '__init__' : Drawable_Object.__init__ })()
+        self.hardware_files.kind = "hardware_files"
 
         # Deployment Path
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
@@ -51,6 +52,7 @@ class ROS_Project(Drawable_Object):
         self.deployment_files = type("ROS_Deployment_Files",
                                    ( object, Drawable_Object, ), 
                                    { '__init__' : Drawable_Object.__init__ })()
+        self.hardware_files.kind = "deployment_files"
 
         # Add hardware_files & deployment files as children of project
         self.children.append(self.hardware_files)
@@ -80,9 +82,11 @@ class ROS_Project(Drawable_Object):
         self.hardware_files = type("ROS_Hardware_Files",
                                    ( object, Drawable_Object, ), 
                                    { '__init__' : Drawable_Object.__init__ })()
+        self.hardware_files.kind = "hardware_files"
         self.deployment_files = type("ROS_Deployment_Files",
                                    ( object, Drawable_Object, ), 
                                    { '__init__' : Drawable_Object.__init__ })()
+        self.hardware_files.kind = "deployment_files"
 
         # Add hardware_files & deployment files as children of project
         self.children.append(self.hardware_files)
@@ -189,9 +193,11 @@ class ROS_Project(Drawable_Object):
         self.hardware_files = type("ROS_Hardware_Files",
                                    ( object, Drawable_Object, ), 
                                    { '__init__' : Drawable_Object.__init__ })()
+        self.hardware_files.kind = "hardware_files"
         self.deployment_files = type("ROS_Deployment_Files",
                                    ( object, Drawable_Object, ), 
                                    { '__init__' : Drawable_Object.__init__ })()
+        self.hardware_files.kind = "deployment_files"
         self.children.append(self.hardware_files)
         self.children.append(self.deployment_files)
 
