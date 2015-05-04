@@ -451,16 +451,21 @@ class ROS_Project(Drawable_Object):
                 if package_child.kind == "Component":
                     if "scheduling_scheme" not in package_child.properties.keys():
                         package_child.properties["scheduling_scheme"] = ""
-                    if "logging_debug" not in package_child.properties.keys():
-                        package_child.properties["logging_debug"] = false
-                    if "logging_info" not in package_child.properties.keys():
-                        package_child.properties["logging_info"] = true
-                    if "logging_warning" not in package_child.properties.keys():
-                        package_child.properties["logging_warning"] = false
-                    if "logging_error" not in package_child.properties.keys():
-                        package_child.properties["logging_error"] = true
-                    if "logging_critical" not in package_child.properties.keys():
-                        package_child.properties["logging_critical"] = false
+                    if "logging_debug" not in package_child.properties.keys() or \
+                       type(package_child.properties["logging_debug"]) is not bool:
+                        package_child.properties["logging_debug"] = False
+                    if "logging_info" not in package_child.properties.keys() or \
+                       type(package_child.properties["logging_info"]) is not bool:
+                        package_child.properties["logging_info"] = True
+                    if "logging_warning" not in package_child.properties.keys() or \
+                       type(package_child.properties["logging_warning"]) is not bool:
+                        package_child.properties["logging_warning"] = False
+                    if "logging_error" not in package_child.properties.keys() or \
+                       type(package_child.properties["logging_error"]) is not bool:
+                        package_child.properties["logging_error"] = True
+                    if "logging_critical" not in package_child.properties.keys() or \
+                       type(package_child.properties["logging_critical"]) is not bool:
+                        package_child.properties["logging_critical"] = True
                     for port in package_child.children:
                         if port.kind == "Client" or port.kind == "Server":
                             port.properties["service_reference"] = reference_dict[port.properties["reference"]]
