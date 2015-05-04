@@ -451,6 +451,16 @@ class ROS_Project(Drawable_Object):
                 if package_child.kind == "Component":
                     if "scheduling_scheme" not in package_child.properties.keys():
                         package_child.properties["scheduling_scheme"] = ""
+                    if "logging_debug" not in package_child.properties.keys():
+                        package_child.properties["logging_debug"] = false
+                    if "logging_info" not in package_child.properties.keys():
+                        package_child.properties["logging_info"] = true
+                    if "logging_warning" not in package_child.properties.keys():
+                        package_child.properties["logging_warning"] = false
+                    if "logging_error" not in package_child.properties.keys():
+                        package_child.properties["logging_error"] = true
+                    if "logging_critical" not in package_child.properties.keys():
+                        package_child.properties["logging_critical"] = false
                     for port in package_child.children:
                         if port.kind == "Client" or port.kind == "Server":
                             port.properties["service_reference"] = reference_dict[port.properties["reference"]]

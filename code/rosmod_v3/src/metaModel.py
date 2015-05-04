@@ -49,7 +49,7 @@ model_dict["Service"] = Meta_Entity(
 model_dict["Component"] = Meta_Entity(
     "Package", 
     ["Timer","Publisher","Subscriber","Client","Server"], 
-    ["name","datatype","scheduling_scheme","logging_error","logging_debug","logging_info"],
+    ["name","datatype","scheduling_scheme","logging_debug","logging_info", "logging_warning", "logging_error", "logging_critical"],
     [["Component_Instance","component_reference"]], 
     [])
 model_dict["Client"] = Meta_Entity(

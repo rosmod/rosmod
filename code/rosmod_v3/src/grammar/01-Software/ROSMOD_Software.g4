@@ -57,6 +57,18 @@ component
            'properties'
             '{'
             ( 'scheduling_scheme' '=' scheduling_scheme ';' ) 
+
+            (
+                'logging'
+                '{'
+                'DEBUG' '=' logging_debug ';'
+                'INFO' '=' logging_info ';'
+                'WARNING' '=' logging_warning ';'
+                'ERROR' '=' logging_error ';'
+                'CRITICAL' '=' logging_critical ';'                
+                '}'
+            )?
+
             '}'
         )?
         ( port | timer )*
@@ -67,6 +79,32 @@ component
 scheduling_scheme
     :
         ( 'FIFO' | 'PFIFO' | 'EDF' )
+    ;
+
+// Component Log levels
+logging_debug
+    :
+        BOOL
+    ;
+
+logging_info
+    :
+        BOOL
+    ;
+
+logging_warning
+    :
+        BOOL
+    ;
+
+logging_error
+    :
+        BOOL
+    ;
+
+logging_critical
+    :
+        BOOL
     ;
 
 // ROS Component Port

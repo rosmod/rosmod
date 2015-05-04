@@ -93,7 +93,14 @@ meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, cre
 meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
 meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
-meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
+meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom
+
+meta_class_dict["logging_debug"] = Grammar_Field("string", "Logging_debug", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_info"] = Grammar_Field("string", "Logging_info", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_warning"] = Grammar_Field("string", "Logging_warning", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_error"] = Grammar_Field("string", "Logging_error", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_critical"] = Grammar_Field("string", "Logging_critical", create_enterAtom, create_exitAtom)
+
 meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
 meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
 meta_class_dict["abstract_business_logic"] = Grammar_Field("code", "Abstract_business_logic", create_enterAtom, create_exitAtom)
