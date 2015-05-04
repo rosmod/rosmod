@@ -248,7 +248,7 @@ class ROS_Project(Drawable_Object):
     def parse_abl(self, dirname):
         #print "ROSTOOLS::Parsing Abstract Business Logic Model Files!"
         for filename in os.listdir(dirname):
-            if len(filename.split('.')) == 3:
+            if len(filename.split('.')) == 4:
                 package_name = filename.split('.')[0]
                 comp_name = filename.split('.')[1]
                 port_name = filename.split('.')[2]
@@ -268,7 +268,7 @@ class ROS_Project(Drawable_Object):
     def parse_pnp(self, dirname):
         #print "ROSTOOLS::Parsing Port Network Profiles!"
         for filename in os.listdir(dirname):
-            if len(filename.split('.')) == 3:
+            if len(filename.split('.')) == 4:
                 package_name = filename.split('.')[0]
                 comp_name = filename.split('.')[1]
                 port_name = filename.split('.')[2]
@@ -490,7 +490,7 @@ class ROS_Project(Drawable_Object):
             for srv in package.getChildrenByKind("Service"):
                 self.save_srv(srv)
             for comp in package.getChildrenByKind("Component"):
-                for port in package.children:
+                for port in comp.children:
                     if "abstract_business_logic" in port.properties.keys():
                         self.save_abl(port)
                     if "port_network_profile" in port.properties.keys():
@@ -552,7 +552,7 @@ class ROS_Project(Drawable_Object):
             path = self.workspace_path + "/abl"
             if not os.path.exists(path):
                 os.makedirs(path)
-            filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + port_object.properties["name"] + ".abl"
+            filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + "." + port_object.properties["name"] + ".abl"
             with open(os.path.join(path, filename), 'w') as temp_file:
                 temp_file.write(port_object.properties["abstract_business_logic"])
         
@@ -562,7 +562,7 @@ class ROS_Project(Drawable_Object):
             path = self.workspace_path + "/pnp"
             if not os.path.exists(path):
                 os.makedirs(path)
-            filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + port_object.properties["name"] + ".pnp"
+            filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + "." + port_object.properties["name"] + ".pnp"
             with open(os.path.join(path, filename), 'w') as temp_file:
                 temp_file.write(port_object.properties["port_network_profile"])
 
