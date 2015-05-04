@@ -1,69 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-u"""
-Provides a StyledTextCtrl that understands TeX embedded in HTML.
-
-This is useful for editing source code of HTML pages using MathJax_. MathJax
-is a Javascript library which parses snippets of the form ``\\(\\LaTeX\\)`` or
-``\\[\\LaTeX\\]`` and displays them either as MathML or some combination of
-HTML and CSS.
-
-The ``HtmlWithTexInput`` behaves like a ``StyledTextCtrl`` and will lex and
-style source code as HTML. TeX snippets will be recognized as such and styled
-differently. If you want to provide your own styles for the TeX snippets,
-use the constants ``wx.stc.STC_L_*`` + ``OFFSET_ROUND`` for the styles of
-the snippets delimited with round brackets, and ``wx.stc.STC_L_*`` + 
-``OFFSET_SQUARE`` for square brackets. The style of the delimiters themselves
-are stored in the style of ``wx.stc.STC_L_MATH`` + ``OFFSET_*``.
-
-The styles for ASP VBScript code get overwritten and canâ€™t be used in
-conjunction with ``HtmlWithTexInput``.
-
-Example::
-
-    my_ctrl = html_with_tex_ctrl.HtmlWithTexInput(my_frame, -1)
-    my_ctrl.StyleSetSpec(wx.stc.STC_L_DEFAULT 
-            + html_with_tex_ctrl.OFFSET_ROUND,
-            "fore:#000099,back:#6666ff,face:Courier New,size:10,eolfilled")
-
-This sets the foreground color of the default style of TeX fragments in round
-brackets to dark blue, the background color to light blue.
-
-If the module is called as a stand-alone application, a test frame is
-produced.
-
-.. _MathJax: http://www.mathjax.org
-"""
-
-__author__ = u"Jan Thor"
-__docformat__ = u"restructuredtext de"
-
 import wx, wx.stc
-from html_styles import style_control, HTML_KEYWORDS
+from c_styles import style_control
 
-
-OFFSET_ROUND = 80 # ASP VBScript styles will be replaced with TeX styles
-OFFSET_SQUARE = OFFSET_ROUND + 5
-MATH_ROUND = chr(wx.stc.STC_L_MATH + OFFSET_ROUND) * 4
-MATH_SQUARE = chr(wx.stc.STC_L_MATH + OFFSET_SQUARE) * 4
-
-STATE_DEFAULT = 0
-STATE_TAG = 1
-STATE_ROUND = 2
-STATE_SQUARE = 3
-STATE_DELIM = 100
+STATE_DEFAULT= -1
+STATE_TYPE = 0
+STATE_ARRAY = 1
+STATE_NAME = 2
+STATE_EQUAL = 3
+STATE_VALUE = 4
+STATE_END = 5
 
 STATE_TRANSITIONS = {
-    STATE_DEFAULT: [("\\(", STATE_ROUND, True), 
-                    ("\\[", STATE_SQUARE, True), 
-                    ("<", STATE_TAG, False)],
-    STATE_TAG: [(">", STATE_DEFAULT, False)],
-    STATE_ROUND: [("\\)", STATE_DEFAULT, True)],
-    STATE_SQUARE: [("\\]", STATE_DEFAULT, True)],
+    STATE_DEFAULT: [("", STATE_TYPE, True)],
+    STATE_TYPE: [("[", STATE_ARRAY, True), 
+                 (" ", STATE_NAME, True)],
+    STATE_ARRAY: [("[", STATE_ARRAY, True),
+                  ("]", STATE_NAME, True)],
+    STATE_NAME: [("=", STATE_EQUAL, True),
+                ("\n", STATE_END, True)],
+    STATE_EQUAL: [(" ", STATE_VALUE, True)],
+    STATE_VALUE: [("\n", STATE_END, True)],
+    STATE_END: [("", STATE_VALUE, True)]
 }
 
-class HtmlWithTexInput(wx.stc.StyledTextCtrl):
+kwList = ["int32","string","int64","bool","float32","float64"]
+
+class StyledInput(wx.stc.StyledTextCtrl):
     u"""StyledTextCtrl with lexing for HTML source with TeX snippets."""
 
     def __init__(self, parent, ID=-1,
@@ -71,32 +35,9 @@ class HtmlWithTexInput(wx.stc.StyledTextCtrl):
         u"""Same parameters as ``wx.stc.StyledTextCtrl``."""
         wx.stc.StyledTextCtrl.__init__(self, parent, ID, pos, size, style)
         self.SetLexer(wx.stc.STC_LEX_CONTAINER)
-        self.SetStyleBits(7)
+        self.SetStyleBits(5)
         self.Bind(wx.stc.EVT_STC_STYLENEEDED, self.OnStyling)
         style_control(self)
-
-        # === Styles for TeX ===
-        self.StyleSetSpec(wx.stc.STC_L_DEFAULT + OFFSET_ROUND,
-            "fore:#333333,back:#ffef66,face:Courier New,size:10,eolfilled")
-        self.StyleSetSpec(wx.stc.STC_L_COMMAND + OFFSET_ROUND,
-            "fore:#000099,back:#ffef66,face:Courier New,size:10,bold")
-        self.StyleSetSpec(wx.stc.STC_L_TAG + OFFSET_ROUND,
-            "fore:#7f007f,back:#ffef66,face:Courier New,size:10")
-        self.StyleSetSpec(wx.stc.STC_L_MATH + OFFSET_ROUND,
-            "fore:#bb0000,back:#ffdf66,face:Courier New,size:10,bold")
-        self.StyleSetSpec(wx.stc.STC_L_COMMENT + OFFSET_ROUND,
-            "fore:#007f00,back:#efff66,face:Courier New,size:10,italic")
-
-        self.StyleSetSpec(wx.stc.STC_L_DEFAULT + OFFSET_SQUARE,
-            "fore:#333333,back:#fff8bb,face:Courier New,size:10,eolfilled")
-        self.StyleSetSpec(wx.stc.STC_L_COMMAND + OFFSET_SQUARE,
-            "fore:#000099,back:#fff8bb,face:Courier New,size:10,bold")
-        self.StyleSetSpec(wx.stc.STC_L_TAG + OFFSET_SQUARE,
-            "fore:#7f007f,back:#fff8bb,face:Courier New,size:10")
-        self.StyleSetSpec(wx.stc.STC_L_MATH + OFFSET_SQUARE,
-            "fore:#bb0000,back:#ffdfaa,face:Courier New,size:10,bold")
-        self.StyleSetSpec(wx.stc.STC_L_COMMENT + OFFSET_SQUARE,
-            "fore:#007f00,back:#f8ffaa,face:Courier New,size:10,italic")
 
         # === More stylinâ€™ ===
         self.SetEdgeMode(wx.stc.STC_EDGE_LINE)
@@ -107,9 +48,9 @@ class HtmlWithTexInput(wx.stc.StyledTextCtrl):
         # === Dummy controls as lexers ===
         self.dummyHtml = wx.stc.StyledTextCtrl(self, -1)
         self.dummyHtml.Show(False)
-        self.dummyHtml.SetLexer(wx.stc.STC_LEX_HTML)
-        self.dummyHtml.SetStyleBits(7)
-        self.dummyHtml.SetKeyWords(0, HTML_KEYWORDS)
+        self.dummyHtml.SetLexer(wx.stc.STC_LEX_CPP)
+        self.dummyHtml.SetStyleBits(5)
+        self.dummyHtml.SetKeyWords(0, " ".join(kwList))
         self.dummyTex = wx.stc.StyledTextCtrl(self, -1)
         self.dummyTex.Show(False)
         self.dummyTex.SetLexer(wx.stc.STC_LEX_LATEX)
@@ -121,19 +62,12 @@ class HtmlWithTexInput(wx.stc.StyledTextCtrl):
         multiplexed = self.dummyHtml.GetStyledText(0, fl)
         return multiplexed
     
-    def _parseTex(self, fragment, offset):
-        self.dummyTex.SetText(fragment.decode("utf8").replace("\n", " "))
-        fl = len(fragment)
-        self.dummyTex.Colourise(0, fl)
-        multiplexed = self.dummyTex.GetStyledText(0, fl)
-        multiplexed = [s for s in multiplexed]
-        for i in range(1, len(multiplexed), 2):
-            multiplexed[i] = chr(ord(multiplexed[i]) + offset)
-        return "".join(multiplexed)
-    
     def OnStyling(self, evt):
         u"""Called when the control needs styling."""
         text = self.GetText().encode("utf8")
+
+        start = self.GetEndStyled()
+        end = evt.GetPosition()
         
         # === split text into chunks ===
         splitpoints = [0]
@@ -147,7 +81,7 @@ class HtmlWithTexInput(wx.stc.StyledTextCtrl):
                     if bsplit:
                         splitpoints.append(i-1)
                         splitpoints.append(i+1)
-                        states.append(STATE_DELIM + state + newstate)
+                        states.append(state)
                         states.append(newstate)
                     state = newstate
         if splitpoints[-1] != len(text):
@@ -162,14 +96,16 @@ class HtmlWithTexInput(wx.stc.StyledTextCtrl):
             fragment = parts[i]
             if type == STATE_DEFAULT:
                 parsed += self._parseHtml(fragment)
-            elif type == STATE_ROUND:
-                parsed += self._parseTex(fragment, OFFSET_ROUND)
-            elif type == STATE_SQUARE:
-                parsed += self._parseTex(fragment, OFFSET_SQUARE)
-            elif type == STATE_ROUND + STATE_DELIM:
+            elif type == STATE_TYPE:
+                parsed += self._parseHtml(fragment)
+            elif type == STATE_ARRAY:
                 parsed += MATH_ROUND
-            elif type == STATE_SQUARE + STATE_DELIM:
+            elif type == STATE_NAME:
+                parsed += self._parseHtml(fragment)
+            elif type == STATE_EQUAL:
                 parsed += MATH_SQUARE
+            elif type == STATE_END:
+                parsed += self._parseHtml(fragment)
                 
         # === style the complete control ===
         self.StartStyling(0, 127)
@@ -184,24 +120,14 @@ class HtmlWithTexInput(wx.stc.StyledTextCtrl):
 #
 # ============================================================================
 
-_TESTSTRING = ur"""\(\)<!DOCTYPE>
-<p>This $i$s <error/> \(\LaTeX\) &amp;!</p>
-<!--Remark \(x\)-->
-\[(\frac{a}{c})^2+(\frac{b}{c})^2=1 \error
-\no comment %Comment Ã¼ble ÃœmlÃ¤utÃ«
-\This \is \still \a \comment\]
-<?Whatâ€™s this?>
-<?php echo "$this funny string"; 3++ ?>
-<script type="text/javacript">
-function f(x) {if("unclos" + '!' return 2*x;}
-</script>
-\[These\) are \(confusing\) delims\]\(right?\)"""
+_TESTSTRING = ur"""int32 helloWorld = 32
+"""
 
 class _TestApp(wx.App):
 
     def OnInit(self):
         frame = wx.Frame(None,-1, "Test Ctrl")
-        HtmlWithTexInput(frame, -1).SetText(_TESTSTRING)
+        StyledInput(frame, -1).SetText(_TESTSTRING)
         frame.Show()
         return True
 
