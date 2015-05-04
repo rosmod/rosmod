@@ -451,21 +451,18 @@ class ROS_Project(Drawable_Object):
                 if package_child.kind == "Component":
                     if "scheduling_scheme" not in package_child.properties.keys():
                         package_child.properties["scheduling_scheme"] = ""
-                    if "logging_debug" not in package_child.properties.keys() or \
-                       type(package_child.properties["logging_debug"]) is not bool:
-                        package_child.properties["logging_debug"] = False
-                    if "logging_info" not in package_child.properties.keys() or \
-                       type(package_child.properties["logging_info"]) is not bool:
-                        package_child.properties["logging_info"] = True
-                    if "logging_warning" not in package_child.properties.keys() or \
-                       type(package_child.properties["logging_warning"]) is not bool:
-                        package_child.properties["logging_warning"] = False
-                    if "logging_error" not in package_child.properties.keys() or \
-                       type(package_child.properties["logging_error"]) is not bool:
-                        package_child.properties["logging_error"] = True
-                    if "logging_critical" not in package_child.properties.keys() or \
-                       type(package_child.properties["logging_critical"]) is not bool:
-                        package_child.properties["logging_critical"] = True
+                    logging_list = ["logging_debug", 
+                                    "logging_info", 
+                                    "logging_warning", 
+                                    "logging_error", 
+                                    "logging_critical"]
+                    # Convert log level settings from string to boolean
+                    for log_level in logging_list:
+                        if package_child.properties[log_level] == "true":
+                            package_child.properties[log_level] = True
+                        else:
+                            package_child.properties[log_level] = False
+
                     for port in package_child.children:
                         if port.kind == "Client" or port.kind == "Server":
                             port.properties["service_reference"] = reference_dict[port.properties["reference"]]
