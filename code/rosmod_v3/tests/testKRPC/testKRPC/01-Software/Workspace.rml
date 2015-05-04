@@ -11,6 +11,14 @@ package krpc
         properties
         {
 	    scheduling_scheme = PFIFO;
+	    logging
+	    {
+	        DEBUG = false;
+	        INFO = false;
+	        WARNING = true;
+	        ERROR = true;
+                CRITICAL = true;
+	    }
         }
         // ROSMOD Server - my_server
         server <krpc/some_srv> my_server 
