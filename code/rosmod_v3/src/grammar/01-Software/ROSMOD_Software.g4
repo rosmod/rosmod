@@ -206,6 +206,12 @@ component_instance
         'component' '<' reference '>' name ';'
     ;
 
+// A boolean variable - must be either true or false
+BOOL
+    :   
+        ( 'true' | 'false')
+    ;
+
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
     :   
@@ -229,12 +235,6 @@ INT
 DOUBLE
     :   
         (DIGIT)+ '.' (DIGIT)*
-    ;
-
-// A boolean variable - must be either true or false
-BOOL
-    :   
-        ( 'true' | 'false')
     ;
 
 // White spaces and escape codes are ignored
