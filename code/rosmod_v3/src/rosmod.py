@@ -259,11 +259,17 @@ class Example(wx.Frame):
         elif model.kind == kind:
             newObj.parent = model.parent
 
+        # SET REFERENCES
+        references = []
+        refObjectTypes = model_dict[kind].out_refs
+        for refObjType in refObjectTypes:
+            references.extend(self.project.getChildrenByKind(refObjType))
+
         ed = dialogs.EditDialog(self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
-                                references = [],
+                                references = references,
                                 style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
