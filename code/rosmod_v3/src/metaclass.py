@@ -118,6 +118,15 @@ meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, cre
 meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
 
 meta_class_dict["definition"] = Grammar_Field("code")
+meta_class_dict["init_business_logic"] = Grammar_Field("hidden")
+meta_class_dict["user_includes"] = Grammar_Field("hidden")
+meta_class_dict["user_globals"] = Grammar_Field("hidden")
+meta_class_dict["hpp_globals"] = Grammar_Field("hidden")
+meta_class_dict["user_private_variables"] = Grammar_Field("hidden")
+meta_class_dict["destructor"] = Grammar_Field("hidden")
+meta_class_dict["cmakelists_packages"] = Grammar_Field("hidden")
+meta_class_dict["cmakelists_functions"] = Grammar_Field("hidden")
+meta_class_dict["cmakelists_include_dirs"] = Grammar_Field("hidden")
 
 # Properties that are references
 meta_class_dict["component_instance_reference"] = Grammar_Field("reference")
