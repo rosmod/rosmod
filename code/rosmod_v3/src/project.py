@@ -489,6 +489,12 @@ class ROS_Project(Drawable_Object):
                 self.save_msg(msg)
             for srv in package.getChildrenByKind("Service"):
                 self.save_srv(srv)
+            for comp in package.getChildrenByKind("Component"):
+                for port in package.children:
+                    if "abstract_business_logic" in port.properties.keys():
+                        self.save_abl(port)
+                    if "port_network_profile" in port.properties.keys():
+                        self.save_pnp(port)
 
     # Generate a ROS Hardware Configurations model (.rhw file) from a ROS_HW Object
     def save_rhw(self, path=""):
