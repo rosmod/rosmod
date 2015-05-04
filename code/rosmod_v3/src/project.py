@@ -162,6 +162,7 @@ class ROS_Project(Drawable_Object):
                 else:
                     temp_file.write("/*\n * ROSMOD Deployment Model\n */\n\n// ROSMOD Hardware Model - " + hardware_name + "\nusing " + hardware_name + ";") 
 
+        self.deployment_builder.rdp.properties["rhw_reference"]=self.hardware_builder.rhw
         self.add(self.deployment_builder.rdp)
 
     # Open an existing ROSMOD Project
