@@ -194,11 +194,13 @@ add_library( dlcomp_lib src/New_Package/Component.cpp src/New_Package/Logger.cpp
 
 add_executable( node1 src/New_Package/node1_main.cpp
 		## Start node1 CPP Marker
+		src/New_Package/Component.cpp
+		src/New_Package/Logger.cpp
 		## End node1 CPP Marker
               )
 target_link_libraries(node1 
                       ## Start node1 Target Link Libraries Marker
-		      dlcomp_lib
+		      dl
                       ## End node1 Target Link Libraries Marker
                       ${catkin_LIBRARIES})
 add_dependencies(node1 New_Package_generate_messages_cpp)

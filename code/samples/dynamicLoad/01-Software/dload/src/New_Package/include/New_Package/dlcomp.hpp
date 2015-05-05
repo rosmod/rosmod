@@ -78,5 +78,4 @@ class dlcomp : public Component
         //# End User Private Variables Marker
 };
 
-
 #endif

@@ -37,4 +37,7 @@ class Component
         Logger LOGGER;
 };
 
+// typedef to make it easier to set up our factory
+//typedef Component *maker_t();
+
 #endif

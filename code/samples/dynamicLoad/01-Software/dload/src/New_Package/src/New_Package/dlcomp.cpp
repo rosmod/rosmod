@@ -8,6 +8,13 @@
 // BUSINESS LOGIC OF THESE FUNCTIONS SUPPLIED BY DEVELOPER
 // -------------------------------------------------------
 
+
+extern "C" {
+Component *maker(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv){
+  return new dlcomp(hostName,nodeName,compName,argc,argv);
+}
+}
+
 // Init Function
 //# Start Init Marker
 void dlcomp::Init(const ros::TimerEvent& event)
@@ -44,7 +51,7 @@ bool dlcomp::dlsrvCallback(New_Package::dlsrv::Request  &req,
 void dlcomp::timer0Callback(const ros::TimerEvent& event)
 {
     // Business Logic for timer0 
-
+  printf("TEST\n");
 }
 //# End timer0Callback Marker
 
