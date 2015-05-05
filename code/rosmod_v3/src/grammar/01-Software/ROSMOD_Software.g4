@@ -44,7 +44,7 @@ package
     :   
         'package' name
         '{'
-        ( component | node )*
+        ( component )*
         '}'
     ;
 
@@ -53,58 +53,8 @@ component
     :   
         'component' name ':' datatype
         '{'
-        (
-           'properties'
-            '{'
-            ( 'scheduling_scheme' '=' scheduling_scheme ';' ) 
-
-            (
-                'logging'
-                '{'
-                'DEBUG' '=' logging_debug ';'
-                'INFO' '=' logging_info ';'
-                'WARNING' '=' logging_warning ';'
-                'ERROR' '=' logging_error ';'
-                'CRITICAL' '=' logging_critical ';'                
-                '}'
-            )?
-
-            '}'
-        )?
-        ( port | timer )*
+             ( port | timer )*
         '}'
-    ;
-
-// Component Scheduling Scheme
-scheduling_scheme
-    :
-        ( 'FIFO' | 'PFIFO' | 'EDF' )
-    ;
-
-// Component Log levels
-logging_debug
-    :
-        BOOL
-    ;
-
-logging_info
-    :
-        BOOL
-    ;
-
-logging_warning
-    :
-        BOOL
-    ;
-
-logging_error
-    :
-        BOOL
-    ;
-
-logging_critical
-    :
-        BOOL
     ;
 
 // ROS Component Port
@@ -175,41 +125,6 @@ priority
 deadline
     :   
         DOUBLE
-    ;
-
-/*
- * Each ROS Node consists of:
- * (1) Node name
- * (2) One or more component instances
- */
-node
-    :   
-        'node' name
-        '{'
-        ( 
-            'properties'
-            '{'
-            ( 'priority' '=' priority ';' ) 
-            '}'
-        )?
-        ( component_instance )+
-        '}'
-    ;
-
-/*
- * Each component instance consists of:
- * (1) Type of the component
- * (2) Name of the component instance
- */
-component_instance
-    :   
-        'component' '<' reference '>' name ';'
-    ;
-
-// A boolean variable - must be either true or false
-BOOL
-    :   
-        ( 'true' | 'false')
     ;
 
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore

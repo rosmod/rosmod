@@ -439,9 +439,18 @@ class ROS_Project(Drawable_Object):
         workspace_generator = ROSMOD_Generator()
         # Use listener_object to generate ROS workspace
         self.workspace_dir = workspace_generator.generate_workspace(self.workspace_builder.rml, 
-                                                                    self.workspace_path, 
-                                                                    self.getChildrenByKind("rdp"), 
-                                                                    self.deployment_path)
+                                                                    self.workspace_path) 
+
+    # Generate Deployment XML files and relevant directories
+    def generate_xml(self):
+        # Instantiate a Generator Object
+        deployment_generator = ROSMOD_Generator()
+        # Use existing deployment objects to generate necessary xml files
+        deployment_generator.generate_xml(self.getChildrenByKind("rdp"),
+                                          deployment_path)
+
+# self.getChildrenByKind("rdp"), 
+# self.deployment_path)
 
     # Resolving References in all workspace packages
     def resolve_references(self, progressQ = None):

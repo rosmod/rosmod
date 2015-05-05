@@ -44,7 +44,7 @@ import rdp as rdp_template
 
 class ROSMOD_Generator:
     # Main Generate Function
-    def generate_workspace(self, workspace, path, deployments, xml_path):
+    def generate_workspace(self, workspace, path):
         print "ROSTOOLS::Generating ROS Workspace..."
         # Make the workspace directory
         # Make the workspace directory
@@ -362,58 +362,33 @@ class ROSMOD_Generator:
                 temp_file.write(self.cmake_lists)
 
         return self.workspace_dir
-'''
+
+    def generate_xml(self, deployments, deployment_path):
         for deployment in deployments:
-            create_folder = False
-            groups = []
-            xml_list = []
-            for child in deployment.children:
-                if child.kind == "group":
-                    create_folder = True
-                    groups.append(child)
-            if create_folder == True:
-                xml_folder_home = os.path.join(xml_path, deployment.properties["name"])
-                if not os.path.exists(xml_folder_home):
-                    os.makedirs(xml_folder_home)
-                
-                # For every group in deployment
-                for group in groups:
-                    # For every port in the group
-                    for port in group.children:
-                        # Create a new xml file if needed by obtaining the node_instance 
-                        # & component_instance of port
-                        node_instance_name = port.properties["node_instance_reference"].properties["name"]
-                        comp_instance_name = port.properties["component_instance_reference"].properties["name"]
-                        new_xml = ROS_Group_XML(port.properties["node_instance_reference"], 
-                                                port.properties["component_instance_reference"])
-                        new_xml.properties["node_instance"] = port.properties["node_instance_reference"]
-                        new_xml.properties["component_instance"] = port.properties["component_instance_reference"]
+            deployment_folder = deployment_path + "/" + deployment.properties["name"]
+            if not os.path.exists(deployment_folder):
+                os.makedirs(deployment_folder)
+            xml_folder = deployment_folder + "/xml"
+            if not os.path.exists(xml_folder):
+                os.makedirs(xml_folder)
+            bin_folder = deployment_folder + "/bin"
+            if not os.path.exists(bin_folder):
+                os.makedirs(bin_folder)
+            for hardware_instance in deployment.children:
+                hardware_folder = xml_folder + "/" + hardware_instance.properties["name"]
+                for node_instance in hardware_instance.children:
+                    node_reference = node_instance.properties["node_reference"]
+                    component_instances = node_reference.children
+                    node_ports = []
+                    # Obtain all port objects in referred node
+                    for instance in component_instances:
+                        for component in instance.children:
+                            for port in component.children:
+                                if port not in node_ports:
+                                    node_ports.append(port)
 
-                        # Add new xml to list if not already in list
-                        if new_xml not in xml_list:
-                            xml_list.append(new_xml)
-                        
-                        # Add the group to xml.groups
-                        for xml in xml_list:
-                            if xml.properties["name"] == new_xml.properties["name"]:
-                                xml_group = ROS_Group()
-                                xml_group.properties["name"] = group.properties["name"]
-                                for grp_port in group.children:
-                                    if grp_port.properties["node_instance_reference"].properties["name"] == xml.properties["node_instance"].properties["name"]:
-                                        if grp_port.properties["component_instance_reference"].properties["name"] == xml.properties["component_instance"].properties["name"]:
-                                            xml_group.children.append(grp_port)
-                                xml.properties["groups"].append(xml_group)
-                               
-
-                    deployment.properties["xml_list"] = xml_list
-                    for xml in xml_list:
-                        xml_namespace = {'xml': xml}
-                        t = node_groups_xml(searchList=[xml_namespace])
-                        xml_str = str(t)
-                        # Write CMakeLists file
-                        with open(os.path.join(xml_folder_home, 
-                                               xml.properties["name"]), 'w') as temp_file:
-                            temp_file.write(xml_str)
-
-        return self.workspace_dir
-'''
+                        for port_instance in node_instance.children:
+                            comp_instance_name = ""
+                            for port in node_ports:
+                                if port_instance.properties["port_reference"] == port:
+                                

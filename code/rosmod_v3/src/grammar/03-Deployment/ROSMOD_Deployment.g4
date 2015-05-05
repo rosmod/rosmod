@@ -40,7 +40,7 @@ hardware_instance
     :   'hardware_instance' name
         '{'
         ( hardware_instance_properties )
-        ( node_instance )+
+        ( node )*
         '}'
     ;
 
@@ -88,12 +88,17 @@ env_var
     ;
 
 // Node Instances in Hardware Instance
-node_instance
-    :   'node_instance' name
+node
+    :   'node' name
         '{'
-        ( 'ref' '=' '"' reference '"' ';' )
-        ( port_instance )*
-        ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
+            'properties'
+            '{'
+                ( 'priority' '=' priority ';' )
+                ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
+            '}'
+
+            ( component_instance )*  
+
         '}'
     ;
 
@@ -109,13 +114,75 @@ cmd_args
         ID
     ;
 
+// Component Scheduling Scheme
+scheduling_scheme
+    :
+        ( 'FIFO' | 'PFIFO' | 'EDF' )
+    ;
+
+// Component Log levels
+logging_debug
+    :
+        BOOL
+    ;
+
+logging_info
+    :
+        BOOL
+    ;
+
+logging_warning
+    :
+        BOOL
+    ;
+
+logging_error
+    :
+        BOOL
+    ;
+
+logging_critical
+    :
+        BOOL
+    ;
+
+priority
+    :   
+        INT
+    ;
+
+component_instance
+    :
+        'component_instance' name
+        '{'
+            'properties'
+            '{'
+                ( 'ref' '=' reference ';')
+		('scheduling_scheme' '=' scheduling_scheme ) 
+                (
+                  'logging'
+                  '{'
+                      'DEBUG' '=' logging_debug ';'
+                      'INFO' '=' logging_info ';'
+                      'WARNING' '=' logging_warning ';'
+                      'ERROR' '=' logging_error ';'
+                      'CRITICAL' '=' logging_critical ';'                
+                   '}'
+		 )
+             '}'
+
+             ( port_instance )*
+        '}'
+    ;
+
+
 // Reference to a component port in Software Model
 port_instance 
     :   
         'port_instance' name
         '{'
-        'ref' '=' '"' reference '"' ';'
-        'group' '=' '"' group '"' ';' 
+            'ref' '=' '"' reference '"' ';'
+            'group' '=' '"' group '"' ';' 
         '}'
     ;
 
@@ -123,6 +190,24 @@ port_instance
 ID
     :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
         ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
+    ;
+
+// A digit - any number between 0 and 9
+fragment DIGIT
+    :   
+        '0'..'9'
+    ;
+
+// An integer - one or more digits
+INT
+    :   
+        DIGIT+
+    ;
+
+// A boolean variable - must be either true or false
+BOOL
+    :   
+        ( 'true' | 'false')
     ;
 
 // White spaces and escape codes are ignored
