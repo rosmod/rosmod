@@ -8,18 +8,6 @@ package krpc
     // ROSMOD Component - krpc_comp
     component krpc_comp : base 
     {
-        properties
-        {
-	    scheduling_scheme = PFIFO;
-	    logging
-	    {
-	        DEBUG = false;
-	        INFO = false;
-	        WARNING = true;
-	        ERROR = true;
-                CRITICAL = true;
-	    }
-        }
         // ROSMOD Server - my_server
         server <krpc/some_srv> my_server 
         {
@@ -35,15 +23,5 @@ package krpc
             priority = 55;
             deadline = 0.0002;
         }       
-    }
-    // ROSMOD Node - krcp_node
-    node krcp_node 
-    {
-        properties
-        {
-            priority = 55;
-        }
-        // ROSMOD Component Instance - krcp_comp_inst
-        component<krpc/krpc_comp> krcp_comp_inst;
     }
 }
