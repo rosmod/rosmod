@@ -57,25 +57,25 @@ model_dict["Client"] = Meta_Entity(
     [], 
     ["name","service_reference","reference", "port_network_profile"],
     [["Port_Instance","port_reference"]], 
-    ["Service"])
+    [["Service","project"]])
 model_dict["Server"] = Meta_Entity(
     "Component", 
     [],
     ["name","service_reference","reference","priority","deadline","abstract_business_logic"],
     [["Port_Instance","port_reference"]], 
-    ["Service"])
+    [["Service","project"]])
 model_dict["Publisher"] = Meta_Entity(
     "Component", 
     [], 
     ["name","message_reference","reference", "port_network_profile"],
     [["Port_Instance","port_reference"]], 
-    ["Message"])
+    [["Message","project"]])
 model_dict["Subscriber"] = Meta_Entity(
     "Component", 
     [],
     ["name","message_reference","reference","priority","deadline","abstract_business_logic"],
     [["Port_Instance","port_reference"]], 
-    ["Message"])
+    [["Message","project"]])
 model_dict["Timer"] = Meta_Entity(
     "Component", 
     [],
@@ -100,13 +100,13 @@ model_dict["rdp"] = Meta_Entity(
     ["Hardware_Instance"], 
     ["name","rhw_reference"],
     [], 
-    ["rhw"])
+    [["rhw","project"]])
 model_dict["Hardware_Instance"] = Meta_Entity(
     "rdp", 
-    ["Node_Instance"],
+    ["Node"],
     ["name","hardware_reference","ip_address","username","sshkey","deployment_path","init","reference"], 
     [], 
-    ["Hardware"])
+    [["Hardware","parent","rhw_reference"]])
 
 model_dict["Node"] = Meta_Entity(
     "Hardware_Instance", 
@@ -119,10 +119,10 @@ model_dict["Component_Instance"] = Meta_Entity(
     ["Port_Instance"], 
     ["name","component_reference","reference"],
     [], 
-    ["Component"])
+    [["Component","project"]])
 model_dict["Port_Instance"] = Meta_Entity(
     "Component_Instance", 
     [], 
     ["name","port_reference","reference","group"],
     [], 
-    ["Client","Server","Publisher","Subscriber"])
+    [["Client","parent","component_reference"],["Server","parent","component_reference"],["Publisher","parent","component_reference"],["Subscriber","parent","component_reference"]])
