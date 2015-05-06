@@ -69,6 +69,20 @@ def BuildStyleDict(self):
                                         minSize = minSize,
                                         placement=drawable.Text_Placement.RIGHT,
                                         overlay = OrderedDict([('fillColor','TURQUOISE')]) )
+    NodeStyle = drawable.Draw_Style(icon=None,
+                                    font=font, 
+                                    method=drawable.Draw_Method.ROUND_RECT, 
+                                    childLayout=drawable.Child_Layout.STACK,
+                                    minSize = minSize,
+                                    placement=drawable.Text_Placement.TOP,
+                                    overlay = OrderedDict([('fillColor','TURQUOISE')]) )
+    CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
+                                        font=font, 
+                                        method=drawable.Draw_Method.ICON, 
+                                        childLayout=drawable.Child_Layout.STACK,
+                                        minSize = minSize,
+                                        placement=drawable.Text_Placement.RIGHT,
+                                        overlay = OrderedDict() )
     HardwareInstStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
                                         method=drawable.Draw_Method.ROUND_RECT, 
@@ -172,20 +186,6 @@ def BuildStyleDict(self):
                                    minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict() )
-    NodeStyle = drawable.Draw_Style(icon=None,
-                                    font=font, 
-                                    method=drawable.Draw_Method.ROUND_RECT, 
-                                    childLayout=drawable.Child_Layout.STACK,
-                                    minSize = minSize,
-                                    placement=drawable.Text_Placement.TOP,
-                                    overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-    CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
-                                        font=font, 
-                                        method=drawable.Draw_Method.ICON, 
-                                        childLayout=drawable.Child_Layout.HIDDEN,
-                                        minSize = minSize,
-                                        placement=drawable.Text_Placement.RIGHT,
-                                        overlay = OrderedDict() )
 
     self.styleDict["rml"] = WrkStyle
 
