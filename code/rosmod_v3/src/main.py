@@ -22,8 +22,6 @@ if __name__ == "__main__":
     # Testing ROS Tools Features
     My_Project = ROS_Project()
     My_Project.open(path)
-#    My_Project.save()
-#    My_Project.generate_workspace()
-#    My_Project.save_rml()
-#    My_Project.save_rhw()
-#    My_Project.save_rdp()
+    My_Project.generate_workspace()
+    My_Project.save()
+

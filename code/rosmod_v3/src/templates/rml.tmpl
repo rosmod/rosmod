@@ -12,40 +12,6 @@ package $package.properties["name"]
     // ROSMOD Component - $component.properties["name"]
     component $component.properties["name"] : $component.properties["datatype"] 
     {
-#if $component.properties["scheduling_scheme"] != ""
-        properties
-        {
-	    scheduling_scheme = $component.properties["scheduling_scheme"];
-	    logging
-	    {
-#if $component.properties["logging_debug"] != False
-	        DEBUG = true;
-#else
-	        DEBUG = false;
-#end if
-#if $component.properties["logging_info"] != False
-	        INFO = true;
-#else
-	        INFO = false;
-#end if
-#if $component.properties["logging_warning"] != False
-	        WARNING = true;
-#else
-	        WARNING = false;
-#end if
-#if $component.properties["logging_error"] != False
-	        ERROR = true;
-#else
-	        ERROR = false;
-#end if
-#if $component.properties["logging_critical"] != False
-                CRITICAL = true;
-#else
-	        CRITICAL = false;
-#end if
-	    }
-        }
-#end if
 #if $component.getChildrenByKind("Server") != []
 #for $server in $component.getChildrenByKind("Server")
         // ROSMOD Server - $server.properties["name"]
@@ -103,26 +69,6 @@ package $package.properties["name"]
         }       
 #end for
 #end if
-    }
-#end for
-#end if
-#if $package.getChildrenByKind("Node") != []
-#for $node in $package.getChildrenByKind("Node")
-    // ROSMOD Node - $node.properties["name"]
-    node $node.properties["name"] 
-    {
-#if $node.properties["priority"] != ""
-        properties
-        {
-            priority = $node.properties["priority"];
-        }
-#end if
-#if $node.getChildrenByKind("Component_Instance") != []
-#for $instance in $node.getChildrenByKind("Component_Instance")
-        // ROSMOD Component Instance - $instance.properties["name"]
-        component<$instance.properties["component_reference"].parent.properties["name"]/$instance.properties["component_reference"].properties["name"]> $instance.properties["name"];
-#end for             						 
-#end if    	     
     }
 #end for
 #end if

@@ -307,14 +307,15 @@ class ROSMOD_Generator:
                 with open(os.path.join(self.cpp, cpp_filename), 'w') as temp_file:
                     temp_file.write(self.component_cpp_str)
 
+        return self.workspace_dir
+
+'''
             for node in nodes:
 
                 if "cmakelists_add_cpp" not in node.properties.keys():
                     node.properties["cmakelists_add_cpp"] = ""
                 if "cmakelists_target_link_libs" not in node.properties.keys():
                     node.properties["cmakelists_target_link_libs"] = ""
-
-
                 node_name = node.properties["name"]
                 hash_include = "#include"
                 node_namespace = {'hash_include': hash_include, 
@@ -361,7 +362,6 @@ class ROSMOD_Generator:
             with open(os.path.join(self.package_path, "CMakeLists.txt"), 'w') as temp_file:
                 temp_file.write(self.cmake_lists)
 
-        return self.workspace_dir
 
     def generate_xml(self, deployments, deployment_path):
         for deployment in deployments:
@@ -392,3 +392,4 @@ class ROSMOD_Generator:
 #                            for port in node_ports:
 #                                if port_instance.properties["port_reference"] == port:
                                 
+'''

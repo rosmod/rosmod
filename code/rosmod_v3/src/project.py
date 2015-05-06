@@ -471,6 +471,12 @@ class ROS_Project(Drawable_Object):
                 for node in hardware_instance.children:
                     for comp_instance in node.children:
                         comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
+                        logging_list = ["logging_debug", "logging_info", "logging_warning", "logging_error", "logging_critical"]
+                        for log_level in logging_list:
+                            if comp_instance.properties[log_level] == "true":
+                                comp_instance.properties[log_level] = True
+                            else:
+                                comp_instance.properties[log_level] = False
                         for port_instance in comp_instance.children:
                             port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
 
