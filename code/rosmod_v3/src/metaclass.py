@@ -8,12 +8,13 @@ from drawable import Drawable_Object
 
 # Grammar Field class used to generate grammar field-specific listener functions
 class Grammar_Field:
-    def __init__(self, kind = "", name = "", entry_point = None, exit_point = None, syntax_checker = None):
+    def __init__(self, kind = "", name = "", entry_point = None, exit_point = None, input_validator = None, display_name = ""):
         self.kind = kind
         self.name = name
         self.entry_point = entry_point
         self.exit_point = exit_point
-        self.syntax_checker = syntax_checker
+        self.input_validator = input_validator
+        self.display_name = display_name
 
 # Enter a Model class type while parsing
 # E.g. Package, Component, Timer etc.
@@ -64,59 +65,57 @@ reference_dict = OrderedDict()
 meta_class_dict = OrderedDict()
 
 # Containers/Models
-meta_class_dict["Package"] = Grammar_Field("object", "Package", create_enterModel, create_exitModel)
+meta_class_dict["Package"] = Grammar_Field("object", "Package", create_enterModel, create_exitModel, None, "Package")
 
-meta_class_dict["Message"] = Grammar_Field("object", "Message", create_enterModel, create_exitModel)
-meta_class_dict["Service"] = Grammar_Field("object", "Service", create_enterModel, create_exitModel)
+meta_class_dict["Message"] = Grammar_Field("object", "Message", create_enterModel, create_exitModel, None, "Message")
+meta_class_dict["Service"] = Grammar_Field("object", "Service", create_enterModel, create_exitModel, None, "Service")
 
-meta_class_dict["Component"] = Grammar_Field("object", "Component", create_enterModel, create_exitModel)
-meta_class_dict["Client"] = Grammar_Field("object", "Client", create_enterModel, create_exitModel)
-meta_class_dict["Server"] = Grammar_Field("object", "Server", create_enterModel, create_exitModel)
-meta_class_dict["Publisher"] = Grammar_Field("object", "Publisher", create_enterModel, create_exitModel)
-meta_class_dict["Subscriber"] = Grammar_Field("object", "Subscriber", create_enterModel, create_exitModel)
+meta_class_dict["Component"] = Grammar_Field("object", "Component", create_enterModel, create_exitModel, None, "Component")
+meta_class_dict["Client"] = Grammar_Field("object", "Client", create_enterModel, create_exitModel, None, "Client")
+meta_class_dict["Server"] = Grammar_Field("object", "Server", create_enterModel, create_exitModel, None, "Server")
+meta_class_dict["Publisher"] = Grammar_Field("object", "Publisher", create_enterModel, create_exitModel, None, "Publisher")
+meta_class_dict["Subscriber"] = Grammar_Field("object", "Subscriber", create_enterModel, create_exitModel, None, "Subscriber")
 
-meta_class_dict["Node"] = Grammar_Field("object", "Node", create_enterModel, create_exitModel)
-meta_class_dict["Component_Instance"] = Grammar_Field("object", "Component_instance", create_enterModel, create_exitModel)
-meta_class_dict["Timer"] = Grammar_Field("object", "Timer", create_enterModel, create_exitModel)
-meta_class_dict["Hardware"] = Grammar_Field("object", "Hardware", create_enterModel, create_exitModel)
-meta_class_dict["Hardware_Instance"] = Grammar_Field("object", "Hardware_instance", create_enterModel, create_exitModel)
-meta_class_dict["Node_Instance"] = Grammar_Field("object", "Node_instance", create_enterModel, create_exitModel)
-meta_class_dict["Port_Instance"] = Grammar_Field("object", "Port_instance", create_enterModel, create_exitModel)
+meta_class_dict["Node"] = Grammar_Field("object", "Node", create_enterModel, create_exitModel, None, "Node")
+meta_class_dict["Component_Instance"] = Grammar_Field("object", "Component_instance", create_enterModel, create_exitModel, None, "Component Instance")
+meta_class_dict["Timer"] = Grammar_Field("object", "Timer", create_enterModel, create_exitModel, None, "Timer")
+meta_class_dict["Hardware"] = Grammar_Field("object", "Hardware", create_enterModel, create_exitModel, None, "Hardware")
+meta_class_dict["Hardware_Instance"] = Grammar_Field("object", "Hardware_instance", create_enterModel, create_exitModel, None, "Hardware Instance")
+meta_class_dict["Node_Instance"] = Grammar_Field("object", "Node_instance", create_enterModel, create_exitModel, None, "Node Instance")
+meta_class_dict["Port_Instance"] = Grammar_Field("object", "Port_instance", create_enterModel, create_exitModel, None, "Port Instance")
 
-meta_class_dict["Step"] = Grammar_Field("object", "Step", create_enterModel, create_exitModel)
-meta_class_dict["Local_Code_Block"] = Grammar_Field("object", "Local_code_block", create_enterModel, create_exitModel)
-meta_class_dict["Client_Using_Srv"] = Grammar_Field("object", "Client_using_srv", create_enterModel, create_exitModel)
-meta_class_dict["Publish_Using_Msg"] = Grammar_Field("object", "Publish_using_msg", create_enterModel, create_exitModel)
-meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, create_exitModel)
+meta_class_dict["Step"] = Grammar_Field("object", "Step", create_enterModel, create_exitModel, None, "Step")
+meta_class_dict["Local_Code_Block"] = Grammar_Field("object", "Local_code_block", create_enterModel, create_exitModel, None, "Local Code Block")
+meta_class_dict["Client_Using_Srv"] = Grammar_Field("object", "Client_using_srv", create_enterModel, create_exitModel, None, "Client using a Service")
+meta_class_dict["Publish_Using_Msg"] = Grammar_Field("object", "Publish_using_msg", create_enterModel, create_exitModel, None, "Publisher using a Message")
+meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, create_exitModel, None, "Loop")
 
 # Properties/Atoms
-meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom)
-meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom)
-meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom)
-meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom)
+meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom, None, "Name")
+meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom, None, "Architecture")
+meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom, None, "Value")
+meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom, None, "Group")
 
-meta_class_dict["logging_debug"] = Grammar_Field("boolean", "Logging_debug", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_info"] = Grammar_Field("boolean", "Logging_info", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_warning"] = Grammar_Field("boolean", "Logging_warning", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_error"] = Grammar_Field("boolean", "Logging_error", create_enterAtom, create_exitAtom)
-meta_class_dict["logging_critical"] = Grammar_Field("boolean", "Logging_critical", create_enterAtom, create_exitAtom)
-
-meta_class_dict["unit"] = Grammar_Field("string", "Unit", create_enterAtom, create_exitAtom)
-meta_class_dict["datatype"] = Grammar_Field("string", "Datatype", create_enterAtom, create_exitAtom)
-meta_class_dict["abstract_business_logic"] = Grammar_Field("code", "Abstract_business_logic", create_enterAtom, create_exitAtom)
-meta_class_dict["port_network_profile"] = Grammar_Field("code", "Port_network_profile", create_enterAtom, create_exitAtom)
-meta_class_dict["scheduling_scheme"] = Grammar_Field("string", "Scheduling_scheme", create_enterAtom, create_exitAtom)
-meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enterAtom, create_exitAtom)
-meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom)
-meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom)
-meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom)
-meta_class_dict["ip_address"] = Grammar_Field("string", "Ip_address", create_enterAtom, create_exitAtom)
-meta_class_dict["username"] = Grammar_Field("string", "Username", create_enterAtom, create_exitAtom)
-meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, create_exitAtom)
-meta_class_dict["deployment_path"] = Grammar_Field("string", "Deployment_path", create_enterAtom, create_exitAtom)
-meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, create_exitAtom)
-meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom)
-meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
+meta_class_dict["logging_debug"] = Grammar_Field("boolean", "Logging_debug", create_enterAtom, create_exitAtom, None, "Log Level - DEBUG")
+meta_class_dict["logging_info"] = Grammar_Field("boolean", "Logging_info", create_enterAtom, create_exitAtom, None, "Log Level - INFO")
+meta_class_dict["logging_warning"] = Grammar_Field("boolean", "Logging_warning", create_enterAtom, create_exitAtom, None, "Log Level - WARNING")
+meta_class_dict["logging_error"] = Grammar_Field("boolean", "Logging_error", create_enterAtom, create_exitAtom, None, "Log Level - ERROR")
+meta_class_dict["logging_critical"] = Grammar_Field("boolean", "Logging_critical", create_enterAtom, create_exitAtom, None, "Log Level - CRITICAL")
+meta_class_dict["datatype"] = Grammar_Field("list", "Datatype", create_enterAtom, create_exitAtom, ["Base", "I/O"], "Component Type")
+meta_class_dict["abstract_business_logic"] = Grammar_Field("code", "Abstract_business_logic", create_enterAtom, create_exitAtom, None, "Abstract Business Logic")
+meta_class_dict["port_network_profile"] = Grammar_Field("code", "Port_network_profile", create_enterAtom, create_exitAtom, None, "Port Network Profile")
+meta_class_dict["scheduling_scheme"] = Grammar_Field("list", "Scheduling_scheme", create_enterAtom, create_exitAtom, ["FIFO", "PFIFO", "EDF"], "Scheduling Scheme")
+meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
+meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom, None, "Period (s)")
+meta_class_dict["priority"] = Grammar_Field("string", "Priority", create_enterAtom, create_exitAtom, None, "Priority")
+meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAtom, create_exitAtom, None, "Deadline (s)")
+meta_class_dict["ip_address"] = Grammar_Field("string", "Ip_address", create_enterAtom, create_exitAtom, None, "IP Address")
+meta_class_dict["username"] = Grammar_Field("string", "Username", create_enterAtom, create_exitAtom, None, "Username")
+meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, create_exitAtom, None, "SSH Key")
+meta_class_dict["deployment_path"] = Grammar_Field("string", "Deployment_path", create_enterAtom, create_exitAtom, None, "Deployment Path")
+meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, create_exitAtom, None, "Initialization Script")
+meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom, None, "Reference")
+meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom, None, "Command-line Arguments")
 
 meta_class_dict["definition"] = Grammar_Field("code")
 meta_class_dict["init_business_logic"] = Grammar_Field("hidden")
