@@ -29,7 +29,6 @@ from rapidxml_utils_hpp import *
 from xmlParser_hpp import *
 from Logger_cpp import *
 from Logger_hpp import *
-from node_groups_xml import *
 from base_component_hpp import *
 from base_component_cpp import *
 import msg as msg_template
