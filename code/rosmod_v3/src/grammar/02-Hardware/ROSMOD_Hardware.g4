@@ -30,15 +30,23 @@ arch
 hardware
     :   'hardware' name
         '{'
+        ( 'ip_address' '=' '"' ip_address '"' ';'  )
         ( 'arch' '=' arch ';' )
         '}'
     ;
 
+// IP Address of Hardware
+ip_address
+    :
+        ID
+    ;
+
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
-    :   ( 'a'..'z' | 'A'..'Z' | '_' )
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' )*
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
     ;
+
 
 // White spaces and escape codes are ignored
 WS

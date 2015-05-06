@@ -4,6 +4,15 @@ from antlr4 import *
 # This class defines a complete listener for a parse tree produced by ROSMOD_HardwareParser.
 class ROSMOD_HardwareListener(ParseTreeListener):
 
+    # Enter a parse tree produced by ROSMOD_HardwareParser#ip_address.
+    def enterIp_address(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_HardwareParser#ip_address.
+    def exitIp_address(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_HardwareParser#hardware.
     def enterHardware(self, ctx):
         pass

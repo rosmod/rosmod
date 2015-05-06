@@ -49,12 +49,10 @@ hardware_instance_properties
     :   'properties'
         '{'
         ( 'ref' '=' '"' reference '"' ';' )
-        ( 'ip_address' '=' '"' ip_address '"' ';'  )
         ( 'username' '=' '"' username '"' ';' )
         ( 'sshkey' '=' '"' sshkey '"' ';'  )
         ( 'deployment_path' '=' '"' deployment_path '"' ';' )   
         ( 'init' '=' '"' init '"' ';')?
-//        ( 'env_var' '=' env_var )*
         '}'
     ;
 
