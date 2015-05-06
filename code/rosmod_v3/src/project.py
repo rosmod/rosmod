@@ -458,39 +458,21 @@ class ROS_Project(Drawable_Object):
         for package in self.workspace_builder.rml.children:
             for package_child in package.children:
                 if package_child.kind == "Component":
-                    if "scheduling_scheme" not in package_child.properties.keys():
-                        package_child.properties["scheduling_scheme"] = ""
-                    logging_list = ["logging_debug", 
-                                    "logging_info", 
-                                    "logging_warning", 
-                                    "logging_error", 
-                                    "logging_critical"]
-                    # Convert log level settings from string to boolean
-                    for log_level in logging_list:
-                        if package_child.properties[log_level] == "true":
-                            package_child.properties[log_level] = True
-                        else:
-                            package_child.properties[log_level] = False
-
                     for port in package_child.children:
                         if port.kind == "Client" or port.kind == "Server":
                             port.properties["service_reference"] = reference_dict[port.properties["reference"]]
                         elif port.kind == "Publisher" or port.kind == "Subscriber":
                             port.properties["message_reference"] = reference_dict[port.properties["reference"]]
-                elif package_child.kind == "Node":
-                    if "priority" not in package_child.properties.keys():
-                        package_child.properties["priority"] = ""
-                    for comp_instance in package_child.children:
-                        comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
 
         for rdp in self.getChildrenByKind("rdp"):
             rdp.properties["rhw_reference"] = reference_dict[rdp.properties["reference"]]
             for hardware_instance in rdp.children:
                 hardware_instance.properties["hardware_reference"] = reference_dict[hardware_instance.properties["reference"]]
-                for node_instance in hardware_instance.children:
-                    node_instance.properties["node_reference"] = reference_dict[node_instance.properties["reference"]]
-                    for port_instance in node_instance.children:
-                        port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
+                for node in hardware_instance.children:
+                    for comp_instance in node.children:
+                        comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
+                        for port_instance in comp_instance.children:
+                            port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
 
     # Generate a ROS model from a workspace object
     # Used to save an edited model
