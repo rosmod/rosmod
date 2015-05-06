@@ -76,12 +76,12 @@ def MakeAdd(self,kind):
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         if newObj != None:
             newObj.properties['name'] = "New" + kind
-            ed = dialogs.EditDialog(
-                editDict=newObj.properties,
-                editObj = newObj,
-                title="Edit "+newObj.kind,
-                references = references,
-                style=wx.RESIZE_BORDER)
+            ed = dialogs.EditDialog(parent = self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Edit "+newObj.kind,
+                                    references = references,
+                                    style=wx.RESIZE_BORDER)
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
@@ -196,12 +196,12 @@ class Example(wx.Frame):
             elif refObjType[1] == "parent":
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         prevProps = copy.copy(self.activeObject.properties)
-        ed = dialogs.EditDialog(
-            editDict=self.activeObject.properties,
-            editObj = self.activeObject,
-            title="Edit "+self.activeObject.kind,
-            references = references,
-            style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(parent=self,
+                                editDict=self.activeObject.properties,
+                                editObj = self.activeObject,
+                                title="Edit "+self.activeObject.kind,
+                                references = references,
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -236,9 +236,9 @@ class Example(wx.Frame):
             if info.deletable and self.activeAspect.GetPageCount() > 1:
                 wx.CallAfter(self.OnAspectDelete,e)
             else:
-                dialogs.ErrorDialog("Cannot delete {}".format(model.properties["name"]))
+                dialogs.ErrorDialog(self, "Cannot delete {}".format(model.properties["name"]))
         else:
-            if dialogs.ConfirmDialog("Delete {}?".format(self.activeObject.properties['name'])):
+            if dialogs.ConfirmDialog(self,"Delete {}?".format(self.activeObject.properties['name'])):
                 self.UpdateUndo()
                 self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                 self.activeObject.deleteAllRefs(self.project)
@@ -270,12 +270,12 @@ class Example(wx.Frame):
         for refObjType in refObjectTypes:
             references.extend(self.project.getChildrenByKind(refObjType))
 
-        ed = dialogs.EditDialog(
-            editObj=newObj,
-            editDict=newObj.properties,
-            title="Edit "+newObj.kind,
-            references = references,
-            style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(parent=self,
+                                editObj=newObj,
+                                editDict=newObj.properties,
+                                title="Edit "+newObj.kind,
+                                references = references,
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -295,7 +295,7 @@ class Example(wx.Frame):
         modelName = self.activeAspect.GetPageText(selectedPage)
         info = self.activeAspectInfo.GetPageInfo(modelName)
         model = info.obj
-        if dialogs.ConfirmDialog("Delete {}?".format(modelName)):
+        if dialogs.ConfirmDialog(self,"Delete {}?".format(modelName)):
             self.UpdateUndo()
             info.canvas.ClearAll()
             model.deleteAllRefs(self.project)
@@ -332,7 +332,8 @@ class Example(wx.Frame):
                 )
                 env.hosts.append(host.properties['name'])
             copyProgressQ = multiprocessing.Queue()
-            dlg = dialogs.RMLProgressDialog( title="Copy Progress",
+            dlg = dialogs.RMLProgressDialog( parent = self,
+                                             title="Copy Progress",
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
             workerThread = WorkerThread(func = lambda : fabTest.copyTest(self.hostDict,
@@ -343,18 +344,18 @@ class Example(wx.Frame):
             workerThread.start()
             dlg.ShowModal()
         else:
-            dialogs.ErrorDialog("Can't copy deployment files when system is running a deployment!")
+            dialogs.ErrorDialog(self,"Can't copy deployment files when system is running a deployment!")
 
     def OnDeploymentRun(self,e):
         newObj = drawable.Drawable_Object()
         newObj.properties = OrderedDict()
         newObj.properties['command'] = ""
-        ed = dialogs.EditDialog(
-            editDict=newObj.properties,
-            editObj = newObj,
-            title="Input Command To Run",
-            references = [],
-            style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(parent=self,
+                                editDict=newObj.properties,
+                                editObj = newObj,
+                                title="Input Command To Run",
+                                references = [],
+                                style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -380,7 +381,8 @@ class Example(wx.Frame):
                 )
                 env.hosts.append(host.properties['name'])
             copyProgressQ = multiprocessing.Queue()
-            dlg = dialogs.RMLProgressDialog( title="Copy Progress",
+            dlg = dialogs.RMLProgressDialog( parent = self,
+                                             title="Copy Progress",
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
             workerThread = WorkerThread(func = lambda : fabTest.runCommandTest(self.hostDict,
@@ -409,12 +411,12 @@ class Example(wx.Frame):
             newObj.properties['name'] = testName
             newObj.properties['hardware_reference'] = None
             references = dep.properties['hardware_configuration_reference'].children
-            ed = dialogs.EditDialog(
-                editDict=newObj.properties,
-                editObj = newObj,
-                title="Deployment Options",
-                references = references,
-                style=wx.RESIZE_BORDER)
+            ed = dialogs.EditDialog(parent=self,
+                                    editDict=newObj.properties,
+                                    editObj = newObj,
+                                    title="Deployment Options",
+                                    references = references,
+                                    style=wx.RESIZE_BORDER)
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
@@ -447,7 +449,8 @@ class Example(wx.Frame):
                     )
                     env.hosts.append(host.properties['name'])
                 deploymentProgressQ = multiprocessing.Queue()
-                dlg = dialogs.RMLProgressDialog( title="Deployment Progress",
+                dlg = dialogs.RMLProgressDialog( parent = self,
+                                                 title="Deployment Progress",
                                                  progress_q = deploymentProgressQ,
                                                  numItems=numNodes)
                 workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
@@ -476,14 +479,15 @@ class Example(wx.Frame):
                 self.workQueue.append(monitorWorkItem)
                 workerThread.start()
         else:
-            dialogs.ErrorDialog("System is already running a deployment!")
+            dialogs.ErrorDialog(self,"System is already running a deployment!")
 
     def OnDeploymentStop(self,e):
         if self.deployed == True: 
             self.deployed = False
             self.deploying = False
             deploymentProgressQ = multiprocessing.Queue()
-            dlg = dialogs.RMLProgressDialog(title="Stop Deployment Progress",
+            dlg = dialogs.RMLProgressDialog(parent = self,
+                                            title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
                                             numItems=self.runningNodes)
             workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
@@ -496,7 +500,7 @@ class Example(wx.Frame):
             drawable.Configure(self.runningDeployment,self.styleDict)
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         else:
-            dialogs.ErrorDialog("System is not running a deployment")
+            dialogs.ErrorDialog(self,"System is not running a deployment")
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnMouseWheel)
@@ -574,6 +578,7 @@ class Example(wx.Frame):
     '''
     def OnPrint(self, e):
         imgName, imgPath = dialogs.RMLFileDialog(
+            parent = self,
             fileTypes = "PNG Images (*.png)|*.png",
             path = self.project_path,
             prompt = "Save Aspect View As Image...",
@@ -601,12 +606,13 @@ class Example(wx.Frame):
             self.statusbar.SetStatusText('Saved {} to {}'.format(imgName,imgPath))
 
     def OnQuit(self, e):
-        if dialogs.ConfirmDialog("Really quit ROSMOD?"):
+        if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
             self.workTimer.Stop()
             exit()
 
     def OnNew(self, e):
         project_path = dialogs.RMLDirectoryDialog(
+            parent = self,
             prompt ="Choose New Project Location", 
             path = self.project_path,
         )
@@ -636,6 +642,7 @@ class Example(wx.Frame):
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
+            parent = self,
             fileTypes = self.fileTypes,
             path = self.project_path,
             prompt = "Choose a ROS Project",
@@ -645,7 +652,8 @@ class Example(wx.Frame):
             self.filename = filename
             self.project_path = model_path
             openProgressQ = multiprocessing.Queue()
-            dlg = dialogs.RMLProgressDialog( title="Open Project Progress",
+            dlg = dialogs.RMLProgressDialog( parent = self,
+                                             title="Open Project Progress",
                                              progress_q = openProgressQ,
                                              numItems=11)
             workerThread = WorkerThread(func = lambda : self.project.open(self.project_path,
@@ -663,7 +671,8 @@ class Example(wx.Frame):
     def OnSaveAs(self, e):
         properties = OrderedDict()
         properties['name'] = self.project.project_name
-        ed = dialogs.EditDialog( editObj = None,
+        ed = dialogs.EditDialog( parent = self,
+                                 editObj = None,
                                  editDict = properties,
                                  title = 'Choose New Project Name',
                                  style = wx.RESIZE_BORDER)
@@ -671,6 +680,7 @@ class Example(wx.Frame):
         inputs = ed.GetInput()
         if inputs != OrderedDict():
             project_path = dialogs.RMLDirectoryDialog(
+                parent = self,
                 prompt ="Choose New Project Location", 
                 path = self.project_path,
             )
@@ -709,7 +719,7 @@ class Example(wx.Frame):
     '''
     def GenerateCode(self, e):
         self.project.generate_workspace()
-        dialogs.InfoDialog("Generated ROS Workspace.")
+        dialogs.InfoDialog(self,"Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
     def AnalyzeNetwork(self, e):
         pass

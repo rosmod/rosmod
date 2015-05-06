@@ -15,9 +15,9 @@ class RMLProgressDialog(wx.Dialog):
     Shows a Progres Gauge while an operation is taking place. May be cancellable
     which is possible when converting pdf/ps or loading models
     """
-    def __init__(self, title, progress_q, numItems=100, cancellable=False):
+    def __init__(self, parent, title, progress_q, numItems=100, cancellable=False):
         """Defines a gauge and a timer which updates the gauge."""
-        wx.Dialog.__init__(self, None, title=title)
+        wx.Dialog.__init__(self, parent=parent, title=title)
         self.count = 0
         self.numItems = numItems
         self.progress = wx.Gauge(self, range=self.numItems)
@@ -78,41 +78,41 @@ class RMLProgressDialog(wx.Dialog):
         self.timer.Stop()
         wx.CallAfter(self.Destroy)
 
-def ProgressBarDialog(title,topic,numItems,cancellable=False):
-    dlg = RMLProgressDialog(title=title,progress_topic=topic,numItems=numItems,cancellable=cancellable)
+def ProgressBarDialog(parent,title,topic,numItems,cancellable=False):
+    dlg = RMLProgressDialog(parent=parent,title=title,progress_topic=topic,numItems=numItems,cancellable=cancellable)
     dlg.ShowModal()
     dlg.Destroy()
 
-def RMLFileDialog(fileTypes,path,prompt,fd_flags):
+def RMLFileDialog(parent,fileTypes,path,prompt,fd_flags):
     modelPath = None
     fileName = None
-    dlg = wx.FileDialog(None, prompt, path, "", fileTypes, fd_flags)
+    dlg = wx.FileDialog(parent, prompt, path, "", fileTypes, fd_flags)
     if dlg.ShowModal() == wx.ID_OK:
         fileName = dlg.GetFilename()
         modelPath = dlg.GetDirectory()
     dlg.Destroy()
     return fileName, modelPath
 
-def RMLDirectoryDialog(path,prompt):
+def RMLDirectoryDialog(parent,path,prompt):
     workspacePath = None
-    dlg = wx.DirDialog(None, prompt, path)
+    dlg = wx.DirDialog(parent, prompt, path)
     if dlg.ShowModal() == wx.ID_OK:
         workspacePath = dlg.GetPath()
     dlg.Destroy()
     return workspacePath
 
-def InfoDialog(info):
-    dlg = wx.MessageDialog(None, info, 'Info', wx.OK )
+def InfoDialog(parent, info):
+    dlg = wx.MessageDialog(parent, info, 'Info', wx.OK )
     dlg.ShowModal()
     dlg.Destroy()
 
-def ErrorDialog( msg):
-    dlg = wx.MessageDialog(None, msg, 'Error', wx.OK | wx.ICON_ERROR)
+def ErrorDialog(parent, msg):
+    dlg = wx.MessageDialog(parent, msg, 'Error', wx.OK | wx.ICON_ERROR)
     dlg.ShowModal()
     dlg.Destroy()
 
-def ConfirmDialog(msg):
-    dlg = wx.MessageDialog(None, msg, 'Confirm', wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+def ConfirmDialog(parent, msg):
+    dlg = wx.MessageDialog(parent, msg, 'Confirm', wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
     retVal = dlg.ShowModal()
     dlg.Destroy()
     if retVal == wx.ID_YES:
@@ -124,13 +124,12 @@ def ConfirmDialog(msg):
 
 class EditDialog(wx.Dialog):
     
-    def __init__(self, *args, **kw):
-        self.title = kw.pop('title', "ROSMOD V2")
-        wx.Dialog.__init__(self, None, title=self.title)
-        self.editDict = kw.pop('editDict', OrderedDict())
-        self.editObj = kw.pop('editObj', None)
-        self.invalidNames = kw.pop('invalidNames',[])
-        self.references = kw.pop('references',[])
+    def __init__(self, parent = None, title = "ROSMOD", style = 0,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
+        self.editDict = editDict
+        self.editObj = editObj
+        self.invalidNames = invalidNames
+        self.references = references
+        wx.Dialog.__init__(self, parent=parent, title=title, style=style)
         self.returnDict = OrderedDict()
         self.InitUI()
 
@@ -290,7 +289,7 @@ class Wizard:
 
     def GetInput(self):
         for objName,propDict in self.propDictDict.iteritems():
-            ed = EditDialog( self.parent,
+            ed = EditDialog( parent = self.parent,
                              editObj = None,
                              editDict = propDict,
                              title = "Configure {}".format(objName),
