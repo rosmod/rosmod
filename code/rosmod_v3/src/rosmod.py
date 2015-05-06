@@ -191,8 +191,10 @@ class Example(wx.Frame):
         references = []
         refObjectTypes = model_dict[kind].out_refs
         for refObjType in refObjectTypes:
-            references.extend(self.project.getChildrenByKind(refObjType))
-
+            if refObjType[1] == "project":
+                references.extend(self.project.getChildrenByKind(refObjType[0]))
+            elif refObjType[1] == "parent":
+                references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         prevProps = copy.copy(self.activeObject.properties)
         ed = dialogs.EditDialog(canvas,
                                 editDict=self.activeObject.properties,
