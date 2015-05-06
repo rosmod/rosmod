@@ -28,7 +28,7 @@ model_dict["rml"] = Meta_Entity(
 
 model_dict["Package"] = Meta_Entity(
     "rml", 
-    ["Message","Service","Component","Node"],
+    ["Message","Service","Component"],
     ["name"],
     [], 
     [])
@@ -83,19 +83,6 @@ model_dict["Timer"] = Meta_Entity(
     [], 
     [])
 
-model_dict["Node"] = Meta_Entity(
-    "Package", 
-    ["Component_Instance"], 
-    ["name","priority"],
-    [["Node_Instance","node_reference"]], 
-    [])
-model_dict["Component_Instance"] = Meta_Entity(
-    "Node", 
-    [], 
-    ["name","component_reference","reference"],
-    [], 
-    ["Component"])
-
 model_dict["rhw"] = Meta_Entity(
     "Project", 
     ["Hardware"], 
@@ -117,18 +104,25 @@ model_dict["rdp"] = Meta_Entity(
 model_dict["Hardware_Instance"] = Meta_Entity(
     "rdp", 
     ["Node_Instance"],
-    ["name","hardware_reference","ip_address","username","sshkey","init","reference"], 
+    ["name","hardware_reference","ip_address","username","sshkey","deployment_path","init","reference"], 
     [], 
     ["Hardware"])
-model_dict["Node_Instance"] = Meta_Entity(
+
+model_dict["Node"] = Meta_Entity(
     "Hardware_Instance", 
-    ["Port_Instance"], 
-    ["name","node_reference","reference","cmd_args"],
+    ["Component_Instance"], 
+    ["name","priority","cmd_args"],
     [], 
-    ["Node"])
+    [])
+model_dict["Component_Instance"] = Meta_Entity(
+    "Node", 
+    ["Port_Instance"], 
+    ["name","component_reference","reference"],
+    [], 
+    ["Component"])
 model_dict["Port_Instance"] = Meta_Entity(
-    "Node_Instance", 
+    "Component_Instance", 
     [], 
     ["name","port_reference","reference","group"],
     [], 
-    ["Client","Server","Publisher","Subscriber","Timer"])
+    ["Client","Server","Publisher","Subscriber"])
