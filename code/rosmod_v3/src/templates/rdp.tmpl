@@ -13,7 +13,6 @@ hardware_instance $hardware_instance.properties["name"]
     properties
     {
         ref = "${deployment.properties["rhw_reference"].properties["name"]}/$hardware_instance.properties["hardware_reference"].properties["name"]";
-        ip_address = "$hardware_instance.properties["ip_address"]";
         username = "$hardware_instance.properties["username"]";
 	sshkey = "$hardware_instance.properties["sshkey"]";
 	deployment_path = "$hardware_instance.properties["deployment_path"]";

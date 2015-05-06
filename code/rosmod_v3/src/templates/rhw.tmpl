@@ -7,6 +7,7 @@
 // Hardware - $hardware.properties["name"]
 hardware $hardware.properties["name"]
 {
+    ip_address = "$hardware.properties["ip_address"]";
 #if $hardware.properties["arch"] != ""
     arch = $hardware.properties["arch"];
 #end if
