@@ -5,11 +5,13 @@
 // Hardware - BeagleboneBlack
 hardware BeagleboneBlack
 {
+    ip_address = "10.1.1.1";
     arch = armv7l;
 }
 // Hardware - NVIDIA_JetsonTK1
 hardware NVIDIA_JetsonTK1
 {
-    arch = arm;
+    ip_address = "10.1.1.2";
+    arch = armv7l;
 }
 
