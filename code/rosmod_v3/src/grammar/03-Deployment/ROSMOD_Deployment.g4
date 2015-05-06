@@ -164,8 +164,8 @@ component_instance
         '{'
             'properties'
             '{'
-                ( 'ref' '=' reference ';')
-		        ('scheduling_scheme' '=' scheduling_scheme ) 
+                ( 'ref' '=' '"' reference '"' ';')
+		        ('scheduling_scheme' '=' scheduling_scheme ';' ) 
                 (
                   'logging'
                   '{'
@@ -193,10 +193,10 @@ port_instance
         '}'
     ;
 
-// An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
-ID
-    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
+// A boolean variable - must be either true or false
+BOOL
+    :   
+        ( 'true' | 'false')
     ;
 
 // A digit - any number between 0 and 9
@@ -211,10 +211,10 @@ INT
         DIGIT+
     ;
 
-// A boolean variable - must be either true or false
-BOOL
-    :   
-        ( 'true' | 'false')
+// An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
+ID
+    :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
     ;
 
 // White spaces and escape codes are ignored

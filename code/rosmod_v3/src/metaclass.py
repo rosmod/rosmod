@@ -113,6 +113,7 @@ meta_class_dict["deadline"] = Grammar_Field("string", "Deadline", create_enterAt
 meta_class_dict["ip_address"] = Grammar_Field("string", "Ip_address", create_enterAtom, create_exitAtom)
 meta_class_dict["username"] = Grammar_Field("string", "Username", create_enterAtom, create_exitAtom)
 meta_class_dict["sshkey"] = Grammar_Field("string", "Sshkey", create_enterAtom, create_exitAtom)
+meta_class_dict["deployment_path"] = Grammar_Field("string", "Deployment_path", create_enterAtom, create_exitAtom)
 meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, create_exitAtom)
 meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom)
 meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom)
