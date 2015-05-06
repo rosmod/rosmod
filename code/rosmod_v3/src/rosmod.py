@@ -76,12 +76,12 @@ def MakeAdd(self,kind):
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         if newObj != None:
             newObj.properties['name'] = "New" + kind
-            ed = dialogs.EditDialog(self,
-                                    editDict=newObj.properties,
-                                    editObj = newObj,
-                                    title="Edit "+newObj.kind,
-                                    references = references,
-                                    style=wx.RESIZE_BORDER)
+            ed = dialogs.EditDialog(
+                editDict=newObj.properties,
+                editObj = newObj,
+                title="Edit "+newObj.kind,
+                references = references,
+                style=wx.RESIZE_BORDER)
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
@@ -196,12 +196,12 @@ class Example(wx.Frame):
             elif refObjType[1] == "parent":
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         prevProps = copy.copy(self.activeObject.properties)
-        ed = dialogs.EditDialog(canvas,
-                                editDict=self.activeObject.properties,
-                                editObj = self.activeObject,
-                                title="Edit "+self.activeObject.kind,
-                                references = references,
-                                style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(
+            editDict=self.activeObject.properties,
+            editObj = self.activeObject,
+            title="Edit "+self.activeObject.kind,
+            references = references,
+            style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -236,9 +236,9 @@ class Example(wx.Frame):
             if info.deletable and self.activeAspect.GetPageCount() > 1:
                 wx.CallAfter(self.OnAspectDelete,e)
             else:
-                dialogs.ErrorDialog(self, "Cannot delete {}".format(model.properties["name"]))
+                dialogs.ErrorDialog("Cannot delete {}".format(model.properties["name"]))
         else:
-            if dialogs.ConfirmDialog(canvas,"Delete {}?".format(self.activeObject.properties['name'])):
+            if dialogs.ConfirmDialog("Delete {}?".format(self.activeObject.properties['name'])):
                 self.UpdateUndo()
                 self.AspectLog("Deleting {}".format(self.activeObject.properties['name']),msgWindow)
                 self.activeObject.deleteAllRefs(self.project)
@@ -270,12 +270,12 @@ class Example(wx.Frame):
         for refObjType in refObjectTypes:
             references.extend(self.project.getChildrenByKind(refObjType))
 
-        ed = dialogs.EditDialog(self,
-                                editObj=newObj,
-                                editDict=newObj.properties,
-                                title="Edit "+newObj.kind,
-                                references = references,
-                                style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(
+            editObj=newObj,
+            editDict=newObj.properties,
+            title="Edit "+newObj.kind,
+            references = references,
+            style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -295,7 +295,7 @@ class Example(wx.Frame):
         modelName = self.activeAspect.GetPageText(selectedPage)
         info = self.activeAspectInfo.GetPageInfo(modelName)
         model = info.obj
-        if dialogs.ConfirmDialog(self,"Delete {}?".format(modelName)):
+        if dialogs.ConfirmDialog("Delete {}?".format(modelName)):
             self.UpdateUndo()
             info.canvas.ClearAll()
             model.deleteAllRefs(self.project)
@@ -343,18 +343,18 @@ class Example(wx.Frame):
             workerThread.start()
             dlg.ShowModal()
         else:
-            dialogs.ErrorDialog(self,"Can't copy deployment files when system is running a deployment!")
+            dialogs.ErrorDialog("Can't copy deployment files when system is running a deployment!")
 
     def OnDeploymentRun(self,e):
         newObj = drawable.Drawable_Object()
         newObj.properties = OrderedDict()
         newObj.properties['command'] = ""
-        ed = dialogs.EditDialog(self,
-                                editDict=newObj.properties,
-                                editObj = newObj,
-                                title="Input Command To Run",
-                                references = [],
-                                style=wx.RESIZE_BORDER)
+        ed = dialogs.EditDialog(
+            editDict=newObj.properties,
+            editObj = newObj,
+            title="Input Command To Run",
+            references = [],
+            style=wx.RESIZE_BORDER)
         ed.ShowModal()
         inputs = ed.GetInput()
         if inputs != OrderedDict():
@@ -409,12 +409,12 @@ class Example(wx.Frame):
             newObj.properties['name'] = testName
             newObj.properties['hardware_reference'] = None
             references = dep.properties['hardware_configuration_reference'].children
-            ed = dialogs.EditDialog(self,
-                                    editDict=newObj.properties,
-                                    editObj = newObj,
-                                    title="Deployment Options",
-                                    references = references,
-                                    style=wx.RESIZE_BORDER)
+            ed = dialogs.EditDialog(
+                editDict=newObj.properties,
+                editObj = newObj,
+                title="Deployment Options",
+                references = references,
+                style=wx.RESIZE_BORDER)
             ed.ShowModal()
             inputs = ed.GetInput()
             if inputs != OrderedDict():
@@ -476,7 +476,7 @@ class Example(wx.Frame):
                 self.workQueue.append(monitorWorkItem)
                 workerThread.start()
         else:
-            dialogs.ErrorDialog(self,"System is already running a deployment!")
+            dialogs.ErrorDialog("System is already running a deployment!")
 
     def OnDeploymentStop(self,e):
         if self.deployed == True: 
@@ -496,7 +496,7 @@ class Example(wx.Frame):
             drawable.Configure(self.runningDeployment,self.styleDict)
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
         else:
-            dialogs.ErrorDialog(self,"System is not running a deployment")
+            dialogs.ErrorDialog("System is not running a deployment")
 
     def BindCanvasMouseEvents(self,canvas):
         canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.OnMouseWheel)
@@ -574,7 +574,6 @@ class Example(wx.Frame):
     '''
     def OnPrint(self, e):
         imgName, imgPath = dialogs.RMLFileDialog(
-            frame = self,
             fileTypes = "PNG Images (*.png)|*.png",
             path = self.project_path,
             prompt = "Save Aspect View As Image...",
@@ -602,13 +601,12 @@ class Example(wx.Frame):
             self.statusbar.SetStatusText('Saved {} to {}'.format(imgName,imgPath))
 
     def OnQuit(self, e):
-        if dialogs.ConfirmDialog(self,"Really quit ROSMOD?"):
+        if dialogs.ConfirmDialog("Really quit ROSMOD?"):
             self.workTimer.Stop()
             exit()
 
     def OnNew(self, e):
         project_path = dialogs.RMLDirectoryDialog(
-            frame = self,
             prompt ="Choose New Project Location", 
             path = self.project_path,
         )
@@ -638,7 +636,6 @@ class Example(wx.Frame):
 
     def OnOpen(self, e):
         filename, model_path = dialogs.RMLFileDialog(
-            frame = self,
             fileTypes = self.fileTypes,
             path = self.project_path,
             prompt = "Choose a ROS Project",
@@ -666,8 +663,7 @@ class Example(wx.Frame):
     def OnSaveAs(self, e):
         properties = OrderedDict()
         properties['name'] = self.project.project_name
-        ed = dialogs.EditDialog( self,
-                                 editObj = None,
+        ed = dialogs.EditDialog( editObj = None,
                                  editDict = properties,
                                  title = 'Choose New Project Name',
                                  style = wx.RESIZE_BORDER)
@@ -675,7 +671,6 @@ class Example(wx.Frame):
         inputs = ed.GetInput()
         if inputs != OrderedDict():
             project_path = dialogs.RMLDirectoryDialog(
-                frame = self,
                 prompt ="Choose New Project Location", 
                 path = self.project_path,
             )
@@ -714,7 +709,7 @@ class Example(wx.Frame):
     '''
     def GenerateCode(self, e):
         self.project.generate_workspace()
-        dialogs.InfoDialog(self,"Generated ROS Workspace.")
+        dialogs.InfoDialog("Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
     def AnalyzeNetwork(self, e):
         pass

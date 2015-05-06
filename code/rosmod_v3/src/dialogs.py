@@ -83,36 +83,36 @@ def ProgressBarDialog(title,topic,numItems,cancellable=False):
     dlg.ShowModal()
     dlg.Destroy()
 
-def RMLFileDialog(frame,fileTypes,path,prompt,fd_flags):
+def RMLFileDialog(fileTypes,path,prompt,fd_flags):
     modelPath = None
     fileName = None
-    dlg = wx.FileDialog(frame, prompt, path, "", fileTypes, fd_flags)
+    dlg = wx.FileDialog(None, prompt, path, "", fileTypes, fd_flags)
     if dlg.ShowModal() == wx.ID_OK:
         fileName = dlg.GetFilename()
         modelPath = dlg.GetDirectory()
     dlg.Destroy()
     return fileName, modelPath
 
-def RMLDirectoryDialog(frame,path,prompt):
+def RMLDirectoryDialog(path,prompt):
     workspacePath = None
-    dlg = wx.DirDialog(frame, prompt, path)
+    dlg = wx.DirDialog(None, prompt, path)
     if dlg.ShowModal() == wx.ID_OK:
         workspacePath = dlg.GetPath()
     dlg.Destroy()
     return workspacePath
 
-def InfoDialog(frame, info):
-    dlg = wx.MessageDialog(frame, info, 'Info', wx.OK )
+def InfoDialog(info):
+    dlg = wx.MessageDialog(None, info, 'Info', wx.OK )
     dlg.ShowModal()
     dlg.Destroy()
 
-def ErrorDialog(frame, msg):
-    dlg = wx.MessageDialog(frame, msg, 'Error', wx.OK | wx.ICON_ERROR)
+def ErrorDialog( msg):
+    dlg = wx.MessageDialog(None, msg, 'Error', wx.OK | wx.ICON_ERROR)
     dlg.ShowModal()
     dlg.Destroy()
 
-def ConfirmDialog(frame, msg):
-    dlg = wx.MessageDialog(frame, msg, 'Confirm', wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+def ConfirmDialog(msg):
+    dlg = wx.MessageDialog(None, msg, 'Confirm', wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
     retVal = dlg.ShowModal()
     dlg.Destroy()
     if retVal == wx.ID_YES:
@@ -125,15 +125,14 @@ def ConfirmDialog(frame, msg):
 class EditDialog(wx.Dialog):
     
     def __init__(self, *args, **kw):
+        self.title = kw.pop('title', "ROSMOD V2")
+        wx.Dialog.__init__(self, None, title=self.title)
         self.editDict = kw.pop('editDict', OrderedDict())
         self.editObj = kw.pop('editObj', None)
         self.invalidNames = kw.pop('invalidNames',[])
-        title = kw.pop('title', "ROSMOD V2")
         self.references = kw.pop('references',[])
-        super(EditDialog, self).__init__(*args,**kw)
         self.returnDict = OrderedDict()
         self.InitUI()
-        self.SetTitle(title)
 
     def InitUI(self):
         panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)#wx.Panel(self)
@@ -276,6 +275,7 @@ class EditDialog(wx.Dialog):
 
     def OnOk(self,e):
         if self.UpdateInputs() == False:
+            self.returnDict = OrderedDict()
             return False
         self.Destroy()
 
