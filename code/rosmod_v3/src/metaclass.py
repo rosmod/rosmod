@@ -117,7 +117,7 @@ meta_class_dict["init"] = Grammar_Field("string", "Init", create_enterAtom, crea
 meta_class_dict["ref"] = Grammar_Field("reference", "Ref", create_enterAtom, create_exitAtom, None, "Reference")
 meta_class_dict["cmd_args"] = Grammar_Field("string", "Cmd_args", create_enterAtom, create_exitAtom, None, "Command-line Arguments")
 
-meta_class_dict["definition"] = Grammar_Field("code")
+meta_class_dict["definition"] = Grammar_Field("code",display_name="Definition")
 meta_class_dict["init_business_logic"] = Grammar_Field("hidden")
 meta_class_dict["user_includes"] = Grammar_Field("hidden")
 meta_class_dict["user_globals"] = Grammar_Field("hidden")

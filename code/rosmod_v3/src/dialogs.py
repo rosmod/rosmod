@@ -147,13 +147,15 @@ class EditDialog(wx.Dialog):
         growRow = False
         for key,value in self.editDict.iteritems():
             field = None
-            label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
+            label = None
             if meta_class_dict[key].kind == "string":
+                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
                 growRow = False
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
             elif meta_class_dict[key].kind == "boolean":
+                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
                 growRow = False
                 field = wx.CheckBox(panel)
                 if type(value) is bool:
@@ -161,14 +163,16 @@ class EditDialog(wx.Dialog):
                 else:
                     field.SetValue(False)
             elif meta_class_dict[key].kind == "list":
+                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
                 growRow = False
-                possibles = meta_class_dict[key].inputValidator
+                possibles = meta_class_dict[key].input_validator
                 field = wx.ComboBox(panel, choices = possibles, style=wx.CB_READONLY)
                 if value in possibles:
                     field.SetStringSelection(value)
                 else:
                     field.SetSelection(0)
             elif meta_class_dict[key].kind == "code":
+                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
                 field = stc.StyledTextCtrl(panel)
 
@@ -210,6 +214,7 @@ class EditDialog(wx.Dialog):
                 if (fieldStr!=None):
                     field.SetText(fieldStr.encode("utf8"))
             elif meta_class_dict[key].kind == 'reference':
+                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
                 growRow=False
                 refObjTypes = model_dict[self.editObj.kind].out_refs
                 field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
