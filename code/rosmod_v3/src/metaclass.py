@@ -129,14 +129,12 @@ meta_class_dict["cmakelists_functions"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_include_dirs"] = Grammar_Field("hidden")
 
 # Properties that are references
-meta_class_dict["component_instance_reference"] = Grammar_Field("reference")
-meta_class_dict["message_reference"] = Grammar_Field("reference")
-meta_class_dict["service_reference"] = Grammar_Field("reference")
-meta_class_dict["component_reference"] = Grammar_Field("reference")
-meta_class_dict["node_reference"] = Grammar_Field("reference")
-meta_class_dict["port_reference"] = Grammar_Field("reference")
-meta_class_dict["rhw_reference"] = Grammar_Field("reference")
-meta_class_dict["hardware_reference"] = Grammar_Field("reference")
+meta_class_dict["message_reference"] = Grammar_Field("reference",display_name="Message")
+meta_class_dict["service_reference"] = Grammar_Field("reference",display_name="Service")
+meta_class_dict["component_reference"] = Grammar_Field("reference",display_name="Component")
+meta_class_dict["port_reference"] = Grammar_Field("reference",display_name="Port")
+meta_class_dict["rhw_reference"] = Grammar_Field("reference",display_name="RHW")
+meta_class_dict["hardware_reference"] = Grammar_Field("reference",display_name="Hardware")
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):
