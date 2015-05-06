@@ -39,6 +39,7 @@ from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
 from rml import *
+from xml import *
 import rhw as rhw_template
 import rdp as rdp_template
 

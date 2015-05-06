@@ -1,0 +1,26 @@
+#unicode utf8
+<?xml version='1.0' encoding 'UTF-8'?>
+#if $node.children != []
+#for $comp_instance in $node.children
+<component_instance name="$comp_instance.properties["name"]">
+  <scheduling_scheme setting="$comp_instance.properties["scheduling_scheme"]"/>
+  <logging>
+    <debug setting="$comp_instance.properties["logging_debug"]"/>
+    <info setting="$comp_instance.properties["logging_info"]"/>
+    <warning setting="$comp_instance.properties["logging_warning"]"/>
+    <error setting="$comp_instance.properties["logging_error"]"/>
+    <critical setting="$comp_instance.properties["logging_critical"]"/>
+  <logging/>
+#if $comp_instance.children != []
+#for $port_instance in $comp_instance.children
+  <port_instance name="$port_instance.properties["name"]">
+    <port name="$port_instance.properties["port_reference"].properties["name"]">
+    <group setting="$port_instance.properties["group"]">
+  <port_instance/>
+#end for
+#end if
+<component_instance/>
+#end for
+#end if
+
+
