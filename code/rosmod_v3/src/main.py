@@ -9,11 +9,19 @@ from project import *
 from builder import *
 from Cheetah.Template import Template
 
+import os,sys
+
 if __name__ == "__main__":
+
+    if len(sys.argv) != 2:
+        print "ERROR, usage: ./main.py <path to project>"
+        sys.exit(1)
+
+    path = sys.argv[1]
 
     # Testing ROS Tools Features
     My_Project = ROS_Project()
-    My_Project.open("/home/amogh/test/hello_rosmod_v3")
+    My_Project.open(path)
 #    My_Project.save()
 #    My_Project.generate_workspace()
 #    My_Project.save_rml()
