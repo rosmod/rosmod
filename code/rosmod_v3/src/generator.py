@@ -389,6 +389,6 @@ class ROSMOD_Generator:
 
                         for port_instance in node_instance.children:
                             comp_instance_name = ""
-                            for port in node_ports:
-                                if port_instance.properties["port_reference"] == port:
+#                            for port in node_ports:
+#                                if port_instance.properties["port_reference"] == port:
                                 

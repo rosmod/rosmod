@@ -52,6 +52,7 @@ hardware_instance_properties
         ( 'ip_address' '=' '"' ip_address '"' ';'  )
         ( 'username' '=' '"' username '"' ';' )
         ( 'sshkey' '=' '"' sshkey '"' ';'  )
+        ( 'deployment_path' '=' '"' deployment_path '"' ';' )   
         ( 'init' '=' '"' init '"' ';')?
 //        ( 'env_var' '=' env_var )*
         '}'
@@ -72,6 +73,12 @@ username
 // Full path to SSH Key
 sshkey
     :   
+        ID
+    ;
+
+// Full path to Deployment Folder where executables reside
+deployment_path
+    :
         ID
     ;
 
@@ -158,7 +165,7 @@ component_instance
             'properties'
             '{'
                 ( 'ref' '=' reference ';')
-		('scheduling_scheme' '=' scheduling_scheme ) 
+		        ('scheduling_scheme' '=' scheduling_scheme ) 
                 (
                   'logging'
                   '{'
