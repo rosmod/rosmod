@@ -146,24 +146,30 @@ class EditDialog(wx.Dialog):
         self.inputs = OrderedDict()
         growRow = False
         for key,value in self.editDict.iteritems():
-            label = None
             field = None
+            label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
             if meta_class_dict[key].kind == "string":
                 growRow = False
-                label = wx.StaticText(panel, label=key + ":")
                 field = wx.TextCtrl(panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
             elif meta_class_dict[key].kind == "boolean":
-                label = wx.StaticText(panel, label=key + ":")
+                growRow = False
                 field = wx.CheckBox(panel)
                 if type(value) is bool:
                     field.SetValue(value)
                 else:
                     field.SetValue(False)
+            elif meta_class_dict[key].kind == "list":
+                growRow = False
+                possibles = meta_class_dict[key].inputValidator
+                field = wx.ComboBox(panel, choices = possibles, style=wx.CB_READONLY)
+                if value in possibles:
+                    field.SetStringSelection(value)
+                else:
+                    field.SetSelection(0)
             elif meta_class_dict[key].kind == "code":
                 growRow=True
-                label = wx.StaticText(panel, label=key + ":")
                 field = stc.StyledTextCtrl(panel)
 
                 kwList = ["int32","string","int64","bool","float32","float64"]
@@ -206,7 +212,6 @@ class EditDialog(wx.Dialog):
             elif meta_class_dict[key].kind == 'reference':
                 growRow=False
                 refObjTypes = model_dict[self.editObj.kind].out_refs
-                label = wx.StaticText(panel, label=key + ":")
                 field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
                     field.Append(ref.properties['name'],ref)
@@ -245,6 +250,8 @@ class EditDialog(wx.Dialog):
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
             if meta_class_dict[key].kind == "string":
+                self.returnDict[key] = field.GetValue()
+            elif meta_class_dict[key].kind == "list":
                 self.returnDict[key] = field.GetValue()
             elif meta_class_dict[key].kind == "boolean":
                 self.returnDict[key] = field.GetValue()
