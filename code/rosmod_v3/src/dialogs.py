@@ -76,12 +76,8 @@ class RMLProgressDialog(wx.Dialog):
 
     def on_cancel(self, event):
         self.timer.Stop()
-        wx.CallAfter(self.Destroy)
-
-def ProgressBarDialog(parent,title,topic,numItems,cancellable=False):
-    dlg = RMLProgressDialog(parent=parent,title=title,progress_topic=topic,numItems=numItems,cancellable=cancellable)
-    dlg.ShowModal()
-    dlg.Destroy()
+        self.EndModal(True)
+        self.Destroy()
 
 def RMLFileDialog(parent,fileTypes,path,prompt,fd_flags):
     modelPath = None
@@ -125,16 +121,16 @@ def ConfirmDialog(parent, msg):
 class EditDialog(wx.Dialog):
     
     def __init__(self, parent = None, title = "ROSMOD", style = 0,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
+        wx.Dialog.__init__(self, parent=parent, title=title)
         self.editDict = editDict
         self.editObj = editObj
         self.invalidNames = invalidNames
         self.references = references
-        wx.Dialog.__init__(self, parent=parent, title=title, style=style)
         self.returnDict = OrderedDict()
         self.InitUI()
 
     def InitUI(self):
-        panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)#wx.Panel(self)
+        panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)
         panel.SetupScrolling()
         vbox = wx.BoxSizer(wx.VERTICAL)
         pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
@@ -164,7 +160,9 @@ class EditDialog(wx.Dialog):
                 label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
                 growRow = False
                 possibles = meta_class_dict[key].input_validator
-                field = wx.ComboBox(panel, choices = possibles, style=wx.CB_READONLY)
+                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                for possible in possibles:
+                    field.Append(possible)
                 if value in possibles:
                     field.SetStringSelection(value)
                 else:
@@ -275,12 +273,31 @@ class EditDialog(wx.Dialog):
     def OnOk(self,e):
         if self.UpdateInputs() == False:
             self.returnDict = OrderedDict()
-            return False
-        self.Destroy()
+            self.EndModal(False)
+            self.Close()
+            self.Destroy()
+        else:
+            self.EndModal(True)
+            self.Close()
+            self.Destroy()
 
     def OnClose(self, e):
         self.returnDict = OrderedDict()
+        self.EndModal(False)
+        self.Close()
         self.Destroy()
+
+def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = 0):
+    ed = EditDialog( parent = parent,
+                     title = title,
+                     style = style,
+                     editObj = editObj,
+                     editDict = editDict,
+                     references = references )
+    ed.ShowModal()
+    inputs = ed.GetInput()
+    ed.Destroy()
+    return inputs
 
 class Wizard:
     def __init__(self, parent, propDictDict):

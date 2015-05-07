@@ -76,14 +76,12 @@ def MakeAdd(self,kind):
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         if newObj != None:
             newObj.properties['name'] = "New" + kind
-            ed = dialogs.EditDialog(parent = self,
+            inputs = dialogs.EditorWindow(parent = self,
                                     editDict=newObj.properties,
                                     editObj = newObj,
                                     title="Edit "+newObj.kind,
                                     references = references,
                                     style=wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
             if inputs != OrderedDict():
                 self.UpdateUndo()
                 for key,value in inputs.iteritems():
@@ -194,16 +192,14 @@ class Example(wx.Frame):
             if refObjType[1] == "project":
                 references.extend(self.project.getChildrenByKind(refObjType[0]))
             elif refObjType[1] == "parent":
-                references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
+                references.extend(self.activeObject.parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
         prevProps = copy.copy(self.activeObject.properties)
-        ed = dialogs.EditDialog(parent=self,
+        inputs = dialogs.EditorWindow(parent=self,
                                 editDict=self.activeObject.properties,
                                 editObj = self.activeObject,
                                 title="Edit "+self.activeObject.kind,
                                 references = references,
                                 style=wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
         if inputs != OrderedDict():
             self.UpdateUndo()
             for key,value in inputs.iteritems():
@@ -215,9 +211,14 @@ class Example(wx.Frame):
                 self.activeAspectInfo.AddPageInfo(info)
                 if newName != prevName:
                     self.activeAspectInfo.DelPageInfo(prevName)
-            if self.activeObject.kind == 'rdp':
-                prevRef = prevProps['rhw_reference']
-                newRef = self.activeObject.properties['rhw_reference']
+            if model_dict[self.activeObject.kind].out_refs != []:
+                refKey = None
+                for key in self.activeObject.properties.keys():
+                    if key.find("_reference") > 0:
+                        refKey = key
+                        break
+                prevRef = prevProps[refKey]
+                newRef = self.activeObject.properties[refKey]
                 if newRef != prevRef:
                     self.activeObject.children = []
             drawable.Configure(obj,self.styleDict)
@@ -270,14 +271,12 @@ class Example(wx.Frame):
         for refObjType in refObjectTypes:
             references.extend(self.project.getChildrenByKind(refObjType))
 
-        ed = dialogs.EditDialog(parent=self,
+        inputs = dialogs.EditorWindow(parent=self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
                                 references = references,
                                 style=wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
         if inputs != OrderedDict():
             self.UpdateUndo()
             for key,value in inputs.iteritems():
@@ -343,6 +342,7 @@ class Example(wx.Frame):
                                     )
             workerThread.start()
             dlg.ShowModal()
+            dlg.Destroy()
         else:
             dialogs.ErrorDialog(self,"Can't copy deployment files when system is running a deployment!")
 
@@ -350,14 +350,12 @@ class Example(wx.Frame):
         newObj = drawable.Drawable_Object()
         newObj.properties = OrderedDict()
         newObj.properties['command'] = ""
-        ed = dialogs.EditDialog(parent=self,
+        inputs = dialogs.EditorWindow(parent=self,
                                 editDict=newObj.properties,
                                 editObj = newObj,
                                 title="Input Command To Run",
                                 references = [],
                                 style=wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
@@ -391,6 +389,7 @@ class Example(wx.Frame):
                                     )
             workerThread.start()
             dlg.ShowModal()
+            dlg.Destroy()
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
@@ -411,14 +410,12 @@ class Example(wx.Frame):
             newObj.properties['name'] = testName
             newObj.properties['hardware_reference'] = None
             references = dep.properties['hardware_configuration_reference'].children
-            ed = dialogs.EditDialog(parent=self,
+            inputs = dialogs.EditorWindow(parent=self,
                                     editDict=newObj.properties,
                                     editObj = newObj,
                                     title="Deployment Options",
                                     references = references,
                                     style=wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
@@ -460,6 +457,7 @@ class Example(wx.Frame):
                 self.updatedHostDict = False
                 workerThread.start()
                 dlg.ShowModal()
+                dlg.Destroy()
                 self.runningDeployment = dep
                 self.runningDeploymentCanvas = canvas
                 self.runningNodes = numNodes
@@ -496,6 +494,7 @@ class Example(wx.Frame):
             )
             workerThread.start()
             dlg.ShowModal()
+            dlg.Destroy()
             self.runningNodes = 0
             drawable.Configure(self.runningDeployment,self.styleDict)
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
@@ -660,6 +659,7 @@ class Example(wx.Frame):
                                                                           openProgressQ) )
             workerThread.start()
             dlg.ShowModal()
+            dlg.Destroy()
             ClearAspects(self)
             BuildAspectPages(self)
             self.statusbar.SetStatusText('Loaded project: {} from: {}'.format(self.filename,self.project_path))
@@ -671,13 +671,11 @@ class Example(wx.Frame):
     def OnSaveAs(self, e):
         properties = OrderedDict()
         properties['name'] = self.project.project_name
-        ed = dialogs.EditDialog( parent = self,
+        inputs = dialogs.EditorWindow( parent = self,
                                  editObj = None,
                                  editDict = properties,
                                  title = 'Choose New Project Name',
                                  style = wx.RESIZE_BORDER)
-        ed.ShowModal()
-        inputs = ed.GetInput()
         if inputs != OrderedDict():
             project_path = dialogs.RMLDirectoryDialog(
                 parent = self,
