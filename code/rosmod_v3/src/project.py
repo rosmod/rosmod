@@ -474,6 +474,15 @@ class ROS_Project(Drawable_Object):
         deployment_generator.generate_xml(self.getChildrenByKind("rdp"),
                                           self.deployment_path)
 
+    # Generate CPN Timing Analysis Model for each deployment
+    def generate_cpn(self):
+        # Instantiate a Generator Object
+        cpn_generator = ROSMOD_Generator()
+        # Use existing deployment objects to generate necessary xml files
+        cpn_generator.generate_cpn(self.workspace_builder.rml,
+                                   self.getChildrenByKind("rdp"),
+                                   self.deployment_path)
+
 # self.getChildrenByKind("rdp"), 
 # self.deployment_path)
 
