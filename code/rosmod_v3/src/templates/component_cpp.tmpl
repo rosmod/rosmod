@@ -9,19 +9,21 @@ $hash_include "$package_name/${component_name}.hpp"
 $user_globals//# End User Globals Marker
 #end if
 
-// -------------------------------------------------------
-// BUSINESS LOGIC OF THESE FUNCTIONS SUPPLIED BY DEVELOPER
-// -------------------------------------------------------
+extern "C" {
+  Component *maker(ComponentConfig &config, int argc, char **argv) {
+    return new dlcomp(config,argc,argv);
+  }
+}
 
-// Init Function
+// Initialization Function
 #if $init_business_logic == ""
 //# Start Init Marker
 void $component_name::Init(const ros::TimerEvent& event)
 {
-    // Initialize Component
+  // Initialize Here
 
-    // Stop Init Timer
-    initOneShotTimer.stop();
+  // Stop Init Timer
+  initOneShotTimer.stop();
 }
 //# End Init Marker
 #else
@@ -31,13 +33,12 @@ $init_business_logic//# End Init Marker
 
 #if $len($subscribers) > 0
 #for $sub in $subscribers
-// OnOneData Subscription handler for ${sub.properties["name"]} subscriber
+// Subscriber Callback - ${sub.properties["name"]}
 #if $sub.properties["business_logic"] == ""
 //# Start ${sub.properties["name"]}_OnOneData Marker
 void $component_name::${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
 {
-    // Business Logic for $sub.properties["name"] subscriber subscribing to topic $sub.properties["message_reference"].properties["name"] callback 
-
+  // Business Logic for $sub.properties["name"] Subscriber
 }
 //# End ${sub.properties["name"]}_OnOneData Marker
 #else
@@ -49,15 +50,15 @@ $sub.properties["business_logic"]//# End ${sub.properties["name"]}_OnOneData Mar
 #end if
 #if $len($provided_services) > 0
 #for $server in $servers
-// Component Service Callback
+// Server Callback - $server.properties["name"]
 #if $server.properties["business_logic"] == ""
 //# Start ${server.properties["service_reference"].properties["name"]}Callback Marker
 bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request  &req,
-    $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
+											   $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
 {
-    // Business Logic for $server.properties["name"] Server providing $server.properties["service_reference"].properties["name"] Service
+  // Business Logic for $server.properties["name"] Server
 
-    return true;
+  return true;
 }
 //# End ${server.properties["service_reference"].properties["name"]}Callback Marker
 #else
@@ -69,13 +70,12 @@ $server.properties["business_logic"]//# End ${server.properties["service_referen
 #end if
 #if $len($timers) > 0
 #for $timer in $timers
-// Callback for $timer.properties["name"] timer
+// Timer Callback - $timer.properties["name"]
 #if $timer.properties["business_logic"] == ""
 //# Start ${timer.properties["name"]}Callback Marker
 void $component_name::${timer.properties["name"]}Callback(const ros::TimerEvent& event)
 {
-    // Business Logic for $timer.properties["name"] 
-
+  // Business Logic for $timer.properties["name"] Timer
 }
 //# End ${timer.properties["name"]}Callback Marker
 #else
@@ -85,176 +85,154 @@ $timer.properties["business_logic"]//# End ${timer.properties["name"]}Callback M
 #end for
 
 #end if
-// ---------------------------------------------
-// EVERYTHING BELOW HERE IS COMPLETELY GENERATED
-// ---------------------------------------------
 
-// Destructor - required for clean shutdown when process is killed
+// Destructor - Cleanup Ports & Timers
 $component_name::~${component_name}()
 {
 #if $len($timers) > 0
 #for $timer in $timers
-    ${timer.properties["name"]}.stop();
+  ${timer.properties["name"]}.stop();
 #end for
 #end if
 #if $len($publishers) > 0
 #for $pub in $publishers
-    ${pub.properties["name"]}.shutdown();
+  ${pub.properties["name"]}.shutdown();
 #end for
 #end if
 #if $len($subscribers) > 0
 #for $sub in $subscribers
-    ${sub.properties["name"]}.shutdown();
+  ${sub.properties["name"]}.shutdown();
 #end for
 #end if
 #if $len($provided_services) > 0
 #for $provided in $provided_services
-    ${provided}_server.shutdown();
+  ${provided}_server.shutdown();
 #end for
 #end if
 #if $len($required_services) > 0
 #for $required in $required_services
-    ${required[1]}_client.shutdown();
+  ${required[1]}_client.shutdown();
 #end for
 #end if
 #if $destructor == ""
-//# Start Destructor Marker
+  //# Start Destructor Marker
 
-//# End Destructor Marker
+  //# End Destructor Marker
 #else
-//# Start Destructor Marker
-$destructor//# End Destructor Marker
+  //# Start Destructor Marker
+  $destructor//# End Destructor Marker
 #end if
-}
+    }
 
+// Startup - Setup Component Ports & Timers
 void $component_name::startUp()
 {
-    ros::NodeHandle nh;
+  ros::NodeHandle nh;
+  std::string advertiseName;
 
-    // Need to read in and parse the group configuration xml if it exists
-    GroupXMLParser groupParser;
-    std::map<std::string,std::string> *portGroupMap = NULL;
-    std::string configFileName = nodeName + "." + compName + ".xml";
-    if (groupParser.Parse(configFileName))
-    {
-	portGroupMap = &groupParser.portGroupMap;
-    }
+#if $len($subscribers) > 0 
+#for $sub in $subscribers
+  // Component Subscriber - $sub.properties["name"]
+  advertiseName = "${sub.properties["message_reference"].properties["name"]}";
+  if (portGroupMap.find("$sub.properties["name"]") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["${sub.properties['name']}"];
+  ros::SubscribeOptions ${sub.properties["name"]}_options;
+  ${sub.properties["name"]}_options = ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
+			                (advertiseName.c_str(),
+			                 1000,
+			                 boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
+			                 ros::VoidPtr(),
+			                 &this->compQueue);
+  this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
+#end for
 
-    std::string advertiseName;
+#end if		
+#if $len($publishers) > 0
+#for $pub in $publishers
+  // Component Publisher - $pub.properties["name"]
+  advertiseName = "${pub.properties["message_reference"].properties["name"]}";
+  if (portGroupMap.find("$pub.properties["name"]") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["$pub.properties["name"]"];
+  this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>
+				      (advertiseName.c_str(), 1000);	
+#end for
 
-    #if $len($subscribers) > 0 
-    // Configure all subscribers associated with this component
-    #for $sub in $subscribers
-    // subscriber: $sub.properties["name"]
-    advertiseName = "${sub.properties["message_reference"].properties["name"]}";
-    if ( portGroupMap != NULL && portGroupMap->find("${sub.properties['name']}") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)["${sub.properties['name']}"];
-    ros::SubscribeOptions ${sub.properties["name"]}_options;
-    ${sub.properties["name"]}_options = 
-	ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
-	    (advertiseName.c_str(),
-	     1000,
-	     boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
-	     ros::VoidPtr(),
-             &this->compQueue);
-    this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
-    #end for
-
-    #end if		
-    #if $len($publishers) > 0
-    // Configure all publishers associated with this component
-    #for $pub in $publishers
-    // publisher: $pub.properties["name"]
-    advertiseName = "${pub.properties["message_reference"].properties["name"]}";
-    if ( portGroupMap != NULL && portGroupMap->find("${pub.properties['name']}") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)["${pub.properties['name']}"];
-    this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>
-	(advertiseName.c_str(), 1000);	
-    #end for
-
-    #end if
-    #if $len($provided_services)
-    // Configure all provided services associated with this component
-    #for $server in $servers
-    // server: $server.properties["name"]
-    advertiseName = "$server.properties["service_reference"].properties["name"]";
-    if ( portGroupMap != NULL && portGroupMap->find("${server.properties["service_reference"].properties["name"]}_server") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)["${server.properties["service_reference"].properties["name"]}_server"];
-    ros::AdvertiseServiceOptions ${server.properties["service_reference"].properties["name"]}_server_options;
-    ${server.properties["service_reference"].properties["name"]}_server_options = 
-	ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
-	    (advertiseName.c_str(),
-             boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
-	     ros::VoidPtr(),
-             &this->compQueue);
-    this->${server.properties["service_reference"].properties["name"]}_server = nh.advertiseService(${server.properties["service_reference"].properties["name"]}_server_options);
-    #end for
+#end if
+#if $len($provided_services)
+#for $server in $servers
+  // Component Server - $server.properties["name"]
+  advertiseName = "$server.properties["service_reference"].properties["name"]";
+  if (portGroupMap.find("$server.properties["name"]") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["$server.properties["name"]"];
+  ros::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
+  ${server.properties["name"]}_server_options = ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
+				                  (advertiseName.c_str(),
+						   boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
+						   ros::VoidPtr(),
+						   &this->compQueue);
+  this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
+#end for
  
-    #end if
-    #if $len($required_services) > 0
-    // Configure all required services associated with this component
-    #for $required in $required_services
-    // client: ${required[1]}_client
-    advertiseName = "$required[1]";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName+"_client") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName+"_client"];
-    this->${required[1]}_client = nh.serviceClient<$required[0]::$required[1]>
-	(advertiseName.c_str()); 
-    #end for
+#end if
+#if $len($required_services) > 0
+  // Configure all required services associated with this component
+#for $client in $clients
+  // Component Client - $client.properties["name"]
+  advertiseName = "$client.properties["service_reference"].properties["name"]";
+  if (portGroupMap.find("$client.properties["name"]") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["client.properties["name"]"]
+      this->${client.properties["name"]} = nh.serviceClient<$client.properties["message_reference"].parent.properties["name"]::$client.properties["service_reference"].properties["name"]>(advertiseName.c_str()); 
+#end for
 
-    #end if
-    // Create Init Timer
-    ros::TimerOptions timer_options;
-    timer_options = 
-	ros::TimerOptions
-	    (ros::Duration(-1),
-	     boost::bind(&$component_name::Init, this, _1),
-	     &this->compQueue,
-             true);
-    this->initOneShotTimer = nh.createTimer(timer_options);  
+#end if
+  // Init Timer
+  ros::TimerOptions timer_options;
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&$component_name::Init, this, _1),
+     &this->compQueue,
+     true);
+  this->initOneShotTimer = nh.createTimer(timer_options);  
   
-    #if $len($timers)
-    // Create all component timers
-    #for $timer in $timers
-    // timer: timer.properties["name"]
-    timer_options = 
-	ros::TimerOptions
-	     #if $timer.properties["period"] == "0.0"
-	     (ros::Duration(-1),
-             #else
-             (ros::Duration($timer.properties["period"]),
-             #end if
-	     boost::bind(&$component_name::${timer.properties["name"]}Callback, this, _1),
-             #if $timer.properties["period"] == "0.0"
-	     &this->compQueue, true);
-             #else
-	     &this->compQueue);
-	     #end if 
-    this->$(timer.properties["name"]) = nh.createTimer(timer_options);
-    #end for
+#if $len($timers)
+#for $timer in $timers
+  // Component Timer - timer.properties["name"]
+  timer_options = 
+    ros::TimerOptions
+#if $timer.properties["period"] == "0.0"
+    (ros::Duration(-1),
+#else
+    (ros::Duration($timer.properties["period"]),
+#end if
+     boost::bind(&$component_name::${timer.properties["name"]}Callback, this, _1),
+#if $timer.properties["period"] == "0.0"
+     &this->compQueue, true);
+#else
+     &this->compQueue);
+#end if 
+  this->$(timer.properties["name"]) = nh.createTimer(timer_options);
+#end for
 
-    #end if
-
-    /*
-     * Identify present working directory of node executable
-     */
-    std::string s = node_argv[0];
-    std::string exec_path = s;
-    std::string delimiter = "/";
-    std::string exec, pwd;
-    size_t pos = 0;
-    while ((pos = s.find(delimiter)) != std::string::npos) {
-        exec = s.substr(0, pos);
-        s.erase(0, pos + delimiter.length());
-    }
+#end if
+  
+  // Identify the pwd of Node Executable
+  std::string s = node_argv[0];
+  std::string exec_path = s;
+  std::string delimiter = "/";
+  std::string exec, pwd;
+  size_t pos = 0;
+  while ((pos = s.find(delimiter)) != std::string::npos) {
     exec = s.substr(0, pos);
-    pwd = exec_path.erase(exec_path.find(exec), exec.length());
-    // Establish the log file name
-    std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
-
-    // Create the log file & open file stream
-    LOGGER.CREATE_FILE(log_file_path);
-
-    // Establish log levels of LOGGER
-    LOGGER.SET_LOG_LEVELS(groupParser.logging);
+    s.erase(0, pos + delimiter.length());
+  }
+  exec = s.substr(0, pos);
+  pwd = exec_path.erase(exec_path.find(exec), exec.length());
+  std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+  
+  // Create the log file & open file stream
+  LOGGER.CREATE_FILE(log_file_path);
+  
+  // Establish log levels of LOGGER
+  LOGGER.SET_LOG_LEVELS(logLevels);
 }

@@ -9,33 +9,34 @@ $hash_include <ros/callback_queue.h>
 $hash_include "$package_name/xmlParser.hpp"
 $hash_include "$package_name/Logger.hpp"
 
-class Component
-{
-    public:
-        // Component Constructor
-        Component(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv);
+class Component {
+public:
+  // Constructor
+  Component(ComponentConfig &config, int argc, char **argv);
 
-	// StartUp will be completely generated
-	virtual void startUp() = 0;
+  // Start up
+  virtual void startUp() = 0;
 
-	// Init will be generated with BL supplied by user
-	virtual void Init(const ros::TimerEvent& event);
+  // Initialization
+  virtual void Init(const ros::TimerEvent& event);
 
-	// queueThread processes queue actions
-	void processQueue();
+  // Callback Queue Handler
+  void processQueue();
 
-	// required for clean shutdown
-	~Component();
+  // Destructor
+  ~Component();
 
-    protected:
-        std::string hostName;
-        std::string nodeName;
-        std::string compName;
-        int node_argc;
-        char **node_argv;
-	ros::Timer initOneShotTimer;  // timer for calling init
-	ros::CallbackQueue compQueue; // single callbackQueue for the component
-        Logger LOGGER;
+protected:
+  std::map<std::string,std::string> portGroupMap;
+  Log_Levels logLevels;
+  std::string hostName;
+  std::string nodeName;
+  std::string compName;
+  int node_argc;
+  char **node_argv;
+  ros::Timer initOneShotTimer; 
+  ros::CallbackQueue compQueue;
+  Logger LOGGER;
 };
 
 #endif
