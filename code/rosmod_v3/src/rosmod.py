@@ -735,7 +735,8 @@ class Example(wx.Frame):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
 
     def AnalyzeTiming(self, dep):
-        print "Analyzing timing properties for deployment: {}".format(dep.properties["name"])
+        self.project.generate_cpn()
+        print "Generated CPN Timing Analysis Model"
 
     '''
     Build the menubar which allows for operations on
