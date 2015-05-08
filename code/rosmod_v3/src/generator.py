@@ -447,7 +447,24 @@ class ROSMOD_Generator:
                     t = xml(searchList=[xml_namespace])
                     xml_content = str(t)
                     with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
-                        temp_file.write(xml_content)                                
+                        temp_file.write(xml_content)       
 
+    def generate_cpn(self, workspace, deployments, deployment_path):
+        for deployment in deployments:
+            deployment_folder = deployment_path + "/" + deployment.properties["name"]
+            if not os.path.exists(deployment_folder):
+                os.makedirs(deployment_folder)
+            cpn_folder = deployment_folder + "/cpn"
+            if not os.path.exists(cpn_folder):
+                os.makedirs(cpn_folder)
+            # Items required for a complete CPN
+            timers = []
+            for package in workspace.children:
+                timers.append(package.getChildrenByKind("Timer"))
+            
+            for hardware_instance in deployment.children:
+                for node in hardware_instance.children:
+                    for component_instance in node.children:
+                        pass
                      
 
