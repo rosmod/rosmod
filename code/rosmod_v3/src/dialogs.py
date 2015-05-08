@@ -17,7 +17,7 @@ class RMLProgressDialog(wx.Dialog):
     """
     def __init__(self, parent, title, progress_q, numItems=100, cancellable=False):
         """Defines a gauge and a timer which updates the gauge."""
-        wx.Dialog.__init__(self, parent=parent, title=title)
+        wx.Dialog.__init__(self, parent=parent, title=title, style = 0)
         self.count = 0
         self.numItems = numItems
         self.progress = wx.Gauge(self, range=self.numItems)
@@ -50,6 +50,7 @@ class RMLProgressDialog(wx.Dialog):
         self.timer = wx.Timer(self, self.TIMER_ID)
         self.timer.Start(100)
         wx.EVT_TIMER(self, self.TIMER_ID, self.OnTimer)
+        self.MakeModal(True)
 
     def OnTimer(self, event):
         try:
@@ -76,40 +77,50 @@ class RMLProgressDialog(wx.Dialog):
 
     def on_cancel(self, event):
         self.timer.Stop()
-        self.EndModal(True)
+        self.MakeModal(False)
         self.Destroy()
 
 def RMLFileDialog(parent,fileTypes,path,prompt,fd_flags):
     modelPath = None
     fileName = None
     dlg = wx.FileDialog(parent, prompt, path, "", fileTypes, fd_flags)
+    dlg.MakeModal(True)
     if dlg.ShowModal() == wx.ID_OK:
         fileName = dlg.GetFilename()
         modelPath = dlg.GetDirectory()
+    dlg.MakeModal(False)
     dlg.Destroy()
     return fileName, modelPath
 
 def RMLDirectoryDialog(parent,path,prompt):
     workspacePath = None
     dlg = wx.DirDialog(parent, prompt, path)
+    dlg.MakeModal(True)
     if dlg.ShowModal() == wx.ID_OK:
         workspacePath = dlg.GetPath()
+    dlg.MakeModal(False)
     dlg.Destroy()
     return workspacePath
 
 def InfoDialog(parent, info):
     dlg = wx.MessageDialog(parent, info, 'Info', wx.OK )
+    dlg.MakeModal(True)
     dlg.ShowModal()
+    dlg.MakeModal(False)
     dlg.Destroy()
 
 def ErrorDialog(parent, msg):
     dlg = wx.MessageDialog(parent, msg, 'Error', wx.OK | wx.ICON_ERROR)
+    dlg.MakeModal(True)
     dlg.ShowModal()
+    dlg.MakeModal(False)
     dlg.Destroy()
 
 def ConfirmDialog(parent, msg):
     dlg = wx.MessageDialog(parent, msg, 'Confirm', wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+    dlg.MakeModal(True)
     retVal = dlg.ShowModal()
+    dlg.MakeModal(False)
     dlg.Destroy()
     if retVal == wx.ID_YES:
         retVal = True
@@ -120,47 +131,45 @@ def ConfirmDialog(parent, msg):
 
 class EditDialog(wx.Dialog):
     
-    def __init__(self, parent = None, title = "ROSMOD", style = 0,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
-        wx.Dialog.__init__(self, parent=parent, title=title)
+    def __init__(self, parent = None, title = "ROSMOD", style = wx.RESIZE_BORDER | wx.SIMPLE_BORDER,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
+        wx.Dialog.__init__(self, parent=parent, title=title, style = style)
         self.editDict = editDict
         self.editObj = editObj
         self.invalidNames = invalidNames
         self.references = references
         self.returnDict = OrderedDict()
         self.InitUI()
+        self.MakeModal(True)
 
     def InitUI(self):
-        panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)
-        panel.SetupScrolling()
-        vbox = wx.BoxSizer(wx.VERTICAL)
-        pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
-        pbox.SetFlexibleDirection(wx.BOTH)
-        pbox.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_ALL)
+        self.panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)
+        self.panel.SetupScrolling()
+        self.vbox = wx.BoxSizer(wx.VERTICAL)
+        self.pbox = wx.FlexGridSizer(rows=len(self.editDict.keys()),cols=2,vgap=9,hgap=25)
+        self.pbox.SetFlexibleDirection(wx.BOTH)
+        self.pbox.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_ALL)
         rNum = 0
         self.inputs = OrderedDict()
-        growRow = False
         for key,value in self.editDict.iteritems():
             field = None
             label = None
+            growRow = False
             if meta_class_dict[key].kind == "string":
-                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
-                growRow = False
-                field = wx.TextCtrl(panel)
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.TextCtrl(self.panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
             elif meta_class_dict[key].kind == "boolean":
-                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
-                growRow = False
-                field = wx.CheckBox(panel)
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.CheckBox(self.panel)
                 if type(value) is bool:
                     field.SetValue(value)
                 else:
                     field.SetValue(False)
             elif meta_class_dict[key].kind == "list":
-                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
-                growRow = False
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 possibles = meta_class_dict[key].input_validator
-                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for possible in possibles:
                     field.Append(possible)
                 if value in possibles:
@@ -168,12 +177,12 @@ class EditDialog(wx.Dialog):
                 else:
                     field.SetSelection(0)
             elif meta_class_dict[key].kind == "code":
-                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
-                field = stc.StyledTextCtrl(panel)
+                field = stc.StyledTextCtrl(self.panel)
 
                 kwList = ["int32","string","int64","bool","float32","float64"]
-                field.SetSizeHints(400, 400)
+                field.SetSizeHints(50, 50)
                 field.SetLexer(stc.STC_LEX_CPP)
                 field.SetKeyWords(0, " ".join(kwList))
                 field.SetMarginType(1, stc.STC_MARGIN_NUMBER)
@@ -206,14 +215,12 @@ class EditDialog(wx.Dialog):
                 # Selection background
                 field.SetSelBackground(1, '#66CCFF')
 
-                fieldStr = value
-                if (fieldStr!=None):
-                    field.SetText(fieldStr.encode("utf8"))
+                if (value!=None):
+                    field.SetText(value.encode("utf8"))
             elif meta_class_dict[key].kind == 'reference':
-                label = wx.StaticText(panel, label=meta_class_dict[key].display_name + ":")
-                growRow=False
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 refObjTypes = model_dict[self.editObj.kind].out_refs
-                field = wx.ComboBox(panel, choices = [], style=wx.CB_READONLY)
+                field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
                     field.Append(ref.properties['name'],ref)
                 if value != None:
@@ -222,28 +229,30 @@ class EditDialog(wx.Dialog):
                     field.SetSelection(0)
             if label != None and field != None:
                 self.inputs[key] = field
-                pbox.AddMany([(label),(field,1,wx.EXPAND)])
+                self.pbox.AddMany([(label),(field,1,wx.EXPAND)])
                 if growRow:
-                    pbox.AddGrowableRow(rNum,1)
+                    self.pbox.AddGrowableRow(rNum,1)
                 else:
-                    pbox.RemoveGrowableRow(rNum)
+                    self.pbox.RemoveGrowableRow(rNum)
                 rNum += 1
-        pbox.AddGrowableCol(1,1)
+            else:
+                del label
+        self.pbox.AddGrowableCol(1,1)
 
-        panel.SetSizer(pbox)
+        self.panel.SetSizer(self.pbox)
 
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
         okButton = wx.Button(self, label='Ok')
         closeButton = wx.Button(self, label='Close')
-        hbox.Add(okButton)
-        hbox.Add(closeButton, flag=wx.LEFT, border=5)
+        self.hbox.Add(okButton)
+        self.hbox.Add(closeButton, flag=wx.LEFT, border=5)
 
-        vbox.Add(panel, proportion=1, 
+        self.vbox.Add(self.panel, proportion=1, 
             flag=wx.ALL|wx.EXPAND, border=5)
-        vbox.Add(hbox, 
+        self.vbox.Add(self.hbox, 
             flag=wx.ALIGN_CENTER|wx.BOTTOM, border=10)
 
-        self.SetSizer(vbox)
+        self.SetSizer(self.vbox)
         
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
@@ -273,21 +282,17 @@ class EditDialog(wx.Dialog):
     def OnOk(self,e):
         if self.UpdateInputs() == False:
             self.returnDict = OrderedDict()
-            self.EndModal(False)
-            self.Close()
-            self.Destroy()
-        else:
-            self.EndModal(True)
-            self.Close()
-            self.Destroy()
-
-    def OnClose(self, e):
-        self.returnDict = OrderedDict()
-        self.EndModal(False)
+        self.MakeModal(False)
         self.Close()
         self.Destroy()
 
-def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = 0):
+    def OnClose(self, e):
+        self.returnDict = OrderedDict()
+        self.MakeModal(False)
+        self.Close()
+        self.Destroy()
+
+def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = wx.RESIZE_BORDER | wx.STAY_ON_TOP):
     ed = EditDialog( parent = parent,
                      title = title,
                      style = style,
@@ -306,13 +311,11 @@ class Wizard:
 
     def GetInput(self):
         for objName,propDict in self.propDictDict.iteritems():
-            ed = EditDialog( parent = self.parent,
-                             editObj = None,
-                             editDict = propDict,
-                             title = "Configure {}".format(objName),
-                             style = wx.RESIZE_BORDER)
-            ed.ShowModal()
-            inputs = ed.GetInput()
+            inputs = EditWindow( parent = self.parent,
+                                 editObj = None,
+                                 editDict = propDict,
+                                 title = "Configure {}".format(objName),
+                                 style = wx.RESIZE_BORDER)
             if inputs != OrderedDict():
                 self.propDictDict[objName] = inputs
             else:

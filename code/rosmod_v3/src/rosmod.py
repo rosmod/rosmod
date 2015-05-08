@@ -198,8 +198,7 @@ class Example(wx.Frame):
                                 editDict=self.activeObject.properties,
                                 editObj = self.activeObject,
                                 title="Edit "+self.activeObject.kind,
-                                references = references,
-                                style=wx.RESIZE_BORDER)
+                                references = references)
         if inputs != OrderedDict():
             self.UpdateUndo()
             for key,value in inputs.iteritems():
@@ -275,8 +274,7 @@ class Example(wx.Frame):
                                 editObj=newObj,
                                 editDict=newObj.properties,
                                 title="Edit "+newObj.kind,
-                                references = references,
-                                style=wx.RESIZE_BORDER)
+                                references = references)
         if inputs != OrderedDict():
             self.UpdateUndo()
             for key,value in inputs.iteritems():
