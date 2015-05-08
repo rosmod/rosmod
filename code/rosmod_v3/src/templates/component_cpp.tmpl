@@ -2,18 +2,11 @@ $hash_include "$package_name/${component_name}.hpp"
 
 #if $user_globals == ""
 //# Start User Globals Marker
-
 //# End User Globals Marker
 #else
 //# Start User Globals Marker
 $user_globals//# End User Globals Marker
 #end if
-
-extern "C" {
-  Component *maker(ComponentConfig &config, int argc, char **argv) {
-    return new dlcomp(config,argc,argv);
-  }
-}
 
 // Initialization Function
 #if $init_business_logic == ""
@@ -54,7 +47,7 @@ $sub.properties["business_logic"]//# End ${sub.properties["name"]}_OnOneData Mar
 #if $server.properties["business_logic"] == ""
 //# Start ${server.properties["service_reference"].properties["name"]}Callback Marker
 bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request  &req,
-											   $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
+  $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
 {
   // Business Logic for $server.properties["name"] Server
 
@@ -120,9 +113,9 @@ $component_name::~${component_name}()
   //# End Destructor Marker
 #else
   //# Start Destructor Marker
-  $destructor//# End Destructor Marker
+  $destructor  //# End Destructor Marker
 #end if
-    }
+}
 
 // Startup - Setup Component Ports & Timers
 void $component_name::startUp()
@@ -138,11 +131,11 @@ void $component_name::startUp()
     advertiseName += "_" + portGroupMap["${sub.properties['name']}"];
   ros::SubscribeOptions ${sub.properties["name"]}_options;
   ${sub.properties["name"]}_options = ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
-			                (advertiseName.c_str(),
-			                 1000,
-			                 boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
-			                 ros::VoidPtr(),
-			                 &this->compQueue);
+      (advertiseName.c_str(),
+       1000,
+       boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
+       ros::VoidPtr(),
+       &this->compQueue);
   this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
 #end for
 
@@ -153,8 +146,7 @@ void $component_name::startUp()
   advertiseName = "${pub.properties["message_reference"].properties["name"]}";
   if (portGroupMap.find("$pub.properties["name"]") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["$pub.properties["name"]"];
-  this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>
-				      (advertiseName.c_str(), 1000);	
+  this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>(advertiseName.c_str(), 1000);
 #end for
 
 #end if
@@ -166,10 +158,10 @@ void $component_name::startUp()
     advertiseName += "_" + portGroupMap["$server.properties["name"]"];
   ros::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
   ${server.properties["name"]}_server_options = ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
-				                  (advertiseName.c_str(),
-						   boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
-						   ros::VoidPtr(),
-						   &this->compQueue);
+      (advertiseName.c_str(),
+       boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
+       ros::VoidPtr(),
+       &this->compQueue);
   this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
 #end for
  
@@ -215,7 +207,6 @@ void $component_name::startUp()
 #end for
 
 #end if
-  
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -235,4 +226,10 @@ void $component_name::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+}
+
+extern "C" {
+  Component *maker(ComponentConfig &config, int argc, char **argv) {
+    return new ${component_name}(config,argc,argv);
+  }
 }

@@ -11,7 +11,6 @@ $hash_include "$service[0]/${service[1]}.h"
 #end for
 #if $user_includes == ""
 //# Start User Includes Marker
-
 //# End User Includes Marker
 #else
 //# Start User Includes Marker
@@ -20,7 +19,6 @@ $user_includes//# End User Includes Marker
 
 #if $hpp_globals == ""
 //# Start User Globals Marker
-
 //# End User Globals Marker
 #else
 //# Start User Globals Marker
@@ -47,11 +45,10 @@ public:
 #if $len($provided_services) > 0
 #for $server in $servers
   // Server Callback - $server.properties["name"]
-  bool ${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request &req,
-									    $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res);
+  bool ${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request &req, 
+    $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res);
 
 #end for
-
 #end if	
 #if $len($timers) > 0
 #for $timer in $timers
@@ -59,47 +56,46 @@ public:
   void ${timer.properties["name"]}Callback(const ros::TimerEvent& event);
 
 #end for
-
 #end if
-  // Start up - Configure Ports and Timers
+  // Start up
   void startUp();
 
-  // Destructor - Cleanup
+  // Destructor
   ~${component_name}();
 
 private:
 
 #if $len($timers) > 0
 #for $timer in $timers
-  // Timer - $timer.properties["name"]
+  // Timer
   ros::Timer $timer.properties["name"];
 
 #end for
 #end if
 #if $len($subscribers) > 0
 #for $sub in $subscribers
-  // Subscriber - $sub.properties["name"]
+  // Subscriber
   ros::Subscriber $sub.properties["name"]; 
 
 #end for
 #end if
 #if $len($publishers) > 0
 #for $pub in $publishers
-  // Publisher - $pub.properties["name"]
+  // Publisher 
   ros::Publisher $pub.properties["name"];
 
 #end for
 #end if
 #if $len($provided_services) > 0
 #for $server in $servers
-  // Server - $server.properties["name"]
+  // Server 
   ros::ServiceServer ${server.properties["name"]};
 
 #end for
 #end if
 #if $len($required_services) > 0
 #for $client in $clients
-  // Client - ${client.properties["name"]}
+  // Client 
   ros::ServiceClient $client.properties["name"];
 
 #end for

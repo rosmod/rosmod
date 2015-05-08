@@ -1,6 +1,6 @@
 $hash_include "$package_name/Component.hpp"
 
-// Constructor - Save node arguments
+// Constructor
 Component::Component(ComponentConfig &config, int argc, char **argv) {
   portGroupMap = config.portGroupMap;
   logLevels = config.logLevels;
@@ -11,10 +11,10 @@ Component::Component(ComponentConfig &config, int argc, char **argv) {
   node_argv = argv;
 }
 
-// Destructor - Cleanup objects in Component
+// Destructor
 Component::~Component() {
-    compQueue.disable();
-    initOneShotTimer.stop();
+  compQueue.disable();
+  initOneShotTimer.stop();
 }
 
 // Initialization
@@ -22,8 +22,8 @@ void Component::Init(const ros::TimerEvent& event) {}
 
 // Callback Queue Handler
 void Component::processQueue() {  
-    ros::NodeHandle nh;
-    while (nh.ok()) {
-	this->compQueue.callAvailable(ros::WallDuration(0.01));
-    }
+  ros::NodeHandle nh;
+  while (nh.ok()) {
+    this->compQueue.callAvailable(ros::WallDuration(0.01));
+  }
 }
