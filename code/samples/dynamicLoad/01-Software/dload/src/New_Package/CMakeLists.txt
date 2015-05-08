@@ -186,11 +186,12 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_library( dlcomp_lib src/New_Package/Component.cpp src/New_Package/Logger.cpp
+add_library( dlcomp src/New_Package/Component.cpp src/New_Package/Logger.cpp
                 src/New_Package/dlcomp.cpp  
 		## Start node1 CPP Marker
 		## End node1 CPP Marker
               )
+add_dependencies(dlcomp New_Package_generate_messages_cpp)
 
 add_executable( node1 src/New_Package/node1_main.cpp
 		## Start node1 CPP Marker
@@ -203,7 +204,6 @@ target_link_libraries(node1
 		      dl
                       ## End node1 Target Link Libraries Marker
                       ${catkin_LIBRARIES})
-add_dependencies(node1 New_Package_generate_messages_cpp)
 
 
 

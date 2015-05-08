@@ -10,31 +10,33 @@
 
 class Component
 {
-    public:
-        // Component Constructor
-        Component(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv);
+public:
+  // Component Constructor
+  Component(ComponentConfig &config, int argc, char **argv);
 
-	// StartUp will be completely generated
-	virtual void startUp() = 0;
+  // StartUp will be completely generated
+  virtual void startUp() = 0;
 
-	// Init will be generated with BL supplied by user
-	virtual void Init(const ros::TimerEvent& event);
+  // Init will be generated with BL supplied by user
+  virtual void Init(const ros::TimerEvent& event);
 
-	// queueThread processes queue actions
-	void processQueue();
+  // queueThread processes queue actions
+  void processQueue();
 
-	// required for clean shutdown
-	~Component();
+  // required for clean shutdown
+  ~Component();
 
-    protected:
-        std::string hostName;
-        std::string nodeName;
-        std::string compName;
-        int node_argc;
-        char **node_argv;
-	ros::Timer initOneShotTimer;  // timer for calling init
-	ros::CallbackQueue compQueue; // single callbackQueue for the component
-        Logger LOGGER;
+protected:
+  std::map<std::string,std::string> portGroupMap;
+  Log_Levels logLevels;
+  std::string hostName;
+  std::string nodeName;
+  std::string compName;
+  int node_argc;
+  char **node_argv;
+  ros::Timer initOneShotTimer;  // timer for calling init
+  ros::CallbackQueue compQueue; // single callbackQueue for the component
+  Logger LOGGER;
 };
 
 // typedef to make it easier to set up our factory

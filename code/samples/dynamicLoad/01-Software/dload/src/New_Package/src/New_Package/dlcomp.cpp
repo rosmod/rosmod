@@ -10,8 +10,8 @@
 
 
 extern "C" {
-Component *maker(std::string hostName, std::string nodeName, std::string compName, int argc, char **argv){
-  return new dlcomp(hostName,nodeName,compName,argc,argv);
+Component *maker(ComponentConfig &config, int argc, char **argv){
+  return new dlcomp(config,argc,argv);
 }
 }
 
@@ -76,22 +76,13 @@ void dlcomp::startUp()
 {
     ros::NodeHandle nh;
 
-    // Need to read in and parse the group configuration xml if it exists
-    GroupXMLParser groupParser;
-    std::map<std::string,std::string> *portGroupMap = NULL;
-    std::string configFileName = nodeName + "." + compName + ".xml";
-    if (groupParser.Parse(configFileName))
-    {
-	portGroupMap = &groupParser.portGroupMap;
-    }
-
     std::string advertiseName;
 
     // Configure all subscribers associated with this component
     // subscriber: sub
     advertiseName = "dlmsg";
-    if ( portGroupMap != NULL && portGroupMap->find("sub") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)["sub"];
+    if ( portGroupMap.find("sub") != portGroupMap.end() )
+        advertiseName += "_" + portGroupMap["sub"];
     ros::SubscribeOptions sub_options;
     sub_options = 
 	ros::SubscribeOptions::create<New_Package::dlmsg>
@@ -105,16 +96,16 @@ void dlcomp::startUp()
     // Configure all publishers associated with this component
     // publisher: pub
     advertiseName = "dlmsg";
-    if ( portGroupMap != NULL && portGroupMap->find("pub") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)["pub"];
+    if ( portGroupMap.find("pub") != portGroupMap.end() )
+        advertiseName += "_" + portGroupMap["pub"];
     this->pub = nh.advertise<New_Package::dlmsg>
 	(advertiseName.c_str(), 1000);	
 
     // Configure all provided services associated with this component
     // server: server
     advertiseName = "dlsrv";
-    if ( portGroupMap != NULL && portGroupMap->find("dlsrv_server") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)["dlsrv_server"];
+    if ( portGroupMap.find("dlsrv_server") != portGroupMap.end() )
+        advertiseName += "_" + portGroupMap["dlsrv_server"];
     ros::AdvertiseServiceOptions dlsrv_server_options;
     dlsrv_server_options = 
 	ros::AdvertiseServiceOptions::create<New_Package::dlsrv>
@@ -127,8 +118,8 @@ void dlcomp::startUp()
     // Configure all required services associated with this component
     // client: dlsrv_client
     advertiseName = "dlsrv";
-    if ( portGroupMap != NULL && portGroupMap->find(advertiseName+"_client") != portGroupMap->end() )
-        advertiseName += "_" + (*portGroupMap)[advertiseName+"_client"];
+    if ( portGroupMap.find(advertiseName+"_client") != portGroupMap.end() )
+        advertiseName += "_" + portGroupMap[advertiseName+"_client"];
     this->dlsrv_client = nh.serviceClient<New_Package::dlsrv>
 	(advertiseName.c_str()); 
 
@@ -173,5 +164,5 @@ void dlcomp::startUp()
     LOGGER.CREATE_FILE(log_file_path);
 
     // Establish log levels of LOGGER
-    LOGGER.SET_LOG_LEVELS(groupParser.logging);
+    LOGGER.SET_LOG_LEVELS(logLevels);
 }
