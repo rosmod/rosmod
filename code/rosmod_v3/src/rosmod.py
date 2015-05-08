@@ -719,7 +719,7 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Generated ROS Workspace')
     def GenerateXML(self, e):
         self.project.generate_xml()
-        dialogs.InfoDialog("Generated Deployment XML files")
+        dialogs.InfoDialog(self,"Generated Deployment XML files")
         self.statusbar.SetStatusText("Generated Deployment XML files")
     def AnalyzeNetwork(self, e):
         pass
