@@ -309,7 +309,7 @@ class Example(wx.Frame):
         self.GenerateCode(e)
 
     def OnDeploymentGenerate(self,e):
-        self.GenerateCode(e)
+        self.GenerateXML(e)
 
     def OnDeploymentMove(self,e):
         if self.deployed == False:
@@ -711,6 +711,10 @@ class Example(wx.Frame):
         self.project.generate_workspace()
         dialogs.InfoDialog("Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
+    def GenerateXML(self, e):
+        self.project.generate_xml()
+        dialogs.InfoDialog("Generated Deployment XML files")
+        self.statusbar.SetStatusText("Generated Deployment XML files")
     def AnalyzeNetwork(self, e):
         pass
 

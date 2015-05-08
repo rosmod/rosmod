@@ -62,18 +62,15 @@ class ROSMOD_Loader:
 
                 if(os.path.isfile(os.path.join(self.package_path, "CMakeLists.txt")) == True):
 
-                    nodes = []
-                    for child in package.children:
-                        if child.kind == "Node":
-                            nodes.append(child)
-                    for node in nodes:
+                    components = package.getChildrenByKind("Component")
+                    for component in components:
 
                         with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
                             # CHECK CMAKELISTS FILE
                             cpp_marker = False
                             cpp_text = ""
-                            start_marker = "## Start " + node.properties["name"] + " CPP Marker"
-                            end_marker = "## End " + node.properties["name"] + " CPP Marker"
+                            start_marker = "## Start " + component.properties["name"] + " CPP Marker"
+                            end_marker = "## End " + component.properties["name"] + " CPP Marker"
                             for num, line in enumerate(cmakelists, 1):
                                 if cpp_marker == True and end_marker not in line:
                                     cpp_text += line
@@ -81,14 +78,14 @@ class ROSMOD_Loader:
                                     cpp_marker = True
                                 if cpp_marker == True and end_marker in line:
                                     cpp_marker = False
-                            node.properties["cmakelists_add_cpp"] = cpp_text  
+                            component.properties["cmakelists_cpp_marker"] = cpp_text  
 
                         with open(os.path.join(self.package_path, "CMakeLists.txt"), 'r') as cmakelists:
                             # CHECK CMAKELISTS FILE
                             tll_marker = False
                             tll_text = ""
-                            start_marker = "## Start " + node.properties["name"] + " Target Link Libraries Marker"
-                            end_marker = "## End " + node.properties["name"] + " Target Link Libraries Marker"
+                            start_marker = "## Start " + component.properties["name"] + " Target Link Libraries Marker"
+                            end_marker = "## End " + component.properties["name"] + " Target Link Libraries Marker"
                             for num, line in enumerate(cmakelists, 1):
                                 if tll_marker == True and end_marker not in line:
                                     tll_text += line
@@ -96,7 +93,7 @@ class ROSMOD_Loader:
                                     tll_marker = True
                                 if tll_marker == True and end_marker in line:
                                     tll_marker = False
-                            node.properties["cmakelists_target_link_libs"] = tll_text                     
+                            component.properties["cmakelists_targetlinklibs_marker"] = tll_text                     
 
                 if os.path.exists(self.package_path):
                     print "ROSTOOLS::Preserving code for Package: ", self.package_path

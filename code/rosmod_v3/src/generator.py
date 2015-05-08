@@ -37,6 +37,7 @@ from component_hpp import *
 from component_cpp import *
 from nodeMain import *
 from CMakeLists import *
+from node_CMakeLists import *
 from rml import *
 from xml import *
 import rhw as rhw_template
@@ -63,7 +64,89 @@ class ROSMOD_Generator:
         # Make the src directory
         self.src_path = self.workspace_dir + "/src"
         if not os.path.exists(self.src_path):
-            os.makedirs(self.src_path)     
+            os.makedirs(self.src_path)  
+
+        # Create the "node" package
+        self.node_path = os.path.join(self.src_path, "node")
+        print "ROSTOOLS:: Node Executable Path: " + self.node_path
+        if not os.path.exists(self.node_path):
+            os.makedirs(self.node_path)
+
+        # Create the include directory
+        self.include = self.node_path + "/include"
+        if not os.path.exists(self.include):
+            os.makedirs(self.include)
+                
+        # Create the src directory
+        self.src = self.node_path + "/src"
+        if not os.path.exists(self.src):
+            os.makedirs(self.src)
+
+        # Create package.xml
+        package_xml_namespace = {'package_name' : "node"}
+        t = package_xml(searchList=[package_xml_namespace])
+        self.package_xml = str(t)
+        with open(os.path.join(self.node_path, "package.xml"), 'w') as temp_file:
+            temp_file.write(self.package_xml)
+
+        # Create CMakeLists.txt
+        cmakelists_namespace = {'package_name': "node",
+                                'catkin_INCLUDE_DIRS': "${catkin_INCLUDE_DIRS}",
+                                'PROJECT_NAME': "${PROJECT_NAME}",
+                                'catkin_LIBRARIES': '${catkin_LIBRARIES}',
+                                'CATKIN_PACKAGE_BIN_DESTINATION':
+                                "${CATKIN_PACKAGE_BIN_DESTINATION}",
+                                'CATKIN_PACKAGE_LIB_DESTINATION': 
+                                "${CATKIN_PACKAGE_LIB_DESTINATION}",
+                                'CATKIN_PACKAGE_INCLUDE_DESTINATION':
+                                "${CATKIN_PACKAGE_INCLUDE_DESTINATION}",
+                                'CATKIN_PACKAGE_SHARE_DESTINATION':
+                                "${CATKIN_PACKAGE_SHARE_DESTINATION}",
+                                'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}"}
+        t = node_CMakeLists(searchList=[cmakelists_namespace])
+        self.cmakelists = str(t)
+        with open(os.path.join(self.node_path, "CMakeLists.txt"), 'w') as temp_file:
+            temp_file.write(self.cmakelists)
+
+        # Create Component.cpp and Component.hpp
+        self.cpp = self.src + "/node"
+        self.hpp = self.include + "/node"
+        base_cpp_namespace = {'hash_include': "#include", 
+                              'package_name': "node"}
+        base_hpp_namespace = {'hash_include': "#include", 
+                              'package_name': "node"}
+
+        if not os.path.exists(self.cpp):
+            os.makedirs(self.cpp)
+            # Populate Base Component cpp template
+            t = base_component_cpp(searchList=[base_cpp_namespace])
+            self.base_cpp = str(t)
+            # Write Component.cpp
+            with open(os.path.join(self.cpp, "Component.cpp"), 'w') as temp_file:
+                temp_file.write(self.base_cpp)
+
+        if not os.path.exists(self.hpp):
+            os.makedirs(self.hpp)
+            # Populate Base Component hpp template
+            t = base_component_hpp(searchList=[base_hpp_namespace])
+            self.base_hpp = str(t)
+            # Write Component.hpp
+            with open(os.path.join(self.hpp, "Component.hpp"), 'w') as temp_file:
+                temp_file.write(self.base_hpp)
+
+        # Populate Logger cpp template
+        t = Logger_cpp(searchList=[base_cpp_namespace])
+        self.logger_cpp = str(t)
+        # Write Logger.cpp
+        with open(os.path.join(self.cpp, "Logger.cpp"), 'w') as temp_file:
+            temp_file.write(self.logger_cpp)
+
+        # Populate Logger hpp template
+        t = Logger_hpp(searchList=[base_hpp_namespace])
+        self.logger_hpp = str(t)
+        # Write Logger.hpp
+        with open(os.path.join(self.hpp, "Logger.hpp"), 'w') as temp_file:
+            temp_file.write(self.logger_hpp)
 
         # For each package in the ros model
         for package in workspace.children:
@@ -265,7 +348,9 @@ class ROSMOD_Generator:
                                           "user_globals", 
                                           "hpp_globals", 
                                           "user_private_variables", 
-                                          "destructor"]
+                                          "destructor",
+                                          "cmakelists_cpp_marker",
+                                          "cmakelists_targetlinklibs_marker"]
                 for prop in probably_uninitialized:
                     if prop not in component.properties.keys():
                         component.properties[prop] = ""
@@ -307,52 +392,6 @@ class ROSMOD_Generator:
                 with open(os.path.join(self.cpp, cpp_filename), 'w') as temp_file:
                     temp_file.write(self.component_cpp_str)
 
-        return self.workspace_dir
-
-    def generate_xml(self, deployments, deployment_path):
-        for deployment in deployments:
-            deployment_folder = deployment_path + "/" + deployment.properties["name"]
-            if not os.path.exists(deployment_folder):
-                os.makedirs(deployment_folder)
-            xml_folder = deployment_folder + "/xml"
-            if not os.path.exists(xml_folder):
-                os.makedirs(xml_folder)
-            bin_folder = deployment_folder + "/bin"
-            if not os.path.exists(bin_folder):
-                os.makedirs(bin_folder)
-            for hardware_instance in deployment.children:
-                hardware_folder = xml_folder + "/" + hardware_instance.properties["name"]
-                if not os.path.exists(hardware_folder):
-                    os.makedirs(hardware_folder)
-                for node in hardware_instance.children:
-                    xml_filename = node.properties["name"] + ".xml"
-                    xml_namespace = {'node': node}
-                    t = xml(searchList=[xml_namespace])
-                    xml_content = str(t)
-                    with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
-                        temp_file.write(xml_content)                                
-
-'''
-            for node in nodes:
-
-                if "cmakelists_add_cpp" not in node.properties.keys():
-                    node.properties["cmakelists_add_cpp"] = ""
-                if "cmakelists_target_link_libs" not in node.properties.keys():
-                    node.properties["cmakelists_target_link_libs"] = ""
-                node_name = node.properties["name"]
-                hash_include = "#include"
-                node_namespace = {'hash_include': hash_include, 
-                                  'package_name': package.properties["name"],
-                                  'node_name': node_name, 
-                                  'component_instances': node.children}
-                t = nodeMain(searchList=[node_namespace])
-                self.nodeMain_str = str(t)
-                # Write node main.cpp file
-                node_filename = node_name + "_main.cpp"
-
-                with open(os.path.join(self.cpp, node_filename), 'w') as temp_file_nm:
-                    temp_file_nm.write(self.nodeMain_str)
-
             package_uninitialized = ["cmakelists_packages",
                                      "cmakelists_functions", 
                                      "cmakelists_include_dirs"]
@@ -378,10 +417,37 @@ class ROSMOD_Generator:
                                      'CATKIN_PACKAGE_SHARE_DESTINATION':
                                            "${CATKIN_PACKAGE_SHARE_DESTINATION}",
                                      'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
-                                     'nodes': nodes}
+                                     'components': components}
             t = CMakeLists(searchList=[cmake_lists_namespace])
             self.cmake_lists = str(t)
             # Write CMakeLists file
             with open(os.path.join(self.package_path, "CMakeLists.txt"), 'w') as temp_file:
-                temp_file.write(self.cmake_lists)                                
-'''
+                temp_file.write(self.cmake_lists)     
+
+        return self.workspace_dir
+
+    def generate_xml(self, deployments, deployment_path):
+        for deployment in deployments:
+            deployment_folder = deployment_path + "/" + deployment.properties["name"]
+            if not os.path.exists(deployment_folder):
+                os.makedirs(deployment_folder)
+            xml_folder = deployment_folder + "/xml"
+            if not os.path.exists(xml_folder):
+                os.makedirs(xml_folder)
+            bin_folder = deployment_folder + "/bin"
+            if not os.path.exists(bin_folder):
+                os.makedirs(bin_folder)
+            for hardware_instance in deployment.children:
+                hardware_folder = xml_folder + "/" + hardware_instance.properties["name"]
+                if not os.path.exists(hardware_folder):
+                    os.makedirs(hardware_folder)
+                for node in hardware_instance.children:
+                    xml_filename = node.properties["name"] + ".xml"
+                    xml_namespace = {'node': node}
+                    t = xml(searchList=[xml_namespace])
+                    xml_content = str(t)
+                    with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
+                        temp_file.write(xml_content)                                
+
+                     
+

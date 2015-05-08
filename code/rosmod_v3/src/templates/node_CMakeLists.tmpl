@@ -1,15 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project($package_name)
 
-#if $functions == ""
-\## Start Global Marker
-
-\## End Global Marker
-#else
-\## Start Global Marker
-$functions\## End Global Marker
-#end if
-
 \## Check C++11 / C++0x
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -29,13 +20,6 @@ find_package(catkin REQUIRED COMPONENTS
 roscpp
 std_msgs
 message_generation
-#if $packages == ""
-\## Start Package Marker
-\## End Package Marker
-#else
-\## Start Package Marker
-$packages\## End Package Marker
-#end if
 )
 
 \## System dependencies are found with CMake's conventions
@@ -72,26 +56,14 @@ $packages\## End Package Marker
 \##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 # Generate messages in the 'msg' folder
-#if $messages != []
 add_message_files(
   FILES
-#for $msg in $messages
-  ${msg.properties["name"]}.msg
-
-#end for
 )
-#end if
 
 # Generate services in the 'srv' folder
-#if $services != []
 add_service_files(
   FILES
-#for $srv in $services
-  ${srv.properties["name"]}.srv
-
-#end for
 )
-#end if
 
 \## Generate actions in the 'action' folder
 # add_action_files(
@@ -132,13 +104,6 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-#if $include_dirs == ""
-\## Start Include Directories Marker
-\## End Include Directories Marker
-#else
-\## Start Include Directories Marker
-$include_dirs\## End Include Directories Marker
-#end if
 )
 
 \## Declare a cpp library
@@ -206,40 +171,11 @@ $include_dirs\## End Include Directories Marker
 \## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 include_directories(include ${catkin_INCLUDE_DIRS})
-
-#if $components != []
-#for $component in $components
-add_library(${component.properties["name"]}
-	    src/$package_name/Component.cpp
-            src/$package_name/Logger.cpp
-            src/$package_name/${component.properties["name"]}.cpp
-#if $component.properties["cmakelists_cpp_marker"] != ""
-            \## Start $component.properties["name"] CPP Marker
-$component.properties["cmakelists_cpp_marker"]            \## End $component.properties["name"] CPP Marker
-#else
-            \## Start $component.properties["name"] CPP Marker
-
-            \## End $component.properties["name"] CPP Marker
-#end if
-           )
-target_link_libraries(${component.properties["name"]}
-#if $component.properties["cmakelists_targetlinklibs_marker"] != ""
-                      \## Start $component.properties["name"] Target Link Libraries Marker
-$component.properties["cmakelists_targetlinklibs_marker"]                      \## End $component.properties["name"] Target Link Libraries Marker
-#else
-                      \## Start $component.properties["name"] Target Link Libraries Marker
-
-                      \## End $component.properties["name"] Target Link Libraries Marker
-#end if
-                      ${catkin_LIBRARIES}
-                      )
-add_dependencies(${component.properties["name"]}
-                 ${package_name}_generate_messages_cpp
-                )
-
-#end for
-#end if
-
+add_executable(node_main
+	       src/node/node_main.cpp
+               src/node/Component.cpp
+               src/node/Logger.cpp)
+target_link_libraries(node_main dl ${catkin_LIBRARIES})
 
 
 
