@@ -39,6 +39,7 @@ def BuildToolbar(self):
     aspectToolbarDict["Deployment"] = [
         TBItem("create","/tnew.png","New Deployment",lambda e : self.OnAspectCreate("rdp",e)),
         TBItem("delete","/texit.png","Remove Deployment", self.OnAspectDelete),
+        TBItem("analyze","/tanalyze.png","Analyze Deployment timing and network properties", self.OnDeploymentAnalyze),
         TBItem("generate","/tgenerate.png","Generate Deployment Files", self.OnDeploymentGenerate),
         TBItem("move","/tmove.png","Copy Deployment Files", self.OnDeploymentMove),
         TBItem("deploy","/tdeploy.png","Deploy onto System", self.OnDeploymentDeploy),

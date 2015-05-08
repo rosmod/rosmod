@@ -305,6 +305,15 @@ class Example(wx.Frame):
     def OnPackageGenerate(self,e):
         self.GenerateCode(e)
 
+    def OnDeploymentAnalyze(self, e):
+        selectedPage = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        modelName = self.activeAspect.GetPageText(selectedPage)
+        info = self.activeAspectInfo.GetPageInfo(modelName)
+        dep = info.obj
+        self.AnalyzeNetwork(dep)
+        self.AnalyzeTiming(dep)
+
     def OnDeploymentGenerate(self,e):
         self.GenerateXML(e)
 
@@ -713,19 +722,19 @@ class Example(wx.Frame):
     '''
     Tools Menubar Menu Functions
     '''
-    def GenerateCode(self, e):
+    def GenerateCode(self):
         self.project.generate_workspace()
         dialogs.InfoDialog(self,"Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
-    def GenerateXML(self, e):
+    def GenerateXML(self):
         self.project.generate_xml()
         dialogs.InfoDialog(self,"Generated Deployment XML files")
         self.statusbar.SetStatusText("Generated Deployment XML files")
-    def AnalyzeNetwork(self, e):
-        pass
+    def AnalyzeNetwork(self, dep):
+        print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
 
-    def AnalyzeTiming(self, e):
-        pass
+    def AnalyzeTiming(self, dep):
+        print "Analyzing timing properties for deployment: {}".format(dep.properties["name"])
 
     '''
     Build the menubar which allows for operations on
