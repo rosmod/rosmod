@@ -303,7 +303,7 @@ class Example(wx.Frame):
             self.activeObject = None
             
     def OnPackageGenerate(self,e):
-        self.GenerateCode(e)
+        self.GenerateCode()
 
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()
@@ -315,7 +315,7 @@ class Example(wx.Frame):
         self.AnalyzeTiming(dep)
 
     def OnDeploymentGenerate(self,e):
-        self.GenerateXML(e)
+        self.GenerateXML()
 
     def OnDeploymentMove(self,e):
         if self.deployed == False:
@@ -722,14 +722,15 @@ class Example(wx.Frame):
     '''
     Tools Menubar Menu Functions
     '''
-    def GenerateCode(self,e):
+    def GenerateCode(self):
         self.project.generate_workspace()
         dialogs.InfoDialog(self,"Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
-    def GenerateXML(self,e):
+    def GenerateXML(self):
         self.project.generate_xml()
         dialogs.InfoDialog(self,"Generated Deployment XML files")
         self.statusbar.SetStatusText("Generated Deployment XML files")
+
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
 
@@ -774,18 +775,6 @@ class Example(wx.Frame):
                                                      kind=wx.ITEM_RADIO
                                                  )
 
-        # tools menu for ROSMOD: generate code, analyze network and timing
-        self.toolMenu = wx.Menu()
-        self.generateMI = self.toolMenu.Append(wx.ID_ANY, 
-                                               "Generate ROS Code\tCtrl+G", 
-                                               "Generate ROS application code and workspace.")
-        self.networkQoSMI = self.toolMenu.Append(wx.ID_ANY, 
-                                                 "Analyze Network", 
-                                                 "Analyze application and system network resource utilization.",)
-        self.blTimingMI = self.toolMenu.Append(wx.ID_ANY, 
-                                               "Analyze Timing", 
-                                               "Generate CPN Tokens and Analyze Business Logic Model.")
-
         # view menu: show/hide statusbar/toolbar/viewer/output
         self.viewMenu = wx.Menu()
         self.shst = self.viewMenu.Append(wx.ID_ANY, 'Show Statusbar', 'Show Statusbar', kind=wx.ITEM_CHECK)
@@ -801,7 +790,6 @@ class Example(wx.Frame):
         self.menubar.Append(self.fileMenu, '&File')
         self.menubar.Append(self.viewMenu, '&View')
         self.menubar.Append(self.aspectsMenu, '&Aspects')
-        self.menubar.Append(self.toolMenu, '&Tools')
         self.SetMenuBar(self.menubar)
         
         # set up the events for the items in the menubar
@@ -821,10 +809,6 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, lambda e : OnAspect(self,"Software",e), self.packageAMI)
         self.Bind(wx.EVT_MENU, lambda e : OnAspect(self,"Hardware",e), self.hardwareAMI)
         self.Bind(wx.EVT_MENU, lambda e : OnAspect(self,"Deployment",e), self.deploymentAMI)
-        # tools menu
-        self.Bind(wx.EVT_MENU, self.GenerateCode, self.generateMI)
-        self.Bind(wx.EVT_MENU, self.AnalyzeNetwork, self.networkQoSMI)
-        self.Bind(wx.EVT_MENU, self.AnalyzeTiming, self.blTimingMI)
         # view menu
         self.Bind(wx.EVT_MENU, self.ToggleStatusBar, self.shst)
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
