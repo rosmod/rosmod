@@ -10,7 +10,7 @@
 // Include all components this actor requires
 #include "New_Package/Component.hpp" 
 
-void componentThread(Component* compPtr)
+void componentThreadFunc(Component* compPtr)
 {
   compPtr->startUp();
   compPtr->processQueue();
@@ -35,6 +35,8 @@ int main(int argc, char **argv)
 	hostName = argv[i+1];
     }
 
+
+  std::vector<boost::thread*> compThreads;
 
   // Need to read in and parse the group configuration xml if it exists
   XMLParser nodeParser;
@@ -61,12 +63,13 @@ int main(int argc, char **argv)
 	  Component *comp_inst = ((Component *(*)(ComponentConfig &, int , char **))(mkr))(nodeParser.compConfigList[i], argc, argv);
 
 	  // Create Component Threads
-	  boost::thread dlcomp_1_thread(componentThread, comp_inst);
+	  boost::thread *comp_thread = new boost::thread(componentThreadFunc, comp_inst);
+	  compThreads.push_back(comp_thread);
 	  ROS_INFO_STREAM(nodeName << " has started " << nodeParser.compConfigList[i].compName);
-
-	  // Create Component Threads
-	  dlcomp_1_thread.join();
-
+	}
+      for (int i=0;i<compThreads.size();i++)
+	{
+	  compThreads[i]->join();
 	}
       return 0; 
     }

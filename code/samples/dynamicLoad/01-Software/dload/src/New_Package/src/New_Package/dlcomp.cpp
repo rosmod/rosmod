@@ -104,6 +104,7 @@ void dlcomp::startUp()
     // Configure all provided services associated with this component
     // server: server
     advertiseName = "dlsrv";
+    // NEED TO FIND SERVER NAME HERE
     if ( portGroupMap.find("dlsrv_server") != portGroupMap.end() )
         advertiseName += "_" + portGroupMap["dlsrv_server"];
     ros::AdvertiseServiceOptions dlsrv_server_options;
@@ -118,6 +119,7 @@ void dlcomp::startUp()
     // Configure all required services associated with this component
     // client: dlsrv_client
     advertiseName = "dlsrv";
+    // NEED TO FIND CLIENT NAME HERE
     if ( portGroupMap.find(advertiseName+"_client") != portGroupMap.end() )
         advertiseName += "_" + portGroupMap[advertiseName+"_client"];
     this->dlsrv_client = nh.serviceClient<New_Package::dlsrv>

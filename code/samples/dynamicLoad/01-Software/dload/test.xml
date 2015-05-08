@@ -15,8 +15,46 @@
       <group setting="G1"/>
     </port_instance>
     <port_instance name="some_name_2">
-      <port name="server"/>
+      <port name="dlsrv_server"/>
       <group setting="G563"/>
+    </port_instance>
+  </component_instance>
+  <component_instance name="dlcomp_inst1">
+    <library name="libdlcomp.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="some_name">
+      <port name="client"/>
+      <group setting="G1"/>
+    </port_instance>
+    <port_instance name="some_name_2">
+      <port name="dlsrv_server"/>
+      <group setting="G563_1"/>
+    </port_instance>
+  </component_instance>
+  <component_instance name="dlcomp_inst2">
+    <library name="libdlcomp.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="some_name">
+      <port name="client"/>
+      <group setting="G1"/>
+    </port_instance>
+    <port_instance name="some_name_2">
+      <port name="dlsrv_server"/>
+      <group setting="G563_2"/>
     </port_instance>
   </component_instance>
 </node>
