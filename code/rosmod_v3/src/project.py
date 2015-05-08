@@ -589,8 +589,9 @@ class ROS_Project(Drawable_Object):
             if not os.path.exists(path):
                 os.makedirs(path)
             filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + "." + port_object.properties["name"] + ".abl"
-            with open(os.path.join(path, filename), 'w') as temp_file:
-                temp_file.write(port_object.properties["abstract_business_logic"])
+            if port_object.properties["abstract_business_logic"] != "":
+                with open(os.path.join(path, filename), 'w') as temp_file:
+                    temp_file.write(port_object.properties["abstract_business_logic"])
         
     # Save Port Network Profiles
     def save_pnp(self, port_object):
@@ -599,8 +600,9 @@ class ROS_Project(Drawable_Object):
             if not os.path.exists(path):
                 os.makedirs(path)
             filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + "." + port_object.properties["name"] + ".pnp"
-            with open(os.path.join(path, filename), 'w') as temp_file:
-                temp_file.write(port_object.properties["port_network_profile"])
+            if port_object.properties["port_network_profile"] != "":
+                with open(os.path.join(path, filename), 'w') as temp_file:
+                    temp_file.write(port_object.properties["port_network_profile"])
 
     # Save System Network Profiles
     def save_snp(self, hardware):
@@ -609,8 +611,9 @@ class ROS_Project(Drawable_Object):
             if not os.path.exists(path):
                 os.makedirs(path)
             filename = hardware.parent.properties["name"] + "." + hardware.properties["name"] + "." + "snp"
-            with open(os.path.join(path, filename), 'w') as temp_file:
-                temp_file.write(hardware.properties["system_network_profile"])
+            if hardware.properties["system_network_profile"] != "":
+                with open(os.path.join(path, filename), 'w') as temp_file:
+                    temp_file.write(hardware.properties["system_network_profile"])
 
     # Save the entire project
     def save(self, project_name = "", project_path = ""):
