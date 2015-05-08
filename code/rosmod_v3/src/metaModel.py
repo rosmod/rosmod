@@ -92,7 +92,7 @@ model_dict["rhw"] = Meta_Entity(
 model_dict["Hardware"] = Meta_Entity(
     "rhw", 
     [], 
-    ["name","ip_address","arch"],
+    ["name","ip_address","arch","system_network_profile"],
     [["Hardware_Instance","hardware_reference"]], 
     [])
 model_dict["rdp"] = Meta_Entity(

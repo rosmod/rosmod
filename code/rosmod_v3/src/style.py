@@ -55,34 +55,6 @@ def BuildStyleDict(self):
                                           offset = pkgOffset,
                                           placement=drawable.Text_Placement.TOP,
                                           overlay = OrderedDict() )
-    PortInstStyle = drawable.Draw_Style(icon=None,
-                                        font=font, 
-                                        method=drawable.Draw_Method.ROUND_RECT, 
-                                        childLayout=drawable.Child_Layout.HIDDEN,
-                                        minSize = minSize,
-                                        placement=drawable.Text_Placement.RIGHT,
-                                        overlay = OrderedDict([('fillColor','BLUE')]) )
-    NodeInstStyle = drawable.Draw_Style(icon=None,
-                                        font=font, 
-                                        method=drawable.Draw_Method.ROUND_RECT, 
-                                        childLayout=drawable.Child_Layout.STACK,                                        
-                                        minSize = minSize,
-                                        placement=drawable.Text_Placement.RIGHT,
-                                        overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-    NodeStyle = drawable.Draw_Style(icon=None,
-                                    font=font, 
-                                    method=drawable.Draw_Method.ROUND_RECT, 
-                                    childLayout=drawable.Child_Layout.STACK,
-                                    minSize = minSize,
-                                    placement=drawable.Text_Placement.TOP,
-                                    overlay = OrderedDict([('fillColor','TURQUOISE')]) )
-    CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
-                                        font=font, 
-                                        method=drawable.Draw_Method.ICON, 
-                                        childLayout=drawable.Child_Layout.STACK,
-                                        minSize = minSize,
-                                        placement=drawable.Text_Placement.RIGHT,
-                                        overlay = OrderedDict() )
     HardwareInstStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
                                         method=drawable.Draw_Method.ROUND_RECT, 
@@ -90,6 +62,27 @@ def BuildStyleDict(self):
                                         minSize = minSize,
                                         placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict([('fillColor','WHITE')]) )
+    NodeStyle = drawable.Draw_Style(icon=None,
+                                        font=font, 
+                                        method=drawable.Draw_Method.ROUND_RECT, 
+                                        childLayout=drawable.Child_Layout.STACK,                                        
+                                        minSize = minSize,
+                                        placement=drawable.Text_Placement.RIGHT,
+                                        overlay = OrderedDict([('fillColor','TURQUOISE')]) )
+    CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
+                                        font=font, 
+                                        method=drawable.Draw_Method.ROUND_RECT, 
+                                        childLayout=drawable.Child_Layout.STACK,
+                                        minSize = minSize,
+                                        placement=drawable.Text_Placement.RIGHT,
+                                        overlay = OrderedDict([('fillColor','MAGENTA')]) )
+    PortInstStyle = drawable.Draw_Style(icon=None,
+                                        font=font, 
+                                        method=drawable.Draw_Method.ROUND_RECT, 
+                                        childLayout=drawable.Child_Layout.HIDDEN,
+                                        minSize = minSize,
+                                        placement=drawable.Text_Placement.RIGHT,
+                                        overlay = OrderedDict([('fillColor','BLUE')]) )
     '''
     STYLES USED FOR SOFTWARE CONFIGURATION OBJECTS
     '''
@@ -205,13 +198,12 @@ def BuildStyleDict(self):
     self.styleDict["Client"] = CliStyle
     self.styleDict["Server"] = SerStyle
 
-    self.styleDict["Node"] = NodeStyle
-    self.styleDict["Component_Instance"] = CompInstStyle
-
     self.styleDict["rhw"] = rhwStyle
     self.styleDict["Hardware"] = HardwareStyle
 
     self.styleDict["rdp"] = DeploymentStyle
-    self.styleDict["Port_Instance"] = PortInstStyle
     self.styleDict["Hardware_Instance"] = HardwareInstStyle
-    self.styleDict["Node_Instance"] = NodeInstStyle
+    self.styleDict["Node"] = NodeStyle
+    self.styleDict["Component_Instance"] = CompInstStyle
+    self.styleDict["Port_Instance"] = PortInstStyle
+
