@@ -303,7 +303,7 @@ class Example(wx.Frame):
             self.activeObject = None
             
     def OnPackageGenerate(self,e):
-        self.GenerateCode()
+        self.GenerateCode(e)
 
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()
@@ -315,7 +315,7 @@ class Example(wx.Frame):
         self.AnalyzeTiming(dep)
 
     def OnDeploymentGenerate(self,e):
-        self.GenerateXML()
+        self.GenerateXML(e)
 
     def OnDeploymentMove(self,e):
         if self.deployed == False:
@@ -722,11 +722,11 @@ class Example(wx.Frame):
     '''
     Tools Menubar Menu Functions
     '''
-    def GenerateCode(self):
+    def GenerateCode(self,e):
         self.project.generate_workspace()
         dialogs.InfoDialog(self,"Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
-    def GenerateXML(self):
+    def GenerateXML(self,e):
         self.project.generate_xml()
         dialogs.InfoDialog(self,"Generated Deployment XML files")
         self.statusbar.SetStatusText("Generated Deployment XML files")
