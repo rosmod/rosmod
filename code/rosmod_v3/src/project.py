@@ -124,6 +124,12 @@ class ROS_Project(Drawable_Object):
         if not os.path.exists(os.path.join(self.project_path, "02-Hardware")):
             os.makedirs(self.hardware_path)
 
+        # Create sub directries in Hardware
+        hardware_dirs = ["snp"]
+        for sub_dir in hardware_dirs:
+            if not os.path.exists(os.path.join(self.hardware_path, sub_dir)):
+                os.makedirs(os.path.join(self.hardware_path, sub_dir))
+
         # Create a hardware builder object - ready to ready new hardware models
         self.hardware_builder = ROS_Hardware_Builder(self)
 
@@ -283,6 +289,21 @@ class ROS_Project(Drawable_Object):
                                             port.properties["port_network_profile"] = ""
                                         port.properties["port_network_profile"] = pnp_file.read()
 
+    # Go through dirname and load in all .snp files into system profile properties in hardware
+    def parse_snp(self, dirname):
+        #print "ROSTOOLS::Parsing System Network Profiles!"
+        for filename in os.listdir(dirname):
+            if len(filename.split('.')) == 3:
+                rhw_name = filename.split('.')[0]
+                hardware_name = filename.split('.')[1]
+                snp_file = open(os.path.join(dirname, filename), 'r')
+                for rhw in self.children:
+                    if rhw.properties["name"] == rhw_name:
+                        for hardware in rhw.children:
+                            if "system_network_profile" not in hardware.properties.keys():
+                                hardware.properties["system_network_profile"] = ""
+                            hardware.properties["system_network_profile"] = snp_file.read()
+
     # Parse .rml software model
     def parse_rml(self, filename):
 
@@ -382,21 +403,25 @@ class ROS_Project(Drawable_Object):
 
         objNames = os.listdir(self.workspace_path)
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing MSG files")
+        ros_tools_log(progressQ,"ROSTOOLS::Parsing Message files")
         if "msg" in objNames:
             self.parse_msg(self.workspace_path + "/msg")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing SRV files")
+        ros_tools_log(progressQ,"ROSTOOLS::Parsing Service files")
         if "srv" in objNames:
             self.parse_srv(self.workspace_path + "/srv")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing ABL files")
+        ros_tools_log(progressQ,"ROSTOOLS::Parsing Abstract Business Logic files")
         if "abl" in objNames:
             self.parse_abl(self.workspace_path + "/abl")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing PNP files")
+        ros_tools_log(progressQ,"ROSTOOLS::Parsing Port Network Profile files")
         if "pnp" in objNames:
             self.parse_pnp(self.workspace_path + "/pnp")
+
+        ros_tools_log(progressQ,"ROSTOOLS::Parsing System Network Profile files")
+        if "snp" in objNames:
+            self.parse_snp(self.hardware_path + "/snp")
 
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Hardware files")
         for rhw in os.listdir(self.hardware_path):
@@ -517,6 +542,8 @@ class ROS_Project(Drawable_Object):
                 temp_file.write(self.rhw)
                 temp_file.close()
             print "ROSTOOLS::Saving " + rhw.properties["name"] + ".rhw " + "at " + path
+            for hardware in rhw.children:
+                self.save_snp(hardware)
 
     # Generate a ROS Deployment model (.rdp file) from a ROS_Deployment Object
     def save_rdp(self, path=""):
@@ -574,6 +601,16 @@ class ROS_Project(Drawable_Object):
             filename = port_object.parent.parent.properties["name"] + "." + port_object.parent.properties["name"] + "." + port_object.properties["name"] + ".pnp"
             with open(os.path.join(path, filename), 'w') as temp_file:
                 temp_file.write(port_object.properties["port_network_profile"])
+
+    # Save System Network Profiles
+    def save_snp(self, hardware):
+        if "system_network_profile" in hardware.properties.keys():
+            path = self.hardware_path + "/snp"
+            if not os.path.exists(path):
+                os.makedirs(path)
+            filename = hardware.parent.properties["name"] + "." + hardware.properties["name"] + "." + "snp"
+            with open(os.path.join(path, filename), 'w') as temp_file:
+                temp_file.write(hardware.properties["system_network_profile"])
 
     # Save the entire project
     def save(self, project_name = "", project_path = ""):
