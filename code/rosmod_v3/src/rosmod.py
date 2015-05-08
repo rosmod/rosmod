@@ -303,7 +303,7 @@ class Example(wx.Frame):
             self.activeObject = None
             
     def OnPackageGenerate(self,e):
-        self.GenerateCode(e)
+        self.GenerateCode()
 
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()
@@ -315,7 +315,7 @@ class Example(wx.Frame):
         self.AnalyzeTiming(dep)
 
     def OnDeploymentGenerate(self,e):
-        self.GenerateXML(e)
+        self.GenerateXML()
 
     def OnDeploymentMove(self,e):
         if self.deployed == False:
