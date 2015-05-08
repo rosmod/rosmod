@@ -459,9 +459,10 @@ class ROSMOD_Generator:
                 os.makedirs(cpn_folder)
             # Items required for a complete CPN
             timers = []
+            components = []
             for package in workspace.children:
-                timers.append(package.getChildrenByKind("Timer"))
-            
+                timers += package.getChildrenByKind("Timer")
+                components += package.getChildrenByKind("Component")
             for hardware_instance in deployment.children:
                 for node in hardware_instance.children:
                     for component_instance in node.children:
