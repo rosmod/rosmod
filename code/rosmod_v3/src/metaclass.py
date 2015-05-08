@@ -103,7 +103,6 @@ meta_class_dict["logging_error"] = Grammar_Field("boolean", "Logging_error", cre
 meta_class_dict["logging_critical"] = Grammar_Field("boolean", "Logging_critical", create_enterAtom, create_exitAtom, None, "Log Level - CRITICAL")
 meta_class_dict["datatype"] = Grammar_Field("list", "Datatype", create_enterAtom, create_exitAtom, ["Base", "I/O"], "Component Type")
 meta_class_dict["abstract_business_logic"] = Grammar_Field("code", "Abstract_business_logic", create_enterAtom, create_exitAtom, None, "Abstract Business Logic")
-meta_class_dict["port_network_profile"] = Grammar_Field("code", "Port_network_profile", create_enterAtom, create_exitAtom, None, "Port Network Profile")
 meta_class_dict["scheduling_scheme"] = Grammar_Field("list", "Scheduling_scheme", create_enterAtom, create_exitAtom, ["FIFO", "PFIFO", "EDF"], "Scheduling Scheme")
 meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
 meta_class_dict["period"] = Grammar_Field("string", "Period", create_enterAtom, create_exitAtom, None, "Period (s)")
@@ -127,6 +126,10 @@ meta_class_dict["destructor"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_packages"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_functions"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_include_dirs"] = Grammar_Field("hidden")
+
+meta_class_dict["port_network_profile"] = Grammar_Field("code", display_name = "Port Network Profile")
+meta_class_dict["system_network_profile"] = Grammar_Field("code", display_name = "System Network Profile")
+
 
 # Properties that are references
 meta_class_dict["message_reference"] = Grammar_Field("reference",display_name="Message")
