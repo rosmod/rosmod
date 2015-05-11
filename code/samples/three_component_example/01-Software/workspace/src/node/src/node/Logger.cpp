@@ -1,5 +1,4 @@
 #include "node/Logger.hpp"
-#include <iostream>
 
 /*
  * Write remaining log contents to file

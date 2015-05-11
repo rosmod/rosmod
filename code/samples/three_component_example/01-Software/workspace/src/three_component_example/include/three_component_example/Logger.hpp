@@ -21,14 +21,14 @@ struct Log_Levels {
   bool ERROR;
   bool CRITICAL;
 
-  Log_Levels() {
+  Log_Levels()
+  {
     DEBUG = false;
     INFO = true;
     WARNING = false;
     ERROR = true;
     CRITICAL = true;
   }
-
 };
 
 /*

@@ -1,5 +1,4 @@
 #include "three_component_example/Logger.hpp"
-#include <iostream>
 
 /*
  * Write remaining log contents to file

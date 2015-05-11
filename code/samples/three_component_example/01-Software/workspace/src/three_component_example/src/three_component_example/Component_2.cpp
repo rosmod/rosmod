@@ -48,7 +48,7 @@ Component_2::~Component_2()
   Name_Publisher.shutdown();
   Service_Server.shutdown();
   //# Start Destructor Marker
-              
+                
   //# End Destructor Marker
 }
 
@@ -112,7 +112,7 @@ void Component_2::startUp()
   LOGGER.CREATE_FILE(log_file_path);
   
   // Establish log levels of LOGGER
-  // LOGGER.SET_LOG_LEVELS(logLevels);
+  LOGGER.SET_LOG_LEVELS(logLevels);
 }
 
 extern "C" {
