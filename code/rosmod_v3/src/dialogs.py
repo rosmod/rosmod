@@ -17,7 +17,7 @@ class RMLProgressDialog(wx.Dialog):
     """
     def __init__(self, parent, title, progress_q, numItems=100, cancellable=False):
         """Defines a gauge and a timer which updates the gauge."""
-        wx.Dialog.__init__(self, parent=parent, title=title, style = 0)
+        wx.Dialog.__init__(self, parent=parent, title=title, style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.count = 0
         self.numItems = numItems
         self.progress = wx.Gauge(self, range=self.numItems)
@@ -131,7 +131,7 @@ def ConfirmDialog(parent, msg):
 
 class EditDialog(wx.Dialog):
     
-    def __init__(self, parent = None, title = "ROSMOD", style = wx.RESIZE_BORDER | wx.SIMPLE_BORDER,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
+    def __init__(self, parent = None, title = "ROSMOD", style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
         wx.Dialog.__init__(self, parent=parent, title=title, style = style)
         self.editDict = editDict
         self.editObj = editObj
@@ -292,7 +292,7 @@ class EditDialog(wx.Dialog):
         self.Close()
         self.Destroy()
 
-def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = wx.RESIZE_BORDER | wx.STAY_ON_TOP):
+def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER | wx.STAY_ON_TOP):
     ed = EditDialog( parent = parent,
                      title = title,
                      style = style,
@@ -315,7 +315,7 @@ class Wizard:
                                    editObj = None,
                                    editDict = propDict,
                                    title = "Configure {}".format(objName),
-                                   style = wx.RESIZE_BORDER)
+                                   style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
             if inputs != OrderedDict():
                 self.propDictDict[objName] = inputs
             else:

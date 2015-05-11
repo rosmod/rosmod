@@ -80,8 +80,7 @@ def MakeAdd(self,kind):
                                     editDict=newObj.properties,
                                     editObj = newObj,
                                     title="Edit "+newObj.kind,
-                                    references = references,
-                                    style=wx.RESIZE_BORDER)
+                                    references = references)
             if inputs != OrderedDict():
                 self.UpdateUndo()
                 for key,value in inputs.iteritems():
@@ -327,14 +326,18 @@ class Example(wx.Frame):
             env.use_ssh_config = False
             self.hostDict = {}
             env.hosts = []
-            for host in dep.getChildrenByKind("Hardware_Instance"):
-                nodeList = []
+            hosts = []
+            for node in dep.getChildrenByKind("Node"):
+                host = node.properties['hardware_reference']
+                if host not in hosts:
+                    hosts.append(host)
+            for host in hosts:
                 self.hostDict[host.properties['name']] = fabTest.deployed_host(
                     userName = host.properties['username'],
-                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    ipAddress = host.properties['ip_address'],
                     keyFile = host.properties['sshkey'],
-                    nodes = nodeList,
-                    envVars = copy.copy(host.properties['env_variables'])
+                    nodes = [],
+                    envVars = []
                 )
                 env.hosts.append(host.properties['name'])
             copyProgressQ = multiprocessing.Queue()
@@ -361,8 +364,7 @@ class Example(wx.Frame):
                                 editDict=newObj.properties,
                                 editObj = newObj,
                                 title="Input Command To Run",
-                                references = [],
-                                style=wx.RESIZE_BORDER)
+                                references = [])
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
@@ -421,15 +423,14 @@ class Example(wx.Frame):
                                     editDict=newObj.properties,
                                     editObj = newObj,
                                     title="Deployment Options",
-                                    references = references,
-                                    style=wx.RESIZE_BORDER)
+                                    references = references)
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
                 rosCoreIP = newObj.properties['hardware_reference'].properties['ip_address']
                 testName = newObj.properties['name']
                 hostToNodeListMap = {}
-                for node in dep.getChildrenByKind("node"):
+                for node in dep.getChildrenByKind("Node"):
                     host = node.properties['hardware_reference']
                     numNodes += 1
                     deploymentPath = node.properties['deployment_path']
@@ -689,8 +690,7 @@ class Example(wx.Frame):
         inputs = dialogs.EditorWindow( parent = self,
                                  editObj = None,
                                  editDict = properties,
-                                 title = 'Choose New Project Name',
-                                 style = wx.RESIZE_BORDER)
+                                 title = 'Choose New Project Name')
         if inputs != OrderedDict():
             project_path = dialogs.RMLDirectoryDialog(
                 parent = self,
