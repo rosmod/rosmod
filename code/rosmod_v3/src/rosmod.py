@@ -80,8 +80,7 @@ def MakeAdd(self,kind):
                                     editDict=newObj.properties,
                                     editObj = newObj,
                                     title="Edit "+newObj.kind,
-                                    references = references,
-                                    style=wx.RESIZE_BORDER)
+                                    references = references)
             if inputs != OrderedDict():
                 self.UpdateUndo()
                 for key,value in inputs.iteritems():
@@ -365,8 +364,7 @@ class Example(wx.Frame):
                                 editDict=newObj.properties,
                                 editObj = newObj,
                                 title="Input Command To Run",
-                                references = [],
-                                style=wx.RESIZE_BORDER)
+                                references = [])
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
@@ -425,8 +423,7 @@ class Example(wx.Frame):
                                     editDict=newObj.properties,
                                     editObj = newObj,
                                     title="Deployment Options",
-                                    references = references,
-                                    style=wx.RESIZE_BORDER)
+                                    references = references)
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
@@ -693,8 +690,7 @@ class Example(wx.Frame):
         inputs = dialogs.EditorWindow( parent = self,
                                  editObj = None,
                                  editDict = properties,
-                                 title = 'Choose New Project Name',
-                                 style = wx.RESIZE_BORDER)
+                                 title = 'Choose New Project Name')
         if inputs != OrderedDict():
             project_path = dialogs.RMLDirectoryDialog(
                 parent = self,
