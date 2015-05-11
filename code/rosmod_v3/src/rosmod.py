@@ -755,8 +755,8 @@ class Example(wx.Frame):
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
         properties = OrderedDict()
-        properties['period'] = 5400
-        properties['numPeriods'] = 1
+        properties['period'] = "5400"
+        properties['numPeriods'] = "1"
         inputs = dialogs.EditorWindow( parent = self,
                                  editObj = None,
                                  editDict = properties,
