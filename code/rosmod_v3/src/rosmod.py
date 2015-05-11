@@ -416,7 +416,7 @@ class Example(wx.Frame):
             newObj.properties = OrderedDict()
             newObj.properties['name'] = testName
             newObj.properties['hardware_reference'] = None
-            references = dep.properties['hardware_configuration_reference'].children
+            references = dep.properties['rhw_reference'].children
             inputs = dialogs.EditorWindow(parent=self,
                                     editDict=newObj.properties,
                                     editObj = newObj,
@@ -426,30 +426,38 @@ class Example(wx.Frame):
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
                     newObj.properties[key] = value
-                rosCoreIP = newObj.properties['host_reference'].properties['ip_address']
+                rosCoreIP = newObj.properties['hardware_reference'].properties['ip_address']
                 testName = newObj.properties['name']
-                for host in dep.getChildrenByKind("host_instance"):
-                    nodeList = []
-                    for node in host.children:
-                        numNodes += 1
-                        nodeList.append(fabTest.deployed_node(
-                            name = node.properties['name'],
-                            executable = '/home/' + host.properties['username'] + '/' + node.properties['node_reference'].parent.properties['name'] + '/' + node.properties['node_reference'].properties['name'],
-                            cmdArgs = node.properties['cmdline_arguments']
-                        ))
-                        nodeList[-1].cmdArgs += " -nodename {}".format(node.properties['name'])
-                        nodeList[-1].cmdArgs += " -hostname {}".format(host.properties['name'])
+                hostToNodeListMap = {}
+                for node in dep.getChildrenByKind("node"):
+                    host = node.properties['hardware_reference']
+                    numNodes += 1
+                    deploymentPath = node.properties['deployment_path']
+                    if deploymentPath == "":
+                        deploymentPath = host.properties['deployment_path']
+                    cmdArgs = node.properties['cmdline_arguments']
+                    cmdArgs += " -nodename {} -hostname {}".format(node.properties['name'],host.properties['name'])
+                    newNode = fabTest.deployed_node(
+                        name = node.properties['name'],
+                        executable = deploymentPath + '/' + 'node_main',
+                        cmdArgs = node.properties['cmdline_arguments']
+                    )
+                    if host in hostToNodeListMap.keys():
+                        hostToNodeListMap[host].append( newNode )
+                    else:
+                        hostToNodeListMap[host] = [ newNode ]
+                for host,nodeList in hostToNodeListMap.iteritems():
                     self.hostDict[host.properties['name']] = fabTest.deployed_host(
                         userName = host.properties['username'],
-                        ipAddress = host.properties['host_reference'].properties['ip_address'],
+                        ipAddress = host.properties['ip_address'],
                         keyFile = host.properties['sshkey'],
                         nodes = nodeList,
-                        envVars = copy.copy(host.properties['env_variables'])
+                        envVars = []
                     )
                     self.hostDict[host.properties['name']].envVars.append(
                         ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
                     self.hostDict[host.properties['name']].envVars.append(
-                        ['ROS_IP',host.properties['host_reference'].properties['ip_address']]
+                        ['ROS_IP',host.properties['ip_address']]
                     )
                     env.hosts.append(host.properties['name'])
                 deploymentProgressQ = multiprocessing.Queue()
