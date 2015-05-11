@@ -19,6 +19,15 @@ void Component_3::Init(const ros::TimerEvent& event)
 void Component_3::Timer_3Callback(const ros::TimerEvent& event)
 {
   // Business Logic for Timer_3 Timer
+  three_component_example::ComponentService srv;
+  srv.request.operation = "GetComponentName";
+  LOGGER.INFO("Component_3::Timer_3::Invoking ComponentService from Timer_3 Callback");
+  if (Service_Client.call(srv))
+    LOGGER.INFO("Component_3::Timer_3::Got Name of Server Component: %s", srv.response.name.c_str());
+  else {
+    LOGGER.ERROR("Component_3::Timer_3::Failed to Invoke Server Operation");
+    Service_Client.waitForExistence(ros::Duration(-1));
+  }
 }
 //# End Timer_3Callback Marker
 

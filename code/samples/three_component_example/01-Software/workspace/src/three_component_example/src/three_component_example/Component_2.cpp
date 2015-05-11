@@ -8,7 +8,6 @@
 void Component_2::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -20,7 +19,10 @@ bool Component_2::ComponentServiceCallback(New_Package::ComponentService::Reques
   New_Package::ComponentService::Response &res)
 {
   // Business Logic for Service_Server Server
-
+  three_component_example::ComponentName compName;
+  compName.name = "Component_2";
+  LOGGER.INFO("Component_2::Name_Publisher::Publishing Component Name %s from ComponentServiceCallback");
+  Name_Publisher.publish(compName);
   return true;
 }
 //# End ComponentServiceCallback Marker
@@ -30,6 +32,10 @@ bool Component_2::ComponentServiceCallback(New_Package::ComponentService::Reques
 void Component_2::Timer_2Callback(const ros::TimerEvent& event)
 {
   // Business Logic for Timer_2 Timer
+  three_component_example::ComponentName compName;
+  compName.name = "Component_2";
+  LOGGER.INFO("Component_2::Name_Publisher::Publishing Component Name %s from Timer_2 Callback");
+  Name_Publisher.publish(compName);
 }
 //# End Timer_2Callback Marker
 

@@ -8,7 +8,10 @@
 void Component_1::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
+  three_component_example::ComponentName compName;
+  compName.name = "Component_1";
+  LOGGER.INFO("Component_1::Name_Publisher::Publishing Component Name::%s", compName.name.c_str());
+  Name_Publisher.publish(compName);
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -19,6 +22,7 @@ void Component_1::Init(const ros::TimerEvent& event)
 void Component_1::Name_Subscriber_OnOneData(const New_Package::ComponentName::ConstPtr& received_data)
 {
   // Business Logic for Name_Subscriber Subscriber
+  LOGGER.INFO("Component_1::Name_Subscriber::Received Component Name::%s", compName->name.c_str());
 }
 //# End Name_Subscriber_OnOneData Marker
 
@@ -27,6 +31,7 @@ void Component_1::Name_Subscriber_OnOneData(const New_Package::ComponentName::Co
 void Component_1::Timer_1Callback(const ros::TimerEvent& event)
 {
   // Business Logic for Timer_1 Timer
+  LOGGER.INFO("Component_1::Timer_1::Timer Callback has triggered");
 }
 //# End Timer_1Callback Marker
 
