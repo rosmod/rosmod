@@ -104,9 +104,9 @@ model_dict["rdp"] = Meta_Entity(
 model_dict["Node"] = Meta_Entity(
     "rdp", 
     ["Component_Instance"], 
-    ["name","priority","cmd_args"],
+    ["name","hardware_reference","priority","cmd_args"],
     [], 
-    [])
+    ["Hardware", "parent", "rhw_reference"])
 model_dict["Component_Instance"] = Meta_Entity(
     "Node", 
     ["Port_Instance"], 

@@ -297,12 +297,11 @@ class ROS_Project(Drawable_Object):
                 rhw_name = filename.split('.')[0]
                 hardware_name = filename.split('.')[1]
                 snp_file = open(os.path.join(dirname, filename), 'r')
-                for rhw in self.children:
+                for rhw in self.getChildrenByKind("rhw"):
                     if rhw.properties["name"] == rhw_name:
                         for hardware in rhw.children:
-                            if "system_network_profile" not in hardware.properties.keys():
-                                hardware.properties["system_network_profile"] = ""
-                            hardware.properties["system_network_profile"] = snp_file.read()
+                            if hardware.properties["name"] == hardware_name:
+                                hardware.properties["system_network_profile"] = snp_file.read()
 
     # Parse .rml software model
     def parse_rml(self, filename):
@@ -401,27 +400,17 @@ class ROS_Project(Drawable_Object):
             self.parse_rml(rml_file)
         count = 0
 
-        objNames = os.listdir(self.workspace_path)
-
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Message files")
-        if "msg" in objNames:
-            self.parse_msg(self.workspace_path + "/msg")
+        self.parse_msg(self.workspace_path + "/msg")
 
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Service files")
-        if "srv" in objNames:
-            self.parse_srv(self.workspace_path + "/srv")
+        self.parse_srv(self.workspace_path + "/srv")
 
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Abstract Business Logic files")
-        if "abl" in objNames:
-            self.parse_abl(self.workspace_path + "/abl")
+        self.parse_abl(self.workspace_path + "/abl")
 
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Port Network Profile files")
-        if "pnp" in objNames:
-            self.parse_pnp(self.workspace_path + "/pnp")
-
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing System Network Profile files")
-        if "snp" in objNames:
-            self.parse_snp(self.hardware_path + "/snp")
+        self.parse_pnp(self.workspace_path + "/pnp")
 
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Hardware files")
         for rhw in os.listdir(self.hardware_path):
@@ -429,11 +418,13 @@ class ROS_Project(Drawable_Object):
                 rhw_file = os.path.join(self.hardware_path, rhw)
                 self.parse_rhw(rhw_file)
                 count += 1
-
         if count == 0:
             ros_tools_log(progressQ,"ROSTOOLS::No ROS Hardware Configurations (.rhw) files found in "+ self.hardware_path)
 
         count = 0
+
+        ros_tools_log(progressQ,"ROSTOOLS::Parsing System Network Profile files")
+        self.parse_snp(self.hardware_path + "/snp")
 
         ros_tools_log(progressQ,"ROSTOOLS::Parsing Deployment files")
         for rdp in os.listdir(self.deployment_path):
