@@ -11,7 +11,7 @@ tools through the use of toolbar buttons and subprocesses.
 import wx
 import wx.stc as stc
 from wx.lib.pubsub import Publisher
-import os,sys
+import sys, os, inspect
 import copy
 import multiprocessing
 from threading import Thread
@@ -45,6 +45,19 @@ from toolbar import *
 from deployment import *
 from contextMenu import *
 from style import *
+
+# Network Analysis
+network_analysis = os.path.realpath(os.path.abspath
+                               (os.path.join
+                                (os.path.split
+                                 (inspect.getfile
+                                  (inspect.currentframe()
+                               )
+                              )[0], "network_analysis/")
+                            ))
+if network_analysis not in sys.path:
+    sys.path.insert(0, network_analysis)
+import acceptance
 
 def MakeAdd(self,kind):
     def GenericAdd(e):
@@ -741,6 +754,7 @@ class Example(wx.Frame):
 
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
+        acceptance.AnalyzeDeployment(dep,5300,2)
 
     def AnalyzeTiming(self, dep):
         self.project.generate_cpn()

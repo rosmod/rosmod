@@ -15,6 +15,20 @@ num_periods = 1
 selected_node = ''
 selected_interface = ''
 
+def AnalyzeHost(host, nodes, period, numPeriods):
+    print "Analyzing host {} with period {} for {} periods.".format(host.properties["name"],period,numPeriods)
+
+def AnalyzeDeployment(dep, period, numPeriods):
+    hostToNodeListMap = {}
+    for node in dep.getChildrenByKind("Node"):
+        host = node.properties['hardware_reference']
+        if host in hostToNodeListMap.keys():
+            hostToNodeListMap[host].append(node)
+        else:
+            hostToNodeListMap[host] = [node]
+    for host,nodeList in hostToNodeListMap.iteritems():
+        AnalyzeHost(host, nodeList, period, numPeriods)
+
 def parse_args(args):
     global orbital_period
     global num_periods
