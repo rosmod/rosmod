@@ -1,68 +1,69 @@
 $hash_include "ros/ros.h"
 $hash_include <cstdlib>
 $hash_include <string.h>
-
-// Required for boost::thread
+$hash_include <dlfcn.h>
 $hash_include <boost/thread.hpp>
+$hash_include "node/Component.hpp"
 
-// Include all components this actor requires
-#if $len($component_instances) > 0
-#for $instance in $component_instances
-$hash_include "$package_name/${instance.properties["component_reference"].properties["name"]}.hpp" 
-#end for
-
-#end if
-
-void componentThread(Component* compPtr)
+void componentThreadFunc(Component* compPtr)
 {
-    compPtr->startUp();
-    compPtr->processQueue();
+  compPtr->startUp();
+  compPtr->processQueue();
 }
 
 int main(int argc, char **argv)
 {
-    std::string nodeName = "$node_name";
-    std::string hostName = "localhost";
+  std::string nodeName = "node";
+  std::string hostName = "localhost";
+  
+  for(int i = 0; i < argc; i++)
+  {
+    if(!strcmp(argv[i], "-nodename"))
+      nodeName = argv[i+1];
+    if(!strcmp(argv[i], "-hostname"))
+      hostName = argv[i+1];
+  }
 
-    for(int i = 0; i < argc; i++)
-    {
-        if(!strcmp(argv[i], "-nodename"))
-            nodeName = argv[i+1];
-	if(!strcmp(argv[i], "-hostname"))
-	    hostName = argv[i+1];
-    }
-
+  std::vector<boost::thread*> compThreads;
+  XMLParser nodeParser;
+  std::string configFileName = nodeName + ".xml";
+  if (nodeParser.Parse(configFileName))
+  {      
     ros::init(argc, argv, nodeName.c_str());
 
     // Create Node Handle
     ros::NodeHandle n;
 
-    // Create Component Objects
-    #if $len($component_instances) > 0
-    #for $instance in $component_instances
-    $instance.properties["component_reference"].properties["name"] ${instance.properties["name"]}(hostName, nodeName, "${instance.properties["name"]}", argc, argv); 
-    #end for
+    ROS_INFO_STREAM(nodeName << " thread id = " << boost::this_thread::get_id());
+    
+    for (int i=0;i<nodeParser.compConfigList.size();i++)
+    {
+      std::string libraryLocation = nodeParser.compConfigList[i].libraryLocation;
+      void *hndl = dlopen(libraryLocation.c_str(), RTLD_NOW);
+      if(hndl == NULL)
+      {
+	cerr << dlerror() << endl;
+	exit(-1);
+      }
+      void *mkr = dlsym(hndl, "maker");
+      Component *comp_inst = ((Component *(*)(ComponentConfig &, int , char **))(mkr))
+	(nodeParser.compConfigList[i], argc, argv);
 
-    #end if
-    // Create Component Threads
-    #if $len($component_instances) > 0
-    #for $instance in $component_instances
-    boost::thread ${instance.properties["name"]}_thread(componentThread, &${instance.properties["name"]});
-    ROS_INFO("Node ${node_name} has started ${instance.properties["name"]}");
-    #end for
-
-    #end if    
-
-    ROS_INFO_STREAM("NodeMain thread id = " << boost::this_thread::get_id());
-
-    // Create Component Threads
-    #if $len($component_instances) > 0
-    #for $instance in $component_instances
-    ${instance.properties["name"]}_thread.join();
-    #end for
-
-    #end if 
-
+      // Create Component Threads
+      boost::thread *comp_thread = new boost::thread(componentThreadFunc, comp_inst);
+      compThreads.push_back(comp_thread);
+      ROS_INFO_STREAM(nodeName << " has started " << nodeParser.compConfigList[i].compName);
+    }
+    for (int i=0;i<compThreads.size();i++)
+    {
+      compThreads[i]->join();
+    }
     return 0; 
+  }
+  else
+  {
+    printf("ERROR::Unable to parse XML file\n");
+    return -1;
+  }
 }
 

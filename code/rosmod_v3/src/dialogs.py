@@ -311,11 +311,11 @@ class Wizard:
 
     def GetInput(self):
         for objName,propDict in self.propDictDict.iteritems():
-            inputs = EditWindow( parent = self.parent,
-                                 editObj = None,
-                                 editDict = propDict,
-                                 title = "Configure {}".format(objName),
-                                 style = wx.RESIZE_BORDER)
+            inputs = EditorWindow( parent = self.parent,
+                                   editObj = None,
+                                   editDict = propDict,
+                                   title = "Configure {}".format(objName),
+                                   style = wx.RESIZE_BORDER)
             if inputs != OrderedDict():
                 self.propDictDict[objName] = inputs
             else:

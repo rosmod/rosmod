@@ -171,6 +171,13 @@ class ROSMOD_Generator:
         with open(os.path.join(self.hpp, "xmlParser.hpp"), 'w') as temp_file:
             temp_file.write(self.xmlParser_hpp)
 
+        node_namespace = {'hash_include' : "#include"}
+        t = nodeMain(searchList=[node_namespace])
+        self.nodeMain_str = str(t)
+        node_filename = "node_main.cpp"
+        with open(os.path.join(self.cpp, node_fiename), 'w') as temp_file:
+            temp_file.write(self.nodeMain_str)
+
         # For each package in the ros model
         for package in workspace.children:
 

@@ -40,7 +40,6 @@ public:
   void ${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
  
 #end for
-
 #end if
 #if $len($provided_services) > 0
 #for $server in $servers
