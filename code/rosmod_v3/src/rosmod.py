@@ -754,7 +754,17 @@ class Example(wx.Frame):
 
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
-        acceptance.AnalyzeDeployment(dep,5300,2)
+        properties = OrderedDict()
+        properties['period'] = 5400
+        properties['numPeriods'] = 1
+        inputs = dialogs.EditorWindow( parent = self,
+                                 editObj = None,
+                                 editDict = properties,
+                                 title = 'Network Analysis Options')
+        if inputs != OrderedDict():
+            period = float(inputs['period'])
+            numPeriods = float(inputs['numPeriods'])
+            acceptance.AnalyzeDeployment(dep,period,numPeriods)
 
     def AnalyzeTiming(self, dep):
         self.project.generate_cpn()
