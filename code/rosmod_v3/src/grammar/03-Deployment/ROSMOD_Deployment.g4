@@ -135,7 +135,7 @@ component_instance
             'properties'
             '{'
                 ( 'ref' '=' '"' reference '"' ';')
-		        ('scheduling_scheme' '=' scheduling_scheme ';' ) 
+		('scheduling_scheme' '=' scheduling_scheme ';' ) 
                 (
                   'logging'
                   '{'

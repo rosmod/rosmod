@@ -21,7 +21,8 @@ bool Component_2::ComponentServiceCallback(three_component_example::ComponentSer
   // Business Logic for Service_Server Server
   three_component_example::ComponentName compName;
   compName.name = "Component_2";
-  LOGGER.INFO("Component_2::Name_Publisher::Publishing Component Name %s from ComponentServiceCallback");
+  res.name = compName.name;
+  LOGGER.INFO("Component_2::Name_Publisher::Publishing Component Name %s from ComponentServiceCallback", compName.name.c_str());
   Name_Publisher.publish(compName);
   return true;
 }
@@ -34,7 +35,7 @@ void Component_2::Timer_2Callback(const ros::TimerEvent& event)
   // Business Logic for Timer_2 Timer
   three_component_example::ComponentName compName;
   compName.name = "Component_2";
-  LOGGER.INFO("Component_2::Name_Publisher::Publishing Component Name %s from Timer_2 Callback");
+  LOGGER.INFO("Component_2::Name_Publisher::Publishing Component Name %s from Timer_2 Callback", compName.name.c_str());
   Name_Publisher.publish(compName);
 }
 //# End Timer_2Callback Marker
@@ -111,7 +112,7 @@ void Component_2::startUp()
   LOGGER.CREATE_FILE(log_file_path);
   
   // Establish log levels of LOGGER
-  LOGGER.SET_LOG_LEVELS(logLevels);
+  // LOGGER.SET_LOG_LEVELS(logLevels);
 }
 
 extern "C" {

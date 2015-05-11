@@ -20,6 +20,15 @@ struct Log_Levels {
   bool WARNING;
   bool ERROR;
   bool CRITICAL;
+
+  Log_Levels() {
+    DEBUG = false;
+    INFO = true;
+    WARNING = false;
+    ERROR = true;
+    CRITICAL = true;
+  }
+
 };
 
 /*
@@ -81,11 +90,7 @@ private:
   string log_path;
 
   // Level of Logging
-  Log_Levels log_levels = {.DEBUG = false,
-			   .INFO = true, 
-			   .WARNING = false, 
-			   .ERROR = true, 
-			   .CRITICAL = true};
+  Log_Levels log_levels;
 
   // High Resolution Clock
   chrono::high_resolution_clock clock;

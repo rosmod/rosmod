@@ -33,7 +33,7 @@ public:
 
   bool Return_Boolean(std::string value) 
   {
-    if (value == "true") 
+    if (value == "True") 
       return true;
     else
       return false;

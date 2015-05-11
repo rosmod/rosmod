@@ -91,7 +91,7 @@ void Component_3::startUp()
   LOGGER.CREATE_FILE(log_file_path);
   
   // Establish log levels of LOGGER
-  LOGGER.SET_LOG_LEVELS(logLevels);
+  // LOGGER.SET_LOG_LEVELS(logLevels);
 }
 
 extern "C" {

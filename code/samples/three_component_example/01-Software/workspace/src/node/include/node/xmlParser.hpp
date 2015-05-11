@@ -33,7 +33,7 @@ public:
 
   bool Return_Boolean(std::string value) 
   {
-    if (value == "true") 
+    if (value == "True") 
       return true;
     else
       return false;
@@ -74,7 +74,7 @@ public:
 	  Return_Boolean(logger->first_node("error")->first_attribute()->value());
 	config.logLevels.CRITICAL = 
 	  Return_Boolean(logger->first_node("critical")->first_attribute()->value());
-	
+
 	for (xml_node<> *port_inst = comp_inst->first_node("port_instance"); 
 	     port_inst; port_inst = port_inst->next_sibling())
 	  {
