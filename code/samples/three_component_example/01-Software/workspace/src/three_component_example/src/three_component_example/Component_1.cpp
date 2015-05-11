@@ -19,10 +19,12 @@ void Component_1::Init(const ros::TimerEvent& event)
 
 // Subscriber Callback - Name_Subscriber
 //# Start Name_Subscriber_OnOneData Marker
-void Component_1::Name_Subscriber_OnOneData(const New_Package::ComponentName::ConstPtr& received_data)
+void Component_1::Name_Subscriber_OnOneData(const three_component_example::ComponentName::ConstPtr& received_data)
 {
   // Business Logic for Name_Subscriber Subscriber
-  LOGGER.INFO("Component_1::Name_Subscriber::Received Component Name::%s", compName->name.c_str());
+  three_component_example::ComponentName compName;
+  compName.name = "Component_1";
+  LOGGER.INFO("Component_1::Name_Subscriber::Received Component Name::%s", compName.name.c_str());
 }
 //# End Name_Subscriber_OnOneData Marker
 
@@ -43,7 +45,7 @@ Component_1::~Component_1()
   Name_Publisher.shutdown();
   Name_Subscriber.shutdown();
   //# Start Destructor Marker
-    
+              
   //# End Destructor Marker
 }
 

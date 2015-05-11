@@ -98,13 +98,13 @@ $component_name::~${component_name}()
 #end for
 #end if
 #if $len($provided_services) > 0
-#for $provided in $provided_services
-  ${provided}_server.shutdown();
+#for $server in $servers
+  ${server.properties["name"]}.shutdown();
 #end for
 #end if
 #if $len($required_services) > 0
-#for $required in $required_services
-  ${required[1]}_client.shutdown();
+#for $client in $clients
+  ${client.properties["name"]}.shutdown();
 #end for
 #end if
 #if $destructor == ""
@@ -172,7 +172,7 @@ void $component_name::startUp()
   // Component Client - $client.properties["name"]
   advertiseName = "$client.properties["service_reference"].properties["name"]";
   if (portGroupMap.find("$client.properties["name"]") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["client.properties["name"]"]
+    advertiseName += "_" + portGroupMap["$client.properties["name"]"];
       this->${client.properties["name"]} = nh.serviceClient<$client.properties["service_reference"].parent.properties["name"]::$client.properties["service_reference"].properties["name"]>(advertiseName.c_str()); 
 #end for
 

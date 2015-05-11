@@ -15,8 +15,8 @@ void Component_2::Init(const ros::TimerEvent& event)
 
 // Server Callback - Service_Server
 //# Start ComponentServiceCallback Marker
-bool Component_2::ComponentServiceCallback(New_Package::ComponentService::Request  &req,
-  New_Package::ComponentService::Response &res)
+bool Component_2::ComponentServiceCallback(three_component_example::ComponentService::Request  &req,
+  three_component_example::ComponentService::Response &res)
 {
   // Business Logic for Service_Server Server
   three_component_example::ComponentName compName;
@@ -45,9 +45,9 @@ Component_2::~Component_2()
 {
   Timer_2.stop();
   Name_Publisher.shutdown();
-  ComponentService_server.shutdown();
+  Service_Server.shutdown();
   //# Start Destructor Marker
-    
+              
   //# End Destructor Marker
 }
 

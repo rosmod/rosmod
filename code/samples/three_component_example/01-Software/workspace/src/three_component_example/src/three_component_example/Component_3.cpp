@@ -36,9 +36,9 @@ void Component_3::Timer_3Callback(const ros::TimerEvent& event)
 Component_3::~Component_3()
 {
   Timer_3.stop();
-  ComponentService_client.shutdown();
+  Service_Client.shutdown();
   //# Start Destructor Marker
-  
+            
   //# End Destructor Marker
 }
 
@@ -52,7 +52,7 @@ void Component_3::startUp()
   // Component Client - Service_Client
   advertiseName = "ComponentService";
   if (portGroupMap.find("Service_Client") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["client.properties["name"]"]
+    advertiseName += "_" + portGroupMap["Service_Client"];
       this->Service_Client = nh.serviceClient<three_component_example::ComponentService>(advertiseName.c_str()); 
 
   // Init Timer
