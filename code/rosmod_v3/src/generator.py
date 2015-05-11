@@ -148,6 +148,29 @@ class ROSMOD_Generator:
         with open(os.path.join(self.hpp, "Logger.hpp"), 'w') as temp_file:
             temp_file.write(self.logger_hpp)
 
+        if not os.path.exists(self.hpp):
+            os.makedirs(self.hpp)
+        xml_namespace = {'hash_include': "#include", 
+                         'package_name': "node"}
+
+        # Main RapidXML file
+        t = rapidxml_hpp(searchList=[xml_namespace])
+        self.rapidxml_hpp = str(t)
+        with open(os.path.join(self.hpp, "rapidxml.hpp"), 'w') as temp_file:
+            temp_file.write(self.rapidxml_hpp)
+
+        # RapidXML Utils file
+        t = rapidxml_utils_hpp(searchList=[xml_namespace])
+        self.rapidxml_utils_hpp = str(t)
+        with open(os.path.join(self.hpp, "rapidxml_utils.hpp"), 'w') as temp_file:
+            temp_file.write(self.rapidxml_utils_hpp)
+
+        # XML Parser file
+        t = xmlParser_hpp(searchList=[xml_namespace])
+        self.xmlParser_hpp = str(t)
+        with open(os.path.join(self.hpp, "xmlParser.hpp"), 'w') as temp_file:
+            temp_file.write(self.xmlParser_hpp)
+
         # For each package in the ros model
         for package in workspace.children:
 
@@ -437,17 +460,16 @@ class ROSMOD_Generator:
             bin_folder = deployment_folder + "/bin"
             if not os.path.exists(bin_folder):
                 os.makedirs(bin_folder)
-            for hardware_instance in deployment.children:
-                hardware_folder = xml_folder + "/" + hardware_instance.properties["name"]
+            for node in deployment.children:
+                hardware_folder = xml_folder + "/" + node.properties["hardware_reference"].properties["name"]
                 if not os.path.exists(hardware_folder):
                     os.makedirs(hardware_folder)
-                for node in hardware_instance.children:
-                    xml_filename = node.properties["name"] + ".xml"
-                    xml_namespace = {'node': node}
-                    t = xml(searchList=[xml_namespace])
-                    xml_content = str(t)
-                    with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
-                        temp_file.write(xml_content)       
+                xml_filename = node.properties["name"] + ".xml"
+                xml_namespace = {'node': node}
+                t = xml(searchList=[xml_namespace])
+                xml_content = str(t)
+                with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
+                    temp_file.write(xml_content)       
 
     def generate_cpn(self, workspace, deployments, deployment_path):
         for deployment in deployments:

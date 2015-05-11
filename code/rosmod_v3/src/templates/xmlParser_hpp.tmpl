@@ -56,13 +56,13 @@ public:
 	ComponentConfig config;
 	config.compName = comp_inst->first_attribute()->value();
 	config.nodeName = nodeName;
-
+	
 	xml_node<> *lib_location = comp_inst->first_node("library");
 	config.libraryLocation = lib_location->first_attribute()->value();
-
+	
 	xml_node<> *sched_scheme = comp_inst->first_node("scheduling_scheme");
 	config.schedulingScheme = sched_scheme->first_attribute()->value();
-
+	
 	xml_node<> *logger = comp_inst->first_node("logging");
 	config.logLevels.DEBUG = 
 	  Return_Boolean(logger->first_node("debug")->first_attribute()->value());
@@ -74,7 +74,7 @@ public:
 	  Return_Boolean(logger->first_node("error")->first_attribute()->value());
 	config.logLevels.CRITICAL = 
 	  Return_Boolean(logger->first_node("critical")->first_attribute()->value());
-
+	
 	for (xml_node<> *port_inst = comp_inst->first_node("port_instance"); 
 	     port_inst; port_inst = port_inst->next_sibling())
 	  {

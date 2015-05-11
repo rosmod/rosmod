@@ -22,8 +22,8 @@ if __name__ == "__main__":
     # Testing ROS Tools Features
     My_Project = ROS_Project()
     My_Project.open(path)
-#    My_Project.generate_workspace()
-#    My_Project.generate_xml()
-#    My_Project.generate_cpn()
+    My_Project.generate_workspace()
+    My_Project.generate_xml()
+    My_Project.generate_cpn()
     My_Project.save()
 
