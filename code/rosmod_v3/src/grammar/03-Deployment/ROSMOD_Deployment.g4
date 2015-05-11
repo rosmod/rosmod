@@ -11,7 +11,7 @@ grammar ROSMOD_Deployment;
  */
 start
     :   ( 'using' reference ';' )
-        ( hardware_instance )*
+        ( node )*
     ;
 
 // Name
@@ -35,70 +35,18 @@ rdp_hardware
         ID
     ;
 
-// Node Hardware Map
-hardware_instance
-    :   'hardware_instance' name
-        '{'
-        ( hardware_instance_properties )
-        ( node )*
-        '}'
-    ;
-
-// Hardware Instance Properties
-hardware_instance_properties
-    :   'properties'
-        '{'
-        ( 'ref' '=' '"' reference '"' ';' )
-        ( 'username' '=' '"' username '"' ';' )
-        ( 'sshkey' '=' '"' sshkey '"' ';'  )
-        ( 'deployment_path' '=' '"' deployment_path '"' ';' )   
-        ( 'init' '=' '"' init '"' ';')?
-        '}'
-    ;
-
-// IP Address of Hardware Instance
-ip_address
-    :   
-        ID
-    ;
-
-// Username of App User
-username
-    :   
-        ID
-    ;
-
-// Full path to SSH Key
-sshkey
-    :   
-        ID
-    ;
-
-// Full path to Deployment Folder where executables reside
-deployment_path
-    :
-        ID
-    ;
-
-// Full path to Init Script
-init
-    :   
-        ID
-    ;
-
-// Environment Variables
-env_var
-    :   
-        ID
-    ;
-
 // Node Instances in Hardware Instance
 node
     :   'node' name
         '{'
             'properties'
             '{'
+                ( 'ref' '=' '"' reference '"' ';' )
                 ( 'priority' '=' priority ';' )
+                ( 'username' '=' '"' username '"' ';' )?
+                ( 'sshkey' '=' '"' sshkey '"' ';'  )?
+                ( 'deployment_path' '=' '"' deployment_path '"' ';' )?   
+                ( 'init' '=' '"' init '"' ';')?
                 ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
             '}'
 
@@ -111,6 +59,30 @@ node
 reference
     :   
         ID ( '/' ID )*
+    ;
+
+// Username @ hardware
+username
+    :
+        ID
+    ;
+
+// SSHKey to access hardware as username
+sshkey 
+    :
+        ID
+    ;
+
+// Path where executables are deployed
+deployment_path
+    :
+        ID
+    ;
+
+// Path to some init script at target that is run before deploying the nodes
+init
+    :
+        ID
     ;
 
 // Command line Arguments

@@ -31,12 +31,40 @@ hardware
     :   'hardware' name
         '{'
         ( 'ip_address' '=' '"' ip_address '"' ';'  )
+        ( 'username' '=' '"' username '"' ';' )
+        ( 'sshkey' '=' '"' sshkey '"' ';'  )
+        ( 'deployment_path' '=' '"' deployment_path '"' ';' )   
+        ( 'init' '=' '"' init '"' ';')?
         ( 'arch' '=' arch ';' )
         '}'
     ;
 
 // IP Address of Hardware
 ip_address
+    :
+        ID
+    ;
+
+// Username @ hardware
+username
+    :
+        ID
+    ;
+
+// SSHKey to access hardware as username
+sshkey 
+    :
+        ID
+    ;
+
+// Path where executables are deployed
+deployment_path
+    :
+        ID
+    ;
+
+// Path to some init script at target that is run before deploying the nodes
+init
     :
         ID
     ;

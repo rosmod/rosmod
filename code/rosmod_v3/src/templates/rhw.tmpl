@@ -7,9 +7,13 @@
 // Hardware - $hardware.properties["name"]
 hardware $hardware.properties["name"]
 {
-    ip_address = "$hardware.properties["ip_address"]";
+  ip_address = "$hardware.properties["ip_address"]";
+  username = "$hardware.properties["username"]";
+  sshkey = "$hardware.properties["sshkey"]"; 
+  deployment_path = "$hardware.properties["deployment_path"]";
+  init = "$hardware.properties["init"]";
 #if $hardware.properties["arch"] != ""
-    arch = $hardware.properties["arch"];
+  arch = $hardware.properties["arch"];
 #end if
 }
 #end for

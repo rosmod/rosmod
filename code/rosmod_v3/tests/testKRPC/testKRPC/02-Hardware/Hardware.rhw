@@ -5,13 +5,21 @@
 // Hardware - BeagleboneBlack
 hardware BeagleboneBlack
 {
-    ip_address = "10.1.1.1";
-    arch = armv7l;
+  ip_address = "10.1.1.1";
+  username = "kelsier";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/kelsier";
+  init = "/home/kelsier/init.sh";
+  arch = armv7l;
 }
 // Hardware - NVIDIA_JetsonTK1
 hardware NVIDIA_JetsonTK1
 {
-    ip_address = "10.1.1.2";
-    arch = armv7l;
+  ip_address = "10.1.1.2";
+  username = "kelsier";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/kelsier";
+  init = "/home/kelsier/init.sh";
+  arch = armv7l;
 }
 

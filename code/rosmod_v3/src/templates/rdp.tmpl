@@ -6,85 +6,69 @@
 using $deployment.properties["rhw_reference"].properties["name"];
 
 #if $deployment.children != []
-#for $hardware_instance in $deployment.getChildrenByKind("Hardware_Instance")
-// ROSMOD Hardware Instance - $hardware_instance.properties["name"]
-hardware_instance $hardware_instance.properties["name"]
+#for $node in $deployment.children
+// ROSMOD Node - $node.properties["name"] 
+node $node.properties["name"]
 {
-    properties
-    {
-        ref = "${deployment.properties["rhw_reference"].properties["name"]}/$hardware_instance.properties["hardware_reference"].properties["name"]";
-        username = "$hardware_instance.properties["username"]";
-	sshkey = "$hardware_instance.properties["sshkey"]";
-	deployment_path = "$hardware_instance.properties["deployment_path"]";
-#if $hardware_instance.properties["init"] != ""
-	init = "$hardware_instance.properties["init"]";
-#end if
-    }
-#if $hardware_instance.children != []
-#for $node in $hardware_instance.children
-    // ROSMOD Node - $node.properties["name"] 
-    node $node.properties["name"]
-    {
-        properties
-	{
-	    priority = $node.properties["priority"];
+  properties
+  {
+    ref = "$node.properties["hardware_reference"].parent.properties["name"]/$node.properties["hardware_reference"].properties["name"]";
+    priority = $node.properties["priority"];
 #if $node.properties["cmd_args"] != ""
-    	    cmd_args = "$node.properties["cmd_args"]";		   
+    cmd_args = "$node.properties["cmd_args"]";		   
 #end if
-        }
+  }
 #if $node.children != []
 #for $comp_instance in $node.children
-        component_instance $comp_instance.properties["name"]
+  component_instance $comp_instance.properties["name"]
+  {
+      properties
+      {
+	ref = "$comp_instance.properties["component_reference"].parent.properties["name"]/$comp_instance.properties["component_reference"].properties["name"]";
+	scheduling_scheme = $comp_instance.properties["scheduling_scheme"];
+	logging
 	{
-            properties
-	    {
- 	        ref = "$comp_instance.properties["component_reference"].parent.properties["name"]/$comp_instance.properties["component_reference"].properties["name"]";
-                scheduling_scheme = $comp_instance.properties["scheduling_scheme"];
-	        logging
-	        {
 #if $comp_instance.properties["logging_debug"] != False
-	            DEBUG = true;
+	  DEBUG = true;
 #else
-	            DEBUG = false;
+	  DEBUG = false;
 #end if
 #if $comp_instance.properties["logging_info"] != False
-	            INFO = true;
+	  INFO = true;
 #else
-	            INFO = false;
+	  INFO = false;
 #end if
 #if $comp_instance.properties["logging_warning"] != False
-	            WARNING = true;
+	  WARNING = true;
 #else
-	            WARNING = false;
+	  WARNING = false;
 #end if
 #if $comp_instance.properties["logging_error"] != False
-	            ERROR = true;
+	  ERROR = true;
 #else
-	            ERROR = false;
+	  ERROR = false;
 #end if
 #if $comp_instance.properties["logging_critical"] != False
-                    CRITICAL = true;
+	  CRITICAL = true;
 #else
-	            CRITICAL = false;
+	  CRITICAL = false;
 #end if
-	        }
-            }
+	}
+      }
 #if $comp_instance.children != []
 #for $port_instance in $comp_instance.children
-            port_instance $port_instance.properties["name"] 
-	    {
-	          ref = "$port_instance.properties["port_reference"].parent.properties["name"]/$port_instance.properties["port_reference"].properties["name"]";
-                  group = "$port_instance.properties["group"]";
-            }
+      port_instance $port_instance.properties["name"] 
+      {
+	ref = "$port_instance.properties["port_reference"].parent.properties["name"]/$port_instance.properties["port_reference"].properties["name"]";
+	group = "$port_instance.properties["group"]";
+      }
 #end for
 #end if
-        }
-#end for
-#end if
-    }
+  }
 #end for
 #end if
 }
-#end for 
+#end for
 #end if
+
 
