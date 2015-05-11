@@ -93,11 +93,11 @@ model_dict["Hardware"] = Meta_Entity(
     "rhw", 
     [], 
     ["name","ip_address","username","sshkey","deployment_path","init","arch","system_network_profile"],
-    [["Hardware_Instance","hardware_reference"]], 
+    [["Node","hardware_reference"]], 
     [])
 model_dict["rdp"] = Meta_Entity(
     "Project", 
-    ["Hardware_Instance"], 
+    ["Node"], 
     ["name","rhw_reference"],
     [], 
     [["rhw","project"]])
