@@ -327,14 +327,18 @@ class Example(wx.Frame):
             env.use_ssh_config = False
             self.hostDict = {}
             env.hosts = []
-            for host in dep.getChildrenByKind("Hardware_Instance"):
-                nodeList = []
+            hosts = []
+            for node in dep.getChildrenByKind("Node"):
+                host = node.properties['hardware_reference']
+                if host not in hosts:
+                    hosts.append(host)
+            for host in hosts:
                 self.hostDict[host.properties['name']] = fabTest.deployed_host(
                     userName = host.properties['username'],
-                    ipAddress = host.properties['host_reference'].properties['ip_address'],
+                    ipAddress = host.properties['ip_address'],
                     keyFile = host.properties['sshkey'],
-                    nodes = nodeList,
-                    envVars = copy.copy(host.properties['env_variables'])
+                    nodes = [],
+                    envVars = []
                 )
                 env.hosts.append(host.properties['name'])
             copyProgressQ = multiprocessing.Queue()
@@ -429,7 +433,7 @@ class Example(wx.Frame):
                 rosCoreIP = newObj.properties['hardware_reference'].properties['ip_address']
                 testName = newObj.properties['name']
                 hostToNodeListMap = {}
-                for node in dep.getChildrenByKind("node"):
+                for node in dep.getChildrenByKind("Node"):
                     host = node.properties['hardware_reference']
                     numNodes += 1
                     deploymentPath = node.properties['deployment_path']
