@@ -9,6 +9,8 @@ from wx.lib.pubsub import Publisher
 
 env.use_ssh_config = False
 
+local_ips = ["localhost","127.0.0.1"]
+
 def InitDeployment(self):
     self.deployed = False
     self.deploying = False
@@ -19,16 +21,20 @@ def InitDeployment(self):
     self.updatedHostDict = False
 
 class deployed_node():
-    def __init__(self,executable,name,cmdArgs='',pids=[]):
+    def __init__(self,executable,name,deploymentDir,userName,keyFile,cmdArgs='',pids=[]):
         self.name = name
         self.executable = executable
+        self.deploymentDir = deploymentDir
+        self.userName = userName
+        self.keyFile = keyFile
         self.cmdArgs = cmdArgs
         self.pids = pids
 
 class deployed_host():
-    def __init__(self,userName,ipAddress,keyFile,nodes=[],envVars=OrderedDict()):
+    def __init__(self,userName,ipAddress,keyFile,deploymentDir,nodes=[],envVars=OrderedDict()):
         self.userName = userName
         self.ipAddress = ipAddress
+        self.deploymentDir = deploymentDir
         self.keyFile = keyFile
         self.nodes = nodes
         self.envVars = envVars
@@ -62,15 +68,15 @@ def getPIDsFromPS(psString, name):
 @parallel
 def parallelDeploy(hostDict,updateQ):
     host = hostDict[env.host_string]
-    env.key_filename = host.keyFile
-    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
     envVarStr = ""
     for key,value in host.envVars:
         envVarStr += " export {}={}".format(key,value)
     with prefix(envVarStr):
         for node in host.nodes:
             executableString = node.executable
-            if host.ipAddress != "localhost":
+            if host.ipAddress not in local_ips:
+                env.key_filename = host.keyFile
+                env.host_string = "{}@{}".format(host.userName,host.ipAddress)
                 run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
                 pgrep = run('ps aux | grep {}'.format(executableString))
             else:
@@ -84,55 +90,86 @@ def parallelDeploy(hostDict,updateQ):
 @parallel
 def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
     host = hostDict[env.host_string]
-    env.key_filename = host.keyFile
-    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-
-    source = os.path.join(exec_folder_path, "*")
-    dest = "/home/" + host.userName + "/."
-    put(source, dest)    
-    source = os.path.join(deployment_folder_path, "*.xml")
-    dest = "/home/" + host.userName + "/."
-    put(source, dest)
+    if host.ipAddress not in local_ips:
+        env.key_filename = host.keyFile
+        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+        source = os.path.join(exec_folder_path, "*")
+        dest = "/home/" + host.userName + "/."
+        put(source, dest)    
+        source = os.path.join(deployment_folder_path, "*.xml")
+        dest = "/home/" + host.userName + "/."
+        put(source, dest)
+    else:
+        source = os.path.join(exec_folder_path, "*")
+        dest = "/home/" + host.userName + "/."
+        local('cp {} {}'.format(source, dest))
+        source = os.path.join(deployment_folder_path, "*.xml")
+        local('cp {} {}'.format(source, dest))
     updateQ.put(["Copied files to {}".format(env.host_string),1])
 
 @parallel
 def parallelCommand(hostDict, command, updateQ):
     host = hostDict[env.host_string]
-    env.key_filename = host.keyFile
-    env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-    run(command)
+    if host.ipAddress not in local_ips:
+        env.key_filename = host.keyFile
+        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+        run(command)
+    else:
+        local(command)
     updateQ.put(["Ran {} on host {}".format(command,env.host_string),1])
 
 @parallel
 def parallelStop(hostDict,updateQ):
     host = hostDict[env.host_string]
-    env.key_filename = host.keyFile
-    env.host_string = "root@{}".format(host.ipAddress)
-    for node in host.nodes:
-        if node.pids != [] and len(node.pids) > 0:
-            for pid in node.pids:
-                try:
-                    run('kill -9 {}'.format(pid))
-                except SystemExit:
-                    pass
-        updateQ.put(["Killed {}".format(node.name),1])
-        node.pids = []
+    if host.ipAddress not in local_ips:
+        env.key_filename = host.keyFile
+        env.host_string = "root@{}".format(host.ipAddress)
+        for node in host.nodes:
+            if node.pids != [] and len(node.pids) > 0:
+                for pid in node.pids:
+                    try:
+                        run('kill -9 {}'.format(pid))
+                    except SystemExit:
+                        pass
+            updateQ.put(["Killed {}".format(node.name),1])
+            node.pids = []
+    else:
+        for node in host.nodes:
+            if node.pids != [] and len(node.pids) > 0:
+                for pid in node.pids:
+                    try:
+                        local('kill -9 {}'.format(pid))
+                    except SystemExit:
+                        pass
+            updateQ.put(["Killed {}".format(node.name),1])
+            node.pids = []
     return host
 
 @parallel
 def parallelMonitor(hostDict,updateQ):
     host = hostDict[env.host_string]
-    env.key_filename = host.keyFile
-    env.host_string = "root@{}".format(host.ipAddress)
-    for node in host.nodes:
-        if node.pids != [] and len(node.pids) > 0:
-            for pid in node.pids:
-                try:
-                    status = run('ps --no-headers -p {}'.format(pid))
-                    updateQ.put(["{} UP".format(node.name),1])
-                except SystemExit:
-                    updateQ.put(["{} DOWN".format(node.name),1])
-                    node.pids = []
+    if host.ipAddress not in local_ips:
+        env.key_filename = host.keyFile
+        env.host_string = "root@{}".format(host.ipAddress)
+        for node in host.nodes:
+            if node.pids != [] and len(node.pids) > 0:
+                for pid in node.pids:
+                    try:
+                        status = run('ps --no-headers -p {}'.format(pid))
+                        updateQ.put(["{} UP".format(node.name),1])
+                    except SystemExit:
+                        updateQ.put(["{} DOWN".format(node.name),1])
+                        node.pids = []
+    else:
+        for node in host.nodes:
+            if node.pids != [] and len(node.pids) > 0:
+                for pid in node.pids:
+                    try:
+                        status = local('ps --no-headers -p {}'.format(pid))
+                        updateQ.put(["{} UP".format(node.name),1])
+                    except SystemExit:
+                        updateQ.put(["{} DOWN".format(node.name),1])
+                        node.pids = []
     return host
 
 def deployTest(hostDict, host_topic, progress_q):

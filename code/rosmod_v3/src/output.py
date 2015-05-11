@@ -73,6 +73,8 @@ class log_Wrapper(object):
         self.log = log
     def write(self,text):
         wx.CallAfter(self.log.write, text, self.color)
+    def flush(self):
+        pass
     __call__ = write
 
 '''

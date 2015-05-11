@@ -15,7 +15,7 @@ class RMLProgressDialog(wx.Dialog):
     Shows a Progres Gauge while an operation is taking place. May be cancellable
     which is possible when converting pdf/ps or loading models
     """
-    def __init__(self, parent, title, progress_q, numItems=100, cancellable=False):
+    def __init__(self, parent, title, progress_q, numItems=100, cancellable=True):
         """Defines a gauge and a timer which updates the gauge."""
         wx.Dialog.__init__(self, parent=parent, title=title, style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.count = 0

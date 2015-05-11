@@ -42,7 +42,7 @@ from aspect import *
 from output import *
 from worker import *
 from toolbar import *
-from deployment import *
+import deployment
 from contextMenu import *
 from style import *
 
@@ -127,7 +127,7 @@ class Example(wx.Frame):
         self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,
                                               style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
         InitAspects(self)
-        InitDeployment(self)
+        deployment.InitDeployment(self)
         BuildStyleDict(self)
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
@@ -331,9 +331,9 @@ class Example(wx.Frame):
 
     def OnDeploymentMove(self,e):
         if self.deployed == False:
-            selectedPage = self.DeploymentAspect.GetSelection()
-            objName = self.DeploymentAspect.GetPageText(selectedPage)
-            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            selectedPage = self.activeAspect.GetSelection()
+            objName = self.activeAspect.GetPageText(selectedPage)
+            info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
             env.use_ssh_config = False
@@ -345,10 +345,11 @@ class Example(wx.Frame):
                 if host not in hosts:
                     hosts.append(host)
             for host in hosts:
-                self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                self.hostDict[host.properties['name']] = deployment.deployed_host(
                     userName = host.properties['username'],
                     ipAddress = host.properties['ip_address'],
                     keyFile = host.properties['sshkey'],
+                    deploymentDir = host.properties['deployment_path'],
                     nodes = [],
                     envVars = []
                 )
@@ -358,7 +359,7 @@ class Example(wx.Frame):
                                              title="Copy Progress",
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
-            workerThread = WorkerThread(func = lambda : fabTest.copyTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.copyTest(self.hostDict,
                                                                          self.project.workspace_dir + "/devel/lib/",
                                                                          self.project.deployment_path +"/"+ dep.properties['name'],
                                                                          copyProgressQ)
@@ -382,9 +383,9 @@ class Example(wx.Frame):
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
             command = newObj.properties['command']
-            selectedPage = self.DeploymentAspect.GetSelection()
-            objName = self.DeploymentAspect.GetPageText(selectedPage)
-            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            selectedPage = self.activeAspect.GetSelection()
+            objName = self.activeAspect.GetPageText(selectedPage)
+            info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
             env.use_ssh_config = False
@@ -392,7 +393,7 @@ class Example(wx.Frame):
             env.hosts = []
             for host in dep.getChildrenByKind("Hardware_Instance"):
                 nodeList = []
-                self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                self.hostDict[host.properties['name']] = deployment.deployed_host(
                     userName = host.properties['username'],
                     ipAddress = host.properties['host_reference'].properties['ip_address'],
                     keyFile = host.properties['sshkey'],
@@ -405,7 +406,7 @@ class Example(wx.Frame):
                                              title="Copy Progress",
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
-            workerThread = WorkerThread(func = lambda : fabTest.runCommandTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self.hostDict,
                                                                                command,
                                                                                copyProgressQ)
                                     )
@@ -415,9 +416,9 @@ class Example(wx.Frame):
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
-            selectedPage = self.DeploymentAspect.GetSelection()
-            objName = self.DeploymentAspect.GetPageText(selectedPage)
-            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            selectedPage = self.activeAspect.GetSelection()
+            objName = self.activeAspect.GetPageText(selectedPage)
+            info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
             env.use_ssh_config = False
@@ -451,7 +452,7 @@ class Example(wx.Frame):
                         deploymentPath = host.properties['deployment_path']
                     cmdArgs = node.properties['cmdline_arguments']
                     cmdArgs += " -nodename {} -hostname {}".format(node.properties['name'],host.properties['name'])
-                    newNode = fabTest.deployed_node(
+                    newNode = deployment.deployed_node(
                         name = node.properties['name'],
                         executable = deploymentPath + '/' + 'node_main',
                         cmdArgs = node.properties['cmdline_arguments']
@@ -461,7 +462,7 @@ class Example(wx.Frame):
                     else:
                         hostToNodeListMap[host] = [ newNode ]
                 for host,nodeList in hostToNodeListMap.iteritems():
-                    self.hostDict[host.properties['name']] = fabTest.deployed_host(
+                    self.hostDict[host.properties['name']] = deployment.deployed_host(
                         userName = host.properties['username'],
                         ipAddress = host.properties['ip_address'],
                         keyFile = host.properties['sshkey'],
@@ -479,7 +480,7 @@ class Example(wx.Frame):
                                                  title="Deployment Progress",
                                                  progress_q = deploymentProgressQ,
                                                  numItems=numNodes)
-                workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
+                workerThread = WorkerThread(func = lambda : deployment.deployTest(self.hostDict,
                                                                                self.hostDictTopic,
                                                                                deploymentProgressQ)
                                         )
@@ -496,7 +497,7 @@ class Example(wx.Frame):
                 # START MONITORING INFRASTRUCTURE
                 #env.warn_only = True
                 monitorQ = multiprocessing.Queue()
-                workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                workerThread = WorkerThread(func = lambda : deployment.monitorTest(self.hostDict,
                                                                                 self.hostDictTopic,
                                                                                 monitorQ)
                                         )
@@ -517,7 +518,7 @@ class Example(wx.Frame):
                                             title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
                                             numItems=self.runningNodes)
-            workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.stopTest(self.hostDict,
                                                                          self.hostDictTopic,
                                                                          deploymentProgressQ)
             )
