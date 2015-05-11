@@ -175,7 +175,7 @@ class ROSMOD_Generator:
         t = nodeMain(searchList=[node_namespace])
         self.nodeMain_str = str(t)
         node_filename = "node_main.cpp"
-        with open(os.path.join(self.cpp, node_fiename), 'w') as temp_file:
+        with open(os.path.join(self.cpp, node_filename), 'w') as temp_file:
             temp_file.write(self.nodeMain_str)
 
         # For each package in the ros model
