@@ -344,13 +344,12 @@ class Example(wx.Frame):
                 deploymentPath = host.properties['deployment_path']
             cmdArgs = node.properties['cmd_args']
             cmdArgs += " -nodename {} -hostname {}".format(node.properties['name'],host.properties['name'])
-            print cmdArgs
             libs = []
             for child in node.children:
                 libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
             newNode = deployment.deployed_node(
                 name = node.properties['name'],
-                executable = deploymentPath + '/' + 'node_main',
+                executable = deploymentPath + '/node_main',
                 libs = libs,
                 config = node.properties['name'] + ".xml",
                 deploymentDir = deploymentPath,
@@ -452,7 +451,7 @@ class Example(wx.Frame):
             dep = info.obj
             canvas = info.canvas
             rosCoreIP = ""
-            testName = ""
+            testName = "NewTest"
             properties = OrderedDict()
             properties['name'] = testName
             properties['hardware_reference'] = None
