@@ -210,6 +210,8 @@ class ROS_Project(Drawable_Object):
     # Go through dirname and load in all .msg files into message objects
     # load them into the ref dict according to their filename pkgName.msgName.msg
     def parse_msg(self, dirname):
+        if not os.path.exists(dirname):
+            return
         #print "ROSTOOLS::Parsing Message Files!"
         for filename in os.listdir(dirname):
             if filename.endswith('.msg'):
@@ -231,6 +233,8 @@ class ROS_Project(Drawable_Object):
     # Go through dirname and load in all .srv files into service objects
     # load them into the ref dict according to their filename pkgName.srvName.srv
     def parse_srv(self, dirname):
+        if not os.path.exists(dirname):
+            return
         #print "ROSTOOLS::Parsing Service Files!"
         for filename in os.listdir(dirname):
             if filename.endswith('.srv'):
@@ -252,6 +256,8 @@ class ROS_Project(Drawable_Object):
     # Go through dirname and load in all .abl files into business_logic properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.abl
     def parse_abl(self, dirname):
+        if not os.path.exists(dirname):
+            return
         #print "ROSTOOLS::Parsing Abstract Business Logic Model Files!"
         for filename in os.listdir(dirname):
             if len(filename.split('.')) == 4:
@@ -272,6 +278,8 @@ class ROS_Project(Drawable_Object):
     # Go through dirname and load in all .pnp files into network profile properties for their ports
     # load them into the ref dict according to their filename pkgName.compName.portName.pnp
     def parse_pnp(self, dirname):
+        if not os.path.exists(dirname):
+            return
         #print "ROSTOOLS::Parsing Port Network Profiles!"
         for filename in os.listdir(dirname):
             if len(filename.split('.')) == 4:
@@ -291,6 +299,8 @@ class ROS_Project(Drawable_Object):
 
     # Go through dirname and load in all .snp files into system profile properties in hardware
     def parse_snp(self, dirname):
+        if not os.path.exists(dirname):
+            return
         #print "ROSTOOLS::Parsing System Network Profiles!"
         for filename in os.listdir(dirname):
             if len(filename.split('.')) == 3:

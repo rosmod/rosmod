@@ -15,7 +15,7 @@ class RMLProgressDialog(wx.Dialog):
     Shows a Progres Gauge while an operation is taking place. May be cancellable
     which is possible when converting pdf/ps or loading models
     """
-    def __init__(self, parent, title, progress_q, numItems=100, cancellable=False):
+    def __init__(self, parent, title, progress_q, numItems=100, cancellable=True):
         """Defines a gauge and a timer which updates the gauge."""
         wx.Dialog.__init__(self, parent=parent, title=title, style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.count = 0
@@ -219,7 +219,6 @@ class EditDialog(wx.Dialog):
                     field.SetText(value.encode("utf8"))
             elif meta_class_dict[key].kind == 'reference':
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
-                refObjTypes = model_dict[self.editObj.kind].out_refs
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
                     field.Append(ref.properties['name'],ref)

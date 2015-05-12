@@ -42,7 +42,7 @@ from aspect import *
 from output import *
 from worker import *
 from toolbar import *
-from deployment import *
+import deployment
 from contextMenu import *
 from style import *
 
@@ -127,7 +127,7 @@ class Example(wx.Frame):
         self.viewSplitter = wx.SplitterWindow(self,wx.ID_NEW,
                                               style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
         InitAspects(self)
-        InitDeployment(self)
+        deployment.InitDeployment(self)
         BuildStyleDict(self)
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
@@ -329,40 +329,82 @@ class Example(wx.Frame):
     def OnDeploymentGenerate(self,e):
         self.GenerateXML()
 
+    def BuildHostDict(self,dep,rosCoreIP=""):
+        #env.warn_only = False
+        env.use_ssh_config = False
+        self.hostDict = {}
+        env.hosts = []
+        hostToNodeListMap = {}
+        numNodes = 0
+        for node in dep.getChildrenByKind("Node"):
+            host = node.properties['hardware_reference']
+            numNodes += 1
+            deploymentPath = node.properties['deployment_path']
+            if deploymentPath == "":
+                deploymentPath = host.properties['deployment_path']
+            cmdArgs = node.properties['cmd_args']
+            cmdArgs += " -nodename {} -hostname {}".format(node.properties['name'],host.properties['name'])
+            print cmdArgs
+            libs = []
+            for child in node.children:
+                libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
+            newNode = deployment.deployed_node(
+                name = node.properties['name'],
+                executable = deploymentPath + '/' + 'node_main',
+                libs = libs,
+                config = node.properties['name'] + ".xml",
+                deploymentDir = deploymentPath,
+                userName = host.properties['username'],
+                keyFile = host.properties['sshkey'],
+                cmdArgs = cmdArgs
+            )
+            if host in hostToNodeListMap.keys():
+                hostToNodeListMap[host].append( newNode )
+            else:
+                hostToNodeListMap[host] = [ newNode ]
+        for host,nodeList in hostToNodeListMap.iteritems():
+            self.hostDict[host.properties['name']] = deployment.deployed_host(
+                name = host.properties['name'],
+                userName = host.properties['username'],
+                deploymentDir = host.properties['deployment_path'],
+                ipAddress = host.properties['ip_address'],
+                keyFile = host.properties['sshkey'],
+                nodes = nodeList,
+                envVars = []
+            )
+            self.hostDict[host.properties['name']].envVars.append(
+                ["LD_LIBRARY_PATH","{}:$LD_LIBRARY_PATH".format(host.properties['deployment_path'])]
+            )
+            if rosCoreIP != "":
+                self.hostDict[host.properties['name']].envVars.append(
+                    ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
+                self.hostDict[host.properties['name']].envVars.append(
+                    ['ROS_IP',host.properties['ip_address']]
+                )
+            env.hosts.append(host.properties['name'])
+        return numNodes
+        
+
     def OnDeploymentMove(self,e):
         if self.deployed == False:
-            selectedPage = self.DeploymentAspect.GetSelection()
-            objName = self.DeploymentAspect.GetPageText(selectedPage)
-            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            selectedPage = self.activeAspect.GetSelection()
+            objName = self.activeAspect.GetPageText(selectedPage)
+            info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
-            env.use_ssh_config = False
-            self.hostDict = {}
-            env.hosts = []
-            hosts = []
-            for node in dep.getChildrenByKind("Node"):
-                host = node.properties['hardware_reference']
-                if host not in hosts:
-                    hosts.append(host)
-            for host in hosts:
-                self.hostDict[host.properties['name']] = fabTest.deployed_host(
-                    userName = host.properties['username'],
-                    ipAddress = host.properties['ip_address'],
-                    keyFile = host.properties['sshkey'],
-                    nodes = [],
-                    envVars = []
-                )
-                env.hosts.append(host.properties['name'])
+            numNodes = self.BuildHostDict(dep)
             copyProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( parent = self,
                                              title="Copy Progress",
                                              progress_q = copyProgressQ,
-                                             numItems=len(self.hostDict))
-            workerThread = WorkerThread(func = lambda : fabTest.copyTest(self.hostDict,
-                                                                         self.project.workspace_dir + "/devel/lib/",
-                                                                         self.project.deployment_path +"/"+ dep.properties['name'],
-                                                                         copyProgressQ)
-                                    )
+                                             numItems=numNodes)
+            workerThread = WorkerThread(
+                func = lambda : deployment.copyTest(
+                    self.hostDict,
+                    self.project.workspace_dir + "/devel/lib/",
+                    self.project.deployment_path +"/"+ dep.properties['name'],
+                    copyProgressQ)
+            )
             workerThread.start()
             dlg.ShowModal()
             dlg.Destroy()
@@ -382,30 +424,19 @@ class Example(wx.Frame):
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
             command = newObj.properties['command']
-            selectedPage = self.DeploymentAspect.GetSelection()
-            objName = self.DeploymentAspect.GetPageText(selectedPage)
-            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            selectedPage = self.activeAspect.GetSelection()
+            objName = self.activeAspect.GetPageText(selectedPage)
+            info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
-            env.use_ssh_config = False
-            self.hostDict = {}
-            env.hosts = []
-            for host in dep.getChildrenByKind("Hardware_Instance"):
-                nodeList = []
-                self.hostDict[host.properties['name']] = fabTest.deployed_host(
-                    userName = host.properties['username'],
-                    ipAddress = host.properties['host_reference'].properties['ip_address'],
-                    keyFile = host.properties['sshkey'],
-                    nodes = nodeList,
-                    envVars = copy.copy(host.properties['env_variables'])
-                )
-                env.hosts.append(host.properties['name'])
+            if self.deployed == False:
+                self.BuildHostDict(dep)
             copyProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( parent = self,
                                              title="Copy Progress",
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
-            workerThread = WorkerThread(func = lambda : fabTest.runCommandTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self.hostDict,
                                                                                command,
                                                                                copyProgressQ)
                                     )
@@ -415,71 +446,35 @@ class Example(wx.Frame):
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
-            selectedPage = self.DeploymentAspect.GetSelection()
-            objName = self.DeploymentAspect.GetPageText(selectedPage)
-            info = self.DeploymentAspectInfo.GetPageInfo(objName)
+            selectedPage = self.activeAspect.GetSelection()
+            objName = self.activeAspect.GetPageText(selectedPage)
+            info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
-            env.use_ssh_config = False
-            self.hostDict = {}
-            env.hosts = []
-            #env.warn_only = False
-            numNodes = 0 # 1 # roscore
             rosCoreIP = ""
             testName = ""
-            newObj = project.Drawable_Object()
-            newObj.properties = OrderedDict()
-            newObj.properties['name'] = testName
-            newObj.properties['hardware_reference'] = None
+            properties = OrderedDict()
+            properties['name'] = testName
+            properties['hardware_reference'] = None
             references = dep.properties['rhw_reference'].children
             inputs = dialogs.EditorWindow(parent=self,
-                                    editDict=newObj.properties,
-                                    editObj = newObj,
+                                    editDict=properties,
                                     title="Deployment Options",
                                     references = references)
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
-                    newObj.properties[key] = value
-                rosCoreIP = newObj.properties['hardware_reference'].properties['ip_address']
-                testName = newObj.properties['name']
-                hostToNodeListMap = {}
-                for node in dep.getChildrenByKind("Node"):
-                    host = node.properties['hardware_reference']
-                    numNodes += 1
-                    deploymentPath = node.properties['deployment_path']
-                    if deploymentPath == "":
-                        deploymentPath = host.properties['deployment_path']
-                    cmdArgs = node.properties['cmdline_arguments']
-                    cmdArgs += " -nodename {} -hostname {}".format(node.properties['name'],host.properties['name'])
-                    newNode = fabTest.deployed_node(
-                        name = node.properties['name'],
-                        executable = deploymentPath + '/' + 'node_main',
-                        cmdArgs = node.properties['cmdline_arguments']
-                    )
-                    if host in hostToNodeListMap.keys():
-                        hostToNodeListMap[host].append( newNode )
-                    else:
-                        hostToNodeListMap[host] = [ newNode ]
-                for host,nodeList in hostToNodeListMap.iteritems():
-                    self.hostDict[host.properties['name']] = fabTest.deployed_host(
-                        userName = host.properties['username'],
-                        ipAddress = host.properties['ip_address'],
-                        keyFile = host.properties['sshkey'],
-                        nodes = nodeList,
-                        envVars = []
-                    )
-                    self.hostDict[host.properties['name']].envVars.append(
-                        ['ROS_MASTER_URI','http://{}:11311/'.format(rosCoreIP)])
-                    self.hostDict[host.properties['name']].envVars.append(
-                        ['ROS_IP',host.properties['ip_address']]
-                    )
-                    env.hosts.append(host.properties['name'])
+                    properties[key] = value
+                rosCoreIP = properties['hardware_reference'].properties['ip_address']
+                testName = properties['name']
+
+                numNodes = self.BuildHostDict(dep,rosCoreIP)
+
                 deploymentProgressQ = multiprocessing.Queue()
                 dlg = dialogs.RMLProgressDialog( parent = self,
                                                  title="Deployment Progress",
                                                  progress_q = deploymentProgressQ,
                                                  numItems=numNodes)
-                workerThread = WorkerThread(func = lambda : fabTest.deployTest(self.hostDict,
+                workerThread = WorkerThread(func = lambda : deployment.deployTest(self.hostDict,
                                                                                self.hostDictTopic,
                                                                                deploymentProgressQ)
                                         )
@@ -491,18 +486,18 @@ class Example(wx.Frame):
                 self.runningDeploymentCanvas = canvas
                 self.runningNodes = numNodes
                 self.deployed = True
-                while not self.updatedHostDict:
-                    pass
+                #while not self.updatedHostDict:
+                #    pass
                 # START MONITORING INFRASTRUCTURE
                 #env.warn_only = True
                 monitorQ = multiprocessing.Queue()
-                workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
+                workerThread = WorkerThread(func = lambda : deployment.monitorTest(self.hostDict,
                                                                                 self.hostDictTopic,
                                                                                 monitorQ)
                                         )
                 monitorWorkItem = WorkItem(process = workerThread,
                                            queue = monitorQ,
-                                           workFunc = self.MonitorWorkFunc)
+                                           workFunc = lambda e : MonitorWorkFunc(self,e))
                 self.workQueue.append(monitorWorkItem)
                 workerThread.start()
         else:
@@ -517,7 +512,7 @@ class Example(wx.Frame):
                                             title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
                                             numItems=self.runningNodes)
-            workerThread = WorkerThread(func = lambda : fabTest.stopTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.stopTest(self.hostDict,
                                                                          self.hostDictTopic,
                                                                          deploymentProgressQ)
             )
@@ -754,7 +749,17 @@ class Example(wx.Frame):
 
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
-        acceptance.AnalyzeDeployment(dep,5300,2)
+        properties = OrderedDict()
+        properties['period'] = "5400"
+        properties['numPeriods'] = "1"
+        inputs = dialogs.EditorWindow( parent = self,
+                                 editObj = None,
+                                 editDict = properties,
+                                 title = 'Network Analysis Options')
+        if inputs != OrderedDict():
+            period = float(inputs['period'])
+            numPeriods = float(inputs['numPeriods'])
+            acceptance.AnalyzeDeployment(dep,period,numPeriods)
 
     def AnalyzeTiming(self, dep):
         self.project.generate_cpn()
