@@ -38,7 +38,7 @@ Component_3::~Component_3()
   Timer_3.stop();
   Service_Client.shutdown();
   //# Start Destructor Marker
-              
+                
   //# End Destructor Marker
 }
 
