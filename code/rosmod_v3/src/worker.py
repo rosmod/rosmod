@@ -2,6 +2,8 @@ import wx
 from wx.lib.pubsub import Publisher
 from threading import Thread
 
+import deployment
+
 EVT_DEPLOYMENT_UPDATE_ID = wx.NewId()
 EVT_MONITORING_UPDATE_ID = wx.NewId()
 EVT_HOSTDICT_UPDATE_ID = wx.NewId()
@@ -95,14 +97,14 @@ def MonitorWorkFunc(self,workItem):
     # get data from queue
     updateCanvas = False
     try:
-        nodes = self.runningDeployment.getChildrenByKind('node_instance')
+        nodes = self.runningDeployment.getChildrenByKind('Node')
         nodeMap = {}
         for n in nodes:
             nodeMap[n.properties['name']] = n
         data = workItem.queue.get(False)
         while data != None:
             #print "GOT DATA: {}".format(data)
-            dataList = data.split(' ')
+            dataList = data[0].split(' ')
             nodeName = dataList[0]
             node = nodeMap[nodeName]
             if dataList[1] == "UP":
@@ -117,9 +119,9 @@ def MonitorWorkFunc(self,workItem):
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
     if not workItem.process.is_alive(): # process has terminated
         # update deployment overlays here
-        workerThread = WorkerThread(func = lambda : fabTest.monitorTest(self.hostDict,
-                                                                        self.hostDictTopic,
-                                                                        workItem.queue)
+        workerThread = WorkerThread(func = lambda : deployment.monitorTest(self.hostDict,
+                                                                           self.hostDictTopic,
+                                                                           workItem.queue)
                                 )
         workerThread.start()
         workItem.data = workerThread

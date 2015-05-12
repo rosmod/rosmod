@@ -21,9 +21,11 @@ def InitDeployment(self):
     self.updatedHostDict = False
 
 class deployed_node():
-    def __init__(self,executable,name,deploymentDir,userName,keyFile,cmdArgs='',pids=[]):
+    def __init__(self,executable,libs,config,name,deploymentDir,userName,keyFile,cmdArgs='',pids=[]):
         self.name = name
         self.executable = executable
+        self.libs = libs
+        self.config = config
         self.deploymentDir = deploymentDir
         self.userName = userName
         self.keyFile = keyFile
@@ -31,7 +33,8 @@ class deployed_node():
         self.pids = pids
 
 class deployed_host():
-    def __init__(self,userName,ipAddress,keyFile,deploymentDir,nodes=[],envVars=OrderedDict()):
+    def __init__(self,name,userName,ipAddress,keyFile,deploymentDir,nodes=[],envVars=OrderedDict()):
+        self.name = name
         self.userName = userName
         self.ipAddress = ipAddress
         self.deploymentDir = deploymentDir
@@ -80,7 +83,7 @@ def parallelDeploy(hostDict,updateQ):
                 run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
                 pgrep = run('ps aux | grep {}'.format(executableString))
             else:
-                local('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
+                tmp = local('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
                 pgrep = local('ps aux | grep {}'.format(executableString))
             pids = getPIDsFromPS(pgrep,executableString)
             node.pids = pids
@@ -90,21 +93,28 @@ def parallelDeploy(hostDict,updateQ):
 @parallel
 def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
     host = hostDict[env.host_string]
+    copyList = []
+    copyList.append( 
+        [os.path.join(exec_folder_path, "node/node_main"), host.deploymentDir] 
+    )
+    for node in host.nodes:
+        copyList.append( 
+            [os.path.join(deployment_folder_path + "/xml/" + host.name, node.config), node.deploymentDir]
+        )
+        for lib in node.libs:
+            copyList.append(
+                [os.path.join(exec_folder_path, lib), node.deploymentDir]
+            )
+        if node.deploymentDir != host.deploymentDir:
+            copyList.append( [os.path.join(exec_folder_path, "node/node_main"), node.deploymentDir] )
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-        source = os.path.join(exec_folder_path, "*")
-        dest = "/home/" + host.userName + "/."
-        put(source, dest)    
-        source = os.path.join(deployment_folder_path, "*.xml")
-        dest = "/home/" + host.userName + "/."
-        put(source, dest)
+        for source,dest in copyList:
+            put(source,dest)
     else:
-        source = os.path.join(exec_folder_path, "*")
-        dest = "/home/" + host.userName + "/."
-        local('cp {} {}'.format(source, dest))
-        source = os.path.join(deployment_folder_path, "*.xml")
-        local('cp {} {}'.format(source, dest))
+        for source,dest in copyList:
+            local('cp {} {}'.format(source, dest))
     updateQ.put(["Copied files to {}".format(env.host_string),1])
 
 @parallel
@@ -160,6 +170,8 @@ def parallelMonitor(hostDict,updateQ):
                     except SystemExit:
                         updateQ.put(["{} DOWN".format(node.name),1])
                         node.pids = []
+            else:
+                updateQ.put(["{} DOWN".format(node.name),1])
     else:
         for node in host.nodes:
             if node.pids != [] and len(node.pids) > 0:
@@ -170,6 +182,8 @@ def parallelMonitor(hostDict,updateQ):
                     except SystemExit:
                         updateQ.put(["{} DOWN".format(node.name),1])
                         node.pids = []
+            else:
+                updateQ.put(["{} DOWN".format(node.name),1])
     return host
 
 def deployTest(hostDict, host_topic, progress_q):

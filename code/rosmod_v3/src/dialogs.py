@@ -219,7 +219,6 @@ class EditDialog(wx.Dialog):
                     field.SetText(value.encode("utf8"))
             elif meta_class_dict[key].kind == 'reference':
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
-                refObjTypes = model_dict[self.editObj.kind].out_refs
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for ref in self.references:
                     field.Append(ref.properties['name'],ref)
