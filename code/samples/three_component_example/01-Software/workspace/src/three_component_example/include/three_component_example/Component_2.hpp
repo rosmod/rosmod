@@ -45,7 +45,7 @@ private:
   ros::ServiceServer Service_Server;
 
   //# Start User Private Variables Marker
-                
+                  
   //# End User Private Variables Marker
 };
 
