@@ -127,8 +127,8 @@ meta_class_dict["cmakelists_packages"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_functions"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_include_dirs"] = Grammar_Field("hidden")
 
-meta_class_dict["port_network_profile"] = Grammar_Field("code", display_name = "Port Network Profile")
-meta_class_dict["system_network_profile"] = Grammar_Field("code", display_name = "System Network Profile")
+meta_class_dict["port_network_profile"] = Grammar_Field("code", display_name = "Port Network Profile\n<time,bandwidth,latency,interface>")
+meta_class_dict["system_network_profile"] = Grammar_Field("code", display_name = "System Network Profile\n<time,bandwidth,latency,interface>")
 
 meta_class_dict["numPeriods"] = Grammar_Field("string", display_name = "Number of Periods")
 meta_class_dict["command"] = Grammar_Field("string", display_name = "Remote Command")

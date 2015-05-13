@@ -1,8 +1,10 @@
 
 import sys, os, csv, copy, glob
 from acceptancemathlib import *
+havePLT = False
 try:
     import matplotlib.pyplot as plt
+    havePLT=True
 except ImportError:
     pass
 
@@ -350,6 +352,9 @@ class NodeProfile:
         return
 
     def plotData(self):
+        if not havePLT:
+            print >> sys.stderr, "ERROR DISPLAYING PLOT: you must have python-matplotlib installed!"
+            return
         plt.figure(2)
         plt.hold(True)
         self.plotProfile('data',self.profile,'required',[8,4,2,4,2,4],'r[t]: ')
@@ -382,6 +387,9 @@ class NodeProfile:
         return
 
     def plotBandwidth(self):
+        if not havePLT:
+            print >> sys.stderr, "ERROR DISPLAYING PLOT: you must have python-matplotlib installed!"
+            return
         plt.figure(1)
         plt.hold(True)
         self.plotProfile('bandwidth',self.profile,'required',[4,8])

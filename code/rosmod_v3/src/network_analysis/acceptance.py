@@ -31,24 +31,26 @@ def AnalyzeHost(host, nodes, period, numPeriods):
 
     selected_interface = ''
     selected_host = host.properties['name']
-    print networkProfile.nodeProfiles[selected_host].interfaces
     if len(networkProfile.nodeProfiles[selected_host].interfaces) > 0:
         selected_interface = networkProfile.nodeProfiles[selected_host].interfaces[0]
     else:
-        print 'ERROR: node {0} has no interfaces that can be analyzed!'.format(selected_host)
+        print >> sys.stderr, 'ERROR: host {0} has no interfaces that can be analyzed!'.format(selected_host)
         return -1
 
-    print 'Using node: interface {0} on node {1}'.format(selected_interface,selected_host)
+    print 'Using host: interface {0} on node {1}'.format(selected_interface,selected_host)
     print "Using period ",period," over ",numPeriods," periods"
 
     if networkProfile.convolve(selected_host,selected_interface) == -1:
-        print 'Node {0} has cannot be analyzed for interface {1}: no usable profile'.format(selected_host,selected_interface)
+        print >> sys.stderr, 'ERROR: Host {0} cannot be analyzed for interface {1}: no usable profile'.format(selected_host,selected_interface)
 
     buff = networkProfile.nodeProfiles[selected_host].buffer
     print "\n[Time location, buffersize]:",[buff[0],buff[2]]
 
     delay = networkProfile.nodeProfiles[selected_host].delay
     print "[Time location, delay]:",[delay[0],delay[2]]
+
+    networkProfile.nodeProfiles[selected_host].plotBandwidth()
+    networkProfile.nodeProfiles[selected_host].plotData()
                     
 
 def AnalyzeDeployment(dep, period, numPeriods):
