@@ -56,10 +56,11 @@ class Log(stc.StyledTextCtrl):
         'text' should be a unicode string or contain only ascii data.
         """
         self.SetReadOnly(False)
+        self.DocumentEnd()
         style = self.getStyle(c)
         lenText = len(text.encode('utf8'))
         end = self.GetLength()
-        self.AddText(text)
+        self.AppendText(text)
         self.StartStyling(end, 31)
         self.SetStyling(lenText, style)
         self.EnsureCaretVisible()
