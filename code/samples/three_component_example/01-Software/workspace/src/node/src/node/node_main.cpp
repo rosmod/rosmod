@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 {
   std::string nodeName = "node";
   std::string hostName = "localhost";
+  std::string configFile = "";
   
   for(int i = 0; i < argc; i++)
   {
@@ -22,11 +23,15 @@ int main(int argc, char **argv)
       nodeName = argv[i+1];
     if(!strcmp(argv[i], "-hostname"))
       hostName = argv[i+1];
+    if(!strcmp(argv[i], "-config"))
+      configFile = argv[i+1];
   }
 
   std::vector<boost::thread*> compThreads;
   XMLParser nodeParser;
   std::string configFileName = nodeName + ".xml";
+  if (configFile.length() > 0)
+    configFileName = configFile;
   if (nodeParser.Parse(configFileName))
   {      
     ros::init(argc, argv, nodeName.c_str());

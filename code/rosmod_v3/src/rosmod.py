@@ -343,7 +343,11 @@ class Example(wx.Frame):
             if deploymentPath == "":
                 deploymentPath = host.properties['deployment_path']
             cmdArgs = node.properties['cmd_args']
-            cmdArgs += " -nodename {} -hostname {}".format(node.properties['name'],host.properties['name'])
+            cmdArgs += " -config {} -nodename {} -hostname {}".format(
+                deploymentPath + "/" + node.properties['name'] + ".xml",
+                node.properties['name'],
+                host.properties['name']
+            )
             libs = []
             for child in node.children:
                 libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
@@ -399,7 +403,7 @@ class Example(wx.Frame):
                                              numItems=numNodes)
             workerThread = WorkerThread(
                 func = lambda : deployment.copyTest(
-                    self.hostDict,
+                    self,
                     self.project.project_path + "/01-Software/" + self.project.getChildrenByKind("rml")[0].properties['name'] + "/devel/lib/",
                     self.project.project_path + "/03-Deployment/"+ dep.properties['name'],
                     copyProgressQ)
@@ -435,7 +439,7 @@ class Example(wx.Frame):
                                              title="Copy Progress",
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
-            workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self,
                                                                                command,
                                                                                copyProgressQ)
                                     )
@@ -473,7 +477,7 @@ class Example(wx.Frame):
                                                  title="Deployment Progress",
                                                  progress_q = deploymentProgressQ,
                                                  numItems=numNodes)
-                workerThread = WorkerThread(func = lambda : deployment.deployTest(self.hostDict,
+                workerThread = WorkerThread(func = lambda : deployment.deployTest(self,
                                                                                self.hostDictTopic,
                                                                                deploymentProgressQ)
                                         )
@@ -490,7 +494,7 @@ class Example(wx.Frame):
                 # START MONITORING INFRASTRUCTURE
                 #env.warn_only = True
                 monitorQ = multiprocessing.Queue()
-                workerThread = WorkerThread(func = lambda : deployment.monitorTest(self.hostDict,
+                workerThread = WorkerThread(func = lambda : deployment.monitorTest(self,
                                                                                 self.hostDictTopic,
                                                                                 monitorQ)
                                         )
@@ -511,7 +515,7 @@ class Example(wx.Frame):
                                             title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
                                             numItems=self.runningNodes)
-            workerThread = WorkerThread(func = lambda : deployment.stopTest(self.hostDict,
+            workerThread = WorkerThread(func = lambda : deployment.stopTest(self,
                                                                          self.hostDictTopic,
                                                                          deploymentProgressQ)
             )

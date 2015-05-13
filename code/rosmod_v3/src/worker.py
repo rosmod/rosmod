@@ -78,6 +78,7 @@ def OnSubscribeMonitorStatus(self,message):
 
 def OnSubscribeHostDictChange(self,message):
     self.updatedHostDict = True
+    print 'HOST DICT RECEIVED'
     self.hostDict = message.data
 
 '''
@@ -119,7 +120,7 @@ def MonitorWorkFunc(self,workItem):
             self.DrawModel(self.runningDeployment,self.runningDeploymentCanvas)
     if not workItem.process.is_alive(): # process has terminated
         # update deployment overlays here
-        workerThread = WorkerThread(func = lambda : deployment.monitorTest(self.hostDict,
+        workerThread = WorkerThread(func = lambda : deployment.monitorTest(self,
                                                                            self.hostDictTopic,
                                                                            workItem.queue)
                                 )

@@ -75,22 +75,22 @@ def parallelDeploy(hostDict,updateQ):
     host = hostDict[env.host_string]
     envVarStr = ""
     for key,value in host.envVars:
-        envVarStr += "export {}={} ".format(key,value)
-    with prefix(envVarStr):
-        for node in host.nodes:
-            executableString = node.executable
-            if host.ipAddress not in local_ips:
+        envVarStr += "export {}={}; ".format(key,value)
+    for node in host.nodes:
+        executableString = node.executable
+        if host.ipAddress not in local_ips:
+            envVarStr = envVarStr.replace(';','')
+            with prefix(envVarStr):
                 env.key_filename = host.keyFile
                 env.host_string = "{}@{}".format(host.userName,host.ipAddress)
                 run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
                 pgrep = run('ps aux | grep {}'.format(executableString))
-            else:
-                tmp = local('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
-                pgrep = local('ps aux | grep {}'.format(executableString))
-            pids = getPIDsFromPS(pgrep,executableString)
-            print "PIDS =",pids
-            node.pids = pids
-            updateQ.put(["Deployed {}".format(node.name),1])
+        else:
+            local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,node.cmdArgs),capture=True)
+            pgrep = local('ps aux | grep {}'.format(executableString),capture=True)
+        pids = getPIDsFromPS(pgrep,node.name)
+        node.pids = pids
+        updateQ.put(["Deployed {}".format(node.name),1])
     return host
 
 @parallel
@@ -117,7 +117,7 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
             put(source,dest)
     else:
         for source,dest in copyList:
-            local('cp {} {}'.format(source, dest))
+            local('cp {} {}'.format(source, dest),capture=True)
     updateQ.put(["Copied files to {}".format(env.host_string),1])
 
 @parallel
@@ -128,7 +128,7 @@ def parallelCommand(hostDict, command, updateQ):
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         run(command)
     else:
-        local(command)
+        local(command,capture=True)
     updateQ.put(["Ran {} on host {}".format(command,env.host_string),1])
 
 @parallel
@@ -136,7 +136,7 @@ def parallelStop(hostDict,updateQ):
     host = hostDict[env.host_string]
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
-        env.host_string = "root@{}".format(host.ipAddress)
+        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         for node in host.nodes:
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
@@ -151,7 +151,7 @@ def parallelStop(hostDict,updateQ):
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
                     try:
-                        local('kill -9 {}'.format(pid))
+                        local('kill -9 {}'.format(pid),capture=True)
                     except SystemExit:
                         pass
             updateQ.put(["Killed {}".format(node.name),1])
@@ -163,7 +163,7 @@ def parallelMonitor(hostDict,updateQ):
     host = hostDict[env.host_string]
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
-        env.host_string = "root@{}".format(host.ipAddress)
+        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         for node in host.nodes:
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
@@ -180,7 +180,7 @@ def parallelMonitor(hostDict,updateQ):
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
                     try:
-                        status = local('ps --no-headers -p {}'.format(pid))
+                        status = local('ps --no-headers -p {}'.format(pid),capture=True)
                         updateQ.put(["{} UP".format(node.name),1])
                     except SystemExit:
                         updateQ.put(["{} DOWN".format(node.name),1])
@@ -189,26 +189,22 @@ def parallelMonitor(hostDict,updateQ):
                 updateQ.put(["{} DOWN".format(node.name),1])
     return host
 
-def deployTest(hostDict, host_topic, progress_q):
-    newHosts = execute(parallelDeploy,hostDict,progress_q)
-    Publisher().sendMessage(host_topic,newHosts)
+def deployTest(self, host_topic, progress_q):
+    self.hostDict = execute(parallelDeploy,self.hostDict,progress_q)
 
-def stopTest(hostDict, host_topic, progress_q):
-    newHosts = execute(parallelStop,hostDict,progress_q)
-    Publisher().sendMessage(host_topic,newHosts)
+def stopTest(self, host_topic, progress_q):
+    self.hostDict = execute(parallelStop,self.hostDict,progress_q)
     
-def monitorTest(hostDict,  host_topic, progress_q):
-    newHosts = execute(parallelMonitor,hostDict,progress_q)
-    Publisher().sendMessage(host_topic,newHosts)
+def monitorTest(self, host_topic, progress_q):
+    self.hostDict = execute(parallelMonitor,self.hostDict,progress_q)
 
-def copyTest(hostDict, exec_folder_path, xml_folder_path, progress_q):
-    execute(parallelCopy, hostDict, exec_folder_path, xml_folder_path, progress_q)
+def copyTest(self, exec_folder_path, xml_folder_path, progress_q):
+    execute(parallelCopy, self.hostDict, exec_folder_path, xml_folder_path, progress_q)
 
-def runCommandTest(hostDict, command, progress_q):
-    execute(parallelCommand, hostDict, command, progress_q)
+def runCommandTest(self, command, progress_q):
+    execute(parallelCommand, self.hostDict, command, progress_q)
 
-@task
-def main():
+def main(ipaddr):
     hostDict = {}
     node = deployed_node(
         name = 'three_component_node',
@@ -218,13 +214,13 @@ def main():
         deploymentDir = '/home/jeb/',
         userName = 'jeb',
         keyFile = '/home/jeb/.ssh/id_rsa_rosmod',
-        cmdArgs = ' -nodename three_component_node -hostname Laptop'
+        cmdArgs = ' -config /home/jeb/three_component_node.xml -nodename three_component_node -hostname Laptop'
     )
     hostDict['Laptop'] = deployed_host(
         name = 'Laptop',
         userName = 'jeb',
         deploymentDir = '/home/jeb/',
-        ipAddress = 'localhost',
+        ipAddress = ipaddr,
         keyFile = '/home/jeb/.ssh/id_rsa_rosmod',
         nodes = [node],
         envVars = []
@@ -233,25 +229,42 @@ def main():
         ["LD_LIBRARY_PATH","/home/jeb/:$LD_LIBRARY_PATH"]
     )
     hostDict['Laptop'].envVars.append(
-        ['ROS_MASTER_URI','http://{}:11311/'.format("127.0.0.1")])
+        ['ROS_MASTER_URI','http://{}:11311/'.format(ipaddr)])
     hostDict['Laptop'].envVars.append(
-        ['ROS_IP','127.0.0.1']
+        ['ROS_IP',ipaddr]
     )
+
+    obj = Object()
+    obj.hostDict = hostDict
 
     env.hosts.append('Laptop')
 
     copyTest(
-        hostDict,
+        obj,
         '/home/jeb/Repositories/rosmod/code/samples/three_component_example/01-Software/workspace/devel/lib/',
         '/home/jeb/Repositories/rosmod/code/samples/three_component_example/03-Deployment/deployment',
         multiprocessing.Queue()
     )
 
-    deployTest(
-        hostDict,
+    hostDict = deployTest(
+        obj,
         'testTopic',
         multiprocessing.Queue()
     )
 
+    hostDict = stopTest(
+        obj,
+        'testTopic',
+        multiprocessing.Queue()
+    )
+
+@task
+def local_test():
+    main('127.0.0.1')
+
+@task
+def remote_test():
+    main('192.168.1.4')
+
 if __name__ == "__main__":
-    main()
+    main('127.0.0.1')

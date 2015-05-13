@@ -6,9 +6,9 @@
 hardware Laptop
 {
   ip_address = "localhost";
-  username = "root";
-  sshkey = "/root/.ssh/id_rsa"; 
-  deployment_path = "/root/";
+  username = "jeb";
+  sshkey = "/home/jeb/.ssh/id_rsa_rosmod"; 
+  deployment_path = "/home/jeb";
   arch = x64;
 }
 
