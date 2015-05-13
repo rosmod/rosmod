@@ -37,7 +37,6 @@ private:
   ros::ServiceClient Service_Client;
 
   //# Start User Private Variables Marker
-                  
   //# End User Private Variables Marker
 };
 

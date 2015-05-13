@@ -45,7 +45,6 @@ Component_1::~Component_1()
   Name_Publisher.shutdown();
   Name_Subscriber.shutdown();
   //# Start Destructor Marker
-                  
   //# End Destructor Marker
 }
 

@@ -48,7 +48,6 @@ Component_2::~Component_2()
   Name_Publisher.shutdown();
   Service_Server.shutdown();
   //# Start Destructor Marker
-                  
   //# End Destructor Marker
 }
 

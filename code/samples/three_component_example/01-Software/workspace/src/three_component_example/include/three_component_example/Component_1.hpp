@@ -44,7 +44,6 @@ private:
   ros::Publisher Name_Publisher;
 
   //# Start User Private Variables Marker
-                  
   //# End User Private Variables Marker
 };
 
