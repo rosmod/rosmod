@@ -762,7 +762,7 @@ class Example(wx.Frame):
                                  title = 'Network Analysis Options')
         if inputs != OrderedDict():
             period = float(inputs['period'])
-            numPeriods = float(inputs['numPeriods'])
+            numPeriods = int(inputs['numPeriods'])
             acceptance.AnalyzeDeployment(dep,period,numPeriods)
 
     def AnalyzeTiming(self, dep):
