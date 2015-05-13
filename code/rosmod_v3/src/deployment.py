@@ -7,7 +7,6 @@ from fabric.api import task, run
 from collections import OrderedDict
 
 import multiprocessing
-from wx.lib.pubsub import Publisher
 
 env.use_ssh_config = False
 
@@ -123,13 +122,14 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
 @parallel
 def parallelCommand(hostDict, command, updateQ):
     host = hostDict[env.host_string]
+    output = ""
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-        run(command)
+        output=run(command)
     else:
-        local(command,capture=True)
-    updateQ.put(["Ran {} on host {}".format(command,env.host_string),1])
+        output=local(command,capture=True)
+    updateQ.put(["Ran {} on host {} with output {}".format(command,env.host_string,output),1])
 
 @parallel
 def parallelStop(hostDict,updateQ):
@@ -189,13 +189,13 @@ def parallelMonitor(hostDict,updateQ):
                 updateQ.put(["{} DOWN".format(node.name),1])
     return host
 
-def deployTest(self, host_topic, progress_q):
+def deployTest(self, progress_q):
     self.hostDict = execute(parallelDeploy,self.hostDict,progress_q)
 
-def stopTest(self, host_topic, progress_q):
+def stopTest(self, progress_q):
     self.hostDict = execute(parallelStop,self.hostDict,progress_q)
     
-def monitorTest(self, host_topic, progress_q):
+def monitorTest(self, progress_q):
     self.hostDict = execute(parallelMonitor,self.hostDict,progress_q)
 
 def copyTest(self, exec_folder_path, xml_folder_path, progress_q):

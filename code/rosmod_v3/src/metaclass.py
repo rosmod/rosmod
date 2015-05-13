@@ -131,6 +131,7 @@ meta_class_dict["port_network_profile"] = Grammar_Field("code", display_name = "
 meta_class_dict["system_network_profile"] = Grammar_Field("code", display_name = "System Network Profile")
 
 meta_class_dict["numPeriods"] = Grammar_Field("string", display_name = "Number of Periods")
+meta_class_dict["command"] = Grammar_Field("string", display_name = "Remote Command")
 
 # Properties that are references
 meta_class_dict["message_reference"] = Grammar_Field("reference",display_name="Message")

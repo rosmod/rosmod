@@ -10,7 +10,6 @@ tools through the use of toolbar buttons and subprocesses.
 
 import wx
 import wx.stc as stc
-from wx.lib.pubsub import Publisher
 import sys, os, inspect
 import copy
 import multiprocessing
@@ -440,8 +439,8 @@ class Example(wx.Frame):
                                              progress_q = copyProgressQ,
                                              numItems=len(self.hostDict))
             workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self,
-                                                                               command,
-                                                                               copyProgressQ)
+                                                                                  command,
+                                                                                  copyProgressQ)
                                     )
             workerThread.start()
             dlg.ShowModal()
@@ -477,10 +476,12 @@ class Example(wx.Frame):
                                                  title="Deployment Progress",
                                                  progress_q = deploymentProgressQ,
                                                  numItems=numNodes)
-                workerThread = WorkerThread(func = lambda : deployment.deployTest(self,
-                                                                               self.hostDictTopic,
-                                                                               deploymentProgressQ)
-                                        )
+                workerThread = WorkerThread(
+                    func = lambda : deployment.deployTest(
+                        self,
+                        deploymentProgressQ
+                    )
+                )
                 self.updatedHostDict = False
                 workerThread.start()
                 dlg.ShowModal()
@@ -489,15 +490,13 @@ class Example(wx.Frame):
                 self.runningDeploymentCanvas = canvas
                 self.runningNodes = numNodes
                 self.deployed = True
-                #while not self.updatedHostDict:
-                #    pass
-                # START MONITORING INFRASTRUCTURE
-                #env.warn_only = True
                 monitorQ = multiprocessing.Queue()
-                workerThread = WorkerThread(func = lambda : deployment.monitorTest(self,
-                                                                                self.hostDictTopic,
-                                                                                monitorQ)
-                                        )
+                workerThread = WorkerThread(
+                    func = lambda : deployment.monitorTest(
+                        self,
+                        monitorQ
+                    )
+                )
                 monitorWorkItem = WorkItem(process = workerThread,
                                            queue = monitorQ,
                                            workFunc = lambda e : MonitorWorkFunc(self,e))
@@ -515,9 +514,11 @@ class Example(wx.Frame):
                                             title="Stop Deployment Progress",
                                             progress_q = deploymentProgressQ,
                                             numItems=self.runningNodes)
-            workerThread = WorkerThread(func = lambda : deployment.stopTest(self,
-                                                                         self.hostDictTopic,
-                                                                         deploymentProgressQ)
+            workerThread = WorkerThread(
+                func = lambda : deployment.stopTest(
+                    self,
+                    deploymentProgressQ
+                )
             )
             workerThread.start()
             dlg.ShowModal()

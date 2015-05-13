@@ -1,39 +1,7 @@
 import wx
-from wx.lib.pubsub import Publisher
 from threading import Thread
 
 import deployment
-
-EVT_DEPLOYMENT_UPDATE_ID = wx.NewId()
-EVT_MONITORING_UPDATE_ID = wx.NewId()
-EVT_HOSTDICT_UPDATE_ID = wx.NewId()
-
-def EVT_DEPLOYMENT_UPDATE(win, func):
-    win.Connect(-1,-1, EVT_DEPLOYMENT_UPDATE_ID, func)
-
-def EVT_MONITORING_UPDATE(win, func):
-    win.Connect(-1,-1, EVT_MONITORING_UPDATE_ID, func)
-
-def EVT_HOSTDICT_UPDATE(win, func):
-    win.Connect(-1,-1, EVT_HOSTDICT_UPDATE_ID, func)
-
-class DeploymentEvent(wx.PyEvent):
-    def __init__(self, data):
-        wx.PyEvent.__init__(self)
-        self.SetEventType(EVT_DEPLOYMENT_UPDATE_ID)
-        self.data = data
-
-class MonitoringEvent(wx.PyEvent):
-    def __init__(self, data):
-        wx.PyEvent.__init__(self)
-        self.SetEventType(EVT_MONITORING_UPDATE_ID)
-        self.data = data
-
-class HostDictEvent(wx.PyEvent):
-    def __init__(self, data):
-        wx.PyEvent.__init__(self)
-        self.SetEventType(EVT_HOSTDICT_UPDATE_ID)
-        self.data = data
 
 class WorkItem():
     def __init__(self,process,queue,workFunc):
@@ -66,20 +34,6 @@ def InitWorkQueue(self):
     self.workTimer = wx.Timer(self, self.workTimerID)  # message will be sent to the panel
     self.workTimer.Start(self.workTimerPeriod*1000)  # x100 milliseconds
     wx.EVT_TIMER(self, self.workTimerID, lambda e : WorkFunction(self,e))  # call the on_timer function
-
-    self.hostDictTopic = "hostDictTopic"                      # used for updating the host Dict from fabric
-    self.monitorStatusTopic = "monitorStatusTopic"            # used for updating the gui from monitor
-    self.deploymentProgressTopic = "deploymentProgressTopic"  # used for progress bars
-    Publisher().subscribe(lambda e : OnSubscribeMonitorStatus(self,e), self.monitorStatusTopic)
-    Publisher().subscribe(lambda e : OnSubscribeHostDictChange(self,e), self.hostDictTopic)
-
-def OnSubscribeMonitorStatus(self,message):
-    pass
-
-def OnSubscribeHostDictChange(self,message):
-    self.updatedHostDict = True
-    print 'HOST DICT RECEIVED'
-    self.hostDict = message.data
 
 '''
 This function is what handles the work of updating the gui by communicating with other processes
@@ -121,7 +75,6 @@ def MonitorWorkFunc(self,workItem):
     if not workItem.process.is_alive(): # process has terminated
         # update deployment overlays here
         workerThread = WorkerThread(func = lambda : deployment.monitorTest(self,
-                                                                           self.hostDictTopic,
                                                                            workItem.queue)
                                 )
         workerThread.start()

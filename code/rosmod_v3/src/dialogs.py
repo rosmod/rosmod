@@ -2,7 +2,6 @@
 
 import wx
 import wx.stc as stc
-from wx.lib.pubsub import Publisher
 from wx.lib.scrolledpanel import ScrolledPanel
 
 from collections import OrderedDict
@@ -56,7 +55,9 @@ class RMLProgressDialog(wx.Dialog):
         try:
             message = self.progress_q.get(False)
             if message != None:
-                self.progressText.SetLabel( message[0] )
+                dispMsg = message[0].split('\n')[0]
+                dispMsg += "..."
+                self.progressText.SetLabel( dispMsg )
                 if len(message) == 1:
                     self.count += 1
                     self.progress.SetValue(self.count)
