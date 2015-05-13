@@ -400,8 +400,8 @@ class Example(wx.Frame):
             workerThread = WorkerThread(
                 func = lambda : deployment.copyTest(
                     self.hostDict,
-                    self.project.workspace_dir + "/devel/lib/",
-                    self.project.deployment_path +"/"+ dep.properties['name'],
+                    self.project.project_path + "/01-Software/" + self.project.getChildrenByKind("rml")[0].properties['name'] + "/devel/lib/",
+                    self.project.project_path + "/03-Deployment/"+ dep.properties['name'],
                     copyProgressQ)
             )
             workerThread.start()
