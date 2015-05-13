@@ -6,7 +6,7 @@ A ROSML model can be viewed from three aspects -
   * Hardware (has description of hardware platform(s) or **host(s)** on which instances of ROS package will run)
   * Deployment (has information about which instance of ROS package will run on which hardware)
 
-  This codebase controls the graphical editor for generating *.rosml, *.roshw and *.rosdp files for your ROSML model. These files describe the three aspects of a ROSML model - **ROSML Packages**, **Hardware** and **Deployment** respectively. Thus, the editor allows for the creation, alteration, and deletion of elements within a ROSML model such as - 
+  This codebase controls the graphical editor for generating *.rml, *.rhw and *.rdp files for your ROSML model. These files describe the three aspects of a ROSML model - **ROSML Packages**, **Hardware** and **Deployment** respectively. Thus, the editor allows for the creation, alteration, and deletion of elements within a ROSML model such as - 
 
   1. The Project
   2. The workspace
