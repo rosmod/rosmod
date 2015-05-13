@@ -204,6 +204,10 @@ def copyTest(self, exec_folder_path, xml_folder_path, progress_q):
 def runCommandTest(self, command, progress_q):
     execute(parallelCommand, self.hostDict, command, progress_q)
 
+class testClass:
+    def __init__(self):
+        pass
+
 def main(ipaddr):
     hostDict = {}
     node = deployed_node(
@@ -234,7 +238,7 @@ def main(ipaddr):
         ['ROS_IP',ipaddr]
     )
 
-    obj = Object()
+    obj = testClass()
     obj.hostDict = hostDict
 
     env.hosts.append('Laptop')
