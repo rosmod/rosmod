@@ -67,7 +67,7 @@ def BuildStyleDict(self):
                                         method=drawable.Draw_Method.ROUND_RECT, 
                                         childLayout=drawable.Child_Layout.STACK,                                        
                                         minSize = minSize,
-                                        placement=drawable.Text_Placement.RIGHT,
+                                        placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict([('fillColor','TURQUOISE')]) )
     CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
                                         font=font, 
@@ -75,7 +75,7 @@ def BuildStyleDict(self):
                                         childLayout=drawable.Child_Layout.STACK,
                                         minSize = minSize,
                                         placement=drawable.Text_Placement.RIGHT,
-                                        overlay = OrderedDict([('fillColor','MAGENTA')]) )
+                                        overlay = OrderedDict([('fillColor','STEEL BLUE')]) )
     PortInstStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
                                         method=drawable.Draw_Method.ROUND_RECT, 
