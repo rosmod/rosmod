@@ -49,6 +49,7 @@ class RMLProgressDialog(wx.Dialog):
         self.timer = wx.Timer(self, self.TIMER_ID)
         self.timer.Start(100)
         wx.EVT_TIMER(self, self.TIMER_ID, self.OnTimer)
+        self.Bind(wx.EVT_CLOSE, self.on_cancel)
         self.MakeModal(True)
 
     def OnTimer(self, event):
