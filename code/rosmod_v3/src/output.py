@@ -120,11 +120,16 @@ def SSHToHost(self,host,e):
 def MonitorNodeLog(self,node,e):
     self.shop.Check(True)
     self.UpdateMainWindow(None)
+    host = node.properties['hardware_reference']
     command = "/usr/bin/ssh"
-    args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
-        node.parent.properties['sshkey'], 
-        node.parent.properties['username'],
-        node.parent.properties['host_reference'].properties['ip_address'])
+    fileString = ""
+    for compInst in node.children:
+        fileString += "{}.{}.log ".format(node.properties['name'],compInst.properties['name'])
+    args = "-i {} {}@{} tail -f {}".format( 
+        host.properties['sshkey'], 
+        host.properties['username'],
+        host.properties['ip_address'],
+        fileString)
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
                                          args=args,
@@ -135,11 +140,14 @@ def MonitorNodeLog(self,node,e):
 def MonitorCompInstLog(self,compInst,e):
     self.shop.Check(True)
     self.UpdateMainWindow(None)
+    host = compInst.parent.properties['hardware_reference']
     command = "/usr/bin/ssh"
-    args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
-        compInst.parent.properties['sshkey'], 
-        compInst.parent.properties['username'],
-        compInst.parent.properties['host_reference'].properties['ip_address'])
+    args = "-i {} {}@{}  tail -f {}.{}.log".format( 
+        host.properties['sshkey'], 
+        host.properties['username'],
+        host.properties['ip_address'],
+        compInst.parent.properties['name'],
+        compInst.properties['name'])
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
                                          args=args,
