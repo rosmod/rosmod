@@ -177,6 +177,16 @@ class Example(wx.Frame):
             for refObj in refObjs:
                 if refObj.properties[refName] == self.activeObject:
                     refObj.style.overlay['overlayColor']='RED'
+        similarObjectTypes = model_dict[kind].display_refs
+        for refType,treePath,otherProp,localProp in similarObjectTypes:
+            parentObj = self.activeObject
+            for node in treePath:
+                if node == "parent":
+                    parentObj = parentObj.parent
+            refObjs = parentObj.getChildrenByKind(refType)
+            for refObj in refObjs:
+                if refObj.properties[otherProp] == self.activeObject.properties[localProp]:
+                    refObj.style.overlay['overlayColor']='RED'
         self.DrawModel(model,canvas)
 
     def OnLeftDoubleClick(self, Object):
