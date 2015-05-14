@@ -148,9 +148,17 @@ class Example(wx.Frame):
 
         InitWorkQueue(self)
 
-        model_dict['Hardware'].context_funcs = [["SSH to Host",SSHToHost]]
-        model_dict['Node'].context_funcs = [["View Logs",MonitorNodeLog]]
-        model_dict['Component_Instance'].context_funcs =[["View Log",MonitorCompInstLog]]
+        model_dict['Hardware'].context_funcs = OrderedDict(
+            [("SSH to Host",lambda e : SSHToHost(self,e))]
+        )
+        model_dict['Node'].context_funcs = OrderedDict(
+            [("View Logs",lambda e : MonitorNodeLog(self,e)),
+             ("Start Node",lambda e : deployment.startNode(self,e)),
+             ("Stop Node",lambda e : deployment.stopNode(self,e))]
+        )
+        model_dict['Component_Instance'].context_funcs = OrderedDict(
+            [("View Log",lambda e : MonitorCompInstLog(self,e))]
+        )
 
         wx.EVT_CLOSE(self, self.OnQuit)
 

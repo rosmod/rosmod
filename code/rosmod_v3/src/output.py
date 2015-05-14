@@ -104,7 +104,8 @@ def BuildOutput(self):
     self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
 
 
-def SSHToHost(self,host,e):
+def SSHToHost(self,e):
+    host = self.activeObject
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     command = "/usr/bin/ssh"
@@ -117,7 +118,8 @@ def SSHToHost(self,host,e):
                         "SSH To {}".format(host.properties['name']), 
                         select=True)
 
-def MonitorNodeLog(self,node,e):
+def MonitorNodeLog(self,e):
+    node = self.activeObject
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     host = node.properties['hardware_reference']
@@ -137,7 +139,8 @@ def MonitorNodeLog(self,node,e):
                         "{} Log".format(node.properties['name']), 
                         select=True)
 
-def MonitorCompInstLog(self,compInst,e):
+def MonitorCompInstLog(self,e):
+    compInst = self.activeObject
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     host = compInst.parent.properties['hardware_reference']

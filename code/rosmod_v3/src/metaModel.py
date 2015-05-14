@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 # 
 class Meta_Entity:
-    def __init__(self, parent = "", children = [], properties = [], in_refs = [], out_refs = [], display_refs = [], context_funcs = []):
+    def __init__(self, parent = "", children = [], properties = [], in_refs = [], out_refs = [], display_refs = [], context_funcs = OrderedDict()):
         self.parent = parent
         self.children = children
         self.properties = properties

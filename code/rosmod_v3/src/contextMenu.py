@@ -29,8 +29,8 @@ def AspectContextMenu(self, obj):
     childTypes = model_dict[obj.kind].children
     for childType in childTypes:
         cm['Add ' + childType] = MakeAdd(self,childType)
-    for contextFuncName, contextFunc in model_dict[obj.kind].context_funcs:
-        cm[contextFuncName] = lambda e: contextFunc(self,obj,e)
+    for contextFuncName, contextFunc in model_dict[obj.kind].context_funcs.iteritems():
+        cm[contextFuncName] = contextFunc
     return cm
 
 class ContextMenuExample(wx.Frame):

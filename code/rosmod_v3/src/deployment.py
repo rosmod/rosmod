@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os
+import os,sys
 
 from fabric.api import *
 from fabric.api import task, run
@@ -158,11 +158,48 @@ def parallelStop(hostDict,updateQ):
             node.pids = []
     return host
 
-def startNode(node,hostDict,updateQ):
-    pass
+def startNode(self,e):
+    node = self.activeObject
+    if self.deployed == True and node in self.runningDeployment.children and\
+       self.hostDict != None and node.properties['hardware_reference'].properties['name'] in self.hostDict.keys():
+        host = self.hostDict[node.properties['hardware_reference'].properties['name']]
+        nodeprops = [x for x in host.nodes if x.name == node.properties['name']][0]
+        if nodeprops.pids != []:
+            print >> sys.stderr, "ERROR: cannot start node which is already running."
+            return
+        envVarStr = ""
+        for key,value in host.envVars:
+            envVarStr += "export {}={}; ".format(key,value)
+        executableString = nodeprops.executable
+        if host.ipAddress not in local_ips:
+            envVarStr = envVarStr.replace(';','')
+            with prefix(envVarStr):
+                env.key_filename = host.keyFile
+                env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+                run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,nodeprops.cmdArgs))
+                pgrep = run('ps aux | grep {}'.format(executableString))
+        else:
+            local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,nodeprops.cmdArgs),capture=True)
+            pgrep = local('ps aux | grep {}'.format(executableString),capture=True)
+        pids = getPIDsFromPS(pgrep,nodeprops.name)
+        nodeprops.pids = pids
+    else:
+        print >> sys.stderr, "ERROR: cannot start node which is not part of current deployment."
 
-def stopNode(node,hostDict,updateQ):
-    pass
+def stopNode(self,e):
+    node = self.activeObject
+    if self.deployed == True and node in self.runningDeployment.children and self.hostDict != None and \
+       node.properties['hardware_reference'].properties['name'] in self.hostDict.keys():
+        host = self.hostDict[node.properties['hardware_reference'].properties['name']]
+        nodeprops = [x for x in host.nodes if x.name == node.properties['name']][0]
+        if host.ipAddress not in local_ips:
+            pass
+        else:
+            for pid in nodeprops.pids:
+                local('kill -9 {}'.format(pid),capture=True)
+            nodeprops.pids = []
+    else:
+        print >> sys.stderr, "ERROR: you must be running a deployment and node must be part of current deployment!"
 
 @parallel
 def parallelMonitor(hostDict,updateQ):
