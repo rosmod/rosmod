@@ -158,6 +158,12 @@ def parallelStop(hostDict,updateQ):
             node.pids = []
     return host
 
+def startNode(node,hostDict,updateQ):
+    pass
+
+def stopNode(node,hostDict,updateQ):
+    pass
+
 @parallel
 def parallelMonitor(hostDict,updateQ):
     host = hostDict[env.host_string]

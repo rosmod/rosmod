@@ -148,6 +148,10 @@ class Example(wx.Frame):
 
         InitWorkQueue(self)
 
+        model_dict['Hardware'].context_funcs = [["SSH to Host",SSHToHost]]
+        model_dict['Node'].context_funcs = [["View Logs",MonitorNodeLog]]
+        model_dict['Component_Instance'].context_funcs =[["View Log",MonitorCompInstLog]]
+
         wx.EVT_CLOSE(self, self.OnQuit)
 
 

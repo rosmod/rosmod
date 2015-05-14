@@ -3,6 +3,8 @@ import wx.lib.agw.flatnotebook as fnb
 import wx.stc as stc
 from terminal import *            
 
+from metaModel import model_dict
+
 class Log(stc.StyledTextCtrl):
     """
     Subclass the StyledTextCtrl to provide  additions
@@ -102,30 +104,45 @@ def BuildOutput(self):
     self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
 
 
-def SSHToHostInst(self,hostInst):
+def SSHToHost(self,host,e):
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     command = "/usr/bin/ssh"
-    args = "-i {} {}@{}".format( hostInst.properties['sshkey'], 
-                                 hostInst.properties['username'],
-                                 hostInst.properties['host_reference'].properties['ip_address'])
+    args = "-i {} {}@{}".format( host.properties['sshkey'], 
+                                 host.properties['username'],
+                                 host.properties['ip_address'])
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
                                          args=args), 
-                        "SSH To {}".format(hostInst.properties['name']), 
+                        "SSH To {}".format(host.properties['name']), 
                         select=True)
 
-def MonitorNodeInstLog(self,nodeInst):
+def MonitorNodeLog(self,node,e):
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     command = "/usr/bin/ssh"
     args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
-        nodeInst.parent.properties['sshkey'], 
-        nodeInst.parent.properties['username'],
-        nodeInst.parent.properties['host_reference'].properties['ip_address'])
+        node.parent.properties['sshkey'], 
+        node.parent.properties['username'],
+        node.parent.properties['host_reference'].properties['ip_address'])
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
                                          args=args,
                                          cols=120),
-                        "{} Log".format(nodeInst.properties['name']), 
+                        "{} Log".format(node.properties['name']), 
+                        select=True)
+
+def MonitorCompInstLog(self,compInst,e):
+    self.shop.Check(True)
+    self.UpdateMainWindow(None)
+    command = "/usr/bin/ssh"
+    args = "-i {} {}@{} source /opt/ros/indigo/setup.bash; tail -f `roslaunch-logs`/rosout.log".format( 
+        compInst.parent.properties['sshkey'], 
+        compInst.parent.properties['username'],
+        compInst.parent.properties['host_reference'].properties['ip_address'])
+    self.output.AddPage(TermEmulatorDemo(self.output,
+                                         command=command,
+                                         args=args,
+                                         cols=120),
+                        "{} Log".format(compInst.properties['name']), 
                         select=True)
