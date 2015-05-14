@@ -129,7 +129,7 @@ def parallelCommand(hostDict, command, updateQ):
         output=run(command)
     else:
         output=local(command,capture=True)
-    updateQ.put(["Ran {} on host {} with output {}".format(command,env.host_string,output),1])
+    updateQ.put(["Ran {} on host {} with output:\n{}".format(command,env.host_string,output),1])
 
 @parallel
 def parallelStop(hostDict,updateQ):
