@@ -256,6 +256,7 @@ class EditDialog(wx.Dialog):
         
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
@@ -283,13 +284,11 @@ class EditDialog(wx.Dialog):
         if self.UpdateInputs() == False:
             self.returnDict = OrderedDict()
         self.MakeModal(False)
-        self.Close()
         self.Destroy()
 
     def OnClose(self, e):
         self.returnDict = OrderedDict()
         self.MakeModal(False)
-        self.Close()
         self.Destroy()
 
 def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER | wx.STAY_ON_TOP):
