@@ -4,6 +4,7 @@ import wx.stc as stc
 from terminal import *            
 
 from metaModel import model_dict
+import deployment
 
 class Log(stc.StyledTextCtrl):
     """
@@ -123,15 +124,20 @@ def MonitorNodeLog(self,e):
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     host = node.properties['hardware_reference']
-    command = "/usr/bin/ssh"
     fileString = ""
     for compInst in node.children:
-        fileString += "{}.{}.log ".format(node.properties['name'],compInst.properties['name'])
-    args = "-i {} {}@{} tail -f {}".format( 
-        host.properties['sshkey'], 
-        host.properties['username'],
-        host.properties['ip_address'],
-        fileString)
+        fileString += "{}/{}.{}.log ".format(host.properties["deployment_path"], node.properties['name'],compInst.properties['name'])
+    if host.properties["ip_address"] not in deployment.local_ips:
+        command = "/usr/bin/ssh"
+        args = "-i {} {}@{} tail -f {}".format( 
+            host.properties['sshkey'], 
+            host.properties['username'],
+            host.properties['ip_address'],
+            fileString)
+    else:
+        command = "/usr/bin/tail"
+        args = "-f {}".format(fileString)
+
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
                                          args=args,
@@ -139,18 +145,25 @@ def MonitorNodeLog(self,e):
                         "{} Log".format(node.properties['name']), 
                         select=True)
 
+
 def MonitorCompInstLog(self,e):
     compInst = self.activeObject
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     host = compInst.parent.properties['hardware_reference']
-    command = "/usr/bin/ssh"
-    args = "-i {} {}@{}  tail -f {}.{}.log".format( 
-        host.properties['sshkey'], 
-        host.properties['username'],
-        host.properties['ip_address'],
-        compInst.parent.properties['name'],
-        compInst.properties['name'])
+    if host.properties["ip_address"] not in deployment.local_ips:
+        command = "/usr/bin/ssh"
+        args = "-i {} {}@{}  tail -f {}/{}.{}.log".format( 
+            host.properties['sshkey'], 
+            host.properties['username'],
+            host.properties['ip_address'],
+            host.properties["deployment_path"],
+            compInst.parent.properties['name'],
+            compInst.properties['name'])
+    else:
+        command = "/usr/bin/tail"
+        args = "-f {}/{}.{}.log".format(host.properties["deployment_path"], compInst.parent.properties["name"], compInst.properties["name"])
+
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
                                          args=args,
