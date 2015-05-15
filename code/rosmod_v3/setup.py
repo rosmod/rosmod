@@ -78,6 +78,10 @@ else:
     p = subprocess.Popen(['apt-get', 'install', 'python-wxtools'])
     p.wait()
 
+    print "SETUP::Installing dtach"
+    p = subprocess.Popen(['apt-get', 'install', 'dtach'])
+    p.wait()
+
 
 
 
