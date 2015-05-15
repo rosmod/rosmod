@@ -181,14 +181,14 @@ class Example(wx.Frame):
         canvas = info.canvas
         self.activeObject = Object.Name
         drawable.Configure(model,self.styleDict)
-        self.activeObject.style.overlay['overlayColor']="RED"
+        self.activeObject.style.overlay['overlayColor']=activeOverlay
         kind = self.activeObject.kind
         referringObjectTypes = model_dict[kind].in_refs
         for refObjType,refName in referringObjectTypes:
             refObjs = model.getChildrenByKind(refObjType)
             for refObj in refObjs:
                 if refObj.properties[refName] == self.activeObject:
-                    refObj.style.overlay['overlayColor']='RED'
+                    refObj.style.overlay['overlayColor']=referenceOverlay
         similarObjectTypes = model_dict[kind].display_refs
         for refType,treePath,otherProp,localProp in similarObjectTypes:
             parentObj = self.activeObject
@@ -198,7 +198,7 @@ class Example(wx.Frame):
             refObjs = parentObj.getChildrenByKind(refType)
             for refObj in refObjs:
                 if refObj.properties[otherProp] == self.activeObject.properties[localProp]:
-                    refObj.style.overlay['overlayColor']='RED'
+                    refObj.style.overlay['overlayColor']=similarOverlay
         self.DrawModel(model,canvas)
 
     def OnLeftDoubleClick(self, Object):

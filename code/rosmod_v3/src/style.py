@@ -11,6 +11,12 @@ editorPath=head
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 
+activeOverlay = "YELLOW"
+nodeDownOverlay = "RED"
+nodeUpOverlay = "GREEN"
+referenceOverlay = "BLUE"
+similarOverlay = "BLACK"
+
 def BuildStyleDict(self):
     self.styleDict = OrderedDict()
     font = OrderedDict()
@@ -55,13 +61,6 @@ def BuildStyleDict(self):
                                           offset = pkgOffset,
                                           placement=drawable.Text_Placement.TOP,
                                           overlay = OrderedDict() )
-    HardwareInstStyle = drawable.Draw_Style(icon=None,
-                                        font=font, 
-                                        method=drawable.Draw_Method.ROUND_RECT, 
-                                        childLayout=drawable.Child_Layout.STACK,                                        
-                                        minSize = minSize,
-                                        placement=drawable.Text_Placement.TOP,
-                                        overlay = OrderedDict([('fillColor','WHITE')]) )
     NodeStyle = drawable.Draw_Style(icon=None,
                                         font=font, 
                                         method=drawable.Draw_Method.ROUND_RECT, 
@@ -109,13 +108,6 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.TOP,
                                    minSize = minSize,
                                    overlay = OrderedDict() )
-    FieldStyle = drawable.Draw_Style(icon=None, 
-                                     font=font, 
-                                     method=drawable.Draw_Method.HIDDEN, 
-                                     childLayout=drawable.Child_Layout.HIDDEN,                                        
-                                     placement=drawable.Text_Placement.TOP,
-                                     minSize = minSize,
-                                     overlay = OrderedDict([('fillColor','GREEN')]) )
     SrvStyle = drawable.Draw_Style(icon=srvIcon,
                                    font=font, 
                                    method=drawable.Draw_Method.ICON, 
@@ -123,20 +115,6 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.TOP,
                                    minSize = minSize,
                                    overlay = OrderedDict() )
-    RequestStyle = drawable.Draw_Style(icon=None,
-                                       font=font, 
-                                       method=drawable.Draw_Method.HIDDEN, 
-                                       childLayout=drawable.Child_Layout.HIDDEN,                                        
-                                       placement=drawable.Text_Placement.TOP,
-                                       minSize = minSize,
-                                       overlay = OrderedDict([('fillColor','BLUE')]) )
-    ResponseStyle = drawable.Draw_Style(icon=None,
-                                        font=font, 
-                                        method=drawable.Draw_Method.HIDDEN, 
-                                        childLayout=drawable.Child_Layout.HIDDEN,                                        
-                                        placement=drawable.Text_Placement.TOP,
-                                        minSize = minSize,
-                                        overlay = OrderedDict([('fillColor','BLUE')]) )
     CompStyle = drawable.Draw_Style(icon=None,
                                     font=font, 
                                     method=drawable.Draw_Method.ROUND_RECT, 
@@ -183,14 +161,8 @@ def BuildStyleDict(self):
     self.styleDict["rml"] = WrkStyle
 
     self.styleDict["Package"] = PkgStyle
-
     self.styleDict["Message"] = MsgStyle
-    self.styleDict["Field"] = FieldStyle
-
     self.styleDict["Service"] = SrvStyle
-    self.styleDict["Request"] = RequestStyle
-    self.styleDict["Response"] = ResponseStyle
-
     self.styleDict["Component"] = CompStyle
     self.styleDict["Timer"] = TmrStyle
     self.styleDict["Publisher"] = PubStyle
@@ -202,7 +174,6 @@ def BuildStyleDict(self):
     self.styleDict["Hardware"] = HardwareStyle
 
     self.styleDict["rdp"] = DeploymentStyle
-    self.styleDict["Hardware_Instance"] = HardwareInstStyle
     self.styleDict["Node"] = NodeStyle
     self.styleDict["Component_Instance"] = CompInstStyle
     self.styleDict["Port_Instance"] = PortInstStyle

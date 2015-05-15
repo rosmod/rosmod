@@ -2,6 +2,7 @@ import wx
 from threading import Thread
 
 import deployment
+import style
 
 class WorkItem():
     def __init__(self,process,queue,workFunc):
@@ -63,9 +64,9 @@ def MonitorWorkFunc(self,workItem):
             nodeName = dataList[0]
             node = nodeMap[nodeName]
             if dataList[1] == "UP":
-                node.style.overlay['overlayColor']='GREEN'
+                node.style.overlay['overlayColor']=style.nodeUpOverlay
             else:
-                node.style.overlay['overlayColor']='RED'
+                node.style.overlay['overlayColor']=style.nodeDownOverlay
             updateCanvas = True
             data = workItem.queue.get(False)
     except:
