@@ -479,6 +479,7 @@ class Example(wx.Frame):
             testName = "NewTest"
             properties = OrderedDict()
             properties['name'] = testName
+            properties['period'] = str(self.workTimerPeriod)
             properties['hardware_reference'] = None
             references = dep.properties['rhw_reference'].children
             inputs = dialogs.EditorWindow(parent=self,
@@ -490,6 +491,9 @@ class Example(wx.Frame):
                     properties[key] = value
                 rosCoreIP = properties['hardware_reference'].properties['ip_address']
                 testName = properties['name']
+
+                self.workTimerPeriod = float(properties['period'])
+                self.workTimer.Start(self.workTimerPeriod*1000)
 
                 numNodes = self.BuildHostDict(dep,rosCoreIP)
 
