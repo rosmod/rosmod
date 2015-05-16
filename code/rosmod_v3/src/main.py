@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
     path = sys.argv[1]
 
-    # Testing ROS Tools Features
-    My_Project = ROS_Project()
+    # Testing ROSMOD Tools Features
+    My_Project = ROSMOD_Project()
     My_Project.open(path)
     My_Project.generate_workspace()
     My_Project.generate_xml()

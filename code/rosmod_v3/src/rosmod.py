@@ -117,7 +117,7 @@ class Example(wx.Frame):
 
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = os.getcwd()
-        self.project = project.ROS_Project()
+        self.project = project.ROSMOD_Project()
 
         self.undoList = []
         self.redoList = []

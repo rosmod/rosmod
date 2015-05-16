@@ -24,17 +24,17 @@ def ros_tools_log(q,logStr,amount=1,total=None):
     else:
         print logStr
 
-# ROS Project class
-class ROS_Project(Drawable_Object):
-    # Initialize ROS Project
+# ROSMOD Project class
+class ROSMOD_Project(Drawable_Object):
+    # Initialize ROSMOD Project
     def __init__(self, **kwargs):
         Drawable_Object.__init__(self)
         
         self.kind = "Project"
 
-        # Name of the ROS Project
+        # Name of the ROSMOD Project
         self.project_name = kwargs.pop("name", "")
-        # Path to ROS Project
+        # Path to ROSMOD Project
         self.project_path = kwargs.pop("path", "")
 
         # Workspace Path
