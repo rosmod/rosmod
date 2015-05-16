@@ -21,6 +21,8 @@ Table of Contents
    Editor
 
    Code_Generators
+
+   Deployment_Infrastructure
    
    Tutorial
    
