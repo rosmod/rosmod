@@ -1,10 +1,11 @@
 Library Reference
 =================
 
-Contents:
+Classes
+-------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   ROSMOD_Project
+   class_Project
 

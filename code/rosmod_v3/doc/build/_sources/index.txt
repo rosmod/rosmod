@@ -8,20 +8,23 @@ Welcome to ROSMOD's documentation!
 
 Welcome! This is the documentation for ROSMOD version 3.0
 
-Contents:
+Table of Contents
+-----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    Introduction
 
-   ROSMOD_Modeling_Language
+   Modeling_Language
 
-   ROSMOD_Editor
+   Editor
+
+   Code_Generators
    
-   ROSMOD_Tutorial
+   Tutorial
    
-   ROSMOD_Library_Reference
+   Library_Reference
 
 
 Indices and tables

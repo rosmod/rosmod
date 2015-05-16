@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ROSMOD Project &mdash; ROSMOD 3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ROSMOD 3.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rosmod-project">
+<h1>ROSMOD Project<a class="headerlink" href="#rosmod-project" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ROSMOD_Project">
+<em class="property">class </em><tt class="descname">ROSMOD_Project</tt><big>(</big><em>Drawable_Object</em><big>)</big><a class="headerlink" href="#ROSMOD_Project" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="ROSMOD_Project.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an empty ROSMOD Project.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.new">
+<tt class="descname">new</tt><big>(</big><em>project_name</em>, <em>project_path</em>, <em>workspace_name</em>, <em>hardware_name</em>, <em>deployment_name</em><span class="optional">[</span>, <em>q=None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new ROSMOD Project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>project_name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the ROSMOD Project</li>
+<li><strong>project_path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The absolute path to the root directory of the ROSMOD Project</li>
+<li><strong>workspace_name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the ROSMOD Software Model and the generated ROS Workspace</li>
+<li><strong>hardware_name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the ROSMOD Hardware Model</li>
+<li><strong>deployment_name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the ROSMOD Deployment Model</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.open">
+<tt class="descname">open</tt><big>(</big><em>project_path</em><span class="optional">[</span>, <em>progressQ = None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open an existing ROSMOD Project</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_Path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The absolute path to the root directory of the ROSMOD Project</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_msg">
+<tt class="descname">parse_msg</tt><big>(</big><em>dirname</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all msg (message) files in the Software Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dirname</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the msg directory in the ROSMOD Software Model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_srv">
+<tt class="descname">parse_srv</tt><big>(</big><em>dirname</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_srv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all srv (service) files in the Software Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dirname</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the srv directory in the ROSMOD Software Model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_abl">
+<tt class="descname">parse_abl</tt><big>(</big><em>dirname</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_abl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all abl (abstract business logic) files in the Software Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dirname</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the abl directory in the ROSMOD Software Model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_pnp">
+<tt class="descname">parse_pnp</tt><big>(</big><em>dirname</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_pnp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all pnp (port network profiles) files in the Software Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dirname</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the pnp directory in the ROSMOD Software Model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_snp">
+<tt class="descname">parse_snp</tt><big>(</big><em>dirname</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_snp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all snp (system network profiles) files in the Hardware Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dirname</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the snp directory in the ROSMOD Hardware Model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_rml">
+<tt class="descname">parse_rml</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_rml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the provided rml file (ROSMOD Software Model)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the .rml file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_rhw">
+<tt class="descname">parse_rhw</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_rhw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the provided rhw file (ROSMOD Hardware Model)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the .rhw file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_rdp">
+<tt class="descname">parse_rdp</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_rdp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the provided rdp file (ROSMOD Deployment Model)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the .rdp file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.parse_models">
+<tt class="descname">parse_models</tt><big>(</big><span class="optional">[</span><em>progressQ=None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.parse_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all Software, Hardware and Deployment models in the ROSMOD Project</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.check_workspace">
+<tt class="descname">check_workspace</tt><big>(</big><big>)</big><a class="headerlink" href="#ROSMOD_Project.check_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for an existing ROS Workspace in the ROSMOD Project in order to preserve any code between code-preservation markers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.generate_workspace">
+<tt class="descname">generate_workspace</tt><big>(</big><big>)</big><a class="headerlink" href="#ROSMOD_Project.generate_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a ROS Workspace from the Software Model. The workspace is generated at PROJECT_ROOT/01-Software/&lt;workspace_name&gt;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.generate_xml">
+<tt class="descname">generate_xml</tt><big>(</big><big>)</big><a class="headerlink" href="#ROSMOD_Project.generate_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Deployment XML files for all ROS nodes in the Deployment Model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.generate_cpn">
+<tt class="descname">generate_cpn</tt><big>(</big><big>)</big><a class="headerlink" href="#ROSMOD_Project.generate_cpn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a Colored Petri Net timing analysis model for the ROSMOD Project</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.resolve_references">
+<tt class="descname">resolve_references</tt><big>(</big><span class="optional">[</span><em>progressQ = None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.resolve_references" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve all missing object references after parsing models</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_rml">
+<tt class="descname">save_rml</tt><big>(</big><span class="optional">[</span><em>path=&quot;&quot;</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_rml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified workspace (.rml) file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Optional path where the .rml file will be saved</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_rhw">
+<tt class="descname">save_rhw</tt><big>(</big><span class="optional">[</span><em>path=&quot;&quot;</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_rhw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified workspace (.rhw) file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Optional path where the .rhw file will be saved</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_rdp">
+<tt class="descname">save_rdp</tt><big>(</big><span class="optional">[</span><em>path=&quot;&quot;</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_rdp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified workspace (.rdp) file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Optional path where the .rdp file will be saved</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_msg">
+<tt class="descname">save_msg</tt><big>(</big><em>msg_object</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified msg object to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg_object</strong> &#8211; Message Object to be saved</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_srv">
+<tt class="descname">save_srv</tt><big>(</big><em>srv_object</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_srv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified srv object to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>srv_object</strong> &#8211; Service Object to be saved</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_abl">
+<tt class="descname">save_abl</tt><big>(</big><em>port_object</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_abl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified abstract business logic to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port_object</strong> &#8211; Port Object that contains an abstract business logic</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_pnp">
+<tt class="descname">save_pnp</tt><big>(</big><em>port_object</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_pnp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified port network profile to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port_object</strong> &#8211; Port Object that contains a port network profile</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save_snp">
+<tt class="descname">save_snp</tt><big>(</big><em>port_object</em><big>)</big><a class="headerlink" href="#ROSMOD_Project.save_snp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a modified system network profile to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port_object</strong> &#8211; Port Object that contains a system network profile</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Project.save">
+<tt class="descname">save</tt><big>(</big><span class="optional">[</span><em>project_name=&quot;&quot;</em><span class="optional">]</span><span class="optional">[</span>, <em>project_path=&quot;&quot;</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ROSMOD_Project.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to &#8220;Save&#8221; or &#8220;Save-As&#8221; an entire ROSMOD Project</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>project_name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of ROSMOD Project used for Save-As</li>
+<li><strong>project_path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path to ROSMOD Project used for Save-As</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/class_Project.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Pranav Srinivas Kumar.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
