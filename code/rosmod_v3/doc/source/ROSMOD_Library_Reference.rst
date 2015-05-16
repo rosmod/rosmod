@@ -1,5 +1,5 @@
-ROSMOD Library Reference
-========================
+Library Reference
+=================
 
 Contents:
 

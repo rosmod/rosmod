@@ -1,2 +1,2 @@
-ROSMOD Editor
-=============
+Graphical User Interface
+========================

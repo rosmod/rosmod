@@ -13,6 +13,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   Introduction
+
    ROSMOD_Modeling_Language
 
    ROSMOD_Editor
