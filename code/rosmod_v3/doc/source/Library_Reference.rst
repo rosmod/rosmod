@@ -8,4 +8,5 @@ Classes
    :maxdepth: 1
 
    class_Project
+   class_Generator
 
