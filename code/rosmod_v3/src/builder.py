@@ -69,7 +69,7 @@ from ROSMOD_DeploymentListener import ROSMOD_DeploymentListener
 
 # Build ROS Workspace from Software Model
 # Use Metaclass to obtain listener functions
-class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
+class ROSMOD_Software_Builder(ROSMOD_SoftwareListener):
     __metaclass__ = Grammar_MetaClass
 
     def __init__(self, project):
@@ -82,7 +82,7 @@ class ROS_Workspace_Builder(ROSMOD_SoftwareListener):
 
 # Build ROS Hardware from Hardware Model
 # Use Metaclass to obtain listener functions
-class ROS_Hardware_Builder(ROSMOD_HardwareListener):
+class ROSMOD_Hardware_Builder(ROSMOD_HardwareListener):
     __metaclass__ = Grammar_MetaClass
 
     def __init__(self, project):
@@ -96,7 +96,7 @@ class ROS_Hardware_Builder(ROSMOD_HardwareListener):
 
 # Build ROS Deployment from Deployment Model
 # Use Metaclass to obtain listener functions
-class ROS_Deployment_Builder(ROSMOD_DeploymentListener):
+class ROSMOD_Deployment_Builder(ROSMOD_DeploymentListener):
     __metaclass__ = Grammar_MetaClass
 
     def __init__(self, project):

@@ -14,39 +14,6 @@ from drawable import Drawable_Object
 from builder import *
 from loader import *
 from generator import *
-
-def ros_tools_log(q,logStr,amount=1,total=None):
-    if q:
-        if total:
-            q.put([logStr,amount,total])
-        else:
-            q.put([logStr,amount])            
-    else:
-        print logStr
-
-# ROSMOD Project class
-class ROSMOD_Project(Drawable_Object):
-    # Initialize ROSMOD Project
-    def __init__(self, **kwargs):
-        Drawable_Object.__init__(self)
-        
-        self.kind = "Project"
-
-        # Name of the ROSMOD Project
-        self.project_name = kwargs.pop("name", "")
-        # Path to ROSMOD Project
-        self.project_path = kwargs.pop("path", "")
-
-        # Workspace Path
-        self.workspace_path = os.path.join(self.project_path, "01-Software")
-        self.workspace_dir = ""
-
-        # Hardware Configurations Path
-        self.hardware_path = os.path.join(self.project_path, "02-Hardware")
-
-        # Deployment Path
-        self.deployment_path = os.path.join(self.project_path, "03-Deployment")
-
     # Create a new ROSMOD Project
     def new(self, 
             project_name = "",
@@ -96,7 +63,7 @@ class ROSMOD_Project(Drawable_Object):
                 os.makedirs(os.path.join(self.workspace_path, sub_dir))
                 
         # Create a Workspace Builder Object - and therefore a workspace object
-        self.workspace_builder = ROS_Workspace_Builder(self)
+        self.workspace_builder = ROSMOD_Software_Builder(self)
         
         # Initialize Workspace name and create a template .rml file
         if workspace_name != "":
@@ -131,7 +98,7 @@ class ROSMOD_Project(Drawable_Object):
                 os.makedirs(os.path.join(self.hardware_path, sub_dir))
 
         # Create a hardware builder object - ready to ready new hardware models
-        self.hardware_builder = ROS_Hardware_Builder(self)
+        self.hardware_builder = ROSMOD_Hardware_Builder(self)
 
         # Create a new template .rhw file
         if hardware_name != "":
@@ -150,7 +117,7 @@ class ROSMOD_Project(Drawable_Object):
             os.makedirs(self.deployment_path)
 
         # Create a deployment builder object - ready to ready new deployment models
-        self.deployment_builder = ROS_Deployment_Builder(self)
+        self.deployment_builder = ROSMOD_Deployment_Builder(self)
 
         # Create a new template .rdp file
         if deployment_name != "":
@@ -330,7 +297,7 @@ class ROSMOD_Project(Drawable_Object):
         # Instantiate a Parse Tree Walker
         walker = ParseTreeWalker()
         
-        self.workspace_builder = ROS_Workspace_Builder(self)
+        self.workspace_builder = ROSMOD_Software_Builder(self)
         self.workspace_builder.rml.properties["name"] = os.path.basename(filename.split(".")[0])
         #print "ROSTOOLS::Reading ROS Workspace:", self.workspace_builder.rml.properties["name"]
 
@@ -357,7 +324,7 @@ class ROSMOD_Project(Drawable_Object):
         walker = ParseTreeWalker()
 
         # Hardware Builder
-        self.hardware_builder = ROS_Hardware_Builder(self)
+        self.hardware_builder = ROSMOD_Hardware_Builder(self)
         self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
         #print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
 
@@ -384,7 +351,7 @@ class ROSMOD_Project(Drawable_Object):
         walker = ParseTreeWalker()    
 
         # Deployment Builder
-        self.deployment_builder = ROS_Deployment_Builder(self)
+        self.deployment_builder = ROSMOD_Deployment_Builder(self)
         self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
         #print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
 

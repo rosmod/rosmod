@@ -23,7 +23,6 @@ ros_templates = os.path.realpath(os.path.abspath
 if ros_templates not in sys.path:
     sys.path.insert(0, ros_templates)
 from package_xml import *
-
 from rapidxml_hpp import *
 from rapidxml_utils_hpp import *
 from xmlParser_hpp import *
