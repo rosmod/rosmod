@@ -14,6 +14,39 @@ from drawable import Drawable_Object
 from builder import *
 from loader import *
 from generator import *
+
+def ros_tools_log(q,logStr,amount=1,total=None):
+    if q:
+        if total:
+            q.put([logStr,amount,total])
+        else:
+            q.put([logStr,amount])            
+    else:
+        print logStr
+
+# ROSMOD Project class
+class ROSMOD_Project(Drawable_Object):
+    # Initialize ROS Project
+    def __init__(self, **kwargs):
+        Drawable_Object.__init__(self)
+        
+        self.kind = "Project"
+
+        # Name of the ROS Project
+        self.project_name = kwargs.pop("name", "")
+        # Path to ROS Project
+        self.project_path = kwargs.pop("path", "")
+
+        # Workspace Path
+        self.workspace_path = os.path.join(self.project_path, "01-Software")
+        self.workspace_dir = ""
+
+        # Hardware Configurations Path
+        self.hardware_path = os.path.join(self.project_path, "02-Hardware")
+
+        # Deployment Path
+        self.deployment_path = os.path.join(self.project_path, "03-Deployment")
+
     # Create a new ROSMOD Project
     def new(self, 
             project_name = "",
