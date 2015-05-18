@@ -1,7 +1,7 @@
-ROS_Hardware_Builder
-====================
+ROSMOD_Hardware_Builder
+=======================
 
-.. py:class:: ROS_Hardware_Builder
+.. py:class:: ROSMOD_Hardware_Builder
 
    Builds a Hardware Object Tree from parsing the .rhw files in 02-Hardware/*
 

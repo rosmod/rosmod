@@ -18,7 +18,7 @@ Classes
    class_Project
    class_Generator
    class_Loader
-   class_ROS_Workspace_Builder
-   class_ROS_Hardware_Builder
-   class_ROS_Deployment_Builder
+   class_Software_Builder
+   class_Hardware_Builder
+   class_Deployment_Builder
 
