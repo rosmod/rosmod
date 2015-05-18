@@ -3,6 +3,8 @@ ROSMOD Project
 
 .. py:class:: ROSMOD_Project(Drawable_Object)
 
+   The high-level interface to a ROSMOD Project
+
    .. py:method:: __init__(**kwargs)
 
       Initialize an empty ROSMOD Project.

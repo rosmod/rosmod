@@ -2,6 +2,8 @@ ROSMOD_Generator
 ================
 
 .. py:class:: ROSMOD_Generator
+
+   Primary Generator class for ROSMOD 
    
    .. py:method:: generate_workspace(workspace, path)
 

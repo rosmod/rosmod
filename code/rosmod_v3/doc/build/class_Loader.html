@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Library Reference &mdash; ROSMOD 3.0 documentation</title>
+    <title>ROSMOD_Loader &mdash; ROSMOD 3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,8 +25,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ROSMOD 3.0 documentation" href="index.html" />
-    <link rel="next" title="Grammar_MetaClass" href="class_Grammar_MetaClass.html" />
-    <link rel="prev" title="Tutorial" href="Tutorial.html" /> 
+    <link rel="up" title="Library Reference" href="Library_Reference.html" />
+    <link rel="next" title="ROS_Workspace_Builder" href="class_ROS_Workspace_Builder.html" />
+    <link rel="prev" title="ROSMOD_Generator" href="class_Generator.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,12 +37,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="class_Grammar_MetaClass.html" title="Grammar_MetaClass"
+          <a href="class_ROS_Workspace_Builder.html" title="ROS_Workspace_Builder"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="Tutorial.html" title="Tutorial"
+          <a href="class_Generator.html" title="ROSMOD_Generator"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li>
+          <li><a href="Library_Reference.html" accesskey="U">Library Reference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,29 +52,32 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="library-reference">
-<h1>Library Reference<a class="headerlink" href="#library-reference" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="metaclass">
-<h2>MetaClass<a class="headerlink" href="#metaclass" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="class_Grammar_MetaClass.html">Grammar_MetaClass</a></li>
+  <div class="section" id="rosmod-loader">
+<h1>ROSMOD_Loader<a class="headerlink" href="#rosmod-loader" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ROSMOD_Loader">
+<em class="property">class </em><tt class="descname">ROSMOD_Loader</tt><a class="headerlink" href="#ROSMOD_Loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads an existing ROS Workspace for Code Preservation</p>
+<dl class="method">
+<dt id="ROSMOD_Loader.load">
+<tt class="descname">load</tt><big>(</big><em>workspace</em>, <em>path</em><big>)</big><a class="headerlink" href="#ROSMOD_Loader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an existing ROS workspace and preserve code blocks between code-preservation markers so that regeneration does not completely overwrite existing work</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>workspace</strong> &#8211; The ROS_Workspace object to traverse</li>
+<li><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The absolute path to the ROS workspace directory</li>
 </ul>
-</div>
-</div>
-<div class="section" id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="class_Project.html">ROSMOD Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="class_Generator.html">ROSMOD_Generator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="class_Loader.html">ROSMOD_Loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="class_ROS_Workspace_Builder.html">ROS_Workspace_Builder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="class_ROS_Hardware_Builder.html">ROS_Hardware_Builder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="class_ROS_Deployment_Builder.html">ROS_Deployment_Builder</a></li>
-</ul>
-</div>
-</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -81,24 +86,15 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Library Reference</a><ul>
-<li><a class="reference internal" href="#metaclass">MetaClass</a></li>
-<li><a class="reference internal" href="#classes">Classes</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
-  <p class="topless"><a href="Tutorial.html"
-                        title="previous chapter">Tutorial</a></p>
+  <p class="topless"><a href="class_Generator.html"
+                        title="previous chapter">ROSMOD_Generator</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="class_Grammar_MetaClass.html"
-                        title="next chapter">Grammar_MetaClass</a></p>
+  <p class="topless"><a href="class_ROS_Workspace_Builder.html"
+                        title="next chapter">ROS_Workspace_Builder</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/Library_Reference.txt"
+    <li><a href="_sources/class_Loader.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -125,12 +121,13 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="class_Grammar_MetaClass.html" title="Grammar_MetaClass"
+          <a href="class_ROS_Workspace_Builder.html" title="ROS_Workspace_Builder"
              >next</a> |</li>
         <li class="right" >
-          <a href="Tutorial.html" title="Tutorial"
+          <a href="class_Generator.html" title="ROSMOD_Generator"
              >previous</a> |</li>
-        <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li>
+          <li><a href="Library_Reference.html" >Library Reference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
