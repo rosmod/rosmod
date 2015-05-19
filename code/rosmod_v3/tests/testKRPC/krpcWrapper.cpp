@@ -2,7 +2,7 @@
 
 using namespace std;
 
-KRPC_Client::KRPC_Client(string name, string ip, int port, int streamPort) 
+KRPCI::KRPCI(string name, string ip, int port, int streamPort) 
   : name_(name),
     ip_(ip),
     port_(port),
@@ -13,12 +13,12 @@ KRPC_Client::KRPC_Client(string name, string ip, int port, int streamPort)
   timeout_ = 1;
 }
 
-KRPC_Client::~KRPC_Client()
+KRPCI::~KRPCI()
 {
   Close();
 }
 
-bool KRPC_Client::Connect()
+bool KRPCI::Connect()
 {
   /* socket: create the socket */
   if ((socket_ = socket(AF_INET, SOCK_STREAM, 0)) <0) {
@@ -130,13 +130,13 @@ bool KRPC_Client::Connect()
   return true;
 }
 
-bool KRPC_Client::Close()
+bool KRPCI::Close()
 {
   close(socket_);
   close(streamSocket_);
 }
 
-bool KRPC_Client::CreateStream(std::string streamName, krpc::Request req)
+bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
 {
   string message;
   message.reserve(40);
@@ -158,10 +158,11 @@ bool KRPC_Client::CreateStream(std::string streamName, krpc::Request req)
   return retVal;
 }
 
-bool KRPC_Client::GetActiveVessel(int& id)
+bool KRPCI::GetActiveVessel(uint64_t& id)
 {
   krpc::Request request;
   krpc::Response response;
+  uint64_t vesselID = 0;
 
   request.set_service("SpaceCenter");
   request.set_procedure("get_ActiveVessel");
@@ -173,20 +174,12 @@ bool KRPC_Client::GetActiveVessel(int& id)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      ZeroCopyInputStream* input = 
-	new ArrayInputStream(response.return_value().data(), response.return_value().length());
-      CodedInputStream* codeStream = 
-	new CodedInputStream(input);
-      uint64_t val;
-      codeStream->ReadVarint64(&val);
-      id = val;
-      delete codeStream;
-      delete input;
+      KRPCI::DecodeVarint(id, (char *)response.return_value().data(), response.return_value().size());
     }
   return true;
 }
 
-bool KRPC_Client::GetVessels(std::vector<int>& ids)
+bool KRPCI::GetVessels(std::vector<uint64_t>& ids)
 {
   krpc::Request request;
   krpc::Response response;
@@ -201,12 +194,8 @@ bool KRPC_Client::GetVessels(std::vector<int>& ids)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      ZeroCopyInputStream* input = 
-	new ArrayInputStream(response.return_value().data(), response.return_value().length());
-      CodedInputStream* codeStream = 
-	new CodedInputStream(input);
       krpc::List vesselList;
-      vesselList.ParseFromCodedStream(codeStream);
+      vesselList.ParseFromString(response.return_value());
       for (int i=0;i<vesselList.items_size();i++)
 	{
 	  uint64_t id;
@@ -214,13 +203,11 @@ bool KRPC_Client::GetVessels(std::vector<int>& ids)
 	  CodedInputStream::ReadLittleEndian64FromArray((const unsigned char*)item.data(),&id);
 	  ids.push_back(id);
 	}
-      delete codeStream;
-      delete input;
     }
   return true;
 }
 
-bool KRPC_Client::GetVesselName(int vesselID, string& name)
+bool KRPCI::GetVesselName(uint64_t vesselID, string& name)
 {
   krpc::Request request;
   krpc::Response response;
@@ -241,20 +228,12 @@ bool KRPC_Client::GetVesselName(int vesselID, string& name)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      ZeroCopyInputStream* input = 
-	new ArrayInputStream(response.return_value().data(), response.return_value().length());
-      CodedInputStream* codeStream = 
-	new CodedInputStream(input);
-      uint64_t len;
-      codeStream->ReadVarint64(&len);
-      codeStream->ReadString(&name,len);
-      delete codeStream;
-      delete input;
+      KRPCI::DecodeString(name, (char *)response.return_value().data(), response.return_value().size());
     }
   return true;
 }
 
-bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, double* pos)
+bool KRPCI::GetVesselPosition(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z)
 {
   krpc::Request request;
   krpc::Response response;
@@ -282,15 +261,12 @@ bool KRPC_Client::GetVesselPosition(int vesselID, int refFrame, double* pos)
 	}
       krpc::Tuple tuple;
       tuple.ParseFromString(response.return_value());
-      std::cout << "Got a tuple of length: " << tuple.items_size() << endl;
-      memcpy(&(pos[0]), tuple.items(0).data(), tuple.items(0).size());
-      memcpy(&(pos[1]), tuple.items(1).data(), tuple.items(0).size());
-      memcpy(&(pos[2]), tuple.items(2).data(), tuple.items(0).size());
+      KRPCI::DecodeTuple(tuple,x,y,z);
     }
   return true;
 }
 
-bool KRPC_Client::GetVesselVelocity(int vesselID, int refFrame, double* vel)
+bool KRPCI::GetVesselVelocity(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z)
 {
   krpc::Request request;
   krpc::Response response;
@@ -316,19 +292,14 @@ bool KRPC_Client::GetVesselVelocity(int vesselID, int refFrame, double* vel)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      ZeroCopyInputStream* input = 
-	new ArrayInputStream(response.return_value().data(), response.return_value().length());
-      CodedInputStream* codeStream = 
-	new CodedInputStream(input);
-      uint64_t len;
-      codeStream->ReadVarint64(&len);
-      delete codeStream;
-      delete input;
+      krpc::Tuple tuple;
+      tuple.ParseFromString(response.return_value());
+      KRPCI::DecodeTuple(tuple,x,y,z);
     }
   return true;
 }
 
-bool KRPC_Client::GetVesselOrbitalReferenceFrame(int vesselID, int& refFrame)
+bool KRPCI::GetVesselOrbitalReferenceFrame(uint64_t vesselID, uint64_t& refFrame)
 {
   krpc::Request request;
   krpc::Response response;
@@ -349,43 +320,157 @@ bool KRPC_Client::GetVesselOrbitalReferenceFrame(int vesselID, int& refFrame)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      ZeroCopyInputStream* input = 
-	new ArrayInputStream(response.return_value().data(), response.return_value().length());
-      CodedInputStream* codeStream = 
-	new CodedInputStream(input);
-      codeStream->ReadVarint64((uint64_t *)&refFrame);
-      delete codeStream;
-      delete input;
+      KRPCI::DecodeVarint(refFrame, (char *)response.return_value().data(), response.return_value().size());
     }
   return true;
 }
 
-bool KRPC_Client::GetVesselRotation(int vesselID, int refFrame, double* rot)
+bool KRPCI::GetVesselRotation(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_Rotation");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(refFrame, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      krpc::Tuple tuple;
+      tuple.ParseFromString(response.return_value());
+      KRPCI::DecodeTuple(tuple,x,y,z);
+    }
+  return true;
+}
+
+bool KRPCI::GetVesselOrbit(uint64_t vesselID, uint64_t &orbit)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_get_Orbit");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(orbit, (char *)response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetOrbitApoapsis(uint64_t orbitID, double& apo)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Orbit_get_Apoapsis");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(orbitID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      memcpy(&apo, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetOrbitPeriapsis(uint64_t orbitID, double& peri)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Orbit_get_Periapsis");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(orbitID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      memcpy(&peri, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetOrbitSpeed(uint64_t orbitID, double& speed)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Orbit_get_Speed");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(orbitID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      memcpy(&speed, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetOrbitTimeToApoapsis(uint64_t orbitID, double& time)
 {
 }
 
-bool KRPC_Client::GetApoapsis(int vesselID, double& apo)
+bool KRPCI::GetOrbitTimeToPeriapsis(uint64_t orbitID, double& time)
 {
 }
 
-bool KRPC_Client::GetPeriapsis(int vesselID, double& peri)
-{
-}
-
-bool KRPC_Client::GetOrbitalSpeed(int vesselID, double& speed)
-{
-}
-
-bool KRPC_Client::GetTimeToApoapsis(int vesselID, double& time)
-{
-}
-
-bool KRPC_Client::GetTimeToPeriapsis(int vesselID, double& time)
-{
-}
-
-
-bool KRPC_Client::SetTargetVessel(int vesselID)
+bool KRPCI::SetTargetVessel(uint64_t vesselID)
 {
   krpc::Request request;
   krpc::Response response;
@@ -410,7 +495,7 @@ bool KRPC_Client::SetTargetVessel(int vesselID)
   return true;
 }
 
-bool KRPC_Client::SetControlSAS(int vesselID, bool on)
+bool KRPCI::SetControlSAS(uint64_t controlID, bool on)
 {
   krpc::Request request;
   krpc::Response response;
@@ -422,12 +507,12 @@ bool KRPC_Client::SetControlSAS(int vesselID, bool on)
   argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+  CodedOutputStream::WriteVarint64ToArray(controlID, (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_value()->resize(1);
-  CodedOutputStream::WriteVarint64ToArray(on, (unsigned char *)argument->mutable_value()->data());
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(on, (unsigned char *)argument->mutable_value()->data());
 
   if (getResponseFromRequest(request,response))
     {
@@ -440,7 +525,7 @@ bool KRPC_Client::SetControlSAS(int vesselID, bool on)
   return true;
 }
 
-bool KRPC_Client::SetControlRCS(int vesselID, bool on)
+bool KRPCI::SetControlRCS(uint64_t controlID, bool on)
 {
   krpc::Request request;
   krpc::Response response;
@@ -452,12 +537,12 @@ bool KRPC_Client::SetControlRCS(int vesselID, bool on)
   argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+  CodedOutputStream::WriteVarint64ToArray(controlID, (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_value()->resize(1);
-  CodedOutputStream::WriteVarint64ToArray(on, (unsigned char *)argument->mutable_value()->data());
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(on, (unsigned char *)argument->mutable_value()->data());
 
   if (getResponseFromRequest(request,response))
     {
@@ -470,7 +555,7 @@ bool KRPC_Client::SetControlRCS(int vesselID, bool on)
   return true;
 }
 
-bool KRPC_Client::SetThrottle(int vesselID, float value)
+bool KRPCI::SetThrottle(uint64_t vesselID, float value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -501,21 +586,21 @@ bool KRPC_Client::SetThrottle(int vesselID, float value)
   return true;
 }
 
-bool KRPC_Client::SetPitch(int vesselID, float value)
+bool KRPCI::SetPitch(uint64_t vesselID, float value)
 {
 }
 
-bool KRPC_Client::SetRoll(int vesselID, float value)
+bool KRPCI::SetRoll(uint64_t vesselID, float value)
 {
 }
 
-bool KRPC_Client::SetYaw(int vesselID, float value)
+bool KRPCI::SetYaw(uint64_t vesselID, float value)
 {
 }
 
 // UTILITY FUNCTIONS:
 
-bool KRPC_Client::createRequestString(krpc::Request req, std::string& str)
+bool KRPCI::createRequestString(krpc::Request req, std::string& str)
 {
   uint64_t size;
   string msg;
@@ -531,7 +616,7 @@ bool KRPC_Client::createRequestString(krpc::Request req, std::string& str)
   return true;
 }
 
-bool KRPC_Client::getResponseFromRequest(krpc::Request req, krpc::Response& res)
+bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
 {
   string message;
   message.reserve(40);
@@ -569,4 +654,86 @@ bool KRPC_Client::getResponseFromRequest(krpc::Request req, krpc::Response& res)
       retVal = false;
     }
   return retVal;
+}
+
+void KRPCI::PrintBytesHex(const char *buf, int size)
+{
+  for (int i = 0; i < size; i++)
+    printf("0x%02X ", (unsigned char)buf[i]);
+}
+
+void KRPCI::EncodeVarint(uint32_t value, char *buf, int &size)
+{
+  size = google::protobuf::io::CodedOutputStream::VarintSize32(value);
+
+  google::protobuf::io::ZeroCopyOutputStream *zcos = new google::protobuf::io::ArrayOutputStream(buf, size);
+  google::protobuf::io::CodedOutputStream *cos = new google::protobuf::io::CodedOutputStream(zcos);
+  cos->WriteVarint32(value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::EncodeVarint(uint64_t value, char *buf, int &size)
+{
+  size = google::protobuf::io::CodedOutputStream::VarintSize64(value);
+
+  google::protobuf::io::ZeroCopyOutputStream *zcos = new google::protobuf::io::ArrayOutputStream(buf, size);
+  google::protobuf::io::CodedOutputStream *cos = new google::protobuf::io::CodedOutputStream(zcos);
+  cos->WriteVarint64(value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::DecodeVarint(uint32_t &value, char *buf, int size)
+{
+  // init coded stream
+  google::protobuf::io::ZeroCopyInputStream *zcos = new google::protobuf::io::ArrayInputStream(buf, size);
+  google::protobuf::io::CodedInputStream *cos = new google::protobuf::io::CodedInputStream(zcos);
+  cos->ReadVarint32(&value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::DecodeVarint(uint64_t &value, char *buf, int size)
+{
+  // init coded stream
+  google::protobuf::io::ZeroCopyInputStream *zcos = new google::protobuf::io::ArrayInputStream(buf, size);
+  google::protobuf::io::CodedInputStream *cos = new google::protobuf::io::CodedInputStream(zcos);
+  cos->ReadVarint64(&value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::DecodeString(string& str, char *buf, int size)
+{
+  google::protobuf::io::ZeroCopyInputStream *zcos = new google::protobuf::io::ArrayInputStream(buf, size);
+  google::protobuf::io::CodedInputStream *cos = new google::protobuf::io::CodedInputStream(zcos);
+  uint64_t len;
+  cos->ReadVarint64(&len);
+  cos->ReadString(&str,len);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::EncodeTuple(double x, double y, double z, krpc::Tuple &tuple)
+{ 
+  string *x_str = tuple.add_items();
+  string *y_str = tuple.add_items();
+  string *z_str = tuple.add_items();
+
+  x_str->assign((char *)&x, sizeof(x));
+  y_str->assign((char *)&y, sizeof(y));
+  z_str->assign((char *)&z, sizeof(z));
+}
+
+void KRPCI::DecodeTuple(krpc::Tuple tuple, double& x, double& y, double& z)
+{
+  memcpy(&x, tuple.items(0).data(), tuple.items(0).size());
+  memcpy(&y, tuple.items(1).data(), tuple.items(0).size());
+  memcpy(&z, tuple.items(2).data(), tuple.items(0).size());
 }
