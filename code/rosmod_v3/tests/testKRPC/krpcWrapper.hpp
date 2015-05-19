@@ -37,7 +37,7 @@ const char streamAck[] = { 0x4F, 0x4B };
 struct KRPC_Stream
 {
 public:
-  KRPC_Stream(std::string name_, uint64_t id_, krpc::Request req) : name(name_), id(id_), request(req) {}
+  KRPC_Stream(std::string name_, uint64_t id_, krpc::Request req, boost::function<void (krpc::Response&)> fptr_) : name(name_), id(id_), request(req), fptr(fptr_) {}
 
   KRPC_Stream(const KRPC_Stream& other)
     : name(other.name),
@@ -50,6 +50,7 @@ public:
   std::string name;
   uint64_t id;
   krpc::Request request;  
+  boost::function<void (krpc::Response&)> fptr;
   krpc::Response response;
 };
 
@@ -62,7 +63,7 @@ public:
   bool Connect();
   bool Close();
 
-  bool CreateStream(std::string streamName, krpc::Request req);
+  bool CreateStream(std::string streamName, krpc::Request req, boost::function<void (krpc::Response&)> fptr);
   bool RemoveStream(std::string streamName);
   bool GetLatestStreamData(std::string streamName, krpc::Response& res);
 
@@ -99,6 +100,7 @@ protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
   bool getResponseFromRequestStream(krpc::Request req, krpc::Response& res);
+  bool getStreamResponsesFromStreamMessage();
   void streamThreadFunc();
 
   void PrintBytesHex(const char *buf, int size);
@@ -111,6 +113,7 @@ protected:
   void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
 private:
   std::map<std::string,KRPC_Stream*> active_streams_;
+  std::map<uint64_t,KRPC_Stream*> id_to_stream_map_;
 
   int port_;
   int streamPort_;
