@@ -138,24 +138,71 @@ bool KRPCI::Close()
 
 bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
 {
-  string message;
-  message.reserve(40);
+  krpc::Request streamReq;
+  krpc::Response response;
+  krpc::Argument* argument;
   bool retVal = true;
-  if ( createRequestString(req,message) )
+
+  streamReq.set_service("KRPC");
+  streamReq.set_procedure("AddStream");
+
+  argument = streamReq.add_arguments();
+  argument->set_position(0);
+  req.SerializeToString(argument->mutable_value());
+
+  if (getResponseFromRequestStream(streamReq,response))
     {
-      int numBytes;
-      if ( (numBytes = send(streamSocket_, message.data(), message.length(), 0)) == -1 )
+      if ( response.has_error() )
 	{
-	  perror("sending request");
+	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      activeStreams_[streamName];
-    } else
-    {
-      std::cerr << "Couldn't serialize request!" << std::endl;
-      retVal = false;
+      uint64_t streamID;
+      KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
+      KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req);
+      active_streams_[streamName] = newStream;
     }
-  return retVal;
+  else
+    return false;
+
+  return true;
+}
+
+bool KRPCI::RemoveStream(std::string streamName)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+  bool retVal = true;
+  uint64_t streamID;
+  std::map<std::string,KRPC_Stream*>::iterator it;
+  
+  it = active_streams_.find(streamName);
+  if (it == active_streams_.end())
+    return false;
+  streamID = it->second->id;
+
+  request.set_service("KRPC");
+  request.set_procedure("RemoveStream");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(streamID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequestStream(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      active_streams_.erase(streamName);
+    }
+  else
+    return false;
+
+  return true;
 }
 
 bool KRPCI::GetActiveVessel(uint64_t& id)
@@ -862,6 +909,46 @@ bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
       memset(buf,0,maxBufferSize);
       int bytesreceived =0;
       if ( (bytesreceived=recv(socket_,buf,maxBufferSize-1,0)) <= 0) {
+	perror("recv");
+	return false;
+      }
+      //std::cout << "Socket received # bytes = " << bytesreceived << endl;
+      ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
+      CodedInputStream* coded_input = new CodedInputStream(raw_input);
+      uint64_t size;
+      coded_input->ReadVarint64(&size);
+      //std::cout << "Received " << size << " bytes." << endl;
+      if (!res.ParseFromCodedStream(coded_input))
+	{
+	  retVal = false;
+	}
+      delete coded_input;
+      delete raw_input;
+    } else
+    {
+      std::cerr << "Couldn't serialize request!" << std::endl;
+      retVal = false;
+    }
+  return retVal;
+}
+
+bool KRPCI::getResponseFromRequestStream(krpc::Request req, krpc::Response& res)
+{
+  string message;
+  message.reserve(40);
+  bool retVal = true;
+  if ( createRequestString(req,message) )
+    {
+      int numBytes;
+      if ( (numBytes = send(streamSocket_, message.data(), message.length(), 0)) == -1 )
+	{
+	  perror("sending request");
+	  return false;
+	}
+      char buf[maxBufferSize];
+      memset(buf,0,maxBufferSize);
+      int bytesreceived =0;
+      if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
 	perror("recv");
 	return false;
       }
