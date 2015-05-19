@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ROSMOD 3.0 documentation" href="index.html" />
-    <link rel="next" title="Modeling Language" href="ROSMOD_Modeling_Language.html" />
+    <link rel="next" title="Modeling Language" href="Modeling_Language.html" />
     <link rel="prev" title="Welcome to ROSMOD’s documentation!" href="index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="ROSMOD_Modeling_Language.html" title="Modeling Language"
+          <a href="Modeling_Language.html" title="Modeling Language"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to ROSMOD’s documentation!"
@@ -52,7 +52,29 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://github.com/finger563/rosmod">ROSMOD</a> is a tool suite for rapid prototyping component-based software applications using the <a class="reference external" href="http://www.ros.org">Robot Operating System</a> (ROS). Using ROSMOD, an application developers can create and manage <em>projects</em> for distributed real-time embedded systems. Each ROSMOD Project consists of <em>models</em> that represent the structure and behavior of the system:</p>
+<ul class="simple">
+<li>Software Model : One or more ROS packages in the workspace.</li>
+<li>Hardware Model: One or more Hardware devices.</li>
+<li>Deployment Model: A Mapping between ROS nodes/processes &amp; Hardware devices.</li>
+</ul>
+<p>Using these models, ROSMOD can:</p>
+<ul class="simple">
+<li>Generate a skeleton ROS workspace, including build system files.</li>
+<li>Preserve already generated work-in-progress ROS workspaces using code-preservation markers.</li>
+<li>Generate deployment-specific XML files for ROS node lifecycle management.</li>
+<li>Generate timing analysis models from abstract business logic specification.</li>
+<li>Perform network analysis to admit/reject applications based on network profiles.</li>
+</ul>
+<p>ROSMOD significantly improves the time taken to prototype ROS packages since much of the <em>boring</em> skeleton code e.g. port &amp; timer initialization, callbacks for timers, servers &amp; subscribers etc. are automatically generated from the Software Model. Once generated, a developer need only add the <em>&#8220;business logic&#8221;</em> of the generated callbacks to complete the package. A detailed tutorial for this workflow can be found <a class="reference internal" href="Tutorial.html#id1"><em>here</em></a>.</p>
+<div class="section" id="component-based-software-development">
+<h2>Component-based Software Development<a class="headerlink" href="#component-based-software-development" title="Permalink to this headline">¶</a></h2>
+<p>Software development using ROSMOD is inspired by the principles of Component-based Software Engineering. Design and implementation of component-based software applications rests on the principle of assembly: <em>Complex systems are built by composing re-useable interacting components</em>. Components contain functional, business-logic code that implements operations/callbacks on state variables. Ports facilitate interactions between communicating components. A component-level message queue controls the scheduling of operations/callbacks.</p>
+<div class="section" id="rosmod-components">
+<h3>ROSMOD Components<a class="headerlink" href="#rosmod-components" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/ros_component.png" src="_images/ros_component.png" />
+</div>
+</div>
 </div>
 
 
@@ -61,11 +83,22 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#component-based-software-development">Component-based Software Development</a><ul>
+<li><a class="reference internal" href="#rosmod-components">ROSMOD Components</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to ROSMOD&#8217;s documentation!</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="ROSMOD_Modeling_Language.html"
+  <p class="topless"><a href="Modeling_Language.html"
                         title="next chapter">Modeling Language</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -96,7 +129,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="ROSMOD_Modeling_Language.html" title="Modeling Language"
+          <a href="Modeling_Language.html" title="Modeling Language"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to ROSMOD’s documentation!"

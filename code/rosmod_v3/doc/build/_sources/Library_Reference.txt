@@ -1,16 +1,16 @@
 Library Reference
 =================
 
-MetaClass
----------
+Grammar Metaclass
+-----------------
 
 .. toctree::
    :maxdepth: 1
 
    class_Grammar_MetaClass
 
-Classes
--------
+Project Classes
+---------------
 
 .. toctree::
    :maxdepth: 1
@@ -18,7 +18,7 @@ Classes
    class_Project
    class_Generator
    class_Loader
-   class_ROS_Workspace_Builder
-   class_ROS_Hardware_Builder
-   class_ROS_Deployment_Builder
+   class_Software_Builder
+   class_Hardware_Builder
+   class_Deployment_Builder
 

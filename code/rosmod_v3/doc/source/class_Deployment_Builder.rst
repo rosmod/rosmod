@@ -1,7 +1,7 @@
-ROS_Deployment_Builder
-======================
+ROSMOD_Deployment_Builder
+=========================
 
-.. py:class:: ROS_Deployment_Builder
+.. py:class:: ROSMOD_Deployment_Builder
 
    Builds a Deployment Object Tree from parsing the .rdp files in 03-Deployment/
 

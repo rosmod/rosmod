@@ -1,7 +1,7 @@
-ROS_Workspace_Builder
+ROSMOD_Software_Builder
 =====================
 
-.. py:class:: ROS_Workspace_Builder(ROSMOD_SoftwareListener)
+.. py:class:: ROSMOD_Software_Builder(ROSMOD_SoftwareListener)
 
    Builds a Software Object Tree from parsing the .rml file in 01-Software/*
 
