@@ -21,7 +21,7 @@ bool KRPCI::${procedure.name}(${procedure.args})
   argument = request.add_arguments();
   argument->set_position(${parameter.position});
 #if $parameter.datatype == "uint64_t"
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(${parameter.name}, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -32,7 +32,7 @@ bool KRPCI::${procedure.name}(${procedure.args})
   argument->set_value((const char*)(&${parameter.name}), sizeof(${parameter.name}));  
 
 #else if $parameter.datatype == "bool"
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(${parameter.name}, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -74,9 +74,9 @@ bool KRPCI::${procedure.name}(${procedure.args})
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
 #end if

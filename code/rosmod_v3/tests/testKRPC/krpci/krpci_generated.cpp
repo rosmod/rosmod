@@ -68,13 +68,13 @@ bool KRPCI::TransformPosition(double position_x, double position_y, double posit
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(from, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(2);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(to, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -112,13 +112,13 @@ bool KRPCI::TransformDirection(double direction_x, double direction_y, double di
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(from, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(2);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(to, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -156,13 +156,13 @@ bool KRPCI::TransformRotation(double rotation_x, double rotation_y, double rotat
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(from, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(2);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(to, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -209,13 +209,13 @@ bool KRPCI::TransformVelocity(double position_x, double position_y, double posit
 
   argument = request.add_arguments();
   argument->set_position(2);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(from, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(3);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(to, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -253,7 +253,7 @@ bool KRPCI::DrawDirection(double direction_x, double direction_y, double directi
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -342,16 +342,16 @@ bool KRPCI::get_Vessels(std::vector<uint64_t>& return_vector)
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::get_Bodies(KRPC::Dictionary& return_dict)
+bool KRPCI::get_Bodies(krpc::Dictionary& return_dict)
 {
   krpc::Request request;
   krpc::Response response;
@@ -403,7 +403,7 @@ bool KRPCI::set_TargetBody(uint64_t value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -451,7 +451,7 @@ bool KRPCI::set_TargetVessel(uint64_t value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -499,7 +499,7 @@ bool KRPCI::set_TargetDockingPort(uint64_t value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -601,7 +601,7 @@ bool KRPCI::AutoPilot_SetRotation(uint64_t AutoPilot_ID, float pitch, float head
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -619,13 +619,13 @@ bool KRPCI::AutoPilot_SetRotation(uint64_t AutoPilot_ID, float pitch, float head
 
   argument = request.add_arguments();
   argument->set_position(4);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(5);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(wait, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -651,7 +651,7 @@ bool KRPCI::AutoPilot_SetDirection(uint64_t AutoPilot_ID, double direction_x, do
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -670,13 +670,13 @@ bool KRPCI::AutoPilot_SetDirection(uint64_t AutoPilot_ID, double direction_x, do
 
   argument = request.add_arguments();
   argument->set_position(3);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(4);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(wait, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -702,7 +702,7 @@ bool KRPCI::AutoPilot_Disengage(uint64_t AutoPilot_ID)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -728,7 +728,7 @@ bool KRPCI::AutoPilot_get_SAS(uint64_t AutoPilot_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -754,13 +754,13 @@ bool KRPCI::AutoPilot_set_SAS(uint64_t AutoPilot_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -775,7 +775,7 @@ bool KRPCI::AutoPilot_set_SAS(uint64_t AutoPilot_ID, bool value)
   return true;
 }
 
-bool KRPCI::AutoPilot_get_SASMode(uint64_t AutoPilot_ID, int32& return_value)
+bool KRPCI::AutoPilot_get_SASMode(uint64_t AutoPilot_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -786,7 +786,7 @@ bool KRPCI::AutoPilot_get_SASMode(uint64_t AutoPilot_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -801,7 +801,7 @@ bool KRPCI::AutoPilot_get_SASMode(uint64_t AutoPilot_ID, int32& return_value)
   return true;
 }
 
-bool KRPCI::AutoPilot_set_SASMode(uint64_t AutoPilot_ID, int32 value)
+bool KRPCI::AutoPilot_set_SASMode(uint64_t AutoPilot_ID, int32_t value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -812,7 +812,7 @@ bool KRPCI::AutoPilot_set_SASMode(uint64_t AutoPilot_ID, int32 value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -829,7 +829,7 @@ bool KRPCI::AutoPilot_set_SASMode(uint64_t AutoPilot_ID, int32 value)
   return true;
 }
 
-bool KRPCI::AutoPilot_get_SpeedMode(uint64_t AutoPilot_ID, int32& return_value)
+bool KRPCI::AutoPilot_get_SpeedMode(uint64_t AutoPilot_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -840,7 +840,7 @@ bool KRPCI::AutoPilot_get_SpeedMode(uint64_t AutoPilot_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -855,7 +855,7 @@ bool KRPCI::AutoPilot_get_SpeedMode(uint64_t AutoPilot_ID, int32& return_value)
   return true;
 }
 
-bool KRPCI::AutoPilot_set_SpeedMode(uint64_t AutoPilot_ID, int32 value)
+bool KRPCI::AutoPilot_set_SpeedMode(uint64_t AutoPilot_ID, int32_t value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -866,7 +866,7 @@ bool KRPCI::AutoPilot_set_SpeedMode(uint64_t AutoPilot_ID, int32 value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -894,7 +894,7 @@ bool KRPCI::AutoPilot_get_Error(uint64_t AutoPilot_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -920,7 +920,7 @@ bool KRPCI::AutoPilot_get_RollError(uint64_t AutoPilot_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(AutoPilot_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -946,13 +946,13 @@ bool KRPCI::CelestialBody_Position(uint64_t CelestialBody_ID, uint64_t reference
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -981,13 +981,13 @@ bool KRPCI::CelestialBody_Velocity(uint64_t CelestialBody_ID, uint64_t reference
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1016,13 +1016,13 @@ bool KRPCI::CelestialBody_Rotation(uint64_t CelestialBody_ID, uint64_t reference
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1051,13 +1051,13 @@ bool KRPCI::CelestialBody_Direction(uint64_t CelestialBody_ID, uint64_t referenc
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1086,13 +1086,13 @@ bool KRPCI::CelestialBody_AngularVelocity(uint64_t CelestialBody_ID, uint64_t re
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1110,7 +1110,7 @@ bool KRPCI::CelestialBody_AngularVelocity(uint64_t CelestialBody_ID, uint64_t re
   return true;
 }
 
-bool KRPCI::CelestialBody_get_Name(uint64_t CelestialBody_ID, string& return_value)
+bool KRPCI::CelestialBody_get_Name(uint64_t CelestialBody_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -1121,7 +1121,7 @@ bool KRPCI::CelestialBody_get_Name(uint64_t CelestialBody_ID, string& return_val
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1147,7 +1147,7 @@ bool KRPCI::CelestialBody_get_Satellites(uint64_t CelestialBody_ID, std::vector<
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1163,9 +1163,9 @@ bool KRPCI::CelestialBody_get_Satellites(uint64_t CelestialBody_ID, std::vector<
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -1183,7 +1183,7 @@ bool KRPCI::CelestialBody_get_Mass(uint64_t CelestialBody_ID, float& return_valu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1209,7 +1209,7 @@ bool KRPCI::CelestialBody_get_GravitationalParameter(uint64_t CelestialBody_ID, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1235,7 +1235,7 @@ bool KRPCI::CelestialBody_get_SurfaceGravity(uint64_t CelestialBody_ID, float& r
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1261,7 +1261,7 @@ bool KRPCI::CelestialBody_get_RotationalPeriod(uint64_t CelestialBody_ID, float&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1287,7 +1287,7 @@ bool KRPCI::CelestialBody_get_RotationalSpeed(uint64_t CelestialBody_ID, float& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1313,7 +1313,7 @@ bool KRPCI::CelestialBody_get_EquatorialRadius(uint64_t CelestialBody_ID, float&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1339,7 +1339,7 @@ bool KRPCI::CelestialBody_get_SphereOfInfluence(uint64_t CelestialBody_ID, float
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1365,7 +1365,7 @@ bool KRPCI::CelestialBody_get_Orbit(uint64_t CelestialBody_ID, uint64_t& return_
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1394,7 +1394,7 @@ bool KRPCI::CelestialBody_get_HasAtmosphere(uint64_t CelestialBody_ID, bool& ret
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1420,7 +1420,7 @@ bool KRPCI::CelestialBody_get_AtmosphereDepth(uint64_t CelestialBody_ID, float& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1446,7 +1446,7 @@ bool KRPCI::CelestialBody_get_HasAtmosphericOxygen(uint64_t CelestialBody_ID, bo
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1472,7 +1472,7 @@ bool KRPCI::CelestialBody_get_ReferenceFrame(uint64_t CelestialBody_ID, uint64_t
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1501,7 +1501,7 @@ bool KRPCI::CelestialBody_get_NonRotatingReferenceFrame(uint64_t CelestialBody_I
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1530,7 +1530,7 @@ bool KRPCI::CelestialBody_get_OrbitalReferenceFrame(uint64_t CelestialBody_ID, u
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(CelestialBody_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1559,13 +1559,13 @@ bool KRPCI::Comms_SignalDelayToVessel(uint64_t Comms_ID, uint64_t other, double&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Comms_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(other, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1591,7 +1591,7 @@ bool KRPCI::Comms_get_HasFlightComputer(uint64_t Comms_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Comms_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1617,7 +1617,7 @@ bool KRPCI::Comms_get_HasConnection(uint64_t Comms_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Comms_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1643,7 +1643,7 @@ bool KRPCI::Comms_get_HasConnectionToGroundStation(uint64_t Comms_ID, bool& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Comms_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1669,7 +1669,7 @@ bool KRPCI::Comms_get_SignalDelay(uint64_t Comms_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Comms_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1695,7 +1695,7 @@ bool KRPCI::Comms_get_SignalDelayToGroundStation(uint64_t Comms_ID, double& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Comms_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1721,7 +1721,7 @@ bool KRPCI::Control_ActivateNextStage(uint64_t Control_ID, std::vector<uint64_t>
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1737,16 +1737,16 @@ bool KRPCI::Control_ActivateNextStage(uint64_t Control_ID, std::vector<uint64_t>
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Control_GetActionGroup(uint64_t Control_ID, uint32 group, bool& return_value)
+bool KRPCI::Control_GetActionGroup(uint64_t Control_ID, uint32_t group, bool& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -1757,7 +1757,7 @@ bool KRPCI::Control_GetActionGroup(uint64_t Control_ID, uint32 group, bool& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1774,7 +1774,7 @@ bool KRPCI::Control_GetActionGroup(uint64_t Control_ID, uint32 group, bool& retu
   return true;
 }
 
-bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32 group, bool state)
+bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32_t group, bool state)
 {
   krpc::Request request;
   krpc::Response response;
@@ -1785,7 +1785,7 @@ bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32 group, bool state
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1793,7 +1793,7 @@ bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32 group, bool state
   argument->set_position(1);
   argument = request.add_arguments();
   argument->set_position(2);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(state, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1808,7 +1808,7 @@ bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32 group, bool state
   return true;
 }
 
-bool KRPCI::Control_ToggleActionGroup(uint64_t Control_ID, uint32 group)
+bool KRPCI::Control_ToggleActionGroup(uint64_t Control_ID, uint32_t group)
 {
   krpc::Request request;
   krpc::Response response;
@@ -1819,7 +1819,7 @@ bool KRPCI::Control_ToggleActionGroup(uint64_t Control_ID, uint32 group)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1847,7 +1847,7 @@ bool KRPCI::Control_AddNode(uint64_t Control_ID, double UT, float prograde, floa
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1892,7 +1892,7 @@ bool KRPCI::Control_RemoveNodes(uint64_t Control_ID)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1918,7 +1918,7 @@ bool KRPCI::Control_get_SAS(uint64_t Control_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1944,13 +1944,13 @@ bool KRPCI::Control_set_SAS(uint64_t Control_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -1976,7 +1976,7 @@ bool KRPCI::Control_get_RCS(uint64_t Control_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2002,13 +2002,13 @@ bool KRPCI::Control_set_RCS(uint64_t Control_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2034,7 +2034,7 @@ bool KRPCI::Control_get_Gear(uint64_t Control_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2060,13 +2060,13 @@ bool KRPCI::Control_set_Gear(uint64_t Control_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2092,7 +2092,7 @@ bool KRPCI::Control_get_Lights(uint64_t Control_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2118,13 +2118,13 @@ bool KRPCI::Control_set_Lights(uint64_t Control_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2150,7 +2150,7 @@ bool KRPCI::Control_get_Brakes(uint64_t Control_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2176,13 +2176,13 @@ bool KRPCI::Control_set_Brakes(uint64_t Control_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2208,7 +2208,7 @@ bool KRPCI::Control_get_Abort(uint64_t Control_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2234,13 +2234,13 @@ bool KRPCI::Control_set_Abort(uint64_t Control_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2266,7 +2266,7 @@ bool KRPCI::Control_get_Throttle(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2292,7 +2292,7 @@ bool KRPCI::Control_set_Throttle(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2322,7 +2322,7 @@ bool KRPCI::Control_get_Pitch(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2348,7 +2348,7 @@ bool KRPCI::Control_set_Pitch(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2378,7 +2378,7 @@ bool KRPCI::Control_get_Yaw(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2404,7 +2404,7 @@ bool KRPCI::Control_set_Yaw(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2434,7 +2434,7 @@ bool KRPCI::Control_get_Roll(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2460,7 +2460,7 @@ bool KRPCI::Control_set_Roll(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2490,7 +2490,7 @@ bool KRPCI::Control_get_Forward(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2516,7 +2516,7 @@ bool KRPCI::Control_set_Forward(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2546,7 +2546,7 @@ bool KRPCI::Control_get_Up(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2572,7 +2572,7 @@ bool KRPCI::Control_set_Up(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2602,7 +2602,7 @@ bool KRPCI::Control_get_Right(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2628,7 +2628,7 @@ bool KRPCI::Control_set_Right(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2658,7 +2658,7 @@ bool KRPCI::Control_get_WheelThrottle(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2684,7 +2684,7 @@ bool KRPCI::Control_set_WheelThrottle(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2714,7 +2714,7 @@ bool KRPCI::Control_get_WheelSteering(uint64_t Control_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2740,7 +2740,7 @@ bool KRPCI::Control_set_WheelSteering(uint64_t Control_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2759,7 +2759,7 @@ bool KRPCI::Control_set_WheelSteering(uint64_t Control_ID, float value)
   return true;
 }
 
-bool KRPCI::Control_get_CurrentStage(uint64_t Control_ID, int32& return_value)
+bool KRPCI::Control_get_CurrentStage(uint64_t Control_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -2770,7 +2770,7 @@ bool KRPCI::Control_get_CurrentStage(uint64_t Control_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2796,7 +2796,7 @@ bool KRPCI::Control_get_Nodes(uint64_t Control_ID, std::vector<uint64_t>& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Control_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2812,9 +2812,9 @@ bool KRPCI::Control_get_Nodes(uint64_t Control_ID, std::vector<uint64_t>& return
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -2832,7 +2832,7 @@ bool KRPCI::Flight_get_GForce(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2858,7 +2858,7 @@ bool KRPCI::Flight_get_MeanAltitude(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2884,7 +2884,7 @@ bool KRPCI::Flight_get_SurfaceAltitude(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2910,7 +2910,7 @@ bool KRPCI::Flight_get_BedrockAltitude(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2936,7 +2936,7 @@ bool KRPCI::Flight_get_Elevation(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2962,7 +2962,7 @@ bool KRPCI::Flight_get_Latitude(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -2988,7 +2988,7 @@ bool KRPCI::Flight_get_Longitude(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3014,7 +3014,7 @@ bool KRPCI::Flight_get_Velocity(uint64_t Flight_ID, double& x, double& y, double
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3043,7 +3043,7 @@ bool KRPCI::Flight_get_Speed(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3069,7 +3069,7 @@ bool KRPCI::Flight_get_HorizontalSpeed(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3095,7 +3095,7 @@ bool KRPCI::Flight_get_VerticalSpeed(uint64_t Flight_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3121,7 +3121,7 @@ bool KRPCI::Flight_get_CenterOfMass(uint64_t Flight_ID, double& x, double& y, do
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3150,7 +3150,7 @@ bool KRPCI::Flight_get_Rotation(uint64_t Flight_ID, double& x, double& y, double
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3179,7 +3179,7 @@ bool KRPCI::Flight_get_Direction(uint64_t Flight_ID, double& x, double& y, doubl
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3208,7 +3208,7 @@ bool KRPCI::Flight_get_Pitch(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3234,7 +3234,7 @@ bool KRPCI::Flight_get_Heading(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3260,7 +3260,7 @@ bool KRPCI::Flight_get_Roll(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3286,7 +3286,7 @@ bool KRPCI::Flight_get_Prograde(uint64_t Flight_ID, double& x, double& y, double
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3315,7 +3315,7 @@ bool KRPCI::Flight_get_Retrograde(uint64_t Flight_ID, double& x, double& y, doub
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3344,7 +3344,7 @@ bool KRPCI::Flight_get_Normal(uint64_t Flight_ID, double& x, double& y, double& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3373,7 +3373,7 @@ bool KRPCI::Flight_get_AntiNormal(uint64_t Flight_ID, double& x, double& y, doub
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3402,7 +3402,7 @@ bool KRPCI::Flight_get_Radial(uint64_t Flight_ID, double& x, double& y, double& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3431,7 +3431,7 @@ bool KRPCI::Flight_get_AntiRadial(uint64_t Flight_ID, double& x, double& y, doub
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3460,7 +3460,7 @@ bool KRPCI::Flight_get_AtmosphereDensity(uint64_t Flight_ID, float& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3486,7 +3486,7 @@ bool KRPCI::Flight_get_DynamicPressure(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3512,7 +3512,7 @@ bool KRPCI::Flight_get_StaticPressure(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3538,7 +3538,7 @@ bool KRPCI::Flight_get_AerodynamicForce(uint64_t Flight_ID, double& x, double& y
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3567,7 +3567,7 @@ bool KRPCI::Flight_get_Lift(uint64_t Flight_ID, double& x, double& y, double& z)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3596,7 +3596,7 @@ bool KRPCI::Flight_get_Drag(uint64_t Flight_ID, double& x, double& y, double& z)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3625,7 +3625,7 @@ bool KRPCI::Flight_get_SpeedOfSound(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3651,7 +3651,7 @@ bool KRPCI::Flight_get_Mach(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3677,7 +3677,7 @@ bool KRPCI::Flight_get_EquivalentAirSpeed(uint64_t Flight_ID, float& return_valu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3703,7 +3703,7 @@ bool KRPCI::Flight_get_TerminalVelocity(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3729,7 +3729,7 @@ bool KRPCI::Flight_get_AngleOfAttack(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3755,7 +3755,7 @@ bool KRPCI::Flight_get_SideslipAngle(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3781,7 +3781,7 @@ bool KRPCI::Flight_get_TotalAirTemperature(uint64_t Flight_ID, float& return_val
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3807,7 +3807,7 @@ bool KRPCI::Flight_get_StaticAirTemperature(uint64_t Flight_ID, float& return_va
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3833,7 +3833,7 @@ bool KRPCI::Flight_get_StallFraction(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3859,7 +3859,7 @@ bool KRPCI::Flight_get_DragCoefficient(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3885,7 +3885,7 @@ bool KRPCI::Flight_get_LiftCoefficient(uint64_t Flight_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3911,7 +3911,7 @@ bool KRPCI::Flight_get_PitchingMomentCoefficient(uint64_t Flight_ID, float& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3937,7 +3937,7 @@ bool KRPCI::Flight_get_BallisticCoefficient(uint64_t Flight_ID, float& return_va
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3963,7 +3963,7 @@ bool KRPCI::Flight_get_ThrustSpecificFuelConsumption(uint64_t Flight_ID, float& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -3978,7 +3978,7 @@ bool KRPCI::Flight_get_ThrustSpecificFuelConsumption(uint64_t Flight_ID, float& 
   return true;
 }
 
-bool KRPCI::Flight_get_FARStatus(uint64_t Flight_ID, string& return_value)
+bool KRPCI::Flight_get_FARStatus(uint64_t Flight_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -3989,7 +3989,7 @@ bool KRPCI::Flight_get_FARStatus(uint64_t Flight_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Flight_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4015,13 +4015,13 @@ bool KRPCI::Node_BurnVector(uint64_t Node_ID, uint64_t referenceFrame, double& x
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4050,13 +4050,13 @@ bool KRPCI::Node_RemainingBurnVector(uint64_t Node_ID, uint64_t referenceFrame, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4085,7 +4085,7 @@ bool KRPCI::Node_Remove(uint64_t Node_ID)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4111,13 +4111,13 @@ bool KRPCI::Node_Position(uint64_t Node_ID, uint64_t referenceFrame, double& x, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4146,13 +4146,13 @@ bool KRPCI::Node_Direction(uint64_t Node_ID, uint64_t referenceFrame, double& x,
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4181,7 +4181,7 @@ bool KRPCI::Node_get_Prograde(uint64_t Node_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4207,7 +4207,7 @@ bool KRPCI::Node_set_Prograde(uint64_t Node_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4237,7 +4237,7 @@ bool KRPCI::Node_get_Normal(uint64_t Node_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4263,7 +4263,7 @@ bool KRPCI::Node_set_Normal(uint64_t Node_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4293,7 +4293,7 @@ bool KRPCI::Node_get_Radial(uint64_t Node_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4319,7 +4319,7 @@ bool KRPCI::Node_set_Radial(uint64_t Node_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4349,7 +4349,7 @@ bool KRPCI::Node_get_DeltaV(uint64_t Node_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4375,7 +4375,7 @@ bool KRPCI::Node_set_DeltaV(uint64_t Node_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4405,7 +4405,7 @@ bool KRPCI::Node_get_RemainingDeltaV(uint64_t Node_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4431,7 +4431,7 @@ bool KRPCI::Node_get_UT(uint64_t Node_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4457,7 +4457,7 @@ bool KRPCI::Node_set_UT(uint64_t Node_ID, double value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4487,7 +4487,7 @@ bool KRPCI::Node_get_TimeTo(uint64_t Node_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4513,7 +4513,7 @@ bool KRPCI::Node_get_Orbit(uint64_t Node_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4542,7 +4542,7 @@ bool KRPCI::Node_get_ReferenceFrame(uint64_t Node_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4571,7 +4571,7 @@ bool KRPCI::Node_get_OrbitalReferenceFrame(uint64_t Node_ID, uint64_t& return_va
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Node_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4600,7 +4600,7 @@ bool KRPCI::Orbit_ReferencePlaneNormal(uint64_t referenceFrame, double& x, doubl
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4629,7 +4629,7 @@ bool KRPCI::Orbit_ReferencePlaneDirection(uint64_t referenceFrame, double& x, do
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4658,7 +4658,7 @@ bool KRPCI::Orbit_get_Body(uint64_t Orbit_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4687,7 +4687,7 @@ bool KRPCI::Orbit_get_Apoapsis(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4713,7 +4713,7 @@ bool KRPCI::Orbit_get_Periapsis(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4739,7 +4739,7 @@ bool KRPCI::Orbit_get_ApoapsisAltitude(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4765,7 +4765,7 @@ bool KRPCI::Orbit_get_PeriapsisAltitude(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4791,7 +4791,7 @@ bool KRPCI::Orbit_get_SemiMajorAxis(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4817,7 +4817,7 @@ bool KRPCI::Orbit_get_SemiMinorAxis(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4843,7 +4843,7 @@ bool KRPCI::Orbit_get_Radius(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4869,7 +4869,7 @@ bool KRPCI::Orbit_get_Speed(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4895,7 +4895,7 @@ bool KRPCI::Orbit_get_Period(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4921,7 +4921,7 @@ bool KRPCI::Orbit_get_TimeToApoapsis(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4947,7 +4947,7 @@ bool KRPCI::Orbit_get_TimeToPeriapsis(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4973,7 +4973,7 @@ bool KRPCI::Orbit_get_Eccentricity(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -4999,7 +4999,7 @@ bool KRPCI::Orbit_get_Inclination(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5025,7 +5025,7 @@ bool KRPCI::Orbit_get_LongitudeOfAscendingNode(uint64_t Orbit_ID, double& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5051,7 +5051,7 @@ bool KRPCI::Orbit_get_ArgumentOfPeriapsis(uint64_t Orbit_ID, double& return_valu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5077,7 +5077,7 @@ bool KRPCI::Orbit_get_MeanAnomalyAtEpoch(uint64_t Orbit_ID, double& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5103,7 +5103,7 @@ bool KRPCI::Orbit_get_Epoch(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5129,7 +5129,7 @@ bool KRPCI::Orbit_get_MeanAnomaly(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5155,7 +5155,7 @@ bool KRPCI::Orbit_get_EccentricAnomaly(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5181,7 +5181,7 @@ bool KRPCI::Orbit_get_NextOrbit(uint64_t Orbit_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5210,7 +5210,7 @@ bool KRPCI::Orbit_get_TimeToSOIChange(uint64_t Orbit_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Orbit_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5236,7 +5236,7 @@ bool KRPCI::Decoupler_Decouple(uint64_t Decoupler_ID)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Decoupler_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5262,7 +5262,7 @@ bool KRPCI::Decoupler_get_Part(uint64_t Decoupler_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Decoupler_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5291,7 +5291,7 @@ bool KRPCI::Decoupler_get_Decoupled(uint64_t Decoupler_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Decoupler_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5317,7 +5317,7 @@ bool KRPCI::Decoupler_get_Impulse(uint64_t Decoupler_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Decoupler_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5343,7 +5343,7 @@ bool KRPCI::DockingPort_Undock(uint64_t DockingPort_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5372,13 +5372,13 @@ bool KRPCI::DockingPort_Position(uint64_t DockingPort_ID, uint64_t referenceFram
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5407,13 +5407,13 @@ bool KRPCI::DockingPort_Direction(uint64_t DockingPort_ID, uint64_t referenceFra
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5442,13 +5442,13 @@ bool KRPCI::DockingPort_Rotation(uint64_t DockingPort_ID, uint64_t referenceFram
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5477,7 +5477,7 @@ bool KRPCI::DockingPort_get_Part(uint64_t DockingPort_ID, uint64_t& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5495,7 +5495,7 @@ bool KRPCI::DockingPort_get_Part(uint64_t DockingPort_ID, uint64_t& return_value
   return true;
 }
 
-bool KRPCI::DockingPort_get_Name(uint64_t DockingPort_ID, string& return_value)
+bool KRPCI::DockingPort_get_Name(uint64_t DockingPort_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -5506,7 +5506,7 @@ bool KRPCI::DockingPort_get_Name(uint64_t DockingPort_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5521,7 +5521,7 @@ bool KRPCI::DockingPort_get_Name(uint64_t DockingPort_ID, string& return_value)
   return true;
 }
 
-bool KRPCI::DockingPort_set_Name(uint64_t DockingPort_ID, string value)
+bool KRPCI::DockingPort_set_Name(uint64_t DockingPort_ID, std::string value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -5532,7 +5532,7 @@ bool KRPCI::DockingPort_set_Name(uint64_t DockingPort_ID, string value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5549,7 +5549,7 @@ bool KRPCI::DockingPort_set_Name(uint64_t DockingPort_ID, string value)
   return true;
 }
 
-bool KRPCI::DockingPort_get_State(uint64_t DockingPort_ID, int32& return_value)
+bool KRPCI::DockingPort_get_State(uint64_t DockingPort_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -5560,7 +5560,7 @@ bool KRPCI::DockingPort_get_State(uint64_t DockingPort_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5586,7 +5586,7 @@ bool KRPCI::DockingPort_get_DockedPart(uint64_t DockingPort_ID, uint64_t& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5615,7 +5615,7 @@ bool KRPCI::DockingPort_get_ReengageDistance(uint64_t DockingPort_ID, float& ret
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5641,7 +5641,7 @@ bool KRPCI::DockingPort_get_HasShield(uint64_t DockingPort_ID, bool& return_valu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5667,7 +5667,7 @@ bool KRPCI::DockingPort_get_Shielded(uint64_t DockingPort_ID, bool& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5693,13 +5693,13 @@ bool KRPCI::DockingPort_set_Shielded(uint64_t DockingPort_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5725,7 +5725,7 @@ bool KRPCI::DockingPort_get_ReferenceFrame(uint64_t DockingPort_ID, uint64_t& re
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(DockingPort_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5754,7 +5754,7 @@ bool KRPCI::Engine_get_Part(uint64_t Engine_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5783,7 +5783,7 @@ bool KRPCI::Engine_get_Active(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5809,13 +5809,13 @@ bool KRPCI::Engine_set_Active(uint64_t Engine_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5841,7 +5841,7 @@ bool KRPCI::Engine_get_Thrust(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5867,7 +5867,7 @@ bool KRPCI::Engine_get_AvailableThrust(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5893,7 +5893,7 @@ bool KRPCI::Engine_get_MaxThrust(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5919,7 +5919,7 @@ bool KRPCI::Engine_get_MaxVacuumThrust(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5945,7 +5945,7 @@ bool KRPCI::Engine_get_ThrustLimit(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -5971,7 +5971,7 @@ bool KRPCI::Engine_set_ThrustLimit(uint64_t Engine_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6001,7 +6001,7 @@ bool KRPCI::Engine_get_SpecificImpulse(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6027,7 +6027,7 @@ bool KRPCI::Engine_get_VacuumSpecificImpulse(uint64_t Engine_ID, float& return_v
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6053,7 +6053,7 @@ bool KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse(uint64_t Engine_ID, float& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6079,7 +6079,7 @@ bool KRPCI::Engine_get_Propellants(uint64_t Engine_ID, std::vector<uint64_t>& re
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6095,9 +6095,9 @@ bool KRPCI::Engine_get_Propellants(uint64_t Engine_ID, std::vector<uint64_t>& re
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -6115,7 +6115,7 @@ bool KRPCI::Engine_get_HasFuel(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6141,7 +6141,7 @@ bool KRPCI::Engine_get_Throttle(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6167,7 +6167,7 @@ bool KRPCI::Engine_get_ThrottleLocked(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6193,7 +6193,7 @@ bool KRPCI::Engine_get_CanRestart(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6219,7 +6219,7 @@ bool KRPCI::Engine_get_CanShutdown(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6245,7 +6245,7 @@ bool KRPCI::Engine_get_Gimballed(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6271,7 +6271,7 @@ bool KRPCI::Engine_get_GimbalRange(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6297,7 +6297,7 @@ bool KRPCI::Engine_get_GimbalLocked(uint64_t Engine_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6323,13 +6323,13 @@ bool KRPCI::Engine_set_GimbalLocked(uint64_t Engine_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6355,7 +6355,7 @@ bool KRPCI::Engine_get_GimbalLimit(uint64_t Engine_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6381,7 +6381,7 @@ bool KRPCI::Engine_set_GimbalLimit(uint64_t Engine_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6411,7 +6411,7 @@ bool KRPCI::LandingGear_get_Part(uint64_t LandingGear_ID, uint64_t& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingGear_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6429,7 +6429,7 @@ bool KRPCI::LandingGear_get_Part(uint64_t LandingGear_ID, uint64_t& return_value
   return true;
 }
 
-bool KRPCI::LandingGear_get_State(uint64_t LandingGear_ID, int32& return_value)
+bool KRPCI::LandingGear_get_State(uint64_t LandingGear_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6440,7 +6440,7 @@ bool KRPCI::LandingGear_get_State(uint64_t LandingGear_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingGear_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6466,7 +6466,7 @@ bool KRPCI::LandingGear_get_Deployed(uint64_t LandingGear_ID, bool& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingGear_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6492,13 +6492,13 @@ bool KRPCI::LandingGear_set_Deployed(uint64_t LandingGear_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingGear_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6524,7 +6524,7 @@ bool KRPCI::LandingLeg_get_Part(uint64_t LandingLeg_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingLeg_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6542,7 +6542,7 @@ bool KRPCI::LandingLeg_get_Part(uint64_t LandingLeg_ID, uint64_t& return_value)
   return true;
 }
 
-bool KRPCI::LandingLeg_get_State(uint64_t LandingLeg_ID, int32& return_value)
+bool KRPCI::LandingLeg_get_State(uint64_t LandingLeg_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6553,7 +6553,7 @@ bool KRPCI::LandingLeg_get_State(uint64_t LandingLeg_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingLeg_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6579,7 +6579,7 @@ bool KRPCI::LandingLeg_get_Deployed(uint64_t LandingLeg_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingLeg_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6605,13 +6605,13 @@ bool KRPCI::LandingLeg_set_Deployed(uint64_t LandingLeg_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LandingLeg_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6637,7 +6637,7 @@ bool KRPCI::LaunchClamp_Release(uint64_t LaunchClamp_ID)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LaunchClamp_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6663,7 +6663,7 @@ bool KRPCI::LaunchClamp_get_Part(uint64_t LaunchClamp_ID, uint64_t& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(LaunchClamp_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6692,7 +6692,7 @@ bool KRPCI::Light_get_Part(uint64_t Light_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Light_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6721,7 +6721,7 @@ bool KRPCI::Light_get_Active(uint64_t Light_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Light_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6747,13 +6747,13 @@ bool KRPCI::Light_set_Active(uint64_t Light_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Light_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6779,7 +6779,7 @@ bool KRPCI::Light_get_PowerUsage(uint64_t Light_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Light_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6794,7 +6794,7 @@ bool KRPCI::Light_get_PowerUsage(uint64_t Light_ID, float& return_value)
   return true;
 }
 
-bool KRPCI::Module_HasField(uint64_t Module_ID, string name, bool& return_value)
+bool KRPCI::Module_HasField(uint64_t Module_ID, std::string name, bool& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6805,7 +6805,7 @@ bool KRPCI::Module_HasField(uint64_t Module_ID, string name, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6822,7 +6822,7 @@ bool KRPCI::Module_HasField(uint64_t Module_ID, string name, bool& return_value)
   return true;
 }
 
-bool KRPCI::Module_GetField(uint64_t Module_ID, string name, string& return_value)
+bool KRPCI::Module_GetField(uint64_t Module_ID, std::string name, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6833,7 +6833,7 @@ bool KRPCI::Module_GetField(uint64_t Module_ID, string name, string& return_valu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6850,7 +6850,7 @@ bool KRPCI::Module_GetField(uint64_t Module_ID, string name, string& return_valu
   return true;
 }
 
-bool KRPCI::Module_HasEvent(uint64_t Module_ID, string name, bool& return_value)
+bool KRPCI::Module_HasEvent(uint64_t Module_ID, std::string name, bool& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6861,7 +6861,7 @@ bool KRPCI::Module_HasEvent(uint64_t Module_ID, string name, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6878,7 +6878,7 @@ bool KRPCI::Module_HasEvent(uint64_t Module_ID, string name, bool& return_value)
   return true;
 }
 
-bool KRPCI::Module_TriggerEvent(uint64_t Module_ID, string name)
+bool KRPCI::Module_TriggerEvent(uint64_t Module_ID, std::string name)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6889,7 +6889,7 @@ bool KRPCI::Module_TriggerEvent(uint64_t Module_ID, string name)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6906,7 +6906,7 @@ bool KRPCI::Module_TriggerEvent(uint64_t Module_ID, string name)
   return true;
 }
 
-bool KRPCI::Module_HasAction(uint64_t Module_ID, string name, bool& return_value)
+bool KRPCI::Module_HasAction(uint64_t Module_ID, std::string name, bool& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6917,7 +6917,7 @@ bool KRPCI::Module_HasAction(uint64_t Module_ID, string name, bool& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6934,7 +6934,7 @@ bool KRPCI::Module_HasAction(uint64_t Module_ID, string name, bool& return_value
   return true;
 }
 
-bool KRPCI::Module_SetAction(uint64_t Module_ID, string name, bool value)
+bool KRPCI::Module_SetAction(uint64_t Module_ID, std::string name, bool value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6945,7 +6945,7 @@ bool KRPCI::Module_SetAction(uint64_t Module_ID, string name, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6953,7 +6953,7 @@ bool KRPCI::Module_SetAction(uint64_t Module_ID, string name, bool value)
   argument->set_position(1);
   argument = request.add_arguments();
   argument->set_position(2);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -6968,7 +6968,7 @@ bool KRPCI::Module_SetAction(uint64_t Module_ID, string name, bool value)
   return true;
 }
 
-bool KRPCI::Module_get_Name(uint64_t Module_ID, string& return_value)
+bool KRPCI::Module_get_Name(uint64_t Module_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -6979,7 +6979,7 @@ bool KRPCI::Module_get_Name(uint64_t Module_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7005,7 +7005,7 @@ bool KRPCI::Module_get_Part(uint64_t Module_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7023,7 +7023,7 @@ bool KRPCI::Module_get_Part(uint64_t Module_ID, uint64_t& return_value)
   return true;
 }
 
-bool KRPCI::Module_get_Fields(uint64_t Module_ID, KRPC::Dictionary& return_dict)
+bool KRPCI::Module_get_Fields(uint64_t Module_ID, krpc::Dictionary& return_dict)
 {
   krpc::Request request;
   krpc::Response response;
@@ -7034,7 +7034,7 @@ bool KRPCI::Module_get_Fields(uint64_t Module_ID, KRPC::Dictionary& return_dict)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7060,7 +7060,7 @@ bool KRPCI::Module_get_Events(uint64_t Module_ID, std::vector<uint64_t>& return_
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7076,9 +7076,9 @@ bool KRPCI::Module_get_Events(uint64_t Module_ID, std::vector<uint64_t>& return_
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -7096,7 +7096,7 @@ bool KRPCI::Module_get_Actions(uint64_t Module_ID, std::vector<uint64_t>& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Module_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7112,9 +7112,9 @@ bool KRPCI::Module_get_Actions(uint64_t Module_ID, std::vector<uint64_t>& return
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -7132,7 +7132,7 @@ bool KRPCI::Parachute_Deploy(uint64_t Parachute_ID)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7158,7 +7158,7 @@ bool KRPCI::Parachute_get_Part(uint64_t Parachute_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7187,7 +7187,7 @@ bool KRPCI::Parachute_get_Deployed(uint64_t Parachute_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7202,7 +7202,7 @@ bool KRPCI::Parachute_get_Deployed(uint64_t Parachute_ID, bool& return_value)
   return true;
 }
 
-bool KRPCI::Parachute_get_State(uint64_t Parachute_ID, int32& return_value)
+bool KRPCI::Parachute_get_State(uint64_t Parachute_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -7213,7 +7213,7 @@ bool KRPCI::Parachute_get_State(uint64_t Parachute_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7239,7 +7239,7 @@ bool KRPCI::Parachute_get_DeployAltitude(uint64_t Parachute_ID, float& return_va
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7265,7 +7265,7 @@ bool KRPCI::Parachute_set_DeployAltitude(uint64_t Parachute_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7295,7 +7295,7 @@ bool KRPCI::Parachute_get_DeployMinPressure(uint64_t Parachute_ID, float& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7321,7 +7321,7 @@ bool KRPCI::Parachute_set_DeployMinPressure(uint64_t Parachute_ID, float value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parachute_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7351,13 +7351,13 @@ bool KRPCI::Part_Position(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7386,13 +7386,13 @@ bool KRPCI::Part_Direction(uint64_t Part_ID, uint64_t referenceFrame, double& x,
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7421,13 +7421,13 @@ bool KRPCI::Part_Velocity(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7456,13 +7456,13 @@ bool KRPCI::Part_Rotation(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7480,7 +7480,7 @@ bool KRPCI::Part_Rotation(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
   return true;
 }
 
-bool KRPCI::Part_get_Name(uint64_t Part_ID, string& return_value)
+bool KRPCI::Part_get_Name(uint64_t Part_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -7491,7 +7491,7 @@ bool KRPCI::Part_get_Name(uint64_t Part_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7506,7 +7506,7 @@ bool KRPCI::Part_get_Name(uint64_t Part_ID, string& return_value)
   return true;
 }
 
-bool KRPCI::Part_get_Title(uint64_t Part_ID, string& return_value)
+bool KRPCI::Part_get_Title(uint64_t Part_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -7517,7 +7517,7 @@ bool KRPCI::Part_get_Title(uint64_t Part_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7543,7 +7543,7 @@ bool KRPCI::Part_get_Cost(uint64_t Part_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7569,7 +7569,7 @@ bool KRPCI::Part_get_Vessel(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7598,7 +7598,7 @@ bool KRPCI::Part_get_Parent(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7627,7 +7627,7 @@ bool KRPCI::Part_get_Children(uint64_t Part_ID, std::vector<uint64_t>& return_ve
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7643,9 +7643,9 @@ bool KRPCI::Part_get_Children(uint64_t Part_ID, std::vector<uint64_t>& return_ve
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -7663,7 +7663,7 @@ bool KRPCI::Part_get_AxiallyAttached(uint64_t Part_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7689,7 +7689,7 @@ bool KRPCI::Part_get_RadiallyAttached(uint64_t Part_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7704,7 +7704,7 @@ bool KRPCI::Part_get_RadiallyAttached(uint64_t Part_ID, bool& return_value)
   return true;
 }
 
-bool KRPCI::Part_get_Stage(uint64_t Part_ID, int32& return_value)
+bool KRPCI::Part_get_Stage(uint64_t Part_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -7715,7 +7715,7 @@ bool KRPCI::Part_get_Stage(uint64_t Part_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7730,7 +7730,7 @@ bool KRPCI::Part_get_Stage(uint64_t Part_ID, int32& return_value)
   return true;
 }
 
-bool KRPCI::Part_get_DecoupleStage(uint64_t Part_ID, int32& return_value)
+bool KRPCI::Part_get_DecoupleStage(uint64_t Part_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -7741,7 +7741,7 @@ bool KRPCI::Part_get_DecoupleStage(uint64_t Part_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7767,7 +7767,7 @@ bool KRPCI::Part_get_Massless(uint64_t Part_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7793,7 +7793,7 @@ bool KRPCI::Part_get_Mass(uint64_t Part_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7819,7 +7819,7 @@ bool KRPCI::Part_get_DryMass(uint64_t Part_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7845,7 +7845,7 @@ bool KRPCI::Part_get_ImpactTolerance(uint64_t Part_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7871,7 +7871,7 @@ bool KRPCI::Part_get_Temperature(uint64_t Part_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7897,7 +7897,7 @@ bool KRPCI::Part_get_MaxTemperature(uint64_t Part_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7923,7 +7923,7 @@ bool KRPCI::Part_get_Resources(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7952,7 +7952,7 @@ bool KRPCI::Part_get_Crossfeed(uint64_t Part_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7978,7 +7978,7 @@ bool KRPCI::Part_get_FuelLinesFrom(uint64_t Part_ID, std::vector<uint64_t>& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -7994,9 +7994,9 @@ bool KRPCI::Part_get_FuelLinesFrom(uint64_t Part_ID, std::vector<uint64_t>& retu
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8014,7 +8014,7 @@ bool KRPCI::Part_get_FuelLinesTo(uint64_t Part_ID, std::vector<uint64_t>& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8030,9 +8030,9 @@ bool KRPCI::Part_get_FuelLinesTo(uint64_t Part_ID, std::vector<uint64_t>& return
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8050,7 +8050,7 @@ bool KRPCI::Part_get_Modules(uint64_t Part_ID, std::vector<uint64_t>& return_vec
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8066,9 +8066,9 @@ bool KRPCI::Part_get_Modules(uint64_t Part_ID, std::vector<uint64_t>& return_vec
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8086,7 +8086,7 @@ bool KRPCI::Part_get_Decoupler(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8115,7 +8115,7 @@ bool KRPCI::Part_get_DockingPort(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8144,7 +8144,7 @@ bool KRPCI::Part_get_Engine(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8173,7 +8173,7 @@ bool KRPCI::Part_get_LandingGear(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8202,7 +8202,7 @@ bool KRPCI::Part_get_LandingLeg(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8231,7 +8231,7 @@ bool KRPCI::Part_get_LaunchClamp(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8260,7 +8260,7 @@ bool KRPCI::Part_get_Light(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8289,7 +8289,7 @@ bool KRPCI::Part_get_Parachute(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8318,7 +8318,7 @@ bool KRPCI::Part_get_ReactionWheel(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8347,7 +8347,7 @@ bool KRPCI::Part_get_Sensor(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8376,7 +8376,7 @@ bool KRPCI::Part_get_SolarPanel(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8405,7 +8405,7 @@ bool KRPCI::Part_get_ReferenceFrame(uint64_t Part_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Part_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8423,7 +8423,7 @@ bool KRPCI::Part_get_ReferenceFrame(uint64_t Part_ID, uint64_t& return_value)
   return true;
 }
 
-bool KRPCI::Parts_WithName(uint64_t Parts_ID, string name, std::vector<uint64_t>& return_vector)
+bool KRPCI::Parts_WithName(uint64_t Parts_ID, std::string name, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8434,7 +8434,7 @@ bool KRPCI::Parts_WithName(uint64_t Parts_ID, string name, std::vector<uint64_t>
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8452,16 +8452,16 @@ bool KRPCI::Parts_WithName(uint64_t Parts_ID, string name, std::vector<uint64_t>
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Parts_WithTitle(uint64_t Parts_ID, string title, std::vector<uint64_t>& return_vector)
+bool KRPCI::Parts_WithTitle(uint64_t Parts_ID, std::string title, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8472,7 +8472,7 @@ bool KRPCI::Parts_WithTitle(uint64_t Parts_ID, string title, std::vector<uint64_
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8490,16 +8490,16 @@ bool KRPCI::Parts_WithTitle(uint64_t Parts_ID, string title, std::vector<uint64_
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Parts_WithModule(uint64_t Parts_ID, string moduleName, std::vector<uint64_t>& return_vector)
+bool KRPCI::Parts_WithModule(uint64_t Parts_ID, std::string moduleName, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8510,7 +8510,7 @@ bool KRPCI::Parts_WithModule(uint64_t Parts_ID, string moduleName, std::vector<u
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8528,16 +8528,16 @@ bool KRPCI::Parts_WithModule(uint64_t Parts_ID, string moduleName, std::vector<u
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Parts_InStage(uint64_t Parts_ID, int32 stage, std::vector<uint64_t>& return_vector)
+bool KRPCI::Parts_InStage(uint64_t Parts_ID, int32_t stage, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8548,7 +8548,7 @@ bool KRPCI::Parts_InStage(uint64_t Parts_ID, int32 stage, std::vector<uint64_t>&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8566,16 +8566,16 @@ bool KRPCI::Parts_InStage(uint64_t Parts_ID, int32 stage, std::vector<uint64_t>&
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Parts_InDecoupleStage(uint64_t Parts_ID, int32 stage, std::vector<uint64_t>& return_vector)
+bool KRPCI::Parts_InDecoupleStage(uint64_t Parts_ID, int32_t stage, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8586,7 +8586,7 @@ bool KRPCI::Parts_InDecoupleStage(uint64_t Parts_ID, int32 stage, std::vector<ui
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8604,16 +8604,16 @@ bool KRPCI::Parts_InDecoupleStage(uint64_t Parts_ID, int32 stage, std::vector<ui
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Parts_ModulesWithName(uint64_t Parts_ID, string moduleName, std::vector<uint64_t>& return_vector)
+bool KRPCI::Parts_ModulesWithName(uint64_t Parts_ID, std::string moduleName, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8624,7 +8624,7 @@ bool KRPCI::Parts_ModulesWithName(uint64_t Parts_ID, string moduleName, std::vec
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8642,16 +8642,16 @@ bool KRPCI::Parts_ModulesWithName(uint64_t Parts_ID, string moduleName, std::vec
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::Parts_DockingPortWithName(uint64_t Parts_ID, string name, uint64_t& return_value)
+bool KRPCI::Parts_DockingPortWithName(uint64_t Parts_ID, std::string name, uint64_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -8662,7 +8662,7 @@ bool KRPCI::Parts_DockingPortWithName(uint64_t Parts_ID, string name, uint64_t& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8693,7 +8693,7 @@ bool KRPCI::Parts_get_All(uint64_t Parts_ID, std::vector<uint64_t>& return_vecto
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8709,9 +8709,9 @@ bool KRPCI::Parts_get_All(uint64_t Parts_ID, std::vector<uint64_t>& return_vecto
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8729,7 +8729,7 @@ bool KRPCI::Parts_get_Root(uint64_t Parts_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8758,7 +8758,7 @@ bool KRPCI::Parts_get_Controlling(uint64_t Parts_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8787,13 +8787,13 @@ bool KRPCI::Parts_set_Controlling(uint64_t Parts_ID, uint64_t value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8819,7 +8819,7 @@ bool KRPCI::Parts_get_Decouplers(uint64_t Parts_ID, std::vector<uint64_t>& retur
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8835,9 +8835,9 @@ bool KRPCI::Parts_get_Decouplers(uint64_t Parts_ID, std::vector<uint64_t>& retur
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8855,7 +8855,7 @@ bool KRPCI::Parts_get_DockingPorts(uint64_t Parts_ID, std::vector<uint64_t>& ret
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8871,9 +8871,9 @@ bool KRPCI::Parts_get_DockingPorts(uint64_t Parts_ID, std::vector<uint64_t>& ret
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8891,7 +8891,7 @@ bool KRPCI::Parts_get_Engines(uint64_t Parts_ID, std::vector<uint64_t>& return_v
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8907,9 +8907,9 @@ bool KRPCI::Parts_get_Engines(uint64_t Parts_ID, std::vector<uint64_t>& return_v
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8927,7 +8927,7 @@ bool KRPCI::Parts_get_LandingGear(uint64_t Parts_ID, std::vector<uint64_t>& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8943,9 +8943,9 @@ bool KRPCI::Parts_get_LandingGear(uint64_t Parts_ID, std::vector<uint64_t>& retu
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8963,7 +8963,7 @@ bool KRPCI::Parts_get_LandingLegs(uint64_t Parts_ID, std::vector<uint64_t>& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -8979,9 +8979,9 @@ bool KRPCI::Parts_get_LandingLegs(uint64_t Parts_ID, std::vector<uint64_t>& retu
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -8999,7 +8999,7 @@ bool KRPCI::Parts_get_LaunchClamps(uint64_t Parts_ID, std::vector<uint64_t>& ret
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9015,9 +9015,9 @@ bool KRPCI::Parts_get_LaunchClamps(uint64_t Parts_ID, std::vector<uint64_t>& ret
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -9035,7 +9035,7 @@ bool KRPCI::Parts_get_Lights(uint64_t Parts_ID, std::vector<uint64_t>& return_ve
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9051,9 +9051,9 @@ bool KRPCI::Parts_get_Lights(uint64_t Parts_ID, std::vector<uint64_t>& return_ve
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -9071,7 +9071,7 @@ bool KRPCI::Parts_get_Parachutes(uint64_t Parts_ID, std::vector<uint64_t>& retur
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9087,9 +9087,9 @@ bool KRPCI::Parts_get_Parachutes(uint64_t Parts_ID, std::vector<uint64_t>& retur
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -9107,7 +9107,7 @@ bool KRPCI::Parts_get_ReactionWheels(uint64_t Parts_ID, std::vector<uint64_t>& r
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9123,9 +9123,9 @@ bool KRPCI::Parts_get_ReactionWheels(uint64_t Parts_ID, std::vector<uint64_t>& r
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -9143,7 +9143,7 @@ bool KRPCI::Parts_get_Sensors(uint64_t Parts_ID, std::vector<uint64_t>& return_v
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9159,9 +9159,9 @@ bool KRPCI::Parts_get_Sensors(uint64_t Parts_ID, std::vector<uint64_t>& return_v
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -9179,7 +9179,7 @@ bool KRPCI::Parts_get_SolarPanels(uint64_t Parts_ID, std::vector<uint64_t>& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9195,16 +9195,16 @@ bool KRPCI::Parts_get_SolarPanels(uint64_t Parts_ID, std::vector<uint64_t>& retu
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::PartResources_HasResource(uint64_t PartResources_ID, string name, bool& return_value)
+bool KRPCI::PartResources_HasResource(uint64_t PartResources_ID, std::string name, bool& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -9215,7 +9215,7 @@ bool KRPCI::PartResources_HasResource(uint64_t PartResources_ID, string name, bo
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9232,7 +9232,7 @@ bool KRPCI::PartResources_HasResource(uint64_t PartResources_ID, string name, bo
   return true;
 }
 
-bool KRPCI::PartResources_Max(uint64_t PartResources_ID, string name, float& return_value)
+bool KRPCI::PartResources_Max(uint64_t PartResources_ID, std::string name, float& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -9243,7 +9243,7 @@ bool KRPCI::PartResources_Max(uint64_t PartResources_ID, string name, float& ret
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9260,7 +9260,7 @@ bool KRPCI::PartResources_Max(uint64_t PartResources_ID, string name, float& ret
   return true;
 }
 
-bool KRPCI::PartResources_Amount(uint64_t PartResources_ID, string name, float& return_value)
+bool KRPCI::PartResources_Amount(uint64_t PartResources_ID, std::string name, float& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -9271,7 +9271,7 @@ bool KRPCI::PartResources_Amount(uint64_t PartResources_ID, string name, float& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9299,7 +9299,7 @@ bool KRPCI::PartResources_get_Names(uint64_t PartResources_ID, std::vector<uint6
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9315,9 +9315,9 @@ bool KRPCI::PartResources_get_Names(uint64_t PartResources_ID, std::vector<uint6
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
@@ -9335,7 +9335,7 @@ bool KRPCI::ReactionWheel_get_Part(uint64_t ReactionWheel_ID, uint64_t& return_v
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9364,7 +9364,7 @@ bool KRPCI::ReactionWheel_get_Active(uint64_t ReactionWheel_ID, bool& return_val
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9390,13 +9390,13 @@ bool KRPCI::ReactionWheel_set_Active(uint64_t ReactionWheel_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9422,7 +9422,7 @@ bool KRPCI::ReactionWheel_get_Broken(uint64_t ReactionWheel_ID, bool& return_val
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9448,7 +9448,7 @@ bool KRPCI::ReactionWheel_get_PitchTorque(uint64_t ReactionWheel_ID, float& retu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9474,7 +9474,7 @@ bool KRPCI::ReactionWheel_get_YawTorque(uint64_t ReactionWheel_ID, float& return
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9500,7 +9500,7 @@ bool KRPCI::ReactionWheel_get_RollTorque(uint64_t ReactionWheel_ID, float& retur
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(ReactionWheel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9526,7 +9526,7 @@ bool KRPCI::Sensor_get_Part(uint64_t Sensor_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Sensor_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9555,7 +9555,7 @@ bool KRPCI::Sensor_get_Active(uint64_t Sensor_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Sensor_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9581,13 +9581,13 @@ bool KRPCI::Sensor_set_Active(uint64_t Sensor_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Sensor_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9602,7 +9602,7 @@ bool KRPCI::Sensor_set_Active(uint64_t Sensor_ID, bool value)
   return true;
 }
 
-bool KRPCI::Sensor_get_Value(uint64_t Sensor_ID, string& return_value)
+bool KRPCI::Sensor_get_Value(uint64_t Sensor_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -9613,7 +9613,7 @@ bool KRPCI::Sensor_get_Value(uint64_t Sensor_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Sensor_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9639,7 +9639,7 @@ bool KRPCI::Sensor_get_PowerUsage(uint64_t Sensor_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Sensor_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9665,7 +9665,7 @@ bool KRPCI::SolarPanel_get_Part(uint64_t SolarPanel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(SolarPanel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9694,7 +9694,7 @@ bool KRPCI::SolarPanel_get_Deployed(uint64_t SolarPanel_ID, bool& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(SolarPanel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9720,13 +9720,13 @@ bool KRPCI::SolarPanel_set_Deployed(uint64_t SolarPanel_ID, bool value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(SolarPanel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9741,7 +9741,7 @@ bool KRPCI::SolarPanel_set_Deployed(uint64_t SolarPanel_ID, bool value)
   return true;
 }
 
-bool KRPCI::SolarPanel_get_State(uint64_t SolarPanel_ID, int32& return_value)
+bool KRPCI::SolarPanel_get_State(uint64_t SolarPanel_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -9752,7 +9752,7 @@ bool KRPCI::SolarPanel_get_State(uint64_t SolarPanel_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(SolarPanel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9778,7 +9778,7 @@ bool KRPCI::SolarPanel_get_EnergyFlow(uint64_t SolarPanel_ID, float& return_valu
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(SolarPanel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9804,7 +9804,7 @@ bool KRPCI::SolarPanel_get_SunExposure(uint64_t SolarPanel_ID, float& return_val
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(SolarPanel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9830,13 +9830,13 @@ bool KRPCI::Vessel_Flight(uint64_t Vessel_ID, uint64_t referenceFrame, uint64_t&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9865,13 +9865,13 @@ bool KRPCI::Vessel_Position(uint64_t Vessel_ID, uint64_t referenceFrame, double&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9900,13 +9900,13 @@ bool KRPCI::Vessel_Velocity(uint64_t Vessel_ID, uint64_t referenceFrame, double&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9935,13 +9935,13 @@ bool KRPCI::Vessel_Rotation(uint64_t Vessel_ID, uint64_t referenceFrame, double&
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -9970,13 +9970,13 @@ bool KRPCI::Vessel_Direction(uint64_t Vessel_ID, uint64_t referenceFrame, double
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10005,13 +10005,13 @@ bool KRPCI::Vessel_AngularVelocity(uint64_t Vessel_ID, uint64_t referenceFrame, 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10029,7 +10029,7 @@ bool KRPCI::Vessel_AngularVelocity(uint64_t Vessel_ID, uint64_t referenceFrame, 
   return true;
 }
 
-bool KRPCI::Vessel_get_Name(uint64_t Vessel_ID, string& return_value)
+bool KRPCI::Vessel_get_Name(uint64_t Vessel_ID, std::string& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10040,7 +10040,7 @@ bool KRPCI::Vessel_get_Name(uint64_t Vessel_ID, string& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10055,7 +10055,7 @@ bool KRPCI::Vessel_get_Name(uint64_t Vessel_ID, string& return_value)
   return true;
 }
 
-bool KRPCI::Vessel_set_Name(uint64_t Vessel_ID, string value)
+bool KRPCI::Vessel_set_Name(uint64_t Vessel_ID, std::string value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10066,7 +10066,7 @@ bool KRPCI::Vessel_set_Name(uint64_t Vessel_ID, string value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10083,7 +10083,7 @@ bool KRPCI::Vessel_set_Name(uint64_t Vessel_ID, string value)
   return true;
 }
 
-bool KRPCI::Vessel_get_Type(uint64_t Vessel_ID, int32& return_value)
+bool KRPCI::Vessel_get_Type(uint64_t Vessel_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10094,7 +10094,7 @@ bool KRPCI::Vessel_get_Type(uint64_t Vessel_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10109,7 +10109,7 @@ bool KRPCI::Vessel_get_Type(uint64_t Vessel_ID, int32& return_value)
   return true;
 }
 
-bool KRPCI::Vessel_set_Type(uint64_t Vessel_ID, int32 value)
+bool KRPCI::Vessel_set_Type(uint64_t Vessel_ID, int32_t value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10120,7 +10120,7 @@ bool KRPCI::Vessel_set_Type(uint64_t Vessel_ID, int32 value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10137,7 +10137,7 @@ bool KRPCI::Vessel_set_Type(uint64_t Vessel_ID, int32 value)
   return true;
 }
 
-bool KRPCI::Vessel_get_Situation(uint64_t Vessel_ID, int32& return_value)
+bool KRPCI::Vessel_get_Situation(uint64_t Vessel_ID, int32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10148,7 +10148,7 @@ bool KRPCI::Vessel_get_Situation(uint64_t Vessel_ID, int32& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10174,7 +10174,7 @@ bool KRPCI::Vessel_get_MET(uint64_t Vessel_ID, double& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10200,7 +10200,7 @@ bool KRPCI::Vessel_get_Target(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10229,13 +10229,13 @@ bool KRPCI::Vessel_set_Target(uint64_t Vessel_ID, uint64_t value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(value, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10261,7 +10261,7 @@ bool KRPCI::Vessel_get_Orbit(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10290,7 +10290,7 @@ bool KRPCI::Vessel_get_Control(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10319,7 +10319,7 @@ bool KRPCI::Vessel_get_AutoPilot(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10348,7 +10348,7 @@ bool KRPCI::Vessel_get_Resources(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10377,7 +10377,7 @@ bool KRPCI::Vessel_get_Parts(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10406,7 +10406,7 @@ bool KRPCI::Vessel_get_Comms(uint64_t Vessel_ID, uint64_t& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10435,7 +10435,7 @@ bool KRPCI::Vessel_get_Mass(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10461,7 +10461,7 @@ bool KRPCI::Vessel_get_DryMass(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10487,7 +10487,7 @@ bool KRPCI::Vessel_get_Thrust(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10513,7 +10513,7 @@ bool KRPCI::Vessel_get_AvailableThrust(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10539,7 +10539,7 @@ bool KRPCI::Vessel_get_MaxThrust(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10565,7 +10565,7 @@ bool KRPCI::Vessel_get_MaxVacuumThrust(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10591,7 +10591,7 @@ bool KRPCI::Vessel_get_SpecificImpulse(uint64_t Vessel_ID, float& return_value)
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10617,7 +10617,7 @@ bool KRPCI::Vessel_get_VacuumSpecificImpulse(uint64_t Vessel_ID, float& return_v
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10643,7 +10643,7 @@ bool KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse(uint64_t Vessel_ID, float& 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10669,7 +10669,7 @@ bool KRPCI::Vessel_get_ReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10698,7 +10698,7 @@ bool KRPCI::Vessel_get_OrbitalReferenceFrame(uint64_t Vessel_ID, uint64_t& retur
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10727,7 +10727,7 @@ bool KRPCI::Vessel_get_SurfaceReferenceFrame(uint64_t Vessel_ID, uint64_t& retur
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10756,7 +10756,7 @@ bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame(uint64_t Vessel_ID, uint64_
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10774,7 +10774,7 @@ bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame(uint64_t Vessel_ID, uint64_
   return true;
 }
 
-bool KRPCI::VesselResources_HasResource(uint64_t VesselResources_ID, string name, bool& return_value)
+bool KRPCI::VesselResources_HasResource(uint64_t VesselResources_ID, std::string name, bool& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10785,7 +10785,7 @@ bool KRPCI::VesselResources_HasResource(uint64_t VesselResources_ID, string name
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10802,7 +10802,7 @@ bool KRPCI::VesselResources_HasResource(uint64_t VesselResources_ID, string name
   return true;
 }
 
-bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, string name, int32 stage, bool cumulative, float& return_value)
+bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, std::string name, int32_t stage, bool cumulative, float& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10813,7 +10813,7 @@ bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, string name, int32 
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10823,7 +10823,7 @@ bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, string name, int32 
   argument->set_position(2);
   argument = request.add_arguments();
   argument->set_position(3);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(cumulative, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10838,7 +10838,7 @@ bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, string name, int32 
   return true;
 }
 
-bool KRPCI::VesselResources_Amount(uint64_t VesselResources_ID, string name, int32 stage, bool cumulative, float& return_value)
+bool KRPCI::VesselResources_Amount(uint64_t VesselResources_ID, std::string name, int32_t stage, bool cumulative, float& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10849,7 +10849,7 @@ bool KRPCI::VesselResources_Amount(uint64_t VesselResources_ID, string name, int
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10859,7 +10859,7 @@ bool KRPCI::VesselResources_Amount(uint64_t VesselResources_ID, string name, int
   argument->set_position(2);
   argument = request.add_arguments();
   argument->set_position(3);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint32ToArray(cumulative, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10885,7 +10885,7 @@ bool KRPCI::VesselResources_get_Names(uint64_t VesselResources_ID, std::vector<u
 
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_values()->resize(10);
+  argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
 		      (unsigned char *)argument->mutable_value()->data());
 
@@ -10901,16 +10901,16 @@ bool KRPCI::VesselResources_get_Names(uint64_t VesselResources_ID, std::vector<u
       for(int i=0; i< output_list.items_size(); i++)
 	{
 	  uint64_t return_value;
-	  KRPCI::DecodeVariant(return_value,
-			       (char *)output_list.items(i).data(),
-			       output_list.items(i).size());
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
     }
   return true;
 }
 
-bool KRPCI::GetStatus(KRPC.Status& return_value)
+bool KRPCI::GetStatus(krpc::Status& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10929,7 +10929,7 @@ bool KRPCI::GetStatus(KRPC.Status& return_value)
   return true;
 }
 
-bool KRPCI::GetServices(KRPC.Services& return_value)
+bool KRPCI::GetServices(krpc::Services& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10948,7 +10948,7 @@ bool KRPCI::GetServices(KRPC.Services& return_value)
   return true;
 }
 
-bool KRPCI::AddStream(KRPC.Request request, uint32& return_value)
+bool KRPCI::AddStream(krpc::Request input_request, uint32_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
@@ -10970,7 +10970,7 @@ bool KRPCI::AddStream(KRPC.Request request, uint32& return_value)
   return true;
 }
 
-bool KRPCI::RemoveStream(uint32 id)
+bool KRPCI::RemoveStream(uint32_t id)
 {
   krpc::Request request;
   krpc::Response response;

@@ -40,9 +40,14 @@ class Parameter:
         elif self.datatype == "KRPC.List":
             return "std::vector<uint64_t> " + self.name + "_vector"
         elif self.datatype == "KRPC.Dictionary":
-            return "KRPC::Dictionary " + self.name + "_dict"
-        elif self.datatype == "uint64":
+            return "krpc::Dictionary " + self.name + "_dict"
+        elif self.datatype == "KRPC.Request":
+            self.name = "input_request"
+            return "krpc::Request " + self.name
+        elif self.datatype == "uint64" or self.datatype == "uint32" or self.datatype == "int32" or self.datatype == "int64":
             return self.datatype + "_t " + self.name 
+        elif self.datatype == "string":
+            return "std::" + self.datatype + " " + self.name
         else:
             return self.datatype + " " + self.name
 
@@ -67,9 +72,21 @@ class Procedure:
             elif self.return_type == "KRPC.List":
                 self.args += "std::vector<uint64_t>& return_vector"
             elif self.return_type == "KRPC.Dictionary":
-                self.args += "KRPC::Dictionary& return_dict"
+                self.args += "krpc::Dictionary& return_dict"
+            elif self.return_type == "KRPC.Status":
+                self.args += "krpc::Status& return_value"
+            elif self.return_type == "KRPC.Services":
+                self.args += "krpc::Services& return_value"
             elif self.return_type == "uint64":
                 self.args += "uint64_t& return_value"
+            elif self.return_type == "uint32":
+                self.args += "uint32_t& return_value"
+            elif self.return_type == "int32":
+                self.args += "int32_t& return_value"
+            elif self.return_type == "int64":
+                self.args += "int64_t& return_value"
+            elif self.return_type == "string":
+                self.args += "std::string& return_value"
             else:
                 self.args += self.return_type + "& return_value"        
     
