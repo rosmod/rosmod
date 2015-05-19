@@ -96,21 +96,20 @@ public:
   bool SetControlPitch(uint64_t controlID, float value);
   bool SetControlRoll(uint64_t controlID, float value);
   bool SetControlYaw(uint64_t controlID, float value);
-protected:
+
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
-  bool getResponseFromRequestStream(krpc::Request req, krpc::Response& res);
   bool getStreamResponsesFromStreamMessage();
   void streamThreadFunc();
 
-  void PrintBytesHex(const char *buf, int size);
-  void EncodeVarint(uint32_t value, char *buf, int &size);
-  void EncodeVarint(uint64_t value, char *buf, int &size);
-  void DecodeVarint(uint32_t &value, char *buf, int size);
-  void DecodeVarint(uint64_t &value, char *buf, int size);
-  void DecodeString(std::string &str, char *buf, int size);
-  void EncodeTuple(double x, double y, double z, krpc::Tuple &tuple);
-  void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
+  static void PrintBytesHex(const char *buf, int size);
+  static void EncodeVarint(uint32_t value, char *buf, int &size);
+  static void EncodeVarint(uint64_t value, char *buf, int &size);
+  static void DecodeVarint(uint32_t &value, char *buf, int size);
+  static void DecodeVarint(uint64_t &value, char *buf, int size);
+  static void DecodeString(std::string &str, char *buf, int size);
+  static void EncodeTuple(double x, double y, double z, krpc::Tuple &tuple);
+  static void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
 private:
   std::map<std::string,KRPC_Stream*> active_streams_;
   std::map<uint64_t,KRPC_Stream*> id_to_stream_map_;

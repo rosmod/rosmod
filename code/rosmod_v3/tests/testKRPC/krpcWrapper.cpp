@@ -127,6 +127,7 @@ bool KRPCI::Connect()
 	  haveReceivedAck = true;
       }
     }
+  boost::thread stream_thread(boost::bind(&KRPCI::streamThreadFunc, this));
   return true;
 }
 
@@ -138,10 +139,9 @@ bool KRPCI::Close()
 
 void KRPCI::streamThreadFunc()
 {
-  std::map<string,KRPC_Stream*>::iterator it;
-  for (it=active_streams_.begin(); it!=active_streams_.end(); ++it)
+  while (true)
     {
-      it->second->fptr(it->second->response);
+      this->getStreamResponsesFromStreamMessage();
     }
 }
 
@@ -159,7 +159,7 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::funct
   argument->set_position(0);
   req.SerializeToString(argument->mutable_value());
 
-  if (getResponseFromRequestStream(streamReq,response))
+  if (getResponseFromRequest(streamReq,response))
     {
       if ( response.has_error() )
 	{
@@ -168,6 +168,7 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::funct
 	}
       uint64_t streamID;
       KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
+      std::cout << "GOT NEW STREAM ID: " << streamID << endl;
       KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req,fptr);
       active_streams_[streamName] = newStream;
       id_to_stream_map_[streamID] = newStream;
@@ -200,7 +201,7 @@ bool KRPCI::RemoveStream(std::string streamName)
   argument->mutable_value()->resize(10);
   CodedOutputStream::WriteVarint64ToArray(streamID, (unsigned char *)argument->mutable_value()->data());
 
-  if (getResponseFromRequestStream(request,response))
+  if (getResponseFromRequest(request,response))
     {
       if ( response.has_error() )
 	{
@@ -943,46 +944,6 @@ bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
   return retVal;
 }
 
-bool KRPCI::getResponseFromRequestStream(krpc::Request req, krpc::Response& res)
-{
-  string message;
-  message.reserve(40);
-  bool retVal = true;
-  if ( createRequestString(req,message) )
-    {
-      int numBytes;
-      if ( (numBytes = send(streamSocket_, message.data(), message.length(), 0)) == -1 )
-	{
-	  perror("sending request");
-	  return false;
-	}
-      char buf[maxBufferSize];
-      memset(buf,0,maxBufferSize);
-      int bytesreceived =0;
-      if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
-	perror("recv");
-	return false;
-      }
-      //std::cout << "Socket received # bytes = " << bytesreceived << endl;
-      ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
-      CodedInputStream* coded_input = new CodedInputStream(raw_input);
-      uint64_t size;
-      coded_input->ReadVarint64(&size);
-      //std::cout << "Received " << size << " bytes." << endl;
-      if (!res.ParseFromCodedStream(coded_input))
-	{
-	  retVal = false;
-	}
-      delete coded_input;
-      delete raw_input;
-    } else
-    {
-      std::cerr << "Couldn't serialize request!" << std::endl;
-      retVal = false;
-    }
-  return retVal;
-}
-
 bool KRPCI::getStreamResponsesFromStreamMessage()
 {
   bool retVal = true;
@@ -990,7 +951,7 @@ bool KRPCI::getStreamResponsesFromStreamMessage()
   memset(buf,0,maxBufferSize);
   int bytesreceived =0;
   if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
-    perror("recv");
+    perror("get stream responses from stream message : stream socket receive");
     return false;
   }
   //std::cout << "Socket received # bytes = " << bytesreceived << endl;
@@ -1013,6 +974,8 @@ bool KRPCI::getStreamResponsesFromStreamMessage()
       if (it != id_to_stream_map_.end())
 	{
 	  it->second->response = response;
+	  if (it->second->fptr != NULL)
+	    it->second->fptr(it->second->response);
 	}
     }
   delete coded_input;

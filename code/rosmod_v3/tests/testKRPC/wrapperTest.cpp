@@ -2,6 +2,20 @@
 
 using namespace std;
 
+void myStreamFunc(krpc::Response& response)
+{
+  if ( response.has_error() )
+    {
+      std::cout << "Response error: " << response.error() << endl;
+      return;
+    }
+  krpc::Tuple tuple;
+  double x,y,z;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple,x,y,z);
+  printf("(x,y,z) = (%f,%f,%f)\n",x,y,z);
+}
+
 int main(int argc, char** argv)
 {
   KRPCI client("wrapperTest");
@@ -48,6 +62,29 @@ int main(int argc, char** argv)
       client.SetControlPitch(controlID,45.0);
       client.SetControlRoll(controlID,20.0);
       client.SetControlYaw(controlID,30.0);
+
+      std::string streamName = "testStream";
+      krpc::Request request;
+      krpc::Argument* argument;
+      request.set_service("SpaceCenter");
+      request.set_procedure("Vessel_Position");
+
+      argument = request.add_arguments();
+      argument->set_position(0);
+      argument->mutable_value()->resize(10);
+      CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+      argument = request.add_arguments();
+      argument->set_position(1);
+      argument->mutable_value()->resize(10);
+      CodedOutputStream::WriteVarint64ToArray(orbitalRefFrame, (unsigned char *)argument->mutable_value()->data());
+      client.CreateStream(streamName,request, myStreamFunc);
+
+      sleep(10);
+
+      client.RemoveStream(streamName);
+
+      sleep(10);
     }
   client.Close();
 }
