@@ -21,12 +21,6 @@ int main(int argc, char** argv)
       std::string vesselName;
       client.GetVesselName(vesselID,vesselName);
       std::cout << "Active vessel Name: " << vesselName << std::endl;
-      uint64_t orbitalRefFrame;
-      client.GetVesselOrbitalReferenceFrame(vesselID, orbitalRefFrame);
-      std::cout << "Active vessel Orbital Reference Frame ID: " << orbitalRefFrame << std::endl;
-      double position[3];
-      client.GetVesselPosition(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
-      std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
       uint64_t orbitID;
       client.GetVesselOrbit(vesselID, orbitID);
       std::cout << "Active vessel orbit: " << orbitID << endl;
@@ -36,6 +30,15 @@ int main(int argc, char** argv)
       double time;
       client.GetOrbitTimeToApoapsis(orbitID,time);
       std::cout << "Active vessel reaches orbit apoapsis in: " << time << endl;
+      uint64_t bodyID;
+      client.GetOrbitBody(orbitID, bodyID);
+      std::cout << "Active vessel orbiting body: " << bodyID << std::endl;
+      uint64_t orbitalRefFrame;
+      client.GetBodyReferenceFrame(bodyID, orbitalRefFrame);
+      std::cout << "Orbiting body's Reference Frame ID: " << orbitalRefFrame << std::endl;
+      double position[3];
+      client.GetVesselPosition(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
+      std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
       //client.SetControlSAS(vesselID,false);
       //client.SetControlRCS(vesselID,false);
       //client.SetThrottle(vesselID,1.0);

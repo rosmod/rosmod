@@ -53,14 +53,18 @@ public:
   bool GetVesselVelocity(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z);
   bool GetVesselRotation(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z);
   bool GetVesselOrbitalReferenceFrame(uint64_t vesselID, uint64_t& refFrame);
+  bool GetVesselSurfaceReferenceFrame(uint64_t vesselID, uint64_t& refFrame);
   bool GetVesselOrbit(uint64_t vesselID, uint64_t& orbit);
 
+  bool GetOrbitBody(uint64_t orbitID, uint64_t &bodyID);
   bool GetOrbitApoapsis(uint64_t orbitID, double& apo);
   bool GetOrbitApoapsisAltitude(uint64_t orbitID, double& alt);
   bool GetOrbitPeriapsis(uint64_t orbitID, double& peri);
   bool GetOrbitSpeed(uint64_t orbitID, double& speed);
   bool GetOrbitTimeToApoapsis(uint64_t orbitID, double& time);
   bool GetOrbitTimeToPeriapsis(uint64_t orbitID, double& time);
+
+  bool GetBodyReferenceFrame(uint64_t bodyID, uint64_t &refFrame);
 
   bool SetTargetVessel(uint64_t vesselID);
 

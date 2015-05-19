@@ -325,6 +325,32 @@ bool KRPCI::GetVesselOrbitalReferenceFrame(uint64_t vesselID, uint64_t& refFrame
   return true;
 }
 
+bool KRPCI::GetVesselSurfaceReferenceFrame(uint64_t vesselID, uint64_t& refFrame)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_get_SurfaceReferenceFrame");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(refFrame, (char *)response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
 bool KRPCI::GetVesselRotation(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z)
 {
   krpc::Request request;
@@ -380,6 +406,32 @@ bool KRPCI::GetVesselOrbit(uint64_t vesselID, uint64_t &orbit)
 	  return false;
 	}
       KRPCI::DecodeVarint(orbit, (char *)response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetOrbitBody(uint64_t orbitID, uint64_t &bodyID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Orbit_get_Body");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(orbitID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(bodyID, (char *)response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -521,6 +573,32 @@ bool KRPCI::GetOrbitTimeToApoapsis(uint64_t orbitID, double& time)
 
 bool KRPCI::GetOrbitTimeToPeriapsis(uint64_t orbitID, double& time)
 {
+}
+
+bool KRPCI::GetBodyReferenceFrame(uint64_t vesselID, uint64_t& refFrame)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("CelestialBody_get_ReferenceFrame");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(refFrame, (char *)response.return_value().data(), response.return_value().size());
+    }
+  return true;
 }
 
 bool KRPCI::SetTargetVessel(uint64_t vesselID)
