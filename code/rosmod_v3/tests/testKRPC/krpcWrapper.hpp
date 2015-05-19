@@ -39,9 +39,18 @@ struct KRPC_Stream
 public:
   KRPC_Stream(std::string name_, uint64_t id_, krpc::Request req) : name(name_), id(id_), request(req) {}
 
+  KRPC_Stream(const KRPC_Stream& other)
+    : name(other.name),
+      id(other.id),
+      request(other.request),
+      response(other.response)
+  {
+  }
+
   std::string name;
   uint64_t id;
   krpc::Request request;  
+  krpc::Response response;
 };
 
 class KRPCI
@@ -54,6 +63,7 @@ public:
   bool Close();
 
   bool CreateStream(std::string streamName, krpc::Request req);
+  bool RemoveStream(std::string streamName);
   bool GetLatestStreamData(std::string streamName, krpc::Response& res);
 
   bool GetActiveVessel(uint64_t& id);
@@ -100,7 +110,7 @@ protected:
   void EncodeTuple(double x, double y, double z, krpc::Tuple &tuple);
   void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
 private:
-  std::vector<KRPC_Stream> active_streams_;
+  std::map<std::string,KRPC_Stream*> active_streams_;
 
   int port_;
   int streamPort_;

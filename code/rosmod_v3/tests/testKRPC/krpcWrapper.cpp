@@ -159,8 +159,45 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
 	}
       uint64_t streamID;
       KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
-      KRPC_Stream newStream(streamName,streamID,req);
-      active_streams_.push_back(newStream);
+      KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req);
+      active_streams_[streamName] = newStream;
+    }
+  else
+    return false;
+
+  return true;
+}
+
+bool KRPCI::RemoveStream(std::string streamName)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+  bool retVal = true;
+  uint64_t streamID;
+  std::map<std::string,KRPC_Stream*>::iterator it;
+  
+  it = active_streams_.find(streamName);
+  if (it == active_streams_.end())
+    return false;
+  streamID = it->second->id;
+
+  request.set_service("KRPC");
+  request.set_procedure("RemoveStream");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(streamID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequestStream(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      active_streams_.erase(streamName);
     }
   else
     return false;
