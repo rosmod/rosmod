@@ -55,15 +55,18 @@ public:
   bool GetVesselOrbitalReferenceFrame(uint64_t vesselID, uint64_t& refFrame);
   bool GetVesselOrbit(uint64_t vesselID, uint64_t& orbit);
 
-  bool GetOrbitApoapsis(uint64_t vesselID, double& apo);
-  bool GetOrbitPeriapsis(uint64_t vesselID, double& peri);
-  bool GetOrbitSpeed(uint64_t vesselID, double& speed);
-  bool GetOrbitTimeToApoapsis(uint64_t vesselID, double& time);
-  bool GetOrbitTimeToPeriapsis(uint64_t vesselID, double& time);
+  bool GetOrbitApoapsis(uint64_t orbitID, double& apo);
+  bool GetOrbitApoapsisAltitude(uint64_t orbitID, double& alt);
+  bool GetOrbitPeriapsis(uint64_t orbitID, double& peri);
+  bool GetOrbitSpeed(uint64_t orbitID, double& speed);
+  bool GetOrbitTimeToApoapsis(uint64_t orbitID, double& time);
+  bool GetOrbitTimeToPeriapsis(uint64_t orbitID, double& time);
 
   bool SetTargetVessel(uint64_t vesselID);
-  bool SetControlSAS(uint64_t vesselID, bool on);
-  bool SetControlRCS(uint64_t vesselID, bool on);
+
+  bool SetControlSAS(uint64_t controlID, bool on);
+  bool SetControlRCS(uint64_t controlID, bool on);
+
   bool SetThrottle(uint64_t vesselID, float value);
   bool SetPitch(uint64_t vesselID, float value);
   bool SetRoll(uint64_t vesselID, float value);

@@ -27,6 +27,15 @@ int main(int argc, char** argv)
       double position[3];
       client.GetVesselPosition(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
       std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
+      uint64_t orbitID;
+      client.GetVesselOrbit(vesselID, orbitID);
+      std::cout << "Active vessel orbit: " << orbitID << endl;
+      double apoapsis;
+      client.GetOrbitApoapsisAltitude(orbitID,apoapsis);
+      std::cout << "Active vessel orbit has apoapsis altitude: " << apoapsis << endl;
+      double time;
+      client.GetOrbitTimeToApoapsis(orbitID,time);
+      std::cout << "Active vessel reaches orbit apoapsis in: " << time << endl;
       //client.SetControlSAS(vesselID,false);
       //client.SetControlRCS(vesselID,false);
       //client.SetThrottle(vesselID,1.0);

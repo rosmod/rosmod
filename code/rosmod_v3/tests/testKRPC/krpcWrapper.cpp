@@ -405,7 +405,35 @@ bool KRPCI::GetOrbitApoapsis(uint64_t orbitID, double& apo)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      apo = 0.0;
       memcpy(&apo, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetOrbitApoapsisAltitude(uint64_t orbitID, double& alt)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Orbit_get_ApoapsisAltitude");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(orbitID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      alt = 0.0;
+      memcpy(&alt, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -431,6 +459,7 @@ bool KRPCI::GetOrbitPeriapsis(uint64_t orbitID, double& peri)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      peri = 0.0;
       memcpy(&peri, response.return_value().data(), response.return_value().size());
     }
   return true;
@@ -457,6 +486,7 @@ bool KRPCI::GetOrbitSpeed(uint64_t orbitID, double& speed)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      speed = 0.0;
       memcpy(&speed, response.return_value().data(), response.return_value().size());
     }
   return true;
@@ -464,6 +494,29 @@ bool KRPCI::GetOrbitSpeed(uint64_t orbitID, double& speed)
 
 bool KRPCI::GetOrbitTimeToApoapsis(uint64_t orbitID, double& time)
 {
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Orbit_get_TimeToApoapsis");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(orbitID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      time = 0.0;
+      memcpy(&time, response.return_value().data(), response.return_value().size());
+    }
+  return true;
 }
 
 bool KRPCI::GetOrbitTimeToPeriapsis(uint64_t orbitID, double& time)
