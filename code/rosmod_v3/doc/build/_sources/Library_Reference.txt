@@ -1,16 +1,16 @@
 Library Reference
 =================
 
-MetaClass
----------
+Grammar Metaclass
+-----------------
 
 .. toctree::
    :maxdepth: 1
 
    class_Grammar_MetaClass
 
-Classes
--------
+Project Classes
+---------------
 
 .. toctree::
    :maxdepth: 1

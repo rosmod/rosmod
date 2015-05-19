@@ -12,7 +12,7 @@ Table of Contents
 -----------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    Introduction
 
@@ -23,6 +23,8 @@ Table of Contents
    Code_Generators
 
    Deployment_Infrastructure
+   
+   Logging_Framework
    
    Tutorial
    
