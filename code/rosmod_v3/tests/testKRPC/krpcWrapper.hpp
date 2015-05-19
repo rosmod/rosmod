@@ -1,23 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
 #include "KRPC.pb.h"
-
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
 using namespace google::protobuf::io;
-
 #include <boost/thread.hpp>
-
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdio.h>

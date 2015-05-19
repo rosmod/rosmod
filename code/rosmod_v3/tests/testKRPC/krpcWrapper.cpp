@@ -168,7 +168,6 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::funct
 	}
       uint64_t streamID;
       KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
-      std::cout << "GOT NEW STREAM ID: " << streamID << endl;
       KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req,fptr);
       active_streams_[streamName] = newStream;
       id_to_stream_map_[streamID] = newStream;

@@ -2,6 +2,20 @@
 
 using namespace std;
 
+void myStreamFunc(krpc::Response& response)
+{
+  if ( response.has_error() )
+    {
+      std::cout << "Response error: " << response.error() << endl;
+      return;
+    }
+  krpc::Tuple tuple;
+  double x,y,z;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple,x,y,z);
+  printf("(x,y,z) = (%f,%f,%f)\n",x,y,z);
+}
+
 int main(int argc, char** argv)
 {
   KRPCI client("wrapperTest");
@@ -48,6 +62,19 @@ int main(int argc, char** argv)
       client.Control_set_Pitch(controlID,45.0);
       client.Control_set_Roll(controlID,20.0);
       client.Control_set_Yaw(controlID,30.0);
+
+      // stream name can be anything, but must be unique for a given client (i.e. KRPCI)
+      std::string streamName = "streamTest_Vessel_Position";
+      krpc::Request request;
+      KRPCI::Vessel_Position_createRequest(vesselID, orbitalRefFrame, request);
+
+      client.CreateStream(streamName,request, myStreamFunc);
+
+      sleep(10);
+
+      client.RemoveStream(streamName);
+
+      sleep(10);
     }
   client.Close();
 }

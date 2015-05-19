@@ -651,6 +651,158 @@ bool KRPCI::get_G(float& return_value)
   return true;
 }
 
+bool KRPCI::get_RailsWarpFactor_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_RailsWarpFactor");
+  return true;
+}
+
+bool KRPCI::get_RailsWarpFactor(int32_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_RailsWarpFactor_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::set_RailsWarpFactor_createRequest(int32_t value, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("set_RailsWarpFactor");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::set_RailsWarpFactor(int32_t value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::set_RailsWarpFactor_createRequest(value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_PhysicsWarpFactor_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_PhysicsWarpFactor");
+  return true;
+}
+
+bool KRPCI::get_PhysicsWarpFactor(int32_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_PhysicsWarpFactor_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::set_PhysicsWarpFactor_createRequest(int32_t value, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("set_PhysicsWarpFactor");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::set_PhysicsWarpFactor(int32_t value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::set_PhysicsWarpFactor_createRequest(value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpMode_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpMode");
+  return true;
+}
+
+bool KRPCI::get_WarpMode(int32_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpMode_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpRate_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpRate");
+  return true;
+}
+
+bool KRPCI::get_WarpRate(float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpRate_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
 bool KRPCI::get_FARAvailable_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -7366,6 +7518,37 @@ bool KRPCI::Engine_get_Propellants(uint64_t Engine_ID, std::vector<uint64_t>& re
   return true;
 }
 
+bool KRPCI::Engine_get_PropellantRatios_createRequest(uint64_t Engine_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Engine_get_PropellantRatios");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Engine_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Engine_get_PropellantRatios(uint64_t Engine_ID, krpc::Dictionary& return_dict)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Engine_get_PropellantRatios_createRequest(Engine_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
 bool KRPCI::Engine_get_HasFuel_createRequest(uint64_t Engine_ID, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -11005,150 +11188,6 @@ bool KRPCI::Parts_get_SolarPanels(uint64_t Parts_ID, std::vector<uint64_t>& retu
   return true;
 }
 
-bool KRPCI::PartResources_HasResource_createRequest(uint64_t PartResources_ID, std::string name, krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("PartResources_HasResource");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
-  return true;
-}
-
-bool KRPCI::PartResources_HasResource(uint64_t PartResources_ID, std::string name, bool& return_value)
-{
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::PartResources_HasResource_createRequest(PartResources_ID, name, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-    }
-  return true;
-}
-
-bool KRPCI::PartResources_Max_createRequest(uint64_t PartResources_ID, std::string name, krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("PartResources_Max");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
-  return true;
-}
-
-bool KRPCI::PartResources_Max(uint64_t PartResources_ID, std::string name, float& return_value)
-{
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::PartResources_Max_createRequest(PartResources_ID, name, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
-    }
-  return true;
-}
-
-bool KRPCI::PartResources_Amount_createRequest(uint64_t PartResources_ID, std::string name, krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("PartResources_Amount");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
-  return true;
-}
-
-bool KRPCI::PartResources_Amount(uint64_t PartResources_ID, std::string name, float& return_value)
-{
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::PartResources_Amount_createRequest(PartResources_ID, name, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
-    }
-  return true;
-}
-
-bool KRPCI::PartResources_get_Names_createRequest(uint64_t PartResources_ID, krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("PartResources_get_Names");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(PartResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  return true;
-}
-
-bool KRPCI::PartResources_get_Names(uint64_t PartResources_ID, std::vector<uint64_t>& return_vector)
-{
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::PartResources_get_Names_createRequest(PartResources_ID, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
-    }
-  return true;
-}
-
 bool KRPCI::ReactionWheel_get_Part_createRequest(uint64_t ReactionWheel_ID, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -11746,6 +11785,179 @@ bool KRPCI::SolarPanel_get_SunExposure(uint64_t SolarPanel_ID, float& return_val
   return true;
 }
 
+bool KRPCI::Resources_HasResource_createRequest(uint64_t Resources_ID, std::string name, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Resources_HasResource");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Resources_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Resources_HasResource(uint64_t Resources_ID, std::string name, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Resources_HasResource_createRequest(Resources_ID, name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Resources_Max_createRequest(uint64_t Resources_ID, std::string name, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Resources_Max");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Resources_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Resources_Max(uint64_t Resources_ID, std::string name, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Resources_Max_createRequest(Resources_ID, name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Resources_Amount_createRequest(uint64_t Resources_ID, std::string name, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Resources_Amount");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Resources_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Resources_Amount(uint64_t Resources_ID, std::string name, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Resources_Amount_createRequest(Resources_ID, name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Resources_Density_createRequest(std::string name, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Resources_Density");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::Resources_Density(std::string name, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Resources_Density_createRequest(name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Resources_get_Names_createRequest(uint64_t Resources_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Resources_get_Names");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Resources_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Resources_get_Names(uint64_t Resources_ID, std::vector<uint64_t>& return_vector)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Resources_get_Names_createRequest(Resources_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      krpc::List output_list;
+      output_list.ParseFromString(response.return_value());
+      for(int i=0; i< output_list.items_size(); i++)
+	{
+	  uint64_t return_value;
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
+	  return_vector.push_back(return_value);
+	}
+    }
+  return true;
+}
+
 bool KRPCI::Vessel_Flight_createRequest(uint64_t Vessel_ID, uint64_t referenceFrame, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -11771,6 +11983,48 @@ bool KRPCI::Vessel_Flight(uint64_t Vessel_ID, uint64_t referenceFrame, uint64_t&
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_Flight_createRequest(Vessel_ID, referenceFrame, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Vessel_ResourcesInDecoupleStage_createRequest(uint64_t Vessel_ID, int32_t stage, bool cumulative, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_ResourcesInDecoupleStage");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Vessel_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(cumulative, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Vessel_ResourcesInDecoupleStage(uint64_t Vessel_ID, int32_t stage, bool cumulative, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Vessel_ResourcesInDecoupleStage_createRequest(Vessel_ID, stage, cumulative, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -12886,27 +13140,21 @@ bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame(uint64_t Vessel_ID, uint64_
   return true;
 }
 
-bool KRPCI::VesselResources_HasResource_createRequest(uint64_t VesselResources_ID, std::string name, krpc::Request& request)
+bool KRPCI::AlarmWithName_createRequest(std::string name, krpc::Request& request)
 {
-  request.set_service("SpaceCenter");
-  request.set_procedure("VesselResources_HasResource");
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("AlarmWithName");
   krpc::Argument* argument;
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
   return true;
 }
 
-bool KRPCI::VesselResources_HasResource(uint64_t VesselResources_ID, std::string name, bool& return_value)
+bool KRPCI::AlarmWithName(std::string name, uint64_t& return_value)
 {
   krpc::Request request;
   krpc::Response response;
-  KRPCI::VesselResources_HasResource_createRequest(VesselResources_ID, name, request);
+  KRPCI::AlarmWithName_createRequest(name, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -12915,115 +13163,28 @@ bool KRPCI::VesselResources_HasResource(uint64_t VesselResources_ID, std::string
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
     }
   return true;
 }
 
-bool KRPCI::VesselResources_Max_createRequest(uint64_t VesselResources_ID, std::string name, int32_t stage, bool cumulative, krpc::Request& request)
+bool KRPCI::AlarmsWithType_createRequest(int32_t type, krpc::Request& request)
 {
-  request.set_service("SpaceCenter");
-  request.set_procedure("VesselResources_Max");
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("AlarmsWithType");
   krpc::Argument* argument;
   argument = request.add_arguments();
   argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
-  argument = request.add_arguments();
-  argument->set_position(2);
-  argument = request.add_arguments();
-  argument->set_position(3);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint32ToArray(cumulative, 
-		      (unsigned char *)argument->mutable_value()->data());
-
   return true;
 }
 
-bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, std::string name, int32_t stage, bool cumulative, float& return_value)
+bool KRPCI::AlarmsWithType(int32_t type, std::vector<uint64_t>& return_vector)
 {
   krpc::Request request;
   krpc::Response response;
-  KRPCI::VesselResources_Max_createRequest(VesselResources_ID, name, stage, cumulative, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
-    }
-  return true;
-}
-
-bool KRPCI::VesselResources_Amount_createRequest(uint64_t VesselResources_ID, std::string name, int32_t stage, bool cumulative, krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("VesselResources_Amount");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
-  argument = request.add_arguments();
-  argument->set_position(2);
-  argument = request.add_arguments();
-  argument->set_position(3);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint32ToArray(cumulative, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  return true;
-}
-
-bool KRPCI::VesselResources_Amount(uint64_t VesselResources_ID, std::string name, int32_t stage, bool cumulative, float& return_value)
-{
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::VesselResources_Amount_createRequest(VesselResources_ID, name, stage, cumulative, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
-    }
-  return true;
-}
-
-bool KRPCI::VesselResources_get_Names_createRequest(uint64_t VesselResources_ID, krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("VesselResources_get_Names");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(VesselResources_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  return true;
-}
-
-bool KRPCI::VesselResources_get_Names(uint64_t VesselResources_ID, std::vector<uint64_t>& return_vector)
-{
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::VesselResources_get_Names_createRequest(VesselResources_ID, request);
+  KRPCI::AlarmsWithType_createRequest(type, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -13041,6 +13202,2560 @@ bool KRPCI::VesselResources_get_Names(uint64_t VesselResources_ID, std::vector<u
 			      (char *)output_list.items(i).data(),
 			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
+	}
+    }
+  return true;
+}
+
+bool KRPCI::CreateAlarm_createRequest(int32_t type, std::string name, double ut, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("CreateAlarm");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&ut), sizeof(ut));  
+
+  return true;
+}
+
+bool KRPCI::CreateAlarm(int32_t type, std::string name, double ut, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::CreateAlarm_createRequest(type, name, ut, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::get_Alarms_createRequest(krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("get_Alarms");
+  return true;
+}
+
+bool KRPCI::get_Alarms(std::vector<uint64_t>& return_vector)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_Alarms_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      krpc::List output_list;
+      output_list.ParseFromString(response.return_value());
+      for(int i=0; i< output_list.items_size(); i++)
+	{
+	  uint64_t return_value;
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
+	  return_vector.push_back(return_value);
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_Delete_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_Delete");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_Delete(uint64_t Alarm_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_Delete_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Action_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Action");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Action(uint64_t Alarm_ID, int32_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Action_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Action_createRequest(uint64_t Alarm_ID, int32_t value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Action");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Alarm_set_Action(uint64_t Alarm_ID, int32_t value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Action_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Margin_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Margin");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Margin(uint64_t Alarm_ID, double& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Margin_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Margin_createRequest(uint64_t Alarm_ID, double value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Margin");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));  
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_Margin(uint64_t Alarm_ID, double value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Margin_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Time_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Time");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Time(uint64_t Alarm_ID, double& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Time_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Time_createRequest(uint64_t Alarm_ID, double value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Time");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));  
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_Time(uint64_t Alarm_ID, double value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Time_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Type_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Type");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Type(uint64_t Alarm_ID, int32_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Type_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_ID_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_ID");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_ID(uint64_t Alarm_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_ID_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Name_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Name");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Name(uint64_t Alarm_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Name_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Name_createRequest(uint64_t Alarm_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Name");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Alarm_set_Name(uint64_t Alarm_ID, std::string value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Name_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Notes_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Notes");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Notes(uint64_t Alarm_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Notes_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Notes_createRequest(uint64_t Alarm_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Notes");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Alarm_set_Notes(uint64_t Alarm_ID, std::string value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Notes_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Remaining_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Remaining");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Remaining(uint64_t Alarm_ID, double& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Remaining_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Repeat_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Repeat");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Repeat(uint64_t Alarm_ID, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Repeat_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Repeat_createRequest(uint64_t Alarm_ID, bool value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Repeat");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_Repeat(uint64_t Alarm_ID, bool value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Repeat_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_RepeatPeriod_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_RepeatPeriod");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_RepeatPeriod(uint64_t Alarm_ID, double& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_RepeatPeriod_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_RepeatPeriod_createRequest(uint64_t Alarm_ID, double value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_RepeatPeriod");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));  
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_RepeatPeriod(uint64_t Alarm_ID, double value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_RepeatPeriod_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Vessel_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_Vessel");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_Vessel(uint64_t Alarm_ID, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_Vessel_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_Vessel_createRequest(uint64_t Alarm_ID, uint64_t value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_Vessel");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_Vessel(uint64_t Alarm_ID, uint64_t value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_Vessel_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_XferOriginBody_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_XferOriginBody");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_XferOriginBody(uint64_t Alarm_ID, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_XferOriginBody_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_XferOriginBody_createRequest(uint64_t Alarm_ID, uint64_t value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_XferOriginBody");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_XferOriginBody(uint64_t Alarm_ID, uint64_t value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_XferOriginBody_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_get_XferTargetBody_createRequest(uint64_t Alarm_ID, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_get_XferTargetBody");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_get_XferTargetBody(uint64_t Alarm_ID, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_get_XferTargetBody_createRequest(Alarm_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Alarm_set_XferTargetBody_createRequest(uint64_t Alarm_ID, uint64_t value, krpc::Request& request)
+{
+  request.set_service("KerbalAlarmClock");
+  request.set_procedure("Alarm_set_XferTargetBody");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Alarm_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Alarm_set_XferTargetBody(uint64_t Alarm_ID, uint64_t value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Alarm_set_XferTargetBody_createRequest(Alarm_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ServoGroupWithName_createRequest(std::string name, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ServoGroupWithName");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::ServoGroupWithName(std::string name, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ServoGroupWithName_createRequest(name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::ServoWithName_createRequest(std::string name, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ServoWithName");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::ServoWithName(std::string name, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ServoWithName_createRequest(name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::get_ServoGroups_createRequest(krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("get_ServoGroups");
+  return true;
+}
+
+bool KRPCI::get_ServoGroups(std::vector<uint64_t>& return_vector)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_ServoGroups_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      krpc::List output_list;
+      output_list.ParseFromString(response.return_value());
+      for(int i=0; i< output_list.items_size(); i++)
+	{
+	  uint64_t return_value;
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
+	  return_vector.push_back(return_value);
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_ServoWithName_createRequest(uint64_t ControlGroup_ID, std::string name, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_ServoWithName");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::ControlGroup_ServoWithName(uint64_t ControlGroup_ID, std::string name, uint64_t& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_ServoWithName_createRequest(ControlGroup_ID, name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(return_value, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveRight_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_MoveRight");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveRight(uint64_t ControlGroup_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_MoveRight_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveLeft_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_MoveLeft");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveLeft(uint64_t ControlGroup_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_MoveLeft_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveCenter_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_MoveCenter");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveCenter(uint64_t ControlGroup_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_MoveCenter_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveNextPreset_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_MoveNextPreset");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_MoveNextPreset(uint64_t ControlGroup_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_MoveNextPreset_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_MovePrevPreset_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_MovePrevPreset");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_MovePrevPreset(uint64_t ControlGroup_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_MovePrevPreset_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_Stop_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_Stop");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_Stop(uint64_t ControlGroup_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_Stop_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Name_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_get_Name");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Name(uint64_t ControlGroup_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_get_Name_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_Name_createRequest(uint64_t ControlGroup_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_set_Name");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_Name(uint64_t ControlGroup_ID, std::string value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_set_Name_createRequest(ControlGroup_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_ForwardKey_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_get_ForwardKey");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_ForwardKey(uint64_t ControlGroup_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_get_ForwardKey_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_ForwardKey_createRequest(uint64_t ControlGroup_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_set_ForwardKey");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_ForwardKey(uint64_t ControlGroup_ID, std::string value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_set_ForwardKey_createRequest(ControlGroup_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_ReverseKey_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_get_ReverseKey");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_ReverseKey(uint64_t ControlGroup_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_get_ReverseKey_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_ReverseKey_createRequest(uint64_t ControlGroup_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_set_ReverseKey");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_ReverseKey(uint64_t ControlGroup_ID, std::string value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_set_ReverseKey_createRequest(ControlGroup_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Speed_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_get_Speed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Speed(uint64_t ControlGroup_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_get_Speed_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_Speed_createRequest(uint64_t ControlGroup_ID, float value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_set_Speed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_Speed(uint64_t ControlGroup_ID, float value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_set_Speed_createRequest(ControlGroup_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Expanded_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_get_Expanded");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Expanded(uint64_t ControlGroup_ID, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_get_Expanded_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_Expanded_createRequest(uint64_t ControlGroup_ID, bool value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_set_Expanded");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_set_Expanded(uint64_t ControlGroup_ID, bool value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_set_Expanded_createRequest(ControlGroup_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Servos_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("ControlGroup_get_Servos");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(ControlGroup_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Servos(uint64_t ControlGroup_ID, std::vector<uint64_t>& return_vector)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ControlGroup_get_Servos_createRequest(ControlGroup_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      krpc::List output_list;
+      output_list.ParseFromString(response.return_value());
+      for(int i=0; i< output_list.items_size(); i++)
+	{
+	  uint64_t return_value;
+	  KRPCI::DecodeVarint(return_value,
+			      (char *)output_list.items(i).data(),
+			      output_list.items(i).size());
+	  return_vector.push_back(return_value);
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_MoveRight_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_MoveRight");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_MoveRight(uint64_t Servo_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_MoveRight_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_MoveLeft_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_MoveLeft");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_MoveLeft(uint64_t Servo_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_MoveLeft_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_MoveCenter_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_MoveCenter");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_MoveCenter(uint64_t Servo_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_MoveCenter_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_MoveNextPreset_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_MoveNextPreset");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_MoveNextPreset(uint64_t Servo_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_MoveNextPreset_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_MovePrevPreset_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_MovePrevPreset");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_MovePrevPreset(uint64_t Servo_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_MovePrevPreset_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_MoveTo_createRequest(uint64_t Servo_ID, float position, float speed, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_MoveTo");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&position), sizeof(position));
+
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&speed), sizeof(speed));
+
+  return true;
+}
+
+bool KRPCI::Servo_MoveTo(uint64_t Servo_ID, float position, float speed)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_MoveTo_createRequest(Servo_ID, position, speed, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_Stop_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_Stop");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_Stop(uint64_t Servo_ID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_Stop_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_Name_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_Name");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_Name(uint64_t Servo_ID, std::string& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_Name_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_Name_createRequest(uint64_t Servo_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_Name");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::Servo_set_Name(uint64_t Servo_ID, std::string value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_Name_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_Highlight_createRequest(uint64_t Servo_ID, bool value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_Highlight");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_set_Highlight(uint64_t Servo_ID, bool value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_Highlight_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_Position_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_Position");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_Position(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_Position_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_MinConfigPosition_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_MinConfigPosition");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_MinConfigPosition(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_MinConfigPosition_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_MaxConfigPosition_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_MaxConfigPosition");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_MaxConfigPosition(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_MaxConfigPosition_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_MinPosition_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_MinPosition");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_MinPosition(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_MinPosition_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_MinPosition_createRequest(uint64_t Servo_ID, float value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_MinPosition");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  return true;
+}
+
+bool KRPCI::Servo_set_MinPosition(uint64_t Servo_ID, float value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_MinPosition_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_MaxPosition_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_MaxPosition");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_MaxPosition(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_MaxPosition_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_MaxPosition_createRequest(uint64_t Servo_ID, float value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_MaxPosition");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  return true;
+}
+
+bool KRPCI::Servo_set_MaxPosition(uint64_t Servo_ID, float value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_MaxPosition_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_ConfigSpeed_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_ConfigSpeed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_ConfigSpeed(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_ConfigSpeed_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_Speed_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_Speed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_Speed(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_Speed_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_Speed_createRequest(uint64_t Servo_ID, float value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_Speed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  return true;
+}
+
+bool KRPCI::Servo_set_Speed(uint64_t Servo_ID, float value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_Speed_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_CurrentSpeed_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_CurrentSpeed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_CurrentSpeed(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_CurrentSpeed_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_CurrentSpeed_createRequest(uint64_t Servo_ID, float value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_CurrentSpeed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  return true;
+}
+
+bool KRPCI::Servo_set_CurrentSpeed(uint64_t Servo_ID, float value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_CurrentSpeed_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_Acceleration_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_Acceleration");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_Acceleration(uint64_t Servo_ID, float& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_Acceleration_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_Acceleration_createRequest(uint64_t Servo_ID, float value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_Acceleration");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  return true;
+}
+
+bool KRPCI::Servo_set_Acceleration(uint64_t Servo_ID, float value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_Acceleration_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsMoving_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_IsMoving");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_IsMoving(uint64_t Servo_ID, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_IsMoving_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsFreeMoving_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_IsFreeMoving");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_IsFreeMoving(uint64_t Servo_ID, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_IsFreeMoving_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsLocked_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_IsLocked");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_IsLocked(uint64_t Servo_ID, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_IsLocked_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_IsLocked_createRequest(uint64_t Servo_ID, bool value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_IsLocked");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_set_IsLocked(uint64_t Servo_ID, bool value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_IsLocked_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsAxisInverted_createRequest(uint64_t Servo_ID, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_get_IsAxisInverted");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_get_IsAxisInverted(uint64_t Servo_ID, bool& return_value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_get_IsAxisInverted_createRequest(Servo_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Servo_set_IsAxisInverted_createRequest(uint64_t Servo_ID, bool value, krpc::Request& request)
+{
+  request.set_service("InfernalRobotics");
+  request.set_procedure("Servo_set_IsAxisInverted");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Servo_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Servo_set_IsAxisInverted(uint64_t Servo_ID, bool value)
+{
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Servo_set_IsAxisInverted_createRequest(Servo_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
 	}
     }
   return true;

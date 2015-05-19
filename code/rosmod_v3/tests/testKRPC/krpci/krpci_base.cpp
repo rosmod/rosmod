@@ -127,6 +127,7 @@ bool KRPCI::Connect()
 	  haveReceivedAck = true;
       }
     }
+  boost::thread stream_thread(boost::bind(&KRPCI::streamThreadFunc, this));
   return true;
 }
 
@@ -136,26 +137,83 @@ bool KRPCI::Close()
   close(streamSocket_);
 }
 
-bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
+void KRPCI::streamThreadFunc()
 {
-  string message;
-  message.reserve(40);
-  bool retVal = true;
-  if ( createRequestString(req,message) )
+  while (true)
     {
-      int numBytes;
-      if ( (numBytes = send(streamSocket_, message.data(), message.length(), 0)) == -1 )
+      this->getStreamResponsesFromStreamMessage();
+    }
+}
+
+bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::function<void (krpc::Response&)> fptr)
+{
+  krpc::Request streamReq;
+  krpc::Response response;
+  krpc::Argument* argument;
+  bool retVal = true;
+
+  streamReq.set_service("KRPC");
+  streamReq.set_procedure("AddStream");
+
+  argument = streamReq.add_arguments();
+  argument->set_position(0);
+  req.SerializeToString(argument->mutable_value());
+
+  if (getResponseFromRequest(streamReq,response))
+    {
+      if ( response.has_error() )
 	{
-	  perror("sending request");
+	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      activeStreams_[streamName];
-    } else
-    {
-      std::cerr << "Couldn't serialize request!" << std::endl;
-      retVal = false;
+      uint64_t streamID;
+      KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
+      KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req,fptr);
+      active_streams_[streamName] = newStream;
+      id_to_stream_map_[streamID] = newStream;
     }
-  return retVal;
+  else
+    return false;
+
+  return true;
+}
+
+bool KRPCI::RemoveStream(std::string streamName)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+  bool retVal = true;
+  uint64_t streamID;
+  std::map<std::string,KRPC_Stream*>::iterator it;
+  
+  it = active_streams_.find(streamName);
+  if (it == active_streams_.end())
+    return false;
+  streamID = it->second->id;
+
+  request.set_service("KRPC");
+  request.set_procedure("RemoveStream");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(streamID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      active_streams_.erase(streamName);
+      id_to_stream_map_.erase(streamID);
+    }
+  else
+    return false;
+
+  return true;
 }
 
 bool KRPCI::createRequestString(krpc::Request req, std::string& str)
@@ -213,6 +271,47 @@ bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
     }
   return retVal;
 }
+
+bool KRPCI::getStreamResponsesFromStreamMessage()
+{
+  bool retVal = true;
+  char buf[maxBufferSize];
+  memset(buf,0,maxBufferSize);
+  int bytesreceived =0;
+  if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
+    perror("get stream responses from stream message : stream socket receive");
+    return false;
+  }
+  //std::cout << "Socket received # bytes = " << bytesreceived << endl;
+  ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
+  CodedInputStream* coded_input = new CodedInputStream(raw_input);
+  uint64_t size;
+  coded_input->ReadVarint64(&size);
+  //std::cout << "Received " << size << " bytes." << endl;
+  krpc::StreamMessage streamMessage;
+  if (!streamMessage.ParseFromCodedStream(coded_input))
+    {
+      retVal = false;
+    }
+  for (int i=0;i<streamMessage.responses_size();i++)
+    {
+      krpc::StreamResponse streamResponse = streamMessage.responses(i);
+      uint64_t streamID = streamResponse.id();
+      krpc::Response response = streamResponse.response();
+      std::map<uint64_t,KRPC_Stream*>::iterator it = id_to_stream_map_.find(streamID);
+      if (it != id_to_stream_map_.end())
+	{
+	  it->second->response = response;
+	  if (it->second->fptr != NULL)
+	    it->second->fptr(it->second->response);
+	}
+    }
+  delete coded_input;
+  delete raw_input;
+  return retVal;
+}
+
+// UTILITY FUNCTIONS
 
 void KRPCI::PrintBytesHex(const char *buf, int size)
 {
