@@ -100,6 +100,7 @@ protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
   bool getResponseFromRequestStream(krpc::Request req, krpc::Response& res);
+  bool getStreamResponsesFromStreamMessage();
   void streamThreadFunc();
 
   void PrintBytesHex(const char *buf, int size);
@@ -112,6 +113,7 @@ protected:
   void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
 private:
   std::map<std::string,KRPC_Stream*> active_streams_;
+  std::map<uint64_t,KRPC_Stream*> id_to_stream_map_;
 
   int port_;
   int streamPort_;

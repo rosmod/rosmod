@@ -170,6 +170,7 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::funct
       KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
       KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req,fptr);
       active_streams_[streamName] = newStream;
+      id_to_stream_map_[streamID] = newStream;
     }
   else
     return false;
@@ -207,6 +208,7 @@ bool KRPCI::RemoveStream(std::string streamName)
 	  return false;
 	}
       active_streams_.erase(streamName);
+      id_to_stream_map_.erase(streamID);
     }
   else
     return false;
@@ -978,6 +980,43 @@ bool KRPCI::getResponseFromRequestStream(krpc::Request req, krpc::Response& res)
       std::cerr << "Couldn't serialize request!" << std::endl;
       retVal = false;
     }
+  return retVal;
+}
+
+bool KRPCI::getStreamResponsesFromStreamMessage()
+{
+  bool retVal = true;
+  char buf[maxBufferSize];
+  memset(buf,0,maxBufferSize);
+  int bytesreceived =0;
+  if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
+    perror("recv");
+    return false;
+  }
+  //std::cout << "Socket received # bytes = " << bytesreceived << endl;
+  ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
+  CodedInputStream* coded_input = new CodedInputStream(raw_input);
+  uint64_t size;
+  coded_input->ReadVarint64(&size);
+  //std::cout << "Received " << size << " bytes." << endl;
+  krpc::StreamMessage streamMessage;
+  if (!streamMessage.ParseFromCodedStream(coded_input))
+    {
+      retVal = false;
+    }
+  for (int i=0;i<streamMessage.responses_size();i++)
+    {
+      krpc::StreamResponse streamResponse = streamMessage.responses(i);
+      uint64_t streamID = streamResponse.id();
+      krpc::Response response = streamResponse.response();
+      std::map<uint64_t,KRPC_Stream*>::iterator it = id_to_stream_map_.find(streamID);
+      if (it != id_to_stream_map_.end())
+	{
+	  it->second->response = response;
+	}
+    }
+  delete coded_input;
+  delete raw_input;
   return retVal;
 }
 
