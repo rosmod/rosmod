@@ -5,17 +5,17 @@ using namespace std;
 #for $service in $services
 #if $service.procedures != []
 #for $procedure in $service.procedures
-bool KRPCI::${procedure.name}(${procedure.args})
+#if $procedure.parameters != []
+bool KRPCI::${procedure.name}_createRequest(${procedure.input_args}, krpc::Request& request)
+#else
+bool KRPCI::${procedure.name}_createRequest(krpc::Request& request)
+#end if
 {
-  krpc::Request request;
-  krpc::Response response;
+  request.set_service("${service.name}");
+  request.set_procedure("${procedure.name}");
 #if $procedure.parameters != []
   krpc::Argument* argument;
 #end if
-
-  request.set_service("${service.name}");
-  request.set_procedure("${procedure.name}");
-
 #if $procedure.parameters != []
 #for $parameter in $procedure.parameters
   argument = request.add_arguments();
@@ -53,6 +53,19 @@ bool KRPCI::${procedure.name}(${procedure.args})
 #end if
 #end for
 #end if
+  return true;
+}
+
+bool KRPCI::${procedure.name}(${procedure.args})
+{
+  krpc::Request request;
+  krpc::Response response;
+#if $procedure.parameters != []
+  KRPCI::${procedure.name}_createRequest(${procedure.request_args}, request);
+#else
+  KRPCI::${procedure.name}_createRequest(request);
+#end if
+
   if (getResponseFromRequest(request,response))
     {
       if (response.has_error())

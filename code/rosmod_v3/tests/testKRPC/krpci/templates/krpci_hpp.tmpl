@@ -43,6 +43,11 @@ public:
 #for $service in $services
 #if $service.procedures != []
 #for $procedure in $service.procedures
+#if $procedure.parameters != []
+  bool ${procedure.name}_createRequest(${procedure.input_args}, krpc::Request& request);
+#else
+  bool ${procedure.name}_createRequest(krpc::Request& request);
+#end if 
   bool ${procedure.name}(${procedure.args});
 #end for
 #end if

@@ -51,6 +51,23 @@ class Parameter:
         else:
             return self.datatype + " " + self.name
 
+    def generate_requeststring(self):
+        if self.datatype == "KRPC.Tuple":
+            return self.name + "_x, " + self.name + "_y, " + self.name + "_z" 
+        elif self.datatype == "KRPC.List":
+            return self.name + "_vector"
+        elif self.datatype == "KRPC.Dictionary":
+            return self.name + "_dict"
+        elif self.datatype == "KRPC.Request":
+            self.name = "input_request"
+            return self.name
+        elif self.datatype == "uint64" or self.datatype == "uint32" or self.datatype == "int32" or self.datatype == "int64":
+            return self.name 
+        elif self.datatype == "string":
+            return self.name
+        else:
+            return self.name
+
 class Procedure:
     def __init__(self):
         self.name = ""
@@ -58,10 +75,16 @@ class Procedure:
         self.parameters = []
         self.return_type = ""
         self.args = ""
+        self.input_args = ""
+        self.request_args = ""
 
     def generate_input_args(self):
         for parameter in self.parameters:
             self.args += parameter.generate_paramstring() + ", "
+            self.input_args += parameter.generate_paramstring() + ", "
+            self.request_args += parameter.generate_requeststring() + ", "
+        self.input_args = self.input_args[:-2]
+        self.request_args = self.request_args[:-2]
             
     def generate_output_args(self):
         if self.return_type == "":
