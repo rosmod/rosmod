@@ -34,6 +34,16 @@ const char helloMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x52, 0x50, 0x
 const char helloStreamMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x53, 0x54, 0x52, 0x45, 0x41, 0x4D };
 const char streamAck[] = { 0x4F, 0x4B };
 
+struct KRPC_Stream
+{
+public:
+  KRPC_Stream(std::string name_, uint64_t id_, krpc::Request req) : name(name_), id(id_), request(req) {}
+
+  std::string name;
+  uint64_t id;
+  krpc::Request request;  
+};
+
 class KRPCI
 {
 public:
@@ -78,6 +88,7 @@ public:
 protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
+  bool getResponseFromRequestStream(krpc::Request req, krpc::Response& res);
   void streamThreadFunc();
 
   void PrintBytesHex(const char *buf, int size);
@@ -89,7 +100,7 @@ protected:
   void EncodeTuple(double x, double y, double z, krpc::Tuple &tuple);
   void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
 private:
-  std::map<std::string,krpc::Response> activeStreams_;
+  std::vector<KRPC_Stream> active_streams_;
 
   int port_;
   int streamPort_;
