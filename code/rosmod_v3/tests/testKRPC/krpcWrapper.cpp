@@ -136,7 +136,16 @@ bool KRPCI::Close()
   close(streamSocket_);
 }
 
-bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
+void KRPCI::streamThreadFunc()
+{
+  std::map<string,KRPC_Stream*>::iterator it;
+  for (it=active_streams_.begin(); it!=active_streams_.end(); ++it)
+    {
+      it->second->fptr(it->second->response);
+    }
+}
+
+bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::function<void (krpc::Response&)> fptr)
 {
   krpc::Request streamReq;
   krpc::Response response;
@@ -159,7 +168,7 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
 	}
       uint64_t streamID;
       KRPCI::DecodeVarint(streamID, (char *)response.return_value().data(), response.return_value().size());
-      KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req);
+      KRPC_Stream *newStream = new KRPC_Stream(streamName,streamID,req,fptr);
       active_streams_[streamName] = newStream;
     }
   else
