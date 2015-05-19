@@ -199,8 +199,7 @@ bool KRPCI::GetVessels(std::vector<uint64_t>& ids)
       for (int i=0;i<vesselList.items_size();i++)
 	{
 	  uint64_t id;
-	  const string item = vesselList.items(i);
-	  CodedInputStream::ReadLittleEndian64FromArray((const unsigned char*)item.data(),&id);
+	  KRPCI::DecodeVarint(id, (char *)vesselList.items(i).data(), vesselList.items(i).size());
 	  ids.push_back(id);
 	}
     }
@@ -229,6 +228,32 @@ bool KRPCI::GetVesselName(uint64_t vesselID, string& name)
 	  return false;
 	}
       KRPCI::DecodeString(name, (char *)response.return_value().data(), response.return_value().size());
+    }
+  return true;
+}
+
+bool KRPCI::GetVesselControl(uint64_t vesselID, uint64_t &controlID)
+{
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Vessel_get_Control");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(controlID, (char *)response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -686,25 +711,23 @@ bool KRPCI::SetControlRCS(uint64_t controlID, bool on)
   return true;
 }
 
-bool KRPCI::SetThrottle(uint64_t vesselID, float value)
+bool KRPCI::SetControlThrottle(uint64_t controlID, float value)
 {
   krpc::Request request;
   krpc::Response response;
   krpc::Argument* argument;
 
   request.set_service("SpaceCenter");
-  request.set_procedure("Engine_set_Throttle");
+  request.set_procedure("Control_set_Throttle");
 
   argument = request.add_arguments();
   argument->set_position(0);
   argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(vesselID, (unsigned char *)argument->mutable_value()->data());
+  CodedOutputStream::WriteVarint64ToArray(controlID, (unsigned char *)argument->mutable_value()->data());
 
   argument = request.add_arguments();
   argument->set_position(1);
-  argument->mutable_value()->resize(8);
-  double v = value;
-  CodedOutputStream::WriteRawToArray((char *)&v, 8, (unsigned char *)argument->mutable_value()->data());
+  argument->set_value((const char*)(&value), sizeof(value));
 
   if (getResponseFromRequest(request,response))
     {
@@ -717,16 +740,91 @@ bool KRPCI::SetThrottle(uint64_t vesselID, float value)
   return true;
 }
 
-bool KRPCI::SetPitch(uint64_t vesselID, float value)
+bool KRPCI::SetControlPitch(uint64_t controlID, float value)
 {
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Control_set_Pitch");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(controlID, (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
 }
 
-bool KRPCI::SetRoll(uint64_t vesselID, float value)
+bool KRPCI::SetControlRoll(uint64_t controlID, float value)
 {
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Control_set_Roll");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(controlID, (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
 }
 
-bool KRPCI::SetYaw(uint64_t vesselID, float value)
+bool KRPCI::SetControlYaw(uint64_t controlID, float value)
 {
+  krpc::Request request;
+  krpc::Response response;
+  krpc::Argument* argument;
+
+  request.set_service("SpaceCenter");
+  request.set_procedure("Control_set_Yaw");
+
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(controlID, (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&value), sizeof(value));
+
+  if (getResponseFromRequest(request,response))
+    {
+      if ( response.has_error() )
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
 }
 
 // UTILITY FUNCTIONS:

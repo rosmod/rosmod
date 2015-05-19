@@ -39,9 +39,15 @@ int main(int argc, char** argv)
       double position[3];
       client.GetVesselPosition(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
       std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
-      //client.SetControlSAS(vesselID,false);
-      //client.SetControlRCS(vesselID,false);
-      //client.SetThrottle(vesselID,1.0);
+      uint64_t controlID;
+      client.GetVesselControl(vesselID, controlID);
+      std::cout << "Active vessel has control ID: " << controlID << endl;
+      client.SetControlSAS(controlID,true);
+      client.SetControlRCS(controlID,true);
+      client.SetControlThrottle(controlID,1.0);
+      client.SetControlPitch(controlID,45.0);
+      client.SetControlRoll(controlID,20.0);
+      client.SetControlYaw(controlID,30.0);
     }
   client.Close();
 }

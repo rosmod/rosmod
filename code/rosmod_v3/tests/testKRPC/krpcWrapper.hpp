@@ -49,6 +49,7 @@ public:
   bool GetActiveVessel(uint64_t& id);
   bool GetVessels(std::vector<uint64_t>& ids);
   bool GetVesselName(uint64_t vesselID, std::string& name);
+  bool GetVesselControl(uint64_t vesselID, uint64_t& controlID);
   bool GetVesselPosition(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z);
   bool GetVesselVelocity(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z);
   bool GetVesselRotation(uint64_t vesselID, uint64_t refFrame, double &x, double &y, double &z);
@@ -70,11 +71,10 @@ public:
 
   bool SetControlSAS(uint64_t controlID, bool on);
   bool SetControlRCS(uint64_t controlID, bool on);
-
-  bool SetThrottle(uint64_t vesselID, float value);
-  bool SetPitch(uint64_t vesselID, float value);
-  bool SetRoll(uint64_t vesselID, float value);
-  bool SetYaw(uint64_t vesselID, float value);
+  bool SetControlThrottle(uint64_t controlID, float value);
+  bool SetControlPitch(uint64_t controlID, float value);
+  bool SetControlRoll(uint64_t controlID, float value);
+  bool SetControlYaw(uint64_t controlID, float value);
 protected:
   bool createRequestString(krpc::Request req, std::string& str);
   bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
