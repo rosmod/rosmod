@@ -1,0 +1,298 @@
+#include "krpci.hpp"
+
+using namespace std;
+
+KRPCI::KRPCI(string name, string ip, int port, int streamPort) 
+  : name_(name),
+    ip_(ip),
+    port_(port),
+    streamPort_(streamPort)
+{
+  name_.resize(32);
+  id_.resize(16);
+  timeout_ = 1;
+}
+
+KRPCI::~KRPCI()
+{
+  Close();
+}
+
+bool KRPCI::Connect()
+{
+  /* socket: create the socket */
+  if ((socket_ = socket(AF_INET, SOCK_STREAM, 0)) <0) {
+    perror("ERROR opening socket");
+    return false;
+  }
+  /* build the server's Internet address */
+  struct sockaddr_in server_addr;    
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(port_);
+  if (inet_pton(AF_INET, ip_.c_str(), &(server_addr.sin_addr)) !=1) {
+    perror("inet_pton");
+    return false;
+  }
+  /* set the address to zero */
+  memset(server_addr.sin_zero, 0, sizeof server_addr.sin_zero);
+  /* connect: create a connection with the server */
+  if (connect(socket_, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+    perror("ERROR connecting");
+    return false;
+  }
+  /* set the timeout on the socket receive */
+  struct timeval tv;
+  tv.tv_sec = timeout_;
+  tv.tv_usec = 0;
+  if (setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
+    perror("Couldn't set sockopts!");
+    close(socket_);
+    return false;
+  }
+  /* send the message line to the server */
+  int sentbytes=0,numbytes=0;
+  if ( numbytes = send(socket_, helloMessage, 12,0) == -1) {
+    perror("send");
+    return false;
+  }
+  /* send the client's connection name to the server */
+  if ( numbytes = send(socket_, name_.c_str(), 32,0) == -1) {
+    perror("send");
+    return false;
+  }
+  /* receive the unique ID from server for this client */
+  bool haveReceivedID = false;
+  while (!haveReceivedID)
+    {
+      id_.clear();
+      int bytesreceived =0;
+      if ( (bytesreceived=recv(socket_,(void *)id_.data(),16,0)) <= 0) {
+      }
+      else {
+	haveReceivedID = true;
+      }
+    }
+  // ****************************
+  // CONNECT TO THE STREAM SERVER
+  // ****************************
+  /* Open the stream socket */
+  if ((streamSocket_ = socket(AF_INET, SOCK_STREAM, 0)) <0) {
+    perror("ERROR opening stream socket");
+    return false;
+  }
+  /* build the server's Internet address */
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(streamPort_);
+  if (inet_pton(AF_INET, ip_.c_str(), &(server_addr.sin_addr)) !=1) {
+    perror("stream inet_pton");
+    return false;
+  }
+  /* set the address to zero */
+  memset(server_addr.sin_zero, 0, sizeof server_addr.sin_zero);
+  /* connect: create a connection with the server */
+  if (connect(streamSocket_, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+    perror("ERROR connecting to stream");
+    return false;
+  }
+  /* set the timeout on the socket receive */
+  tv.tv_sec = timeout_;
+  tv.tv_usec = 0;
+  if (setsockopt(streamSocket_, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
+    perror("Couldn't set sockopts!");
+    Close();
+    return false;
+  }
+  /* Send the stream Hello message */
+  sentbytes=0,numbytes=0;
+  if ( numbytes = send(streamSocket_, helloStreamMessage, 12,0) == -1) {
+    perror("send");
+    return false;
+  }
+  /* Send the client ID */
+  if ( numbytes = send(streamSocket_, id_.c_str(), 16,0) == -1) {
+    perror("send");
+    return false;
+  }
+  /* Receive the stream ACK */
+  bool haveReceivedAck = false;
+  char ack[2];
+  while (!haveReceivedAck)
+    {
+      memset(ack,0,2);
+      int bytesreceived =0;
+      if ( (bytesreceived=recv(streamSocket_,(void *)ack,2,0)) <= 0) {
+      }
+      else {
+	if ( strncmp(ack,streamAck,2) == 0 )
+	  haveReceivedAck = true;
+      }
+    }
+  return true;
+}
+
+bool KRPCI::Close()
+{
+  close(socket_);
+  close(streamSocket_);
+}
+
+bool KRPCI::CreateStream(std::string streamName, krpc::Request req)
+{
+  string message;
+  message.reserve(40);
+  bool retVal = true;
+  if ( createRequestString(req,message) )
+    {
+      int numBytes;
+      if ( (numBytes = send(streamSocket_, message.data(), message.length(), 0)) == -1 )
+	{
+	  perror("sending request");
+	  return false;
+	}
+      activeStreams_[streamName];
+    } else
+    {
+      std::cerr << "Couldn't serialize request!" << std::endl;
+      retVal = false;
+    }
+  return retVal;
+}
+
+bool KRPCI::createRequestString(krpc::Request req, std::string& str)
+{
+  uint64_t size;
+  string msg;
+  if ( req.SerializeToString(&msg) )
+    {
+      unsigned char msgLen[10] = {0};
+      CodedOutputStream::WriteVarint64ToArray(msg.length(), msgLen);
+      str = string((const char *)msgLen) + msg;
+    } else
+    {
+      return false;
+    }
+  return true;
+}
+
+bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
+{
+  string message;
+  message.reserve(40);
+  bool retVal = true;
+  if ( createRequestString(req,message) )
+    {
+      int numBytes;
+      if ( (numBytes = send(socket_, message.data(), message.length(), 0)) == -1 )
+	{
+	  perror("sending request");
+	  return false;
+	}
+      char buf[maxBufferSize];
+      memset(buf,0,maxBufferSize);
+      int bytesreceived =0;
+      if ( (bytesreceived=recv(socket_,buf,maxBufferSize-1,0)) <= 0) {
+	perror("recv");
+	return false;
+      }
+      //std::cout << "Socket received # bytes = " << bytesreceived << endl;
+      ZeroCopyInputStream* raw_input = new ArrayInputStream(buf,maxBufferSize);
+      CodedInputStream* coded_input = new CodedInputStream(raw_input);
+      uint64_t size;
+      coded_input->ReadVarint64(&size);
+      //std::cout << "Received " << size << " bytes." << endl;
+      if (!res.ParseFromCodedStream(coded_input))
+	{
+	  retVal = false;
+	}
+      delete coded_input;
+      delete raw_input;
+    } else
+    {
+      std::cerr << "Couldn't serialize request!" << std::endl;
+      retVal = false;
+    }
+  return retVal;
+}
+
+void KRPCI::PrintBytesHex(const char *buf, int size)
+{
+  for (int i = 0; i < size; i++)
+    printf("0x%02X ", (unsigned char)buf[i]);
+}
+
+void KRPCI::EncodeVarint(uint32_t value, char *buf, int &size)
+{
+  size = google::protobuf::io::CodedOutputStream::VarintSize32(value);
+
+  google::protobuf::io::ZeroCopyOutputStream *zcos = new google::protobuf::io::ArrayOutputStream(buf, size);
+  google::protobuf::io::CodedOutputStream *cos = new google::protobuf::io::CodedOutputStream(zcos);
+  cos->WriteVarint32(value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::EncodeVarint(uint64_t value, char *buf, int &size)
+{
+  size = google::protobuf::io::CodedOutputStream::VarintSize64(value);
+
+  google::protobuf::io::ZeroCopyOutputStream *zcos = new google::protobuf::io::ArrayOutputStream(buf, size);
+  google::protobuf::io::CodedOutputStream *cos = new google::protobuf::io::CodedOutputStream(zcos);
+  cos->WriteVarint64(value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::DecodeVarint(uint32_t &value, char *buf, int size)
+{
+  // init coded stream
+  google::protobuf::io::ZeroCopyInputStream *zcos = new google::protobuf::io::ArrayInputStream(buf, size);
+  google::protobuf::io::CodedInputStream *cos = new google::protobuf::io::CodedInputStream(zcos);
+  cos->ReadVarint32(&value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::DecodeVarint(uint64_t &value, char *buf, int size)
+{
+  // init coded stream
+  google::protobuf::io::ZeroCopyInputStream *zcos = new google::protobuf::io::ArrayInputStream(buf, size);
+  google::protobuf::io::CodedInputStream *cos = new google::protobuf::io::CodedInputStream(zcos);
+  cos->ReadVarint64(&value);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::DecodeString(string& str, char *buf, int size)
+{
+  google::protobuf::io::ZeroCopyInputStream *zcos = new google::protobuf::io::ArrayInputStream(buf, size);
+  google::protobuf::io::CodedInputStream *cos = new google::protobuf::io::CodedInputStream(zcos);
+  uint64_t len;
+  cos->ReadVarint64(&len);
+  cos->ReadString(&str,len);
+
+  delete cos;
+  delete zcos;
+}
+
+void KRPCI::EncodeTuple(double x, double y, double z, krpc::Tuple &tuple)
+{ 
+  string *x_str = tuple.add_items();
+  string *y_str = tuple.add_items();
+  string *z_str = tuple.add_items();
+
+  x_str->assign((char *)&x, sizeof(x));
+  y_str->assign((char *)&y, sizeof(y));
+  z_str->assign((char *)&z, sizeof(z));
+}
+
+void KRPCI::DecodeTuple(krpc::Tuple tuple, double& x, double& y, double& z)
+{
+  memcpy(&x, tuple.items(0).data(), tuple.items(0).size());
+  memcpy(&y, tuple.items(1).data(), tuple.items(0).size());
+  memcpy(&z, tuple.items(2).data(), tuple.items(0).size());
+}
+

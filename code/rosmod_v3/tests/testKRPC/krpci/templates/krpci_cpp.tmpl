@@ -1,0 +1,49 @@
+$hash_include "krpci.hpp"
+using namespace std;
+
+#if $services != []
+#for $service in $services
+#if $service.procedures != []
+#for $procedure in $service.procedures
+bool KRPCI::${procedure.name}(${procedure.args})
+{
+  krpc::Request request;
+  krpc::Response response;
+#if $procedure.parameters != []
+  krpc::Argument* argument;
+#end if
+
+  request.set_service("${service.name}");
+  request.set_procedure("${procedure.name}");
+#if $procedure.parameters != []
+#for $parameter in $procedure.parameters
+  argument = request.add_arguments();
+  argument->set_position(${parameter.position});
+#if $parameter.datatype == "uint64_t"
+  argument->mutable_values()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(${parameter.name}, (unsigned char *)argument->mutable_value()->data());
+
+#else if $parameter.datatype == "float"
+  argument->set_value((const char*)(&${parameter.name}), sizeof(${parameter.name}));
+#end if
+#end for
+#end if
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KRPCI::DecodeVarint(id, 
+			  (char *)response.return_value().data(), 
+			  response.return_value().size());
+    }
+  return true;
+
+}
+#end for
+#end if
+#end for
+#end if

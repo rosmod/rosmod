@@ -1,0 +1,75 @@
+$hash_include <iostream>
+$hash_include <fstream>
+$hash_include <string>
+$hash_include <sys/types.h>
+$hash_include <sys/stat.h>
+$hash_include <fcntl.h>
+$hash_include "KRPC.pb.h"
+$hash_include <google/protobuf/io/zero_copy_stream.h>
+$hash_include <google/protobuf/io/zero_copy_stream_impl.h>
+$hash_include <google/protobuf/io/coded_stream.h>
+using namespace google::protobuf::io;
+$hash_include <boost/thread.hpp>
+$hash_include <stdio.h>
+$hash_include <stdlib.h>
+$hash_include <sys/types.h>
+$hash_include <sys/socket.h>
+$hash_include <stdio.h>
+$hash_include <stdlib.h>
+$hash_include <unistd.h>
+$hash_include <string.h>
+$hash_include <arpa/inet.h>
+$hash_include <errno.h>
+$hash_include <netinet/in.h>
+$hash_include <ifaddrs.h>
+
+const int maxBufferSize = 65535;
+const char helloMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x52, 0x50, 0x43, 0x00, 0x00, 0x00 };
+const char helloStreamMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x53, 0x54, 0x52, 0x45, 0x41, 0x4D };
+const char streamAck[] = { 0x4F, 0x4B };
+
+class KRPCI
+{
+public:
+  KRPCI(std::string name, std::string ip="127.0.0.1", int port=50000, int streamPort=50001);
+  ~KRPCI();
+
+  bool Connect();
+  bool Close();
+
+  bool CreateStream(std::string streamName, krpc::Request req);
+  bool GetLatestStreamData(std::string streamName, krpc::Response& res);
+#if $services != []
+#for $service in $services
+#if $service.procedures != []
+#for $procedure in $service.procedures
+  bool ${procedure.name}(${procedure.args});
+#end for
+#end if
+#end for
+#end if
+protected:
+  bool createRequestString(krpc::Request req, std::string& str);
+  bool getResponseFromRequest(krpc::Request req, krpc::Response& res);
+  void streamThreadFunc();
+
+  void PrintBytesHex(const char *buf, int size);
+  void EncodeVarint(uint32_t value, char *buf, int &size);
+  void EncodeVarint(uint64_t value, char *buf, int &size);
+  void DecodeVarint(uint32_t &value, char *buf, int size);
+  void DecodeVarint(uint64_t &value, char *buf, int size);
+  void DecodeString(std::string &str, char *buf, int size);
+  void EncodeTuple(double x, double y, double z, krpc::Tuple &tuple);
+  void DecodeTuple(krpc::Tuple tuple, double &x, double &y, double &z);
+private:
+  std::map<std::string,krpc::Response> activeStreams_;
+
+  int port_;
+  int streamPort_;
+  std::string ip_;
+  std::string id_;
+  std::string name_;
+  int socket_;
+  int streamSocket_;
+  int timeout_;
+};
