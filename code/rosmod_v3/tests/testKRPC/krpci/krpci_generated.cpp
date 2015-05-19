@@ -529,6 +529,8 @@ bool KRPCI::get_UT(double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -548,6 +550,8 @@ bool KRPCI::get_G(float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -905,6 +909,8 @@ bool KRPCI::AutoPilot_get_Error(uint64_t AutoPilot_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -931,6 +937,8 @@ bool KRPCI::AutoPilot_get_RollError(uint64_t AutoPilot_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1194,6 +1202,8 @@ bool KRPCI::CelestialBody_get_Mass(uint64_t CelestialBody_ID, float& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1220,6 +1230,8 @@ bool KRPCI::CelestialBody_get_GravitationalParameter(uint64_t CelestialBody_ID, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1246,6 +1258,8 @@ bool KRPCI::CelestialBody_get_SurfaceGravity(uint64_t CelestialBody_ID, float& r
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1272,6 +1286,8 @@ bool KRPCI::CelestialBody_get_RotationalPeriod(uint64_t CelestialBody_ID, float&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1298,6 +1314,8 @@ bool KRPCI::CelestialBody_get_RotationalSpeed(uint64_t CelestialBody_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1324,6 +1342,8 @@ bool KRPCI::CelestialBody_get_EquatorialRadius(uint64_t CelestialBody_ID, float&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1350,6 +1370,8 @@ bool KRPCI::CelestialBody_get_SphereOfInfluence(uint64_t CelestialBody_ID, float
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1431,6 +1453,8 @@ bool KRPCI::CelestialBody_get_AtmosphereDepth(uint64_t CelestialBody_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1576,6 +1600,8 @@ bool KRPCI::Comms_SignalDelayToVessel(uint64_t Comms_ID, uint64_t other, double&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1680,6 +1706,8 @@ bool KRPCI::Comms_get_SignalDelay(uint64_t Comms_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -1706,6 +1734,8 @@ bool KRPCI::Comms_get_SignalDelayToGroundStation(uint64_t Comms_ID, double& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2277,6 +2307,8 @@ bool KRPCI::Control_get_Throttle(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2333,6 +2365,8 @@ bool KRPCI::Control_get_Pitch(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2389,6 +2423,8 @@ bool KRPCI::Control_get_Yaw(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2445,6 +2481,8 @@ bool KRPCI::Control_get_Roll(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2501,6 +2539,8 @@ bool KRPCI::Control_get_Forward(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2557,6 +2597,8 @@ bool KRPCI::Control_get_Up(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2613,6 +2655,8 @@ bool KRPCI::Control_get_Right(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2669,6 +2713,8 @@ bool KRPCI::Control_get_WheelThrottle(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2725,6 +2771,8 @@ bool KRPCI::Control_get_WheelSteering(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2843,6 +2891,8 @@ bool KRPCI::Flight_get_GForce(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2869,6 +2919,8 @@ bool KRPCI::Flight_get_MeanAltitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2895,6 +2947,8 @@ bool KRPCI::Flight_get_SurfaceAltitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2921,6 +2975,8 @@ bool KRPCI::Flight_get_BedrockAltitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2947,6 +3003,8 @@ bool KRPCI::Flight_get_Elevation(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2973,6 +3031,8 @@ bool KRPCI::Flight_get_Latitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -2999,6 +3059,8 @@ bool KRPCI::Flight_get_Longitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3054,6 +3116,8 @@ bool KRPCI::Flight_get_Speed(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3080,6 +3144,8 @@ bool KRPCI::Flight_get_HorizontalSpeed(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3106,6 +3172,8 @@ bool KRPCI::Flight_get_VerticalSpeed(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3219,6 +3287,8 @@ bool KRPCI::Flight_get_Pitch(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3245,6 +3315,8 @@ bool KRPCI::Flight_get_Heading(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3271,6 +3343,8 @@ bool KRPCI::Flight_get_Roll(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3471,6 +3545,8 @@ bool KRPCI::Flight_get_AtmosphereDensity(uint64_t Flight_ID, float& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3497,6 +3573,8 @@ bool KRPCI::Flight_get_DynamicPressure(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3523,6 +3601,8 @@ bool KRPCI::Flight_get_StaticPressure(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3636,6 +3716,8 @@ bool KRPCI::Flight_get_SpeedOfSound(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3662,6 +3744,8 @@ bool KRPCI::Flight_get_Mach(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3688,6 +3772,8 @@ bool KRPCI::Flight_get_EquivalentAirSpeed(uint64_t Flight_ID, float& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3714,6 +3800,8 @@ bool KRPCI::Flight_get_TerminalVelocity(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3740,6 +3828,8 @@ bool KRPCI::Flight_get_AngleOfAttack(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3766,6 +3856,8 @@ bool KRPCI::Flight_get_SideslipAngle(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3792,6 +3884,8 @@ bool KRPCI::Flight_get_TotalAirTemperature(uint64_t Flight_ID, float& return_val
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3818,6 +3912,8 @@ bool KRPCI::Flight_get_StaticAirTemperature(uint64_t Flight_ID, float& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3844,6 +3940,8 @@ bool KRPCI::Flight_get_StallFraction(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3870,6 +3968,8 @@ bool KRPCI::Flight_get_DragCoefficient(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3896,6 +3996,8 @@ bool KRPCI::Flight_get_LiftCoefficient(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3922,6 +4024,8 @@ bool KRPCI::Flight_get_PitchingMomentCoefficient(uint64_t Flight_ID, float& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3948,6 +4052,8 @@ bool KRPCI::Flight_get_BallisticCoefficient(uint64_t Flight_ID, float& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -3974,6 +4080,8 @@ bool KRPCI::Flight_get_ThrustSpecificFuelConsumption(uint64_t Flight_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4192,6 +4300,8 @@ bool KRPCI::Node_get_Prograde(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4248,6 +4358,8 @@ bool KRPCI::Node_get_Normal(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4304,6 +4416,8 @@ bool KRPCI::Node_get_Radial(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4360,6 +4474,8 @@ bool KRPCI::Node_get_DeltaV(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4416,6 +4532,8 @@ bool KRPCI::Node_get_RemainingDeltaV(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4442,6 +4560,8 @@ bool KRPCI::Node_get_UT(uint64_t Node_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4498,6 +4618,8 @@ bool KRPCI::Node_get_TimeTo(uint64_t Node_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4698,6 +4820,8 @@ bool KRPCI::Orbit_get_Apoapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4724,6 +4848,8 @@ bool KRPCI::Orbit_get_Periapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4750,6 +4876,8 @@ bool KRPCI::Orbit_get_ApoapsisAltitude(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4776,6 +4904,8 @@ bool KRPCI::Orbit_get_PeriapsisAltitude(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4802,6 +4932,8 @@ bool KRPCI::Orbit_get_SemiMajorAxis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4828,6 +4960,8 @@ bool KRPCI::Orbit_get_SemiMinorAxis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4854,6 +4988,8 @@ bool KRPCI::Orbit_get_Radius(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4880,6 +5016,8 @@ bool KRPCI::Orbit_get_Speed(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4906,6 +5044,8 @@ bool KRPCI::Orbit_get_Period(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4932,6 +5072,8 @@ bool KRPCI::Orbit_get_TimeToApoapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4958,6 +5100,8 @@ bool KRPCI::Orbit_get_TimeToPeriapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -4984,6 +5128,8 @@ bool KRPCI::Orbit_get_Eccentricity(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5010,6 +5156,8 @@ bool KRPCI::Orbit_get_Inclination(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5036,6 +5184,8 @@ bool KRPCI::Orbit_get_LongitudeOfAscendingNode(uint64_t Orbit_ID, double& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5062,6 +5212,8 @@ bool KRPCI::Orbit_get_ArgumentOfPeriapsis(uint64_t Orbit_ID, double& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5088,6 +5240,8 @@ bool KRPCI::Orbit_get_MeanAnomalyAtEpoch(uint64_t Orbit_ID, double& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5114,6 +5268,8 @@ bool KRPCI::Orbit_get_Epoch(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5140,6 +5296,8 @@ bool KRPCI::Orbit_get_MeanAnomaly(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5166,6 +5324,8 @@ bool KRPCI::Orbit_get_EccentricAnomaly(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5221,6 +5381,8 @@ bool KRPCI::Orbit_get_TimeToSOIChange(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5328,6 +5490,8 @@ bool KRPCI::Decoupler_get_Impulse(uint64_t Decoupler_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5626,6 +5790,8 @@ bool KRPCI::DockingPort_get_ReengageDistance(uint64_t DockingPort_ID, float& ret
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5852,6 +6018,8 @@ bool KRPCI::Engine_get_Thrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5878,6 +6046,8 @@ bool KRPCI::Engine_get_AvailableThrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5904,6 +6074,8 @@ bool KRPCI::Engine_get_MaxThrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5930,6 +6102,8 @@ bool KRPCI::Engine_get_MaxVacuumThrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -5956,6 +6130,8 @@ bool KRPCI::Engine_get_ThrustLimit(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6012,6 +6188,8 @@ bool KRPCI::Engine_get_SpecificImpulse(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6038,6 +6216,8 @@ bool KRPCI::Engine_get_VacuumSpecificImpulse(uint64_t Engine_ID, float& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6064,6 +6244,8 @@ bool KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse(uint64_t Engine_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6152,6 +6334,8 @@ bool KRPCI::Engine_get_Throttle(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6282,6 +6466,8 @@ bool KRPCI::Engine_get_GimbalRange(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6366,6 +6552,8 @@ bool KRPCI::Engine_get_GimbalLimit(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -6790,6 +6978,8 @@ bool KRPCI::Light_get_PowerUsage(uint64_t Light_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7250,6 +7440,8 @@ bool KRPCI::Parachute_get_DeployAltitude(uint64_t Parachute_ID, float& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7306,6 +7498,8 @@ bool KRPCI::Parachute_get_DeployMinPressure(uint64_t Parachute_ID, float& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7554,6 +7748,8 @@ bool KRPCI::Part_get_Cost(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7804,6 +8000,8 @@ bool KRPCI::Part_get_Mass(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7830,6 +8028,8 @@ bool KRPCI::Part_get_DryMass(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7856,6 +8056,8 @@ bool KRPCI::Part_get_ImpactTolerance(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7882,6 +8084,8 @@ bool KRPCI::Part_get_Temperature(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -7908,6 +8112,8 @@ bool KRPCI::Part_get_MaxTemperature(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9256,6 +9462,8 @@ bool KRPCI::PartResources_Max(uint64_t PartResources_ID, std::string name, float
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9284,6 +9492,8 @@ bool KRPCI::PartResources_Amount(uint64_t PartResources_ID, std::string name, fl
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9459,6 +9669,8 @@ bool KRPCI::ReactionWheel_get_PitchTorque(uint64_t ReactionWheel_ID, float& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9485,6 +9697,8 @@ bool KRPCI::ReactionWheel_get_YawTorque(uint64_t ReactionWheel_ID, float& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9511,6 +9725,8 @@ bool KRPCI::ReactionWheel_get_RollTorque(uint64_t ReactionWheel_ID, float& retur
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9650,6 +9866,8 @@ bool KRPCI::Sensor_get_PowerUsage(uint64_t Sensor_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9789,6 +10007,8 @@ bool KRPCI::SolarPanel_get_EnergyFlow(uint64_t SolarPanel_ID, float& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -9815,6 +10035,8 @@ bool KRPCI::SolarPanel_get_SunExposure(uint64_t SolarPanel_ID, float& return_val
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10185,6 +10407,8 @@ bool KRPCI::Vessel_get_MET(uint64_t Vessel_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10446,6 +10670,8 @@ bool KRPCI::Vessel_get_Mass(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10472,6 +10698,8 @@ bool KRPCI::Vessel_get_DryMass(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10498,6 +10726,8 @@ bool KRPCI::Vessel_get_Thrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10524,6 +10754,8 @@ bool KRPCI::Vessel_get_AvailableThrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10550,6 +10782,8 @@ bool KRPCI::Vessel_get_MaxThrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10576,6 +10810,8 @@ bool KRPCI::Vessel_get_MaxVacuumThrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10602,6 +10838,8 @@ bool KRPCI::Vessel_get_SpecificImpulse(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10628,6 +10866,8 @@ bool KRPCI::Vessel_get_VacuumSpecificImpulse(uint64_t Vessel_ID, float& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10654,6 +10894,8 @@ bool KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse(uint64_t Vessel_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10834,6 +11076,8 @@ bool KRPCI::VesselResources_Max(uint64_t VesselResources_ID, std::string name, i
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }
@@ -10870,6 +11114,8 @@ bool KRPCI::VesselResources_Amount(uint64_t VesselResources_ID, std::string name
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
     }
   return true;
 }

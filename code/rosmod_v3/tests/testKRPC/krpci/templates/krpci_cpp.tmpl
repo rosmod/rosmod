@@ -79,6 +79,12 @@ bool KRPCI::${procedure.name}(${procedure.args})
 			      output_list.items(i).size());
 	  return_vector.push_back(return_value);
 	}
+#else if $procedure.return_type == "double"
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+#else if $procedure.return_type == "float"
+      return_value = 0.0;
+      memcpy(&return_value, response.return_value().data(), response.return_value().size());
 #end if
     }
   return true;
