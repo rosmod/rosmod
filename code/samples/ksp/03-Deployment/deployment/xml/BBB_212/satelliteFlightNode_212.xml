@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<node name="satelliteFlightNode_212">
+  <component_instance name="GroundInterface_Instance">
+    <library name="libGroundInterface.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+  <component_instance name="OrbitController_Instance">
+    <library name="libOrbitController.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="ThrusterComm_Client">
+      <port name="ThrusterComm_Client"/>
+      <group setting="Group_212"/>
+    </port_instance>
+    <port_instance name="SatelliteState_Client">
+      <port name="SatelliteState_Client"/>
+      <group setting="Group_212"/>
+    </port_instance>
+  </component_instance>
+  <component_instance name="SatelliteBusInterface_Instance">
+    <library name="libSatelliteBusInterface.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="SatelliteState_Server">
+      <port name="SatelliteState_Server"/>
+      <group setting="Group_212"/>
+    </port_instance>
+    <port_instance name="ThrusterComm_Server">
+      <port name="ThrusterComm_Server"/>
+      <group setting="Group_212"/>
+    </port_instance>
+  </component_instance>
+</node>
+
