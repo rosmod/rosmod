@@ -72,6 +72,14 @@
 <p>Software development using ROSMOD is inspired by the principles of Component-based Software Engineering. Design and implementation of component-based software applications rests on the principle of assembly: <em>Complex systems are built by composing re-useable interacting components</em>. Components contain functional, business-logic code that implements operations/callbacks on state variables. Ports facilitate interactions between communicating components. A component-level message queue controls the scheduling of operations/callbacks.</p>
 <div class="section" id="rosmod-components">
 <h3>ROSMOD Components<a class="headerlink" href="#rosmod-components" title="Permalink to this headline">¶</a></h3>
+<p>A ROSMOD Component is a re-useable unit/piece of software in an application. Each component can contain one or more of the following:</p>
+<ul class="simple">
+<li>Publishers: A publisher port publishes (without blocking) on a message/topic (msg in ROS)</li>
+<li>Subscribers: A subscriber port subscribes to a message/topic (msg in ROS)</li>
+<li>Servers: A server port provides an &#8220;operation&#8221; to the external world</li>
+<li>Clients: A client port requires/uses an operation provided by a server (potentially on another component)</li>
+<li>Timers: A timer is used to trigger the component. Timer callbacks are invoked when a timer expires</li>
+</ul>
 <img alt="_images/ros_component.png" src="_images/ros_component.png" />
 </div>
 </div>

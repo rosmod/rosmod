@@ -316,7 +316,12 @@ bool KRPCI::getStreamResponsesFromStreamMessage()
   return retVal;
 }
 
-// UTILITY FUNCTIONS
+/*
+ * UTILITY FUNCTIONS
+ * 
+ * Source for the following functions:
+ * https://github.com/Vivero/KNav/blob/master/KRPCI/src/KRPCI.cpp
+ */
 
 void KRPCI::PrintBytesHex(const char *buf, int size)
 {
