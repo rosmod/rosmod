@@ -231,11 +231,14 @@ add_library(SatelliteBusInterface
             ## Start SatelliteBusInterface CPP Marker
 	    src/krpci/krpci_generated.cpp
 	    src/krpci/krpci_base.cpp
+	    src/krpci/KRPC.pb.cc
             ## End SatelliteBusInterface CPP Marker
            )
 target_link_libraries(SatelliteBusInterface
                       ## Start SatelliteBusInterface Target Link Libraries Marker
-
+		      boost_system
+		      boost_thread
+		      protobuf
                       ## End SatelliteBusInterface Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )

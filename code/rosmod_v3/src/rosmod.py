@@ -60,7 +60,6 @@ import acceptance
 
 def MakeAdd(self,kind):
     def GenericAdd(e):
-        references = []
         info = self.GetActivePanelInfo()
         model = info.obj
         canvas = info.canvas
@@ -80,12 +79,14 @@ def MakeAdd(self,kind):
         newObj.parent = self.activeObject
         parent = self.activeObject
         # SET REFERENCES
+        references = []
         refObjectTypes = model_dict[kind].out_refs
         for refObjType in refObjectTypes:
             if refObjType[1] == "project":
                 references.extend(self.project.getChildrenByKind(refObjType[0]))
             elif refObjType[1] == "parent":
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
+        print references
         if newObj != None:
             newObj.properties['name'] = "New" + kind
             inputs = dialogs.EditorWindow(parent = self,
@@ -301,7 +302,10 @@ class Example(wx.Frame):
         references = []
         refObjectTypes = model_dict[kind].out_refs
         for refObjType in refObjectTypes:
-            references.extend(self.project.getChildrenByKind(refObjType))
+            if refObjType[1] == "project":
+                references.extend(self.project.getChildrenByKind(refObjType[0]))
+            elif refObjType[1] == "parent":
+                references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
 
         inputs = dialogs.EditorWindow(parent=self,
                                 editObj=newObj,
