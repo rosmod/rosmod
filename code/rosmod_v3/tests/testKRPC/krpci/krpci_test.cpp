@@ -2,6 +2,26 @@
 
 using namespace std;
 
+class myclass
+{
+public:
+  myclass(int tmp=10) : myInstVar(tmp) {}
+  void classStreamFunc(krpc::Response& response)
+  {
+    if ( response.has_error() )
+      {
+	std::cout << "Response error: " << response.error() << endl;
+	return;
+      }
+    krpc::Tuple tuple;
+    double x,y,z;
+    tuple.ParseFromString(response.return_value());
+    KRPCI::DecodeTuple(tuple,x,y,z);
+    printf("CLASS METHOD WITH INST VAR %d : (x,y,z) = (%f,%f,%f)\n",myInstVar,x,y,z);
+  }
+  int myInstVar;
+};
+
 void myStreamFunc(krpc::Response& response)
 {
   if ( response.has_error() )
@@ -69,6 +89,14 @@ int main(int argc, char** argv)
       KRPCI::Vessel_Position_createRequest(vesselID, orbitalRefFrame, request);
 
       client.CreateStream(streamName,request, myStreamFunc);
+
+      
+      myclass class1 = myclass(50);
+      std::string streamName2 = "classStream";
+      krpc::Request request2;
+      KRPCI::Vessel_Rotation_createRequest(vesselID, orbitalRefFrame, request2);
+
+      client.CreateStream(streamName2, request2, boost::bind(&myclass::classStreamFunc, class1, _1));
 
       sleep(10);
 
