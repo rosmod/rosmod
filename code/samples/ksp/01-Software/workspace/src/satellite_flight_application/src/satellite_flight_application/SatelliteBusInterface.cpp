@@ -10,12 +10,12 @@ void SatelliteBusInterface::Init(const ros::TimerEvent& event)
   // Initialize Here
   krpc_client = KRPCI(nodeName + compName);
   krpc_client.Connect();
-  client.get_ActiveVessel(vessel_id);
-  client.Vessel_get_Name(vessel_id, vessel_name);
-  client.Vessel_get_Control(vessel_id, control_id);
-  client.Vessel_get_Orbit(vessel_id,orbit_id);
-  client.Orbit_get_Body(orbit_id, body_id);
-  client.CelestialBody_get_ReferenceFrame(body_id, reference_frame_id);
+  krpc_client.get_ActiveVessel(vessel_id);
+  krpc_client.Vessel_get_Name(vessel_id, vessel_name);
+  krpc_client.Vessel_get_Control(vessel_id, control_id);
+  krpc_client.Vessel_get_Orbit(vessel_id,orbit_id);
+  krpc_client.Orbit_get_Body(orbit_id, body_id);
+  krpc_client.CelestialBody_get_ReferenceFrame(body_id, reference_frame_id);
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -28,9 +28,9 @@ bool SatelliteBusInterface::SatelliteStateCallback(satellite_flight_application:
 {
   // Business Logic for SatelliteState_Server Server
   satellite_flight_application::SatState state;
-  client.Vessel_Position(vessel_id, reference_frame_id, state.rpos_x, state.rpos_y, state.rpos_z);
-  client.Vessel_Velocity(vessel_id, reference_frame_id, state.rvel_x, state.rvel_y, state.rvel_z);
-  client.Vessel_Rotation(vessel_id, reference_frame_id, state.rrot_x, state.rrot_y, state.rrot_z);
+  krpc_client.Vessel_Position(vessel_id, reference_frame_id, state.rpos_x, state.rpos_y, state.rpos_z);
+  krpc_client.Vessel_Velocity(vessel_id, reference_frame_id, state.rvel_x, state.rvel_y, state.rvel_z);
+  krpc_client.Vessel_Rotation(vessel_id, reference_frame_id, state.vrot_x, state.vrot_y, state.vrot_z);
   res.state = state;
   return true;
 }
@@ -43,9 +43,9 @@ bool SatelliteBusInterface::ThrusterCommCallback(satellite_flight_application::T
   // Business Logic for ThrusterComm_Server Server
   double duration = req.duration;
   LOGGER.INFO("Activating engine for %d seconds.\n",duration);
-  client.Control_set_Throttle(control_id, req.amount);
+  krpc_client.Control_set_Throttle(control_id, req.amount);
   ros::Duration(duration).sleep();
-  client.Control_set_Throttle(control_id, 0);
+  krpc_client.Control_set_Throttle(control_id, 0);
   return true;
 }
 //# End ThrusterCommCallback Marker
@@ -57,7 +57,7 @@ SatelliteBusInterface::~SatelliteBusInterface()
   SatelliteState_Server.shutdown();
   ThrusterComm_Server.shutdown();
   //# Start Destructor Marker
-  client.Close();
+  krpc_client.Close();
   //# End Destructor Marker
 }
 

@@ -229,7 +229,8 @@ add_library(SatelliteBusInterface
             src/satellite_flight_application/Logger.cpp
             src/satellite_flight_application/SatelliteBusInterface.cpp
             ## Start SatelliteBusInterface CPP Marker
-
+	    src/krpci/krpci_generated.cpp
+	    src/krpci/krpci_base.cpp
             ## End SatelliteBusInterface CPP Marker
            )
 target_link_libraries(SatelliteBusInterface

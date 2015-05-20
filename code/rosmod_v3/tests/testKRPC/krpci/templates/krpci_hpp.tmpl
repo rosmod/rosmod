@@ -51,11 +51,13 @@ public:
 class KRPCI
 {
 public:
-  KRPCI(std::string name, std::string ip="127.0.0.1", int port=50000, int streamPort=50001);
+  KRPCI(std::string name="localClient", std::string ip="127.0.0.1", int port=50000, int streamPort=50001);
   ~KRPCI();
 
   bool Connect();
   bool Close();
+
+  void SetName(std::string name);
 
   // UTILITY FUNCTIONS
   static void PrintBytesHex(const char *buf, int size);

@@ -6,6 +6,7 @@
 #include "satellite_flight_application/SatelliteState.h"
 #include "satellite_flight_application/ThrusterComm.h"
 //# Start User Includes Marker
+#include "krpci/krpci.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -43,6 +44,13 @@ private:
   ros::ServiceServer ThrusterComm_Server;
 
   //# Start User Private Variables Marker
+  KRPCI krpc_client;
+  uint64_t vessel_id;
+  std::string vessel_name;
+  uint64_t control_id;
+  uint64_t orbit_id;
+  uint64_t body_id;
+  uint64_t reference_frame_id;
   //# End User Private Variables Marker
 };
 
