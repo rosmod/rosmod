@@ -8,7 +8,14 @@
 void SatelliteBusInterface::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
+  krpc_client = KRPCI(nodeName + compName);
+  krpc_client.Connect();
+  client.get_ActiveVessel(vessel_id);
+  client.Vessel_get_Name(vessel_id, vessel_name);
+  client.Vessel_get_Control(vessel_id, control_id);
+  client.Vessel_get_Orbit(vessel_id,orbit_id);
+  client.Orbit_get_Body(orbit_id, body_id);
+  client.CelestialBody_get_ReferenceFrame(body_id, reference_frame_id);
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -20,7 +27,11 @@ bool SatelliteBusInterface::SatelliteStateCallback(satellite_flight_application:
   satellite_flight_application::SatelliteState::Response &res)
 {
   // Business Logic for SatelliteState_Server Server
-
+  satellite_flight_application::SatState state;
+  client.Vessel_Position(vessel_id, reference_frame_id, state.rpos_x, state.rpos_y, state.rpos_z);
+  client.Vessel_Velocity(vessel_id, reference_frame_id, state.rvel_x, state.rvel_y, state.rvel_z);
+  client.Vessel_Rotation(vessel_id, reference_frame_id, state.rrot_x, state.rrot_y, state.rrot_z);
+  res.state = state;
   return true;
 }
 //# End SatelliteStateCallback Marker
@@ -30,7 +41,11 @@ bool SatelliteBusInterface::ThrusterCommCallback(satellite_flight_application::T
   satellite_flight_application::ThrusterComm::Response &res)
 {
   // Business Logic for ThrusterComm_Server Server
-
+  double duration = req.duration;
+  LOGGER.INFO("Activating engine for %d seconds.\n",duration);
+  client.Control_set_Throttle(control_id, req.amount);
+  ros::Duration(duration).sleep();
+  client.Control_set_Throttle(control_id, 0);
   return true;
 }
 //# End ThrusterCommCallback Marker
@@ -42,6 +57,7 @@ SatelliteBusInterface::~SatelliteBusInterface()
   SatelliteState_Server.shutdown();
   ThrusterComm_Server.shutdown();
   //# Start Destructor Marker
+  client.Close();
   //# End Destructor Marker
 }
 
