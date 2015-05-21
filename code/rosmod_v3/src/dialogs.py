@@ -170,7 +170,7 @@ class EditDialog(wx.Dialog):
                     field.SetValue(False)
             elif meta_class_dict[key].kind == "list":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
-                possibles = meta_class_dict[key].input_validator
+                possibles = meta_class_dict[key].input_validator(None,self.editObj,None)
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for possible in possibles:
                     field.Append(possible)
@@ -261,21 +261,26 @@ class EditDialog(wx.Dialog):
 
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
-            if meta_class_dict[key].kind == "string":
-                self.returnDict[key] = field.GetValue()
-            elif meta_class_dict[key].kind == "list":
-                self.returnDict[key] = field.GetValue()
-            elif meta_class_dict[key].kind == "boolean":
-                self.returnDict[key] = field.GetValue()
+            fieldValue = None
+            if meta_class_dict[key].kind == "string" or\
+               meta_class_dict[key].kind == "list" or\
+               meta_class_dict[key].kind == "boolean":
+                fieldValue = field.GetValue()
             elif meta_class_dict[key].kind == "code":
-                fieldTxt = field.GetText()
-                self.returnDict[key] = fieldTxt
+                fieldValue = field.GetText()
             elif meta_class_dict[key].kind == "reference":
-                obj = field.GetClientData(field.GetSelection())
-                if obj == None:
+                fieldValue = field.GetClientData(field.GetSelection())
+                if fieldValue == None:
                     ErrorDialog(self, "You must select a reference object!")
                     return False
-                self.returnDict[key] = obj
+            input_validator_func = meta_class_dict[key].input_validator
+            if input_validator_func != None:
+                fieldValue = input_validator_func(None,self.editObj,fieldValue)
+            if fieldValue != None:
+                self.returnDict[key] = fieldValue
+            else:
+                ErrorDialog(self, "{} is invalid!".format(key))
+                return False
         return True
 
     def GetInput(self):
@@ -284,8 +289,9 @@ class EditDialog(wx.Dialog):
     def OnOk(self,e):
         if self.UpdateInputs() == False:
             self.returnDict = OrderedDict()
-        self.MakeModal(False)
-        self.Destroy()
+        else:
+            self.MakeModal(False)
+            self.Destroy()
 
     def OnClose(self, e):
         self.returnDict = OrderedDict()

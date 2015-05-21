@@ -5,6 +5,7 @@
 from collections import OrderedDict
 from metaModel import model_dict
 from drawable import Drawable_Object
+from input_validators import *
 
 # Grammar Field class used to generate grammar field-specific listener functions
 class Grammar_Field:
@@ -91,7 +92,7 @@ meta_class_dict["Publish_Using_Msg"] = Grammar_Field("object", "Publish_using_ms
 meta_class_dict["Loop"] = Grammar_Field("object", "Loop", create_enterModel, create_exitModel, None, "Loop")
 
 # Properties/Atoms
-meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom, None, "Name")
+meta_class_dict["name"] = Grammar_Field("string", "Name", create_enterAtom, create_exitAtom, name_validator, "Name")
 meta_class_dict["arch"] = Grammar_Field("string", "Arch", create_enterAtom, create_exitAtom, None, "Architecture")
 meta_class_dict["value"] = Grammar_Field("string", "Value", create_enterAtom, create_exitAtom, None, "Value")
 meta_class_dict["group"] = Grammar_Field("string", "Group", create_enterAtom, create_exitAtom, None, "Group")
@@ -101,7 +102,7 @@ meta_class_dict["logging_info"] = Grammar_Field("boolean", "Logging_info", creat
 meta_class_dict["logging_warning"] = Grammar_Field("boolean", "Logging_warning", create_enterAtom, create_exitAtom, None, "Log Level - WARNING")
 meta_class_dict["logging_error"] = Grammar_Field("boolean", "Logging_error", create_enterAtom, create_exitAtom, None, "Log Level - ERROR")
 meta_class_dict["logging_critical"] = Grammar_Field("boolean", "Logging_critical", create_enterAtom, create_exitAtom, None, "Log Level - CRITICAL")
-meta_class_dict["datatype"] = Grammar_Field("list", "Datatype", create_enterAtom, create_exitAtom, ["Base", "I/O"], "Component Type")
+meta_class_dict["datatype"] = Grammar_Field("list", "Datatype", create_enterAtom, create_exitAtom, datatype_validator, "Component Type")
 meta_class_dict["abstract_business_logic"] = Grammar_Field("code", "Abstract_business_logic", create_enterAtom, create_exitAtom, None, "Abstract Business Logic")
 meta_class_dict["scheduling_scheme"] = Grammar_Field("list", "Scheduling_scheme", create_enterAtom, create_exitAtom, ["FIFO", "PFIFO", "EDF"], "Scheduling Scheme")
 meta_class_dict["reference"] = Grammar_Field("hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
@@ -137,7 +138,7 @@ meta_class_dict["command"] = Grammar_Field("string", display_name = "Remote Comm
 meta_class_dict["message_reference"] = Grammar_Field("reference",display_name="Message")
 meta_class_dict["service_reference"] = Grammar_Field("reference",display_name="Service")
 meta_class_dict["component_reference"] = Grammar_Field("reference",display_name="Component")
-meta_class_dict["port_reference"] = Grammar_Field("reference",display_name="Port")
+meta_class_dict["port_reference"] = Grammar_Field("reference",display_name="Port",input_validator=port_reference_validator)
 meta_class_dict["rhw_reference"] = Grammar_Field("reference",display_name="RHW")
 meta_class_dict["hardware_reference"] = Grammar_Field("reference",display_name="Hardware")
 

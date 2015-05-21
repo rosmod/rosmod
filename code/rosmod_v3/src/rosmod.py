@@ -86,7 +86,6 @@ def MakeAdd(self,kind):
                 references.extend(self.project.getChildrenByKind(refObjType[0]))
             elif refObjType[1] == "parent":
                 references.extend(parent.properties[refObjType[2]].getChildrenByKind(refObjType[0]))
-        print references
         if newObj != None:
             newObj.properties['name'] = "New" + kind
             inputs = dialogs.EditorWindow(parent = self,
