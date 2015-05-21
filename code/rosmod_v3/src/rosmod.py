@@ -91,8 +91,7 @@ def MakeAdd(self,kind):
             inputs = dialogs.EditorWindow(parent = self,
                                     editDict=newObj.properties,
                                     editObj = newObj,
-                                    title="Edit "+newObj.kind,
-                                    references = references)
+                                    title="Edit "+newObj.kind)
             if inputs != OrderedDict():
                 self.UpdateUndo()
                 for key,value in inputs.iteritems():
@@ -230,8 +229,7 @@ class Example(wx.Frame):
         inputs = dialogs.EditorWindow(parent=self,
                                 editDict=self.activeObject.properties,
                                 editObj = self.activeObject,
-                                title="Edit "+self.activeObject.kind,
-                                references = references)
+                                title="Edit "+self.activeObject.kind)
         if inputs != OrderedDict():
             self.UpdateUndo()
             for key,value in inputs.iteritems():
@@ -309,8 +307,7 @@ class Example(wx.Frame):
         inputs = dialogs.EditorWindow(parent=self,
                                 editObj=newObj,
                                 editDict=newObj.properties,
-                                title="Edit "+newObj.kind,
-                                references = references)
+                                title="Edit "+newObj.kind)
         if inputs != OrderedDict():
             self.UpdateUndo()
             for key,value in inputs.iteritems():
@@ -445,8 +442,7 @@ class Example(wx.Frame):
         inputs = dialogs.EditorWindow(parent=self,
                                 editDict=newObj.properties,
                                 editObj = newObj,
-                                title="Input Command To Run",
-                                references = [])
+                                title="Input Command To Run")
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 newObj.properties[key] = value
@@ -484,11 +480,12 @@ class Example(wx.Frame):
             properties['name'] = testName
             properties['period'] = str(self.workTimerPeriod)
             properties['hardware_reference'] = None
-            references = dep.properties['rhw_reference'].children
+            referenceDict = OrderedDict()
+            referenceDict['hardware_reference'] = dep.properties['rhw_reference'].children
             inputs = dialogs.EditorWindow(parent=self,
-                                    editDict=properties,
-                                    title="Deployment Options",
-                                    references = references)
+                                          editDict=properties,
+                                          title="Deployment Options",
+                                          referenceDict = referenceDict)
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
                     properties[key] = value

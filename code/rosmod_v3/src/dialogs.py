@@ -133,15 +133,17 @@ def ConfirmDialog(parent, msg):
 
 class EditDialog(wx.Dialog):
     
-    def __init__(self, parent = None, title = "ROSMOD", style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER,  editDict = OrderedDict(), editObj = None, invalidNames =[], references = []):
+    def __init__(self, parent = None, title = "ROSMOD", style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER,  editDict = OrderedDict(), editObj = None, referenceDict = OrderedDict()):
         wx.Dialog.__init__(self, parent=parent, title=title, style = style)
+        self.project = parent.project
         self.editDict = editDict
         self.editObj = editObj
-        self.invalidNames = invalidNames
-        self.references = references
+        self.referenceDict = referenceDict
         self.returnDict = OrderedDict()
-        self.InitUI()
-        self.MakeModal(True)
+        if self.InitUI() == True:
+            self.MakeModal(True)
+        else:
+            self.Destroy()
 
     def InitUI(self):
         self.panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)
@@ -170,7 +172,11 @@ class EditDialog(wx.Dialog):
                     field.SetValue(False)
             elif meta_class_dict[key].kind == "list":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
-                possibles, error = meta_class_dict[key].input_validator(None,self.editObj,None)
+                possibles, error = meta_class_dict[key].input_validator(self.project,self.editObj,None,key)
+                if possibles == None:
+                    print error
+                    ErrorDialog(self,error)
+                    return False
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for possible in possibles:
                     field.Append(possible)
@@ -222,8 +228,18 @@ class EditDialog(wx.Dialog):
             elif meta_class_dict[key].kind == 'reference':
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
-                for ref in self.references:
-                    field.Append(ref.properties['name'],ref)
+                if self.referenceDict != OrderedDict() and key in self.referenceDict.keys():
+                    for ref in self.referenceDict[key]:
+                        field.Append(ref.properties['name'],ref)
+                else:
+                    refs, error = meta_class_dict[key].input_validator(self.project,self.editObj,None,key)
+                    print refs
+                    print error
+                    if refs == None:
+                        ErrorDialog(self,error)
+                        return False
+                    for ref in refs:
+                        field.Append(ref.properties['name'],ref)
                 if value != None:
                     field.SetStringSelection(value.properties['name'])
                 else:
@@ -258,6 +274,7 @@ class EditDialog(wx.Dialog):
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        return True
 
     def UpdateInputs(self):
         for key,field in self.inputs.iteritems():
@@ -275,7 +292,7 @@ class EditDialog(wx.Dialog):
                     return False
             input_validator_func = meta_class_dict[key].input_validator
             if input_validator_func != None:
-                fieldValue, error = input_validator_func(None,self.editObj,fieldValue)
+                fieldValue, error = input_validator_func(self.project,self.editObj,fieldValue,key)
             if fieldValue != None:
                 self.returnDict[key] = fieldValue
             else:
@@ -298,13 +315,13 @@ class EditDialog(wx.Dialog):
         self.MakeModal(False)
         self.Destroy()
 
-def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", references = [], style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER | wx.STAY_ON_TOP):
+def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title = "ROSMOD", referenceDict = OrderedDict(), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER | wx.STAY_ON_TOP):
     ed = EditDialog( parent = parent,
                      title = title,
                      style = style,
                      editObj = editObj,
                      editDict = editDict,
-                     references = references )
+                     referenceDict = referenceDict )
     ed.ShowModal()
     inputs = ed.GetInput()
     ed.Destroy()
