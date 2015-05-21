@@ -140,11 +140,11 @@ class EditDialog(wx.Dialog):
         self.editObj = editObj
         self.referenceDict = referenceDict
         self.returnDict = OrderedDict()
-        if self.InitUI() == True:
-            self.MakeModal(True)
-        else:
-            self.MakeModal(True)
-            wx.CallAfter(self.OnClose,None)
+        #if self.InitUI() == True:
+        #    self.MakeModal(True)
+        #else:
+        #    self.MakeModal(True)
+        #    wx.CallAfter(self.OnClose,None)
 
     def InitUI(self):
         retValue = True
@@ -332,9 +332,12 @@ def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title 
                      editDict = editDict,
                      referenceDict = referenceDict )
     inputs = OrderedDict()
-    if ed != None:
+    if ed.InitUI() == True:
+        ed.ShowModal()
         inputs = ed.GetInput()
-        ed.Destroy()
+    else:
+        ed.MakeModal(False)
+    ed.Destroy()
     return inputs
 
 class Wizard:
