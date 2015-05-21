@@ -143,9 +143,11 @@ class EditDialog(wx.Dialog):
         if self.InitUI() == True:
             self.MakeModal(True)
         else:
-            self.Destroy()
+            self.MakeModal(True)
+            wx.CallAfter(self.OnClose,None)
 
     def InitUI(self):
+        retValue = True
         self.panel = wx.lib.scrolledpanel.ScrolledPanel(parent = self, id = -1)
         self.panel.SetupScrolling()
         self.vbox = wx.BoxSizer(wx.VERTICAL)
@@ -172,18 +174,18 @@ class EditDialog(wx.Dialog):
                     field.SetValue(False)
             elif meta_class_dict[key].kind == "list":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 possibles, error = meta_class_dict[key].input_validator(self.project,self.editObj,None,key)
                 if possibles == None:
-                    print error
                     ErrorDialog(self,error)
-                    return False
-                field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
-                for possible in possibles:
-                    field.Append(possible)
-                if value in possibles:
-                    field.SetStringSelection(value)
+                    retValue = False
                 else:
-                    field.SetSelection(0)
+                    for possible in possibles:
+                        field.Append(possible)
+                    if value in possibles:
+                        field.SetStringSelection(value)
+                    else:
+                        field.SetSelection(0)
             elif meta_class_dict[key].kind == "code":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
@@ -228,22 +230,29 @@ class EditDialog(wx.Dialog):
             elif meta_class_dict[key].kind == 'reference':
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
-                if self.referenceDict != OrderedDict() and key in self.referenceDict.keys():
-                    for ref in self.referenceDict[key]:
-                        field.Append(ref.properties['name'],ref)
+                if self.referenceDict != OrderedDict():
+                    if key in self.referenceDict.keys():
+                        for ref in self.referenceDict[key]:
+                            field.Append(ref.properties['name'],ref)
+                        if value != None:
+                            field.SetStringSelection(value.properties['name'])
+                        else:
+                            field.SetSelection(0)
+                    else:
+                        ErrorDialog(self, "No possible options exist for {}".format(key))
+                        retValue = False
                 else:
                     refs, error = meta_class_dict[key].input_validator(self.project,self.editObj,None,key)
-                    print refs
-                    print error
                     if refs == None:
                         ErrorDialog(self,error)
-                        return False
-                    for ref in refs:
-                        field.Append(ref.properties['name'],ref)
-                if value != None:
-                    field.SetStringSelection(value.properties['name'])
-                else:
-                    field.SetSelection(0)
+                        retValue = False
+                    else:
+                        for ref in refs:
+                            field.Append(ref.properties['name'],ref)
+                        if value != None and value in refs:
+                            field.SetStringSelection(value.properties['name'])
+                        else:
+                            field.SetSelection(0)
             if label != None and field != None:
                 self.inputs[key] = field
                 self.pbox.AddMany([(label),(field,1,wx.EXPAND)])
@@ -274,9 +283,10 @@ class EditDialog(wx.Dialog):
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        return True
+        return retValue
 
     def UpdateInputs(self):
+        print "CHECKING INPUTS"
         for key,field in self.inputs.iteritems():
             fieldValue = None
             if meta_class_dict[key].kind == "string" or\
@@ -322,9 +332,10 @@ def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title 
                      editObj = editObj,
                      editDict = editDict,
                      referenceDict = referenceDict )
-    ed.ShowModal()
-    inputs = ed.GetInput()
-    ed.Destroy()
+    inputs = OrderedDict()
+    if ed != None:
+        inputs = ed.GetInput()
+        ed.Destroy()
     return inputs
 
 class Wizard:
