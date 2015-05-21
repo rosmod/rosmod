@@ -286,7 +286,6 @@ class EditDialog(wx.Dialog):
         return retValue
 
     def UpdateInputs(self):
-        print "CHECKING INPUTS"
         for key,field in self.inputs.iteritems():
             fieldValue = None
             if meta_class_dict[key].kind == "string" or\
