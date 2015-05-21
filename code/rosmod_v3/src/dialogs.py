@@ -170,7 +170,7 @@ class EditDialog(wx.Dialog):
                     field.SetValue(False)
             elif meta_class_dict[key].kind == "list":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
-                possibles = meta_class_dict[key].input_validator(None,self.editObj,None)
+                possibles, error = meta_class_dict[key].input_validator(None,self.editObj,None)
                 field = wx.ComboBox(self.panel, choices = [], style=wx.CB_READONLY)
                 for possible in possibles:
                     field.Append(possible)
@@ -275,11 +275,11 @@ class EditDialog(wx.Dialog):
                     return False
             input_validator_func = meta_class_dict[key].input_validator
             if input_validator_func != None:
-                fieldValue = input_validator_func(None,self.editObj,fieldValue)
+                fieldValue, error = input_validator_func(None,self.editObj,fieldValue)
             if fieldValue != None:
                 self.returnDict[key] = fieldValue
             else:
-                ErrorDialog(self, "{} is invalid!".format(key))
+                ErrorDialog(self, "{} is invalid:\n{}".format(meta_class_dict[key].display_name,error))
                 return False
         return True
 
