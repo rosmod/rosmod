@@ -72,7 +72,7 @@
 <p>Software development using ROSMOD is inspired by the principles of Component-based Software Engineering. Design and implementation of component-based software applications rests on the principle of assembly: <em>Complex systems are built by composing re-useable interacting components</em>. Components contain functional, business-logic code that implements operations/callbacks on state variables. Ports facilitate interactions between communicating components. A component-level message queue controls the scheduling of operations/callbacks.</p>
 <div class="section" id="rosmod-components">
 <h3>ROSMOD Components<a class="headerlink" href="#rosmod-components" title="Permalink to this headline">¶</a></h3>
-<p>A ROSMOD Component is a re-useable unit/piece of software in an application. Each component can contain one or more of the following:</p>
+<p>A ROSMOD Component is a re-useable unit/piece of software in an application. Components can be thought of as LEGO pieces - Each piece has a well-defined shape; Multiple such pieces are connected together to build large structures (applications). Component-based software divides application concerns into smaller, manageable blocks that can be easily composed. In ROSMOD, each component can contain one or more of the following:</p>
 <ul class="simple">
 <li>Publishers: A publisher port publishes (without blocking) on a message/topic (msg in ROS)</li>
 <li>Subscribers: A subscriber port subscribes to a message/topic (msg in ROS)</li>
@@ -81,6 +81,11 @@
 <li>Timers: A timer is used to trigger the component. Timer callbacks are invoked when a timer expires</li>
 </ul>
 <img alt="_images/ros_component.png" src="_images/ros_component.png" />
+<p>Each component has a single thread called the &#8220;Component Executor Thread&#8221;. This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks &amp; timer callbacks. To facilitate interactions with other components, each component also has a &#8220;Component Message Queue&#8221;. This queue <em>holds</em> requests received from other interacting entities. When a client port in &#8220;Component A&#8221; make a procedure call to a server port in &#8220;Component B&#8221;, this requests first lands in the message queue of Component B and is eventually handled by the Component B executor thread.</p>
+</div>
+<div class="section" id="rosmod-nodes">
+<h3>ROSMOD Nodes<a class="headerlink" href="#rosmod-nodes" title="Permalink to this headline">¶</a></h3>
+<p>ROSMOD Nodes are deployable processes that run the application/package. These Nodes contain one or more <em>instances</em> of ROSMOD Components. Therefore, each ROSMOD node contains one or more component threads, each of which (1) uses component ports to push out queries, (2) uses its message queue to receive external requests, and (3) executes triggered callbacks. ROSMOD Nodes are similar to ROS Nodes but follow a strict structure and behavior.</p>
 </div>
 </div>
 </div>
@@ -96,6 +101,7 @@
 <li><a class="reference internal" href="#">Introduction</a><ul>
 <li><a class="reference internal" href="#component-based-software-development">Component-based Software Development</a><ul>
 <li><a class="reference internal" href="#rosmod-components">ROSMOD Components</a></li>
+<li><a class="reference internal" href="#rosmod-nodes">ROSMOD Nodes</a></li>
 </ul>
 </li>
 </ul>

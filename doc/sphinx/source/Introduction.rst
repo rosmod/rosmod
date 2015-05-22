@@ -35,9 +35,9 @@ A ROSMOD Component is a re-useable unit/piece of software in an application. Com
 
 .. image:: ./_images/ros_component.png
 
-Notes:
+Each component has a single thread called the "Component Executor Thread". This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks & timer callbacks. To facilitate interactions with other components, each component also has a "Component Message Queue". This queue *holds* requests received from other interacting entities. When a client port in "Component A" make a procedure call to a server port in "Component B", this requests first lands in the message queue of Component B and is eventually handled by the Component B executor thread.
 
-* Threading: Every component has a single thread called the component executor thread. This thread handles all requests from external entities and executes the component callbacks e.g. timer callbacks, subscriber callbacks, server callbacks etc. 
-* Message Queue: Every Component has a message queue. This queue holds requests from (1) other components and from (2) the underlying infrastructure. When a client port in "Component A" make a procedure call to a server port in "Component B", this requests first lands in the message queue of Component B and is eventually handled by Componetn B's executor thread.
+ROSMOD Nodes
+^^^^^^^^^^^^
 
-
+ROSMOD Nodes are deployable processes that run the application/package. These Nodes contain one or more *instances* of ROSMOD Components. Therefore, each ROSMOD node contains one or more component threads, each of which (1) uses component ports to push out queries, (2) uses its message queue to receive external requests, and (3) executes triggered callbacks. ROSMOD Nodes are similar to ROS Nodes but follow a strict structure and behavior. 
