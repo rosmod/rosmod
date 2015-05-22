@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ROSMOD_Hardware_Builder &mdash; ROSMOD 3.0 documentation</title>
+    <title>ROSMOD_Generator &mdash; ROSMOD 3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ROSMOD 3.0 documentation" href="index.html" />
     <link rel="up" title="Library Reference" href="Library_Reference.html" />
-    <link rel="next" title="ROSMOD_Deployment_Builder" href="class_Deployment_Builder.html" />
-    <link rel="prev" title="ROSMOD_Software_Builder" href="class_Software_Builder.html" /> 
+    <link rel="next" title="ROSMOD_Loader" href="class_Loader.html" />
+    <link rel="prev" title="ROSMOD Project" href="class_Project.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,10 +37,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="class_Deployment_Builder.html" title="ROSMOD_Deployment_Builder"
+          <a href="class_Loader.html" title="ROSMOD_Loader"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="class_Software_Builder.html" title="ROSMOD_Software_Builder"
+          <a href="class_Project.html" title="ROSMOD Project"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li>
           <li><a href="Library_Reference.html" accesskey="U">Library Reference</a> &raquo;</li> 
@@ -52,29 +52,62 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="rosmod-hardware-builder">
-<h1>ROSMOD_Hardware_Builder<a class="headerlink" href="#rosmod-hardware-builder" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="rosmod-generator">
+<h1>ROSMOD_Generator<a class="headerlink" href="#rosmod-generator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ROSMOD_Hardware_Builder">
-<em class="property">class </em><tt class="descname">ROSMOD_Hardware_Builder</tt><a class="headerlink" href="#ROSMOD_Hardware_Builder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Builds a Hardware Object Tree from parsing the .rhw files in 02-Hardware/*</p>
+<dt id="ROSMOD_Generator">
+<em class="property">class </em><tt class="descname">ROSMOD_Generator</tt><a class="headerlink" href="#ROSMOD_Generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Primary Generator class for ROSMOD</p>
+<dl class="method">
+<dt id="ROSMOD_Generator.generate_workspace">
+<tt class="descname">generate_workspace</tt><big>(</big><em>workspace</em>, <em>path</em><big>)</big><a class="headerlink" href="#ROSMOD_Generator.generate_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the ROS Workspace and build system from the Software Model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/reference/datamodel.html#__metaclass__" title="(in Python v2.7)"><strong>__metaclass__</strong></a> &#8211; <a class="reference internal" href="class_Grammar_MetaClass.html#id1"><em>Grammar_MetaClass</em></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>workspace</strong> &#8211; The ROS_Workspace object to traverse</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; The absolute path to the to-be-generated workspace directory</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
 <dl class="method">
-<dt id="ROSMOD_Hardware_Builder.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>project</em><big>)</big><a class="headerlink" href="#ROSMOD_Hardware_Builder.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the root of the Hardware Object Tree, a &#8220;ROS_RHW&#8221; class object</p>
+<dt id="ROSMOD_Generator.generate_xml">
+<tt class="descname">generate_xml</tt><big>(</big><em>deployments</em>, <em>deployment_path</em><big>)</big><a class="headerlink" href="#ROSMOD_Generator.generate_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Deployment-specific ROS Node XML files from the Deployment Model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project</strong> &#8211; The ROSMOD_Project object that is the parent of the Software model</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>deployments</strong> &#8211; The list of all ROS_Deployment objects in 03-Deployment directory</li>
+<li><strong>deployment_path</strong> &#8211; The absolute path to the Deployment directory</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ROSMOD_Generator.generate_cpn">
+<tt class="descname">generate_cpn</tt><big>(</big><em>workspace</em>, <em>deployments</em>, <em>deployment_path</em><big>)</big><a class="headerlink" href="#ROSMOD_Generator.generate_cpn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a Colored Petri Net-based Timing Analysis Model for the Project</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>workspace</strong> &#8211; The ROS_Workspace object to traverse</li>
+<li><strong>deployments</strong> &#8211; The list of all ROS_Deployment objects in 03-Deployment directory</li>
+<li><strong>deployment_path</strong> &#8211; The absolute path to the Deployment directory</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -91,14 +124,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="class_Software_Builder.html"
-                        title="previous chapter">ROSMOD_Software_Builder</a></p>
+  <p class="topless"><a href="class_Project.html"
+                        title="previous chapter">ROSMOD Project</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="class_Deployment_Builder.html"
-                        title="next chapter">ROSMOD_Deployment_Builder</a></p>
+  <p class="topless"><a href="class_Loader.html"
+                        title="next chapter">ROSMOD_Loader</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/class_Hardware_Builder.txt"
+    <li><a href="_sources/class_Generator.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -125,10 +158,10 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="class_Deployment_Builder.html" title="ROSMOD_Deployment_Builder"
+          <a href="class_Loader.html" title="ROSMOD_Loader"
              >next</a> |</li>
         <li class="right" >
-          <a href="class_Software_Builder.html" title="ROSMOD_Software_Builder"
+          <a href="class_Project.html" title="ROSMOD Project"
              >previous</a> |</li>
         <li><a href="index.html">ROSMOD 3.0 documentation</a> &raquo;</li>
           <li><a href="Library_Reference.html" >Library Reference</a> &raquo;</li> 
