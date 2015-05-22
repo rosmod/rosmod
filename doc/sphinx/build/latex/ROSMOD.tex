@@ -190,13 +190,30 @@ A ROSMOD Component is a re-useable unit/piece of software in an application. Com
 
 \end{itemize}
 
-\scalebox{0.500000}{\includegraphics{ROSMOD_Component.png}}
+{\hfill\scalebox{0.750000}{\includegraphics{ROSMOD_Component.png}}\hfill}
 
 Each component has a single thread called the ``Component Executor Thread''. This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks \& timer callbacks. To facilitate interactions with other components, each component also has a ``Component Message Queue''. This queue \emph{holds} requests received from other interacting entities.
 
-The following figure shows a simple Client-Server component interaction. Component A is periodically triggered by a timer. At each timer expiry, Component A makes a blocking remote procedure call to Component B using its client port. This service request, on reaching Component B, is enqueued onto Component B's message queue. When this request reaches the front of the queue, the corresponding server-side callback is executed by the Component B executor thread and the response is returned back to Component A. This message queue based interaction between component entities is also true for timers. When the timer in Component A expires, a timer callback request is enqueued onto its message queue and eventually handled.
+The following figure shows a simple Client-Server component interaction. Component A is periodically triggered by a timer. At each timer expiry, Component A makes a blocking remote procedure call to Component B using its client port. This service request, on reaching Component B, is enqueued onto Component B's message queue. When this request reaches the front of the queue, the corresponding server-side callback is executed by the Component B executor thread and the response is returned back to Component A. This message queue-based interaction is also true for timers; when the timer in Component A expires, a timer callback request is enqueued onto its message queue and eventually handled.
 
 {\hfill\scalebox{0.750000}{\includegraphics{Component_Message_Queue.png}}\hfill}
+
+
+\paragraph{Design Notes:}
+\label{Introduction:design-notes}\begin{itemize}
+\item {} 
+In each component, the message queue is processed by a single executor thread. Multiple components can run concurrently but each component execution is single-threaded.
+
+\item {} 
+The component message queue supports several scheduling schemes including FIFO (first-in first-out), PFIFO (priority first-in first-out) and EDF (earliest deadline first).
+
+\item {} 
+Requests in the message queue are processed using a non-preemptive scheduling scheme. This means that each callback/operation run by the executor thread is run to completion before the next one (in the message queue) is processed.
+
+\item {} 
+These rules are strictly applied to all ROSMOD components.
+
+\end{itemize}
 
 
 \subsubsection{ROSMOD Nodes}
@@ -206,10 +223,109 @@ ROSMOD Nodes are deployable processes that run the application/package. These No
 
 \section{Modeling Language}
 \label{Modeling_Language:modeling-language}\label{Modeling_Language::doc}
+The ROSMOD Modeling Language is both textual and graphical. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the ROSMOD Project are saved in a set of text files (\emph{models}) that follow a strict set of grammatical rules. The grammatical rules were written using \href{http://www.antlr.org/}{Antlr 4} and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files.
+
 
 \subsection{Software Model}
 \label{Modeling_Language:software-model}
-The Software model completely describes a ROS Workspace. Every ROS Workspace contains one or more packages. Each package contains \href{http://wiki.ros.org/Messages}{messages}, \href{http://wiki.ros.org/Services}{services} and components.
+The Software model completely describes a ROS Workspace.
+
+As shown in the above class diagram, every ROS workspace contains one or more ROS packages. Each ROS package contains one or more (1) messages, (2) services and (3) components. In ROSMOD, such packages are built using the Software Modeling Language.
+
+
+\subsubsection{Messages}
+\label{Modeling_Language:messages}
+Messages are constructed identical to the textual language used in \href{http://wiki.ros.org/msg}{.msg files} by ROS. Here is a sample msg file:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{int64} \PYG{n}{sat\PYGZus{}id}
+\PYG{n}{float64} \PYG{n}{inclination}
+\PYG{n}{float64} \PYG{n}{longitudeAN}
+\PYG{n}{float64} \PYG{n}{argumentOfPeriapsis}
+\PYG{n}{float64} \PYG{n}{eccentricity}
+\PYG{n}{float64} \PYG{n}{semimajorAxis}
+\PYG{n}{float64} \PYG{n}{meanAnomaly}
+\end{Verbatim}
+
+
+\subsubsection{Services}
+\label{Modeling_Language:services}
+Services are also constructed identical to the textual langugage used in \href{http://wiki.ros.org/srv}{.srv files} by ROS. Here is a sample srv file:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{int64} \PYG{n}{thruster\PYGZus{}id}
+\PYG{n}{float64} \PYG{n}{amount}
+\PYG{n}{float64} \PYG{n}{duration}
+\PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}
+\PYG{n}{int64} \PYG{n}{return\PYGZus{}value}
+\end{Verbatim}
+
+
+\subsubsection{Components}
+\label{Modeling_Language:components}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * ROSMOD Software Model}
+\PYG{c+cm}{ */}
+
+\PYG{c+c1}{// ROSMOD Package \PYGZhy{} three\PYGZus{}component\PYGZus{}example}
+\PYG{n}{package} \PYG{n}{three\PYGZus{}component\PYGZus{}example}
+\PYG{p}{\PYGZob{}}
+  \PYG{c+c1}{// ROSMOD Component \PYGZhy{} Component\PYGZus{}1}
+  \PYG{n}{component} \PYG{n}{Component\PYGZus{}1} \PYG{o}{:} \PYG{n}{Base}
+  \PYG{p}{\PYGZob{}}
+    \PYG{c+c1}{// ROSMOD Publisher \PYGZhy{} Name\PYGZus{}Publisher}
+    \PYG{n}{publisher} \PYG{o}{\PYGZlt{}}\PYG{n}{three\PYGZus{}component\PYGZus{}example}\PYG{o}{/}\PYG{n}{ComponentName}\PYG{o}{\PYGZgt{}} \PYG{n}{Name\PYGZus{}Publisher}\PYG{p}{;}
+    \PYG{c+c1}{// ROSMOD Subscriber \PYGZhy{} Name\PYGZus{}Subscriber}
+    \PYG{n}{subscriber} \PYG{o}{\PYGZlt{}}\PYG{n}{three\PYGZus{}component\PYGZus{}example}\PYG{o}{/}\PYG{n}{ComponentName}\PYG{o}{\PYGZgt{}} \PYG{n}{Name\PYGZus{}Subscriber}
+    \PYG{p}{\PYGZob{}}
+      \PYG{n}{priority} \PYG{o}{=} \PYG{l+m+mi}{50}\PYG{p}{;}
+      \PYG{n}{deadline} \PYG{o}{=} \PYG{l+m+mf}{0.300}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{c+c1}{// ROSMOD Timer \PYGZhy{} Timer\PYGZus{}1}
+    \PYG{n}{timer} \PYG{n}{Timer\PYGZus{}1}
+    \PYG{p}{\PYGZob{}}
+       \PYG{n}{period} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{p}{;}
+       \PYG{n}{priority} \PYG{o}{=} \PYG{l+m+mi}{50}\PYG{p}{;}
+       \PYG{n}{deadline} \PYG{o}{=} \PYG{l+m+mf}{0.200}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{c+c1}{// ROSMOD Component \PYGZhy{} Component\PYGZus{}2}
+  \PYG{n}{component} \PYG{n}{Component\PYGZus{}2} \PYG{o}{:} \PYG{n}{Base}
+  \PYG{p}{\PYGZob{}}
+    \PYG{c+c1}{// ROSMOD Server \PYGZhy{} Service\PYGZus{}Server}
+    \PYG{n}{server} \PYG{o}{\PYGZlt{}}\PYG{n}{three\PYGZus{}component\PYGZus{}example}\PYG{o}{/}\PYG{n}{ComponentService}\PYG{o}{\PYGZgt{}} \PYG{n}{Service\PYGZus{}Server}
+    \PYG{p}{\PYGZob{}}
+      \PYG{n}{priority} \PYG{o}{=} \PYG{l+m+mi}{50}\PYG{p}{;}
+      \PYG{n}{deadline} \PYG{o}{=} \PYG{l+m+mf}{0.500}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{c+c1}{// ROSMOD Publisher \PYGZhy{} Name\PYGZus{}Publisher}
+    \PYG{n}{publisher} \PYG{o}{\PYGZlt{}}\PYG{n}{three\PYGZus{}component\PYGZus{}example}\PYG{o}{/}\PYG{n}{ComponentName}\PYG{o}{\PYGZgt{}} \PYG{n}{Name\PYGZus{}Publisher}\PYG{p}{;}
+    \PYG{c+c1}{// ROSMOD Timer \PYGZhy{} Timer\PYGZus{}2}
+    \PYG{n}{timer} \PYG{n}{Timer\PYGZus{}2}
+    \PYG{p}{\PYGZob{}}
+       \PYG{n}{period} \PYG{o}{=} \PYG{l+m+mf}{1.0}\PYG{p}{;}
+       \PYG{n}{priority} \PYG{o}{=} \PYG{l+m+mi}{50}\PYG{p}{;}
+       \PYG{n}{deadline} \PYG{o}{=} \PYG{l+m+mf}{0.200}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{c+c1}{// ROSMOD Component \PYGZhy{} Component\PYGZus{}3}
+  \PYG{n}{component} \PYG{n}{Component\PYGZus{}3} \PYG{o}{:} \PYG{n}{Base}
+  \PYG{p}{\PYGZob{}}
+    \PYG{c+c1}{// ROSMOD Client \PYGZhy{} Service\PYGZus{}Client}
+    \PYG{n}{client} \PYG{o}{\PYGZlt{}}\PYG{n}{three\PYGZus{}component\PYGZus{}example}\PYG{o}{/}\PYG{n}{ComponentService}\PYG{o}{\PYGZgt{}} \PYG{n}{Service\PYGZus{}Client}\PYG{p}{;}
+    \PYG{c+c1}{// ROSMOD Timer \PYGZhy{} Timer\PYGZus{}3}
+    \PYG{n}{timer} \PYG{n}{Timer\PYGZus{}3}
+    \PYG{p}{\PYGZob{}}
+       \PYG{n}{period} \PYG{o}{=} \PYG{l+m+mf}{2.0}\PYG{p}{;}
+       \PYG{n}{priority} \PYG{o}{=} \PYG{l+m+mi}{50}\PYG{p}{;}
+       \PYG{n}{deadline} \PYG{o}{=} \PYG{l+m+mf}{0.100}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
 
 
 \subsection{Hardware Model}

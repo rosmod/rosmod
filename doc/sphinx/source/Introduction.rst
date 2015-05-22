@@ -1,7 +1,7 @@
 Introduction
 ============
 
-`ROSMOD <https://github.com/finger563/rosmod>`_ is a tool suite for rapid prototyping component-based software applications using the `Robot Operating System <http://www.ros.org>`_ (ROS). Using ROSMOD, an application developers can create and manage *projects* for distributed real-time embedded systems. Each ROSMOD Project consists of *models* that represent the structure and behavior of the system:
+`ROSMOD <https://github.com/finger563/rosmod>`_ is a tool suite for rapid prototyping component-based software applications using the `Robot Operating System <http://www.ros.org>`_ (ROS). Using ROSMOD, an application developer can create and manage *projects* for distributed real-time embedded systems. Each ROSMOD Project consists of *models* that represent the structure and behavior of the system:
 
 * Software Model : One or more ROS packages in the workspace.
 * Hardware Model: One or more Hardware devices.
@@ -39,11 +39,19 @@ A ROSMOD Component is a re-useable unit/piece of software in an application. Com
 
 Each component has a single thread called the "Component Executor Thread". This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks & timer callbacks. To facilitate interactions with other components, each component also has a "Component Message Queue". This queue *holds* requests received from other interacting entities. 
 
-The following figure shows a simple Client-Server component interaction. Component A is periodically triggered by a timer. At each timer expiry, Component A makes a blocking remote procedure call to Component B using its client port. This service request, on reaching Component B, is enqueued onto Component B's message queue. When this request reaches the front of the queue, the corresponding server-side callback is executed by the Component B executor thread and the response is returned back to Component A. This message queue based interaction between component entities is also true for timers. When the timer in Component A expires, a timer callback request is enqueued onto its message queue and eventually handled.
+The following figure shows a simple Client-Server component interaction. Component A is periodically triggered by a timer. At each timer expiry, Component A makes a blocking remote procedure call to Component B using its client port. This service request, on reaching Component B, is enqueued onto Component B's message queue. When this request reaches the front of the queue, the corresponding server-side callback is executed by the Component B executor thread and the response is returned back to Component A. This message queue-based interaction is also true for timers; when the timer in Component A expires, a timer callback request is enqueued onto its message queue and eventually handled.
 
 .. image:: ./_images/Component_Message_Queue.png
-   :scale: 75 %
+   :scale: 90 %
    :align: center
+
+Design Notes:
+"""""""""""""
+
+* In each component, the message queue is processed by a single executor thread. Multiple components can run concurrently but each component execution is single-threaded.
+* The component message queue supports several scheduling schemes including FIFO (first-in first-out), PFIFO (priority first-in first-out) and EDF (earliest deadline first).
+* Requests in the message queue are processed using a non-preemptive scheduling scheme. This means that each callback/operation run by the executor thread is run to completion before the next one (in the message queue) is processed. 
+* These rules are strictly applied to all ROSMOD components.
 
 ROSMOD Nodes
 ^^^^^^^^^^^^

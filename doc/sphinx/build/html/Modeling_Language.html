@@ -52,11 +52,11 @@
             
   <div class="section" id="modeling-language">
 <h1>Modeling Language<a class="headerlink" href="#modeling-language" title="Permalink to this headline">¶</a></h1>
-<p>The ROSMOD Modeling Language is both textual and graphical. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the ROSMOD Project are saved in a set of text files (<em>models</em>) that follow a strict set of grammatical rules. The grammatical rules were written using <a class="reference external" href="http://www.antlr.org/">Antlr 4</a> and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files.</p>
+<p>ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the project are saved in a set of text files (<em>models</em>) that follow a strict set of grammatical rules. The grammatical rules were written using <a class="reference external" href="http://www.antlr.org/">Antlr 4</a> and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files.</p>
 <div class="section" id="software-model">
 <h2>Software Model<a class="headerlink" href="#software-model" title="Permalink to this headline">¶</a></h2>
 <p>The Software model completely describes a ROS Workspace.</p>
-<p>As shown in the above class diagram, every ROS workspace contains one or more ROS packages. Each ROS package contains one or more (1) messages, (2) services and (3) components. In ROSMOD, such packages are built using the Software Modeling Language.</p>
+<p>As shown in the above metamodel, every ROS workspace contains one or more ROS packages. Each ROS package contains (1) messages, (2) services and (3) components. Multiple communicating components are used to realize a domain-specific application e.g. an <em>Image Processor</em> component can periodically fetch the webcam feed from a <em>Camera</em> component and perform image processing tasks. The data structures, ports and timers of these components are described in this Software Model. How these components are grouped into ROS nodes and deployed on specific hardware is described using the <a class="reference internal" href="#id1"><em>Deployment Model</em></a>.</p>
 <div class="section" id="messages">
 <h3>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h3>
 <p>Messages are constructed identical to the textual language used in <a class="reference external" href="http://wiki.ros.org/msg">.msg files</a> by ROS. Here is a sample msg file:</p>
@@ -153,7 +153,7 @@
 </div>
 <div class="section" id="deployment-model">
 <h2>Deployment Model<a class="headerlink" href="#deployment-model" title="Permalink to this headline">¶</a></h2>
-</div>
+<span class="target" id="id1"></span></div>
 </div>
 
 

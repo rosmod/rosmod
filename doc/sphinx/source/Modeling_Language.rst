@@ -1,14 +1,14 @@
 Modeling Language
 =================
 
-The ROSMOD Modeling Language is both textual and graphical. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the ROSMOD Project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files.
+ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files.
 
 Software Model
 --------------
 
-The Software model completely describes a ROS Workspace.
+The Software model completely describes a ROS Workspace. 
 
-As shown in the above class diagram, every ROS workspace contains one or more ROS packages. Each ROS package contains one or more (1) messages, (2) services and (3) components. In ROSMOD, such packages are built using the Software Modeling Language. 
+As shown in the above metamodel, every ROS workspace contains one or more ROS packages. Each ROS package contains (1) messages, (2) services and (3) components. Multiple communicating components are used to realize a domain-specific application e.g. an *Image Processor* component can periodically fetch the webcam feed from a *Camera* component and perform image processing tasks. The data structures, ports and timers of these components are described in this Software Model. How these components are grouped into ROS nodes and deployed on specific hardware is described using the :ref:`Deployment Model <deployment_model>`.  
 
 Messages
 ^^^^^^^^
@@ -112,3 +112,4 @@ Hardware Model
 Deployment Model
 ----------------
 
+.. _deployment_model:
