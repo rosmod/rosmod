@@ -8,6 +8,10 @@ Software Model
 
 The Software model completely describes a ROS Workspace. 
 
+.. image:: ./_images/Software_Model.png
+   :scale: 70 %
+   :align: center
+
 As shown in the above metamodel, every ROS workspace contains one or more ROS packages. Each ROS package contains (1) messages, (2) services and (3) components. Multiple communicating components are used to realize a domain-specific application e.g. an *Image Processor* component can periodically fetch the webcam feed from a *Camera* component and perform image processing tasks. The data structures, ports and timers of these components are described in this Software Model. How these components are grouped into ROS nodes and deployed on specific hardware is described using the :ref:`Deployment Model <deployment_model>`.  
 
 Messages
@@ -109,7 +113,15 @@ Components
 Hardware Model
 --------------
 
+.. image:: ./_images/Hardware_Model.png
+   :scale: 80 %
+   :align: center
+
 Deployment Model
 ----------------
 
 .. _deployment_model:
+
+.. image:: ./_images/Deployment_Model.png
+   :scale: 80 %
+   :align: center

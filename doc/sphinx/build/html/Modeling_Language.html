@@ -56,6 +56,7 @@
 <div class="section" id="software-model">
 <h2>Software Model<a class="headerlink" href="#software-model" title="Permalink to this headline">¶</a></h2>
 <p>The Software model completely describes a ROS Workspace.</p>
+<a class="reference internal image-reference" href="_images/Software_Model.png"><img alt="_images/Software_Model.png" class="align-center" src="_images/Software_Model.png" style="width: 821.1px; height: 611.1px;" /></a>
 <p>As shown in the above metamodel, every ROS workspace contains one or more ROS packages. Each ROS package contains (1) messages, (2) services and (3) components. Multiple communicating components are used to realize a domain-specific application e.g. an <em>Image Processor</em> component can periodically fetch the webcam feed from a <em>Camera</em> component and perform image processing tasks. The data structures, ports and timers of these components are described in this Software Model. How these components are grouped into ROS nodes and deployed on specific hardware is described using the <a class="reference internal" href="#id1"><em>Deployment Model</em></a>.</p>
 <div class="section" id="messages">
 <h3>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h3>
@@ -150,10 +151,12 @@
 </div>
 <div class="section" id="hardware-model">
 <h2>Hardware Model<a class="headerlink" href="#hardware-model" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/Hardware_Model.png"><img alt="_images/Hardware_Model.png" class="align-center" src="_images/Hardware_Model.png" style="width: 237.6px; height: 357.6px;" /></a>
 </div>
 <div class="section" id="deployment-model">
 <h2>Deployment Model<a class="headerlink" href="#deployment-model" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="id1"></span></div>
+<a class="reference internal image-reference" href="_images/Deployment_Model.png" id="id1"><img alt="_images/Deployment_Model.png" class="align-center" id="id1" src="_images/Deployment_Model.png" style="width: 277.6px; height: 661.6px;" /></a>
+</div>
 </div>
 
 
