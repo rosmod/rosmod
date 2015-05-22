@@ -18,7 +18,7 @@ Table of Contents
 
    Modeling_Language
 
-   Editor
+   Graphical_User_Interface
 
    Code_Generators
 

@@ -1,7 +1,7 @@
 Modeling Language
 =================
 
-ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files. 
+ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a :ref:`Graphical User Interface <gui>` to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files. 
 
 Software Model
 --------------
