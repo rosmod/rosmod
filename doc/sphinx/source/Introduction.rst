@@ -34,7 +34,8 @@ A ROSMOD Component is a re-useable unit/piece of software in an application. Com
 * *Timers*: A timer is used to trigger the component. Timer callbacks are invoked when a timer expires
 
 .. image:: ./_images/ROSMOD_Component.png
-   :scale: 50 %
+   :scale: 75 %
+   :align: center
 
 Each component has a single thread called the "Component Executor Thread". This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks & timer callbacks. To facilitate interactions with other components, each component also has a "Component Message Queue". This queue *holds* requests received from other interacting entities. 
 
