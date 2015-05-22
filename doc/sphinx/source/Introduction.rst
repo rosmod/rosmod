@@ -27,15 +27,22 @@ ROSMOD Components
 
 A ROSMOD Component is a re-useable unit/piece of software in an application. Components can be thought of as LEGO pieces - Each piece has a well-defined shape; Multiple such pieces are connected together to build large structures (applications). Component-based software divides application concerns into smaller, manageable blocks that can be easily composed. In ROSMOD, each component can contain one or more of the following:
 
-* Publishers: A publisher port publishes (without blocking) on a message/topic (msg in ROS)
-* Subscribers: A subscriber port subscribes to a message/topic (msg in ROS)
-* Servers: A server port provides an "operation" to the external world
-* Clients: A client port requires/uses an operation provided by a server (potentially on another component)
-* Timers: A timer is used to trigger the component. Timer callbacks are invoked when a timer expires
+* *Publishers*: A publisher port publishes (without blocking) on a message/topic (msg in ROS)
+* *Subscribers*: A subscriber port subscribes to a message/topic (msg in ROS)
+* *Servers*: A server port provides an "operation" (srv in ROS) to the external world 
+* *Clients*: A client port requires/uses an operation (srv in ROS) provided by a server (potentially on another component)
+* *Timers*: A timer is used to trigger the component. Timer callbacks are invoked when a timer expires
 
-.. image:: ./_images/ros_component.png
+.. image:: ./_images/ROSMOD_Component.png
+   :scale: 50 %
 
-Each component has a single thread called the "Component Executor Thread". This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks & timer callbacks. To facilitate interactions with other components, each component also has a "Component Message Queue". This queue *holds* requests received from other interacting entities. When a client port in "Component A" make a procedure call to a server port in "Component B", this requests first lands in the message queue of Component B and is eventually handled by the Component B executor thread.
+Each component has a single thread called the "Component Executor Thread". This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks & timer callbacks. To facilitate interactions with other components, each component also has a "Component Message Queue". This queue *holds* requests received from other interacting entities. 
+
+The following figure shows a simple Client-Server component interaction. Component A is periodically triggered by a timer. At each timer expiry, Component A makes a blocking remote procedure call to Component B using its client port. This service request, on reaching Component B, is enqueued onto Component B's message queue. When this request reaches the front of the queue, the corresponding server-side callback is executed by the Component B executor thread and the response is returned back to Component A. This message queue based interaction between component entities is also true for timers. When the timer in Component A expires, a timer callback request is enqueued onto its message queue and eventually handled.
+
+.. image:: ./_images/Component_Message_Queue.png
+   :scale: 75 %
+   :align: center
 
 ROSMOD Nodes
 ^^^^^^^^^^^^
