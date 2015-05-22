@@ -1,7 +1,7 @@
 Modeling Language
 =================
 
-ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files. 
+ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a :ref:`Graphical User Interface <gui>` to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files. 
 
 Software Model
 --------------
@@ -120,6 +120,15 @@ Notice that the subscriber and the timer have a *priority* and a *deadline* prop
 
 Hardware Model
 --------------
+
+The Hardware model completely describes the set of hardware devices available for deployment. Each hardware device is described by:
+
+* Name: Name of the Hardware Device e.g. Beaglebone Black
+* IP Address: The IP Address of the hardware device
+* Username: The username to use when accessing this hardware device
+* SSH Key: Full path to an SSH Key to access this hardware device
+* Deployment Path: Full path on the hardware device, where executables are to be copied
+* Arch: Name of the architecture of the target hardware device e.g. armv7l. 
 
 .. image:: ./_images/Hardware_Model.png
    :scale: 80 %

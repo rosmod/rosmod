@@ -121,6 +121,15 @@ Notice that the subscriber and the timer have a *priority* and a *deadline* prop
 Hardware Model
 --------------
 
+The Hardware model completely describes the set of hardware devices available for deployment. Each hardware device is described by:
+
+* Name: Name of the Hardware Device e.g. Beaglebone Black
+* IP Address: The IP Address of the hardware device
+* Username: The username to use when accessing this hardware device
+* SSH Key: Full path to an SSH Key to access this hardware device
+* Deployment Path: Full path on the hardware device, where executables are to be copied
+* Arch: Name of the architecture of the target hardware device e.g. armv7l. 
+
 .. image:: ./_images/Hardware_Model.png
    :scale: 80 %
    :align: center
