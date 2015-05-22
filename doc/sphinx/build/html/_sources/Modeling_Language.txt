@@ -1,7 +1,7 @@
 Modeling Language
 =================
 
-ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files.
+ROSMOD Projects are built using the ROSMOD Modeling Language. The tool suite provides a Graphical User Interface to build these models but the state and configuration properties of the project are saved in a set of text files (*models*) that follow a strict set of grammatical rules. The grammatical rules were written using `Antlr 4 <http://www.antlr.org/>`_ and the models are loaded using the generated parser, lexer and listener classes. This section briefly describes the ROSMOD Textual Modeling Language, along with sample model files. 
 
 Software Model
 --------------
@@ -17,7 +17,7 @@ As shown in the above metamodel, every ROS workspace contains one or more ROS pa
 Messages
 ^^^^^^^^
 
-Messages are constructed identical to the textual language used in `.msg files <http://wiki.ros.org/msg>`_ by ROS. Here is a sample msg file:
+Messages are data structures used by Publishers and Subscribers. The data structure of messages is described in .msg files. ROSMOD Messages are constructed identical to the textual language used in `ROS msg files <http://wiki.ros.org/msg>`_. Here is a sample msg file:
 
 .. code-block:: c
 
@@ -32,7 +32,7 @@ Messages are constructed identical to the textual language used in `.msg files <
 Services
 ^^^^^^^^
 
-Services are also constructed identical to the textual langugage used in `.srv files <http://wiki.ros.org/srv>`_ by ROS. Here is a sample srv file:
+Services are data structures used by Clients and Servers. The data structure for services is described in .srv files. ROSMOD Services are also constructed identical to the textual langugage used in `ROS srv files <http://wiki.ros.org/srv>`_ by ROS. Here is a sample srv file:
 
 .. code-block:: c
 
@@ -44,6 +44,14 @@ Services are also constructed identical to the textual langugage used in `.srv f
 
 Components
 ^^^^^^^^^^
+
+Valid ROSMOD Packages contain one or more *components*. Each component has zero or more ports/timers. In the following example, the *three_component_example* package has three components: Component_1, Component_2 and Component_3. Component_1 has 
+
+* Publisher: *Name_Publisher* publishing on the *ComponentName* message
+* Subscriber: *Name_Subscriber* subscribing to the *ComponentName* message
+* Timer: *Timer_1* with a period of 0.5 seconds
+
+Notice that the subscriber and the timer have a *priority* and a *deadline* property. These properties are used by the component message queue when enqueuing requests from external entities. When the component scheduling scheme is PFIFO, the request with the highest priority is chosen first for processing. Similarly, when the scheduling scheme is EDF, the request with the earliest relative deadline is chosen first for processing. So, different callbacks/operations in the same component compete for a processing order. By default, this scheduling scheme is FIFO.
 
 .. code-block:: c
 

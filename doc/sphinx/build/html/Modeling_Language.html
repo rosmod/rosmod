@@ -60,7 +60,7 @@
 <p>As shown in the above metamodel, every ROS workspace contains one or more ROS packages. Each ROS package contains (1) messages, (2) services and (3) components. Multiple communicating components are used to realize a domain-specific application e.g. an <em>Image Processor</em> component can periodically fetch the webcam feed from a <em>Camera</em> component and perform image processing tasks. The data structures, ports and timers of these components are described in this Software Model. How these components are grouped into ROS nodes and deployed on specific hardware is described using the <a class="reference internal" href="#id1"><em>Deployment Model</em></a>.</p>
 <div class="section" id="messages">
 <h3>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h3>
-<p>Messages are constructed identical to the textual language used in <a class="reference external" href="http://wiki.ros.org/msg">.msg files</a> by ROS. Here is a sample msg file:</p>
+<p>Messages are data structures used by Publishers and Subscribers. The data structure of messages is described in .msg files. ROSMOD Messages are constructed identical to the textual language used in <a class="reference external" href="http://wiki.ros.org/msg">ROS msg files</a>. Here is a sample msg file:</p>
 <div class="highlight-c"><div class="highlight"><pre><span class="n">int64</span> <span class="n">sat_id</span>
 <span class="n">float64</span> <span class="n">inclination</span>
 <span class="n">float64</span> <span class="n">longitudeAN</span>
@@ -73,7 +73,7 @@
 </div>
 <div class="section" id="services">
 <h3>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h3>
-<p>Services are also constructed identical to the textual langugage used in <a class="reference external" href="http://wiki.ros.org/srv">.srv files</a> by ROS. Here is a sample srv file:</p>
+<p>Services are data structures used by Clients and Servers. The data structure for services is described in .srv files. ROSMOD Services are also constructed identical to the textual langugage used in <a class="reference external" href="http://wiki.ros.org/srv">ROS srv files</a> by ROS. Here is a sample srv file:</p>
 <div class="highlight-c"><div class="highlight"><pre><span class="n">int64</span> <span class="n">thruster_id</span>
 <span class="n">float64</span> <span class="n">amount</span>
 <span class="n">float64</span> <span class="n">duration</span>
@@ -84,6 +84,13 @@
 </div>
 <div class="section" id="components">
 <h3>Components<a class="headerlink" href="#components" title="Permalink to this headline">¶</a></h3>
+<p>Valid ROSMOD Packages contain one or more <em>components</em>. Each component has zero or more ports/timers. In the following example, the <em>three_component_example</em> package has three components: Component_1, Component_2 and Component_3. Component_1 has</p>
+<ul class="simple">
+<li>Publisher: <em>Name_Publisher</em> publishing on the <em>ComponentName</em> message</li>
+<li>Subscriber: <em>Name_Subscriber</em> subscribing to the <em>ComponentName</em> message</li>
+<li>Timer: <em>Timer_1</em> with a period of 0.5 seconds</li>
+</ul>
+<p>Notice that the subscriber and the timer have a <em>priority</em> and a <em>deadline</em> property. These properties are used by the component message queue when enqueuing requests from external entities. When the component scheduling scheme is PFIFO, the request with the highest priority is chosen first for processing. Similarly, when the scheduling scheme is EDF, the request with the earliest relative deadline is chosen first for processing. So, different callbacks/operations in the same component compete for a processing order. By default, this scheduling scheme is FIFO.</p>
 <div class="highlight-c"><div class="highlight"><pre><span class="cm">/*</span>
 <span class="cm"> * ROSMOD Software Model</span>
 <span class="cm"> */</span>
