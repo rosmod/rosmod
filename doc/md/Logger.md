@@ -1,1 +1,0 @@
-This is a documentation of ROSMOD Logger
