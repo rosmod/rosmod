@@ -628,12 +628,26 @@ class ROSMOD_Project(Drawable_Object):
     def save(self, project_name = "", project_path = ""):
         if project_path == "":
             project_path = self.project_path
+            # Save the ROS Workpace Model
+            self.save_rml()
+            # Save the ROS Hardware Configurations Model
+            self.save_rhw()
+            # Save the ROS Deployment Model
+            self.save_rdp()
         else:
-            self.new(project_name, project_path)
+            new_project = ROSMOD_Project()
+            new_project.new(project_name, project_path)
+            if os.path.isfile(os.path.join(new_project.workspace_path, "New_Workspace.rml")):
+                os.remove(os.path.join(new_project.workspace_path, "New_Workspace.rml"))
+            if os.path.isfile(os.path.join(new_project.hardware_path, "New_Hardware.rhw")):
+                os.remove(os.path.join(new_project.hardware_path, "New_Hardware.rhw"))
+            if os.path.isfile(os.path.join(new_project.deployment_path, "New_Deployment.rdp")):
+                os.remove(os.path.join(new_project.deployment_path, "New_Deployment.rdp"))
+            # Save the ROS Workpace Model
+            self.save_rml(new_project.workspace_path)
+            # Save the ROS Hardware Configurations Model
+            self.save_rhw(new_project.hardware_path)
+            # Save the ROS Deployment Model
+            self.save_rdp(new_project.deployment_path)
 
-        # Save the ROS Workpace Model
-        self.save_rml()
-        # Save the ROS Hardware Configurations Model
-        self.save_rhw()
-        # Save the ROS Deployment Model
-        self.save_rdp()
+

@@ -26,4 +26,4 @@ if __name__ == "__main__":
     My_Project.generate_xml()
     My_Project.generate_cpn()
     My_Project.save()
-
+    My_Project.save("Save_three_component_example", "/home/kelsier/Desktop")
