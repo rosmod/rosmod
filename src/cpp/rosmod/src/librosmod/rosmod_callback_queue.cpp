@@ -104,7 +104,8 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
   info.removal_id = removal_id;
   info.callback_options = callback_options;
   
-  ROS_INFO("ADDCALLBACK: Scheme: %d, Priority: %d, Deadline Sec: %d, nSec: %d", 
+  ROS_INFO("Enqueue:: Callback: %s, Scheme: %d, Priority: %d, Deadline Sec: %d, nSec: %d", 
+	   callback_options.alias.c_str(),
 	   scheduling_scheme,
 	   callback_options.priority,
 	   callback_options.deadline.sec,

@@ -156,10 +156,12 @@ typedef boost::function<void(const TimerEvent&)> TimerCallback;
  */
 struct ROSMOD_Callback_Options
 {
+  std::string alias;
   int priority;
   Duration deadline;
   
   ROSMOD_Callback_Options() {
+    alias = "";
     priority = -1;
     deadline.sec = -1;
     deadline.nsec = -1;

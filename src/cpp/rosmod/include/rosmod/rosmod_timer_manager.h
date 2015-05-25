@@ -58,6 +58,8 @@ private:
     boost::function<void(const E&)> callback;
     CallbackQueueInterface* callback_queue;
 
+    ROSMOD_Callback_Options callback_options;
+
     WallDuration last_cb_duration;
 
     T last_expected;
@@ -289,12 +291,13 @@ int32_t TimerManager<T, D, E>::add(const D& period,
 				   CallbackQueueInterface* callback_queue,
                                    const VoidConstPtr& tracked_object, 
 				   bool oneshot,
-				   ROSMOD_Callback_Options callback_options)
+				   ROSMOD_Callback_Options callback_options_)
 {
   TimerInfoPtr info(new TimerInfo);
   info->period = period;
   info->callback = callback;
   info->callback_queue = callback_queue;
+  info->callback_options = callback_options_;
   info->last_expected = T::now();
   info->next_expected = info->last_expected + period;
   info->removed = false;
