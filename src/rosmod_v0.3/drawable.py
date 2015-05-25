@@ -32,13 +32,14 @@ def drawText(text,pos,style,canvas):
             posStr = "cr"
         elif style.textPlacement == Text_Placement.RIGHT:
             posStr = "cl"
-        return canvas.AddScaledText(
-            text,
-            pos,
-            Size=style.font['pointSize'],
-            Position=posStr,
-            Family=wx.MODERN
-        )
+        output_text = canvas.AddScaledText(text,
+                                           pos,
+                                           Size=style.font['pointSize'],
+                                           Position=posStr,
+                                           Family=wx.MODERN)
+        output_text.Color = style.font['color']
+        output_text.Weight = style.font['weight']
+        return output_text
     else:
         return None
 
@@ -234,7 +235,11 @@ class Drawable_Object:
                 FillStyle = 'Transparent'
             )
         if self.textPosition != None and "name" in self.properties.keys():
-            drawText(self.properties["name"],self.textPosition.Get(),self.style,canvas)
+            input_text = self.style.font['prefix'] + self.properties["name"]
+            drawText(input_text, 
+                     self.textPosition.Get(),
+                     self.style,
+                     canvas)
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
@@ -311,7 +316,7 @@ def Layout(dObj, topLeftPos, canvas):
         dObj.height = maxObjHeight
         dObj.textPosition = getTextPos(
             option = dObj.style.textPlacement,
-            txtString = dObj.properties["name"],
+            txtString = dObj.style.font['prefix'] + dObj.properties["name"],
             objPos = dObj.topLeft.Get(),
             objSize = (dObj.width,dObj.height),
             font = dObj.style.font
@@ -319,7 +324,7 @@ def Layout(dObj, topLeftPos, canvas):
         maxObjWidth, maxObjHeight = getWidthWithText(
             objSize = (dObj.width,dObj.height),
             style = dObj.style,
-            objName = dObj.properties["name"],
+            objName = dObj.style.font['prefix'] + dObj.properties["name"],
             canvas = canvas
         )
         return maxObjWidth,maxObjHeight
