@@ -229,7 +229,7 @@ class Drawable_Object:
                 (x,y-self.height),
                 (self.width,self.height),
                 LineColor = self.style.overlay['overlayColor'],
-                LineWidth = 5,
+                LineWidth = 2,
                 FillColor = self.style.overlay['overlayColor'],
                 InForeground = False,
                 FillStyle = 'Transparent'
