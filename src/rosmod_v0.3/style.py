@@ -10,8 +10,9 @@ head,tail = os.path.split(dirName)
 editorPath=head
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
+modelIconPath_2 = rootIconPath + '/model_v2'
 
-activeOverlay = "YELLOW"
+activeOverlay = "BLACK"
 nodeDownOverlay = "RED"
 nodeUpOverlay = "GREEN"
 referenceOverlay = "BLUE"
@@ -20,16 +21,16 @@ similarOverlay = "BLACK"
 def BuildStyleDict(self):
     self.styleDict = OrderedDict()
     font = OrderedDict()
-    minSize = (50,50)
-    padding = (10,10)
-    pkgOffset = (50,50)
-    msgIcon = wx.Bitmap(modelIconPath + '/msgIcon.png')
-    srvIcon = wx.Bitmap(modelIconPath + '/srvIcon.png')
-    tmrIcon = wx.Bitmap(modelIconPath + '/tmrIcon.png')
-    pubIcon = wx.Bitmap(modelIconPath + '/pubIcon.png')
-    subIcon = wx.Bitmap(modelIconPath + '/subIcon.png')
-    clientIcon = wx.Bitmap(modelIconPath + '/clientIcon.png')
-    serverIcon = wx.Bitmap(modelIconPath + '/serverIcon.png')
+    minSize = (30, 30)
+    padding = (10, 10)
+    pkgOffset = (10, 50)
+    msgIcon = wx.Bitmap(modelIconPath_2 + '/msg.png')
+    srvIcon = wx.Bitmap(modelIconPath_2 + '/srv.png')
+    tmrIcon = wx.Bitmap(modelIconPath_2 + '/timer.png')
+    pubIcon = wx.Bitmap(modelIconPath_2 + '/publisher.png')
+    subIcon = wx.Bitmap(modelIconPath_2 + '/subscriber.png')
+    clientIcon = wx.Bitmap(modelIconPath_2 + '/client.png')
+    serverIcon = wx.Bitmap(modelIconPath_2 + '/server.png')
     compInstIcon = wx.Bitmap(modelIconPath + '/compInstIcon.png')
     hostIcon = wx.Bitmap(modelIconPath + '/bbb.png')
     hostInstIcon = wx.Bitmap(modelIconPath + '/bbb.png')
@@ -37,10 +38,10 @@ def BuildStyleDict(self):
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
     '''
     rhwStyle = drawable.Draw_Style(icon=None, 
-                                   font={'pointSize' : 20,
-                                         'color' : "black",
-                                         'prefix' : "",
-                                         'weight' : wx.NORMAL}, 
+                                   font={'pointSize' : 25,
+                                         'color' : "#9A3334",
+                                         'prefix' : "Hardware Model: ",
+                                         'weight' : wx.BOLD}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.SQUARE,
                                    offset = pkgOffset,
@@ -48,21 +49,21 @@ def BuildStyleDict(self):
                                    overlay = OrderedDict() )
     HardwareStyle = drawable.Draw_Style(icon=hostIcon,
                                         font={'pointSize' : 20,
-                                              'color' : "black",
-                                              'prefix' : "",
-                                              'weight' : wx.NORMAL}, 
+                                              'color' : "#217C7E",
+                                              'prefix' : "Device: ",
+                                              'weight' : wx.BOLD}, 
                                         method=drawable.Draw_Method.ICON, 
                                         childLayout=drawable.Child_Layout.HIDDEN,
-                                        minSize = minSize,
+                                        minSize = (100, 100),
                                         placement=drawable.Text_Placement.TOP,
                                         overlay = OrderedDict() )
     '''
     STYLES USED FOR DEPLOYMENT CONFIGURATION OBJECTS
     '''
     DeploymentStyle = drawable.Draw_Style(icon=None, 
-                                          font={'pointSize' : 20,
+                                          font={'pointSize' : 25,
                                                 'color' : "#9A3334",
-                                                'prefix' : "Deployment: ",
+                                                'prefix' : "Deployment Model: ",
                                                 'weight' : wx.BOLD}, 
                                           method=drawable.Draw_Method.ICON, 
                                           childLayout=drawable.Child_Layout.SQUARE,
@@ -76,9 +77,9 @@ def BuildStyleDict(self):
                                           'weight' : wx.BOLD}, 
                                     method=drawable.Draw_Method.ROUND_RECT, 
                                     childLayout=drawable.Child_Layout.STACK,     
-                                    minSize = minSize,
                                     placement=drawable.Text_Placement.TOP,
-                                    overlay = OrderedDict([('fillColor','#217C7E')]) )
+                                    overlay = OrderedDict([('fillColor','#217C7E')]),
+                                    minSize = (30, 30))
     CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
                                         font={'pointSize' : 20,
                                               'color' : "white",
@@ -113,8 +114,8 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict() )
     PkgStyle = drawable.Draw_Style(icon=None, 
-                                   font={'pointSize' : 20,
-                                         'color' : "black",
+                                   font={'pointSize' : 25,
+                                         'color' : "#9A3334",
                                          'prefix' : "Package: ",
                                          'weight' : wx.BOLD}, 
                                    method=drawable.Draw_Method.ICON, 
@@ -126,34 +127,34 @@ def BuildStyleDict(self):
                                    offset = pkgOffset )
     MsgStyle = drawable.Draw_Style(icon=msgIcon, 
                                    font={'pointSize' : 20,
-                                         'color' : "black",
+                                         'color' : "#217C7E",
                                          'prefix' : "",
-                                         'weight' : wx.NORMAL}, 
+                                         'weight' : wx.BOLD}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,      
                                    placement=drawable.Text_Placement.TOP,
-                                   minSize = minSize,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50))
     SrvStyle = drawable.Draw_Style(icon=srvIcon,
                                    font={'pointSize' : 20,
-                                         'color' : "black",
+                                         'color' : "#217C7E",
                                          'prefix' : "",
-                                         'weight' : wx.NORMAL}, 
+                                         'weight' : wx.BOLD}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,  
                                    placement=drawable.Text_Placement.TOP,
-                                   minSize = minSize,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50) )
     CompStyle = drawable.Draw_Style(icon=None,
                                     font={'pointSize' : 20,
-                                          'color' : "black",
+                                          'color' : "#217C7E",
                                           'prefix' : "",
-                                          'weight' : wx.NORMAL}, 
+                                          'weight' : wx.BOLD}, 
                                     method=drawable.Draw_Method.ROUND_RECT, 
                                     childLayout=drawable.Child_Layout.STACK,    
                                     placement=drawable.Text_Placement.TOP,
                                     minSize = minSize,
-                                    overlay = OrderedDict([('fillColor','white')]) )
+                                    overlay = OrderedDict([('fillColor','#217C7E')]) )
     TmrStyle = drawable.Draw_Style(icon=tmrIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -161,9 +162,9 @@ def BuildStyleDict(self):
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
-                                   minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50) )
     PubStyle = drawable.Draw_Style(icon=pubIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -171,9 +172,9 @@ def BuildStyleDict(self):
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
-                                   minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50) )
     SubStyle = drawable.Draw_Style(icon=subIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -181,9 +182,9 @@ def BuildStyleDict(self):
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
-                                   minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50) )
     CliStyle = drawable.Draw_Style(icon=clientIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -191,9 +192,9 @@ def BuildStyleDict(self):
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
-                                   minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50) )
     SerStyle = drawable.Draw_Style(icon=serverIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -201,9 +202,9 @@ def BuildStyleDict(self):
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
-                                   minSize = minSize,
                                    placement=drawable.Text_Placement.RIGHT,
-                                   overlay = OrderedDict() )
+                                   overlay = OrderedDict(),
+                                   minSize = (50, 50) )
 
     self.styleDict["rml"] = WrkStyle
 

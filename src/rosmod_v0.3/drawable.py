@@ -286,6 +286,7 @@ def Layout(dObj, topLeftPos, canvas):
             maxWidth = 0
             for child in dObj.children:
                 w,h = Layout(child,childPos,canvas)
+                w -= padding[0]
                 childPos[1] -= (padding[1] + h)
                 maxWidth = max(w,maxWidth)
             maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
