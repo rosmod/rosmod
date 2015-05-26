@@ -33,7 +33,6 @@ def BuildStyleDict(self):
     serverIcon = wx.Bitmap(modelIconPath_2 + '/server.png')
     compInstIcon = wx.Bitmap(modelIconPath + '/compInstIcon.png')
     hostIcon = wx.Bitmap(modelIconPath_2 + '/computer.png')
-    hostInstIcon = wx.Bitmap(modelIconPath + '/bbb.png')
     '''
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
     '''
@@ -158,7 +157,7 @@ def BuildStyleDict(self):
     TmrStyle = drawable.Draw_Style(icon=tmrIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
-                                         'prefix' : "  ",
+                                         'prefix' : " ",
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
@@ -168,7 +167,7 @@ def BuildStyleDict(self):
     PubStyle = drawable.Draw_Style(icon=pubIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
-                                         'prefix' : "  ",
+                                         'prefix' : " ",
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
@@ -178,7 +177,7 @@ def BuildStyleDict(self):
     SubStyle = drawable.Draw_Style(icon=subIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
-                                         'prefix' : "  ",
+                                         'prefix' : " ",
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
@@ -188,7 +187,7 @@ def BuildStyleDict(self):
     CliStyle = drawable.Draw_Style(icon=clientIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
-                                         'prefix' : "  ",
+                                         'prefix' : " ",
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
@@ -198,7 +197,7 @@ def BuildStyleDict(self):
     SerStyle = drawable.Draw_Style(icon=serverIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
-                                         'prefix' : "  ",
+                                         'prefix' : " ",
                                          'weight' : wx.NORMAL}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.HIDDEN,
