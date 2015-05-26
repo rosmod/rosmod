@@ -9,6 +9,10 @@ from collections import OrderedDict
 from metaclass import meta_class_dict
 from metaModel import model_dict
 
+from pygments import highlight
+from pygments.lexers import RstLexer
+from pygments.formatters import HtmlFormatter
+
 class RMLProgressDialog(wx.Dialog):
     """
     Shows a Progres Gauge while an operation is taking place. May be cancellable
@@ -278,22 +282,6 @@ class EditDialog(wx.Dialog):
                       flag=wx.ALL|wx.EXPAND, border=10)
         self.vbox.Add(self.hbox, 
                       flag=wx.ALIGN_CENTER|wx.BOTTOM, border=10)
-        # Start of Description Box addition
-        self.vbox.Add(wx.StaticText(self, label="Description"), 
-                      flag=wx.ALIGN_CENTER|wx.BOTTOM,
-                      border=10)
-        read_only_txtCtrl = wx.TextCtrl(self,
-                                        -1,
-                                        meta_class_dict[key].description,
-                                        style=wx.TE_MULTILINE|wx.TE_READONLY)
-        description_font = wx.Font(10, wx.MODERN, wx.NORMAL, wx.NORMAL, False, u'Consolas')
-        read_only_txtCtrl.SetFont(description_font)
-        self.vbox.Add(read_only_txtCtrl, 
-                      1, 
-                      wx.EXPAND, 
-                      border = 10)
-        # End of Description Box addition
-
         self.SetSizer(self.vbox)
         
         okButton.Bind(wx.EVT_BUTTON, self.OnOk)
