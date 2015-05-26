@@ -21,7 +21,7 @@ def BuildStyleDict(self):
     self.styleDict = OrderedDict()
     font = OrderedDict()
     minSize = (30, 30)
-    padding = (10, 10)
+    padding = (30, 30)
     pkgOffset = (10, 50)
     msgIcon = wx.Bitmap(modelIconPath + '/msg.png')
     srvIcon = wx.Bitmap(modelIconPath + '/srv.png')
