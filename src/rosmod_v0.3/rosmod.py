@@ -682,13 +682,13 @@ class Example(wx.Frame):
             self.project_path = project_path
             propertiesDict = OrderedDict()
             propertiesDict['Project'] = OrderedDict()
-            propertiesDict['Project']['name'] = "NewProject"
+            propertiesDict['Project']['name'] = "New_Project"
             propertiesDict['Workspace'] = OrderedDict()
-            propertiesDict['Workspace']['name'] = "NewWorkspace"
+            propertiesDict['Workspace']['name'] = "New_Workspace"
             propertiesDict['Hardware'] = OrderedDict()
-            propertiesDict['Hardware']['name'] = "NewHardware"
+            propertiesDict['Hardware']['name'] = "New_Hardware"
             propertiesDict['Deployment'] = OrderedDict()
-            propertiesDict['Deployment']['name'] = "NewDeployment"
+            propertiesDict['Deployment']['name'] = "New_Deployment"
             w = dialogs.Wizard(self,propertiesDict)
             inputs = w.GetInput()
             if inputs != None:
