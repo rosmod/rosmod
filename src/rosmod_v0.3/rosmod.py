@@ -347,6 +347,9 @@ class Example(wx.Frame):
         self.AnalyzeNetwork(dep)
         self.AnalyzeTiming(dep)
 
+    def OnDeploymentTiming(self, e):
+        pass
+
     def OnDeploymentGenerate(self,e):
         self.GenerateXML()
 
@@ -466,6 +469,9 @@ class Example(wx.Frame):
             workerThread.start()
             dlg.ShowModal()
             dlg.Destroy()
+
+    def OnDeploymentROSCORE(self, e):
+        print "Starting ROSCORE!"
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:

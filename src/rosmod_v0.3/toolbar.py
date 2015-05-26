@@ -9,7 +9,7 @@ dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
 editorPath=head
 rootIconPath= editorPath + '/icons'
-toolbarIconPath= rootIconPath + '/toolbar'
+toolbarIconPath= rootIconPath + '/toolbar_v2'
 
 class TBItem:
     def __init__(self, name, icon, helpStr, func, _id = wx.ID_ANY):
@@ -28,46 +28,48 @@ class TBInfo():
 
 def BuildToolbar(self):
     aspectToolbarDict["Software"] = [
-        TBItem("create","/tnew.png","New Package",lambda e : self.OnAspectCreate("Package",e)),
-        TBItem("delete","/texit.png","Remove Package", self.OnAspectDelete),
-        TBItem("generate","/tgenerate.png","Generate Executable Files", self.OnPackageGenerate)
+        TBItem("create","/new.png","New Package",lambda e : self.OnAspectCreate("Package",e)),
+        TBItem("delete","/delete.png","Remove Package", self.OnAspectDelete),
+        TBItem("generate","/generate.png","Generate Workspace", self.OnPackageGenerate)
     ]
     aspectToolbarDict["Hardware"] = [
-        TBItem("create","/tnew.png","New Hardware",lambda e : self.OnAspectCreate("rhw",e)),
-        TBItem("delete","/texit.png","Remove Hardware", self.OnAspectDelete),
+        TBItem("create","/new.png","New Hardware",lambda e : self.OnAspectCreate("rhw",e)),
+        TBItem("delete","/delete.png","Remove Hardware", self.OnAspectDelete),
     ]
     aspectToolbarDict["Deployment"] = [
-        TBItem("create","/tnew.png","New Deployment",lambda e : self.OnAspectCreate("rdp",e)),
-        TBItem("delete","/texit.png","Remove Deployment", self.OnAspectDelete),
-        TBItem("analyze","/tanalyze.png","Analyze Deployment timing and network properties", self.OnDeploymentAnalyze),
-        TBItem("generate","/tgenerate.png","Generate Deployment Files", self.OnDeploymentGenerate),
-        TBItem("move","/tmove.png","Copy Deployment Files", self.OnDeploymentMove),
-        TBItem("deploy","/tdeploy.png","Deploy onto System", self.OnDeploymentDeploy),
-        TBItem("stop","/tstop.png","Stop Deployed System", self.OnDeploymentStop),
-        TBItem("run","/trun.png","Run <Command> on All Hosts", self.OnDeploymentRun)
+        TBItem("create","/new.png","New Deployment",lambda e : self.OnAspectCreate("rdp",e)),
+        TBItem("delete","/delete.png","Remove Deployment", self.OnAspectDelete),
+        TBItem("analyze","/analyze_network.png","Run Network Analysis Tool", self.OnDeploymentAnalyze),
+        TBItem("timing", "/analyze_timing.png", "Generate Timing Analysis Model", self.OnDeploymentTiming),
+        TBItem("generate","/generate.png","Generate Deployment XML Files", self.OnDeploymentGenerate),
+        TBItem("move","/copy.png","Copy Deployment Files", self.OnDeploymentMove),
+        TBItem("roscore", "/roscore.png", "Start ROSCORE", self.OnDeploymentROSCORE),
+        TBItem("deploy","/start.png","Start Deployment", self.OnDeploymentDeploy),
+        TBItem("stop","/stop.png","Stop Deployment", self.OnDeploymentStop),
+        TBItem("run","/run.png","Run <Command> on all Hardware Devices", self.OnDeploymentRun)
     ]
 
     self.toolbar = self.CreateToolBar()
     # file operations
     self.tb_new = self.toolbar.AddLabelTool(
-        wx.ID_NEW, '', wx.Bitmap(toolbarIconPath + '/tnew.png'), shortHelp="New")
+        wx.ID_NEW, '', wx.Bitmap(toolbarIconPath + '/new.png'), shortHelp="New")
     self.tb_open = self.toolbar.AddLabelTool(
-        wx.ID_OPEN, '', wx.Bitmap(toolbarIconPath + '/topen.png'), shortHelp="Open")
+        wx.ID_OPEN, '', wx.Bitmap(toolbarIconPath + '/open.png'), shortHelp="Open")
     self.tb_save = self.toolbar.AddLabelTool(
-        wx.ID_SAVE, '', wx.Bitmap(toolbarIconPath + '/tsave.png'), shortHelp="Save")
+        wx.ID_SAVE, '', wx.Bitmap(toolbarIconPath + '/save.png'), shortHelp="Save")
     self.tb_print = self.toolbar.AddLabelTool(
-        wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/tprint.png'), shortHelp="Print Page to File")
+        wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/print.png'), shortHelp="Print Page to File")
     self.toolbar.AddSeparator()
     # undo/redo
     self.tb_undo = self.toolbar.AddLabelTool(
-        wx.ID_UNDO, '', wx.Bitmap(toolbarIconPath + '/tundo.png'), shortHelp="Undo")
+        wx.ID_UNDO, '', wx.Bitmap(toolbarIconPath + '/undo.png'), shortHelp="Undo")
     self.tb_redo = self.toolbar.AddLabelTool(
-        wx.ID_REDO, '', wx.Bitmap(toolbarIconPath + '/tredo.png'), shortHelp="Redo")
+        wx.ID_REDO, '', wx.Bitmap(toolbarIconPath + '/redo.png'), shortHelp="Redo")
     self.toolbar.EnableTool(wx.ID_UNDO, False)
     self.toolbar.EnableTool(wx.ID_REDO, False)
     self.toolbar.AddSeparator()
     self.tb_term = self.toolbar.AddLabelTool(
-        wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/tterm.png'), shortHelp="Terminal")
+        wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/terminal.png'), shortHelp="Terminal")
     self.toolbar.AddSeparator()
     self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
     self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
@@ -76,6 +78,7 @@ def BuildToolbar(self):
     self.Bind(wx.EVT_TOOL, self.OnUndo, self.tb_undo)
     self.Bind(wx.EVT_TOOL, self.OnRedo, self.tb_redo)
     self.Bind(wx.EVT_TOOL, self.OnTerminal, self.tb_term)
+
 
 def AddAspectToolbar(self,kind):
     tbi = TBInfo( name="label",
