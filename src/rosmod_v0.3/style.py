@@ -103,10 +103,10 @@ def BuildStyleDict(self):
     STYLES USED FOR SOFTWARE CONFIGURATION OBJECTS
     '''
     WrkStyle = drawable.Draw_Style(icon=None, 
-                                   font={'pointSize' : 20,
+                                   font={'pointSize' : 25,
                                          'color' : "black",
-                                         'prefix' : "",
-                                         'weight' : wx.NORMAL}, 
+                                         'prefix' : "Hardware Model: ",
+                                         'weight' : wx.BOLD}, 
                                    method=drawable.Draw_Method.ICON, 
                                    childLayout=drawable.Child_Layout.STACK,                       
                                    offset = pkgOffset,
