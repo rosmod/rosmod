@@ -101,7 +101,7 @@ def BuildOutput(self):
     sys.stderr=stderr_log
     panel.SetSizer(vbox)
 
-    self.output.AddPage(panel, "Console Output")
+    self.output.AddPage(panel, "Console")
     self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
 
 
