@@ -10,7 +10,6 @@ head,tail = os.path.split(dirName)
 editorPath=head
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
-modelIconPath_2 = rootIconPath + '/model_v2'
 
 activeOverlay = "BLACK"
 nodeDownOverlay = "RED"
@@ -24,15 +23,14 @@ def BuildStyleDict(self):
     minSize = (30, 30)
     padding = (10, 10)
     pkgOffset = (10, 50)
-    msgIcon = wx.Bitmap(modelIconPath_2 + '/msg.png')
-    srvIcon = wx.Bitmap(modelIconPath_2 + '/srv.png')
-    tmrIcon = wx.Bitmap(modelIconPath_2 + '/timer.png')
-    pubIcon = wx.Bitmap(modelIconPath_2 + '/publisher.png')
-    subIcon = wx.Bitmap(modelIconPath_2 + '/subscriber.png')
-    clientIcon = wx.Bitmap(modelIconPath_2 + '/client.png')
-    serverIcon = wx.Bitmap(modelIconPath_2 + '/server.png')
-    compInstIcon = wx.Bitmap(modelIconPath + '/compInstIcon.png')
-    hostIcon = wx.Bitmap(modelIconPath_2 + '/computer.png')
+    msgIcon = wx.Bitmap(modelIconPath + '/msg.png')
+    srvIcon = wx.Bitmap(modelIconPath + '/srv.png')
+    tmrIcon = wx.Bitmap(modelIconPath + '/timer.png')
+    pubIcon = wx.Bitmap(modelIconPath + '/publisher.png')
+    subIcon = wx.Bitmap(modelIconPath + '/subscriber.png')
+    clientIcon = wx.Bitmap(modelIconPath + '/client.png')
+    serverIcon = wx.Bitmap(modelIconPath + '/server.png')
+    hostIcon = wx.Bitmap(modelIconPath + '/computer.png')
     '''
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
     '''
@@ -79,7 +77,7 @@ def BuildStyleDict(self):
                                     placement=drawable.Text_Placement.TOP,
                                     overlay = OrderedDict([('fillColor','#217C7E')]),
                                     minSize = (30, 30))
-    CompInstStyle = drawable.Draw_Style(icon=compInstIcon,
+    CompInstStyle = drawable.Draw_Style(icon=None,
                                         font={'pointSize' : 20,
                                               'color' : "white",
                                               'prefix' : " ",

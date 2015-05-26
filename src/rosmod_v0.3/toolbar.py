@@ -9,7 +9,7 @@ dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
 editorPath=head
 rootIconPath= editorPath + '/icons'
-toolbarIconPath= rootIconPath + '/toolbar_v2'
+toolbarIconPath= rootIconPath + '/toolbar'
 
 class TBItem:
     def __init__(self, name, icon, helpStr, func, _id = wx.ID_ANY):
