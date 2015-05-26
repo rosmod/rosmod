@@ -113,6 +113,7 @@ class Example(wx.Frame):
     def InitUI(self):
 
         self.activeObject = None
+        self.roscore = False
 
         self.fileTypes = "ROSMOD Project (*.rosmod)|*.rosmod"
         self.project_path = os.getcwd()
@@ -471,7 +472,9 @@ class Example(wx.Frame):
             dlg.Destroy()
 
     def OnDeploymentROSCORE(self, e):
-        print "Starting ROSCORE!"
+        if self.roscore == False:
+            print "ROSMOD::Starting ROSCORE!"
+            self.roscore = True
 
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
