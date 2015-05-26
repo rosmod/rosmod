@@ -85,7 +85,7 @@ void Component_2::startUp()
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - timer.properties["name"]
+  // Component Timer - Timer_2
   timer_options = 
     ros::TimerOptions
     (ros::Duration(1.0),

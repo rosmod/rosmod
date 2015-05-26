@@ -1,11 +1,11 @@
-#include "publish_subscribe_package/Publisher.hpp"
+#include "timer_package/Timer.hpp"
 
 //# Start User Globals Marker
 //# End User Globals Marker
 
 // Initialization Function
 //# Start Init Marker
-void Publisher::Init(const ros::TimerEvent& event)
+void Timer::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
 
@@ -14,57 +14,63 @@ void Publisher::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
-// Timer Callback - publish_timer
-//# Start publish_timerCallback Marker
-void Publisher::publish_timerCallback(const ros::TimerEvent& event)
+// Timer Callback - periodic_timer
+//# Start periodic_timerCallback Marker
+void Timer::periodic_timerCallback(const ros::TimerEvent& event)
 {
-  // Business Logic for publish_timer Timer
-  publish_subscribe_package::Message message_;
-  message_.name = "Publisher";
-  publisher_port.publish(message_);
-  LOGGER.INFO("Publisher::Published on Message topic!");
+  // Business Logic for periodic_timer Timer
+  LOGGER.INFO("Timer::Periodic Timer triggered!");
 }
-//# End publish_timerCallback Marker
+//# End periodic_timerCallback Marker
+// Timer Callback - sporadic_timer
+//# Start sporadic_timerCallback Marker
+void Timer::sporadic_timerCallback(const ros::TimerEvent& event)
+{
+  // Business Logic for sporadic_timer Timer
+  LOGGER.INFO("Timer::Sporadic Timer triggered!");
+}
+//# End sporadic_timerCallback Marker
 
 
 // Destructor - Cleanup Ports & Timers
-Publisher::~Publisher()
+Timer::~Timer()
 {
-  publish_timer.stop();
-  publisher_port.shutdown();
+  periodic_timer.stop();
+  sporadic_timer.stop();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
-void Publisher::startUp()
+void Timer::startUp()
 {
   ros::NodeHandle nh;
   std::string advertiseName;
-
-  // Component Publisher - publisher_port
-  advertiseName = "Message";
-  if (portGroupMap.find("publisher_port") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["publisher_port"];
-  this->publisher_port = nh.advertise<publish_subscribe_package::Message>(advertiseName.c_str(), 1000);
 
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
     ros::TimerOptions
     (ros::Duration(-1),
-     boost::bind(&Publisher::Init, this, _1),
+     boost::bind(&Timer::Init, this, _1),
      &this->compQueue,
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - publish_timer
+  // Component Timer - periodic_timer
   timer_options = 
     ros::TimerOptions
-    (ros::Duration(0.5),
-     boost::bind(&Publisher::publish_timerCallback, this, _1),
+    (ros::Duration(1.0),
+     boost::bind(&Timer::periodic_timerCallback, this, _1),
      &this->compQueue);
-  this->publish_timer = nh.createTimer(timer_options);
+  this->periodic_timer = nh.createTimer(timer_options);
+  // Component Timer - sporadic_timer
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&Timer::sporadic_timerCallback, this, _1),
+     &this->compQueue, true);
+  this->sporadic_timer = nh.createTimer(timer_options);
 
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
@@ -89,6 +95,6 @@ void Publisher::startUp()
 
 extern "C" {
   Component *maker(ComponentConfig &config, int argc, char **argv) {
-    return new Publisher(config,argc,argv);
+    return new Timer(config,argc,argv);
   }
 }

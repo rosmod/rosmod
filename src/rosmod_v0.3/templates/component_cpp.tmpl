@@ -188,7 +188,7 @@ void $component_name::startUp()
   
 #if $len($timers)
 #for $timer in $timers
-  // Component Timer - timer.properties["name"]
+  // Component Timer - $timer.properties["name"]
   timer_options = 
     ros::TimerOptions
 #if $timer.properties["period"] == "0.0"
