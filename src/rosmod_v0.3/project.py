@@ -60,17 +60,17 @@ class ROSMOD_Project(Drawable_Object):
         if project_name != "":
             self.project_name = project_name
         else:
-            ros_tools_log( q, "ROSTOOLS::ERROR::Invalid Project Name")
+            ros_tools_log( q, "ROSMOD::ERROR::Invalid Project Name")
         if project_path != "":
             self.project_path = project_path
         else:
-            ros_tools_log(q, "ROSTOOLS::ERROR::Invalid Project Path")
+            ros_tools_log(q, "ROSMOD::ERROR::Invalid Project Path")
         self.project_path = os.path.join(self.project_path, self.project_name)
 
         self.children = []
 
         # Notify user
-        ros_tools_log(q, "ROSTOOLS::Creating Project " + project_name + " at " + project_path)
+        ros_tools_log(q, "ROSMOD::Creating Project " + project_name + " at " + project_path)
 
         # Create the .rosmod file
         if not os.path.exists(self.project_path):
@@ -178,13 +178,13 @@ class ROSMOD_Project(Drawable_Object):
         project_directories = []
         for prj_file in os.listdir(project_path):
             if prj_file.endswith(".rosmod"):
-                logStr = "ROSTOOLS::Opening ROSMOD Project: {}".format(project_path)
+                logStr = "ROSMOD::Opening ROSMOD Project: {}".format(project_path)
                 ros_tools_log(progressQ,logStr)
                 valid_project = True
         if valid_project == True:
-            logStr = "ROSTOOLS::Project Name: {}".format(os.path.basename(project_path))
+            logStr = "ROSMOD::Project Name: {}".format(os.path.basename(project_path))
             ros_tools_log(progressQ, logStr)
-            logStr = "ROSTOOLS::Project Path: {}".format(project_path)
+            logStr = "ROSMOD::Project Path: {}".format(project_path)
             ros_tools_log(progressQ, logStr)
             sub_directories = [x[0] for x in os.walk(project_path)]
             for sd in reversed(sub_directories):
@@ -205,14 +205,14 @@ class ROSMOD_Project(Drawable_Object):
                 self.__init__(name=os.path.basename(project_path), path=project_path)
                 self.parse_models(progressQ)
             else:
-                ros_tools_log(progressQ, "ROSTOOLS::ERROR::Invalid Project!")
+                ros_tools_log(progressQ, "ROSMOD::ERROR::Invalid Project!")
                 
     # Go through dirname and load in all .msg files into message objects
     # load them into the ref dict according to their filename pkgName.msgName.msg
     def parse_msg(self, dirname):
         if not os.path.exists(dirname):
             return
-        #print "ROSTOOLS::Parsing Message Files!"
+        #print "ROSMOD::Parsing Message Files!"
         for filename in os.listdir(dirname):
             if filename.endswith('.msg'):
                 package_name = filename.split('.')[0]
@@ -235,7 +235,7 @@ class ROSMOD_Project(Drawable_Object):
     def parse_srv(self, dirname):
         if not os.path.exists(dirname):
             return
-        #print "ROSTOOLS::Parsing Service Files!"
+        #print "ROSMOD::Parsing Service Files!"
         for filename in os.listdir(dirname):
             if filename.endswith('.srv'):
                 package_name = filename.split('.')[0]
@@ -258,7 +258,7 @@ class ROSMOD_Project(Drawable_Object):
     def parse_abl(self, dirname):
         if not os.path.exists(dirname):
             return
-        #print "ROSTOOLS::Parsing Abstract Business Logic Model Files!"
+        #print "ROSMOD::Parsing Abstract Business Logic Model Files!"
         for filename in os.listdir(dirname):
             if len(filename.split('.')) == 4:
                 package_name = filename.split('.')[0]
@@ -280,7 +280,7 @@ class ROSMOD_Project(Drawable_Object):
     def parse_pnp(self, dirname):
         if not os.path.exists(dirname):
             return
-        #print "ROSTOOLS::Parsing Port Network Profiles!"
+        #print "ROSMOD::Parsing Port Network Profiles!"
         for filename in os.listdir(dirname):
             if len(filename.split('.')) == 4:
                 package_name = filename.split('.')[0]
@@ -301,7 +301,7 @@ class ROSMOD_Project(Drawable_Object):
     def parse_snp(self, dirname):
         if not os.path.exists(dirname):
             return
-        #print "ROSTOOLS::Parsing System Network Profiles!"
+        #print "ROSMOD::Parsing System Network Profiles!"
         for filename in os.listdir(dirname):
             if len(filename.split('.')) == 3:
                 rhw_name = filename.split('.')[0]
@@ -316,7 +316,7 @@ class ROSMOD_Project(Drawable_Object):
     # Parse .rml software model
     def parse_rml(self, filename):
 
-        #print "ROSTOOLS::Parsing File:", filename
+        #print "ROSMOD::Parsing File:", filename
         # Read the input model
         model = FileStream(filename)
         # Instantiate the ROSLexer
@@ -332,7 +332,7 @@ class ROSMOD_Project(Drawable_Object):
         
         self.workspace_builder = ROSMOD_Software_Builder(self)
         self.workspace_builder.rml.properties["name"] = os.path.basename(filename.split(".")[0])
-        #print "ROSTOOLS::Reading ROS Workspace:", self.workspace_builder.rml.properties["name"]
+        #print "ROSMOD::Reading ROS Workspace:", self.workspace_builder.rml.properties["name"]
 
         # Walk the parse tree
         walker.walk(self.workspace_builder, tree)
@@ -342,7 +342,7 @@ class ROSMOD_Project(Drawable_Object):
     # Parse .rhw hardware configurations model
     def parse_rhw(self, filename):
 
-        #print "ROSTOOLS::Parsing File:", filename
+        #print "ROSMOD::Parsing File:", filename
         # Read the hardware configurations model
         model = FileStream(filename)
         # Instantiate the HostsLexer
@@ -359,7 +359,7 @@ class ROSMOD_Project(Drawable_Object):
         # Hardware Builder
         self.hardware_builder = ROSMOD_Hardware_Builder(self)
         self.hardware_builder.rhw.properties["name"] = os.path.basename(filename.split(".")[0])
-        #print "ROSTOOLS::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
+        #print "ROSMOD::Reading Hardware Model:", self.hardware_builder.rhw.properties["name"]
 
         # Walk the parse tree
         walker.walk(self.hardware_builder, tree)
@@ -369,7 +369,7 @@ class ROSMOD_Project(Drawable_Object):
 
     # Parse .rdp software deployment model
     def parse_rdp(self, filename):
-        #print "ROSTOOLS::Parsing File:", filename
+        #print "ROSMOD::Parsing File:", filename
         # Read the hardware configurations model
         model = FileStream(filename)
         # Instantiate the DeploymentLexer
@@ -386,7 +386,7 @@ class ROSMOD_Project(Drawable_Object):
         # Deployment Builder
         self.deployment_builder = ROSMOD_Deployment_Builder(self)
         self.deployment_builder.rdp.properties["name"] = os.path.basename(filename.split(".")[0])
-        #print "ROSTOOLS::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
+        #print "ROSMOD::Reading Deployment Model:", self.deployment_builder.rdp.properties["name"]
 
         # Walk the parse tree
         walker.walk(self.deployment_builder, tree)
@@ -402,41 +402,41 @@ class ROSMOD_Project(Drawable_Object):
                 count += 1
                 
         if count == 0:
-            ros_tools_log(progressQ,"ROSTOOLS::No ROSMOD (.rml) file found in " + self.workspace_path)
+            ros_tools_log(progressQ,"ROSMOD::No ROSMOD (.rml) file found in " + self.workspace_path)
         elif count > 1:
-            ros_tools_log(progressQ,"ROSTOOLS::ERROR::There can only be one .rml file in 01-ROS-Workspace!")
+            ros_tools_log(progressQ,"ROSMOD::ERROR::There can only be one .rml file in 01-ROS-Workspace!")
         else:
-            ros_tools_log(progressQ,"ROSTOOLS::Parsing Software files")
+            ros_tools_log(progressQ,"ROSMOD::Parsing Software files")
             self.parse_rml(rml_file)
         count = 0
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing Message files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing Message files")
         self.parse_msg(self.workspace_path + "/msg")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing Service files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing Service files")
         self.parse_srv(self.workspace_path + "/srv")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing Abstract Business Logic files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing Abstract Business Logic files")
         self.parse_abl(self.workspace_path + "/abl")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing Port Network Profile files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing Port Network Profile files")
         self.parse_pnp(self.workspace_path + "/pnp")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing Hardware files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing Hardware files")
         for rhw in os.listdir(self.hardware_path):
             if rhw.endswith(".rhw"):
                 rhw_file = os.path.join(self.hardware_path, rhw)
                 self.parse_rhw(rhw_file)
                 count += 1
         if count == 0:
-            ros_tools_log(progressQ,"ROSTOOLS::No ROS Hardware Configurations (.rhw) files found in "+ self.hardware_path)
+            ros_tools_log(progressQ,"ROSMOD::No ROS Hardware Configurations (.rhw) files found in "+ self.hardware_path)
 
         count = 0
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing System Network Profile files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing System Network Profile files")
         self.parse_snp(self.hardware_path + "/snp")
 
-        ros_tools_log(progressQ,"ROSTOOLS::Parsing Deployment files")
+        ros_tools_log(progressQ,"ROSMOD::Parsing Deployment files")
         for rdp in os.listdir(self.deployment_path):
             if rdp.endswith(".rdp"):
                 rdp_file = os.path.join(self.deployment_path, rdp)
@@ -444,9 +444,9 @@ class ROSMOD_Project(Drawable_Object):
                 count += 1
                 
         if count == 0:
-            ros_tools_log(progressQ,"ROSTOOLS::No ROS Deployment (.rdp) files found in" + self.deployment_path)
+            ros_tools_log(progressQ,"ROSMOD::No ROS Deployment (.rdp) files found in" + self.deployment_path)
 
-        ros_tools_log(progressQ,"ROSTOOLS::Resolving References")
+        ros_tools_log(progressQ,"ROSMOD::Resolving References")
         self.resolve_references()
 
     # Check workspace directory for existing code that may
@@ -489,7 +489,7 @@ class ROSMOD_Project(Drawable_Object):
 
     # Resolving References in all workspace packages
     def resolve_references(self, progressQ = None):
-        #print "ROSTOOLS::Fixing unresolved references"
+        #print "ROSMOD::Fixing unresolved references"
         for package in self.workspace_builder.rml.children:
             for package_child in package.children:
                 if package_child.kind == "Component":
@@ -524,7 +524,7 @@ class ROSMOD_Project(Drawable_Object):
         self.rml = str(t)
         with open(os.path.join(path, self.workspace_builder.rml.properties["name"] + ".rml"), 'w') as temp_file:
             temp_file.write(self.rml)
-        print "ROSTOOLS::Saving " + self.workspace_builder.rml.properties["name"] + ".rml " + "at " + path
+        print "ROSMOD::Saving " + self.workspace_builder.rml.properties["name"] + ".rml " + "at " + path
         
         # Save all messages and services in respective folders
         for package in self.workspace_builder.rml.children:
@@ -550,7 +550,7 @@ class ROSMOD_Project(Drawable_Object):
             with open(os.path.join(path, rhw.properties["name"] + ".rhw"), 'w') as temp_file:
                 temp_file.write(self.rhw)
                 temp_file.close()
-            print "ROSTOOLS::Saving " + rhw.properties["name"] + ".rhw " + "at " + path
+            print "ROSMOD::Saving " + rhw.properties["name"] + ".rhw " + "at " + path
             for hardware in rhw.children:
                 self.save_snp(hardware)
 
@@ -565,7 +565,7 @@ class ROSMOD_Project(Drawable_Object):
             with open(os.path.join(path, rdp.properties["name"] + ".rdp"), 'w') as temp_file:
                 temp_file.write(self.rdp)
                 temp_file.close()
-            print "ROSTOOLS::Saving " + rdp.properties["name"] + ".rdp " + "at " + path  
+            print "ROSMOD::Saving " + rdp.properties["name"] + ".rdp " + "at " + path  
 
     # Save Message files
     def save_msg(self, msg_object):
@@ -577,7 +577,7 @@ class ROSMOD_Project(Drawable_Object):
         msg = str(t)
         with open(os.path.join(path, msg_object.parent.properties["name"] + "." + msg_object.properties["name"] + ".msg"), 'w') as temp_file:
             temp_file.write(msg)
-        print "ROSTOOLS::Saving " + msg_object.properties["name"] + ".msg " + "at " + path
+        print "ROSMOD::Saving " + msg_object.properties["name"] + ".msg " + "at " + path
         
     # Save Service files
     def save_srv(self, srv_object):
@@ -589,7 +589,7 @@ class ROSMOD_Project(Drawable_Object):
         srv = str(t)
         with open(os.path.join(path, srv_object.parent.properties["name"] + "." + srv_object.properties["name"] + ".srv"), 'w') as temp_file:
             temp_file.write(srv)
-        print "ROSTOOLS::Saving " + srv_object.properties["name"] + ".srv " + "at " + path
+        print "ROSMOD::Saving " + srv_object.properties["name"] + ".srv " + "at " + path
 
     # Save Abstract Business Logic files
     def save_abl(self, port_object):

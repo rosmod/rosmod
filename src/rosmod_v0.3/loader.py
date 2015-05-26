@@ -8,7 +8,7 @@ class ROSMOD_Loader:
     # Load the business logic of component operations
     def load(self, workspace, path):
         
-        print "ROSTOOLS::Checking for existing workspace in path:", path
+        print "ROSMOD::Checking for existing workspace in path:", path
         self.workspace_dir = path + "/" + workspace.properties["name"]
 
         if os.path.exists(self.workspace_dir):
@@ -96,7 +96,7 @@ class ROSMOD_Loader:
                             component.properties["cmakelists_targetlinklibs_marker"] = tll_text                     
 
                 if os.path.exists(self.package_path):
-                    print "ROSTOOLS::Preserving code for Package: ", self.package_path
+                    print "ROSMOD::Preserving code for Package: ", self.package_path
 
                     self.include = self.package_path + "/include"
                     self.src = self.package_path + "/src"

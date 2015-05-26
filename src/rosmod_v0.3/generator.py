@@ -45,11 +45,11 @@ import rdp as rdp_template
 class ROSMOD_Generator:
     # Main Generate Function
     def generate_workspace(self, workspace, path):
-        print "ROSTOOLS::Generating ROS Workspace..."
+        print "ROSMOD::Generating ROS Workspace..."
         # Make the workspace directory
         # Make the workspace directory
         self.workspace_dir = os.path.join(path, workspace.properties["name"])
-        print "ROSTOOLS::Workspace Path:", self.workspace_dir
+        print "ROSMOD::Workspace Path:", self.workspace_dir
         if not os.path.exists(self.workspace_dir):
             os.makedirs(self.workspace_dir)
 
@@ -67,7 +67,7 @@ class ROSMOD_Generator:
 
         # Create the "node" package
         self.node_path = os.path.join(self.src_path, "node")
-        print "ROSTOOLS:: Node Executable Path: " + self.node_path
+        print "ROSMOD:: Node Executable Path: " + self.node_path
         if not os.path.exists(self.node_path):
             os.makedirs(self.node_path)
 
@@ -182,7 +182,7 @@ class ROSMOD_Generator:
 
             # Create the package directory
             self.package_path = os.path.join(self.src_path, package.properties["name"])
-            print "ROSTOOLS::" + package.properties["name"] + " Path: " + self.package_path
+            print "ROSMOD::" + package.properties["name"] + " Path: " + self.package_path
             if not os.path.exists(self.package_path):
                 os.makedirs(self.package_path)
 

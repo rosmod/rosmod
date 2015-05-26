@@ -51,8 +51,8 @@ def getWidthWithText(objSize,style,objName,canvas):
     if txt != None:
         txt.CalcBoundingBox()
         BB = txt.BoundingBox
-        txtHeight = abs(BB[0][1] - BB[1][1]) * 1.2
-        txtWidth = abs(BB[0][0] - BB[1][0]) * 1.2
+        txtHeight = abs(BB[0][1] - BB[1][1]) * 1.0#2
+        txtWidth = abs(BB[0][0] - BB[1][0]) * 1.0#2
         canvas.RemoveObject(txt)
     width,height = objSize
     if txtPlacement == Text_Placement.TOP or txtPlacement == Text_Placement.BOTTOM:
