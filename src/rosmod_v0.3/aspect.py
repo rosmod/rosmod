@@ -134,7 +134,7 @@ def BuildAspectPages(self):
 
 def BuildModelPage(self,parent,model,aspectInfo,insertPos=-1):
     newPage = wx.Panel(parent)
-    navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "BEIGE")
+    navCanvas = NavCanvas.NavCanvas(newPage,BackgroundColor = "WHITE")
     canvas = navCanvas.Canvas
     msgWindow = stc.StyledTextCtrl(newPage,wx.ID_ANY,
                                    style= wx.SUNKEN_BORDER)
