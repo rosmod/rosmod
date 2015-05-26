@@ -274,9 +274,9 @@ class EditDialog(wx.Dialog):
         self.hbox.Add(closeButton, flag=wx.LEFT, border=5)
 
         self.vbox.Add(self.panel, proportion=1, 
-            flag=wx.ALL|wx.EXPAND, border=5)
+                      flag=wx.ALL|wx.EXPAND, border=10)
         self.vbox.Add(self.hbox, 
-            flag=wx.ALIGN_CENTER|wx.BOTTOM, border=10)
+                      flag=wx.ALIGN_CENTER|wx.BOTTOM, border=10)
 
         self.SetSizer(self.vbox)
         

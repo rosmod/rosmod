@@ -134,7 +134,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,      
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75))
+                                   minSize = (108, 79))
     SrvStyle = drawable.Draw_Style(icon=srvIcon,
                                    font={'pointSize' : 20,
                                          'color' : "black",
@@ -144,7 +144,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,  
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75) )
+                                   minSize = (108, 79) )
     CompStyle = drawable.Draw_Style(icon=None,
                                     font={'pointSize' : 20,
                                           'color' : "#217C7E",
@@ -164,7 +164,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75) )
+                                   minSize = (108, 79) )
     PubStyle = drawable.Draw_Style(icon=pubIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -174,7 +174,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75) )
+                                   minSize = (108, 79) )
     SubStyle = drawable.Draw_Style(icon=subIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -184,7 +184,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75) )
+                                   minSize = (108, 79) )
     CliStyle = drawable.Draw_Style(icon=clientIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -194,7 +194,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75) )
+                                   minSize = (108, 79) )
     SerStyle = drawable.Draw_Style(icon=serverIcon,
                                    font={'pointSize' : 20,
                                          'color' : "white",
@@ -204,7 +204,7 @@ def BuildStyleDict(self):
                                    childLayout=drawable.Child_Layout.HIDDEN,
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
-                                   minSize = (75, 75) )
+                                   minSize = (108, 79) )
 
     self.styleDict["rml"] = WrkStyle
 
