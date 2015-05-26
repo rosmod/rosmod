@@ -134,7 +134,8 @@ def ConfirmDialog(parent, msg):
 class EditDialog(wx.Dialog):
     
     def __init__(self, parent = None, title = "ROSMOD", style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER,  editDict = OrderedDict(), editObj = None, referenceDict = OrderedDict()):
-        wx.Dialog.__init__(self, parent=parent, title=title, style = style)
+        wx.Dialog.__init__(self, parent=parent, title=title, style = style, size = [800, 500])
+        self.size = [800, 400]
         self.project = parent.project
         self.editDict = editDict
         self.editObj = editObj
