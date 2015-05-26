@@ -32,7 +32,7 @@ def BuildStyleDict(self):
     clientIcon = wx.Bitmap(modelIconPath_2 + '/client.png')
     serverIcon = wx.Bitmap(modelIconPath_2 + '/server.png')
     compInstIcon = wx.Bitmap(modelIconPath + '/compInstIcon.png')
-    hostIcon = wx.Bitmap(modelIconPath_2 + '/computer.gif')
+    hostIcon = wx.Bitmap(modelIconPath_2 + '/computer.png')
     hostInstIcon = wx.Bitmap(modelIconPath + '/bbb.png')
     '''
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS

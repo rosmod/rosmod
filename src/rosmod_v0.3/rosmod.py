@@ -141,7 +141,7 @@ class Example(wx.Frame):
         self.Layout()
         
         self.SetSize((800, 600))
-        self.SetTitle('ROSMOD Editor')
+        self.SetTitle('ROSMOD GUI')
         self.Centre()
         self.Show(True)
 
