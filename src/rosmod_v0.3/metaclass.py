@@ -9,13 +9,20 @@ from input_validators import *
 
 # Grammar Field class used to generate grammar field-specific listener functions
 class Grammar_Field:
-    def __init__(self, kind = "", name = "", entry_point = None, exit_point = None, input_validator = None, display_name = ""):
+    def __init__(self, kind = "", 
+                 name = "", 
+                 entry_point = None, 
+                 exit_point = None, 
+                 input_validator = None, 
+                 display_name = "",
+                 description = "Description here"):
         self.kind = kind
         self.name = name
         self.entry_point = entry_point
         self.exit_point = exit_point
         self.input_validator = input_validator
         self.display_name = display_name
+        self.description = description
 
 # Enter a Model class type while parsing
 # E.g. Package, Component, Timer etc.
