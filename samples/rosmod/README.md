@@ -1,0 +1,1 @@
+This directory contains samples that use our rosmod package instead of roscpp
