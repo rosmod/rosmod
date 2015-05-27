@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; ROSMOD 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ROSMOD 0.3 documentation" href="index.html" />
+    <link rel="next" title="Modeling Language" href="Modeling_Language.html" />
+    <link rel="prev" title="Welcome to ROSMOD’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Modeling_Language.html" title="Modeling Language"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ROSMOD’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ROSMOD 0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://github.com/finger563/rosmod">ROSMOD</a> is a tool suite for rapid prototyping component-based software applications using the <a class="reference external" href="http://www.ros.org">Robot Operating System</a> (ROS). Using ROSMOD, an application developer can create and manage <em>projects</em> for distributed real-time embedded systems. Each ROSMOD Project consists of <em>models</em> that represent the structure and behavior of the system:</p>
+<ul class="simple">
+<li>Software Model : One or more ROS packages in the workspace.</li>
+<li>Hardware Model: One or more Hardware devices.</li>
+<li>Deployment Model: A Mapping between ROS nodes/processes &amp; Hardware devices.</li>
+</ul>
+<p>Using these models, ROSMOD can:</p>
+<ul class="simple">
+<li>Generate a skeleton ROS workspace, including build system files.</li>
+<li>Preserve already generated work-in-progress ROS workspaces using code-preservation markers.</li>
+<li>Generate deployment-specific XML files for ROS node lifecycle management.</li>
+<li>Generate timing analysis models from abstract business logic specification.</li>
+<li>Perform network analysis to admit/reject applications based on network profiles.</li>
+</ul>
+<p>ROSMOD significantly improves the time taken to prototype ROS packages since much of the <em>boring</em> skeleton code e.g. port &amp; timer initialization, callbacks for timers, servers &amp; subscribers etc. are automatically generated from the Software Model. Once generated, a developer need only add the <em>&#8220;business logic&#8221;</em> of the generated callbacks to complete the package. A detailed tutorial for this workflow can be found <a class="reference internal" href="Tutorial.html#id1"><em>here</em></a>.</p>
+<div class="section" id="component-based-software-development">
+<h2>Component-based Software Development<a class="headerlink" href="#component-based-software-development" title="Permalink to this headline">¶</a></h2>
+<p>Software development using ROSMOD is inspired by the principles of Component-based Software Engineering. Design and implementation of component-based software applications rests on the principle of assembly: <em>Complex systems are built by composing re-useable interacting components</em>. Components contain functional, business-logic code that implements operations/callbacks on state variables. Ports facilitate interactions between communicating components. A component-level message queue controls the scheduling of operations/callbacks.</p>
+<div class="section" id="rosmod-components">
+<h3>ROSMOD Components<a class="headerlink" href="#rosmod-components" title="Permalink to this headline">¶</a></h3>
+<p>A ROSMOD Component is a re-useable unit/piece of software in an application. Components can be thought of as LEGO pieces - Each piece has a well-defined shape; Multiple such pieces are connected together to build large structures (applications). Component-based software divides application concerns into smaller, manageable blocks that can be easily composed. In ROSMOD, each component can contain one or more of the following:</p>
+<ul class="simple">
+<li><em>Publishers</em>: A publisher port publishes (without blocking) on a message/topic (msg in ROS)</li>
+<li><em>Subscribers</em>: A subscriber port subscribes to a message/topic (msg in ROS)</li>
+<li><em>Servers</em>: A server port provides an &#8220;operation&#8221; (srv in ROS) to the external world</li>
+<li><em>Clients</em>: A client port requires/uses an operation (srv in ROS) provided by a server (potentially on another component)</li>
+<li><em>Timers</em>: A timer is used to trigger the component. Timer callbacks are invoked when a timer expires</li>
+</ul>
+<a class="reference internal image-reference" href="_images/ROSMOD_Component.png"><img alt="_images/ROSMOD_Component.png" class="align-center" src="_images/ROSMOD_Component.png" style="width: 926.25px; height: 578.25px;" /></a>
+<p>Each component has a single thread called the &#8220;Component Executor Thread&#8221;. This thread handles all requests from external entities (other components) and infrastructural triggers (timer expiry). This thread is therefore responsible for executing all triggered callbacks e.g. subscriber callbacks, server callbacks &amp; timer callbacks. To facilitate interactions with other components, each component also has a &#8220;Component Message Queue&#8221;. This queue <em>holds</em> requests received from other interacting entities.</p>
+<p>The following figure shows a simple Client-Server component interaction. Component A is periodically triggered by a timer. At each timer expiry, Component A makes a blocking remote procedure call to Component B using its client port. This service request, on reaching Component B, is enqueued onto Component B&#8217;s message queue. When this request reaches the front of the queue, the corresponding server-side callback is executed by the Component B executor thread and the response is returned back to Component A. This message queue-based interaction is also true for timers; when the timer in Component A expires, a timer callback request is enqueued onto its message queue and eventually handled.</p>
+<a class="reference internal image-reference" href="_images/Component_Message_Queue.png"><img alt="_images/Component_Message_Queue.png" class="align-center" src="_images/Component_Message_Queue.png" style="width: 1313.1px; height: 396.9px;" /></a>
+<div class="section" id="design-notes">
+<h4>Design Notes:<a class="headerlink" href="#design-notes" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>In each component, the message queue is processed by a single executor thread. Multiple components can run concurrently but each component execution is single-threaded.</li>
+<li>The component message queue supports several scheduling schemes including FIFO (first-in first-out), PFIFO (priority first-in first-out) and EDF (earliest deadline first).</li>
+<li>Requests in the message queue are processed using a non-preemptive scheduling scheme. This means that each callback/operation run by the executor thread is run to completion before the next one (in the message queue) is processed.</li>
+<li>These rules are strictly applied to all ROSMOD components.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="rosmod-nodes">
+<h3>ROSMOD Nodes<a class="headerlink" href="#rosmod-nodes" title="Permalink to this headline">¶</a></h3>
+<p>ROSMOD Nodes are deployable processes that run the application/package. These Nodes contain one or more <em>instances</em> of ROSMOD Components. Therefore, each ROSMOD node contains one or more component threads, each of which (1) uses component ports to push out queries, (2) uses its message queue to receive external requests, and (3) executes triggered callbacks. ROSMOD Nodes are similar to ROS Nodes but follow a strict structure and behavior.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#component-based-software-development">Component-based Software Development</a><ul>
+<li><a class="reference internal" href="#rosmod-components">ROSMOD Components</a><ul>
+<li><a class="reference internal" href="#design-notes">Design Notes:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rosmod-nodes">ROSMOD Nodes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to ROSMOD&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Modeling_Language.html"
+                        title="next chapter">Modeling Language</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Introduction.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Modeling_Language.html" title="Modeling Language"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ROSMOD’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">ROSMOD 0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Pranav Srinivas Kumar.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
