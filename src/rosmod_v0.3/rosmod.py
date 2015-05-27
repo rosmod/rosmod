@@ -892,10 +892,12 @@ class Example(wx.Frame):
         self.statusbar.SetStatusText('Ready')
 
 def main():
-    ex = wx.App()
-    Example(None)
-    ex.MainLoop()    
-
+    if 'DISPLAY' in os.environ.keys():
+        ex = wx.App()
+        Example(None)
+        ex.MainLoop()    
+    else:
+        print "No Display Found! We don't yet have a purely command line version"
 
 if __name__ == '__main__':
     main()
