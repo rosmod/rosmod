@@ -16,6 +16,8 @@ import multiprocessing
 from threading import Thread
 from fabric.api import *
 
+from cmdline import *
+
 from collections import OrderedDict
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources, Utilities
 try:
@@ -899,7 +901,8 @@ def main(argv):
 
     # Is ROSMOD invoked with "no gui" option?
     if no_gui == True:
-        print "ROSMOD Command Line Version!"
+        interface = ROSMOD_Commandline()
+        interface.welcome()
     else:
         # If GUI required, check if DISPLAY exists
         if 'DISPLAY' in os.environ.keys():
