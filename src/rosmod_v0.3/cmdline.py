@@ -10,6 +10,7 @@ class ROSMOD_Commandline:
         self.project = None
         os.system('clear')
         self.path = str(os.getcwd())
+        self.deployed = False
         print "__________ ________    _________   _____   ________  ________    "
         print "\______   \\_____  \  /   _____/  /     \  \_____  \ \______ \   "
         print " |       _/ /   |   \ \_____  \  /  \ /  \  /   |   \ |    |  \  "
@@ -61,12 +62,12 @@ class ROSMOD_Commandline:
         print "Project home: " + self.project.project_path
         print "                                                                 "
         print " [1] Generate ROS Workspace"
-        print " [2] Generate deployment-specific XML files"
+        print " [2] Generate Deployment-specific XML files"
         print " [3] Build ROS Workspace" 
         print " [4] Clean & Rebuild ROS Workspace"
-        print " [5] Copy deployment units to target devices"
-        print " [6] Run the deployment"
-        print " [7] Print..."
+#        print " [5] Copy deployment units to target devices"
+#        print " [6] Run the deployment"
+#        print " [7] Print..."
         print " [0] Quit ROSMOD"
         print "                                                                 "
         choice = raw_input("Please choose an option: ")
@@ -149,6 +150,7 @@ class ROSMOD_Commandline:
             p = subprocess.Popen(['rm', '-rf', 'devel'])
             p.wait()
             self.build_workspace()
+
 
                                                      
 
