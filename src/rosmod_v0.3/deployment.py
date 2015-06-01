@@ -70,7 +70,7 @@ def getPIDsFromPS(psString, name):
     return pids
 
 @parallel
-def parallelDeploy(hostDict,updateQ):
+def parallelDeploy(hostDict,updateQ=None):
     host = hostDict[env.host_string]
     envVarStr = ""
     for key,value in host.envVars:
@@ -89,11 +89,12 @@ def parallelDeploy(hostDict,updateQ):
             pgrep = local('ps aux | grep {}'.format(executableString),capture=True)
         pids = getPIDsFromPS(pgrep,node.name)
         node.pids = pids
-        updateQ.put(["Deployed {}".format(node.name),1])
+        if updateQ != None:
+            updateQ.put(["Deployed {}".format(node.name),1])
     return host
 
 @parallel
-def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
+def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ=None):
     host = hostDict[env.host_string]
     copyList = []
     copyList.append( 
@@ -117,7 +118,8 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ):
     else:
         for source,dest in copyList:
             local('cp {} {}'.format(source, dest),capture=True)
-    updateQ.put(["Copied files to {}".format(env.host_string),1])
+    if updateQ != None:
+        updateQ.put(["Copied files to {}".format(env.host_string),1])
 
 @parallel
 def parallelCommand(hostDict, command, updateQ):
@@ -132,7 +134,7 @@ def parallelCommand(hostDict, command, updateQ):
     updateQ.put(["Ran {} on host {} with output:\n{}".format(command,env.host_string,output),1])
 
 @parallel
-def parallelStop(hostDict,updateQ):
+def parallelStop(hostDict,updateQ=None):
     host = hostDict[env.host_string]
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
@@ -154,7 +156,8 @@ def parallelStop(hostDict,updateQ):
                         local('kill -9 {}'.format(pid),capture=True)
                     except SystemExit:
                         pass
-            updateQ.put(["Killed {}".format(node.name),1])
+            if updateQ != None:
+                updateQ.put(["Killed {}".format(node.name),1])
             node.pids = []
     return host
 
