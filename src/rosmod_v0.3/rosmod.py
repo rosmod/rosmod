@@ -902,7 +902,7 @@ def main(argv):
     # Is ROSMOD invoked with "no gui" option?
     if no_gui == True:
         interface = ROSMOD_Commandline()
-        interface.welcome()
+        interface.run()
     else:
         # If GUI required, check if DISPLAY exists
         if 'DISPLAY' in os.environ.keys():

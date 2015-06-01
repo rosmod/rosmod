@@ -181,6 +181,9 @@ class ROSMOD_Project(Drawable_Object):
                 logStr = "ROSMOD::Opening ROSMOD Project: {}".format(project_path)
                 ros_tools_log(progressQ,logStr)
                 valid_project = True
+        if valid_project == False:
+            print "ROSMOD::ERROR::No valid ROSMOD Project Found!"
+            return -1
         if valid_project == True:
             logStr = "ROSMOD::Project Name: {}".format(os.path.basename(project_path))
             ros_tools_log(progressQ, logStr)
@@ -474,6 +477,7 @@ class ROSMOD_Project(Drawable_Object):
         # Use existing deployment objects to generate necessary xml files
         deployment_generator.generate_xml(self.getChildrenByKind("rdp"),
                                           self.deployment_path)
+        print "ROSMOD::Generated Deployment-Specific XML files at: " + self.deployment_path
 
     # Generate CPN Timing Analysis Model for each deployment
     def generate_cpn(self):
