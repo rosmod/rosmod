@@ -30,7 +30,8 @@ def BuildToolbar(self):
     aspectToolbarDict["Software"] = [
         TBItem("create","/new.png","New Package",lambda e : self.OnAspectCreate("Package",e)),
         TBItem("delete","/delete.png","Remove Package", self.OnAspectDelete),
-        TBItem("generate","/generate.png","Generate Workspace", self.OnPackageGenerate)
+        TBItem("generate","/generate.png","Generate Workspace", self.OnPackageGenerate),
+        TBItem("build","/build.png","Build Workspace", self.OnPackageBuild)
     ]
     aspectToolbarDict["Hardware"] = [
         TBItem("create","/new.png","New Hardware",lambda e : self.OnAspectCreate("rhw",e)),

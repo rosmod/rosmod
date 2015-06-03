@@ -341,6 +341,55 @@ class Example(wx.Frame):
     def OnPackageGenerate(self,e):
         self.GenerateCode()
 
+    def OnPackageBuild(self, e):
+        rosmod_path = str(os.getcwd())
+        if self.project.workspace_dir == "":
+            self.build_path = self.project.project_path\
+                              + '/01-Software/'\
+                              + self.project.getChildrenByKind('rml')[0].properties['name']
+            if not os.path.exists(self.build_path):
+                print "ROSMOD::ERROR::No Workspace Found! Generate a ROS workspace first"
+            else:
+                os.chdir(self.build_path + '/')
+                source_space = self.build_path + '/src'
+                build_space = self.build_path + '/build'
+                devel_prefix = '-DCATKIN_DEVEL_PREFIX=' + self.build_path + '/devel'
+                install_prefix = '-DCMAKE_INSTALL_PREFIX=' + self.build_path + '/install'
+                p = subprocess.Popen(['catkin_make', 
+                                      '--directory',
+                                      self.build_path,
+                                      '--source', 
+                                      source_space, 
+                                      '--build',
+                                      build_space,
+                                      devel_prefix, 
+                                      install_prefix], 
+                                     shell=False)
+                p.communicate()
+                p.wait()
+        else:
+            if not os.path.exists(self.project.workspace_dir):
+                print "ROSMOD::ERROR::Unexpected error! Please regenerate ROS workspace"
+            else:
+                os.chdir(self.project.workspace_dir)
+                source_space = self.project.workspace_dir + '/src'
+                build_space = self.project.workspace_dir + '/build'
+                devel_prefix = '-DCATKIN_DEVEL_PREFIX=' + self.project.workspace_dir + '/devel'
+                install_prefix = '-DCMAKE_INSTALL_PREFIX='\
+                                 + self.project.workspace_dir + '/install'
+                p = subprocess.Popen(['catkin_make', 
+                                      '--directory',
+                                      self.project.workspace_dir,
+                                      '--source',
+                                      source_space, 
+                                      '--build',
+                                      build_space,
+                                      devel_prefix,
+                                      install_prefix], 
+                                     shell=False)
+                p.communicate()
+                p.wait()
+
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()
         numPages = self.activeAspect.GetPageCount()
