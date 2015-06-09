@@ -161,6 +161,24 @@ def parallelStop(hostDict,updateQ=None):
             node.pids = []
     return host
 
+def startMaster(self,e):
+    host = self.hostDict[self.rosCoreHost.properties['name']]
+    if host.ipAddress not in local_ips:
+        env.key_filename = host.keyFile
+        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+        run('source /home/jeb/Repositories/ROS-Indigo/install_isolated/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
+    else:
+        local('dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
+
+def stopMaster(self,e):
+    host = self.hostDict[self.rosCoreHost.properties['name']]
+    if host.ipAddress not in local_ips:
+        env.key_filename = host.keyFile
+        env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+        run('pkill roscore')
+    else:
+        local('pkill roscore')
+
 def startNode(self,e):
     node = self.activeObject
     if self.deployed == True and node in self.runningDeployment.children and\

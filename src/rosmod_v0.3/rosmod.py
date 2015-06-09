@@ -522,11 +522,6 @@ class Example(wx.Frame):
             dlg.ShowModal()
             dlg.Destroy()
 
-    def OnDeploymentROSCORE(self, e):
-        if self.roscore == False:
-            print "ROSMOD::Starting ROSCORE!"
-            self.roscore = True
-
     def OnDeploymentDeploy(self,e):
         if self.deployed == False:
             selectedPage = self.activeAspect.GetSelection()
@@ -534,7 +529,6 @@ class Example(wx.Frame):
             info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
-            rosCoreIP = ""
             testName = "NewTest"
             properties = OrderedDict()
             properties['name'] = testName
@@ -549,13 +543,17 @@ class Example(wx.Frame):
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
                     properties[key] = value
-                rosCoreIP = properties['hardware_reference'].properties['ip_address']
+
+                self.rosCoreHost = properties['hardware_reference']
+                rosCoreIP = self.rosCoreHost.properties['ip_address']
+                numNodes = self.BuildHostDict(dep,rosCoreIP)
+
+                print "ROSMOD::Starting ROSCORE!"
+                deployment.startMaster(self,None)
                 testName = properties['name']
 
                 self.workTimerPeriod = float(properties['period'])
                 self.workTimer.Start(self.workTimerPeriod*1000)
-
-                numNodes = self.BuildHostDict(dep,rosCoreIP)
 
                 deploymentProgressQ = multiprocessing.Queue()
                 dlg = dialogs.RMLProgressDialog( parent = self,
@@ -595,6 +593,8 @@ class Example(wx.Frame):
         if self.deployed == True: 
             self.deployed = False
             self.deploying = False
+            print "ROSMOD::Stopping ROSCORE!"
+            deployment.stopMaster(self,None)
             deploymentProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog(parent = self,
                                             title="Stop Deployment Progress",

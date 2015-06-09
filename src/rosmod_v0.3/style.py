@@ -17,6 +17,9 @@ nodeUpOverlay = "GREEN"
 referenceOverlay = "WHITE"
 similarOverlay = "BLACK"
 
+def EditStyle(self):
+    pass
+
 def BuildStyleDict(self):
     self.styleDict = OrderedDict()
     font = OrderedDict()

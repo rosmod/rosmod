@@ -44,7 +44,6 @@ def BuildToolbar(self):
         TBItem("timing", "/analyze_timing.png", "Generate Timing Analysis Model", self.OnDeploymentTiming),
         TBItem("generate","/generate.png","Generate Deployment XML Files", self.OnDeploymentGenerate),
         TBItem("move","/copy.png","Copy Deployment Files", self.OnDeploymentMove),
-        TBItem("roscore", "/roscore.png", "Start ROSCORE", self.OnDeploymentROSCORE),
         TBItem("deploy","/start.png","Start Deployment", self.OnDeploymentDeploy),
         TBItem("stop","/stop.png","Stop Deployment", self.OnDeploymentStop),
         TBItem("run","/run.png","Run <Command> on all Hardware Devices", self.OnDeploymentRun)
