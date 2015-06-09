@@ -150,6 +150,12 @@ class Example(wx.Frame):
 
         InitWorkQueue(self)
 
+        # SET UP CONTEXT FUNCTIONS
+        model_dict['Component'].context_funcs= OrderedDict(
+            [("Edit CPP",lambda e : OpenFile(self,'cpp',e)),
+            ("Edit HPP",lambda e : OpenFile(self,'hpp',e)),
+            ("Edit Both CPP and HPP",lambda e : OpenFile(self,'all',e))]            
+        )
         model_dict['Hardware'].context_funcs = OrderedDict(
             [("SSH to Host",lambda e : SSHToHost(self,e))]
         )

@@ -1,10 +1,20 @@
 import wx
 import wx.lib.agw.flatnotebook as fnb
 import wx.stc as stc
-from terminal import *            
+from terminal import *        
+import subprocess    
 
 from metaModel import model_dict
 import deployment
+
+import time
+import re
+def is_running(process):
+    s = subprocess.Popen(["ps", "axw"],stdout=subprocess.PIPE)
+    for x in s.stdout:
+        if re.search(process, x):
+            return True
+    return False
 
 class Log(stc.StyledTextCtrl):
     """
@@ -119,6 +129,37 @@ def BuildOutput(self):
     self.output.AddPage(panel, "Console")
     self.output.AddPage(TermEmulatorDemo(self.output), "Terminal")
 
+def OpenFile(self,kind,e):
+    packageName = self.activeObject.parent.properties['name']
+    workspaceName = self.activeObject.parent.parent.properties['name']
+    componentName = self.activeObject.properties['name']
+    command = None
+    if kind == 'cpp':
+        fileName = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/src/' + packageName + '/' + componentName + '.cpp'
+        command = ['emacsclient',fileName]
+    elif kind == 'hpp':
+        fileName = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/include/' + packageName + '/' + componentName + '.hpp'
+        command = ['emacsclient',fileName]
+    elif kind == 'all':
+        fileName1 = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/src/' + packageName + '/' + componentName + '.cpp'
+        fileName2 = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/include/' + packageName + '/' + componentName + '.hpp'
+        command = ['emacsclient',fileName1,fileName2]
+    if command != None:
+        if is_running("emacs"):
+            pass
+        else:
+            p1 = subprocess.Popen(['emacs',
+                                   '-mm'],
+                                  shell=False)
+            time.sleep(2)
+        p = subprocess.Popen(command,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             shell=False)
+        out_thread1 = OutTextThread(sys.stdout,p.stdout)
+        out_thread1.start()
+        out_thread2 = OutTextThread(sys.stderr,p.stderr)
+        out_thread2.start()            
 
 def SSHToHost(self,e):
     host = self.activeObject
