@@ -363,10 +363,14 @@ class Example(wx.Frame):
                                       '--build',
                                       build_space,
                                       devel_prefix, 
-                                      install_prefix], 
+                                      install_prefix],
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
                                      shell=False)
-                p.communicate()
-                p.wait()
+                out_thread1 = OutTextThread(sys.stdout,p.stdout)
+                out_thread1.start()
+                out_thread2 = OutTextThread(sys.stderr,p.stderr)
+                out_thread2.start()
         else:
             if not os.path.exists(self.project.workspace_dir):
                 print "ROSMOD::ERROR::Unexpected error! Please regenerate ROS workspace"
@@ -385,10 +389,15 @@ class Example(wx.Frame):
                                       '--build',
                                       build_space,
                                       devel_prefix,
-                                      install_prefix], 
+                                      install_prefix],
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
                                      shell=False)
-                p.communicate()
-                p.wait()
+                out_thread1 = OutTextThread(sys.stdout,p.stdout)
+                out_thread1.start() 
+                out_thread1.start()
+                out_thread2 = OutTextThread(sys.stderr,p.stderr)
+                out_thread2.start()
 
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()

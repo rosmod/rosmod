@@ -78,8 +78,23 @@ class log_Wrapper(object):
     def write(self,text):
         wx.CallAfter(self.log.write, text, self.color)
     def flush(self):
-        pass
+        wx.Getapp().ProcessPendingEvents() 
     __call__ = write
+
+class OutTextThread(threading.Thread):
+    def __init__(self, log_wrapper, std_out):
+        super(OutTextThread, self).__init__()
+        self.std_out = std_out
+        self.log_wrapper=log_wrapper
+
+    def run(self):
+        text = None
+        while text != '':
+            if self.std_out != None:
+                text = self.std_out.readline()
+                self.log_wrapper.write(text)
+            else:
+                text = ''
 
 '''
 Build the output notebook for ROSMOD which holds:
