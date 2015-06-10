@@ -4,6 +4,8 @@ from collections import OrderedDict
 import copy
 import drawable
 
+from metaModel import model_dict
+
 exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
 head,tail = os.path.split(dirName)
@@ -11,8 +13,26 @@ editorPath=head
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 
+def BuildIcons(self):
+    self.iconList = OrderedDict()
+    self.iconDict = OrderedDict()
+    for key in model_dict.keys():
+        self.iconList[key+'Icon'] = modelIconPath + '/' + key + '.png'
+        if os.path.isfile(self.iconList[key+'Icon']):
+            self.iconDict[key] = wx.Bitmap(self.iconList[key+'Icon'])
+        else:
+            self.iconDict[key] = None
+
 def EditIcons(self):
     print "EDITING ICONS"
+
+def BuildOverlay(self):
+    self.overlayDict = OrderedDict()
+    self.overlayDict['active'] = "BLACK"
+    self.overlayDict['nodeDown'] = "RED"
+    self.overlayDict['nodeUp'] = "GREEN"
+    self.overlayDict['reference'] = "WHITE"
+    self.overlayDict['similar'] = "BLACK"
 
 def EditOverlay(self):
     print "EDITING OVERLAY"
@@ -22,24 +42,7 @@ def EditStyle(self,kind):
         print "EDITING ",kind
     return Generic
 
-def BuildStyleDict(self):
-    self.overlayDict = OrderedDict()
-    self.overlayDict['active'] = "BLACK"
-    self.overlayDict['nodeDown'] = "RED"
-    self.overlayDict['nodeUp'] = "GREEN"
-    self.overlayDict['reference'] = "WHITE"
-    self.overlayDict['similar'] = "BLACK"
-
-    self.iconDict = OrderedDict()
-    self.iconDict['Message'] = wx.Bitmap(modelIconPath + '/msg.png')
-    self.iconDict['Service'] = wx.Bitmap(modelIconPath + '/srv.png')
-    self.iconDict['Timer'] = wx.Bitmap(modelIconPath + '/timer.png')
-    self.iconDict['Publisher'] = wx.Bitmap(modelIconPath + '/publisher.png')
-    self.iconDict['Subscriber'] = wx.Bitmap(modelIconPath + '/subscriber.png')
-    self.iconDict['Client'] = wx.Bitmap(modelIconPath + '/client.png')
-    self.iconDict['Server'] = wx.Bitmap(modelIconPath + '/server.png')
-    self.iconDict['Hardware'] = wx.Bitmap(modelIconPath + '/computer.png')
-
+def BuildStyle(self):
     minSize = (30, 30)
     offset = (10, 50)
     padding = (30, 30)

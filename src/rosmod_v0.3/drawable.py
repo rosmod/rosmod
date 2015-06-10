@@ -156,7 +156,7 @@ class Drawable_Object:
         x,y = self.topLeft.Get()
         dObj = None
         if self.style['method'] == 'ICON':
-            if self.kind in iconDict.keys():
+            if iconDict[self.kind] != None:
                 dObj = canvas.AddScaledBitmap(
                     iconDict[self.kind],
                     XY = (x,y),

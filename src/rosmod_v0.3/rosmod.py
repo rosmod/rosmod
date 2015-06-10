@@ -129,7 +129,9 @@ class Example(wx.Frame):
                                               style=wx.SP_PERMIT_UNSPLIT|wx.SP_BORDER|wx.SP_3DBORDER)
         InitAspects(self)
         deployment.InitDeployment(self)
-        BuildStyleDict(self)
+        BuildIcons(self)
+        BuildOverlay(self)
+        BuildStyle(self)
         # build the MenuBar,Toolbar, and Statusbar
         self.BuildMenu()
         BuildToolbar(self)

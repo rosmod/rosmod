@@ -271,6 +271,11 @@ meta_class_dict['weight'] = Grammar_Field(
     kind="string",
     display_name="Weight")
 
+for key in model_dict.keys():
+    meta_class_dict[key+'Icon'] = Grammar_Field(
+        kind = "file",
+        display_name = key + ' Icon')
+
 # code-generation/preserveration related properties : should be hidden from user
 meta_class_dict["init_business_logic"] = Grammar_Field("hidden")
 meta_class_dict["user_includes"] = Grammar_Field("hidden")
