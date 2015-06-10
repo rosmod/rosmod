@@ -145,11 +145,6 @@ class EditDialog(wx.Dialog):
         self.editObj = editObj
         self.referenceDict = referenceDict
         self.returnDict = OrderedDict()
-        #if self.InitUI() == True:
-        #    self.MakeModal(True)
-        #else:
-        #    self.MakeModal(True)
-        #    wx.CallAfter(self.OnClose,None)
 
     def InitUI(self):
         retValue = True
@@ -191,6 +186,10 @@ class EditDialog(wx.Dialog):
                         field.SetStringSelection(value)
                     else:
                         field.SetSelection(0)
+            elif meta_class_dict[key].kind == "tuple":
+                pass
+            elif meta_class_dict[key].kind == "dictionary":
+                pass
             elif meta_class_dict[key].kind == "code":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
