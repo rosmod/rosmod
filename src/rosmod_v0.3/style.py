@@ -4,6 +4,8 @@ from collections import OrderedDict
 import copy
 import drawable
 
+import dialogs
+
 from metaModel import model_dict
 
 exeName = sys.argv[0]
@@ -13,18 +15,37 @@ editorPath=head
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 
-def BuildIcons(self):
+def BuildStyleObjects(self):
+    BuildIconList(self)
+    BuildIcons(self)
+    BuildOverlay(self)
+    BuildStyle(self)
+
+def BuildIconList(self):
     self.iconList = OrderedDict()
-    self.iconDict = OrderedDict()
     for key in model_dict.keys():
         self.iconList[key+'Icon'] = modelIconPath + '/' + key + '.png'
+
+def BuildIcons(self):
+    self.iconDict = OrderedDict()
+    for key in model_dict.keys():
         if os.path.isfile(self.iconList[key+'Icon']):
             self.iconDict[key] = wx.Bitmap(self.iconList[key+'Icon'])
         else:
             self.iconDict[key] = None
 
 def EditIcons(self):
-    print "EDITING ICONS"
+    inputs = dialogs.EditorWindow( parent = self,
+                                   editObj = None,
+                                   editDict = self.iconList,
+                                   title = 'Select Object Icons')
+    if inputs != OrderedDict():
+        self.iconList = inputs
+        BuildIcons(self)
+        info = self.GetActivePanelInfo()
+        model = info.obj
+        canvas = info.canvas
+        self.DrawModel(model,canvas)
 
 def BuildOverlay(self):
     self.overlayDict = OrderedDict()

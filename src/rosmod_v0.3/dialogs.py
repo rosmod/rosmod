@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import os
 import wx
 import wx.stc as stc
 from wx.lib.scrolledpanel import ScrolledPanel
@@ -190,6 +191,11 @@ class EditDialog(wx.Dialog):
                 pass
             elif meta_class_dict[key].kind == "dictionary":
                 pass
+            elif meta_class_dict[key].kind == "file":
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.Button(self.panel, label=value)
+                field.Bind(wx.EVT_BUTTON, 
+                           self.OnFileDialog(field,value,"*.png",meta_class_dict[key].display_name))
             elif meta_class_dict[key].kind == "code":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
@@ -295,6 +301,8 @@ class EditDialog(wx.Dialog):
                meta_class_dict[key].kind == "list" or\
                meta_class_dict[key].kind == "boolean":
                 fieldValue = field.GetValue()
+            elif meta_class_dict[key].kind == "file":
+                fieldValue = field.GetLabel()
             elif meta_class_dict[key].kind == "code":
                 fieldValue = field.GetText()
             elif meta_class_dict[key].kind == "reference":
@@ -314,6 +322,19 @@ class EditDialog(wx.Dialog):
 
     def GetInput(self):
         return self.returnDict
+
+    def OnFileDialog(self,field,value,types,prompt):
+        def RetFunc(e):
+            fName, fPath = RMLFileDialog(
+                parent = self,
+                fileTypes = types,
+                path = os.path.split(value)[0],
+                prompt = prompt,
+                fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
+            )
+            if fName != None and fPath != None:
+                field.SetLabel(fPath+'/'+fName)
+        return RetFunc
 
     def OnOk(self,e):
         if self.UpdateInputs() == False:
