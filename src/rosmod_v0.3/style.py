@@ -12,13 +12,15 @@ rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 
 def EditIcons(self):
-    pass
+    print "EDITING ICONS"
 
 def EditOverlay(self):
-    pass
+    print "EDITING OVERLAY"
 
-def EditStyle(self):
-    pass
+def EditStyle(self,kind):
+    def Generic(e):
+        print "EDITING ",kind
+    return Generic
 
 def BuildStyleDict(self):
     self.overlayDict = OrderedDict()

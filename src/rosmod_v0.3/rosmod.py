@@ -919,10 +919,21 @@ class Example(wx.Frame):
         self.viewMenu.Check(self.shvw.GetId(), True)
         self.viewMenu.Check(self.shop.GetId(), True)
 
+        # preferences menu: edit the display options, styles, and icons
+        self.prefMenu = wx.Menu()
+        self.overlayMI = self.prefMenu.Append(wx.ID_ANY, 'Edit Overlays', 'Edit Overlays')
+        self.iconMI = self.prefMenu.Append(wx.ID_ANY, 'Edit Icons', 'Edit Icons')
+        self.styleMenu = wx.Menu()
+        self.prefMenu.AppendSubMenu(self.styleMenu,"Edit Styles")
+        self.styleMI = OrderedDict()
+        for key in self.styleDict.keys():
+            self.styleMI[key] = self.styleMenu.Append(wx.ID_ANY, key, key)
+
         # add the menus to the menubar
         self.menubar.Append(self.fileMenu, '&File')
         self.menubar.Append(self.viewMenu, '&View')
         self.menubar.Append(self.aspectsMenu, '&Aspects')
+        self.menubar.Append(self.prefMenu, '&Preferences')
         self.SetMenuBar(self.menubar)
         
         # set up the events for the items in the menubar
@@ -947,6 +958,11 @@ class Example(wx.Frame):
         self.Bind(wx.EVT_MENU, self.ToggleToolBar, self.shtl)
         self.Bind(wx.EVT_MENU, self.ToggleAspectView, self.shvw)
         self.Bind(wx.EVT_MENU, self.ToggleOutputView, self.shop)
+        # preferences menu
+        self.Bind(wx.EVT_MENU, lambda e : EditOverlay(self), self.overlayMI)
+        self.Bind(wx.EVT_MENU, lambda e : EditIcons(self), self.iconMI)
+        for key,MI in self.styleMI.iteritems():
+            self.Bind(wx.EVT_MENU, EditStyle(self,key), MI)
 
     '''
     Build the Statusbar which provides extra information about
