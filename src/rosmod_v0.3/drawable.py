@@ -10,41 +10,32 @@ from wx.lib.floatcanvas import NavCanvas, FloatCanvas, Resources
 
 from metaModel import model_dict
 
-class Text_Placement:
-    TOP, BOTTOM, LEFT, RIGHT, CENTER, NONE = range(6)
-
-class Child_Layout:
-    ROWS, COLUMNS, STACK, LINE, SQUARE, HIDDEN = range(6)
-
-class Draw_Method:
-    RECT, ROUND_RECT, ICON, HIDDEN = range(4)
-
 def drawText(text,pos,style,canvas):
-    if style.textPlacement != Text_Placement.NONE:
+    if style['textPlacement'] != 'NONE':
         posStr = "cc"
-        if style.textPlacement == Text_Placement.TOP:
+        if style['textPlacement'] == 'TOP':
             posStr = "bc"
-        elif style.textPlacement == Text_Placement.BOTTOM:
+        elif style['textPlacement'] == 'BOTTOM':
             posStr = "tc"
-        elif style.textPlacement == Text_Placement.CENTER:
+        elif style['textPlacement'] == 'CENTER':
             posStr = "cc"
-        elif style.textPlacement == Text_Placement.LEFT:
+        elif style['textPlacement'] == 'LEFT':
             posStr = "cr"
-        elif style.textPlacement == Text_Placement.RIGHT:
+        elif style['textPlacement'] == 'RIGHT':
             posStr = "cl"
         output_text = canvas.AddScaledText(text,
                                            pos,
-                                           Size=style.font['pointSize'],
+                                           Size=style['font']['pointSize'],
                                            Position=posStr,
                                            Family=wx.MODERN)
-        output_text.Color = style.font['color']
-        output_text.Weight = style.font['weight']
+        output_text.Color = style['font']['color']
+        output_text.Weight = style['font']['weight']
         return output_text
     else:
         return None
 
 def getWidthWithText(objSize,style,objName,canvas):
-    txtPlacement = style.textPlacement
+    txtPlacement = style['textPlacement']
     txt = drawText(objName,(0,0),style,canvas)
     txtWidth = 0
     txtHeight = 0
@@ -55,73 +46,39 @@ def getWidthWithText(objSize,style,objName,canvas):
         txtWidth = abs(BB[0][0] - BB[1][0]) * 1.0#2
         canvas.RemoveObject(txt)
     width,height = objSize
-    if txtPlacement == Text_Placement.TOP or txtPlacement == Text_Placement.BOTTOM:
+    if txtPlacement == 'TOP' or txtPlacement == 'BOTTOM':
         width = max(width,txtWidth)
         height += txtHeight
-    elif txtPlacement == Text_Placement.LEFT or txtPlacement == Text_Placement.RIGHT:
+    elif txtPlacement == 'LEFT' or txtPlacement == 'RIGHT':
         width += txtWidth
-    elif txtPlacement == Text_Placement.CENTER:
+    elif txtPlacement == 'CENTER':
         width = max(width,txtWidth)
-    elif txtPlacement == Text_Placement.NONE:
+    elif txtPlacement == 'NONE':
         pass
     return width,height
 
 def getTextPos(option,txtString,objPos,objSize,font):
     x = -1
     y = -1
-    if option == Text_Placement.TOP:
+    if option == 'TOP':
         y = objPos[1]
         x = objPos[0] + objSize[0] / 2 
-    elif option == Text_Placement.BOTTOM:
+    elif option == 'BOTTOM':
         y = objPos[1] - objSize[1]
         x = objPos[0] + objSize[0] / 2 
-    elif option == Text_Placement.LEFT:
+    elif option == 'LEFT':
         y = objPos[1] - objSize[1] / 2 
         x = objPos[0] 
-    elif option == Text_Placement.RIGHT:
+    elif option == 'RIGHT':
         y = objPos[1] - objSize[1] / 2 
         x = objPos[0] + objSize[0]
-    elif option == Text_Placement.CENTER:
+    elif option == 'CENTER':
         y = objPos[1] - objSize[1] / 2
         x = objPos[0] + objSize[0] / 2 
-    elif option == Text_Placement.NONE:
+    elif option == 'NONE':
         pass
     txtPos = wx.Point(x,y)
     return txtPos
-
-class Draw_Style:
-    def __init__(self, 
-                 icon=None, 
-                 font=OrderedDict([('pointSize',20)]), 
-                 method=Draw_Method.ICON, 
-                 childLayout = Child_Layout.STACK,
-                 placement=Text_Placement.TOP,
-                 overlay = OrderedDict(),
-                 padding = (10,10),
-                 offset = (10,10),
-                 minSize = (30,30)
-             ):
-        self.icon = icon
-        self.font = font
-        self.method = method
-        self.textPlacement = placement
-        self.childLayout = childLayout
-        self.overlay = overlay
-        self.padding = padding
-        self.offset = offset
-        self.minSize = minSize
-
-    def Copy(self,other):
-        self.icon = other.icon
-        self.font = copy.deepcopy(other.font)
-        self.method = copy.deepcopy(other.method)
-        self.childLayout = copy.deepcopy(other.childLayout)
-        self.textPlacement = copy.deepcopy(other.textPlacement)
-        self.overlay = copy.deepcopy(other.overlay)
-        self.padding = copy.deepcopy(other.padding)
-        self.offset = copy.deepcopy(other.offset)
-        self.minSize = copy.deepcopy(other.minSize)
-
 
 '''
 Drawable Objects are anything that should
@@ -142,7 +99,7 @@ class Drawable_Object:
         self.children = []
 
         # these are configured (default or by user)
-        self.style = Draw_Style()
+        self.style = OrderedDict()
 
         # these are calculated by the Layout() function
         self.topLeft = wx.Point()
@@ -155,7 +112,7 @@ class Drawable_Object:
         #self.kind = other.kind
         self.properties = copy.deepcopy(other.properties)
         self.children = copy.deepcopy(other.children)
-        self.style = copy.deepcopy(other.style)
+        self.style = copy.copy(other.style)
         self.topLeft = copy.deepcopy(other.topLeft)
         self.height = copy.copy(other.height)
         self.width = copy.copy(other.width)
@@ -193,24 +150,24 @@ class Drawable_Object:
     Draw() is called after layout has been calculated
     Should receive the device context
     '''
-    def Draw(self, canvas, leftClickFunc, rightClickFunc, leftDClickFunc):
-        if self.style.method == Draw_Method.HIDDEN:
+    def Draw(self, iconDict, canvas, leftClickFunc, rightClickFunc, leftDClickFunc):
+        if self.style['method'] == 'HIDDEN':
             return
         x,y = self.topLeft.Get()
         dObj = None
-        if self.style.method == Draw_Method.ICON:
-            if self.style.icon != None:
+        if self.style['method'] == 'ICON':
+            if self.kind in iconDict.keys():
                 dObj = canvas.AddScaledBitmap(
-                    self.style.icon,
+                    iconDict[self.kind],
                     XY = (x,y),
                     Height = self.height,
                     Position = "tl")
-        elif self.style.method == Draw_Method.RECT or\
-             self.style.method == Draw_Method.ROUND_RECT:
+        elif self.style['method'] == 'RECT' or\
+             self.style['method'] == 'ROUND_RECT':
             dObj = canvas.AddRectangle(
                 (x,y-self.height),
                 (self.width,self.height),
-                FillColor = self.style.overlay["fillColor"],
+                FillColor = self.style['overlay']["fillColor"],
                 InForeground = False
             )
         else:
@@ -221,17 +178,17 @@ class Drawable_Object:
             dObj.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
             dObj.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
             dObj.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, leftDClickFunc)
-        if 'outlineColor' in self.style.overlay.keys():
+        if 'outlineColor' in self.style['overlay'].keys():
             rect = canvas.AddRectangle(
                 (x,y-self.height),
                 (self.width,self.height),
-                LineColor = self.style.overlay['outlineColor'],
+                LineColor = self.style['overlay']['outlineColor'],
                 LineWidth = 2,
                 InForeground = False,
                 FillStyle = 'Transparent'
             )
         if self.textPosition != None and "name" in self.properties.keys():
-            input_text = self.style.font['prefix'] + self.properties["name"]
+            input_text = self.style['font']['prefix'] + self.properties["name"]
             drawText(input_text, 
                      self.textPosition.Get(),
                      self.style,
@@ -239,7 +196,7 @@ class Drawable_Object:
         canvas.AddPoint(self.topLeft.Get())
         canvas.AddPoint(self.textPosition.Get())
         for child in self.children:
-            child.Draw(canvas,leftClickFunc,rightClickFunc,leftDClickFunc)
+            child.Draw(iconDict,canvas,leftClickFunc,rightClickFunc,leftDClickFunc)
 
 '''
 The Layout function takes a top-level
@@ -256,18 +213,18 @@ necessarily, as the text may extend beyond the object
 and this would capture the extent of the text
 '''
 def Layout(dObj, topLeftPos, canvas):
-    if dObj.style.method != Draw_Method.HIDDEN:
+    if dObj.style['method'] != 'HIDDEN':
         # configure things that will be returned
-        padding = dObj.style.padding
-        minSize = dObj.style.minSize
-        offset = dObj.style.offset
+        padding = dObj.style['padding']
+        minSize = dObj.style['minSize']
+        offset = dObj.style['offset']
         maxObjWidth = minSize[0]
         maxObjHeight = minSize[1]
         dObj.topLeft = wx.Point(topLeftPos[0],topLeftPos[1])
         childPos = [topLeftPos[0] + offset[0], topLeftPos[1] - offset[1]]
         childTypes = model_dict[dObj.kind].children
         maxWidth = 0
-        if dObj.style.childLayout == Child_Layout.COLUMNS:
+        if dObj.style['childLayout'] == 'COLUMNS':
             for childType in childTypes:
                 children = dObj.getChildrenByKind(childType)
                 maxWidth = 0
@@ -278,7 +235,7 @@ def Layout(dObj, topLeftPos, canvas):
                 maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
                 maxObjWidth += maxWidth
                 childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
-        elif dObj.style.childLayout == Child_Layout.STACK:
+        elif dObj.style['childLayout'] == 'STACK':
             maxWidth = 0
             for child in dObj.children:
                 w,h = Layout(child,childPos,canvas)
@@ -287,7 +244,7 @@ def Layout(dObj, topLeftPos, canvas):
                 maxWidth = max(w,maxWidth)
             maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
             maxObjWidth += maxWidth
-        elif dObj.style.childLayout == Child_Layout.SQUARE:
+        elif dObj.style['childLayout'] == 'SQUARE':
             sideLen = int(math.sqrt(len(dObj.children)))
             maxWidth = 0
             numDone = 0
@@ -302,9 +259,9 @@ def Layout(dObj, topLeftPos, canvas):
                     maxObjWidth += maxWidth
                     childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
                     maxWidth = 0
-        elif dObj.style.childLayout == Child_Layout.LINE:
+        elif dObj.style['childLayout'] == 'LINE':
             pass # unimplemented
-        elif dObj.style.childLayout == Child_Layout.ROWS:
+        elif dObj.style['childLayout'] == 'ROWS':
             pass # unimplemented
         maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
         maxObjWidth = max(maxObjWidth, maxWidth)
@@ -312,16 +269,16 @@ def Layout(dObj, topLeftPos, canvas):
         dObj.width = maxObjWidth
         dObj.height = maxObjHeight
         dObj.textPosition = getTextPos(
-            option = dObj.style.textPlacement,
-            txtString = dObj.style.font['prefix'] + dObj.properties["name"],
+            option = dObj.style['textPlacement'],
+            txtString = dObj.style['font']['prefix'] + dObj.properties["name"],
             objPos = dObj.topLeft.Get(),
             objSize = (dObj.width,dObj.height),
-            font = dObj.style.font
+            font = dObj.style['font']
         )
         maxObjWidth, maxObjHeight = getWidthWithText(
             objSize = (dObj.width,dObj.height),
             style = dObj.style,
-            objName = dObj.style.font['prefix'] + dObj.properties["name"],
+            objName = dObj.style['font']['prefix'] + dObj.properties["name"],
             canvas = canvas
         )
         return maxObjWidth,maxObjHeight
@@ -329,7 +286,7 @@ def Layout(dObj, topLeftPos, canvas):
         return 0,0
 
 def Configure(dObj,styleDict):
-    dObj.style.Copy(styleDict[dObj.kind])
+    dObj.style = copy.deepcopy(styleDict[dObj.kind])
     if dObj.children != []:
         for child in dObj.children:
             Configure(child,styleDict)
