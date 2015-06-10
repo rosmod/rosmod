@@ -11,29 +11,38 @@ editorPath=head
 rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 
-activeOverlay = "BLACK"
-nodeDownOverlay = "RED"
-nodeUpOverlay = "GREEN"
-referenceOverlay = "WHITE"
-similarOverlay = "BLACK"
+def EditIcons(self):
+    pass
+
+def EditOverlay(self):
+    pass
 
 def EditStyle(self):
     pass
 
 def BuildStyleDict(self):
+    self.overlayDict = OrderedDict()
+    self.overlayDict['active'] = "BLACK"
+    self.overlayDict['nodeDown'] = "RED"
+    self.overlayDict['nodeUp'] = "GREEN"
+    self.overlayDict['reference'] = "WHITE"
+    self.overlayDict['similar'] = "BLACK"
+
     self.styleDict = OrderedDict()
     font = OrderedDict()
     minSize = (30, 30)
     padding = (30, 30)
     pkgOffset = (10, 50)
-    msgIcon = wx.Bitmap(modelIconPath + '/msg.png')
-    srvIcon = wx.Bitmap(modelIconPath + '/srv.png')
-    tmrIcon = wx.Bitmap(modelIconPath + '/timer.png')
-    pubIcon = wx.Bitmap(modelIconPath + '/publisher.png')
-    subIcon = wx.Bitmap(modelIconPath + '/subscriber.png')
-    clientIcon = wx.Bitmap(modelIconPath + '/client.png')
-    serverIcon = wx.Bitmap(modelIconPath + '/server.png')
-    hostIcon = wx.Bitmap(modelIconPath + '/computer.png')
+
+    self.iconDict = OrderedDict()
+    self.iconDict['Message'] = wx.Bitmap(modelIconPath + '/msg.png')
+    self.iconDict['Service'] = wx.Bitmap(modelIconPath + '/srv.png')
+    self.iconDict['Timer'] = wx.Bitmap(modelIconPath + '/timer.png')
+    self.iconDict['Publisher'] = wx.Bitmap(modelIconPath + '/publisher.png')
+    self.iconDict['Subscriber'] = wx.Bitmap(modelIconPath + '/subscriber.png')
+    self.iconDict['Client'] = wx.Bitmap(modelIconPath + '/client.png')
+    self.iconDict['Server'] = wx.Bitmap(modelIconPath + '/server.png')
+    self.iconDict['Hardware'] = wx.Bitmap(modelIconPath + '/computer.png')
     '''
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
     '''
@@ -47,7 +56,7 @@ def BuildStyleDict(self):
                                    offset = pkgOffset,
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict() )
-    HardwareStyle = drawable.Draw_Style(icon=hostIcon,
+    HardwareStyle = drawable.Draw_Style(icon=self.iconDict['Hardware'],
                                         font={'pointSize' : 20,
                                               'color' : "#217C7E",
                                               'prefix' : "Device: ",
@@ -125,7 +134,7 @@ def BuildStyleDict(self):
                                    minSize = minSize,
                                    padding = (50,25),
                                    offset = pkgOffset )
-    MsgStyle = drawable.Draw_Style(icon=msgIcon, 
+    MsgStyle = drawable.Draw_Style(icon=self.iconDict['Message'], 
                                    font={'pointSize' : 20,
                                          'color' : "black",
                                          'prefix' : "",
@@ -135,7 +144,7 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.TOP,
                                    overlay = OrderedDict(),
                                    minSize = (108, 79))
-    SrvStyle = drawable.Draw_Style(icon=srvIcon,
+    SrvStyle = drawable.Draw_Style(icon=self.iconDict['Service'],
                                    font={'pointSize' : 20,
                                          'color' : "black",
                                          'prefix' : "",
@@ -155,7 +164,7 @@ def BuildStyleDict(self):
                                     placement=drawable.Text_Placement.TOP,
                                     minSize = minSize,
                                     overlay = OrderedDict([('fillColor','#217C7E')]) )
-    TmrStyle = drawable.Draw_Style(icon=tmrIcon,
+    TmrStyle = drawable.Draw_Style(icon=self.iconDict['Timer'],
                                    font={'pointSize' : 20,
                                          'color' : "white",
                                          'prefix' : " ",
@@ -165,7 +174,7 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
                                    minSize = (108, 79) )
-    PubStyle = drawable.Draw_Style(icon=pubIcon,
+    PubStyle = drawable.Draw_Style(icon=self.iconDict['Publisher'],
                                    font={'pointSize' : 20,
                                          'color' : "white",
                                          'prefix' : " ",
@@ -175,7 +184,7 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
                                    minSize = (108, 79) )
-    SubStyle = drawable.Draw_Style(icon=subIcon,
+    SubStyle = drawable.Draw_Style(icon=self.iconDict['Subscriber'],
                                    font={'pointSize' : 20,
                                          'color' : "white",
                                          'prefix' : " ",
@@ -185,7 +194,7 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
                                    minSize = (108, 79) )
-    CliStyle = drawable.Draw_Style(icon=clientIcon,
+    CliStyle = drawable.Draw_Style(icon=self.iconDict['Client'],
                                    font={'pointSize' : 20,
                                          'color' : "white",
                                          'prefix' : " ",
@@ -195,7 +204,7 @@ def BuildStyleDict(self):
                                    placement=drawable.Text_Placement.RIGHT,
                                    overlay = OrderedDict(),
                                    minSize = (108, 79) )
-    SerStyle = drawable.Draw_Style(icon=serverIcon,
+    SerStyle = drawable.Draw_Style(icon=self.iconDict['Server'],
                                    font={'pointSize' : 20,
                                          'color' : "white",
                                          'prefix' : " ",

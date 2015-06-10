@@ -205,32 +205,28 @@ class Drawable_Object:
                     XY = (x,y),
                     Height = self.height,
                     Position = "tl")
-                dObj.HitFill = True
-                dObj.Name = self
-        elif self.style.method == Draw_Method.RECT:
-            pass
-        elif self.style.method == Draw_Method.ROUND_RECT:
+        elif self.style.method == Draw_Method.RECT or\
+             self.style.method == Draw_Method.ROUND_RECT:
             dObj = canvas.AddRectangle(
                 (x,y-self.height),
                 (self.width,self.height),
                 FillColor = self.style.overlay["fillColor"],
                 InForeground = False
             )
-            dObj.HitFill = True
-            dObj.Name = self
         else:
             pass
         if dObj != None:
+            dObj.HitFill = True
+            dObj.Name = self
             dObj.Bind(FloatCanvas.EVT_FC_RIGHT_UP, rightClickFunc)
             dObj.Bind(FloatCanvas.EVT_FC_LEFT_UP, leftClickFunc)
             dObj.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, leftDClickFunc)
-        if 'overlayColor' in self.style.overlay.keys():
+        if 'outlineColor' in self.style.overlay.keys():
             rect = canvas.AddRectangle(
                 (x,y-self.height),
                 (self.width,self.height),
-                LineColor = self.style.overlay['overlayColor'],
+                LineColor = self.style.overlay['outlineColor'],
                 LineWidth = 2,
-                FillColor = self.style.overlay['overlayColor'],
                 InForeground = False,
                 FillStyle = 'Transparent'
             )
