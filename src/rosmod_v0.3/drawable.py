@@ -234,6 +234,13 @@ def Layout(dObj, topLeftPos, canvas):
                     maxWidth = max(w,maxWidth)
                 for child in children:
                     child.width = maxWidth
+                    child.textPosition = getTextPos(
+                        option = child.style['textPlacement'],
+                        txtString = child.style['font']['prefix'] + child.properties["name"],
+                        objPos = child.topLeft.Get(),
+                        objSize = (child.width,child.height),
+                        font = child.style['font']
+                    )
                 maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
                 maxObjWidth += maxWidth
                 childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
@@ -262,6 +269,13 @@ def Layout(dObj, topLeftPos, canvas):
                 if (numDone % sideLen) == 0:
                     for child in dObj.children[startInd:numDone]:
                         child.width = maxWidth
+                        child.textPosition = getTextPos(
+                            option = child.style['textPlacement'],
+                            txtString = child.style['font']['prefix'] + child.properties["name"],
+                            objPos = child.topLeft.Get(),
+                            objSize = (child.width,child.height),
+                            font = child.style['font']
+                        )
                     startInd = numDone
                     maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
                     maxObjWidth += maxWidth
@@ -269,6 +283,13 @@ def Layout(dObj, topLeftPos, canvas):
                     maxWidth = 0
             for child in dObj.children[startInd:numDone]:
                 child.width = maxWidth
+                child.textPosition = getTextPos(
+                    option = child.style['textPlacement'],
+                    txtString = child.style['font']['prefix'] + child.properties["name"],
+                    objPos = child.topLeft.Get(),
+                    objSize = (child.width,child.height),
+                    font = child.style['font']
+                )
         elif dObj.style['childLayout'] == 'LINE':
             pass # unimplemented
         elif dObj.style['childLayout'] == 'ROWS':

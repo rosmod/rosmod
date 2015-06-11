@@ -247,7 +247,7 @@ def BuildStyle(self):
     WrkStyle = copy.deepcopy(defaultStyle)
     WrkStyle['font'] = {'pointSize' : 25,
                         'color' : "black",
-                        'prefix' : "Hardware Model: ",
+                        'prefix' : "Software Model: ",
                         'weight' : wx.BOLD}
     WrkStyle['method'] = 'ICON'
     WrkStyle['childLayout'] = 'STACK'
