@@ -45,7 +45,8 @@ def EditIcons(self):
                                    editDict = self.iconList,
                                    title = 'Select Object Icons')
     if inputs != OrderedDict():
-        self.iconList = inputs
+        for key,value in inputs.iteritems():
+            self.iconList[key] = value
         BuildIcons(self)
         info = self.GetActivePanelInfo()
         model = info.obj
@@ -70,8 +71,8 @@ def EditOverlay(self):
                                    editDict = self.overlayDict,
                                    title = 'Select Overlays')
     if inputs != OrderedDict():
-        self.overlayDict = inputs
-        BuildIcons(self)
+        for key,value in inputs.iteritems():
+            self.overlayDict[key] = value
         info = self.GetActivePanelInfo()
         model = info.obj
         canvas = info.canvas
@@ -79,7 +80,18 @@ def EditOverlay(self):
 
 def EditStyle(self,kind):
     def Generic(e):
-        print "EDITING ",kind
+        inputs = dialogs.EditorWindow( parent = self,
+                                       editObj = None,
+                                       editDict = self.styleDict[kind],
+                                       title = 'Edit {} Style'.format(kind))
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                self.styleDict[kind][key] = value
+            info = self.GetActivePanelInfo()
+            model = info.obj
+            canvas = info.canvas
+            drawable.Configure(model,self.styleDict)
+            self.DrawModel(model,canvas)
     return Generic
 
 def BuildStyle(self):
@@ -88,15 +100,15 @@ def BuildStyle(self):
     valid_drawMethod = ["ICON","RECT","ROUND_RECT","HIDDEN"]
     valid_childLayout = ["STACK","COLUMNS","LINE","ROWS","SQUARE","HIDDEN"]
     meta_class_dict['textPlacement'] = Grammar_Field(
-        kind="string",
+        kind="list",
         display_name="Text Placement",
         input_validator=lambda p,o,s,k : list_validator(valid_textPlacement,p,o,s,k))
     meta_class_dict['method'] = Grammar_Field(
-        kind="string",
+        kind="list",
         display_name="Draw Method",
         input_validator=lambda p,o,s,k : list_validator(valid_drawMethod,p,o,s,k))
     meta_class_dict['childLayout'] = Grammar_Field(
-        kind="string",
+        kind="list",
         display_name="Child Layout",
         input_validator=lambda p,o,s,k : list_validator(valid_childLayout,p,o,s,k))
     meta_class_dict['padding'] = Grammar_Field(
@@ -266,7 +278,6 @@ def BuildStyle(self):
     SrvStyle['minSize'] = (108, 79)
 
     CompStyle = copy.deepcopy(defaultStyle)
-    CompStyle['icon'] = None
     CompStyle['font'] = {'pointSize' : 20,
                          'color' : "#217C7E",
                          'prefix' : "Component: ",
