@@ -49,9 +49,10 @@ def EditIcons(self):
             self.iconList[key] = value
         BuildIcons(self)
         info = self.GetActivePanelInfo()
-        model = info.obj
-        canvas = info.canvas
-        self.DrawModel(model,canvas)
+        if info != None:
+            model = info.obj
+            canvas = info.canvas
+            self.DrawModel(model,canvas)
 
 def BuildOverlay(self):
     self.overlayDict = OrderedDict()
@@ -74,9 +75,10 @@ def EditOverlay(self):
         for key,value in inputs.iteritems():
             self.overlayDict[key] = value
         info = self.GetActivePanelInfo()
-        model = info.obj
-        canvas = info.canvas
-        self.DrawModel(model,canvas)
+        if info != None:
+            model = info.obj
+            canvas = info.canvas
+            self.DrawModel(model,canvas)
 
 def EditStyle(self,kind):
     def Generic(e):
@@ -88,10 +90,11 @@ def EditStyle(self,kind):
             for key,value in inputs.iteritems():
                 self.styleDict[kind][key] = value
             info = self.GetActivePanelInfo()
-            model = info.obj
-            canvas = info.canvas
-            drawable.Configure(model,self.styleDict)
-            self.DrawModel(model,canvas)
+            if info != None:
+                model = info.obj
+                canvas = info.canvas
+                drawable.Configure(model,self.styleDict)
+                self.DrawModel(model,canvas)
     return Generic
 
 def BuildStyle(self):
@@ -148,15 +151,28 @@ def BuildStyle(self):
         kind="string",
         display_name="Weight")
 
-    minSize = (30, 30)
-    offset = (10, 50)
-    padding = (30, 30)
+    meta_class_dict['Index 0'] = Grammar_Field(
+        kind="string",
+        display_name="Index 0")
+    meta_class_dict['Index 1'] = Grammar_Field(
+        kind="string",
+        display_name="Index 1")
+    meta_class_dict['Index 2'] = Grammar_Field(
+        kind="string",
+        display_name="Index 2")
+    meta_class_dict['Index 3'] = Grammar_Field(
+        kind="string",
+        display_name="Index 3")
+
+    minSize = [30, 30]
+    offset = [10, 50]
+    padding = [30, 30]
 
     self.styleDict = OrderedDict()
     defaultStyle = OrderedDict()
     defaultStyle['minSize'] = minSize
-    defaultStyle['padding'] = (10,10)
-    defaultStyle['offset'] = (10,10)
+    defaultStyle['padding'] = [10,10]
+    defaultStyle['offset'] = [10,10]
     defaultStyle['textPlacement'] = 'TOP'
     '''
     STYLES USED FOR HARDWARE CONFIGURATION OBJECTS
@@ -179,7 +195,7 @@ def BuildStyle(self):
                              'weight' : wx.BOLD}
     HardwareStyle['method'] = 'ICON'
     HardwareStyle['childLayout'] = 'HIDDEN'
-    HardwareStyle['minSize'] = (200, 200)
+    HardwareStyle['minSize'] = [200, 200]
     HardwareStyle['textPlacement'] = 'TOP'
     HardwareStyle['overlay'] = OrderedDict()
     '''
@@ -205,7 +221,7 @@ def BuildStyle(self):
     NodeStyle['childLayout'] = 'STACK'   
     NodeStyle['textPlacement'] = 'TOP'
     NodeStyle['overlay'] = OrderedDict([('fillColor','#217C7E')])
-    NodeStyle['minSize'] = (30, 30)
+    NodeStyle['minSize'] = [30, 30]
 
     CompInstStyle = copy.deepcopy(defaultStyle)
     CompInstStyle['font'] = {'pointSize' : 20,
@@ -253,7 +269,7 @@ def BuildStyle(self):
     PkgStyle['textPlacement'] = 'TOP'
     PkgStyle['overlay'] = OrderedDict()
     PkgStyle['minSize'] = minSize
-    PkgStyle['padding'] = (50,25)
+    PkgStyle['padding'] = [50,25]
 
     MsgStyle = copy.deepcopy(defaultStyle)
     MsgStyle['font'] = {'pointSize' : 20,
@@ -264,7 +280,7 @@ def BuildStyle(self):
     MsgStyle['childLayout'] = 'HIDDEN'
     MsgStyle['textPlacement'] = 'TOP'
     MsgStyle['overlay'] = OrderedDict()
-    MsgStyle['minSize'] = (108, 79)
+    MsgStyle['minSize'] = [108, 79]
 
     SrvStyle = copy.deepcopy(defaultStyle)
     SrvStyle['font'] = {'pointSize' : 20,
@@ -275,7 +291,7 @@ def BuildStyle(self):
     SrvStyle['childLayout'] = 'HIDDEN'
     SrvStyle['textPlacement'] = 'TOP'
     SrvStyle['overlay'] = OrderedDict()
-    SrvStyle['minSize'] = (108, 79)
+    SrvStyle['minSize'] = [108, 79]
 
     CompStyle = copy.deepcopy(defaultStyle)
     CompStyle['font'] = {'pointSize' : 20,
@@ -297,7 +313,7 @@ def BuildStyle(self):
     TmrStyle['childLayout'] = 'HIDDEN'
     TmrStyle['textPlacement'] = 'RIGHT'
     TmrStyle['overlay'] = OrderedDict()
-    TmrStyle['minSize'] = (108, 79)
+    TmrStyle['minSize'] = [108, 79]
 
     PubStyle = copy.deepcopy(defaultStyle)
     PubStyle['font'] = {'pointSize' : 20,
@@ -308,7 +324,7 @@ def BuildStyle(self):
     PubStyle['childLayout'] = 'HIDDEN'
     PubStyle['textPlacement'] = 'RIGHT'
     PubStyle['overlay'] = OrderedDict()
-    PubStyle['minSize'] = (108, 79)
+    PubStyle['minSize'] = [108, 79]
 
     SubStyle = copy.deepcopy(defaultStyle)
     SubStyle['font'] = {'pointSize' : 20,
@@ -319,7 +335,7 @@ def BuildStyle(self):
     SubStyle['childLayout'] = 'HIDDEN'
     SubStyle['textPlacement'] = 'RIGHT'
     SubStyle['overlay'] = OrderedDict()
-    SubStyle['minSize'] = (108, 79)
+    SubStyle['minSize'] = [108, 79]
 
     CliStyle = copy.deepcopy(defaultStyle)
     CliStyle['font'] = {'pointSize' : 20,
@@ -330,7 +346,7 @@ def BuildStyle(self):
     CliStyle['childLayout'] = 'HIDDEN'
     CliStyle['textPlacement'] = 'RIGHT'
     CliStyle['overlay'] = OrderedDict()
-    CliStyle['minSize'] = (108, 79)
+    CliStyle['minSize'] = [108, 79]
     
     SerStyle = copy.deepcopy(defaultStyle)
     SerStyle['font'] = {'pointSize' : 20,
@@ -341,7 +357,7 @@ def BuildStyle(self):
     SerStyle['childLayout'] = 'HIDDEN'
     SerStyle['textPlacement'] = 'RIGHT'
     SerStyle['overlay'] = OrderedDict()
-    SerStyle['minSize'] = (108, 79)
+    SerStyle['minSize'] = [108, 79]
 
     self.styleDict["rml"] = WrkStyle
 

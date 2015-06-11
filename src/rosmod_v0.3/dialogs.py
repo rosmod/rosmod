@@ -188,14 +188,17 @@ class EditDialog(wx.Dialog):
                     else:
                         field.SetSelection(0)
             elif meta_class_dict[key].kind == "tuple":
-                pass
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.Button(self.panel, label="{}".format(value))
+                field.Bind(wx.EVT_BUTTON,
+                           self.OnTupleEdit(field,value,"Edit {}".format(key)))
             elif meta_class_dict[key].kind == "dictionary":
                 pass
             elif meta_class_dict[key].kind == "file":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.Button(self.panel, label=value)
                 field.Bind(wx.EVT_BUTTON, 
-                           self.OnFileDialog(field,value,"*.png",meta_class_dict[key].display_name))
+                           self.OnFileDialog(field,"*.png",meta_class_dict[key].display_name))
             elif meta_class_dict[key].kind == "code":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
@@ -303,6 +306,11 @@ class EditDialog(wx.Dialog):
                 fieldValue = field.GetValue()
             elif meta_class_dict[key].kind == "file":
                 fieldValue = field.GetLabel()
+            elif meta_class_dict[key].kind == "tuple":
+                fieldValue = []
+                fieldStr = field.GetLabel().strip("[]").split(",")
+                for substr in fieldStr:
+                    fieldValue.append(float(substr))
             elif meta_class_dict[key].kind == "code":
                 fieldValue = field.GetText()
             elif meta_class_dict[key].kind == "reference":
@@ -323,17 +331,33 @@ class EditDialog(wx.Dialog):
     def GetInput(self):
         return self.returnDict
 
-    def OnFileDialog(self,field,value,types,prompt):
+    def OnFileDialog(self,field,types,prompt):
         def RetFunc(e):
             fName, fPath = RMLFileDialog(
                 parent = self,
                 fileTypes = types,
-                path = os.path.split(value)[0],
+                path = os.path.split(field.GetLabel())[0],
                 prompt = prompt,
                 fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
             )
             if fName != None and fPath != None:
                 field.SetLabel(fPath+'/'+fName)
+        return RetFunc
+
+    def OnTupleEdit(self, field, obj, prompt):
+        def RetFunc(e):
+            props = OrderedDict()
+            i = 0
+            for elem in obj:
+                props['Index {}'.format(i)] = str(elem)
+                i += 1
+            inputs = EditorWindow(parent=self,
+                                  editDict=props,
+                                  title=prompt)
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    obj[int(key.split()[1])] = float(value)
+                field.SetLabel("{}".format(obj))
         return RetFunc
 
     def OnOk(self,e):

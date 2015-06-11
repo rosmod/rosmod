@@ -639,11 +639,13 @@ class Example(wx.Frame):
         canvas.Unbind(FloatCanvas.EVT_RIGHT_UP)
 
     def GetActivePanelInfo(self):
+        pageInfo = None
         selectedAspect = self.activeAspect
         selectedAspectInfo = self.activeAspectInfo
         selectedPage = selectedAspect.GetSelection()
-        pageName = selectedAspect.GetPageText(selectedPage)
-        pageInfo = selectedAspectInfo.GetPageInfo(pageName)
+        if selectedPage >= 0:
+            pageName = selectedAspect.GetPageText(selectedPage)
+            pageInfo = selectedAspectInfo.GetPageInfo(pageName)
         return pageInfo
     def AspectLog(self, text, msgWindow):
         msgWindow.SetReadOnly(False)
