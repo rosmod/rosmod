@@ -232,6 +232,8 @@ def Layout(dObj, topLeftPos, canvas):
                     w,h = Layout(child,childPos,canvas)
                     childPos[1] -= (padding[1] + h)
                     maxWidth = max(w,maxWidth)
+                for child in children:
+                    child.width = maxWidth
                 maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
                 maxObjWidth += maxWidth
                 childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
@@ -242,12 +244,15 @@ def Layout(dObj, topLeftPos, canvas):
                 w -= padding[0]
                 childPos[1] -= (padding[1] + h)
                 maxWidth = max(w,maxWidth)
+            #for child in dObj.children:
+            #    child.width = maxWidth
             maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
             maxObjWidth += maxWidth
         elif dObj.style['childLayout'] == 'SQUARE':
             sideLen = int(math.sqrt(len(dObj.children)))
             maxWidth = 0
             numDone = 0
+            startInd = 0
             while numDone < len(dObj.children):
                 obj = dObj.children[numDone]
                 w,h = Layout(obj,childPos,canvas)
@@ -255,10 +260,15 @@ def Layout(dObj, topLeftPos, canvas):
                 maxWidth = max(w,maxWidth)
                 numDone += 1
                 if (numDone % sideLen) == 0:
+                    for child in dObj.children[startInd:numDone]:
+                        child.width = maxWidth
+                    startInd = numDone
                     maxObjHeight = max(maxObjHeight,abs(childPos[1] - topLeftPos[1]))
                     maxObjWidth += maxWidth
                     childPos = [childPos[0] + padding[0] + maxWidth,topLeftPos[1] - offset[1]]
                     maxWidth = 0
+            for child in dObj.children[startInd:numDone]:
+                child.width = maxWidth
         elif dObj.style['childLayout'] == 'LINE':
             pass # unimplemented
         elif dObj.style['childLayout'] == 'ROWS':
