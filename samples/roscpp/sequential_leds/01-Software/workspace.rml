@@ -1,0 +1,20 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - sequential_leds_app
+package sequential_leds_app
+{
+  // ROSMOD Component - led_controller
+  component led_controller : Base 
+  {
+    // ROSMOD Publisher - led_state_pub
+    publisher <sequential_leds_app/led_state> led_state_pub;
+    // ROSMOD Subscriber - led_state_sub
+    subscriber <sequential_leds_app/led_state> led_state_sub 
+    {
+      priority = 55.0;
+      deadline = 0.1;
+    }       
+  }
+}
