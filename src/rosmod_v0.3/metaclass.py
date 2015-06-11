@@ -144,11 +144,11 @@ meta_class_dict["scheduling_scheme"] = Grammar_Field(
 meta_class_dict["reference"] = Grammar_Field(
     "hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
 meta_class_dict["period"] = Grammar_Field(
-    "string", "Period", create_enterAtom, create_exitAtom, None, "Period (s)")
+    "number", "Period", create_enterAtom, create_exitAtom, None, "Period (s)")
 meta_class_dict["priority"] = Grammar_Field(
-    "string", "Priority", create_enterAtom, create_exitAtom, None, "Priority")
+    "number", "Priority", create_enterAtom, create_exitAtom, None, "Priority")
 meta_class_dict["deadline"] = Grammar_Field(
-    "string", "Deadline", create_enterAtom, create_exitAtom, None, "Deadline (s)")
+    "number", "Deadline", create_enterAtom, create_exitAtom, None, "Deadline (s)")
 meta_class_dict["ip_address"] = Grammar_Field(
     "string", "Ip_address", create_enterAtom, create_exitAtom, None, "IP Address")
 meta_class_dict["username"] = Grammar_Field(
