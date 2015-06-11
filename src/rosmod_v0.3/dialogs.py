@@ -166,6 +166,10 @@ class EditDialog(wx.Dialog):
                 field = wx.TextCtrl(self.panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
+            elif meta_class_dict[key].kind == "number":
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.TextCtrl(self.panel)
+                field.AppendText(str(value))
             elif meta_class_dict[key].kind == "boolean":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.CheckBox(self.panel)
@@ -193,7 +197,10 @@ class EditDialog(wx.Dialog):
                 field.Bind(wx.EVT_BUTTON,
                            self.OnTupleEdit(field,value,"Edit {}".format(key)))
             elif meta_class_dict[key].kind == "dictionary":
-                pass
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.Button(self.panel, label="Edit {}".format(key))
+                field.Bind(wx.EVT_BUTTON, 
+                           self.OnDictEdit(field, value, "Edit {}".format(key)))
             elif meta_class_dict[key].kind == "file":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.Button(self.panel, label=value)
@@ -304,6 +311,8 @@ class EditDialog(wx.Dialog):
                meta_class_dict[key].kind == "list" or\
                meta_class_dict[key].kind == "boolean":
                 fieldValue = field.GetValue()
+            elif meta_class_dict[key].kind == "number":
+                fieldValue = float(field.GetValue())
             elif meta_class_dict[key].kind == "file":
                 fieldValue = field.GetLabel()
             elif meta_class_dict[key].kind == "tuple":
@@ -311,6 +320,8 @@ class EditDialog(wx.Dialog):
                 fieldStr = field.GetLabel().strip("[]").split(",")
                 for substr in fieldStr:
                     fieldValue.append(float(substr))
+            elif meta_class_dict[key].kind == "dictionary":
+                fieldValue = self.editDict[key]
             elif meta_class_dict[key].kind == "code":
                 fieldValue = field.GetText()
             elif meta_class_dict[key].kind == "reference":
@@ -349,15 +360,25 @@ class EditDialog(wx.Dialog):
             props = OrderedDict()
             i = 0
             for elem in obj:
-                props['Index {}'.format(i)] = str(elem)
+                props['Index {}'.format(i)] = elem
                 i += 1
             inputs = EditorWindow(parent=self,
                                   editDict=props,
                                   title=prompt)
             if inputs != OrderedDict():
                 for key,value in inputs.iteritems():
-                    obj[int(key.split()[1])] = float(value)
+                    obj[int(key.split()[1])] = value
                 field.SetLabel("{}".format(obj))
+        return RetFunc
+
+    def OnDictEdit(self, field, obj, prompt):
+        def RetFunc(e):
+            inputs = EditorWindow(parent=self,
+                                  editDict=obj,
+                                  title=prompt)
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    obj[key] = value
         return RetFunc
 
     def OnOk(self,e):
