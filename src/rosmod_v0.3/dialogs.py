@@ -316,10 +316,7 @@ class EditDialog(wx.Dialog):
             elif meta_class_dict[key].kind == "file":
                 fieldValue = field.GetLabel()
             elif meta_class_dict[key].kind == "tuple":
-                fieldValue = []
-                fieldStr = field.GetLabel().strip("[]").split(",")
-                for substr in fieldStr:
-                    fieldValue.append(float(substr))
+                fieldValue = self.editDict[key]
             elif meta_class_dict[key].kind == "dictionary":
                 fieldValue = self.editDict[key]
             elif meta_class_dict[key].kind == "code":
