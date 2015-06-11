@@ -63,9 +63,9 @@ def MonitorWorkFunc(self,workItem):
             nodeName = dataList[0]
             node = nodeMap[nodeName]
             if dataList[1] == "UP":
-                node.style['overlay']['outlineColor']=self.overlayDict['nodeUp']
+                node.style['overlay']['outlineColor']=self.overlayDict['Node Up Overlay']
             else:
-                node.style['overlay']['outlineColor']=self.overlayDict['nodeDown']
+                node.style['overlay']['outlineColor']=self.overlayDict['Node Down Overlay']
             updateCanvas = True
             data = workItem.queue.get(False)
     except:

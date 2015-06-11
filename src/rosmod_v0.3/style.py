@@ -7,6 +7,7 @@ import drawable
 import dialogs
 
 from metaModel import model_dict
+from metaclass import *
 
 exeName = sys.argv[0]
 dirName = os.path.abspath(exeName)
@@ -16,6 +17,10 @@ rootIconPath= editorPath + '/icons'
 modelIconPath= rootIconPath + '/model'
 
 def BuildStyleObjects(self):
+    for key in model_dict.keys():
+        meta_class_dict[key+'Icon'] = Grammar_Field(
+            kind = "file",
+            display_name = key + ' Icon')
     BuildIconList(self)
     BuildIcons(self)
     BuildOverlay(self)
@@ -49,14 +54,28 @@ def EditIcons(self):
 
 def BuildOverlay(self):
     self.overlayDict = OrderedDict()
-    self.overlayDict['active'] = "BLACK"
-    self.overlayDict['nodeDown'] = "RED"
-    self.overlayDict['nodeUp'] = "GREEN"
-    self.overlayDict['reference'] = "WHITE"
-    self.overlayDict['similar'] = "BLACK"
+    self.overlayDict['Active Overlay'] = "BLACK"
+    self.overlayDict['Node Down Overlay'] = "RED"
+    self.overlayDict['Node Up Overlay'] = "GREEN"
+    self.overlayDict['Reference Overlay'] = "WHITE"
+    self.overlayDict['Similar Overlay'] = "BLACK"
+    for key in self.overlayDict.keys():
+        meta_class_dict[key] = Grammar_Field(
+            kind = "string",
+            display_name = key)
 
 def EditOverlay(self):
-    print "EDITING OVERLAY"
+    inputs = dialogs.EditorWindow( parent = self,
+                                   editObj = None,
+                                   editDict = self.overlayDict,
+                                   title = 'Select Overlays')
+    if inputs != OrderedDict():
+        self.overlayDict = inputs
+        BuildIcons(self)
+        info = self.GetActivePanelInfo()
+        model = info.obj
+        canvas = info.canvas
+        self.DrawModel(model,canvas)
 
 def EditStyle(self,kind):
     def Generic(e):
@@ -64,6 +83,59 @@ def EditStyle(self,kind):
     return Generic
 
 def BuildStyle(self):
+    # style related options which can be edited
+    valid_textPlacement = ["NONE","TOP","BOTTOM","CENTER","LEFT","RIGHT"]
+    valid_drawMethod = ["ICON","RECT","ROUND_RECT","HIDDEN"]
+    valid_childLayout = ["STACK","COLUMNS","LINE","ROWS","SQUARE","HIDDEN"]
+    meta_class_dict['textPlacement'] = Grammar_Field(
+        kind="string",
+        display_name="Text Placement",
+        input_validator=lambda p,o,s,k : list_validator(valid_textPlacement,p,o,s,k))
+    meta_class_dict['method'] = Grammar_Field(
+        kind="string",
+        display_name="Draw Method",
+        input_validator=lambda p,o,s,k : list_validator(valid_drawMethod,p,o,s,k))
+    meta_class_dict['childLayout'] = Grammar_Field(
+        kind="string",
+        display_name="Child Layout",
+        input_validator=lambda p,o,s,k : list_validator(valid_childLayout,p,o,s,k))
+    meta_class_dict['padding'] = Grammar_Field(
+        kind="tuple",
+        display_name="Padding (x,y)")
+    meta_class_dict['minSize'] = Grammar_Field(
+        kind="tuple",
+        display_name="Minimum Size (x,y)")
+    meta_class_dict['offset'] = Grammar_Field(
+        kind="tuple",
+        display_name="Offset (x,y)")
+    meta_class_dict['overlay'] = Grammar_Field(
+        kind="dictionary",
+        display_name="Overlay")
+    meta_class_dict['fillColor'] = Grammar_Field(
+        kind="string",
+        display_name="Fill Color")
+    meta_class_dict['outlineColor'] = Grammar_Field(
+        kind="string",
+        display_name="Outline Color")
+    meta_class_dict['font'] = Grammar_Field(
+        kind="dictionary",
+        display_name="Font")
+    meta_class_dict['pointSize'] = Grammar_Field(
+        kind="string",
+        display_name="Point Size")
+    meta_class_dict['color'] = Grammar_Field(
+        kind="string",
+        display_name="Color")
+    meta_class_dict['pointSize'] = Grammar_Field(
+        kind="string",
+        display_name="Point Size")
+    meta_class_dict['prefix'] = Grammar_Field(
+        kind="string",
+        display_name="Prefix")
+    meta_class_dict['weight'] = Grammar_Field(
+        kind="string",
+        display_name="Weight")
+
     minSize = (30, 30)
     offset = (10, 50)
     padding = (30, 30)
