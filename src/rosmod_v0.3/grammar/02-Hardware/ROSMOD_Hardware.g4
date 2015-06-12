@@ -34,6 +34,7 @@ hardware
         ( 'username' '=' '"' username '"' ';' )
         ( 'sshkey' '=' '"' sshkey '"' ';'  )
         ( 'deployment_path' '=' '"' deployment_path '"' ';' )   
+        ( 'install_path' '=' '"' install_path '"' ';' )
         ( 'init' '=' '"' init '"' ';')?
         ( 'arch' '=' arch ';' )
         '}'
@@ -59,6 +60,12 @@ sshkey
 
 // Path where executables are deployed
 deployment_path
+    :
+        ID
+    ;
+
+// Path where ROS has been installed
+install_path
     :
         ID
     ;
