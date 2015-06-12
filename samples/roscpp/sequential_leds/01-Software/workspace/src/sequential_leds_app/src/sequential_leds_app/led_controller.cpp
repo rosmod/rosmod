@@ -10,6 +10,9 @@ void led_controller::Init(const ros::TimerEvent& event)
   // Initialize Here
   ledPin = 0;  // if using USR LEDs, use 0-3, else use real pin values
   ledState = false;
+  invert = false;
+ 
+  bool start = false;
   
   for (int i = 0; i < node_argc; i++)
     {
@@ -17,12 +20,25 @@ void led_controller::Init(const ros::TimerEvent& event)
 	{
 	  ledPin = atoi(node_argv[i+1]);
 	}
+      if (!strcmp(node_argv[i], "--invert"))
+	{
+	  invert = true;
+	}
       if (!strcmp(node_argv[i], "--start"))
 	{
-	  // publish here
+	  start = true;
 	}
     }
+
   (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
+
+  if (start)
+    {
+      sequential_leds_app::led_state nextLEDState;
+      nextLEDState.pin = ledPin;
+      nextLEDState.state = ledState;
+      led_state_pub.publish(nextLEDState);
+    }
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -33,6 +49,16 @@ void led_controller::Init(const ros::TimerEvent& event)
 void led_controller::led_state_sub_OnOneData(const sequential_leds_app::led_state::ConstPtr& received_data)
 {
   // Business Logic for led_state_sub Subscriber
+  ledState = received_data->state;
+  ledPin = received_data->pin;
+  (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
+
+  ros::Duration(0.5).sleep();
+
+  sequential_leds_app::led_state nextLEDState;
+  nextLEDState.pin = ledPin;
+  nextLEDState.state = ledState;
+  led_state_pub.publish(nextLEDState);
 }
 //# End led_state_sub_OnOneData Marker
 
