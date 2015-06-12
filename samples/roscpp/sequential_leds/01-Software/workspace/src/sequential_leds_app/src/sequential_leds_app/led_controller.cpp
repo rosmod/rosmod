@@ -8,7 +8,21 @@
 void led_controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
+  ledPin = 0;  // if using USR LEDs, use 0-3, else use real pin values
+  ledState = false;
+  
+  for (int i = 0; i < node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--pin"))
+	{
+	  ledPin = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "--start"))
+	{
+	  // publish here
+	}
+    }
+  (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
   // Stop Init Timer
   initOneShotTimer.stop();
 }

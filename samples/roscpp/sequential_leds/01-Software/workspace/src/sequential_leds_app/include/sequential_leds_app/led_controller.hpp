@@ -6,6 +6,7 @@
 #include "sequential_leds_app/led_state.h"
 #include "sequential_leds_app/led_state.h"
 //# Start User Includes Marker
+#include "gpio/gpio.h"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -38,6 +39,8 @@ private:
   ros::Publisher led_state_pub;
 
   //# Start User Private Variables Marker
+  bool ledState;
+  unsigned int ledPin;
   //# End User Private Variables Marker
 };
 
