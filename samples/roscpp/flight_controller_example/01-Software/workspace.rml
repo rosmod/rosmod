@@ -1,0 +1,190 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - flight_controller_package
+package flight_controller_package
+{
+  // ROSMOD Component - Pitch_Sensor
+  component Pitch_Sensor : Base 
+  {
+    // ROSMOD Publisher - pitch_publisher
+    publisher <flight_controller_package/Pitch> pitch_publisher;
+    // ROSMOD Timer - pitch_sensor_timer
+    timer pitch_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50.0;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Yaw_Sensor
+  component Yaw_Sensor : Base 
+  {
+    // ROSMOD Publisher - yaw_publisher
+    publisher <flight_controller_package/Pitch> yaw_publisher;
+    // ROSMOD Timer - yaw_sensor_timer
+    timer yaw_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50.0;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - Roll_Sensor
+  component Roll_Sensor : Base 
+  {
+    // ROSMOD Publisher - roll_publisher
+    publisher <flight_controller_package/Pitch> roll_publisher;
+    // ROSMOD Timer - roll_sensor_timer
+    timer roll_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50.0;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - Altitude_Sensor
+  component Altitude_Sensor : Base 
+  {
+    // ROSMOD Publisher - altitude_publisher
+    publisher <flight_controller_package/Pitch> altitude_publisher;
+    // ROSMOD Timer - altitude_sensor_timer
+    timer altitude_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50.0;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Pitch_Actuator
+  component Pitch_Actuator : Base 
+  {
+    // ROSMOD Server - pitch_control_server
+    server <flight_controller_package/Pitch_Control> pitch_control_server 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Roll_Actuator
+  component Roll_Actuator : Base 
+  {
+    // ROSMOD Server - roll_control_server
+    server <flight_controller_package/Roll_Control> roll_control_server 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Yaw_Actuator
+  component Yaw_Actuator : Base 
+  {
+    // ROSMOD Server - yaw_control_server
+    server <flight_controller_package/Yaw_Control> yaw_control_server 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Throttle_Actuator
+  component Throttle_Actuator : Base 
+  {
+    // ROSMOD Server - throttle_control_server
+    server <flight_controller_package/Throttle_Control> throttle_control_server 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Landing_Gear_Controller
+  component Landing_Gear_Controller : Base 
+  {
+    // ROSMOD Server - landing_gear_control_server
+    server <flight_controller_package/Landing_Gear_Control> landing_gear_control_server 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - PID_Controller
+  component PID_Controller : Base 
+  {
+    // ROSMOD Client - throttle_control_client
+    client <flight_controller_package/Throttle_Control> throttle_control_client;
+    // ROSMOD Client - pitch_control_client
+    client <flight_controller_package/Pitch_Control> pitch_control_client;
+    // ROSMOD Client - roll_control_client
+    client <flight_controller_package/Roll_Control> roll_control_client;
+    // ROSMOD Client - yaw_control_client
+    client <flight_controller_package/Yaw_Control> yaw_control_client;
+    // ROSMOD Client - landing_gear_control_client
+    client <flight_controller_package/Landing_Gear_Control> landing_gear_control_client;
+    // ROSMOD Subscriber - pitch_subscriber
+    subscriber <flight_controller_package/Pitch> pitch_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - roll_subscriber
+    subscriber <flight_controller_package/Roll> roll_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - yaw_subscriber
+    subscriber <flight_controller_package/Yaw> yaw_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - altitude_subscriber
+    subscriber <flight_controller_package/Altitude> altitude_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+    // ROSMOD Timer - pid_control_timer
+    timer pid_control_timer 
+    {
+	period = 0.1;
+	priority = 50.0;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - High_level_Controller
+  component High_level_Controller : Base 
+  {
+    // ROSMOD Subscriber - pitch_subscriber
+    subscriber <flight_controller_package/Pitch> pitch_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - roll_subscriber
+    subscriber <flight_controller_package/Roll> roll_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.4;
+    }       
+    // ROSMOD Subscriber - yaw_subscriber
+    subscriber <flight_controller_package/Yaw> yaw_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - altitude_subscriber
+    subscriber <flight_controller_package/Altitude> altitude_subscriber 
+    {
+      priority = 50.0;
+      deadline = 0.2;
+    }       
+    // ROSMOD Timer - high_level_timer
+    timer high_level_timer 
+    {
+	period = 0.5;
+	priority = 50.0;
+	deadline = 0.5;
+    }       
+  }
+}
