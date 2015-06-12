@@ -1,10 +1,13 @@
-# KRPC Flight Controller
+# KRPC Flight Controller for 
 # Date: 2015.06.11
 
 import krpc
 import time
 import math
 from pid import *
+
+def clamp(n, minn, maxn):
+    return max(min(maxn, n), minn)
 
 def get_relative_heading(current, target):
     relative_longitude = (target.longitude - current.longitude)
@@ -29,7 +32,8 @@ class Flight_Controller:
         self.ref_frame = self.vessel.orbit.body.reference_frame
         self.control = self.vessel.control
         self.control.brakes = True
-        self.cruise_altitude = 1000
+        self.cruise_altitude = 10000
+        self.gear_altitude = 100
         self.waypoint_list = []
         print "Ready to Take Off!"
         self.state = "Take_Off"
@@ -39,61 +43,48 @@ class Flight_Controller:
             self.run()
 
     def change_state(self, target_heading, target_altitude):
-        print "Changing State!"
         # Prepare to change state
         self.control.sas = False
         self.control.pitch = 0.0
         self.control.roll = 0.0        
         self.control.yaw = 0.0
 
-        altitude_tolerance = 10
-        heading_tolerance = 2
-        roll_tolerance = 2
+        # Roll PID 
+        roll_PID = PID(P=0.05, D=0.0)
+        roll_PID.setPoint(0.0)
 
-        AoA_PID = PID()
-        altitude_PID = PID()
-        AoA_setting = 0
+        # Pitch PID
+        pitch_PID = PID(P=0.1, I=0.01, Integrator_max=75, Integrator_min = -75)
+        pitch_PID_setting = 0
+
+        # Altitude PID 
+        altitude_PID = PID(P=0.05, D=5.0, I=0.01, Integrator_max=75, Integrator_min=-75)
+        altitude_PID.setPoint(target_altitude)
+
         while True:
-            # want this to give us an angle between [-45,45] degrees
-            temp_alt = altitude_PID.update(self.flight.surface_altitude) 
-            AoA_setting = temp_alt
-            AoA_PID.setPoint(AoA_setting)
+
+            if self.flight.surface_altitude < self.gear_altitude and self.control.gear == False:
+                self.control.gear = True
+            elif self.flight.surface_altitude > self.gear_altitude and self.control.gear == True:
+                self.control.gear = False
+ 
+            # Altitude PID Control
+            altitude_output = altitude_PID.update(self.flight.surface_altitude)
+            #altitude_output = clamp(altitude_output, -20, 20) 
+            pitch_setting = altitude_output
+            # Set desired pitch
+            pitch_PID.setPoint(pitch_setting)
+
+            # Pitch PID Control - Set new pitch
             # want this to give us a pitch between [-1,1]
-            temp_AoA = AoA_PID.update(self.flight.pitch)
-            self.control.pitch = temp_AoA
+            pitch_output = pitch_PID.update(self.flight.pitch)
+            self.control.pitch = pitch_output
 
-        while (abs(self.flight.heading - target_heading) > altitude_tolerance) or (abs(self.flight.surface_altitude - target_altitude) > altitude_tolerance):
+            # Roll PID Control
+            roll_output = roll_PID.update(self.flight.roll)
+            self.control.roll = roll_output
 
-            if (abs(self.flight.heading - target_heading) > heading_tolerance):
-                roll_pid = PID()
-                roll_pid.setPoint(-90)
-                while (abs(self.flight.roll + 90) > roll_tolerance):
-                    temp_roll = roll_pid.update(self.flight.roll)
-                    print "Roll: " + str(temp_roll)
-                    self.control.roll = temp_roll
-                    
-                heading_pid = PID()
-                heading_pid.setPoint(target_heading)
-                while (abs(self.flight.heading - target_heading) > heading_tolerance):
-                     temp_heading = heading_pid.update(self.flight.heading)
-                     print "Heading: " + str(temp_heading)
-                     self.control.pitch = temp_heading
-
-            if (abs(self.flight.surface_altitude - target_altitude) > altitude_tolerance):
-                roll_pid = PID()
-                roll_pid.setPoint(0)
-                while (abs(self.flight.roll) > roll_tolerance):
-                    temp_roll = roll_pid.update(self.flight.roll)
-                    print "Roll: " + str(temp_roll)
-                    self.control.roll = temp_roll
-                                    
-                altitude_pid = PID()
-                altitude_pid.setPoint(target_altitude)
-                while (abs(self.flight.surface_altitude - target_altitude) > altitude_tolerance):
-                    temp_heading = altitude_pid.update(self.flight.surface_altitude)/10000
-                    print "Heading: " + str(temp_heading)
-                    self.control.pitch = temp_heading
-                
+            time.sleep(0.05)                
 
     def run(self):
         while True:
