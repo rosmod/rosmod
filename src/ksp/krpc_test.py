@@ -50,6 +50,18 @@ class Flight_Controller:
         heading_tolerance = 2
         roll_tolerance = 2
 
+        AoA_PID = PID()
+        altitude_PID = PID()
+        AoA_setting = 0
+        while True:
+            # want this to give us an angle between [-45,45] degrees
+            temp_alt = altitude_PID.update(self.flight.surface_altitude) 
+            AoA_setting = temp_alt
+            AoA_PID.setPoint(AoA_setting)
+            # want this to give us a pitch between [-1,1]
+            temp_AoA = AoA_PID.update(self.flight.pitch)
+            self.control.pitch = temp_AoA
+
         while (abs(self.flight.heading - target_heading) > altitude_tolerance) or (abs(self.flight.surface_altitude - target_altitude) > altitude_tolerance):
 
             if (abs(self.flight.heading - target_heading) > heading_tolerance):
