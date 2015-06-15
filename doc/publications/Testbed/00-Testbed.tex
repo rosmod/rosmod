@@ -50,50 +50,8 @@ Email:\{pkumar, emfinger, gabor\}@isis.vanderbilt.edu}
 
 \input{Abstract}
 \input{Introduction}
-
-CPS are hard to develop hardware/software for; because the software is coupled with the hardware, software testing and deployment may be difficult.  Many systems require rigorous testing before final deployment, but may not be able to be tested easily in the lab or in the real world without first providing the assurances that the tests produce.  For such systems, a closed-loop simulation testbed is necessary which can fully emulate the deployed system, including the physical characteristics of the nodes, the network characteristics of the systems, and the sensors and actuators which the systems used.  Furthermore, many of these systems use specialized embedded computers which have very different software and hardware support than cloud-based testing infrastructure can provide.  
-
-use automotive industry testbed as example, this is cost effective version for other embedded systems developers and researchers
-
-architectural description:
-require good physics integration -> distributed -> time sync -> low jitter -> accurate timing
-what kind of tests can you run?
-what kind of systems is this good for?
-
-limitations:
-can't do all integration testing
-usb-ethernet -> limitation for physics possibly -> what scenarios
-switches can be limitations depending on applications and such -> to what can they support?
-processing limitations -> dependent on testbed -> hardware prototyping boards should be used for relevant hardware
-how does the system/testbed scale: switches? openflow?
-
-future work:
-test/measure jitter
-
-
 \input{Problem_Statement}
 \input{Testbed}
-\subsection{Overall Architecture}
-\subsubsection{Application Network and Emulation}
-\subsubsection{Physics Network}
-\subsubsection{Physics sim and interface}
-\subsubsection{Actual hardware}
-
-\subsection{System Analysis}
-\subsubsection{Network Analysis}
-\subsubsection{Timing Analysis}
-
-\subsection{Testing}
-\subsubsection{Orbiter}
-Good for certain types of system testing but not great for doing tests across multiple domains
-\subsubsection{KSP}
-Though not as accurate, allows testing between multiple interacting domains.
-
-\subsection{Limitations}
-
-\subsection{Extensions}
-
-
 \input{Related_Research}
 \input{Conclusions}
 
