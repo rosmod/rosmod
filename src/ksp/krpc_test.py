@@ -57,8 +57,10 @@ class Flight_Controller:
         pitch_PID = PID(P=0.1, I=0.01, Integrator_max=75, Integrator_min = -75)
         pitch_PID_setting = 0
 
-        # Altitude PID 
-        altitude_PID = PID(P=0.05, D=5.0, I=0.01, Integrator_max=75, Integrator_min=-75)
+        # Altitude PID
+        gain = abs(self.flight.surface_altitude - target_altitude) * 1/10000.0
+        altitude_PID = PID(P=gain*5, D=gain*500.0, I=gain, Integrator_max=75, Integrator_min=-75)
+        #altitude_PID = PID(P=0.05, D=5.0, I=0.01, Integrator_max=75, Integrator_min=-75)
         altitude_PID.setPoint(target_altitude)
 
         while True:
@@ -70,7 +72,7 @@ class Flight_Controller:
  
             # Altitude PID Control
             altitude_output = altitude_PID.update(self.flight.surface_altitude)
-            #altitude_output = clamp(altitude_output, -20, 20) 
+            #altitude_output = clamp(altitude_output, -40, 40) 
             pitch_setting = altitude_output
             # Set desired pitch
             pitch_PID.setPoint(pitch_setting)
