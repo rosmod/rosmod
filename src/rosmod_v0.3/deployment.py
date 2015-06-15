@@ -79,6 +79,7 @@ def parallelDeploy(hostDict,updateQ=None):
         executableString = node.executable
         if host.ipAddress not in local_ips:
             envVarStr = envVarStr.replace(';','')
+            envVarStr += "export LD_LIBRARY_PATH={}:$LD_LIBRARY_PATH".format(node.deploymentDir)
             with prefix(envVarStr):
                 env.key_filename = host.keyFile
                 env.host_string = "{}@{}".format(host.userName,host.ipAddress)
@@ -214,7 +215,10 @@ def stopNode(self,e):
         host = self.hostDict[node.properties['hardware_reference'].properties['name']]
         nodeprops = [x for x in host.nodes if x.name == node.properties['name']][0]
         if host.ipAddress not in local_ips:
-            pass
+            env.key_filename = host.keyFile
+            env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+            for pid in nodeprops.pids:
+                run('kill -9 {}'.format(pid))
         else:
             for pid in nodeprops.pids:
                 local('kill -9 {}'.format(pid),capture=True)
