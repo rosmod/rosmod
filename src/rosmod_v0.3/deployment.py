@@ -79,7 +79,7 @@ def parallelDeploy(hostDict,updateQ=None):
         executableString = node.executable
         if host.ipAddress not in local_ips:
             envVarStr = envVarStr.replace(';','')
-            envVarStr += "export LD_LIBRARY_PATH={}:$LD_LIBRARY_PATH".format(node.deploymentDir)
+            #envVarStr += "export LD_LIBRARY_PATH={}:$LD_LIBRARY_PATH".format(node.deploymentDir)
             with prefix(envVarStr):
                 env.key_filename = host.keyFile
                 env.host_string = "{}@{}".format(host.userName,host.ipAddress)

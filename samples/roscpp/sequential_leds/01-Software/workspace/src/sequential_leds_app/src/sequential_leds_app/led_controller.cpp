@@ -9,6 +9,7 @@ void led_controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
   ledPin = 0;  // if using USR LEDs, use 0-3, else use real pin values
+  useGPIO = true;
   ledState = false;
   invert = false;
  
@@ -28,14 +29,21 @@ void led_controller::Init(const ros::TimerEvent& event)
 	{
 	  start = true;
 	}
+      if (!strcmp(node_argv[i], "--nogpio"))
+	{
+	  useGPIO = false;
+	}
     }
 
-  (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
+  if (useGPIO)
+    (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
 
   if (start)
     {
       ledState = true;
-      (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
+      if (useGPIO)
+	(ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
+      printf("Publishing new state %d for pin %d\n",ledState,ledPin);
       sequential_leds_app::led_state nextLEDState;
       nextLEDState.pin = ledPin;
       nextLEDState.state = ledState;
@@ -53,13 +61,16 @@ void led_controller::led_state_sub_OnOneData(const sequential_leds_app::led_stat
   // Business Logic for led_state_sub Subscriber
   ledState = received_data->state;
   ledPin = received_data->pin;
-  (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
+  printf("Received new state %d for pin %d\n",ledState,ledPin);
+  if (useGPIO)
+    (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
 
   ros::Duration(0.5).sleep();
 
   sequential_leds_app::led_state nextLEDState;
   if (invert)
     ledState = !ledState;
+  printf("Publishing new state %d for pin %d\n",ledState,ledPin);
   nextLEDState.pin = ledPin;
   nextLEDState.state = ledState;
   led_state_pub.publish(nextLEDState);
