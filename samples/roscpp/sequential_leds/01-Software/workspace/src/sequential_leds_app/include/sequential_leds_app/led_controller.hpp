@@ -39,9 +39,10 @@ private:
   ros::Publisher led_state_pub;
 
   //# Start User Private Variables Marker
-    bool ledState;
+  bool ledState;
   bool invert;
   unsigned int ledPin;
+  bool useGPIO;
   //# End User Private Variables Marker
 };
 
