@@ -88,7 +88,7 @@ class log_Wrapper(object):
     def write(self,text):
         wx.CallAfter(self.log.write, text, self.color)
     def flush(self):
-        wx.Getapp().ProcessPendingEvents() 
+        wx.CallAfter(self.log.write, "", self.color)
     __call__ = write
 
 class OutTextThread(threading.Thread):

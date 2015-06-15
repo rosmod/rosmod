@@ -34,6 +34,8 @@ void led_controller::Init(const ros::TimerEvent& event)
 
   if (start)
     {
+      ledState = true;
+      (ledState) ? led_set_value(ledPin, HIGH) : led_set_value(ledPin, LOW);
       sequential_leds_app::led_state nextLEDState;
       nextLEDState.pin = ledPin;
       nextLEDState.state = ledState;
@@ -56,6 +58,8 @@ void led_controller::led_state_sub_OnOneData(const sequential_leds_app::led_stat
   ros::Duration(0.5).sleep();
 
   sequential_leds_app::led_state nextLEDState;
+  if (invert)
+    ledState = !ledState;
   nextLEDState.pin = ledPin;
   nextLEDState.state = ledState;
   led_state_pub.publish(nextLEDState);

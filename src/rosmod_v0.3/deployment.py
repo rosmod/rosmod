@@ -166,7 +166,7 @@ def startMaster(self,e):
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-        run('source /home/jeb/Repositories/ROS-Indigo/install_isolated/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
+        run('source /opt/ros/indigo/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
     else:
         local('dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
 
