@@ -18,3 +18,26 @@ package sequential_leds_app
     }       
   }
 }
+// ROSMOD Package - client_server
+package client_server
+{
+  // ROSMOD Component - led_service_comp
+  component led_service_comp : Base 
+  {
+    // ROSMOD Server - led_server
+    server <client_server/led_state> led_server 
+    {
+      priority = 50.0;
+      deadline = 0.5;
+    }       
+    // ROSMOD Client - led_client
+    client <client_server/led_state> led_client;
+    // ROSMOD Timer - ledTimer
+    timer ledTimer 
+    {
+	period = 0.5;
+	priority = 50.0;
+	deadline = 0.5;
+    }       
+  }
+}
