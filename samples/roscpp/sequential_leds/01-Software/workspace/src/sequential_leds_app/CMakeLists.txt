@@ -179,6 +179,16 @@ include_directories(
 # catkin_add_nosetests(test)
 include_directories(include ${catkin_INCLUDE_DIRS})
 
+add_executable(simplePubSub
+  src/sequential_leds_app/simplePubSub.cpp
+  )
+target_link_libraries(simplePubSub
+  ${catkin_LIBRARIES}
+  )
+add_dependencies(simplePubSub
+  sequential_leds_app_generate_messages_cpp
+  )
+
 add_library(led_controller
 	    src/sequential_leds_app/Component.cpp
             src/sequential_leds_app/Logger.cpp
