@@ -34,7 +34,7 @@ hardware
         ( 'username' '=' '"' username '"' ';' )
         ( 'sshkey' '=' '"' sshkey '"' ';'  )
         ( 'deployment_path' '=' '"' deployment_path '"' ';' )   
-        ( 'install_path' '=' '"' install_path '"' ';' )
+        ( 'install_path' '=' '"' install_path '"' ';' )?
         ( 'init' '=' '"' init '"' ';')?
         ( 'arch' '=' arch ';' )
         '}'
