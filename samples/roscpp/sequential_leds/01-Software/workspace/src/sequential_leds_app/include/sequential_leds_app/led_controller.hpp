@@ -41,7 +41,7 @@ private:
   //# Start User Private Variables Marker
   bool ledState;
   bool invert;
-  unsigned int ledPin;
+  unsigned int numLEDs;
   bool useGPIO;
   //# End User Private Variables Marker
 };

@@ -116,9 +116,11 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ=Non
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         for source,dest in copyList:
             put(source,dest)
+            run('chmod +x {}'.format(dest + source.split('/')[-1]))
     else:
         for source,dest in copyList:
             local('cp {} {}'.format(source, dest),capture=True)
+            local('chmod +x {}'.format(dest + source.split('/')[-1]),capture=True)
     if updateQ != None:
         updateQ.put(["Copied files to {}".format(env.host_string),1])
 
@@ -235,10 +237,10 @@ def parallelMonitor(hostDict,updateQ):
         for node in host.nodes:
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
-                    try:
-                        status = run('ps --no-headers -p {}'.format(pid))
+                    status = run('ps --no-headers -p {}'.format(pid))
+                    if status != "":
                         updateQ.put(["{} UP".format(node.name),1])
-                    except SystemExit:
+                    else:
                         updateQ.put(["{} DOWN".format(node.name),1])
                         node.pids = []
             else:
@@ -247,10 +249,10 @@ def parallelMonitor(hostDict,updateQ):
         for node in host.nodes:
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
-                    try:
-                        status = local('ps --no-headers -p {}'.format(pid),capture=True)
+                    status = local('ps --no-headers -p {}'.format(pid),capture=True)
+                    if status != "":
                         updateQ.put(["{} UP".format(node.name),1])
-                    except SystemExit:
+                    else:
                         updateQ.put(["{} DOWN".format(node.name),1])
                         node.pids = []
             else:
@@ -258,18 +260,23 @@ def parallelMonitor(hostDict,updateQ):
     return host
 
 def deployTest(self, progress_q):
+    env.warn_only = False
     self.hostDict = execute(parallelDeploy,self.hostDict,progress_q)
 
 def stopTest(self, progress_q):
+    env.warn_only = False
     self.hostDict = execute(parallelStop,self.hostDict,progress_q)
     
 def monitorTest(self, progress_q):
+    env.warn_only = True
     self.hostDict = execute(parallelMonitor,self.hostDict,progress_q)
 
 def copyTest(self, exec_folder_path, xml_folder_path, progress_q):
+    env.warn_only = True
     execute(parallelCopy, self.hostDict, exec_folder_path, xml_folder_path, progress_q)
 
 def runCommandTest(self, command, progress_q):
+    env.warn_only = True
     execute(parallelCommand, self.hostDict, command, progress_q)
 
 class testClass:

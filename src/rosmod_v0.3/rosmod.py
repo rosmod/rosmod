@@ -421,16 +421,15 @@ class Example(wx.Frame):
         self.GenerateXML()
 
     def BuildHostDict(self,dep,rosCoreIP=""):
-        #env.warn_only = False
         env.use_ssh_config = False
-        self.hostDict = {}
+        self.hostDict = OrderedDict()
         env.hosts = []
         hostToNodeListMap = {}
         numNodes = 0
         numHosts = 0
         for node in dep.getChildrenByKind("Node"):
-            host = node.properties['hardware_reference']
             numNodes += 1
+            host = node.properties['hardware_reference']
             deploymentPath = node.properties['deployment_path']
             if deploymentPath == "":
                 deploymentPath = host.properties['deployment_path']
@@ -457,8 +456,8 @@ class Example(wx.Frame):
                 hostToNodeListMap[host].append( newNode )
             else:
                 hostToNodeListMap[host] = [ newNode ]
-                numHosts += 1
         for host,nodeList in hostToNodeListMap.iteritems():
+            numHosts += 1
             self.hostDict[host.properties['name']] = deployment.deployed_host(
                 name = host.properties['name'],
                 userName = host.properties['username'],
@@ -527,16 +526,18 @@ class Example(wx.Frame):
             info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
+            numNodes = 0
+            numHosts = 0
             if self.deployed == False:
-                self.BuildHostDict(dep)
-            copyProgressQ = multiprocessing.Queue()
+                numNodes, numHosts = self.BuildHostDict(dep)
+            runProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( parent = self,
                                              title="Copy Progress",
-                                             progress_q = copyProgressQ,
+                                             progress_q = runProgressQ,
                                              numItems=len(self.hostDict))
             workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self,
                                                                                   command,
-                                                                                  copyProgressQ)
+                                                                                  runProgressQ)
                                     )
             workerThread.start()
             dlg.ShowModal()

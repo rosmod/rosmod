@@ -166,7 +166,7 @@ def SSHToHost(self,e):
     self.shop.Check(True)
     self.UpdateMainWindow(None)
     command = "/usr/bin/ssh"
-    args = "-i {} {}@{}".format( host.properties['sshkey'], 
+    args = "-i {} {}@{}".format( os.path.expanduser(host.properties['sshkey']), 
                                  host.properties['username'],
                                  host.properties['ip_address'])
     self.output.AddPage(TermEmulatorDemo(self.output,
@@ -186,7 +186,7 @@ def MonitorNodeLog(self,e):
     if host.properties["ip_address"] not in deployment.local_ips:
         command = "/usr/bin/ssh"
         args = "-i {} {}@{} tail -f {}".format( 
-            host.properties['sshkey'], 
+            os.path.expanduser(host.properties['sshkey']), 
             host.properties['username'],
             host.properties['ip_address'],
             fileString)
@@ -210,7 +210,7 @@ def MonitorCompInstLog(self,e):
     if host.properties["ip_address"] not in deployment.local_ips:
         command = "/usr/bin/ssh"
         args = "-i {} {}@{}  tail -f {}/{}.{}.log".format( 
-            host.properties['sshkey'], 
+            os.path.expanduser(host.properties['sshkey']), 
             host.properties['username'],
             host.properties['ip_address'],
             host.properties["deployment_path"],
