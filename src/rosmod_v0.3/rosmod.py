@@ -427,6 +427,7 @@ class Example(wx.Frame):
         env.hosts = []
         hostToNodeListMap = {}
         numNodes = 0
+        numHosts = 0
         for node in dep.getChildrenByKind("Node"):
             host = node.properties['hardware_reference']
             numNodes += 1
@@ -456,6 +457,7 @@ class Example(wx.Frame):
                 hostToNodeListMap[host].append( newNode )
             else:
                 hostToNodeListMap[host] = [ newNode ]
+                numHosts += 1
         for host,nodeList in hostToNodeListMap.iteritems():
             self.hostDict[host.properties['name']] = deployment.deployed_host(
                 name = host.properties['name'],
@@ -479,7 +481,7 @@ class Example(wx.Frame):
                     ['LD_LIBRARY_PATH',host.properties['deployment_path']]
                 )
             env.hosts.append(host.properties['name'])
-        return numNodes
+        return numNodes,numHosts
         
 
     def OnDeploymentMove(self,e):
@@ -489,12 +491,12 @@ class Example(wx.Frame):
             info = self.activeAspectInfo.GetPageInfo(objName)
             dep = info.obj
             canvas = info.canvas
-            numNodes = self.BuildHostDict(dep)
+            numNodes, numHosts = self.BuildHostDict(dep)
             copyProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( parent = self,
                                              title="Copy Progress",
                                              progress_q = copyProgressQ,
-                                             numItems=numNodes)
+                                             numItems=numHosts)
             workerThread = WorkerThread(
                 func = lambda : deployment.copyTest(
                     self,
@@ -564,7 +566,7 @@ class Example(wx.Frame):
 
                 self.rosCoreHost = properties['hardware_reference']
                 rosCoreIP = self.rosCoreHost.properties['ip_address']
-                numNodes = self.BuildHostDict(dep,rosCoreIP)
+                numNodes, numHosts = self.BuildHostDict(dep,rosCoreIP)
 
                 print "ROSMOD::Starting ROSCORE!"
                 deployment.startMaster(self,None)
