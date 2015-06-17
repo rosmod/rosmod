@@ -5,9 +5,19 @@ require good physics integration -> distributed -> time sync -> low jitter -> ac
 what kind of tests can you run?
 what kind of systems is this good for?
 \subsubsection{Application Network and Emulation}
+What network emulation is; why is it useful; how it is done: Dummynet (like last year's paper) and OpenFlow (like we're trying to do this year)
+
+This network emulates the physical network which the system would use after deployment.  This can be a wired or wireless network or networks with any topology.  Using network emulation techniques the characteristics of the network as it would exist after deployment can be enforced on the testbed's application network traffic to emulate the real network.
 \subsubsection{Physics Network}
+This network provides the infrastructure necessary to emulate the systems' sensors and actuators, and allows the testbed software to receive sensor data and output actuator commands to the simulation.
 \subsubsection{Physics sim and interface}
+The physics simulation closes the loop for the testbed, allowing the physical dynamics of the testbed's hardware to be simulated in the environment in which it would be deployed.  Furthermore, an API allows the aspects of the simulation such as sensor data and control commands to be transmitted between the testbed and the simulation.
+
+One such simulator which supports this type of interface and has proven useful for the development and testing of CPS applications is Orbiter Space Flight Simulator.  Orbiter allows for very accurate gravitational dynamics simulation for systems in the solar system.  Using the API provided by the Orbiter add-on OrbConnect, programs can communicate with and control the spacecraft in the simulation.  
+
+Another more recent alternative to Orbiter, Kerbal Space Program (KSP), supports a wider range of physical system simulations, and expedites the process of simulation development and deployment.  Because KSP supports not only gravitational dynamics simulation, but also aerodynamic, rigid-body, and fluid simulation, it can be used to simulation systems which interact with these different domains.  Using the API provided by the KSP add-on KRPC (KSP remote procedure call), programs can control the state of the simulation and communicate with the systems in the simulation.  Whereas simulation development with orbiter required either the use of pre-existing models (e.g. the space-shuttle), or complete 3d modeling and specification of the system components to be simulated, simulation development with KSP is facilitated by the built-in tools KSP has to build aerospace/ground systems from their constituent components.  Because KSP has a large library of built-in components which have been modeled and can be composed together however the designer chooses, the capability to develop new simulations is greatly improved.  
 \subsubsection{Actual hardware}
+The hardware which runs the testbed application software is composed of 32 BeagleBone Blacks.  These embedded computing boards run Ubuntu Linux on a dual-core 32-bit ARM processor with an embedded GPU.  
 
 \subsection{System Analysis}
 \subsubsection{Network Analysis}
