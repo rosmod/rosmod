@@ -10,7 +10,7 @@ grammar ROSMOD_Deployment;
  * This is the start of the deployment model
  */
 start
-    :   ( 'using' reference ';' )
+    :   ( 'using' (' ')* reference (' ')* ';' )
         ( node )*
     ;
 
@@ -37,17 +37,17 @@ rdp_hardware
 
 // Node Instances in Hardware Instance
 node
-    :   'node' name
-        '{'
+    :   'node' (' ')* name (' ')*
+        (' ')* '{' (' ')*
             'properties'
-            '{'
-                ( 'ref' '=' '"' reference '"' ';' )
-                ( 'priority' '=' priority ';' )
-                ( 'username' '=' '"' username '"' ';' )?
-                ( 'sshkey' '=' '"' sshkey '"' ';'  )?
-                ( 'deployment_path' '=' '"' deployment_path '"' ';' )?   
-                ( 'init' '=' '"' init '"' ';')?
-                ( 'cmd_args' '=' '"' cmd_args '"' ';' )?
+            (' ')* '{' (' ')*
+                ( 'ref' (' ')* '=' (' ')* '"' reference '"' (' ')* ';' )
+                ( 'priority' (' ')* '=' (' ')* priority (' ')* ';' )
+                ( 'username' (' ')* '=' (' ')* '"' username '"' (' ')* ';' )?
+                ( 'sshkey' (' ')* '=' (' ')* '"' sshkey '"' (' ')* ';'  )?
+                ( 'deployment_path' (' ')* '=' (' ')* '"' deployment_path '"' (' ')* ';' )?   
+                ( 'init' (' ')* '=' (' ')* '"' init '"' (' ')* ';')?
+                ( 'cmd_args' (' ')* '=' (' ')* '"' cmd_args '"' (' ')* ';' )?
             '}'
 
             ( component_instance )*  
@@ -88,7 +88,7 @@ init
 // Command line Arguments
 cmd_args
     :   
-        ID
+        ID ((' ') ID)*
     ;
 
 // Component Scheduling Scheme
@@ -130,20 +130,20 @@ priority
 
 component_instance
     :
-        'component_instance' name
-        '{'
+        'component_instance' (' ')* name (' ')*
+        (' ')* '{' (' ')*
             'properties'
-            '{'
-                ( 'ref' '=' '"' reference '"' ';')
-		('scheduling_scheme' '=' scheduling_scheme ';' ) 
+            (' ')* '{' (' ')*
+                ( 'ref' (' ')* '=' (' ')* '"' reference '"' (' ')* ';')
+		('scheduling_scheme' (' ')* '=' (' ')* scheduling_scheme (' ')* ';' ) 
                 (
                   'logging'
-                  '{'
-                      'DEBUG' '=' logging_debug ';'
-                      'INFO' '=' logging_info ';'
-                      'WARNING' '=' logging_warning ';'
-                      'ERROR' '=' logging_error ';'
-                      'CRITICAL' '=' logging_critical ';'                
+                  (' ')* '{' (' ')*
+                      'DEBUG' (' ')* '=' (' ')* logging_debug (' ')* ';'
+                      'INFO' (' ')* '=' (' ')* logging_info (' ')* ';'
+                      'WARNING' (' ')* '=' (' ')* logging_warning (' ')* ';'
+                      'ERROR' (' ')* '=' (' ')* logging_error (' ')* ';'
+                      'CRITICAL' (' ')* '=' (' ')* logging_critical (' ')* ';'                
                    '}'
 		 )
              '}'
@@ -156,10 +156,10 @@ component_instance
 // Reference to a component port in Software Model
 port_instance 
     :   
-        'port_instance' name
-        '{'
-            'ref' '=' '"' reference '"' ';'
-            'group' '=' '"' group '"' ';' 
+        'port_instance' (' ')* name
+        (' ')* '{' (' ')*
+            'ref' (' ')* '=' (' ')* '"' reference '"' (' ')* ';'
+            'group' (' ')* '=' (' ')* '"' group '"' (' ')* ';' 
         '}'
     ;
 
