@@ -42,7 +42,7 @@ from xml import *
 import rhw as rhw_template
 import rdp as rdp_template
 
-import shutil
+from shutil import *
 
 class ROSMOD_Generator:
     # Main Generate Function
@@ -215,19 +215,19 @@ class ROSMOD_Generator:
                     os.makedirs(self.krpci_src)
 
                 # krpci.hpp
-                copy_file(os.path.abspath('krpci/krpci.hpp'), self.krpci_include)
+                copyfile(os.path.abspath('krpci/krpci.hpp'), self.krpci_include + '/krpci.hpp')
 
                 # KRPC.pb.h
-                copy_file(os.path.abspath('krpci/KRPC.pb.h'), self.krpci_include)
+                copyfile(os.path.abspath('krpci/KRPC.pb.h'), self.krpci_include + '/KRPC.pb.h')
 
                 # krpci_base.cpp
-                copy_file(os.path.abspath('krpci/krpci_base.cpp'), self.krpci_src)
+                copyfile(os.path.abspath('krpci/krpci_base.cpp'), self.krpci_src + '/krpci_base.cpp')
 
                 # krpci_generated.cpp
-                copy_file(os.path.abspath('krpci/krpci_generated.cpp'), self.krpci_src)
+                copyfile(os.path.abspath('krpci/krpci_generated.cpp'), self.krpci_src + '/krpci_generated.cpp')
 
                 # KRPC.pb.cc
-                copy_file(os.path.abspath('krpci/KRPC.pb.cc'), self.krpci_src)
+                copyfile(os.path.abspath('krpci/KRPC.pb.cc'), self.krpci_src + '/KRPC.pb.cc')
 
             messages = []
             services = []

@@ -6,7 +6,7 @@
 package flight_controller_package
 {
   // ROSMOD Component - Pitch_Sensor
-  component Pitch_Sensor : Base 
+  component Pitch_Sensor : KSP 
   {
     // ROSMOD Publisher - pitch_publisher
     publisher <flight_controller_package/Pitch> pitch_publisher;
@@ -14,12 +14,12 @@ package flight_controller_package
     timer pitch_sensor_timer 
     {
 	period = 0.2;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.2;
     }       
   }
   // ROSMOD Component - Yaw_Sensor
-  component Yaw_Sensor : Base 
+  component Yaw_Sensor : KSP 
   {
     // ROSMOD Publisher - yaw_publisher
     publisher <flight_controller_package/Pitch> yaw_publisher;
@@ -27,12 +27,12 @@ package flight_controller_package
     timer yaw_sensor_timer 
     {
 	period = 0.2;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.1;
     }       
   }
   // ROSMOD Component - Roll_Sensor
-  component Roll_Sensor : Base 
+  component Roll_Sensor : KSP 
   {
     // ROSMOD Publisher - roll_publisher
     publisher <flight_controller_package/Pitch> roll_publisher;
@@ -40,12 +40,12 @@ package flight_controller_package
     timer roll_sensor_timer 
     {
 	period = 0.2;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.1;
     }       
   }
   // ROSMOD Component - Altitude_Sensor
-  component Altitude_Sensor : Base 
+  component Altitude_Sensor : KSP 
   {
     // ROSMOD Publisher - altitude_publisher
     publisher <flight_controller_package/Pitch> altitude_publisher;
@@ -53,57 +53,57 @@ package flight_controller_package
     timer altitude_sensor_timer 
     {
 	period = 0.2;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.2;
     }       
   }
   // ROSMOD Component - Pitch_Actuator
-  component Pitch_Actuator : Base 
+  component Pitch_Actuator : KSP 
   {
     // ROSMOD Server - pitch_control_server
     server <flight_controller_package/Pitch_Control> pitch_control_server 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
   }
   // ROSMOD Component - Roll_Actuator
-  component Roll_Actuator : Base 
+  component Roll_Actuator : KSP 
   {
     // ROSMOD Server - roll_control_server
     server <flight_controller_package/Roll_Control> roll_control_server 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
   }
   // ROSMOD Component - Yaw_Actuator
-  component Yaw_Actuator : Base 
+  component Yaw_Actuator : KSP 
   {
     // ROSMOD Server - yaw_control_server
     server <flight_controller_package/Yaw_Control> yaw_control_server 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
   }
   // ROSMOD Component - Throttle_Actuator
-  component Throttle_Actuator : Base 
+  component Throttle_Actuator : KSP 
   {
     // ROSMOD Server - throttle_control_server
     server <flight_controller_package/Throttle_Control> throttle_control_server 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
   }
   // ROSMOD Component - Landing_Gear_Controller
-  component Landing_Gear_Controller : Base 
+  component Landing_Gear_Controller : KSP 
   {
     // ROSMOD Server - landing_gear_control_server
     server <flight_controller_package/Landing_Gear_Control> landing_gear_control_server 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
   }
@@ -123,32 +123,32 @@ package flight_controller_package
     // ROSMOD Subscriber - pitch_subscriber
     subscriber <flight_controller_package/Pitch> pitch_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
     // ROSMOD Subscriber - roll_subscriber
     subscriber <flight_controller_package/Roll> roll_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.1;
     }       
     // ROSMOD Subscriber - yaw_subscriber
     subscriber <flight_controller_package/Yaw> yaw_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
     // ROSMOD Subscriber - altitude_subscriber
     subscriber <flight_controller_package/Altitude> altitude_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
     // ROSMOD Timer - pid_control_timer
     timer pid_control_timer 
     {
 	period = 0.1;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.2;
     }       
   }
@@ -158,32 +158,32 @@ package flight_controller_package
     // ROSMOD Subscriber - pitch_subscriber
     subscriber <flight_controller_package/Pitch> pitch_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
     // ROSMOD Subscriber - roll_subscriber
     subscriber <flight_controller_package/Roll> roll_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.4;
     }       
     // ROSMOD Subscriber - yaw_subscriber
     subscriber <flight_controller_package/Yaw> yaw_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
     // ROSMOD Subscriber - altitude_subscriber
     subscriber <flight_controller_package/Altitude> altitude_subscriber 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.2;
     }       
     // ROSMOD Timer - high_level_timer
     timer high_level_timer 
     {
 	period = 0.5;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.5;
     }       
   }
