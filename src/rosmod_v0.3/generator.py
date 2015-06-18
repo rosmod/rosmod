@@ -42,6 +42,12 @@ from xml import *
 import rhw as rhw_template
 import rdp as rdp_template
 
+from krpci_base_cpp import *
+from krpci_generated_cpp import *
+from krpci_hpp import  *
+from KRPC_pb_cc import *
+from KRPC_pb_h import *
+
 class ROSMOD_Generator:
     # Main Generate Function
     def generate_workspace(self, workspace, path):
@@ -195,6 +201,58 @@ class ROSMOD_Generator:
             self.src = self.package_path + "/src"
             if not os.path.exists(self.src):
                 os.makedirs(self.src)
+
+            needs_io = False
+            for comp in package.getChildrenByKind("Component"):
+                if comp.properties['datatype'] == 'KSP':
+                    needs_io = True
+
+            print 'Detected KSP Component?: ' + str(needs_io)
+
+            if needs_io == True:
+                self.krpci_include = self.include + '/krpci'
+                if not os.path.exists(self.krpci_include):
+                    os.makedirs(self.krpci_include)
+
+                self.krpci_src = self.src + '/krpci'
+                if not os.path.exists(self.krpci_src):
+                    os.makedirs(self.krpci_src)
+
+                # krpci.hpp
+                krpci_hpp_namespace = {'hash_include' : "#include"}
+                t = krpci_hpp(searchList=[krpci_hpp_namespace])
+                self.krpci_hpp = str(t)
+                with open(os.path.join(self.krpci_include, 
+                                       "krpci.hpp"), 'w') as temp_file:
+                    temp_file.write(self.krpci_hpp)    
+
+                # KRPC.pb.h
+                t = KRPC_pb_h(searchList=[krpci_hpp_namespace])
+                self.krpci_pb_h = str(t)
+                with open(os.path.join(self.krpci_include, 
+                                       "KRPC.pb.h"), 'w') as temp_file:
+                    temp_file.write(self.krpci_pb_h)    
+
+                # krpci_base.cpp
+                t = krpci_base_cpp(searchList=[krpci_hpp_namespace])
+                self.krpci_base = str(t)
+                with open(os.path.join(self.krpci_src, 
+                                       "krpci_base.cpp"), 'w') as temp_file:
+                    temp_file.write(self.krpci_base)   
+
+                # krpci_generated.cpp
+                t = krpci_generated_cpp(searchList=[krpci_hpp_namespace])
+                self.krpci_generated = str(t)
+                with open(os.path.join(self.krpci_src, 
+                                       "krpci_generated.cpp"), 'w') as temp_file:
+                    temp_file.write(self.krpci_generated)  
+
+                # KRPC.pb.cc
+                t = KRPC_pb_cc(searchList=[krpci_hpp_namespace])
+                self.krpci_pb = str(t)
+                with open(os.path.join(self.krpci_src, 
+                                       "KRPC.pb.cc"), 'w') as temp_file:
+                    temp_file.write(self.krpci_pb)  
 
             messages = []
             services = []
@@ -402,7 +460,8 @@ class ROSMOD_Generator:
                                        'servers': servers,
                                        'provided_services': provided_services, 
                                        'required_services': required_services, 
-                                       'timers': timers}
+                                       'timers': timers,
+                                       'component_type': component.properties['datatype']}
                 t = component_hpp(searchList=[component_namespace])
                 self.component_hpp_str = str(t)
                 # Write the component hpp file

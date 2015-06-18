@@ -76,6 +76,15 @@ class ROSMOD_HardwareListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_HardwareParser#install_path.
+    def enterInstall_path(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_HardwareParser#install_path.
+    def exitInstall_path(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_HardwareParser#sshkey.
     def enterSshkey(self, ctx):
         pass

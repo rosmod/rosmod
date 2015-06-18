@@ -124,7 +124,7 @@ meta_class_dict["logging_error"] = Grammar_Field(
 meta_class_dict["logging_critical"] = Grammar_Field(
     "boolean", "Logging_critical", create_enterAtom, create_exitAtom, None, "Log Level - CRITICAL")
 
-valid_datatypes = ["Base", "I/O"]
+valid_datatypes = ["Base", "KSP"]
 valid_scheduling_schemes = ["FIFO", "PFIFO", "EDF"]
 meta_class_dict["datatype"] = Grammar_Field(
     "list", 
@@ -144,11 +144,11 @@ meta_class_dict["scheduling_scheme"] = Grammar_Field(
 meta_class_dict["reference"] = Grammar_Field(
     "hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
 meta_class_dict["period"] = Grammar_Field(
-    "number", "Period", create_enterAtom, create_exitAtom, None, "Period (s)")
+    "double", "Period", create_enterAtom, create_exitAtom, None, "Period (s)")
 meta_class_dict["priority"] = Grammar_Field(
-    "number", "Priority", create_enterAtom, create_exitAtom, None, "Priority")
+    "integer", "Priority", create_enterAtom, create_exitAtom, None, "Priority")
 meta_class_dict["deadline"] = Grammar_Field(
-    "number", "Deadline", create_enterAtom, create_exitAtom, None, "Deadline (s)")
+    "double", "Deadline", create_enterAtom, create_exitAtom, None, "Deadline (s)")
 meta_class_dict["ip_address"] = Grammar_Field(
     "string", "Ip_address", create_enterAtom, create_exitAtom, None, "IP Address")
 meta_class_dict["username"] = Grammar_Field(
@@ -157,6 +157,8 @@ meta_class_dict["sshkey"] = Grammar_Field(
     "string", "Sshkey", create_enterAtom, create_exitAtom, None, "SSH Key")
 meta_class_dict["deployment_path"] = Grammar_Field(
     "string", "Deployment_path", create_enterAtom, create_exitAtom, None, "Deployment Path")
+meta_class_dict["install_path"] = Grammar_Field(
+    "string", "Install_path", create_enterAtom, create_exitAtom, None, "ROS Installation Path")
 meta_class_dict["init"] = Grammar_Field(
     "string", "Init", create_enterAtom, create_exitAtom, None, "Initialization Script")
 meta_class_dict["ref"] = Grammar_Field(

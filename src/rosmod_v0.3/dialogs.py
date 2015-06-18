@@ -166,7 +166,11 @@ class EditDialog(wx.Dialog):
                 field = wx.TextCtrl(self.panel)
                 if value != "" and value != None and value != []:
                     field.AppendText(value)
-            elif meta_class_dict[key].kind == "number":
+            elif meta_class_dict[key].kind == "double":
+                label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
+                field = wx.TextCtrl(self.panel)
+                field.AppendText(str(value)
+            elif meta_class_dict[key].kind == "integer":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.TextCtrl(self.panel)
                 field.AppendText(str(value))
@@ -311,8 +315,10 @@ class EditDialog(wx.Dialog):
                meta_class_dict[key].kind == "list" or\
                meta_class_dict[key].kind == "boolean":
                 fieldValue = field.GetValue()
-            elif meta_class_dict[key].kind == "number":
-                fieldValue = float(field.GetValue())
+            elif meta_class_dict[key].kind == "double":
+                fieldValue = float(field.GetValue()
+            elif meta_class_dict[key].kind == "integer":
+                fieldValue = int(field.GetValue())
             elif meta_class_dict[key].kind == "file":
                 fieldValue = field.GetLabel()
             elif meta_class_dict[key].kind == "tuple":

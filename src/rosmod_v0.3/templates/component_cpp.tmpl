@@ -13,6 +13,9 @@ $user_globals//# End User Globals Marker
 //# Start Init Marker
 void $component_name::Init(const ros::TimerEvent& event)
 {
+#if $component_type == 'KSP'
+  krpci_client.SetName(nodeName + "_" + compName);
+#end if
   // Initialize Here
 
   // Stop Init Timer

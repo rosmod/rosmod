@@ -9,6 +9,11 @@ $hash_include "$topic[0]/${topic[1]}.h"
 #for $service in $services
 $hash_include "$service[0]/${service[1]}.h"
 #end for
+
+#if $component_type == 'KSP'
+$hash_include "krpci/krpci.hpp"
+#end if
+
 #if $user_includes == ""
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -99,6 +104,9 @@ private:
 
 #end for
 #end if
+#if $component_type == "KSP"
+  KRPCI krpci_client("${component_name}_krpci");
+#end if
 #if $user_private_variables == ""
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
@@ -107,6 +115,5 @@ private:
   $user_private_variables  //# End User Private Variables Marker
 	#end if
 };
-
 
 #endif
