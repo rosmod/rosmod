@@ -401,7 +401,6 @@ class Example(wx.Frame):
                                      shell=False)
                 out_thread1 = OutTextThread(sys.stdout,p.stdout)
                 out_thread1.start() 
-                out_thread1.start()
                 out_thread2 = OutTextThread(sys.stderr,p.stderr)
                 out_thread2.start()
 
