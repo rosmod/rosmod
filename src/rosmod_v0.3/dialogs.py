@@ -316,7 +316,7 @@ class EditDialog(wx.Dialog):
                meta_class_dict[key].kind == "boolean":
                 fieldValue = field.GetValue()
             elif meta_class_dict[key].kind == "double":
-                fieldValue = float(field.GetValue()
+                fieldValue = float(field.GetValue())
             elif meta_class_dict[key].kind == "integer":
                 fieldValue = int(field.GetValue())
             elif meta_class_dict[key].kind == "file":
