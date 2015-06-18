@@ -13,7 +13,7 @@ package sequential_leds_app
     // ROSMOD Subscriber - led_state_sub
     subscriber <sequential_leds_app/led_state> led_state_sub 
     {
-      priority = 55.0;
+      priority = 55;
       deadline = 0.1;
     }       
   }
@@ -27,7 +27,7 @@ package client_server
     // ROSMOD Server - led_server
     server <client_server/led_state> led_server 
     {
-      priority = 50.0;
+      priority = 50;
       deadline = 0.5;
     }       
     // ROSMOD Client - led_client
@@ -36,7 +36,7 @@ package client_server
     timer ledTimer 
     {
 	period = 0.5;
-	priority = 50.0;
+	priority = 50;
 	deadline = 0.5;
     }       
   }
