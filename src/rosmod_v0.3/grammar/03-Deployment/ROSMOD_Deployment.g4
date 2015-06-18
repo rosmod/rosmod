@@ -88,7 +88,7 @@ init
 // Command line Arguments
 cmd_args
     :   
-        ID ((' ') ID)*
+        ID ((' ')* (ID | INT) )*
     ;
 
 // Component Scheduling Scheme
@@ -184,7 +184,7 @@ INT
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
     :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' | '-' )*
     ;
 
 // White spaces and escape codes are ignored
