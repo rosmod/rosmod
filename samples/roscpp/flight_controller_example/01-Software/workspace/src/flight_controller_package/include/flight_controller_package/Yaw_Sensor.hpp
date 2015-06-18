@@ -39,7 +39,7 @@ private:
   // Publisher 
   ros::Publisher yaw_publisher;
 
-  KRPCI krpci_client("Yaw_Sensor_krpci");
+  KRPCI krpci_client;
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };

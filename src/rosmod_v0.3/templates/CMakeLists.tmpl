@@ -228,6 +228,9 @@ $component.properties["cmakelists_cpp_marker"]            \## End $component.pro
 #end if
            )
 target_link_libraries(${component.properties["name"]}
+#if $component.properties['datatype'] == "KSP"
+		      boost_system boost_thread protobuf
+#end if
 #if $component.properties["cmakelists_targetlinklibs_marker"] != ""
                       \## Start $component.properties["name"] Target Link Libraries Marker
 $component.properties["cmakelists_targetlinklibs_marker"]                      \## End $component.properties["name"] Target Link Libraries Marker

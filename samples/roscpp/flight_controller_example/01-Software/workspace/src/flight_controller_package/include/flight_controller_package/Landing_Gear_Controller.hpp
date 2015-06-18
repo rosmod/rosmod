@@ -37,7 +37,7 @@ private:
   // Server 
   ros::ServiceServer landing_gear_control_server;
 
-  KRPCI krpci_client("Landing_Gear_Controller_krpci");
+  KRPCI krpci_client;
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };

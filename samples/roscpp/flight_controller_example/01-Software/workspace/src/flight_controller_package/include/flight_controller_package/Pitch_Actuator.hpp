@@ -37,7 +37,7 @@ private:
   // Server 
   ros::ServiceServer pitch_control_server;
 
-  KRPCI krpci_client("Pitch_Actuator_krpci");
+  KRPCI krpci_client;
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };

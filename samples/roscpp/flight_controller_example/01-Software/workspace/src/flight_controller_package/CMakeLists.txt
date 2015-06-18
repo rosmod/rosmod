@@ -207,6 +207,7 @@ add_library(Pitch_Sensor
             ## End Pitch_Sensor CPP Marker
            )
 target_link_libraries(Pitch_Sensor
+		      boost_system boost_thread protobuf
                       ## Start Pitch_Sensor Target Link Libraries Marker
 
                       ## End Pitch_Sensor Target Link Libraries Marker
@@ -225,6 +226,7 @@ add_library(Yaw_Sensor
             ## End Yaw_Sensor CPP Marker
            )
 target_link_libraries(Yaw_Sensor
+		      boost_system boost_thread protobuf
                       ## Start Yaw_Sensor Target Link Libraries Marker
 
                       ## End Yaw_Sensor Target Link Libraries Marker
@@ -243,6 +245,7 @@ add_library(Roll_Sensor
             ## End Roll_Sensor CPP Marker
            )
 target_link_libraries(Roll_Sensor
+		      boost_system boost_thread protobuf
                       ## Start Roll_Sensor Target Link Libraries Marker
 
                       ## End Roll_Sensor Target Link Libraries Marker
@@ -261,6 +264,7 @@ add_library(Altitude_Sensor
             ## End Altitude_Sensor CPP Marker
            )
 target_link_libraries(Altitude_Sensor
+		      boost_system boost_thread protobuf
                       ## Start Altitude_Sensor Target Link Libraries Marker
 
                       ## End Altitude_Sensor Target Link Libraries Marker
@@ -279,6 +283,7 @@ add_library(Pitch_Actuator
             ## End Pitch_Actuator CPP Marker
            )
 target_link_libraries(Pitch_Actuator
+		      boost_system boost_thread protobuf
                       ## Start Pitch_Actuator Target Link Libraries Marker
 
                       ## End Pitch_Actuator Target Link Libraries Marker
@@ -297,6 +302,7 @@ add_library(Roll_Actuator
             ## End Roll_Actuator CPP Marker
            )
 target_link_libraries(Roll_Actuator
+		      boost_system boost_thread protobuf
                       ## Start Roll_Actuator Target Link Libraries Marker
 
                       ## End Roll_Actuator Target Link Libraries Marker
@@ -315,6 +321,7 @@ add_library(Yaw_Actuator
             ## End Yaw_Actuator CPP Marker
            )
 target_link_libraries(Yaw_Actuator
+		      boost_system boost_thread protobuf
                       ## Start Yaw_Actuator Target Link Libraries Marker
 
                       ## End Yaw_Actuator Target Link Libraries Marker
@@ -333,6 +340,7 @@ add_library(Throttle_Actuator
             ## End Throttle_Actuator CPP Marker
            )
 target_link_libraries(Throttle_Actuator
+		      boost_system boost_thread protobuf
                       ## Start Throttle_Actuator Target Link Libraries Marker
 
                       ## End Throttle_Actuator Target Link Libraries Marker
@@ -351,6 +359,7 @@ add_library(Landing_Gear_Controller
             ## End Landing_Gear_Controller CPP Marker
            )
 target_link_libraries(Landing_Gear_Controller
+		      boost_system boost_thread protobuf
                       ## Start Landing_Gear_Controller Target Link Libraries Marker
 
                       ## End Landing_Gear_Controller Target Link Libraries Marker

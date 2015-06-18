@@ -37,7 +37,7 @@ private:
   // Server 
   ros::ServiceServer yaw_control_server;
 
-  KRPCI krpci_client("Yaw_Actuator_krpci");
+  KRPCI krpci_client;
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };
