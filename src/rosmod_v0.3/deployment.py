@@ -34,7 +34,7 @@ class deployed_node():
         self.pids = pids
 
 class deployed_host():
-    def __init__(self,name,userName,ipAddress,keyFile,deploymentDir,nodes=[],envVars=OrderedDict()):
+    def __init__(self,name,userName,ipAddress,keyFile,deploymentDir,installDir,nodes=[],envVars=OrderedDict()):
         self.name = name
         self.userName = userName
         self.ipAddress = ipAddress
@@ -42,6 +42,7 @@ class deployed_host():
         self.keyFile = keyFile
         self.nodes = nodes
         self.envVars = envVars
+        self.installDir = installDir
 
 def getStatusFromPS(psString, name):
     pass
@@ -79,7 +80,6 @@ def parallelDeploy(hostDict,updateQ=None):
         executableString = node.executable
         if host.ipAddress not in local_ips:
             envVarStr = envVarStr.replace(';','')
-            #envVarStr += "export LD_LIBRARY_PATH={}:$LD_LIBRARY_PATH".format(node.deploymentDir)
             with prefix(envVarStr):
                 env.key_filename = host.keyFile
                 env.host_string = "{}@{}".format(host.userName,host.ipAddress)
@@ -169,7 +169,10 @@ def startMaster(self,e):
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-        run('source /opt/ros/indigo/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
+        installDir = host.installDir
+        if installDir == '':
+            installDir = '/opt/ros/indigo'
+        run('source {}/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore'.format(installDir))
     else:
         local('dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
 
