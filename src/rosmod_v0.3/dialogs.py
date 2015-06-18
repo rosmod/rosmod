@@ -169,7 +169,7 @@ class EditDialog(wx.Dialog):
             elif meta_class_dict[key].kind == "double":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.TextCtrl(self.panel)
-                field.AppendText(str(value)
+                field.AppendText(str(value))
             elif meta_class_dict[key].kind == "integer":
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 field = wx.TextCtrl(self.panel)

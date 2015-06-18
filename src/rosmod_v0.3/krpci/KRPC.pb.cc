@@ -2,18 +2,18 @@
 // source: KRPC.proto
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
-$hash_include "krpci/KRPC.pb.h"
+#include "KRPC.pb.h"
 
-$hash_include <algorithm>
+#include <algorithm>
 
-$hash_include <google/protobuf/stubs/common.h>
-$hash_include <google/protobuf/stubs/once.h>
-$hash_include <google/protobuf/io/coded_stream.h>
-$hash_include <google/protobuf/wire_format_lite_inl.h>
-$hash_include <google/protobuf/descriptor.h>
-$hash_include <google/protobuf/generated_message_reflection.h>
-$hash_include <google/protobuf/reflection_ops.h>
-$hash_include <google/protobuf/wire_format.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/generated_message_reflection.h>
+#include <google/protobuf/reflection_ops.h>
+#include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 
 namespace krpc {

@@ -42,11 +42,7 @@ from xml import *
 import rhw as rhw_template
 import rdp as rdp_template
 
-from krpci_base_cpp import *
-from krpci_generated_cpp import *
-from krpci_hpp import  *
-from KRPC_pb_cc import *
-from KRPC_pb_h import *
+import shutil
 
 class ROSMOD_Generator:
     # Main Generate Function
@@ -219,40 +215,19 @@ class ROSMOD_Generator:
                     os.makedirs(self.krpci_src)
 
                 # krpci.hpp
-                krpci_hpp_namespace = {'hash_include' : "#include"}
-                t = krpci_hpp(searchList=[krpci_hpp_namespace])
-                self.krpci_hpp = str(t)
-                with open(os.path.join(self.krpci_include, 
-                                       "krpci.hpp"), 'w') as temp_file:
-                    temp_file.write(self.krpci_hpp)    
+                copy_file(os.path.abspath('krpci/krpci.hpp'), self.krpci_include)
 
                 # KRPC.pb.h
-                t = KRPC_pb_h(searchList=[krpci_hpp_namespace])
-                self.krpci_pb_h = str(t)
-                with open(os.path.join(self.krpci_include, 
-                                       "KRPC.pb.h"), 'w') as temp_file:
-                    temp_file.write(self.krpci_pb_h)    
+                copy_file(os.path.abspath('krpci/KRPC.pb.h'), self.krpci_include)
 
                 # krpci_base.cpp
-                t = krpci_base_cpp(searchList=[krpci_hpp_namespace])
-                self.krpci_base = str(t)
-                with open(os.path.join(self.krpci_src, 
-                                       "krpci_base.cpp"), 'w') as temp_file:
-                    temp_file.write(self.krpci_base)   
+                copy_file(os.path.abspath('krpci/krpci_base.cpp'), self.krpci_src)
 
                 # krpci_generated.cpp
-                t = krpci_generated_cpp(searchList=[krpci_hpp_namespace])
-                self.krpci_generated = str(t)
-                with open(os.path.join(self.krpci_src, 
-                                       "krpci_generated.cpp"), 'w') as temp_file:
-                    temp_file.write(self.krpci_generated)  
+                copy_file(os.path.abspath('krpci/krpci_generated.cpp'), self.krpci_src)
 
                 # KRPC.pb.cc
-                t = KRPC_pb_cc(searchList=[krpci_hpp_namespace])
-                self.krpci_pb = str(t)
-                with open(os.path.join(self.krpci_src, 
-                                       "KRPC.pb.cc"), 'w') as temp_file:
-                    temp_file.write(self.krpci_pb)  
+                copy_file(os.path.abspath('krpci/KRPC.pb.cc'), self.krpci_src)
 
             messages = []
             services = []

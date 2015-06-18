@@ -1,4 +1,4 @@
-$hash_include "krpci/krpci.hpp"
+#include "krpci.hpp"
 
 using namespace std;
 

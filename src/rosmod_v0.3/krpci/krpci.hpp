@@ -1,28 +1,27 @@
-$hash_include <iostream>
-$hash_include <fstream>
-$hash_include <string>
-$hash_include <sys/types.h>
-$hash_include <sys/stat.h>
-$hash_include <fcntl.h>
-$hash_include <google/protobuf/io/zero_copy_stream.h>
-$hash_include <google/protobuf/io/zero_copy_stream_impl.h>
-$hash_include <google/protobuf/io/coded_stream.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include "KRPC.pb.h"
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
+#include <google/protobuf/io/coded_stream.h>
 using namespace google::protobuf::io;
-$hash_include <boost/thread.hpp>
-$hash_include <stdio.h>
-$hash_include <stdlib.h>
-$hash_include <sys/types.h>
-$hash_include <sys/socket.h>
-$hash_include <stdio.h>
-$hash_include <stdlib.h>
-$hash_include <unistd.h>
-$hash_include <string.h>
-$hash_include <arpa/inet.h>
-$hash_include <errno.h>
-$hash_include <netinet/in.h>
-$hash_include <ifaddrs.h>
-
-$hash_include "krpci/KRPC.pb.h"
+#include <boost/thread.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <ifaddrs.h>
 
 const int maxBufferSize = 65535;
 const char helloMessage[] = { 0x48, 0x45, 0x4C, 0x4C, 0x4F, 0x2D, 0x52, 0x50, 0x43, 0x00, 0x00, 0x00 };
