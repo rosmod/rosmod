@@ -461,6 +461,7 @@ class Example(wx.Frame):
                 name = host.properties['name'],
                 userName = host.properties['username'],
                 deploymentDir = host.properties['deployment_path'],
+                installDir = host.properties['install_path'],
                 ipAddress = host.properties['ip_address'],
                 keyFile = host.properties['sshkey'],
                 nodes = nodeList,
