@@ -28,13 +28,13 @@ void High_level_Controller::roll_subscriber_OnOneData(const flight_controller_pa
   // Business Logic for roll_subscriber Subscriber
 }
 //# End roll_subscriber_OnOneData Marker
-// Subscriber Callback - yaw_subscriber
-//# Start yaw_subscriber_OnOneData Marker
-void High_level_Controller::yaw_subscriber_OnOneData(const flight_controller_package::Yaw::ConstPtr& received_data)
+// Subscriber Callback - heading_subscriber
+//# Start heading_subscriber_OnOneData Marker
+void High_level_Controller::heading_subscriber_OnOneData(const flight_controller_package::Heading::ConstPtr& received_data)
 {
-  // Business Logic for yaw_subscriber Subscriber
+  // Business Logic for heading_subscriber Subscriber
 }
-//# End yaw_subscriber_OnOneData Marker
+//# End heading_subscriber_OnOneData Marker
 // Subscriber Callback - altitude_subscriber
 //# Start altitude_subscriber_OnOneData Marker
 void High_level_Controller::altitude_subscriber_OnOneData(const flight_controller_package::Altitude::ConstPtr& received_data)
@@ -58,7 +58,7 @@ High_level_Controller::~High_level_Controller()
   high_level_timer.stop();
   pitch_subscriber.shutdown();
   roll_subscriber.shutdown();
-  yaw_subscriber.shutdown();
+  heading_subscriber.shutdown();
   altitude_subscriber.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
@@ -94,18 +94,18 @@ void High_level_Controller::startUp()
        ros::VoidPtr(),
        &this->compQueue);
   this->roll_subscriber = nh.subscribe(roll_subscriber_options);
-  // Component Subscriber - yaw_subscriber
-  advertiseName = "Yaw";
-  if (portGroupMap.find("yaw_subscriber") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["yaw_subscriber"];
-  ros::SubscribeOptions yaw_subscriber_options;
-  yaw_subscriber_options = ros::SubscribeOptions::create<flight_controller_package::Yaw>
+  // Component Subscriber - heading_subscriber
+  advertiseName = "Heading";
+  if (portGroupMap.find("heading_subscriber") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["heading_subscriber"];
+  ros::SubscribeOptions heading_subscriber_options;
+  heading_subscriber_options = ros::SubscribeOptions::create<flight_controller_package::Heading>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&High_level_Controller::yaw_subscriber_OnOneData, this, _1),
+       boost::bind(&High_level_Controller::heading_subscriber_OnOneData, this, _1),
        ros::VoidPtr(),
        &this->compQueue);
-  this->yaw_subscriber = nh.subscribe(yaw_subscriber_options);
+  this->heading_subscriber = nh.subscribe(heading_subscriber_options);
   // Component Subscriber - altitude_subscriber
   advertiseName = "Altitude";
   if (portGroupMap.find("altitude_subscriber") != portGroupMap.end())

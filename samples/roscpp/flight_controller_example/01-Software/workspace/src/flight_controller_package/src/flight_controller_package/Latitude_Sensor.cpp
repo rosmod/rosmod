@@ -1,11 +1,11 @@
-#include "flight_controller_package/Yaw_Actuator.hpp"
+#include "flight_controller_package/Latitude_Sensor.hpp"
 
 //# Start User Globals Marker
 //# End User Globals Marker
 
 // Initialization Function
 //# Start Init Marker
-void Yaw_Actuator::Init(const ros::TimerEvent& event)
+void Latitude_Sensor::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
 
@@ -14,54 +14,54 @@ void Yaw_Actuator::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
-// Server Callback - yaw_control_server
-//# Start Yaw_ControlCallback Marker
-bool Yaw_Actuator::Yaw_ControlCallback(flight_controller_package::Yaw_Control::Request  &req,
-  flight_controller_package::Yaw_Control::Response &res)
+// Timer Callback - latitude_sensor_timer
+//# Start latitude_sensor_timerCallback Marker
+void Latitude_Sensor::latitude_sensor_timerCallback(const ros::TimerEvent& event)
 {
-  // Business Logic for yaw_control_server Server
-
-  return true;
+  // Business Logic for latitude_sensor_timer Timer
 }
-//# End Yaw_ControlCallback Marker
+//# End latitude_sensor_timerCallback Marker
 
 
 // Destructor - Cleanup Ports & Timers
-Yaw_Actuator::~Yaw_Actuator()
+Latitude_Sensor::~Latitude_Sensor()
 {
-  yaw_control_server.shutdown();
+  latitude_sensor_timer.stop();
+  latitude_publisher.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
-void Yaw_Actuator::startUp()
+void Latitude_Sensor::startUp()
 {
   ros::NodeHandle nh;
   std::string advertiseName;
 
-  // Component Server - yaw_control_server
-  advertiseName = "Yaw_Control";
-  if (portGroupMap.find("yaw_control_server") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["yaw_control_server"];
-  ros::AdvertiseServiceOptions yaw_control_server_server_options;
-  yaw_control_server_server_options = ros::AdvertiseServiceOptions::create<flight_controller_package::Yaw_Control>
-      (advertiseName.c_str(),
-       boost::bind(&Yaw_Actuator::Yaw_ControlCallback, this, _1, _2),
-       ros::VoidPtr(),
-       &this->compQueue);
-  this->yaw_control_server = nh.advertiseService(yaw_control_server_server_options);
- 
+  // Component Publisher - latitude_publisher
+  advertiseName = "Latitude";
+  if (portGroupMap.find("latitude_publisher") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["latitude_publisher"];
+  this->latitude_publisher = nh.advertise<flight_controller_package::Latitude>(advertiseName.c_str(), 1000);
+
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
     ros::TimerOptions
     (ros::Duration(-1),
-     boost::bind(&Yaw_Actuator::Init, this, _1),
+     boost::bind(&Latitude_Sensor::Init, this, _1),
      &this->compQueue,
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
+  // Component Timer - latitude_sensor_timer
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(0.2),
+     boost::bind(&Latitude_Sensor::latitude_sensor_timerCallback, this, _1),
+     &this->compQueue);
+  this->latitude_sensor_timer = nh.createTimer(timer_options);
+
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -82,11 +82,10 @@ void Yaw_Actuator::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
-  krpci_client.SetName(nodeName + "_" + compName);
 }
 
 extern "C" {
   Component *maker(ComponentConfig &config, int argc, char **argv) {
-    return new Yaw_Actuator(config,argc,argv);
+    return new Latitude_Sensor(config,argc,argv);
   }
 }

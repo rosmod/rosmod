@@ -1,6 +1,10 @@
 #include "flight_controller_package/Roll_Sensor.hpp"
 
 //# Start User Globals Marker
+uint64_t vesselID;
+uint64_t refFrame;
+uint64_t flightID;
+float roll;
 //# End User Globals Marker
 
 // Initialization Function
@@ -8,6 +12,17 @@
 void Roll_Sensor::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  if (!krpci_client.Connect())
+    LOGGER.INFO("Couldn't connect to KRPC Server!");
+
+  // Get Active Vessel
+  krpci_client.get_ActiveVessel(vesselID);
+
+  // Get Reference Frame
+  krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, refFrame);
+
+  // Get Flight ID
+  krpci_client.Vessel_Flight(vesselID, refFrame, flightID);
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -19,6 +34,12 @@ void Roll_Sensor::Init(const ros::TimerEvent& event)
 void Roll_Sensor::roll_sensor_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for roll_sensor_timer Timer
+  krpci_client.Flight_get_Roll(flightID, roll);
+
+  flight_controller_package::Roll new_roll;
+  new_roll.value = roll;
+  roll_publisher.publish(new_roll);
+  LOGGER.INFO("Roll_Publisher::New Roll Value: %f", new_roll.value);
 }
 //# End roll_sensor_timerCallback Marker
 
@@ -39,10 +60,10 @@ void Roll_Sensor::startUp()
   std::string advertiseName;
 
   // Component Publisher - roll_publisher
-  advertiseName = "Pitch";
+  advertiseName = "Roll";
   if (portGroupMap.find("roll_publisher") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["roll_publisher"];
-  this->roll_publisher = nh.advertise<flight_controller_package::Pitch>(advertiseName.c_str(), 1000);
+  this->roll_publisher = nh.advertise<flight_controller_package::Roll>(advertiseName.c_str(), 1000);
 
   // Init Timer
   ros::TimerOptions timer_options;

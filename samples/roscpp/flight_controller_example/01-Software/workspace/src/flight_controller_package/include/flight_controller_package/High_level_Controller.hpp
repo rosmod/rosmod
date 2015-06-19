@@ -5,7 +5,7 @@
 #include "Component.hpp"
 #include "flight_controller_package/Pitch.h"
 #include "flight_controller_package/Roll.h"
-#include "flight_controller_package/Yaw.h"
+#include "flight_controller_package/Heading.h"
 #include "flight_controller_package/Altitude.h"
 
 
@@ -30,8 +30,8 @@ public:
   // Subscriber Callback - roll_subscriber
   void roll_subscriber_OnOneData(const flight_controller_package::Roll::ConstPtr& received_data); 
  
-  // Subscriber Callback - yaw_subscriber
-  void yaw_subscriber_OnOneData(const flight_controller_package::Yaw::ConstPtr& received_data); 
+  // Subscriber Callback - heading_subscriber
+  void heading_subscriber_OnOneData(const flight_controller_package::Heading::ConstPtr& received_data); 
  
   // Subscriber Callback - altitude_subscriber
   void altitude_subscriber_OnOneData(const flight_controller_package::Altitude::ConstPtr& received_data); 
@@ -57,7 +57,7 @@ private:
   ros::Subscriber roll_subscriber; 
 
   // Subscriber
-  ros::Subscriber yaw_subscriber; 
+  ros::Subscriber heading_subscriber; 
 
   // Subscriber
   ros::Subscriber altitude_subscriber; 

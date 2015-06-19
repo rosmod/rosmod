@@ -23,6 +23,22 @@ void KRPCI::SetName(std::string name)
   name_ = name;
 }
 
+void KRPCI::SetIP(std::string ip)
+{
+  ip_ = ip;
+}
+
+void KRPCI::SetPort(int port)
+{
+  port_ = port;
+}
+
+void KRPCI::SetStreamPort(int streamPort)
+{
+  streamPort_ = streamPort;
+}
+
+
 bool KRPCI::Connect()
 {
   /* socket: create the socket */

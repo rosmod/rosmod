@@ -64,11 +64,19 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
+  Speed.msg
+
   Pitch.msg
+
+  Latitude.msg
 
   Yaw.msg
 
+  Longitude.msg
+
   Altitude.msg
+
+  Heading.msg
 
   Roll.msg
 
@@ -85,7 +93,7 @@ add_service_files(
 
   Landing_Gear_Control.srv
 
-  Yaw_Control.srv
+  Heading_Control.srv
 
 )
 
@@ -217,22 +225,22 @@ add_dependencies(Pitch_Sensor
                  flight_controller_package_generate_messages_cpp
                 )
 
-add_library(Yaw_Sensor
+add_library(Heading_Sensor
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
-            src/flight_controller_package/Yaw_Sensor.cpp
-            ## Start Yaw_Sensor CPP Marker
+            src/flight_controller_package/Heading_Sensor.cpp
+            ## Start Heading_Sensor CPP Marker
 
-            ## End Yaw_Sensor CPP Marker
+            ## End Heading_Sensor CPP Marker
            )
-target_link_libraries(Yaw_Sensor
+target_link_libraries(Heading_Sensor
 		      boost_system boost_thread protobuf
-                      ## Start Yaw_Sensor Target Link Libraries Marker
+                      ## Start Heading_Sensor Target Link Libraries Marker
 
-                      ## End Yaw_Sensor Target Link Libraries Marker
+                      ## End Heading_Sensor Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )
-add_dependencies(Yaw_Sensor
+add_dependencies(Heading_Sensor
                  flight_controller_package_generate_messages_cpp
                 )
 
@@ -312,22 +320,22 @@ add_dependencies(Roll_Actuator
                  flight_controller_package_generate_messages_cpp
                 )
 
-add_library(Yaw_Actuator
+add_library(Heading_Actuator
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
-            src/flight_controller_package/Yaw_Actuator.cpp
-            ## Start Yaw_Actuator CPP Marker
+            src/flight_controller_package/Heading_Actuator.cpp
+            ## Start Heading_Actuator CPP Marker
 
-            ## End Yaw_Actuator CPP Marker
+            ## End Heading_Actuator CPP Marker
            )
-target_link_libraries(Yaw_Actuator
+target_link_libraries(Heading_Actuator
 		      boost_system boost_thread protobuf
-                      ## Start Yaw_Actuator Target Link Libraries Marker
+                      ## Start Heading_Actuator Target Link Libraries Marker
 
-                      ## End Yaw_Actuator Target Link Libraries Marker
+                      ## End Heading_Actuator Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )
-add_dependencies(Yaw_Actuator
+add_dependencies(Heading_Actuator
                  flight_controller_package_generate_messages_cpp
                 )
 
@@ -402,6 +410,61 @@ target_link_libraries(High_level_Controller
                       ${catkin_LIBRARIES}
                       )
 add_dependencies(High_level_Controller
+                 flight_controller_package_generate_messages_cpp
+                )
+
+add_library(Speed_Sensor
+	    src/flight_controller_package/Component.cpp
+            src/flight_controller_package/Logger.cpp
+            src/flight_controller_package/Speed_Sensor.cpp
+            ## Start Speed_Sensor CPP Marker
+
+            ## End Speed_Sensor CPP Marker
+           )
+target_link_libraries(Speed_Sensor
+		      boost_system boost_thread protobuf
+                      ## Start Speed_Sensor Target Link Libraries Marker
+
+                      ## End Speed_Sensor Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Speed_Sensor
+                 flight_controller_package_generate_messages_cpp
+                )
+
+add_library(Latitude_Sensor
+	    src/flight_controller_package/Component.cpp
+            src/flight_controller_package/Logger.cpp
+            src/flight_controller_package/Latitude_Sensor.cpp
+            ## Start Latitude_Sensor CPP Marker
+
+            ## End Latitude_Sensor CPP Marker
+           )
+target_link_libraries(Latitude_Sensor
+                      ## Start Latitude_Sensor Target Link Libraries Marker
+
+                      ## End Latitude_Sensor Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Latitude_Sensor
+                 flight_controller_package_generate_messages_cpp
+                )
+
+add_library(Longitude_Sensor
+	    src/flight_controller_package/Component.cpp
+            src/flight_controller_package/Logger.cpp
+            src/flight_controller_package/Longitude_Sensor.cpp
+            ## Start Longitude_Sensor CPP Marker
+
+            ## End Longitude_Sensor CPP Marker
+           )
+target_link_libraries(Longitude_Sensor
+                      ## Start Longitude_Sensor Target Link Libraries Marker
+
+                      ## End Longitude_Sensor Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Longitude_Sensor
                  flight_controller_package_generate_messages_cpp
                 )
 

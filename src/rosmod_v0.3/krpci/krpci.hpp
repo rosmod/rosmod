@@ -58,6 +58,9 @@ public:
   bool Close();
 
   void SetName(std::string name);
+  void SetIP(std::string ip);
+  void SetPort(int port);
+  void SetStreamPort(int streamPort);
 
   // UTILITY FUNCTIONS
   static void PrintBytesHex(const char *buf, int size);

@@ -1,11 +1,11 @@
-#include "flight_controller_package/Yaw_Sensor.hpp"
+#include "flight_controller_package/Longitude_Sensor.hpp"
 
 //# Start User Globals Marker
 //# End User Globals Marker
 
 // Initialization Function
 //# Start Init Marker
-void Yaw_Sensor::Init(const ros::TimerEvent& event)
+void Longitude_Sensor::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
 
@@ -14,53 +14,53 @@ void Yaw_Sensor::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
-// Timer Callback - yaw_sensor_timer
-//# Start yaw_sensor_timerCallback Marker
-void Yaw_Sensor::yaw_sensor_timerCallback(const ros::TimerEvent& event)
+// Timer Callback - longitude_sensor_timer
+//# Start longitude_sensor_timerCallback Marker
+void Longitude_Sensor::longitude_sensor_timerCallback(const ros::TimerEvent& event)
 {
-  // Business Logic for yaw_sensor_timer Timer
+  // Business Logic for longitude_sensor_timer Timer
 }
-//# End yaw_sensor_timerCallback Marker
+//# End longitude_sensor_timerCallback Marker
 
 
 // Destructor - Cleanup Ports & Timers
-Yaw_Sensor::~Yaw_Sensor()
+Longitude_Sensor::~Longitude_Sensor()
 {
-  yaw_sensor_timer.stop();
-  yaw_publisher.shutdown();
+  longitude_sensor_timer.stop();
+  longitude_publisher.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
-void Yaw_Sensor::startUp()
+void Longitude_Sensor::startUp()
 {
   ros::NodeHandle nh;
   std::string advertiseName;
 
-  // Component Publisher - yaw_publisher
-  advertiseName = "Pitch";
-  if (portGroupMap.find("yaw_publisher") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["yaw_publisher"];
-  this->yaw_publisher = nh.advertise<flight_controller_package::Pitch>(advertiseName.c_str(), 1000);
+  // Component Publisher - longitude_publisher
+  advertiseName = "Longitude";
+  if (portGroupMap.find("longitude_publisher") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["longitude_publisher"];
+  this->longitude_publisher = nh.advertise<flight_controller_package::Longitude>(advertiseName.c_str(), 1000);
 
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
     ros::TimerOptions
     (ros::Duration(-1),
-     boost::bind(&Yaw_Sensor::Init, this, _1),
+     boost::bind(&Longitude_Sensor::Init, this, _1),
      &this->compQueue,
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - yaw_sensor_timer
+  // Component Timer - longitude_sensor_timer
   timer_options = 
     ros::TimerOptions
     (ros::Duration(0.2),
-     boost::bind(&Yaw_Sensor::yaw_sensor_timerCallback, this, _1),
+     boost::bind(&Longitude_Sensor::longitude_sensor_timerCallback, this, _1),
      &this->compQueue);
-  this->yaw_sensor_timer = nh.createTimer(timer_options);
+  this->longitude_sensor_timer = nh.createTimer(timer_options);
 
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
@@ -82,11 +82,10 @@ void Yaw_Sensor::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
-  krpci_client.SetName(nodeName + "_" + compName);
 }
 
 extern "C" {
   Component *maker(ComponentConfig &config, int argc, char **argv) {
-    return new Yaw_Sensor(config,argc,argv);
+    return new Longitude_Sensor(config,argc,argv);
   }
 }

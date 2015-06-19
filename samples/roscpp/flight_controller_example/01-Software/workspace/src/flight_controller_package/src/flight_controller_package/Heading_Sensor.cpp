@@ -1,15 +1,15 @@
-#include "flight_controller_package/Pitch_Sensor.hpp"
+#include "flight_controller_package/Heading_Sensor.hpp"
 
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t refFrame;
 uint64_t flightID;
-float pitch;
+float heading;
 //# End User Globals Marker
 
 // Initialization Function
 //# Start Init Marker
-void Pitch_Sensor::Init(const ros::TimerEvent& event)
+void Heading_Sensor::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
   if (!krpci_client.Connect())
@@ -29,60 +29,59 @@ void Pitch_Sensor::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
-// Timer Callback - pitch_sensor_timer
-//# Start pitch_sensor_timerCallback Marker
-void Pitch_Sensor::pitch_sensor_timerCallback(const ros::TimerEvent& event)
+// Timer Callback - heading_sensor_timer
+//# Start heading_sensor_timerCallback Marker
+void Heading_Sensor::heading_sensor_timerCallback(const ros::TimerEvent& event)
 {
-  // Business Logic for pitch_sensor_timer Timer
-  krpci_client.Flight_get_Pitch(flightID, pitch);
+  // Business Logic for heading_sensor_timer Timer
+  krpci_client.Flight_get_Heading(flightID, heading);
 
-  flight_controller_package::Pitch new_pitch;
-  new_pitch.value = pitch;
-  pitch_publisher.publish(new_pitch);
-  LOGGER.INFO("Pitch_Publisher::New Pitch Value: %f", new_pitch.value);
+  flight_controller_package::Heading new_heading;
+  new_heading.value = heading;
+  heading_publisher.publish(new_heading);
+  LOGGER.INFO("Heading_Publisher::New Heading Value: %f", new_heading.value);
 }
-//# End pitch_sensor_timerCallback Marker
+//# End heading_sensor_timerCallback Marker
 
 
 // Destructor - Cleanup Ports & Timers
-Pitch_Sensor::~Pitch_Sensor()
+Heading_Sensor::~Heading_Sensor()
 {
-  pitch_sensor_timer.stop();
-  pitch_publisher.shutdown();
+  heading_sensor_timer.stop();
+  heading_publisher.shutdown();
   //# Start Destructor Marker
-        krpci_client.Close();
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
-void Pitch_Sensor::startUp()
+void Heading_Sensor::startUp()
 {
   ros::NodeHandle nh;
   std::string advertiseName;
 
-  // Component Publisher - pitch_publisher
-  advertiseName = "Pitch";
-  if (portGroupMap.find("pitch_publisher") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["pitch_publisher"];
-  this->pitch_publisher = nh.advertise<flight_controller_package::Pitch>(advertiseName.c_str(), 1000);
+  // Component Publisher - heading_publisher
+  advertiseName = "Heading";
+  if (portGroupMap.find("heading_publisher") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["heading_publisher"];
+  this->heading_publisher = nh.advertise<flight_controller_package::Heading>(advertiseName.c_str(), 1000);
 
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
     ros::TimerOptions
     (ros::Duration(-1),
-     boost::bind(&Pitch_Sensor::Init, this, _1),
+     boost::bind(&Heading_Sensor::Init, this, _1),
      &this->compQueue,
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - pitch_sensor_timer
+  // Component Timer - heading_sensor_timer
   timer_options = 
     ros::TimerOptions
     (ros::Duration(0.2),
-     boost::bind(&Pitch_Sensor::pitch_sensor_timerCallback, this, _1),
+     boost::bind(&Heading_Sensor::heading_sensor_timerCallback, this, _1),
      &this->compQueue);
-  this->pitch_sensor_timer = nh.createTimer(timer_options);
+  this->heading_sensor_timer = nh.createTimer(timer_options);
 
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
@@ -109,6 +108,6 @@ void Pitch_Sensor::startUp()
 
 extern "C" {
   Component *maker(ComponentConfig &config, int argc, char **argv) {
-    return new Pitch_Sensor(config,argc,argv);
+    return new Heading_Sensor(config,argc,argv);
   }
 }

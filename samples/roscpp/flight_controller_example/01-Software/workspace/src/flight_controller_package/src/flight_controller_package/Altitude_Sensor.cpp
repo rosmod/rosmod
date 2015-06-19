@@ -1,6 +1,10 @@
 #include "flight_controller_package/Altitude_Sensor.hpp"
 
 //# Start User Globals Marker
+uint64_t vesselID;
+uint64_t refFrame;
+uint64_t flightID;
+double altitude;
 //# End User Globals Marker
 
 // Initialization Function
@@ -8,6 +12,17 @@
 void Altitude_Sensor::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  if (!krpci_client.Connect())
+    LOGGER.INFO("Couldn't connect to KRPC Server!");
+
+  // Get Active Vessel
+  krpci_client.get_ActiveVessel(vesselID);
+
+  // Get Reference Frame
+  krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, refFrame);
+
+  // Get Flight ID
+  krpci_client.Vessel_Flight(vesselID, refFrame, flightID);
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -19,6 +34,12 @@ void Altitude_Sensor::Init(const ros::TimerEvent& event)
 void Altitude_Sensor::altitude_sensor_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for altitude_sensor_timer Timer
+  krpci_client.Flight_get_MeanAltitude(flightID, altitude);
+
+  flight_controller_package::Altitude new_altitude;
+  new_altitude.value = altitude;
+  altitude_publisher.publish(new_altitude);
+  LOGGER.INFO("Altitude_Publisher::New Altitude Value: %f", new_altitude.value);
 }
 //# End altitude_sensor_timerCallback Marker
 
@@ -39,10 +60,10 @@ void Altitude_Sensor::startUp()
   std::string advertiseName;
 
   // Component Publisher - altitude_publisher
-  advertiseName = "Pitch";
+  advertiseName = "Altitude";
   if (portGroupMap.find("altitude_publisher") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["altitude_publisher"];
-  this->altitude_publisher = nh.advertise<flight_controller_package::Pitch>(advertiseName.c_str(), 1000);
+  this->altitude_publisher = nh.advertise<flight_controller_package::Altitude>(advertiseName.c_str(), 1000);
 
   // Init Timer
   ros::TimerOptions timer_options;

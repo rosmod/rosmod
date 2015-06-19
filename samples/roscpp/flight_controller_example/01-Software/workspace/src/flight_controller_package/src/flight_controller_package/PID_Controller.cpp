@@ -28,13 +28,13 @@ void PID_Controller::roll_subscriber_OnOneData(const flight_controller_package::
   // Business Logic for roll_subscriber Subscriber
 }
 //# End roll_subscriber_OnOneData Marker
-// Subscriber Callback - yaw_subscriber
-//# Start yaw_subscriber_OnOneData Marker
-void PID_Controller::yaw_subscriber_OnOneData(const flight_controller_package::Yaw::ConstPtr& received_data)
+// Subscriber Callback - heading_subscriber
+//# Start heading_subscriber_OnOneData Marker
+void PID_Controller::heading_subscriber_OnOneData(const flight_controller_package::Heading::ConstPtr& received_data)
 {
-  // Business Logic for yaw_subscriber Subscriber
+  // Business Logic for heading_subscriber Subscriber
 }
-//# End yaw_subscriber_OnOneData Marker
+//# End heading_subscriber_OnOneData Marker
 // Subscriber Callback - altitude_subscriber
 //# Start altitude_subscriber_OnOneData Marker
 void PID_Controller::altitude_subscriber_OnOneData(const flight_controller_package::Altitude::ConstPtr& received_data)
@@ -58,12 +58,12 @@ PID_Controller::~PID_Controller()
   pid_control_timer.stop();
   pitch_subscriber.shutdown();
   roll_subscriber.shutdown();
-  yaw_subscriber.shutdown();
+  heading_subscriber.shutdown();
   altitude_subscriber.shutdown();
   throttle_control_client.shutdown();
   pitch_control_client.shutdown();
   roll_control_client.shutdown();
-  yaw_control_client.shutdown();
+  heading_control_client.shutdown();
   landing_gear_control_client.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
@@ -99,18 +99,18 @@ void PID_Controller::startUp()
        ros::VoidPtr(),
        &this->compQueue);
   this->roll_subscriber = nh.subscribe(roll_subscriber_options);
-  // Component Subscriber - yaw_subscriber
-  advertiseName = "Yaw";
-  if (portGroupMap.find("yaw_subscriber") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["yaw_subscriber"];
-  ros::SubscribeOptions yaw_subscriber_options;
-  yaw_subscriber_options = ros::SubscribeOptions::create<flight_controller_package::Yaw>
+  // Component Subscriber - heading_subscriber
+  advertiseName = "Heading";
+  if (portGroupMap.find("heading_subscriber") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["heading_subscriber"];
+  ros::SubscribeOptions heading_subscriber_options;
+  heading_subscriber_options = ros::SubscribeOptions::create<flight_controller_package::Heading>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&PID_Controller::yaw_subscriber_OnOneData, this, _1),
+       boost::bind(&PID_Controller::heading_subscriber_OnOneData, this, _1),
        ros::VoidPtr(),
        &this->compQueue);
-  this->yaw_subscriber = nh.subscribe(yaw_subscriber_options);
+  this->heading_subscriber = nh.subscribe(heading_subscriber_options);
   // Component Subscriber - altitude_subscriber
   advertiseName = "Altitude";
   if (portGroupMap.find("altitude_subscriber") != portGroupMap.end())
@@ -140,11 +140,11 @@ void PID_Controller::startUp()
   if (portGroupMap.find("roll_control_client") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["roll_control_client"];
       this->roll_control_client = nh.serviceClient<flight_controller_package::Roll_Control>(advertiseName.c_str()); 
-  // Component Client - yaw_control_client
-  advertiseName = "Yaw_Control";
-  if (portGroupMap.find("yaw_control_client") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["yaw_control_client"];
-      this->yaw_control_client = nh.serviceClient<flight_controller_package::Yaw_Control>(advertiseName.c_str()); 
+  // Component Client - heading_control_client
+  advertiseName = "Heading_Control";
+  if (portGroupMap.find("heading_control_client") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["heading_control_client"];
+      this->heading_control_client = nh.serviceClient<flight_controller_package::Heading_Control>(advertiseName.c_str()); 
   // Component Client - landing_gear_control_client
   advertiseName = "Landing_Gear_Control";
   if (portGroupMap.find("landing_gear_control_client") != portGroupMap.end())

@@ -1,9 +1,9 @@
-#ifndef YAW_SENSOR_HPP
-#define YAW_SENSOR_HPP
+#ifndef HEADING_SENSOR_HPP
+#define HEADING_SENSOR_HPP
 
 #include "ros/ros.h"
 #include "Component.hpp"
-#include "flight_controller_package/Pitch.h"
+#include "flight_controller_package/Heading.h"
 
 #include "krpci/krpci.hpp"
 
@@ -13,31 +13,31 @@
 //# Start User Globals Marker
 //# End User Globals Marker
 
-class Yaw_Sensor : public Component
+class Heading_Sensor : public Component
 {
 public:
   // Constructor
-  Yaw_Sensor(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  Heading_Sensor(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);
 
-  // Timer Callback - yaw_sensor_timer
-  void yaw_sensor_timerCallback(const ros::TimerEvent& event);
+  // Timer Callback - heading_sensor_timer
+  void heading_sensor_timerCallback(const ros::TimerEvent& event);
 
   // Start up
   void startUp();
 
   // Destructor
-  ~Yaw_Sensor();
+  ~Heading_Sensor();
 
 private:
 
   // Timer
-  ros::Timer yaw_sensor_timer;
+  ros::Timer heading_sensor_timer;
 
   // Publisher 
-  ros::Publisher yaw_publisher;
+  ros::Publisher heading_publisher;
 
   KRPCI krpci_client;
   //# Start User Private Variables Marker
