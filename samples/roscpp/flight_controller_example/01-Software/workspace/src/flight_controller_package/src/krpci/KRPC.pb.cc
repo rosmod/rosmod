@@ -2,7 +2,7 @@
 // source: KRPC.proto
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
-#include "KRPC.pb.h"
+#include "krpci/KRPC.pb.h"
 
 #include <algorithm>
 

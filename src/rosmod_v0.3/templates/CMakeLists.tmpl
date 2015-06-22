@@ -213,7 +213,7 @@ add_library(${component.properties["name"]}
 	    src/$package_name/Component.cpp
             src/$package_name/Logger.cpp
             src/$package_name/${component.properties["name"]}.cpp
-#if $component.kind == 'KSP'
+#if $component.properties['datatype'] == 'KSP'
             src/krpci/KRPC.pb.cc
 	    src/krpci/krpci_base.cpp
             src/krpci/krpci_generated.cpp
@@ -247,16 +247,3 @@ add_dependencies(${component.properties["name"]}
 
 #end for
 #end if
-
-
-
-
-
-
-
-
-
-
-
-
-

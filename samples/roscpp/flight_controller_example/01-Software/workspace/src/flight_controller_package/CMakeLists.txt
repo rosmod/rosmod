@@ -66,9 +66,11 @@ add_message_files(
   FILES
   Speed.msg
 
+  Heading.msg
+
   Pitch.msg
 
-  Latitude.msg
+  Roll.msg
 
   Yaw.msg
 
@@ -76,24 +78,24 @@ add_message_files(
 
   Altitude.msg
 
-  Heading.msg
-
-  Roll.msg
+  Latitude.msg
 
 )
 
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  Throttle_Control.srv
-
   Roll_Control.srv
 
-  Pitch_Control.srv
+  Heading_Control.srv
+
+  Yaw_Control.srv
 
   Landing_Gear_Control.srv
 
-  Heading_Control.srv
+  Throttle_Control.srv
+
+  Pitch_Control.srv
 
 )
 
@@ -210,6 +212,9 @@ add_library(Pitch_Sensor
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Pitch_Sensor.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Pitch_Sensor CPP Marker
 
             ## End Pitch_Sensor CPP Marker
@@ -229,6 +234,9 @@ add_library(Heading_Sensor
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Heading_Sensor.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Heading_Sensor CPP Marker
 
             ## End Heading_Sensor CPP Marker
@@ -248,6 +256,9 @@ add_library(Roll_Sensor
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Roll_Sensor.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Roll_Sensor CPP Marker
 
             ## End Roll_Sensor CPP Marker
@@ -267,6 +278,9 @@ add_library(Altitude_Sensor
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Altitude_Sensor.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Altitude_Sensor CPP Marker
 
             ## End Altitude_Sensor CPP Marker
@@ -286,6 +300,9 @@ add_library(Pitch_Actuator
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Pitch_Actuator.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Pitch_Actuator CPP Marker
 
             ## End Pitch_Actuator CPP Marker
@@ -305,6 +322,9 @@ add_library(Roll_Actuator
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Roll_Actuator.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Roll_Actuator CPP Marker
 
             ## End Roll_Actuator CPP Marker
@@ -324,6 +344,9 @@ add_library(Heading_Actuator
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Heading_Actuator.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Heading_Actuator CPP Marker
 
             ## End Heading_Actuator CPP Marker
@@ -343,6 +366,9 @@ add_library(Throttle_Actuator
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Throttle_Actuator.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Throttle_Actuator CPP Marker
 
             ## End Throttle_Actuator CPP Marker
@@ -362,6 +388,9 @@ add_library(Landing_Gear_Controller
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Landing_Gear_Controller.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Landing_Gear_Controller CPP Marker
 
             ## End Landing_Gear_Controller CPP Marker
@@ -417,6 +446,9 @@ add_library(Speed_Sensor
 	    src/flight_controller_package/Component.cpp
             src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Speed_Sensor.cpp
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
             ## Start Speed_Sensor CPP Marker
 
             ## End Speed_Sensor CPP Marker
@@ -467,17 +499,4 @@ target_link_libraries(Longitude_Sensor
 add_dependencies(Longitude_Sensor
                  flight_controller_package_generate_messages_cpp
                 )
-
-
-
-
-
-
-
-
-
-
-
-
-
 

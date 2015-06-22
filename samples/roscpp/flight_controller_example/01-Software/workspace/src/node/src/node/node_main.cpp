@@ -34,6 +34,7 @@ int main(int argc, char **argv)
     configFileName = configFile;
   if (nodeParser.Parse(configFileName))
   {      
+    nodeName = nodeParser.nodeName;
     ros::init(argc, argv, nodeName.c_str());
 
     // Create Node Handle

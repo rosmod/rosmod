@@ -203,8 +203,6 @@ class ROSMOD_Generator:
                 if comp.properties['datatype'] == 'KSP':
                     needs_io = True
 
-            print 'Detected KSP Component?: ' + str(needs_io)
-
             if needs_io == True:
                 self.krpci_include = self.include + '/krpci'
                 if not os.path.exists(self.krpci_include):
