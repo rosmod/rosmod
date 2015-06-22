@@ -21,6 +21,7 @@ KRPCI::~KRPCI()
 void KRPCI::SetName(std::string name)
 {
   name_ = name;
+  name_.resize(32);
 }
 
 bool KRPCI::Connect()

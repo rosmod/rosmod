@@ -3,6 +3,8 @@
 //# Start User Globals Marker
 //# End User Globals Marker
 
+KRPCI krpci_client;
+
 // Initialization Function
 //# Start Init Marker
 void Speed_Sensor::Init(const ros::TimerEvent& event)

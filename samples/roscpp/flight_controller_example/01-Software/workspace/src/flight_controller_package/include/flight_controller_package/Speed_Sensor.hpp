@@ -39,7 +39,6 @@ private:
   // Publisher 
   ros::Publisher speed_publisher;
 
-  KRPCI krpci_client;
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };

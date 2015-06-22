@@ -3,6 +3,8 @@
 //# Start User Globals Marker
 //# End User Globals Marker
 
+KRPCI krpci_client;
+
 // Initialization Function
 //# Start Init Marker
 void Landing_Gear_Controller::Init(const ros::TimerEvent& event)

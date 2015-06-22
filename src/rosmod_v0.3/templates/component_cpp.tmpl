@@ -8,6 +8,10 @@ $hash_include "$package_name/${component_name}.hpp"
 $user_globals//# End User Globals Marker
 #end if
 
+#if $component_type == "KSP"
+KRPCI krpci_client;
+#end if
+
 // Initialization Function
 #if $init_business_logic == ""
 //# Start Init Marker

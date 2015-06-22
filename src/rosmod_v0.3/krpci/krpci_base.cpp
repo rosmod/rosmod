@@ -21,6 +21,7 @@ KRPCI::~KRPCI()
 void KRPCI::SetName(std::string name)
 {
   name_ = name;
+  name_.resize(32);
 }
 
 void KRPCI::SetIP(std::string ip)
@@ -300,7 +301,7 @@ bool KRPCI::getStreamResponsesFromStreamMessage()
   memset(buf,0,maxBufferSize);
   int bytesreceived =0;
   if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
-    perror("get stream responses from stream message : stream socket receive");
+    //perror("get stream responses from stream message : stream socket receive");
     return false;
   }
   //std::cout << "Socket received # bytes = " << bytesreceived << endl;

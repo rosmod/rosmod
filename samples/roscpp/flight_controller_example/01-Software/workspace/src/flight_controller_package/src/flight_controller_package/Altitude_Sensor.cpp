@@ -7,6 +7,8 @@ uint64_t flightID;
 double altitude;
 //# End User Globals Marker
 
+KRPCI krpci_client;
+
 // Initialization Function
 //# Start Init Marker
 void Altitude_Sensor::Init(const ros::TimerEvent& event)

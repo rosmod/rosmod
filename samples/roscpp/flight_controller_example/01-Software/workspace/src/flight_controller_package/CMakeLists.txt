@@ -66,11 +66,9 @@ add_message_files(
   FILES
   Speed.msg
 
-  Heading.msg
-
   Pitch.msg
 
-  Roll.msg
+  Latitude.msg
 
   Yaw.msg
 
@@ -78,24 +76,26 @@ add_message_files(
 
   Altitude.msg
 
-  Latitude.msg
+  Heading.msg
+
+  Roll.msg
 
 )
 
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
+  Throttle_Control.srv
+
   Roll_Control.srv
 
-  Heading_Control.srv
-
-  Yaw_Control.srv
+  Pitch_Control.srv
 
   Landing_Gear_Control.srv
 
-  Throttle_Control.srv
+  Yaw_Control.srv
 
-  Pitch_Control.srv
+  Heading_Control.srv
 
 )
 

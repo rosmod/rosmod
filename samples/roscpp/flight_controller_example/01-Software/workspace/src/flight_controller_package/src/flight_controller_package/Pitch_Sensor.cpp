@@ -7,22 +7,32 @@ uint64_t flightID;
 float pitch;
 //# End User Globals Marker
 
+KRPCI krpci_client;
+
 // Initialization Function
 //# Start Init Marker
 void Pitch_Sensor::Init(const ros::TimerEvent& event)
 {
+  std::cout << "About to Connect" << std::endl;
+  krpci_client.SetName(nodeName + "_" + compName);
+
   // Initialize Here
-  if (!krpci_client.Connect())
-    LOGGER.INFO("Couldn't connect to KRPC Server!");
+  if (krpci_client.Connect()) {
+    // Get Active Vessel
+    krpci_client.get_ActiveVessel(vesselID);
 
-  // Get Active Vessel
-  krpci_client.get_ActiveVessel(vesselID);
+    std::cout << "Vessel ID: " << vesselID << std::endl;
 
-  // Get Reference Frame
-  krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, refFrame);
+    // Get Reference Frame
+    krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, refFrame);
 
-  // Get Flight ID
-  krpci_client.Vessel_Flight(vesselID, refFrame, flightID);
+    std::cout << "Surface Reference Frame: " << refFrame << std::endl;
+
+    // Get Flight ID
+    krpci_client.Vessel_Flight(vesselID, refFrame, flightID);
+
+    std::cout << "FlightID: " << flightID << std::endl;
+  }
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -50,7 +60,7 @@ Pitch_Sensor::~Pitch_Sensor()
   pitch_sensor_timer.stop();
   pitch_publisher.shutdown();
   //# Start Destructor Marker
-                      krpci_client.Close();
+                        krpci_client.Close();
   //# End Destructor Marker
 }
 

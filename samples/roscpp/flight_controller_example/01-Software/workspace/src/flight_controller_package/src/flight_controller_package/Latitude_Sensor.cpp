@@ -3,6 +3,7 @@
 //# Start User Globals Marker
 //# End User Globals Marker
 
+
 // Initialization Function
 //# Start Init Marker
 void Latitude_Sensor::Init(const ros::TimerEvent& event)
