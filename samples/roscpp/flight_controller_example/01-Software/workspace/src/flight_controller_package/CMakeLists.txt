@@ -66,9 +66,11 @@ add_message_files(
   FILES
   Speed.msg
 
+  Heading.msg
+
   Pitch.msg
 
-  Latitude.msg
+  Roll.msg
 
   Yaw.msg
 
@@ -76,26 +78,24 @@ add_message_files(
 
   Altitude.msg
 
-  Heading.msg
-
-  Roll.msg
+  Latitude.msg
 
 )
 
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  Throttle_Control.srv
-
   Roll_Control.srv
 
-  Pitch_Control.srv
-
-  Landing_Gear_Control.srv
+  Heading_Control.srv
 
   Yaw_Control.srv
 
-  Heading_Control.srv
+  Landing_Gear_Control.srv
+
+  Throttle_Control.srv
+
+  Pitch_Control.srv
 
 )
 
@@ -209,18 +209,12 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(Pitch_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Pitch_Sensor.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Pitch_Sensor CPP Marker
 
             ## End Pitch_Sensor CPP Marker
            )
 target_link_libraries(Pitch_Sensor
-		      boost_system boost_thread protobuf
                       ## Start Pitch_Sensor Target Link Libraries Marker
 
                       ## End Pitch_Sensor Target Link Libraries Marker
@@ -231,18 +225,12 @@ add_dependencies(Pitch_Sensor
                 )
 
 add_library(Heading_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Heading_Sensor.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Heading_Sensor CPP Marker
 
             ## End Heading_Sensor CPP Marker
            )
 target_link_libraries(Heading_Sensor
-		      boost_system boost_thread protobuf
                       ## Start Heading_Sensor Target Link Libraries Marker
 
                       ## End Heading_Sensor Target Link Libraries Marker
@@ -253,18 +241,12 @@ add_dependencies(Heading_Sensor
                 )
 
 add_library(Roll_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Roll_Sensor.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Roll_Sensor CPP Marker
 
             ## End Roll_Sensor CPP Marker
            )
 target_link_libraries(Roll_Sensor
-		      boost_system boost_thread protobuf
                       ## Start Roll_Sensor Target Link Libraries Marker
 
                       ## End Roll_Sensor Target Link Libraries Marker
@@ -275,18 +257,12 @@ add_dependencies(Roll_Sensor
                 )
 
 add_library(Altitude_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Altitude_Sensor.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Altitude_Sensor CPP Marker
 
             ## End Altitude_Sensor CPP Marker
            )
 target_link_libraries(Altitude_Sensor
-		      boost_system boost_thread protobuf
                       ## Start Altitude_Sensor Target Link Libraries Marker
 
                       ## End Altitude_Sensor Target Link Libraries Marker
@@ -297,18 +273,12 @@ add_dependencies(Altitude_Sensor
                 )
 
 add_library(Pitch_Actuator
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Pitch_Actuator.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Pitch_Actuator CPP Marker
 
             ## End Pitch_Actuator CPP Marker
            )
 target_link_libraries(Pitch_Actuator
-		      boost_system boost_thread protobuf
                       ## Start Pitch_Actuator Target Link Libraries Marker
 
                       ## End Pitch_Actuator Target Link Libraries Marker
@@ -319,18 +289,12 @@ add_dependencies(Pitch_Actuator
                 )
 
 add_library(Roll_Actuator
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Roll_Actuator.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Roll_Actuator CPP Marker
 
             ## End Roll_Actuator CPP Marker
            )
 target_link_libraries(Roll_Actuator
-		      boost_system boost_thread protobuf
                       ## Start Roll_Actuator Target Link Libraries Marker
 
                       ## End Roll_Actuator Target Link Libraries Marker
@@ -341,18 +305,12 @@ add_dependencies(Roll_Actuator
                 )
 
 add_library(Heading_Actuator
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Heading_Actuator.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Heading_Actuator CPP Marker
 
             ## End Heading_Actuator CPP Marker
            )
 target_link_libraries(Heading_Actuator
-		      boost_system boost_thread protobuf
                       ## Start Heading_Actuator Target Link Libraries Marker
 
                       ## End Heading_Actuator Target Link Libraries Marker
@@ -363,18 +321,12 @@ add_dependencies(Heading_Actuator
                 )
 
 add_library(Throttle_Actuator
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Throttle_Actuator.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Throttle_Actuator CPP Marker
 
             ## End Throttle_Actuator CPP Marker
            )
 target_link_libraries(Throttle_Actuator
-		      boost_system boost_thread protobuf
                       ## Start Throttle_Actuator Target Link Libraries Marker
 
                       ## End Throttle_Actuator Target Link Libraries Marker
@@ -385,18 +337,12 @@ add_dependencies(Throttle_Actuator
                 )
 
 add_library(Landing_Gear_Controller
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Landing_Gear_Controller.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Landing_Gear_Controller CPP Marker
 
             ## End Landing_Gear_Controller CPP Marker
            )
 target_link_libraries(Landing_Gear_Controller
-		      boost_system boost_thread protobuf
                       ## Start Landing_Gear_Controller Target Link Libraries Marker
 
                       ## End Landing_Gear_Controller Target Link Libraries Marker
@@ -407,8 +353,6 @@ add_dependencies(Landing_Gear_Controller
                 )
 
 add_library(PID_Controller
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/PID_Controller.cpp
             ## Start PID_Controller CPP Marker
 
@@ -425,8 +369,6 @@ add_dependencies(PID_Controller
                 )
 
 add_library(High_level_Controller
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/High_level_Controller.cpp
             ## Start High_level_Controller CPP Marker
 
@@ -443,18 +385,12 @@ add_dependencies(High_level_Controller
                 )
 
 add_library(Speed_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Speed_Sensor.cpp
-            src/krpci/KRPC.pb.cc
-	    src/krpci/krpci_base.cpp
-            src/krpci/krpci_generated.cpp
             ## Start Speed_Sensor CPP Marker
 
             ## End Speed_Sensor CPP Marker
            )
 target_link_libraries(Speed_Sensor
-		      boost_system boost_thread protobuf
                       ## Start Speed_Sensor Target Link Libraries Marker
 
                       ## End Speed_Sensor Target Link Libraries Marker
@@ -465,8 +401,6 @@ add_dependencies(Speed_Sensor
                 )
 
 add_library(Latitude_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Latitude_Sensor.cpp
             ## Start Latitude_Sensor CPP Marker
 
@@ -483,8 +417,6 @@ add_dependencies(Latitude_Sensor
                 )
 
 add_library(Longitude_Sensor
-	    src/flight_controller_package/Component.cpp
-            src/flight_controller_package/Logger.cpp
             src/flight_controller_package/Longitude_Sensor.cpp
             ## Start Longitude_Sensor CPP Marker
 
@@ -500,3 +432,11 @@ add_dependencies(Longitude_Sensor
                  flight_controller_package_generate_messages_cpp
                 )
 
+add_library(KRPCI
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
+	    )
+target_link_libraries(KRPCI
+  boost_system boost_thread protobuf
+  )

@@ -29,6 +29,7 @@ class XMLParser
 {
 public:
   std::vector<ComponentConfig> compConfigList;
+  std::vector<std::string> libList;
   std::string nodeName;
 
   bool Return_Boolean(std::string value) 
@@ -50,8 +51,14 @@ public:
     xml_node<> *node = doc.first_node("node");
     nodeName = node->first_attribute()->value();
 
+    for (xml_node<> *lib_location = node->first_node("library");
+	 lib_location; lib_location = lib_location->next_sibling("library"))
+      {
+	libList.push_back(lib_location->first_attribute()->value());
+      }
+
     for (xml_node<> *comp_inst = node->first_node("component_instance"); 
-	 comp_inst; comp_inst = comp_inst->next_sibling())
+	 comp_inst; comp_inst = comp_inst->next_sibling("component_instance"))
       {
 	ComponentConfig config;
 	config.compName = comp_inst->first_attribute()->value();
@@ -76,7 +83,7 @@ public:
 	  Return_Boolean(logger->first_node("critical")->first_attribute()->value());
 	
 	for (xml_node<> *port_inst = comp_inst->first_node("port_instance"); 
-	     port_inst; port_inst = port_inst->next_sibling())
+	     port_inst; port_inst = port_inst->next_sibling("port_instance"))
 	  {
 	    std::string portInstName = port_inst->first_attribute()->value();
 	    xml_node<> *port = port_inst->first_node("port");

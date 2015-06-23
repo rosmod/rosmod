@@ -60,7 +60,7 @@ Pitch_Sensor::~Pitch_Sensor()
   pitch_sensor_timer.stop();
   pitch_publisher.shutdown();
   //# Start Destructor Marker
-                        krpci_client.Close();
+                                krpci_client.Close();
   //# End Destructor Marker
 }
 

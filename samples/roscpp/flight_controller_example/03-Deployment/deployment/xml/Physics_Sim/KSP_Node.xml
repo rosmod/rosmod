@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="KSP_Node">
+  <library name="libKRPCI.so"/>
   <component_instance name="Pitch_Sensor_i">
     <library name="libPitch_Sensor.so"/>
     <scheduling_scheme setting="FIFO"/>

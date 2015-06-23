@@ -478,7 +478,8 @@ class ROSMOD_Generator:
                                      'CATKIN_PACKAGE_SHARE_DESTINATION':
                                            "${CATKIN_PACKAGE_SHARE_DESTINATION}",
                                      'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
-                                     'components': components}
+                                     'components': components,
+                                     'needs_io' : needs_io}
             t = CMakeLists(searchList=[cmake_lists_namespace])
             self.cmake_lists = str(t)
             # Write CMakeLists file
@@ -503,7 +504,11 @@ class ROSMOD_Generator:
                 if not os.path.exists(hardware_folder):
                     os.makedirs(hardware_folder)
                 xml_filename = node.properties["name"] + ".xml"
-                xml_namespace = {'node': node}
+                needs_io = False
+                for comp_inst in node.children:
+                    if comp_inst.properties['component_reference'].properties['datatype'] == 'KSP':
+                        needs_io = True
+                xml_namespace = {'node': node, 'needs_io':needs_io}
                 t = xml(searchList=[xml_namespace])
                 xml_content = str(t)
                 with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
