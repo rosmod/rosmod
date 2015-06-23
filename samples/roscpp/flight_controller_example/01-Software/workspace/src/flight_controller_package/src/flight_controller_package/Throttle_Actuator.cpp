@@ -1,6 +1,9 @@
 #include "flight_controller_package/Throttle_Actuator.hpp"
 
 //# Start User Globals Marker
+uint64_t vesselID;
+uint64_t partsID;
+std::vector<uint64_t> engineIDs;
 //# End User Globals Marker
 
 KRPCI krpci_client;
@@ -10,6 +13,33 @@ KRPCI krpci_client;
 void Throttle_Actuator::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  std::cout << "About to Connect" << std::endl;
+  krpci_client.SetName(nodeName + "_" + compName);
+
+  if (krpci_client.Connect()) {
+    // Get Active Vessel
+    krpci_client.get_ActiveVessel(vesselID);
+
+    std::cout << "Vessel ID: " << vesselID << std::endl;
+
+    // Get Reference Frame
+    krpci_client.Vessel_get_Parts(vesselID, partsID);
+
+    std::cout << "Parts ID: " << partsID << std::endl;
+
+    // Get Flight ID
+    krpci_client.Parts_get_Engines(partsID, engineIDs);
+    
+    for (int i=0; i < engineIDs.size(); i++)
+      {
+	std::cout << "Engine ID: " << engineIDs[i] << std::endl;
+	if (i < engineIDs.size() / 2)
+	  {
+	    krpci_client.Engine_set_ThrustLimit(engineIDs[i],0);
+	    std::cout << "Set Engine ID "<<engineIDs[i]<<" Thrust Limit to 0" << std::endl;
+	  }
+      }
+  }
 
   // Stop Init Timer
   initOneShotTimer.stop();
