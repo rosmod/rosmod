@@ -63,6 +63,10 @@ private:
   ros::Subscriber altitude_subscriber; 
 
   //# Start User Private Variables Marker
+  double pitch;
+  double roll;
+  double heading;
+  double altitude;
   //# End User Private Variables Marker
 };
 

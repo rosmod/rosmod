@@ -19,7 +19,9 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
 //# Start pitch_subscriber_OnOneData Marker
 void High_level_Controller::pitch_subscriber_OnOneData(const flight_controller_package::Pitch::ConstPtr& received_data)
 {
-  // Business Logic for pitch_subscriber Subscriber
+  // Business Logic for pitch_subscriber Subscribe
+  pitch = received_data->value;
+  LOGGER.INFO("High-level Control::Latest Pitch Sensor Reading: %f", pitch);
 }
 //# End pitch_subscriber_OnOneData Marker
 // Subscriber Callback - roll_subscriber
@@ -27,6 +29,8 @@ void High_level_Controller::pitch_subscriber_OnOneData(const flight_controller_p
 void High_level_Controller::roll_subscriber_OnOneData(const flight_controller_package::Roll::ConstPtr& received_data)
 {
   // Business Logic for roll_subscriber Subscriber
+  roll = received_data->value;
+  LOGGER.INFO("High-level Control::Latest Roll Sensor Reading: %f", roll);
 }
 //# End roll_subscriber_OnOneData Marker
 // Subscriber Callback - heading_subscriber
@@ -34,6 +38,8 @@ void High_level_Controller::roll_subscriber_OnOneData(const flight_controller_pa
 void High_level_Controller::heading_subscriber_OnOneData(const flight_controller_package::Heading::ConstPtr& received_data)
 {
   // Business Logic for heading_subscriber Subscriber
+  heading = received_data->value;
+  LOGGER.INFO("High-level Control:: Heading Sensor Reading: %f", heading);
 }
 //# End heading_subscriber_OnOneData Marker
 // Subscriber Callback - altitude_subscriber
@@ -41,6 +47,8 @@ void High_level_Controller::heading_subscriber_OnOneData(const flight_controller
 void High_level_Controller::altitude_subscriber_OnOneData(const flight_controller_package::Altitude::ConstPtr& received_data)
 {
   // Business Logic for altitude_subscriber Subscriber
+  altitude = received_data->value;
+  LOGGER.INFO("High-level Control::Latest Altitude Sensor Reading: %f", altitude);
 }
 //# End altitude_subscriber_OnOneData Marker
 

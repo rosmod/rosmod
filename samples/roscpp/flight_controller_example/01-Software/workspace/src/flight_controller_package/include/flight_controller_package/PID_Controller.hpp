@@ -83,6 +83,10 @@ private:
   ros::ServiceClient landing_gear_control_client;
 
   //# Start User Private Variables Marker
+  double pitch;
+  double roll;
+  double heading;
+  double altitude;
   //# End User Private Variables Marker
 };
 

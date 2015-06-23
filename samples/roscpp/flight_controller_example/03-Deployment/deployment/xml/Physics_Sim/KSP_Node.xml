@@ -45,5 +45,27 @@
       <critical setting="True"/>
     </logging>
   </component_instance>
+  <component_instance name="PID_Controller_I">
+    <library name="libPID_Controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+  <component_instance name="High_level_Controller_i">
+    <library name="libHigh_level_Controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
 </node>
 
