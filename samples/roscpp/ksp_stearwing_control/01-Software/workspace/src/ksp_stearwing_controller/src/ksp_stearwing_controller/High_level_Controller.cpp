@@ -1,6 +1,8 @@
 #include "ksp_stearwing_controller/High_level_Controller.hpp"
 
 //# Start User Globals Marker
+uint64_t vesselID;
+uint64_t controlID;
 //# End User Globals Marker
 
 KRPCI krpci_client;
@@ -10,7 +12,10 @@ KRPCI krpci_client;
 void High_level_Controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
+  if (krpci_client.Connect()) {
+    krpci_client.get_ActiveVessel(vesselID);
+    krpci_client.Vessel_get_Control(vesselID, controlID);
+  }
   // Stop Init Timer
   initOneShotTimer.stop();
 }
