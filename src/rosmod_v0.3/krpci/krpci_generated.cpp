@@ -1,4 +1,4 @@
-#include "krpci.hpp"
+#include "krpci/krpci.hpp"
 using namespace std;
 
 bool KRPCI::ClearTarget_createRequest(krpc::Request& request)
