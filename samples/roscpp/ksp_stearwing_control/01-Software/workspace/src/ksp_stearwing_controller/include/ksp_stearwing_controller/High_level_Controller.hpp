@@ -55,7 +55,21 @@ private:
   double current_latitude;
   double current_longitude;
   double current_speed;
-  string state;
+  enum state { INIT, 
+	       TAKE_OFF, 
+	       CRUISE, 
+	       LAND };
+  state current_state;
+
+  float goal_heading;
+  double goal_altitude;
+  double goal_speed;
+
+  float heading_tolerance;
+  float altitude_tolerance;
+  float speed_tolerance;
+  
+  bool isGoalReached();
   //# End User Private Variables Marker
 };
 
