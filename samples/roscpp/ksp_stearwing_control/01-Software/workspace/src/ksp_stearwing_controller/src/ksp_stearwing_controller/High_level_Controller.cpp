@@ -5,25 +5,31 @@ uint64_t vesselID;
 uint64_t controlID;
 
 bool High_level_Controller::isGoalReached() {
-  // Based on current_state and all 10 previous states in previous_state,
-  // check if the goals are reached and stable
-  return true;
 }
 
 bool High_level_Controller::state_func_INIT() {
-  // Check initial state to see if all Kerbals are ready for takeoff
-  // Fasten your seat belts
   // Set goals for TAKE_OFF state
+  goal_altitude = 2000.0;
+  goal_heading = 45.0;
+  
+  // Change State
+  current_state = TAKE_OFF; 
 }
 
 bool High_level_Controller::state_func_TAKEOFF() {
   // On successful takeoff, reach a stable cruise altitude and pitch
   // Set goals for CRUISE state
+
+  // Change State
+  current_state = CRUISE; 
 }
 
 bool High_level_Controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
+
+  // Change State
+  current_state = LAND; 
 }
 
 bool High_level_Controller::state_func_LAND() {
@@ -50,10 +56,6 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   heading_tolerance = 10.0;
   altitude_tolerance = 5.0;
   speed_tolerance = 5.0;
-
-  // Set Takeoff Goal
-  goal_altitude = 2000.0;
-  goal_heading = 45.0;
 
   // Setup cruise waypoints here
   // UPDATE THESE
@@ -114,7 +116,6 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
     switch(current_state) {
     case INIT :
       state_func_INIT();
-      current_state = TAKE_OFF; 
       break;
     case TAKE_OFF :
       state_func_TAKEOFF();
