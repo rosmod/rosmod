@@ -2,9 +2,11 @@
 
 //# Start User Globals Marker
 uint64_t vesselID;
-uint64_t refFrame;
+uint64_t surfaceRefFrameID;
 uint64_t flightID;
 uint64_t controlID;
+uint64_t orbitalRefFrameID;
+uint64_t orbitalFlightID;
 float throttle;
 float pitch;
 float roll;
@@ -24,8 +26,10 @@ void Sensor_Component::Init(const ros::TimerEvent& event)
   // Initialize Here
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);
-    krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, refFrame);
-    krpci_client.Vessel_Flight(vesselID, refFrame, flightID);
+    krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, surfaceRefFrameID);
+    krpci_client.Vessel_get_OrbitalReferenceFrame(vesselID, orbitalRefFrameID);
+    krpci_client.Vessel_Flight(vesselID, surfaceRefFrameID, flightID);
+    krpci_client.Vessel_Flight(vesselID, orbitalRefFrameID, orbitalFlightID);
     krpci_client.Vessel_get_Control(vesselID, controlID);
   }
 
@@ -47,6 +51,15 @@ void Sensor_Component::sensor_timerCallback(const ros::TimerEvent& event)
   krpci_client.Flight_get_Latitude(flightID, latitude);
   krpci_client.Flight_get_Longitude(flightID, longitude);
   krpci_client.Flight_get_Speed(flightID, speed);
+
+  double trans_x, trans_y, trans_z;
+  krpci_client.Flight_get_Velocity(orbitalFlightID, trans_x, trans_y, trans_z);
+  //LOGGER.INFO("ORBITAL FLIGHT VELOCITY:: %f, %f, %f",trans_x,trans_y,trans_z);
+  double vel_x, vel_y, vel_z;
+  krpci_client.TransformDirection(trans_x, trans_y, trans_z, orbitalRefFrameID, surfaceRefFrameID, vel_x, vel_y, vel_z);
+  //LOGGER.INFO("VELOCITY:: %f, %f, %f",vel_x,vel_y,vel_z);
+  double vel_speed = sqrt(vel_x * vel_x + vel_y * vel_y + vel_z * vel_z);
+  //LOGGER.INFO("SPEED:: %f",vel_speed);
 
   ksp_stearwing_controller::Sensor_Reading new_reading;
   new_reading.throttle = throttle;
