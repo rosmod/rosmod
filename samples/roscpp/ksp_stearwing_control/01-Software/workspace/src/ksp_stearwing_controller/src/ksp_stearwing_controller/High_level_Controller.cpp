@@ -3,6 +3,10 @@
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t controlID;
+
+bool High_level_Controller::isGoalReached() {
+  return true;
+}
 //# End User Globals Marker
 
 KRPCI krpci_client;
@@ -12,6 +16,28 @@ KRPCI krpci_client;
 void High_level_Controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  
+  current_state = INIT;
+
+  // Set Goal tolerances
+  heading_tolerance = 10.0;
+  altitude_tolerance = 5.0;
+  speed_tolerance = 5.0;
+
+  // Set Takeoff Goal
+  goal_altitude = 2000.0;
+  goal_heading = 45.0;
+
+  // Setup cruise waypoints here
+  // UPDATE THESE
+  Waypoint wp1(2000.0, -0.05, -74.4);
+  Waypoint wp2(5000.0, -1.5, 74.0);
+  Waypoint wp3(3000.0, -1.7, 72.0);
+  cruise_waypoints.push_back(wp1);
+  cruise_waypoints.push_back(wp2);
+  cruise_waypoints.push_back(wp3);
+
+  // Connect to kRPC Server and obtain the vessel & control ID
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);
     krpci_client.Vessel_get_Control(vesselID, controlID);
@@ -43,6 +69,32 @@ void High_level_Controller::sensor_subscriber_OnOneData(const ksp_stearwing_cont
 void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for flight_control_timer Timer
+
+  // If High-level Goal is reached, then change state
+  if (isGoalReached()) {
+
+    switch(current_state) {
+    case INIT :
+      // Check initial state to see if all Kerbals are ready for takeoff
+      // Fasten your seat belts
+      current_state = TAKE_OFF; 
+      break;
+    case TAKE_OFF :
+      // On successful takeoff, reach a stable cruise altitude and pitch
+      // Then start CRUISE state
+      current_state = CRUISE;
+      break;
+    case CRUISE :
+      // Iterate through all waypoints and cruise till land
+      // Periodically update goals here as waypoints are passed
+      current_state = LAND;
+      break;
+    case LAND :
+      // Time to Land
+      // Without throttle control, this is going to be tough
+      break;
+    }
+  }
 }
 //# End flight_control_timerCallback Marker
 

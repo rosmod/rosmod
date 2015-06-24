@@ -12,6 +12,19 @@
 //# End User Includes Marker
 
 //# Start User Globals Marker
+class Waypoint {
+public:
+  Waypoint(double altitude, 
+	   double latitude, 
+	   double longitude) : 
+    altitude_(altitude),
+    latitude_(latitude),
+    longitude_(longitude){}
+
+  double altitude_;
+  double latitude_;
+  double longitude_;
+};
 //# End User Globals Marker
 
 class High_level_Controller : public Component
@@ -55,7 +68,23 @@ private:
   double current_latitude;
   double current_longitude;
   double current_speed;
-  string state;
+  enum state { INIT, 
+	       TAKE_OFF, 
+	       CRUISE, 
+	       LAND };
+  state current_state;
+
+  float goal_heading;
+  double goal_altitude;
+  double goal_speed;
+
+  float heading_tolerance;
+  float altitude_tolerance;
+  float speed_tolerance;
+
+  vector<Waypoint> cruise_waypoints;
+  
+  bool isGoalReached();
   //# End User Private Variables Marker
 };
 
