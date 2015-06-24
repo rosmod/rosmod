@@ -5,6 +5,26 @@ uint64_t vesselID;
 uint64_t controlID;
 
 bool High_level_Controller::isGoalReached() {
+
+  bool stable_state = false;
+  // Check current sensor values
+  if ((abs(goal_heading - current_heading) < heading_tolerance) &&
+      (abs(goal_altitude - current_altitude) < altitude_tolerance)) {
+
+    // Check last 10 sensor values
+    if (previous_states.size() == 10) {
+      for(boost::circular_buffer<Save_State>::iterator it = previous_states.begin(); 
+	  it != previous_states.end(); ++it) {
+	
+      }
+    }
+    else {
+      return false;
+    }
+  }
+  else {
+    return false;
+  }
 }
 
 bool High_level_Controller::state_func_INIT() {
@@ -21,7 +41,7 @@ bool High_level_Controller::state_func_TAKEOFF() {
   // Set goals for CRUISE state
 
   // Change State
-  current_state = CRUISE; 
+  current_state = LAND;
 }
 
 bool High_level_Controller::state_func_CRUISE() {
@@ -119,11 +139,9 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
       break;
     case TAKE_OFF :
       state_func_TAKEOFF();
-      current_state = CRUISE;
       break;
     case CRUISE :
       state_func_CRUISE();
-      current_state = LAND;
       break;
     case LAND :
       state_func_LAND();
