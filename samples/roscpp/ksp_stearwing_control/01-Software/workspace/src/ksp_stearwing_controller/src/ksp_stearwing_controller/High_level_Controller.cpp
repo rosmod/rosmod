@@ -5,23 +5,30 @@ uint64_t vesselID;
 uint64_t controlID;
 
 bool High_level_Controller::isGoalReached() {
+  // Based on current_state and all 10 previous states in previous_state,
+  // check if the goals are reached and stable
   return true;
 }
 
 bool High_level_Controller::state_func_INIT() {
-
+  // Check initial state to see if all Kerbals are ready for takeoff
+  // Fasten your seat belts
+  // Set goals for TAKE_OFF state
 }
 
 bool High_level_Controller::state_func_TAKEOFF() {
-
+  // On successful takeoff, reach a stable cruise altitude and pitch
+  // Set goals for CRUISE state
 }
 
 bool High_level_Controller::state_func_CRUISE() {
-
+  // Set goals for LAND state
+  // Iterate through all waypoints in cruise_waypoints
 }
 
 bool High_level_Controller::state_func_LAND() {
-
+  // Time to Land
+  // Without throttle control, this is going to be rough
 }
 
 //# End User Globals Marker
@@ -80,7 +87,15 @@ void High_level_Controller::sensor_subscriber_OnOneData(const ksp_stearwing_cont
   current_latitude = received_data->latitude;
   current_longitude = received_data->longitude;
   current_speed = received_data->speed;
-  LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f", current_throttle, current_pitch, current_roll, current_heading, current_altitude, current_latitude, current_longitude, current_speed);
+  LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f", 
+	      current_throttle, 
+	      current_pitch, 
+	      current_roll, 
+	      current_heading, 
+	      current_altitude, 
+	      current_latitude, 
+	      current_longitude, 
+	      current_speed);
 
   Save_State new_state(current_heading, current_altitude, current_speed);
   previous_states.push_back(new_state);
@@ -98,26 +113,18 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
 
     switch(current_state) {
     case INIT :
-      // Check initial state to see if all Kerbals are ready for takeoff
-      // Fasten your seat belts
       state_func_INIT();
       current_state = TAKE_OFF; 
       break;
     case TAKE_OFF :
-      // On successful takeoff, reach a stable cruise altitude and pitch
-      // Then start CRUISE state
       state_func_TAKEOFF();
       current_state = CRUISE;
       break;
     case CRUISE :
-      // Iterate through all waypoints and cruise till land
-      // Periodically update goals here as waypoints are passed
       state_func_CRUISE();
       current_state = LAND;
       break;
     case LAND :
-      // Time to Land
-      // Without throttle control, this is going to be tough
       state_func_LAND();
       break;
     }
