@@ -9,5 +9,6 @@ hardware Laptop
   username = "jeb";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb";
+  arch = x86;
 }
 

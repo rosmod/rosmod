@@ -55,6 +55,7 @@ private:
   double current_latitude;
   double current_longitude;
   double current_speed;
+  string state;
   //# End User Private Variables Marker
 };
 
