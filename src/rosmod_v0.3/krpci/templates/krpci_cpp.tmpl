@@ -90,7 +90,7 @@ bool KRPCI::${procedure.name}(${procedure.args})
   return true;
 }
 
-#if ${procedure.output_args} != ""
+#if $procedure.output_args != ""
 bool KRPCI::${procedure.name}_parseResponse(krpc::Response response, ${procedure.output_args})
 {
 #if $procedure.return_type == "uint64"
@@ -121,7 +121,7 @@ bool KRPCI::${procedure.name}_parseResponse(krpc::Response response, ${procedure
 #end if
   return true;
 }
-#endif
+#end if
 
 #end for
 #end if
