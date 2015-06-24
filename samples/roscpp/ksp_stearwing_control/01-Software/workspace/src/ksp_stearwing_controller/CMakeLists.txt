@@ -218,7 +218,7 @@ add_dependencies(Actuator_Component
 add_library(PID
             src/ksp_stearwing_controller/PID.cpp
             ## Start PID CPP Marker
-
+	    src/ksp_stearwing_controller/libpid.cpp
             ## End PID CPP Marker
            )
 target_link_libraries(PID
