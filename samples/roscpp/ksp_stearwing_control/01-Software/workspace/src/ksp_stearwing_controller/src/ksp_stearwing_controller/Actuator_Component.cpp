@@ -1,6 +1,8 @@
 #include "ksp_stearwing_controller/Actuator_Component.hpp"
 
 //# Start User Globals Marker
+uint64_t vesselID;
+uint64_t controlID;
 //# End User Globals Marker
 
 KRPCI krpci_client;
@@ -10,7 +12,10 @@ KRPCI krpci_client;
 void Actuator_Component::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
+  if (krpci_client.Connect()) {
+    krpci_client.get_ActiveVessel(vesselID);
+    krpci_client.Vessel_get_Control(vesselID, controlID);
+  }
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -21,6 +26,15 @@ void Actuator_Component::Init(const ros::TimerEvent& event)
 void Actuator_Component::actuator_control_subscriber_OnOneData(const ksp_stearwing_controller::Actuation_Command::ConstPtr& received_data)
 {
   // Business Logic for actuator_control_subscriber Subscriber
+  float new_pitch = received_data->new_pitch;
+  float new_roll = received_data->new_roll;
+  float new_yaw = received_data->new_yaw;
+  float new_throttle = received_data->new_throttle;
+
+  krpci_client.Control_set_Pitch(controlID, new_pitch);
+  krpci_client.Control_set_Roll(controlID, new_roll);
+  krpci_client.Control_set_Yaw(controlID, new_yaw);
+  krpci_client.Control_set_Throttle(controlID, new_throttle);
 }
 //# End actuator_control_subscriber_OnOneData Marker
 

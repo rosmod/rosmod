@@ -24,10 +24,8 @@ void PID::sensor_subscriber_OnOneData(const ksp_stearwing_controller::Sensor_Rea
   current_roll = received_data->roll;
   current_heading = received_data->heading;
   current_altitude = received_data->altitude;
-  current_latitude = received_data->latitude;
-  current_longitude = received_data->longitude;
   current_speed = received_data->speed;
-  LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f", current_throttle, current_pitch, current_roll, current_heading, current_altitude, current_latitude, current_longitude, current_speed);
+  LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Speed=%f", current_throttle, current_pitch, current_roll, current_heading, current_altitude, current_speed);
 }
 //# End sensor_subscriber_OnOneData Marker
 // Subscriber Callback - pid_control_subscriber
@@ -35,6 +33,10 @@ void PID::sensor_subscriber_OnOneData(const ksp_stearwing_controller::Sensor_Rea
 void PID::pid_control_subscriber_OnOneData(const ksp_stearwing_controller::Control_Command::ConstPtr& received_data)
 {
   // Business Logic for pid_control_subscriber Subscriber
+  goal_heading = received_data->heading;
+  goal_altitude = received_data->altitude;
+  goal_speed = received_data->speed;
+  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", current_heading, current_altitude, current_speed);
 }
 //# End pid_control_subscriber_OnOneData Marker
 
@@ -43,6 +45,19 @@ void PID::pid_control_subscriber_OnOneData(const ksp_stearwing_controller::Contr
 void PID::pid_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for pid_timer Timer
+  float new_pitch = 0;
+  float new_roll = 0;
+  float new_yaw = 0;
+  float new_throttle = 0;
+
+  // NEED TO DO PID HERE
+
+  ksp_stearwing_controller::Actuation_Command new_actuation;
+  new_actuation.new_pitch = new_pitch;
+  new_actuation.new_roll = new_roll;
+  new_actuation.new_yaw = new_yaw;
+  new_actuation.new_throttle = new_throttle;
+  actuator_control_publisher.publish(new_actuation);
 }
 //# End pid_timerCallback Marker
 

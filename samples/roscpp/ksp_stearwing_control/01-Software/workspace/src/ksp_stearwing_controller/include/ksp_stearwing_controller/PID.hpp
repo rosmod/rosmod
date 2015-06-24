@@ -58,9 +58,11 @@ private:
   float current_roll;
   float current_heading;
   double current_altitude;
-  double current_latitude;
-  double current_longitude;
   double current_speed;
+
+  float goal_heading;
+  double goal_altitude;
+  double goal_speed;
   //# End User Private Variables Marker
 };
 
