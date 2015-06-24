@@ -19,6 +19,9 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   
   current_state = INIT;
 
+  // Set the history capacity
+  previous_states.set_capacity(10);
+
   // Set Goal tolerances
   heading_tolerance = 10.0;
   altitude_tolerance = 5.0;
@@ -61,6 +64,9 @@ void High_level_Controller::sensor_subscriber_OnOneData(const ksp_stearwing_cont
   current_longitude = received_data->longitude;
   current_speed = received_data->speed;
   LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f", current_throttle, current_pitch, current_roll, current_heading, current_altitude, current_latitude, current_longitude, current_speed);
+
+  Save_State new_state(current_heading, current_altitude, current_speed);
+  previous_states.push_back(new_state);
 }
 //# End sensor_subscriber_OnOneData Marker
 
@@ -121,11 +127,11 @@ void High_level_Controller::startUp()
     advertiseName += "_" + portGroupMap["sensor_subscriber"];
   ros::SubscribeOptions sensor_subscriber_options;
   sensor_subscriber_options = ros::SubscribeOptions::create<ksp_stearwing_controller::Sensor_Reading>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&High_level_Controller::sensor_subscriber_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&High_level_Controller::sensor_subscriber_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->sensor_subscriber = nh.subscribe(sensor_subscriber_options);
 
   // Component Publisher - pid_control_publisher

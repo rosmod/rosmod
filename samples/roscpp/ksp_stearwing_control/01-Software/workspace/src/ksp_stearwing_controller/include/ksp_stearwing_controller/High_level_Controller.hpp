@@ -9,6 +9,7 @@
 #include "krpci/krpci.hpp"
 
 //# Start User Includes Marker
+#include <boost/circular_buffer.hpp>
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -24,6 +25,20 @@ public:
   double altitude_;
   double latitude_;
   double longitude_;
+};
+
+class Save_State {
+public:
+  Save_State(float heading, 
+	     double altitude, 
+	     double speed) : 
+    heading_(heading),
+    altitude_(altitude),
+    speed_(speed){}
+
+  float heading_;
+  double altitude_;
+  double speed_;  
 };
 //# End User Globals Marker
 
@@ -83,6 +98,7 @@ private:
   float speed_tolerance;
 
   vector<Waypoint> cruise_waypoints;
+boost::circular_buffer<Save_State> previous_states;
   
   bool isGoalReached();
   //# End User Private Variables Marker
