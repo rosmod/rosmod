@@ -9,6 +9,7 @@
 
 
 //# Start User Includes Marker
+#include "ksp_stearwing_controller/libpid.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -53,7 +54,7 @@ private:
   ros::Publisher actuator_control_publisher;
 
   //# Start User Private Variables Marker
-      float current_throttle;
+  float current_throttle;
   float current_pitch;
   float current_roll;
   float current_heading;
@@ -63,6 +64,12 @@ private:
   float goal_heading;
   double goal_altitude;
   double goal_speed;
+
+  libpid altitude_pid;
+  libpid pitch_pid;
+  libpid roll_pid;
+  libpid heading_pid;
+  libpid speed_pid;
   //# End User Private Variables Marker
 };
 
