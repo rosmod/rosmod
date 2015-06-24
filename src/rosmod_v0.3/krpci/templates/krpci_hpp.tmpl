@@ -82,6 +82,7 @@ public:
   static bool ${procedure.name}_createRequest(krpc::Request& request);
 #end if 
   bool ${procedure.name}(${procedure.args});
+  bool ${procedure.name}_parseResponse(krpc::Response response, ${procedure.output_args});
 #end for
 #end if
 #end for
@@ -103,4 +104,6 @@ private:
   int socket_;
   int streamSocket_;
   int timeout_;
+
+  bool connected_;
 };

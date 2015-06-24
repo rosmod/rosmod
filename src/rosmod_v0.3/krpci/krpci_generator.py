@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # KRPC Service API Generator
 # Author: Pranav Srinivas Kumar
 # Date: 2015.05.19
@@ -11,7 +12,7 @@ generator_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(generator_dir + "/templates")
 
 # Recursively compile on template files in templates directory
-os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl > /dev/null 2>&1")
+os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl") # > /dev/null 2>&1")
 krpc_templates = os.path.realpath(os.path.abspath
                                   (os.path.join
                                    (os.path.split
@@ -76,6 +77,7 @@ class Procedure:
         self.return_type = ""
         self.args = ""
         self.input_args = ""
+        self.output_args = ""
         self.request_args = ""
 
     def generate_input_args(self):
@@ -87,31 +89,32 @@ class Procedure:
         self.request_args = self.request_args[:-2]
             
     def generate_output_args(self):
-        if self.return_type == "":
-            self.args = self.args[:-2]
-        else:
+        if self.return_type != "":
             if self.return_type == "KRPC.Tuple":
-                self.args += "double& x, double& y, double& z"
+                self.output_args += "double& x, double& y, double& z"
             elif self.return_type == "KRPC.List":
-                self.args += "std::vector<uint64_t>& return_vector"
+                self.output_args += "std::vector<uint64_t>& return_vector"
             elif self.return_type == "KRPC.Dictionary":
-                self.args += "krpc::Dictionary& return_dict"
+                self.output_args += "krpc::Dictionary& return_dict"
             elif self.return_type == "KRPC.Status":
-                self.args += "krpc::Status& return_value"
+                self.output_args += "krpc::Status& return_value"
             elif self.return_type == "KRPC.Services":
-                self.args += "krpc::Services& return_value"
+                self.output_args += "krpc::Services& return_value"
             elif self.return_type == "uint64":
-                self.args += "uint64_t& return_value"
+                self.output_args += "uint64_t& return_value"
             elif self.return_type == "uint32":
-                self.args += "uint32_t& return_value"
+                self.output_args += "uint32_t& return_value"
             elif self.return_type == "int32":
-                self.args += "int32_t& return_value"
+                self.output_args += "int32_t& return_value"
             elif self.return_type == "int64":
-                self.args += "int64_t& return_value"
+                self.output_args += "int64_t& return_value"
             elif self.return_type == "string":
-                self.args += "std::string& return_value"
+                self.output_args += "std::string& return_value"
             else:
-                self.args += self.return_type + "& return_value"        
+                self.output_args += self.return_type + "& return_value"
+            self.args += self.output_args
+        else:
+            self.args = self.args[:-2]
     
     def generate_argstring(self):
         self.generate_input_args()
