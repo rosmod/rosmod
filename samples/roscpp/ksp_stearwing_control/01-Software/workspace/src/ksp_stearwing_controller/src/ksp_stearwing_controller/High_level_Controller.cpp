@@ -28,6 +28,16 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   goal_altitude = 2000.0;
   goal_heading = 45.0;
 
+  // Setup cruise waypoints here
+  // UPDATE THESE
+  Waypoint wp1(2000.0, -0.05, -74.4);
+  Waypoint wp2(5000.0, -1.5, 74.0);
+  Waypoint wp3(3000.0, -1.7, 72.0);
+  cruise_waypoints.push_back(wp1);
+  cruise_waypoints.push_back(wp2);
+  cruise_waypoints.push_back(wp3);
+
+  // Connect to kRPC Server and obtain the vessel & control ID
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);
     krpci_client.Vessel_get_Control(vesselID, controlID);
