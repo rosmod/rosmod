@@ -7,6 +7,23 @@ uint64_t controlID;
 bool High_level_Controller::isGoalReached() {
   return true;
 }
+
+bool High_level_Controller::state_func_INIT() {
+
+}
+
+bool High_level_Controller::state_func_TAKEOFF() {
+
+}
+
+bool High_level_Controller::state_func_CRUISE() {
+
+}
+
+bool High_level_Controller::state_func_LAND() {
+
+}
+
 //# End User Globals Marker
 
 KRPCI krpci_client;
@@ -83,23 +100,34 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
     case INIT :
       // Check initial state to see if all Kerbals are ready for takeoff
       // Fasten your seat belts
+      state_func_INIT();
       current_state = TAKE_OFF; 
       break;
     case TAKE_OFF :
       // On successful takeoff, reach a stable cruise altitude and pitch
       // Then start CRUISE state
+      state_func_TAKEOFF();
       current_state = CRUISE;
       break;
     case CRUISE :
       // Iterate through all waypoints and cruise till land
       // Periodically update goals here as waypoints are passed
+      state_func_CRUISE();
       current_state = LAND;
       break;
     case LAND :
       // Time to Land
       // Without throttle control, this is going to be tough
+      state_func_LAND();
       break;
     }
+
+    // Publish newly set goals
+    ksp_stearwing_controller::Control_Command new_command;
+    new_command.goal_altitude = goal_altitude;
+    new_command.goal_speed = goal_speed;
+    new_command.goal_heading = goal_heading;
+    pid_control_publisher.publish(new_command);
   }
 }
 //# End flight_control_timerCallback Marker

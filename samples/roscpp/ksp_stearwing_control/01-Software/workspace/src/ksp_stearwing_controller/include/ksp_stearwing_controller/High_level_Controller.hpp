@@ -75,7 +75,7 @@ private:
   ros::Publisher pid_control_publisher;
 
   //# Start User Private Variables Marker
-      float current_throttle;
+  float current_throttle;
   float current_pitch;
   float current_roll;
   float current_heading;
@@ -98,9 +98,13 @@ private:
   float speed_tolerance;
 
   vector<Waypoint> cruise_waypoints;
-boost::circular_buffer<Save_State> previous_states;
+  boost::circular_buffer<Save_State> previous_states;
   
   bool isGoalReached();
+  bool state_func_INIT();
+  bool state_func_TAKEOFF();
+  bool state_func_CRUISE();
+  bool state_func_LAND();
   //# End User Private Variables Marker
 };
 
