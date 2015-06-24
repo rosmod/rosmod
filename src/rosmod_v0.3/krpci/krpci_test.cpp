@@ -13,11 +13,9 @@ public:
 	std::cout << "Response error: " << response.error() << endl;
 	return;
       }
-    krpc::Tuple tuple;
     double x,y,z;
-    tuple.ParseFromString(response.return_value());
-    KRPCI::DecodeTuple(tuple,x,y,z);
-    printf("CLASS METHOD WITH INST VAR %d : (x,y,z) = (%f,%f,%f)\n",myInstVar,x,y,z);
+    KRPCI::Vessel_Rotation_parseResponse(response, x ,y, z);
+    printf("CLASS METHOD WITH INST VAR %d :: VESSEL ROTATION : (x,y,z) = (%f,%f,%f)\n",myInstVar,x,y,z);
   }
   int myInstVar;
 };
@@ -29,11 +27,9 @@ void myStreamFunc(krpc::Response& response)
       std::cout << "Response error: " << response.error() << endl;
       return;
     }
-  krpc::Tuple tuple;
   double x,y,z;
-  tuple.ParseFromString(response.return_value());
-  KRPCI::DecodeTuple(tuple,x,y,z);
-  printf("(x,y,z) = (%f,%f,%f)\n",x,y,z);
+  KRPCI::Vessel_Position_parseResponse(response, x ,y, z);
+  printf("VESSEL POSITION: (x,y,z) = (%f,%f,%f)\n",x,y,z);
 }
 
 int main(int argc, char** argv)
