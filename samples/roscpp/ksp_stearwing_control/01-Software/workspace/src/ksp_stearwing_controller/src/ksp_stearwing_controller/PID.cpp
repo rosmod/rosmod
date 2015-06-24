@@ -3,6 +3,7 @@
 //# Start User Globals Marker
 //# End User Globals Marker
 
+
 // Initialization Function
 //# Start Init Marker
 void PID::Init(const ros::TimerEvent& event)
@@ -33,9 +34,9 @@ void PID::sensor_subscriber_OnOneData(const ksp_stearwing_controller::Sensor_Rea
 void PID::pid_control_subscriber_OnOneData(const ksp_stearwing_controller::Control_Command::ConstPtr& received_data)
 {
   // Business Logic for pid_control_subscriber Subscriber
-  goal_heading = received_data->heading;
-  goal_altitude = received_data->altitude;
-  goal_speed = received_data->speed;
+  goal_heading = received_data->goal_heading;
+  goal_altitude = received_data->goal_altitude;
+  goal_speed = received_data->goal_speed;
   LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", current_heading, current_altitude, current_speed);
 }
 //# End pid_control_subscriber_OnOneData Marker
