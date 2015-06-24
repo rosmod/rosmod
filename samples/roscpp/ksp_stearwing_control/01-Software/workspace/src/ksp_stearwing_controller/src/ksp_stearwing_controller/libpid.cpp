@@ -8,7 +8,7 @@
 
 libpid::libpid()
 {
-  kp_ = ki_ = kd_ = derivator_ = integrator_ = integrator_max_ = integrator_min_ = 0;
+  kp_ = ki_ = kd_ = derivator_ = integrator_ = integrator_max_ = integrator_min_ = set_point_ = 0;
 }
 
 libpid::libpid(double p, 
@@ -28,17 +28,17 @@ libpid::libpid(double p,
 }
 
 double libpid::update(double current_value) {
-  error_ = set_point_ - current_value_;
-  p_value_ = kp_ * error_;
-  d_value_ = kd_ * (error_ - derivator_);
-  derivator_ = error_;
-  integrator_ = integrator_ + error_;
+  double error = set_point_ - current_value;
+  double p_value = kp_ * error;
+  double d_value = kd_ * (error - derivator_);
+  derivator_ = error;
+  integrator_ = integrator_ + error;
   if (integrator_ > integrator_max_)
     integrator_ = integrator_max_;
   else if (integrator_ < integrator_min_)
     integrator_ = integrator_min_;
-  i_value_ = integrator_ * ki_;
-  pid = p_value_ + i_value_ + d_value_;
+  double i_value = integrator_ * ki_;
+  double pid = p_value + i_value + d_value;
   return pid;  
 }
 
@@ -50,8 +50,16 @@ void libpid::setIntegrator(double integrator) {
   integrator_ = integrator;
 }
 
-void libpid::setKp(double kd) {
-  kd_ = kd;
+void libpid::setIntegratorMax(double max) {
+  integrator_max_ = max;
+}
+
+void libpid::setIntegratorMin(double min) {
+  integrator_min_ = min;
+}
+
+void libpid::setKp(double kp) {
+  kp_ = kp;
 }
 
 void libpid::setKi(double ki) {
@@ -64,10 +72,6 @@ void libpid::setKd(double kd) {
 
 double libpid::getPoint() {
   return set_point_;
-}
-
-double libpid::getError() {
-  return error_; 
 }
 
 double libpid::getIntegrator() {

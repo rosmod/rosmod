@@ -1,12 +1,13 @@
 #include "ksp_stearwing_controller/High_level_Controller.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t controlID;
 
 bool High_level_Controller::isGoalReached() {
 
-  bool stable_state = false;
   // Check current sensor values
   if ((abs(goal_heading - current_heading) < heading_tolerance) &&
       (abs(goal_altitude - current_altitude) < altitude_tolerance)) {
@@ -15,33 +16,30 @@ bool High_level_Controller::isGoalReached() {
     if (previous_states.size() == 10) {
       for(boost::circular_buffer<Save_State>::iterator it = previous_states.begin(); 
 	  it != previous_states.end(); ++it) {
-	
+	  if ((abs(goal_heading - it->heading_) > heading_tolerance) &&
+	      (abs(goal_altitude - it->altitude_) > altitude_tolerance))
+	    return false;
       }
-    }
-    else {
-      return false;
+      return true;
     }
   }
-  else {
-    return false;
-  }
+  return false;
 }
 
 bool High_level_Controller::state_func_INIT() {
-  // Set goals for TAKE_OFF state
+  // Change State
   goal_altitude = 2000.0;
   goal_heading = 45.0;
-  
-  // Change State
+  goal_speed = 50.0;
   current_state = TAKE_OFF; 
+  std::vector<uint64_t> return_vec;
+  krpci_client.Control_ActivateNextStage(controlID, return_vec);
 }
 
 bool High_level_Controller::state_func_TAKEOFF() {
-  // On successful takeoff, reach a stable cruise altitude and pitch
-  // Set goals for CRUISE state
 
   // Change State
-  current_state = LAND;
+  current_state = CRUISE;
 }
 
 bool High_level_Controller::state_func_CRUISE() {
@@ -59,14 +57,13 @@ bool High_level_Controller::state_func_LAND() {
 
 //# End User Globals Marker
 
-KRPCI krpci_client;
-
 // Initialization Function
 //# Start Init Marker
 void High_level_Controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-  
+  goal_altitude = 70.0;
+  goal_heading = 90.0;
   current_state = INIT;
 
   // Set the history capacity
@@ -109,16 +106,6 @@ void High_level_Controller::sensor_subscriber_OnOneData(const ksp_stearwing_cont
   current_latitude = received_data->latitude;
   current_longitude = received_data->longitude;
   current_speed = received_data->speed;
-  LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f", 
-	      current_throttle, 
-	      current_pitch, 
-	      current_roll, 
-	      current_heading, 
-	      current_altitude, 
-	      current_latitude, 
-	      current_longitude, 
-	      current_speed);
-
   Save_State new_state(current_heading, current_altitude, current_speed);
   previous_states.push_back(new_state);
 }
@@ -129,10 +116,10 @@ void High_level_Controller::sensor_subscriber_OnOneData(const ksp_stearwing_cont
 void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for flight_control_timer Timer
-
+  LOGGER.INFO("Current State: %d; Goals Reached! Time to Switch State!", 
+	      current_state);
   // If High-level Goal is reached, then change state
   if (isGoalReached()) {
-
     switch(current_state) {
     case INIT :
       state_func_INIT();
@@ -155,6 +142,8 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
     new_command.goal_heading = goal_heading;
     pid_control_publisher.publish(new_command);
   }
+  LOGGER.INFO("Current State: %d; Sent Goals:: Altitude=%f, Speed=%f, Heading=%f", current_state, goal_altitude, goal_speed, goal_heading);
+
 }
 //# End flight_control_timerCallback Marker
 

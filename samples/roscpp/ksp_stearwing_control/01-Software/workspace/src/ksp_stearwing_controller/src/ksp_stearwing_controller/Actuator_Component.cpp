@@ -35,6 +35,7 @@ void Actuator_Component::actuator_control_subscriber_OnOneData(const ksp_stearwi
   krpci_client.Control_set_Roll(controlID, new_roll);
   krpci_client.Control_set_Yaw(controlID, new_yaw);
   krpci_client.Control_set_Throttle(controlID, new_throttle);
+  LOGGER.INFO("Received Control Commands: Pitch=%f, Roll=%f, Yaw=%f, Throttle=%f", new_pitch, new_roll, new_yaw, new_throttle);
 }
 //# End actuator_control_subscriber_OnOneData Marker
 

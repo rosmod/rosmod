@@ -9,25 +9,28 @@
 void PID::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-  altitude_pid.setKp(1.0);
-  altitude_pid.setKi(0.1);
-  altitude_pid.setKd(0.1);
+  altitude_pid.setKp(0.05);
+  altitude_pid.setKi(0);
+  altitude_pid.setKd(1.0);
 
-  pitch_pid.setKp(1.0);
-  pitch_pid.setKi(0.1);
+  pitch_pid.setKp(0.1);
+  pitch_pid.setKi(0.5);
   pitch_pid.setKd(0.1);
+  pitch_pid.setIntegratorMax(10);
 
-  roll_pid.setKp(1.0);
-  roll_pid.setKi(0.1);
+  roll_pid.setKp(0.1);
+  roll_pid.setKi(0);
   roll_pid.setKd(0.1);
 
   heading_pid.setKp(1.0);
   heading_pid.setKi(0.1);
   heading_pid.setKd(0.1);
+  heading_pid.setIntegratorMax(50);
 
   speed_pid.setKp(1.0);
   speed_pid.setKi(0.1);
   speed_pid.setKd(0.1);
+  speed_pid.setIntegratorMax(50);
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -44,7 +47,6 @@ void PID::sensor_subscriber_OnOneData(const ksp_stearwing_controller::Sensor_Rea
   current_heading = received_data->heading;
   current_altitude = received_data->altitude;
   current_speed = received_data->speed;
-  LOGGER.INFO("Sensor Subscriber::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Speed=%f", current_throttle, current_pitch, current_roll, current_heading, current_altitude, current_speed);
 }
 //# End sensor_subscriber_OnOneData Marker
 // Subscriber Callback - pid_control_subscriber
@@ -55,8 +57,9 @@ void PID::pid_control_subscriber_OnOneData(const ksp_stearwing_controller::Contr
   goal_heading = received_data->goal_heading;
   goal_altitude = received_data->goal_altitude;
   goal_speed = received_data->goal_speed;
-  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", current_heading, current_altitude, current_speed);
+  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", goal_heading, goal_altitude, goal_speed);
   altitude_pid.setPoint(goal_altitude);
+  altitude_pid.setKp(abs(current_altitude-goal_altitude)*0.000005);
   heading_pid.setPoint(goal_heading);
   speed_pid.setPoint(goal_speed);
 }
@@ -76,10 +79,11 @@ void PID::pid_timerCallback(const ros::TimerEvent& event)
 
   // NEED TO DO PID HERE
   new_AoA = altitude_pid.update(current_altitude);
-  new_pitch = pitch_pid.update(new_AoA);
+  pitch_pid.setPoint(new_AoA);
+  new_pitch = pitch_pid.update(current_pitch);
   new_roll = roll_pid.update(current_roll);
-  new_yaw = heading_pid.update(current_heading);
-  //new_throttle = speed_pid.update(current_speed);
+  //new_yaw = heading_pid.update(current_heading);
+  new_throttle = speed_pid.update(current_speed);
 
   ksp_stearwing_controller::Actuation_Command new_actuation;
   new_actuation.new_pitch = new_pitch;
