@@ -439,8 +439,13 @@ class Example(wx.Frame):
                 host.properties['name']
             )
             libs = []
+            needs_io = False
             for child in node.children:
                 libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
+                if child.properties['datatype'] == 'KSP':
+                    needs_io = True
+            if needs_io:
+                libs.append("libKRPCI.so")
             newNode = deployment.deployed_node(
                 name = node.properties['name'],
                 executable = deploymentPath + '/node_main',

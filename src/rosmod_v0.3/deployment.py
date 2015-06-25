@@ -166,15 +166,15 @@ def parallelStop(hostDict,updateQ=None):
 
 def startMaster(self,e):
     host = self.hostDict[self.rosCoreHost.properties['name']]
+    installDir = host.installDir
+    if installDir == '':
+        installDir = '/opt/ros/indigo'
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-        installDir = host.installDir
-        if installDir == '':
-            installDir = '/opt/ros/indigo'
         run('source {}/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore'.format(installDir))
     else:
-        local('dtach -n `mktemp -u /tmp/dtach.XXXX` roscore')
+        local('source {}/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore'.format(installDir))
 
 def stopMaster(self,e):
     host = self.hostDict[self.rosCoreHost.properties['name']]
