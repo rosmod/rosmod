@@ -54,18 +54,18 @@ private:
   ros::Publisher actuator_control_publisher;
 
   //# Start User Private Variables Marker
-  float current_throttle;
+          float current_throttle;
   float current_pitch;
   float current_roll;
   float current_heading;
-  double current_altitude;
+  double current_mean_altitude;
   double current_speed;
 
   float goal_heading;
-  double goal_altitude;
+  double goal_mean_altitude;
   double goal_speed;
 
-  libpid altitude_pid;
+  libpid mean_altitude_pid;
   libpid pitch_pid;
   libpid roll_pid;
   libpid heading_pid;

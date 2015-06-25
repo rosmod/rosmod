@@ -64,11 +64,11 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Actuation_Command.msg
-
   Control_Command.msg
 
   Sensor_Reading.msg
+
+  Actuation_Command.msg
 
 )
 

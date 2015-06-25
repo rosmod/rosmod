@@ -1,26 +1,83 @@
 #include "ksp_stearwing_controller/PID.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
 
 // Initialization Function
 //# Start Init Marker
 void PID::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-  altitude_pid.setKp(0.05);
-  altitude_pid.setKi(0);
-  altitude_pid.setKd(1.0);
 
-  pitch_pid.setKp(0.1);
-  pitch_pid.setKi(0.5);
-  pitch_pid.setKd(0.1);
-  pitch_pid.setIntegratorMax(10);
+  double ma_kp=0.05, ma_ki=0.0, ma_kd=0.05, ma_imax=50, ma_imin=-50;
+  double p_kp=0.5, p_ki=0.5, p_kd=0.05, p_imax=500, p_imin=-500;
 
-  roll_pid.setKp(0.1);
+  LOGGER.INFO("Argc: %d", node_argc);
+
+  for (int i=0;i<node_argc;i++)
+    {
+      LOGGER.INFO("Argv: %s", node_argv[i]);
+
+      if (!strcmp(node_argv[i],"--ma_kp"))
+	{
+	  ma_kp = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Mean Altitude Kp=%f", ma_kp);
+	}
+      if (!strcmp(node_argv[i],"--ma_ki"))
+	{
+	  ma_ki = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Mean Altitude Ki=%f", ma_ki);
+	}
+      if (!strcmp(node_argv[i],"--ma_kd"))
+	{
+	  ma_kd = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Mean Altitude Kd=%f", ma_kd);
+	}
+      if (!strcmp(node_argv[i],"--ma_imax"))
+	{
+	  ma_imax = atof(node_argv[i+1]);
+	  ma_imin = -ma_imax;
+	  LOGGER.INFO("New Mean Altitude Int Max=%f", ma_imax);
+	}
+      if (!strcmp(node_argv[i],"--p_kp"))
+	{
+	  p_kp = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Pitch Kp=%f", p_kp);
+	}
+      if (!strcmp(node_argv[i],"--p_ki"))
+	{
+	  p_ki = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Pitch Ki=%f", p_ki);
+	}
+      if (!strcmp(node_argv[i],"--p_kd"))
+	{
+	  p_kd = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Pitch Kd=%f", p_kd);
+	}
+      if (!strcmp(node_argv[i],"--p_imax"))
+	{
+	  p_imax = atof(node_argv[i+1]);
+	  p_imin = -p_imax;
+	  LOGGER.INFO("New Pitch Int Max=%f", p_imax);
+	}
+    }
+
+  mean_altitude_pid.setKp(ma_kp);
+  mean_altitude_pid.setKi(ma_ki);
+  mean_altitude_pid.setKd(ma_kd);
+  mean_altitude_pid.setIntegratorMax(ma_imax);
+  mean_altitude_pid.setIntegratorMin(ma_imin);
+
+  pitch_pid.setKp(p_kp);
+  pitch_pid.setKi(p_ki);
+  pitch_pid.setKd(p_kd);
+  pitch_pid.setIntegratorMax(p_imax);
+  pitch_pid.setIntegratorMin(p_imin);
+
+  roll_pid.setKp(0.05);
   roll_pid.setKi(0);
-  roll_pid.setKd(0.1);
+  roll_pid.setKd(0.005);
 
   heading_pid.setKp(1.0);
   heading_pid.setKi(0.1);
@@ -45,7 +102,7 @@ void PID::sensor_subscriber_OnOneData(const ksp_stearwing_controller::Sensor_Rea
   current_pitch = received_data->pitch;
   current_roll = received_data->roll;
   current_heading = received_data->heading;
-  current_altitude = received_data->altitude;
+  current_mean_altitude = received_data->mean_altitude;
   current_speed = received_data->speed;
 }
 //# End sensor_subscriber_OnOneData Marker
@@ -55,11 +112,21 @@ void PID::pid_control_subscriber_OnOneData(const ksp_stearwing_controller::Contr
 {
   // Business Logic for pid_control_subscriber Subscriber
   goal_heading = received_data->goal_heading;
-  goal_altitude = received_data->goal_altitude;
+  double temp_altitude = goal_mean_altitude;
+  if (received_data->goal_altitude != temp_altitude)
+    goal_mean_altitude = received_data->goal_altitude;
   goal_speed = received_data->goal_speed;
-  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", goal_heading, goal_altitude, goal_speed);
-  altitude_pid.setPoint(goal_altitude);
-  altitude_pid.setKp(abs(current_altitude-goal_altitude)*0.000005);
+  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", goal_heading, goal_mean_altitude, goal_speed);
+  mean_altitude_pid.setPoint(goal_mean_altitude);
+
+  if (received_data->goal_altitude != temp_altitude)
+    {
+      double gain = abs(current_mean_altitude-goal_mean_altitude) * 1/10000.0;
+      //mean_altitude_pid.setKp(gain*5);
+      //mean_altitude_pid.setKi(gain);
+      //mean_altitude_pid.setKd(gain*500.0);
+    }
+
   heading_pid.setPoint(goal_heading);
   speed_pid.setPoint(goal_speed);
 }
@@ -78,12 +145,14 @@ void PID::pid_timerCallback(const ros::TimerEvent& event)
   float new_AoA = 0;
 
   // NEED TO DO PID HERE
-  new_AoA = altitude_pid.update(current_altitude);
+  new_AoA = mean_altitude_pid.update(current_mean_altitude);
   pitch_pid.setPoint(new_AoA);
   new_pitch = pitch_pid.update(current_pitch);
   new_roll = roll_pid.update(current_roll);
   //new_yaw = heading_pid.update(current_heading);
   new_throttle = speed_pid.update(current_speed);
+
+  std::cout << "new_AOA=" << new_AoA << "; new_pitch=" << new_pitch << "" << std::endl; 
 
   ksp_stearwing_controller::Actuation_Command new_actuation;
   new_actuation.new_pitch = new_pitch;

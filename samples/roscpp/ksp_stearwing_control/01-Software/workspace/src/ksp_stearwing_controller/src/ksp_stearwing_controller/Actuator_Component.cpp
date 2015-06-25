@@ -1,16 +1,19 @@
 #include "ksp_stearwing_controller/Actuator_Component.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t controlID;
 //# End User Globals Marker
 
-KRPCI krpci_client;
-
 // Initialization Function
 //# Start Init Marker
 void Actuator_Component::Init(const ros::TimerEvent& event)
 {
+
+  krpci_client.SetIP("191.168.127.100");
+
   // Initialize Here
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);

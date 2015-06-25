@@ -75,14 +75,16 @@ private:
   ros::Publisher pid_control_publisher;
 
   //# Start User Private Variables Marker
-  float current_throttle;
+          float current_throttle;
   float current_pitch;
   float current_roll;
   float current_heading;
-  double current_altitude;
+  double current_mean_altitude;
   double current_latitude;
   double current_longitude;
   double current_speed;
+  double current_surface_altitude;
+  double current_landing_gear;
   enum state { INIT, 
 	       TAKE_OFF, 
 	       CRUISE, 
@@ -90,11 +92,11 @@ private:
   state current_state;
 
   float goal_heading;
-  double goal_altitude;
+  double goal_mean_altitude;
   double goal_speed;
 
   float heading_tolerance;
-  float altitude_tolerance;
+  float mean_altitude_tolerance;
   float speed_tolerance;
 
   vector<Waypoint> cruise_waypoints;

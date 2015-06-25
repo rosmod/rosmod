@@ -86,8 +86,8 @@ def parallelDeploy(hostDict,updateQ=None):
                 run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
                 pgrep = run('ps aux | grep {}'.format(executableString))
         else:
-            local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,node.cmdArgs),capture=True)
-            pgrep = local('ps aux | grep {}'.format(executableString),capture=True)
+            local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,node.cmdArgs),capture=True, shell="/bin/bash")
+            pgrep = local('ps aux | grep {}'.format(executableString),capture=True, shell="/bin/bash")
         pids = getPIDsFromPS(pgrep,node.name)
         node.pids = pids
         if updateQ != None:
@@ -119,8 +119,8 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ=Non
             run('chmod +x {}'.format(dest + source.split('/')[-1]))
     else:
         for source,dest in copyList:
-            local('cp {} {}'.format(source, dest),capture=True)
-            local('chmod +x {}'.format(dest + source.split('/')[-1]),capture=True)
+            local('cp {} {}'.format(source, dest),capture=True, shell="/bin/bash")
+            local('chmod +x {}'.format(dest + source.split('/')[-1]),capture=True, shell="/bin/bash")
     if updateQ != None:
         updateQ.put(["Copied files to {}".format(env.host_string),1])
 
@@ -133,7 +133,7 @@ def parallelCommand(hostDict, command, updateQ):
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         output=run(command)
     else:
-        output=local(command,capture=True)
+        output=local(command,capture=True, shell="/bin/bash")
     updateQ.put(["Ran {} on host {} with output:\n{}".format(command,env.host_string,output),1])
 
 @parallel
@@ -156,7 +156,7 @@ def parallelStop(hostDict,updateQ=None):
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
                     try:
-                        local('kill -9 {}'.format(pid),capture=True)
+                        local('kill -9 {}'.format(pid),capture=True, shell="/bin/bash")
                     except SystemExit:
                         pass
             if updateQ != None:
@@ -174,7 +174,7 @@ def startMaster(self,e):
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         run('source {}/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore'.format(installDir))
     else:
-        local('source {}/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore'.format(installDir))
+        local('source {}/setup.bash && dtach -n `mktemp -u /tmp/dtach.XXXX` roscore'.format(installDir), shell="/bin/bash")
 
 def stopMaster(self,e):
     host = self.hostDict[self.rosCoreHost.properties['name']]
@@ -183,7 +183,7 @@ def stopMaster(self,e):
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)
         run('pkill roscore')
     else:
-        local('pkill roscore')
+        local('pkill roscore', shell="/bin/bash")
 
 def startNode(self,e):
     node = self.activeObject
@@ -206,7 +206,7 @@ def startNode(self,e):
                 run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,nodeprops.cmdArgs))
                 pgrep = run('ps aux | grep {}'.format(executableString))
         else:
-            local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,nodeprops.cmdArgs),capture=True)
+            local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,nodeprops.cmdArgs),capture=True, shell="/bin/bash")
             pgrep = local('ps aux | grep {}'.format(executableString),capture=True)
         pids = getPIDsFromPS(pgrep,nodeprops.name)
         nodeprops.pids = pids
@@ -226,7 +226,7 @@ def stopNode(self,e):
                 run('kill -9 {}'.format(pid))
         else:
             for pid in nodeprops.pids:
-                local('kill -9 {}'.format(pid),capture=True)
+                local('kill -9 {}'.format(pid),capture=True, shell="/bin/bash")
             nodeprops.pids = []
     else:
         print >> sys.stderr, "ERROR: you must be running a deployment and node must be part of current deployment!"
@@ -252,7 +252,7 @@ def parallelMonitor(hostDict,updateQ):
         for node in host.nodes:
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
-                    status = local('ps --no-headers -p {}'.format(pid),capture=True)
+                    status = local('ps --no-headers -p {}'.format(pid),capture=True, shell="/bin/bash")
                     if status != "":
                         updateQ.put(["{} UP".format(node.name),1])
                     else:

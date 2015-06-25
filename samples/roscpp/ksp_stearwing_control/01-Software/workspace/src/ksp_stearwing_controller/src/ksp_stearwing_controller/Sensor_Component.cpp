@@ -1,5 +1,7 @@
 #include "ksp_stearwing_controller/Sensor_Component.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t surfaceRefFrameID;
@@ -11,18 +13,21 @@ float throttle;
 float pitch;
 float roll;
 float heading;
-double altitude;
+double mean_altitude;
 double latitude;
 double longitude;
 double speed;
+double surface_altitude;
+bool landing_gear;
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
 void Sensor_Component::Init(const ros::TimerEvent& event)
 {
+
+  krpci_client.SetIP("191.168.127.100");
+
   // Initialize Here
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);
@@ -47,10 +52,12 @@ void Sensor_Component::sensor_timerCallback(const ros::TimerEvent& event)
   krpci_client.Flight_get_Pitch(flightID, pitch);
   krpci_client.Flight_get_Roll(flightID, roll);
   krpci_client.Flight_get_Heading(flightID, heading);
-  krpci_client.Flight_get_MeanAltitude(flightID, altitude);
+  krpci_client.Flight_get_MeanAltitude(flightID, mean_altitude);
   krpci_client.Flight_get_Latitude(flightID, latitude);
   krpci_client.Flight_get_Longitude(flightID, longitude);
   krpci_client.Flight_get_Speed(flightID, speed);
+  krpci_client.Flight_get_SurfaceAltitude(flightID, surface_altitude);
+  krpci_client.Control_get_Gear(controlID, landing_gear);
 
   double trans_x, trans_y, trans_z;
   krpci_client.Flight_get_Velocity(orbitalFlightID, trans_x, trans_y, trans_z);
@@ -66,12 +73,14 @@ void Sensor_Component::sensor_timerCallback(const ros::TimerEvent& event)
   new_reading.pitch = pitch;
   new_reading.roll = roll;
   new_reading.heading = heading;
-  new_reading.altitude = altitude;
+  new_reading.mean_altitude = mean_altitude;
   new_reading.latitude = latitude;
   new_reading.longitude = longitude;
   new_reading.speed = speed;
+  new_reading.surface_altitude = surface_altitude;
+  new_reading.landing_gear = landing_gear;
   sensor_publisher.publish(new_reading);
-  LOGGER.INFO("Sensor Publisher::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f", throttle, pitch, roll, heading, altitude, latitude, longitude, speed);
+  LOGGER.INFO("Sensor Publisher::Throttle=%f; Pitch=%f; Roll=%f; Heading=%f, Mean_Altitude=%f; Latitude=%f; Longitude=%f; Speed=%f; Landing_Gear=%d", throttle, pitch, roll, heading, mean_altitude, latitude, longitude, speed, landing_gear);
 }
 //# End sensor_timerCallback Marker
 

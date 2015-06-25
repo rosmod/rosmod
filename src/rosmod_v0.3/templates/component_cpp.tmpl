@@ -1,15 +1,15 @@
 $hash_include "$package_name/${component_name}.hpp"
 
+#if $component_type == "KSP"
+KRPCI krpci_client;
+#end if
+
 #if $user_globals == ""
 //# Start User Globals Marker
 //# End User Globals Marker
 #else
 //# Start User Globals Marker
 $user_globals//# End User Globals Marker
-#end if
-
-#if $component_type == "KSP"
-KRPCI krpci_client;
 #end if
 
 // Initialization Function
