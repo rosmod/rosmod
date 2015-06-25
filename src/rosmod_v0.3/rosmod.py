@@ -442,7 +442,7 @@ class Example(wx.Frame):
             needs_io = False
             for child in node.children:
                 libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
-                if child.properties['datatype'] == 'KSP':
+                if child.properties['component_reference'].properties['datatype'] == 'KSP':
                     needs_io = True
             if needs_io:
                 libs.append("libKRPCI.so")
