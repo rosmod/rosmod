@@ -414,10 +414,14 @@ class Example(wx.Frame):
         info = self.activeAspectInfo.GetPageInfo(modelName)
         dep = info.obj
         self.AnalyzeNetwork(dep)
-        self.AnalyzeTiming(dep)
 
     def OnDeploymentTiming(self, e):
-        pass
+        selectedPage = self.activeAspect.GetSelection()
+        numPages = self.activeAspect.GetPageCount()
+        modelName = self.activeAspect.GetPageText(selectedPage)
+        info = self.activeAspectInfo.GetPageInfo(modelName)
+        dep = info.obj
+        self.AnalyzeTiming(dep)
 
     def OnDeploymentGenerate(self,e):
         self.GenerateXML()
