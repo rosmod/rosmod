@@ -181,8 +181,10 @@ class Example(wx.Frame):
         width,height = drawable.Layout(model,(0,0),canvas)
         model.Draw(self.iconDict,canvas,self.OnLeftClick,self.OnRightClick,self.OnLeftDoubleClick)
         canvas.Draw()
-        if c != None:
+        if c != None and not numpy.array_equal(c,[0,0]):
             canvas.Zoom(1,c)
+        else:
+            canvas.Zoom(1,model.textPosition)
 
     def OnLeftClick(self, Object):
         info = self.GetActivePanelInfo()
