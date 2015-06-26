@@ -5,16 +5,10 @@ import copy
 import drawable
 
 import dialogs
+from pkg_resources import resource_filename,resource_exists
 
 from metaModel import model_dict
 from metaclass import *
-
-exeName = sys.argv[0]
-dirName = os.path.abspath(exeName)
-head,tail = os.path.split(dirName)
-editorPath=head
-rootIconPath= editorPath + '/icons'
-modelIconPath= rootIconPath + '/model'
 
 def BuildStyleObjects(self):
     for key in model_dict.keys():
@@ -29,7 +23,10 @@ def BuildStyleObjects(self):
 def BuildIconList(self):
     self.iconList = OrderedDict()
     for key in model_dict.keys():
-        self.iconList[key+'Icon'] = modelIconPath + '/' + key + '.png'
+        if resource_exists('icons.model', key + '.png'):
+            self.iconList[key+'Icon'] = resource_filename('icons.model', key + '.png')
+        else:
+            self.iconList[key+'Icon'] = ""
 
 def BuildIcons(self):
     self.iconDict = OrderedDict()

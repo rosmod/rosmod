@@ -1,15 +1,9 @@
 import wx
 import os,sys
 from collections import OrderedDict
+from pkg_resources import resource_filename
 
 #from aspect import *
-
-exeName = sys.argv[0]
-dirName = os.path.abspath(exeName)
-head,tail = os.path.split(dirName)
-editorPath=head
-rootIconPath= editorPath + '/icons'
-toolbarIconPath= rootIconPath + '/toolbar'
 
 class TBItem:
     def __init__(self, name, icon, helpStr, func, _id = wx.ID_ANY):
@@ -28,48 +22,48 @@ class TBInfo():
 
 def BuildToolbar(self):
     aspectToolbarDict["Software"] = [
-        TBItem("create","/new.png","New Package",lambda e : self.OnAspectCreate("Package",e)),
-        TBItem("delete","/delete.png","Remove Package", self.OnAspectDelete),
-        TBItem("generate","/generate.png","Generate Workspace", self.OnPackageGenerate),
-        TBItem("build","/build.png","Build Workspace", self.OnPackageBuild)
+        TBItem("create",resource_filename('icons.toolbar', 'new.png'),"New Package",lambda e : self.OnAspectCreate("Package",e)),
+        TBItem("delete",resource_filename('icons.toolbar', 'delete.png'),"Remove Package", self.OnAspectDelete),
+        TBItem("generate",resource_filename('icons.toolbar', 'generate.png'),"Generate Workspace", self.OnPackageGenerate),
+        TBItem("build",resource_filename('icons.toolbar', 'build.png'),"Build Workspace", self.OnPackageBuild)
     ]
     aspectToolbarDict["Hardware"] = [
-        TBItem("create","/new.png","New Hardware",lambda e : self.OnAspectCreate("rhw",e)),
-        TBItem("delete","/delete.png","Remove Hardware", self.OnAspectDelete),
+        TBItem("create",resource_filename('icons.toolbar', 'new.png'),"New Hardware",lambda e : self.OnAspectCreate("rhw",e)),
+        TBItem("delete",resource_filename('icons.toolbar', 'delete.png'),"Remove Hardware", self.OnAspectDelete),
     ]
     aspectToolbarDict["Deployment"] = [
-        TBItem("create","/new.png","New Deployment",lambda e : self.OnAspectCreate("rdp",e)),
-        TBItem("delete","/delete.png","Remove Deployment", self.OnAspectDelete),
-        TBItem("analyze","/analyze_network.png","Run Network Analysis Tool", self.OnDeploymentAnalyze),
-        TBItem("timing", "/analyze_timing.png", "Generate Timing Analysis Model", self.OnDeploymentTiming),
-        TBItem("generate","/generate.png","Generate Deployment XML Files", self.OnDeploymentGenerate),
-        TBItem("move","/copy.png","Copy Deployment Files", self.OnDeploymentMove),
-        TBItem("deploy","/start.png","Start Deployment", self.OnDeploymentDeploy),
-        TBItem("stop","/stop.png","Stop Deployment", self.OnDeploymentStop),
-        TBItem("run","/run.png","Run <Command> on all Hardware Devices", self.OnDeploymentRun)
+        TBItem("create",resource_filename('icons.toolbar', 'new.png'),"New Deployment",lambda e : self.OnAspectCreate("rdp",e)),
+        TBItem("delete",resource_filename('icons.toolbar', 'delete.png'),"Remove Deployment", self.OnAspectDelete),
+        TBItem("analyze",resource_filename('icons.toolbar', 'analyze_network.png'),"Run Network Analysis Tool", self.OnDeploymentAnalyze),
+        TBItem("timing",resource_filename('icons.toolbar', 'analyze_timing.png'), "Generate Timing Analysis Model", self.OnDeploymentTiming),
+        TBItem("generate",resource_filename('icons.toolbar', 'generate.png'),"Generate Deployment XML Files", self.OnDeploymentGenerate),
+        TBItem("move",resource_filename('icons.toolbar', 'copy.png'),"Copy Deployment Files", self.OnDeploymentMove),
+        TBItem("deploy",resource_filename('icons.toolbar', 'start.png'),"Start Deployment", self.OnDeploymentDeploy),
+        TBItem("stop",resource_filename('icons.toolbar', 'stop.png'),"Stop Deployment", self.OnDeploymentStop),
+        TBItem("run",resource_filename('icons.toolbar', 'run.png'),"Run <Command> on all Hardware Devices", self.OnDeploymentRun)
     ]
 
     self.toolbar = self.CreateToolBar()
     # file operations
     self.tb_new = self.toolbar.AddLabelTool(
-        wx.ID_NEW, '', wx.Bitmap(toolbarIconPath + '/new.png'), shortHelp="New")
+        wx.ID_NEW, '', wx.Bitmap(resource_filename('icons.toolbar', 'new.png')), shortHelp="New")
     self.tb_open = self.toolbar.AddLabelTool(
-        wx.ID_OPEN, '', wx.Bitmap(toolbarIconPath + '/open.png'), shortHelp="Open")
+        wx.ID_OPEN, '', wx.Bitmap(resource_filename('icons.toolbar', 'open.png')), shortHelp="Open")
     self.tb_save = self.toolbar.AddLabelTool(
-        wx.ID_SAVE, '', wx.Bitmap(toolbarIconPath + '/save.png'), shortHelp="Save")
+        wx.ID_SAVE, '', wx.Bitmap(resource_filename('icons.toolbar', 'save.png')), shortHelp="Save")
     self.tb_print = self.toolbar.AddLabelTool(
-        wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/print.png'), shortHelp="Print Page to File")
+        wx.ID_ANY, '', wx.Bitmap(resource_filename('icons.toolbar', 'print.png')), shortHelp="Print Page to File")
     self.toolbar.AddSeparator()
     # undo/redo
     self.tb_undo = self.toolbar.AddLabelTool(
-        wx.ID_UNDO, '', wx.Bitmap(toolbarIconPath + '/undo.png'), shortHelp="Undo")
+        wx.ID_UNDO, '', wx.Bitmap(resource_filename('icons.toolbar', 'undo.png')), shortHelp="Undo")
     self.tb_redo = self.toolbar.AddLabelTool(
-        wx.ID_REDO, '', wx.Bitmap(toolbarIconPath + '/redo.png'), shortHelp="Redo")
+        wx.ID_REDO, '', wx.Bitmap(resource_filename('icons.toolbar', 'redo.png')), shortHelp="Redo")
     self.toolbar.EnableTool(wx.ID_UNDO, False)
     self.toolbar.EnableTool(wx.ID_REDO, False)
     self.toolbar.AddSeparator()
     self.tb_term = self.toolbar.AddLabelTool(
-        wx.ID_ANY, '', wx.Bitmap(toolbarIconPath + '/terminal.png'), shortHelp="Terminal")
+        wx.ID_ANY, '', wx.Bitmap(resource_filename('icons.toolbar', 'terminal.png')), shortHelp="Terminal")
     self.toolbar.AddSeparator()
     self.Bind(wx.EVT_TOOL, self.OnNew, self.tb_new)
     self.Bind(wx.EVT_TOOL, self.OnOpen, self.tb_open)
@@ -88,7 +82,7 @@ def AddAspectToolbar(self,kind):
     for item in aspectToolbarDict[kind]:
         tbi = TBInfo( name = item.name,
                       obj = self.toolbar.AddTool( item._id,
-                                                  bitmap = wx.Bitmap(toolbarIconPath + item.icon),
+                                                  bitmap = wx.Bitmap(item.icon),
                                                   shortHelpString = item.helpStr))
         self.AspectInfos[kind].AddTBInfo(tbi)
         self.Bind(wx.EVT_TOOL, item.func, tbi.obj)
