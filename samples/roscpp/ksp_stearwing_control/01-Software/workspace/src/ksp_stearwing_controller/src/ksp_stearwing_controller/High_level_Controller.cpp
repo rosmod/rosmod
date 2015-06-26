@@ -30,7 +30,7 @@ bool High_level_Controller::isGoalReached() {
 bool High_level_Controller::state_func_INIT() {
   // Change State
   goal_mean_altitude = cruise_altitude;
-  goal_heading = 45.0;
+  goal_heading = 90.0;
   goal_speed = 50.0;
   current_state = TAKE_OFF; 
   std::vector<uint64_t> return_vec;
@@ -39,7 +39,7 @@ bool High_level_Controller::state_func_INIT() {
 
 bool High_level_Controller::state_func_TAKEOFF() {
   // Change State
-  goal_heading = 90;
+  goal_heading = 135;
   current_state = CRUISE;
 }
 
@@ -80,8 +80,8 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   previous_states.set_capacity(10);
 
   // Set Goal tolerances
-  heading_tolerance = 3.0;
-  mean_altitude_tolerance = 5.0;
+  heading_tolerance = 1.0;
+  mean_altitude_tolerance = 3.0;
   speed_tolerance = 5.0;
 
   // Setup cruise waypoints here
