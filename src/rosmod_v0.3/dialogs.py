@@ -405,6 +405,7 @@ def EditorWindow(parent = None, editDict = OrderedDict(), editObj = None, title 
                      referenceDict = referenceDict )
     inputs = OrderedDict()
     if ed.InitUI() == True:
+        ed.MakeModal(True)
         ed.ShowModal()
         inputs = ed.GetInput()
     else:
