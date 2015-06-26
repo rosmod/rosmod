@@ -155,9 +155,9 @@ def BuildModelPage(self,parent,model,aspectInfo,insertPos=-1):
     parent.AdvanceSelection()
     canvas.InitAll()
     drawable.Configure(model,self.styleDict)
-    self.DrawModel(model,canvas)
+    #self.DrawModel(model,canvas)
     #canvas.ZoomToBB()
-    canvas.Zoom(1,model.textPosition)
+    #canvas.Zoom(1,model.textPosition)
 
 
 '''
