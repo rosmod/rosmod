@@ -13,76 +13,79 @@ void PID::Init(const ros::TimerEvent& event)
   double ma_kp=0.05, ma_ki=0.0, ma_kd=0.05, ma_imax=50, ma_imin=-50;
   double p_kp=0.5, p_ki=0.5, p_kd=0.05, p_imax=500, p_imin=-500;
   double r_kp=0.05, r_ki=0.0, r_kd=0.005, r_imax=500, r_imin=-500;
-
-  LOGGER.INFO("Argc: %d", node_argc);
+  double h_kp=0.05, h_ki=0.0, h_kd=0.005, h_imax=500, h_imin=-500;
 
   for (int i=0;i<node_argc;i++)
     {
-      LOGGER.INFO("Argv: %s", node_argv[i]);
-
       if (!strcmp(node_argv[i],"--ma_kp"))
 	{
 	  ma_kp = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Mean Altitude Kp=%f", ma_kp);
 	}
       if (!strcmp(node_argv[i],"--ma_ki"))
 	{
 	  ma_ki = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Mean Altitude Ki=%f", ma_ki);
 	}
       if (!strcmp(node_argv[i],"--ma_kd"))
 	{
 	  ma_kd = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Mean Altitude Kd=%f", ma_kd);
 	}
       if (!strcmp(node_argv[i],"--ma_imax"))
 	{
 	  ma_imax = atof(node_argv[i+1]);
 	  ma_imin = -ma_imax;
-	  LOGGER.INFO("New Mean Altitude Int Max=%f", ma_imax);
 	}
       if (!strcmp(node_argv[i],"--p_kp"))
 	{
 	  p_kp = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Pitch Kp=%f", p_kp);
 	}
       if (!strcmp(node_argv[i],"--p_ki"))
 	{
 	  p_ki = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Pitch Ki=%f", p_ki);
 	}
       if (!strcmp(node_argv[i],"--p_kd"))
 	{
 	  p_kd = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Pitch Kd=%f", p_kd);
 	}
       if (!strcmp(node_argv[i],"--p_imax"))
 	{
 	  p_imax = atof(node_argv[i+1]);
 	  p_imin = -p_imax;
-	  LOGGER.INFO("New Pitch Int Max=%f", p_imax);
 	}
       if (!strcmp(node_argv[i],"--r_kp"))
 	{
 	  r_kp = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Roll Kp=%f", r_kp);
 	}
       if (!strcmp(node_argv[i],"--r_ki"))
 	{
 	  r_ki = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Roll Ki=%f", r_ki);
 	}
       if (!strcmp(node_argv[i],"--r_kd"))
 	{
 	  r_kd = atof(node_argv[i+1]);
-	  LOGGER.INFO("New Roll Kd=%f", r_kd);
 	}
       if (!strcmp(node_argv[i],"--r_imax"))
 	{
 	  r_imax = atof(node_argv[i+1]);
 	  r_imin = -r_imax;
-	  LOGGER.INFO("New Roll Int Max=%f", r_imax);
 	}
+      if (!strcmp(node_argv[i],"--h_kp"))
+	{
+	  h_kp = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--h_ki"))
+	{
+	  h_ki = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--h_kd"))
+	{
+	  h_kd = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--h_imax"))
+	{
+	  h_imax = atof(node_argv[i+1]);
+	  h_imin = -h_imax;
+	}
+
     }
 
   mean_altitude_pid.setKp(ma_kp);
@@ -106,10 +109,11 @@ void PID::Init(const ros::TimerEvent& event)
   //roll_pid.setKi(0);
   //roll_pid.setKd(0.005);
 
-  heading_pid.setKp(1.0);
-  heading_pid.setKi(0.1);
-  heading_pid.setKd(0.1);
-  heading_pid.setIntegratorMax(50);
+  heading_pid.setKp(h_kp);
+  heading_pid.setKi(h_ki);
+  heading_pid.setKd(h_kd);
+  heading_pid.setIntegratorMax(h_imax);
+  heading_pid.setIntegratorMin(h_imin);
 
   speed_pid.setKp(1.0);
   speed_pid.setKi(0.1);
@@ -143,7 +147,7 @@ void PID::pid_control_subscriber_OnOneData(const ksp_stearwing_controller::Contr
   if (received_data->goal_altitude != temp_altitude)
     goal_mean_altitude = received_data->goal_altitude;
   goal_speed = received_data->goal_speed;
-  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", goal_heading, goal_mean_altitude, goal_speed);
+  //  LOGGER.INFO("Control Subscriber::Heading=%f, Altitude=%f; Speed=%f", goal_heading, goal_mean_altitude, goal_speed);
   mean_altitude_pid.setPoint(goal_mean_altitude);
 
   if (received_data->goal_altitude != temp_altitude)
@@ -168,6 +172,7 @@ void PID::pid_timerCallback(const ros::TimerEvent& event)
   float new_roll = 0;
   float new_yaw = 0;
   float new_throttle = 0;
+  float new_heading = 0;
 
   float new_AoA = 0;
 
@@ -175,11 +180,11 @@ void PID::pid_timerCallback(const ros::TimerEvent& event)
   new_AoA = mean_altitude_pid.update(current_mean_altitude);
   pitch_pid.setPoint(new_AoA);
   new_pitch = pitch_pid.update(current_pitch);
-  new_roll = roll_pid.update(current_roll);
+  new_heading = heading_pid.update(current_heading);  
+  new_roll = roll_pid.update(-new_heading);
+  LOGGER.INFO("Current Heading=%f, New Heading=%f; New Roll=%f", current_heading, new_heading, new_roll);
   //new_yaw = heading_pid.update(current_heading);
   new_throttle = speed_pid.update(current_speed);
-
-  std::cout << "new_AOA=" << new_AoA << "; new_pitch=" << new_pitch << "" << std::endl; 
 
   ksp_stearwing_controller::Actuation_Command new_actuation;
   new_actuation.new_pitch = new_pitch;

@@ -75,7 +75,7 @@ private:
   ros::Publisher pid_control_publisher;
 
   //# Start User Private Variables Marker
-          float current_throttle;
+                    float current_throttle;
   float current_pitch;
   float current_roll;
   float current_heading;

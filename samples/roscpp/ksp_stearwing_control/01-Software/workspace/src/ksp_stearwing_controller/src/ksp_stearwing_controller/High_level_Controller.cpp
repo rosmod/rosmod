@@ -38,8 +38,8 @@ bool High_level_Controller::state_func_INIT() {
 }
 
 bool High_level_Controller::state_func_TAKEOFF() {
-
   // Change State
+  goal_heading = 90;
   current_state = CRUISE;
 }
 
@@ -80,7 +80,7 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   previous_states.set_capacity(10);
 
   // Set Goal tolerances
-  heading_tolerance = 10.0;
+  heading_tolerance = 3.0;
   mean_altitude_tolerance = 5.0;
   speed_tolerance = 5.0;
 
