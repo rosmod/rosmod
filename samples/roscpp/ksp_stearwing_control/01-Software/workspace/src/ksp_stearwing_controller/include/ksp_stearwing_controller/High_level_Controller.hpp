@@ -98,6 +98,8 @@ private:
   float heading_tolerance;
   float mean_altitude_tolerance;
   float speed_tolerance;
+  double lat_tolerance;
+  double long_tolerance;
 
   vector<Waypoint> cruise_waypoints;
   boost::circular_buffer<Save_State> previous_states;

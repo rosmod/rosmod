@@ -3,9 +3,25 @@
 KRPCI krpci_client;
 
 //# Start User Globals Marker
+#include <math.h>
+#define PI 3.14159265
+
+int current_waypoint = 0;
+std::vector<Waypoint>::size_type wp_size; 
+
 uint64_t vesselID;
 uint64_t controlID;
 double cruise_altitude;
+
+float get_relative_heading(double current_latitude, 
+			   double current_longitude,
+			   double target_latitude,
+			   double target_longitude) {
+  double relative_longitude = target_longitude - current_longitude;
+  double relative_latitude = target_latitude - current_latitude;
+  float heading = (90.0 - atan2(relative_latitude, relative_longitude) * 180/PI);
+  return heading;
+}
 
 bool High_level_Controller::isGoalReached() {
 
@@ -39,16 +55,32 @@ bool High_level_Controller::state_func_INIT() {
 
 bool High_level_Controller::state_func_TAKEOFF() {
   // Change State
-  goal_heading = 135;
   current_state = CRUISE;
 }
 
 bool High_level_Controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
-
-  // Change State
-  current_state = LAND; 
+  if (current_waypoint <= wp_size/2) {
+    LOGGER.INFO("Updating Waypoint Goals!");
+    double target_latitude = cruise_waypoints[current_waypoint].latitude_;
+    double target_longitude = cruise_waypoints[current_waypoint].longitude_;
+    if ((abs(target_latitude - current_latitude) < lat_tolerance) && 
+        (abs(target_longitude - current_longitude) < long_tolerance)) {
+      current_waypoint++;
+    }
+    else {
+      goal_heading = get_relative_heading(current_latitude, 
+					  current_longitude, 
+				          target_latitude,
+				          target_longitude);
+      goal_mean_altitude = cruise_waypoints[current_waypoint].altitude_;
+    }
+  }
+  else {
+    // Change State
+    current_state = LAND; 
+  }
 }
 
 bool High_level_Controller::state_func_LAND() {
@@ -80,18 +112,22 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   previous_states.set_capacity(10);
 
   // Set Goal tolerances
-  heading_tolerance = 1.0;
-  mean_altitude_tolerance = 3.0;
+  heading_tolerance = 5.0;
+  mean_altitude_tolerance = 10.0;
   speed_tolerance = 5.0;
 
+  lat_tolerance = 0.05;
+  long_tolerance = 0.5;
   // Setup cruise waypoints here
   // UPDATE THESE
-  Waypoint wp1(2000.0, -0.05, -74.4);
-  Waypoint wp2(5000.0, -1.5, 74.0);
-  Waypoint wp3(3000.0, -1.7, 72.0);
-  cruise_waypoints.push_back(wp1);
+//  Waypoint wp1(500.0, -1.29, -74.2788);
+  Waypoint wp2(500.0, -1.1422, -74.0304);
+  Waypoint wp3(500.0, -1.45409, -73.9299);
+//  cruise_waypoints.push_back(wp1);
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
+
+  wp_size = cruise_waypoints.size();
 
   ///krpci_client.SetIP("191.168.127.100");
 
@@ -133,9 +169,9 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
   LOGGER.INFO("Current State: %d; Goals Reached! Time to Switch State!", 
 	      current_state);
 
-  if (current_mean_altitude > 150)// && !current_landing_gear)
+  if (current_surface_altitude > 150)// && !current_landing_gear)
     krpci_client.Control_set_Gear(controlID, 0);
-  else if (current_mean_altitude < 150)// && current_landing_gear)
+  else if (current_surface_altitude < 150)// && current_landing_gear)
     krpci_client.Control_set_Gear(controlID, 1);
 
   // If High-level Goal is reached, then change state
