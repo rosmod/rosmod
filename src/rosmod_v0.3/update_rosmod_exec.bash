@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-zip -r ../rosmod.zip *
-mv ../rosmod.zip ../rosmod.egg
-sudo mv ../rosmod.egg /opt/rosmod.egg
-echo 'alias rosmod="python /opt/rosmod.egg"' > ~/.bashrc
-echo "Created rosmod.egg at path:"
-
+if [ $1 = ""]; then
+    echo "Usage: ./update_rosmod_exec.bash <path>"
+    echo "Example: ./update_rosmod_exec.bash /home/jeb"
+else
+    zip -r ../rosmod.zip *
+    mv ../rosmod.zip ../rosmod.egg
+    mv ../rosmod.egg $1
+    echo "Created rosmod.egg at" $1
+fi 
