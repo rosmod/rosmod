@@ -26,7 +26,7 @@ bool landing_gear;
 void Sensor_Component::Init(const ros::TimerEvent& event)
 {
 
-  krpci_client.SetIP("191.168.127.100");
+  //krpci_client.SetIP("191.168.127.100");
 
   // Initialize Here
   if (krpci_client.Connect()) {

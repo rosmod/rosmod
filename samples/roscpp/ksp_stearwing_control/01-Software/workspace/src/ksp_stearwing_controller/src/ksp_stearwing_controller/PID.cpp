@@ -12,6 +12,7 @@ void PID::Init(const ros::TimerEvent& event)
 
   double ma_kp=0.05, ma_ki=0.0, ma_kd=0.05, ma_imax=50, ma_imin=-50;
   double p_kp=0.5, p_ki=0.5, p_kd=0.05, p_imax=500, p_imin=-500;
+  double r_kp=0.05, r_ki=0.0, r_kd=0.005, r_imax=500, r_imin=-500;
 
   LOGGER.INFO("Argc: %d", node_argc);
 
@@ -61,6 +62,27 @@ void PID::Init(const ros::TimerEvent& event)
 	  p_imin = -p_imax;
 	  LOGGER.INFO("New Pitch Int Max=%f", p_imax);
 	}
+      if (!strcmp(node_argv[i],"--r_kp"))
+	{
+	  r_kp = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Roll Kp=%f", r_kp);
+	}
+      if (!strcmp(node_argv[i],"--r_ki"))
+	{
+	  r_ki = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Roll Ki=%f", r_ki);
+	}
+      if (!strcmp(node_argv[i],"--r_kd"))
+	{
+	  r_kd = atof(node_argv[i+1]);
+	  LOGGER.INFO("New Roll Kd=%f", r_kd);
+	}
+      if (!strcmp(node_argv[i],"--r_imax"))
+	{
+	  r_imax = atof(node_argv[i+1]);
+	  r_imin = -r_imax;
+	  LOGGER.INFO("New Roll Int Max=%f", r_imax);
+	}
     }
 
   mean_altitude_pid.setKp(ma_kp);
@@ -75,9 +97,14 @@ void PID::Init(const ros::TimerEvent& event)
   pitch_pid.setIntegratorMax(p_imax);
   pitch_pid.setIntegratorMin(p_imin);
 
-  roll_pid.setKp(0.05);
-  roll_pid.setKi(0);
-  roll_pid.setKd(0.005);
+  roll_pid.setKp(r_kp);
+  roll_pid.setKi(r_ki);
+  roll_pid.setKd(r_kd);
+  roll_pid.setIntegratorMax(r_imax);
+  roll_pid.setIntegratorMin(r_imin);
+  //roll_pid.setKp(0.05);
+  //roll_pid.setKi(0);
+  //roll_pid.setKd(0.005);
 
   heading_pid.setKp(1.0);
   heading_pid.setKi(0.1);

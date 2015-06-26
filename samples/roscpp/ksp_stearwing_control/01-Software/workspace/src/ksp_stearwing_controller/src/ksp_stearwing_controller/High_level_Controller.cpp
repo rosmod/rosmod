@@ -93,7 +93,7 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
 
-  krpci_client.SetIP("191.168.127.100");
+  ///krpci_client.SetIP("191.168.127.100");
 
   // Connect to kRPC Server and obtain the vessel & control ID
   if (krpci_client.Connect()) {
