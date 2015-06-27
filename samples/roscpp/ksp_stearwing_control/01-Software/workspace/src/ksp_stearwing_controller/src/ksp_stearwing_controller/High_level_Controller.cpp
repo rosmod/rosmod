@@ -47,7 +47,7 @@ bool High_level_Controller::state_func_INIT() {
   // Change State
   goal_mean_altitude = cruise_altitude;
   goal_heading = 90.0;
-  goal_speed = 50.0;
+  goal_speed = 180.0;
   current_state = TAKE_OFF; 
   std::vector<uint64_t> return_vec;
   krpci_client.Control_ActivateNextStage(controlID, return_vec);

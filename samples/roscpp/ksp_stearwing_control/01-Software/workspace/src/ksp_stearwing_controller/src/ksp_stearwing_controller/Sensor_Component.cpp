@@ -4,6 +4,8 @@ KRPCI krpci_client;
 
 //# Start User Globals Marker
 uint64_t vesselID;
+uint64_t orbitID;
+uint64_t bodyID;
 uint64_t surfaceRefFrameID;
 uint64_t flightID;
 uint64_t controlID;
@@ -32,7 +34,9 @@ void Sensor_Component::Init(const ros::TimerEvent& event)
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);
     krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, surfaceRefFrameID);
-    krpci_client.Vessel_get_OrbitalReferenceFrame(vesselID, orbitalRefFrameID);
+    krpci_client.Vessel_get_Orbit(vesselID, orbitID);
+    krpci_client.Orbit_get_Body(orbitID, bodyID);
+    krpci_client.CelestialBody_get_ReferenceFrame(bodyID, orbitalRefFrameID);
     krpci_client.Vessel_Flight(vesselID, surfaceRefFrameID, flightID);
     krpci_client.Vessel_Flight(vesselID, orbitalRefFrameID, orbitalFlightID);
     krpci_client.Vessel_get_Control(vesselID, controlID);
@@ -55,18 +59,13 @@ void Sensor_Component::sensor_timerCallback(const ros::TimerEvent& event)
   krpci_client.Flight_get_MeanAltitude(flightID, mean_altitude);
   krpci_client.Flight_get_Latitude(flightID, latitude);
   krpci_client.Flight_get_Longitude(flightID, longitude);
-  krpci_client.Flight_get_Speed(flightID, speed);
+  //krpci_client.Flight_get_Speed(flightID, speed);
   krpci_client.Flight_get_SurfaceAltitude(flightID, surface_altitude);
   krpci_client.Control_get_Gear(controlID, landing_gear);
 
-  double trans_x, trans_y, trans_z;
-  krpci_client.Flight_get_Velocity(orbitalFlightID, trans_x, trans_y, trans_z);
-  //LOGGER.INFO("ORBITAL FLIGHT VELOCITY:: %f, %f, %f",trans_x,trans_y,trans_z);
-  double vel_x, vel_y, vel_z;
-  krpci_client.TransformDirection(trans_x, trans_y, trans_z, orbitalRefFrameID, surfaceRefFrameID, vel_x, vel_y, vel_z);
-  //LOGGER.INFO("VELOCITY:: %f, %f, %f",vel_x,vel_y,vel_z);
-  double vel_speed = sqrt(vel_x * vel_x + vel_y * vel_y + vel_z * vel_z);
-  //LOGGER.INFO("SPEED:: %f",vel_speed);
+  double vel[3];
+  krpci_client.Vessel_Velocity(vesselID, orbitalRefFrameID, vel[0], vel[1], vel[2]);
+  speed = sqrt(vel[0] * vel[0] + vel[1] * vel[1] + vel[2] * vel[2]);
 
   ksp_stearwing_controller::Sensor_Reading new_reading;
   new_reading.throttle = throttle;

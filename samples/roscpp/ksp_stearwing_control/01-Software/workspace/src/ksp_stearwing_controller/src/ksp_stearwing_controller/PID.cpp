@@ -115,10 +115,11 @@ void PID::Init(const ros::TimerEvent& event)
   heading_pid.setIntegratorMax(h_imax);
   heading_pid.setIntegratorMin(h_imin);
 
-  speed_pid.setKp(1.0);
-  speed_pid.setKi(0.1);
-  speed_pid.setKd(0.1);
+  speed_pid.setKp(0.1);
+  speed_pid.setKi(0.001);
+  speed_pid.setKd(0.05);
   speed_pid.setIntegratorMax(50);
+  speed_pid.setIntegratorMin(-50);
   // Stop Init Timer
   initOneShotTimer.stop();
 }

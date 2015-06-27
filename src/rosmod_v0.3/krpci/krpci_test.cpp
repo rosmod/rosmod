@@ -13,9 +13,11 @@ public:
 	std::cout << "Response error: " << response.error() << endl;
 	return;
       }
+    krpc::Tuple tuple;
     double x,y,z;
-    KRPCI::Vessel_Rotation_parseResponse(response, x ,y, z);
-    printf("CLASS METHOD WITH INST VAR %d :: VESSEL ROTATION : (x,y,z) = (%f,%f,%f)\n",myInstVar,x,y,z);
+    tuple.ParseFromString(response.return_value());
+    KRPCI::DecodeTuple(tuple,x,y,z);
+    printf("CLASS METHOD WITH INST VAR %d : (x,y,z) = (%f,%f,%f)\n",myInstVar,x,y,z);
   }
   int myInstVar;
 };
@@ -27,9 +29,11 @@ void myStreamFunc(krpc::Response& response)
       std::cout << "Response error: " << response.error() << endl;
       return;
     }
+  krpc::Tuple tuple;
   double x,y,z;
-  KRPCI::Vessel_Position_parseResponse(response, x ,y, z);
-  printf("VESSEL POSITION: (x,y,z) = (%f,%f,%f)\n",x,y,z);
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple,x,y,z);
+  printf("(x,y,z) = (%f,%f,%f)\n",x,y,z);
 }
 
 int main(int argc, char** argv)
@@ -69,6 +73,9 @@ int main(int argc, char** argv)
       double position[3];
       client.Vessel_Position(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
       std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
+      double velocity[3];
+      client.Vessel_Velocity(vesselID, orbitalRefFrame, velocity[0], velocity[1], velocity[2]);
+      std::cout << "Active vessel Velocity: "<< velocity[0]<<","<<velocity[1]<<","<<velocity[2]<<endl;
       uint64_t controlID;
       client.Vessel_get_Control(vesselID, controlID);
       std::cout << "Active vessel has control ID: " << controlID << endl;
@@ -84,21 +91,21 @@ int main(int argc, char** argv)
       krpc::Request request;
       KRPCI::Vessel_Position_createRequest(vesselID, orbitalRefFrame, request);
 
-      client.CreateStream(streamName,request, myStreamFunc);
+      //client.CreateStream(streamName,request, myStreamFunc);
 
       
       myclass class1 = myclass(50);
-      std::string streamName2 = "classStream";
+      std::string streamName2 = "streamtest_Vessel_Velocity";
       krpc::Request request2;
-      KRPCI::Vessel_Rotation_createRequest(vesselID, orbitalRefFrame, request2);
+      KRPCI::Vessel_Velocity_createRequest(vesselID, orbitalRefFrame, request2);
 
-      client.CreateStream(streamName2, request2, boost::bind(&myclass::classStreamFunc, class1, _1));
+      //client.CreateStream(streamName2, request2, boost::bind(&myclass::classStreamFunc, class1, _1));
 
-      sleep(10);
+      //sleep(10);
 
-      client.RemoveStream(streamName);
+      //client.RemoveStream(streamName);
 
-      sleep(10);
+      //sleep(10);
     }
   client.Close();
 }
