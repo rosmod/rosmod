@@ -61,7 +61,7 @@ bool High_level_Controller::state_func_TAKEOFF() {
 bool High_level_Controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
-  if (current_waypoint <= wp_size/2) {
+  if (current_waypoint <= wp_size) {
     LOGGER.INFO("Updating Waypoint Goals!");
     double target_latitude = cruise_waypoints[current_waypoint].latitude_;
     double target_longitude = cruise_waypoints[current_waypoint].longitude_;
@@ -75,6 +75,7 @@ bool High_level_Controller::state_func_CRUISE() {
 				          target_latitude,
 				          target_longitude);
       goal_mean_altitude = cruise_waypoints[current_waypoint].altitude_;
+      goal_speed = cruise_waypoints[current_waypoint].speed_;
     }
   }
   else {
@@ -117,15 +118,19 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   speed_tolerance = 5.0;
 
   lat_tolerance = 0.05;
-  long_tolerance = 0.5;
+  long_tolerance = 0.1;
   // Setup cruise waypoints here
   // UPDATE THESE
-//  Waypoint wp1(500.0, -1.29, -74.2788);
-  Waypoint wp2(500.0, -1.1422, -74.0304);
-  Waypoint wp3(500.0, -1.45409, -73.9299);
-//  cruise_waypoints.push_back(wp1);
+  Waypoint wp1(500.0, -0.4614, -73.3667, 180.0);
+  Waypoint wp2(500.0, -1.1426, -73.1030, 180.0);
+  Waypoint wp3(500.0, -1.4502, -72.2900, 180.0);
+  Waypoint wp4(250.0, -1.4254, -72.2603, 90.0);
+  Waypoint wp5(250.0, -1.5409, -71.9099, 0.0);
+  cruise_waypoints.push_back(wp1);
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
+  cruise_waypoints.push_back(wp4);
+  cruise_waypoints.push_back(wp5);
 
   wp_size = cruise_waypoints.size();
 

@@ -17,14 +17,17 @@ class Waypoint {
 public:
   Waypoint(double altitude, 
 	   double latitude, 
-	   double longitude) : 
+	   double longitude,
+	   double speed) : 
     altitude_(altitude),
     latitude_(latitude),
-    longitude_(longitude){}
+    longitude_(longitude),
+    speed_(speed){}
 
   double altitude_;
   double latitude_;
   double longitude_;
+  double speed_;
 };
 
 class Save_State {
