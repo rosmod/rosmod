@@ -17,10 +17,12 @@ $user_globals//# End User Globals Marker
 //# Start Init Marker
 void $component_name::Init(const ros::TimerEvent& event)
 {
+  LOGGER.DEBUG("Entering ${component_name}::Init");
   // Initialize Here
 
   // Stop Init Timer
-  initOneShotTimer.stop();
+  initOneShotTimer.stop()
+  LOGGER.DEBUG("Exiting ${component_name}::Init");
 }
 //# End Init Marker
 #else
@@ -35,7 +37,10 @@ $init_business_logic//# End Init Marker
 //# Start ${sub.properties["name"]}_OnOneData Marker
 void $component_name::${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
 {
+  LOGGER.DEBUG("Entering $component_name::${sub.properties["name"]}_OnOneData");
   // Business Logic for $sub.properties["name"] Subscriber
+
+  LOGGER.DEBUG("Exiting $component_name::${sub.properties["name"]}_OnOneData");
 }
 //# End ${sub.properties["name"]}_OnOneData Marker
 #else
@@ -53,8 +58,10 @@ $sub.properties["business_logic"]//# End ${sub.properties["name"]}_OnOneData Mar
 bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request  &req,
   $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
 {
+  LOGGER.DEBUG("Entering $component_name::${server.properties["service_reference"].properties["name"]}Callback");
   // Business Logic for $server.properties["name"] Server
 
+  LOGGER.DEBUG("Exiting $component_name::${server.properties["service_reference"].properties["name"]}Callback");
   return true;
 }
 //# End ${server.properties["service_reference"].properties["name"]}Callback Marker
@@ -72,7 +79,10 @@ $server.properties["business_logic"]//# End ${server.properties["service_referen
 //# Start ${timer.properties["name"]}Callback Marker
 void $component_name::${timer.properties["name"]}Callback(const ros::TimerEvent& event)
 {
+  LOGGER.DEBUG("Entering $component_name::${timer.properties["name"]}Callback");
   // Business Logic for $timer.properties["name"] Timer
+
+  LOGGER.DEBUG("Exiting $component_name::${timer.properties["name"]}Callback");
 }
 //# End ${timer.properties["name"]}Callback Marker
 #else
@@ -123,6 +133,7 @@ $component_name::~${component_name}()
 // Startup - Setup Component Ports & Timers
 void $component_name::startUp()
 {
+  LOGGER.DEBUG("Entering $component_name::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -233,6 +244,7 @@ void $component_name::startUp()
 #if $component_type == "KSP"
   krpci_client.SetName(nodeName + "_" + compName);
 #end if
+  LOGGER.DEBUG("Exiting $component_name::startUp");
 }
 
 extern "C" {
