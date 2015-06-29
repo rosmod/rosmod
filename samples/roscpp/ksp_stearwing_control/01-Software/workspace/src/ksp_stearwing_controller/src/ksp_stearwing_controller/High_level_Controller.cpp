@@ -11,6 +11,7 @@ std::vector<Waypoint>::size_type wp_size;
 
 uint64_t vesselID;
 uint64_t controlID;
+uint64_t surfaceRefFrameID;
 double cruise_altitude;
 
 float get_relative_heading(double current_latitude, 
@@ -140,6 +141,7 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   if (krpci_client.Connect()) {
     krpci_client.get_ActiveVessel(vesselID);
     krpci_client.Vessel_get_Control(vesselID, controlID);
+    krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, surfaceRefFrameID);
   }
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -195,6 +197,12 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
       state_func_LAND();
       break;
     }
+
+    krpci_client.ClearDirections();
+    double x, y, z = 0;
+    x = cos(goal_heading);
+    y = sin(goal_heading);
+    krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,1,1,1,10);
 
     // Publish newly set goals
     ksp_stearwing_controller::Control_Command new_command;
