@@ -117,24 +117,28 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   previous_states.set_capacity(10);
 
   // Set Goal tolerances
-  heading_tolerance = 5.0;
+  heading_tolerance = 2.5;
   mean_altitude_tolerance = 10.0;
   speed_tolerance = 5.0;
 
   lat_tolerance = 0.05;
   long_tolerance = 0.1;
   // Setup cruise waypoints here
-  // UPDATE THESE
-  Waypoint wp1(500.0, -0.4614, -73.3667, 180.0);
-  Waypoint wp2(500.0, -1.4699, -73.1030, 180.0);
-  Waypoint wp3(500.0, -1.4908, -72.2900, 180.0);
-  Waypoint wp4(250.0, -1.5009, -72.2603, 90.0);
-  Waypoint wp5(165.0, -1.5009, -71.2099, 0.0);
+  // Altitude, Latitude, Longitude, Speed
+  Waypoint wp1(500.0, -0.9414, -73.9667, 180.0);
+  Waypoint wp2(500.0, -1.4499, -73.5030, 180.0);
+  Waypoint wp3(500.0, -1.5008, -73.2900, 180.0);
+  Waypoint wp4(300.0, -1.5009, -72.2603, 120.0);
+  Waypoint wp5(300.0, -1.5009, -71.5603, 120.0);
+  Waypoint wp6(300.0, -1.5009, -71.9000, 0.0); 
+  Waypoint wp7(165.0, -1.5009, -71.2099, 0.0);
   cruise_waypoints.push_back(wp1);
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
   cruise_waypoints.push_back(wp4);
   cruise_waypoints.push_back(wp5);
+  cruise_waypoints.push_back(wp6);
+  cruise_waypoints.push_back(wp7);
 
   wp_size = cruise_waypoints.size();
 
@@ -219,7 +223,7 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
     x = cosLat * cos(lon * PI/180.0);
     y = sin(lat * PI/180.0);
     z = cosLat * sin(lon * PI/180.0);
-    //    krpci_client.DrawDirection(x,y,z,orbitalRefFrameID, 1, 0, 0, cruise_waypoints[current_waypoint].altitude_ + 6500);
+    krpci_client.DrawDirection(x,y,z,orbitalRefFrameID, 1, 0, 0, cruise_waypoints[current_waypoint].altitude_ + 6500);
 
     // Publish newly set goals
     ksp_stearwing_controller::Control_Command new_command;
