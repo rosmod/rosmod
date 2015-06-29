@@ -13,6 +13,9 @@ uint64_t vesselID;
 uint64_t controlID;
 uint64_t surfaceRefFrameID;
 double cruise_altitude;
+uint64_t orbitID;
+uint64_t bodyID;
+uint64_t orbitalRefFrameID;
 
 float get_relative_heading(double current_latitude, 
 			   double current_longitude,
@@ -123,10 +126,10 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   // Setup cruise waypoints here
   // UPDATE THESE
   Waypoint wp1(500.0, -0.4614, -73.3667, 180.0);
-  Waypoint wp2(500.0, -1.1426, -73.1030, 180.0);
-  Waypoint wp3(500.0, -1.4502, -72.2900, 180.0);
-  Waypoint wp4(250.0, -1.4254, -72.2603, 90.0);
-  Waypoint wp5(250.0, -1.5409, -71.9099, 0.0);
+  Waypoint wp2(500.0, -1.4699, -73.1030, 180.0);
+  Waypoint wp3(500.0, -1.4908, -72.2900, 180.0);
+  Waypoint wp4(250.0, -1.5009, -72.2603, 90.0);
+  Waypoint wp5(165.0, -1.5009, -71.2099, 0.0);
   cruise_waypoints.push_back(wp1);
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
@@ -142,6 +145,9 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
     krpci_client.get_ActiveVessel(vesselID);
     krpci_client.Vessel_get_Control(vesselID, controlID);
     krpci_client.Vessel_get_SurfaceReferenceFrame(vesselID, surfaceRefFrameID);
+    krpci_client.Vessel_get_Orbit(vesselID, orbitID);
+    krpci_client.Orbit_get_Body(orbitID, bodyID);
+    krpci_client.CelestialBody_get_ReferenceFrame(bodyID, orbitalRefFrameID);
   }
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -178,8 +184,11 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
 
   if (current_surface_altitude > 150)// && !current_landing_gear)
     krpci_client.Control_set_Gear(controlID, 0);
-  else if (current_surface_altitude < 150)// && current_landing_gear)
+  else if (current_surface_altitude < 150) {// && current_landing_gear) 
     krpci_client.Control_set_Gear(controlID, 1);
+    if (current_state != INIT && current_state != TAKE_OFF) 
+      krpci_client.Control_set_Brakes(controlID, 1);
+  }
 
   // If High-level Goal is reached, then change state
   if (isGoalReached()) {
@@ -199,10 +208,18 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
     }
 
     krpci_client.ClearDirections();
-    double x, y, z = 0;
-    x = cos(goal_heading);
-    y = sin(goal_heading);
-    krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,1,1,1,10);
+    double x=0, y, z;
+    z = sin(goal_heading * PI/180.0);
+    y = cos(goal_heading * PI/180.0);
+    krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,1,1,1,20);
+
+    double lat = cruise_waypoints[current_waypoint].latitude_;
+    double lon = cruise_waypoints[current_waypoint].longitude_;
+    double cosLat = cos(lat * PI/180.0);
+    x = cosLat * cos(lon * PI/180.0);
+    y = sin(lat * PI/180.0);
+    z = cosLat * sin(lon * PI/180.0);
+    //    krpci_client.DrawDirection(x,y,z,orbitalRefFrameID, 1, 0, 0, cruise_waypoints[current_waypoint].altitude_ + 6500);
 
     // Publish newly set goals
     ksp_stearwing_controller::Control_Command new_command;
