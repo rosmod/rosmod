@@ -80,6 +80,8 @@ bool High_level_Controller::state_func_CRUISE() {
 				          target_longitude);
       goal_mean_altitude = cruise_waypoints[current_waypoint].altitude_;
       goal_speed = cruise_waypoints[current_waypoint].speed_;
+      if (goal_mean_altitude == 350) 
+	mean_altitude_tolerance = 20;
     }
   }
   else {
@@ -117,32 +119,28 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   previous_states.set_capacity(10);
 
   // Set Goal tolerances
-  heading_tolerance = 2.5;
+  heading_tolerance = 5.0;
   mean_altitude_tolerance = 10.0;
   speed_tolerance = 5.0;
 
-  lat_tolerance = 0.05;
-  long_tolerance = 0.1;
+  lat_tolerance = 0.1;
+  long_tolerance = 0.5;
+
   // Setup cruise waypoints here
   // Altitude, Latitude, Longitude, Speed
   Waypoint wp1(500.0, -0.9414, -73.9667, 180.0);
-  Waypoint wp2(500.0, -1.4499, -73.5030, 180.0);
-  Waypoint wp3(500.0, -1.5008, -73.2900, 180.0);
-  Waypoint wp4(300.0, -1.5009, -72.2603, 120.0);
-  Waypoint wp5(300.0, -1.5009, -71.5603, 120.0);
-  Waypoint wp6(300.0, -1.5009, -71.9000, 0.0); 
-  Waypoint wp7(165.0, -1.5009, -71.2099, 0.0);
+  Waypoint wp2(500.0, -1.4399, -73.5030, 180.0);
+  Waypoint wp3(800.0, -1.5009, -73.2900, 180.0);
+  Waypoint wp4(800.0, -1.5009, -72.3000, 150.0);
+  Waypoint wp6(600.0, -1.5009, -71.4000, 140.0); 
+  Waypoint wp7(200.0, -1.5009, -71.2099, 0.0);
   cruise_waypoints.push_back(wp1);
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
   cruise_waypoints.push_back(wp4);
-  cruise_waypoints.push_back(wp5);
   cruise_waypoints.push_back(wp6);
   cruise_waypoints.push_back(wp7);
-
   wp_size = cruise_waypoints.size();
-
-  ///krpci_client.SetIP("191.168.127.100");
 
   // Connect to kRPC Server and obtain the vessel & control ID
   if (krpci_client.Connect()) {
@@ -286,7 +284,7 @@ void High_level_Controller::startUp()
   // Component Timer - flight_control_timer
   timer_options = 
     ros::TimerOptions
-    (ros::Duration(0.5),
+    (ros::Duration(0.5), // 0.5 second timer
      boost::bind(&High_level_Controller::flight_control_timerCallback, this, _1),
      &this->compQueue);
   this->flight_control_timer = nh.createTimer(timer_options);
