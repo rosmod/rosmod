@@ -55,38 +55,100 @@ bool High_level_Controller::state_func_INIT() {
   current_state = TAKE_OFF; 
   std::vector<uint64_t> return_vec;
   krpci_client.Control_ActivateNextStage(controlID, return_vec);
+  return true;
 }
 
 bool High_level_Controller::state_func_TAKEOFF() {
   // Change State
-  current_state = CRUISE;
+  if (isGoalReached())
+    current_state = CRUISE;
+  return true;
 }
 
 bool High_level_Controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
-  if (current_waypoint <= wp_size) {
-    LOGGER.INFO("Updating Waypoint Goals!");
+  if (current_waypoint < wp_size) {
     double target_latitude = cruise_waypoints[current_waypoint].latitude_;
     double target_longitude = cruise_waypoints[current_waypoint].longitude_;
-    if ((abs(target_latitude - current_latitude) < lat_tolerance) && 
-        (abs(target_longitude - current_longitude) < long_tolerance)) {
-      current_waypoint++;
+    double wp_lat_tolerance = cruise_waypoints[current_waypoint].lat_tolerance_;
+    double wp_long_tolerance = cruise_waypoints[current_waypoint].long_tolerance_;
+
+    LOGGER.INFO("Waypoint=%d; isGoalReached=%d; Lat=%f; Lon=%f; Target_Lat=%f; Target_Lon=%f; Target_Speed=%f",
+		current_waypoint, isGoalReached(), current_latitude, current_longitude, 
+		target_latitude, target_longitude, goal_speed);
+
+    if ((abs(target_latitude - current_latitude) < wp_lat_tolerance) && 
+	(abs(target_longitude - current_longitude) < wp_long_tolerance)) {
+      // Find midpoint between current waypoint & next waypoint
+      // Converge more gradually by choosing the midpoint between 2 waypoints!
+      if (current_waypoint < wp_size) {
+
+	double next_wp_lat = cruise_waypoints[current_waypoint + 1].latitude_;
+	double next_wp_long = cruise_waypoints[current_waypoint + 1].longitude_;
+
+	// If the midpoint is very close to next waypoint, we can stop converging..
+	if ((abs(next_wp_lat - current_latitude) < wp_lat_tolerance) && 
+	    (abs(next_wp_long - current_longitude) 
+	     < cruise_waypoints[current_waypoint].long_tolerance_)) {
+	  current_waypoint++;
+	}
+	// Else, find a midpoint and change current waypoint parameters
+	else {
+	  LOGGER.INFO("Calculating Midpoint! Current Latitude=%f, Longitude=%f", 
+		      current_latitude, current_longitude);
+	  double current_wp_lat = cruise_waypoints[current_waypoint].latitude_;
+	  double current_wp_long = cruise_waypoints[current_waypoint].longitude_;
+	  double current_wp_altitude = cruise_waypoints[current_waypoint].altitude_;
+	  double current_wp_speed = cruise_waypoints[current_waypoint].speed_;
+
+	  double current_wp_lat_tolerance = cruise_waypoints[current_waypoint].lat_tolerance_;
+	  double current_wp_long_tolerance = cruise_waypoints[current_waypoint].long_tolerance_;
+
+	  double next_wp_lat = cruise_waypoints[current_waypoint + 1].latitude_;
+	  double next_wp_long = cruise_waypoints[current_waypoint + 1].longitude_;
+	  double next_wp_altitude = cruise_waypoints[current_waypoint + 1].altitude_;
+	  double next_wp_speed = cruise_waypoints[current_waypoint + 1].speed_;
+
+	  double next_wp_lat_tolerance = cruise_waypoints[current_waypoint + 1].lat_tolerance_;
+	  double next_wp_long_tolerance = cruise_waypoints[current_waypoint + 1].long_tolerance_;
+
+	  /*
+	    double midpoint_lat_tolerance = (current_wp_lat_tolerance + next_wp_lat_tolerance)/2;
+	    double midpoint_long_tolerance = (current_wp_long_tolerance + next_wp_long_tolerance)/2;
+	  */
+
+	  double midpoint_latitude = (current_wp_lat + next_wp_lat)/2;
+	  double midpoint_longitude = (current_wp_long + next_wp_long)/2;
+	  goal_heading = get_relative_heading(current_latitude,
+					      current_longitude,
+					      midpoint_latitude,
+					      midpoint_longitude);
+	  goal_mean_altitude = current_wp_altitude;
+	  goal_speed = cruise_waypoints[current_waypoint].speed_ - 5; 
+
+	  LOGGER.INFO("Midpoint Latitude=%f, Longitude=%f, Speed=%f", 
+		      midpoint_latitude, midpoint_longitude, goal_speed);
+
+	  cruise_waypoints[current_waypoint].latitude_ = midpoint_latitude;
+	  cruise_waypoints[current_waypoint].longitude_ = midpoint_longitude;
+	  cruise_waypoints[current_waypoint].altitude_ = goal_mean_altitude;
+	  cruise_waypoints[current_waypoint].speed_ = goal_speed;
+	}
+      }
+      else {
+	++current_waypoint;
+      }
     }
+
     else {
       goal_heading = get_relative_heading(current_latitude, 
 					  current_longitude, 
-				          target_latitude,
-				          target_longitude);
+					  target_latitude,
+					  target_longitude);
       goal_mean_altitude = cruise_waypoints[current_waypoint].altitude_;
       goal_speed = cruise_waypoints[current_waypoint].speed_;
-      if (goal_mean_altitude == 350) 
-	mean_altitude_tolerance = 20;
     }
-  }
-  else {
-    // Change State
-    current_state = LAND; 
   }
 }
 
@@ -123,23 +185,18 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   mean_altitude_tolerance = 10.0;
   speed_tolerance = 5.0;
 
-  lat_tolerance = 0.1;
-  long_tolerance = 0.5;
+  lat_tolerance = 0.02;
+  long_tolerance = 0.21;
 
-  // Setup cruise waypoints here
-  // Altitude, Latitude, Longitude, Speed
-  Waypoint wp1(500.0, -0.9414, -73.9667, 180.0);
-  Waypoint wp2(500.0, -1.4399, -73.5030, 180.0);
-  Waypoint wp3(800.0, -1.5009, -73.2900, 180.0);
-  Waypoint wp4(800.0, -1.5009, -72.3000, 150.0);
-  Waypoint wp6(600.0, -1.5009, -71.4000, 140.0); 
-  Waypoint wp7(200.0, -1.5009, -71.2099, 0.0);
+  // Starting point of CRUISE mode
+  // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
+  Waypoint wp1(500.0, -1.5209, -73.5530, 180.0, 0.06, 0.5);
   cruise_waypoints.push_back(wp1);
+
+  // Last waypoint of CRUISE mode
+  Waypoint wp2(500.0, -1.5350, -71.9999, 0.0, 0.06, 0.35);
   cruise_waypoints.push_back(wp2);
-  cruise_waypoints.push_back(wp3);
-  cruise_waypoints.push_back(wp4);
-  cruise_waypoints.push_back(wp6);
-  cruise_waypoints.push_back(wp7);
+
   wp_size = cruise_waypoints.size();
 
   // Connect to kRPC Server and obtain the vessel & control ID
@@ -181,9 +238,6 @@ void High_level_Controller::sensor_subscriber_OnOneData(const ksp_stearwing_cont
 void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for flight_control_timer Timer
-  LOGGER.INFO("Current State: %d; Goals Reached! Time to Switch State!", 
-	      current_state);
-
   if (current_surface_altitude > 150)// && !current_landing_gear)
     krpci_client.Control_set_Gear(controlID, 0);
   else if (current_surface_altitude < 150) {// && current_landing_gear) 
@@ -191,47 +245,35 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
     if (current_state != INIT && current_state != TAKE_OFF) 
       krpci_client.Control_set_Brakes(controlID, 1);
   }
-
-  // If High-level Goal is reached, then change state
-  if (isGoalReached()) {
-    switch(current_state) {
-    case INIT :
-      state_func_INIT();
-      break;
-    case TAKE_OFF :
-      state_func_TAKEOFF();
-      break;
-    case CRUISE :
-      state_func_CRUISE();
-      break;
-    case LAND :
-      state_func_LAND();
-      break;
-    }
-
-    krpci_client.ClearDirections();
-    double x=0, y, z;
-    z = sin(goal_heading * PI/180.0);
-    y = cos(goal_heading * PI/180.0);
-    krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,1,1,1,20);
-
-    double lat = cruise_waypoints[current_waypoint].latitude_;
-    double lon = cruise_waypoints[current_waypoint].longitude_;
-    double cosLat = cos(lat * PI/180.0);
-    x = cosLat * cos(lon * PI/180.0);
-    y = sin(lat * PI/180.0);
-    z = cosLat * sin(lon * PI/180.0);
-    krpci_client.DrawDirection(x,y,z,orbitalRefFrameID, 1, 0, 0, cruise_waypoints[current_waypoint].altitude_ + 6500);
-
-    // Publish newly set goals
-    ksp_stearwing_controller::Control_Command new_command;
-    new_command.goal_altitude = goal_mean_altitude;
-    new_command.goal_speed = goal_speed;
-    new_command.goal_heading = goal_heading;
-    pid_control_publisher.publish(new_command);
+  
+  switch(current_state) {
+  case INIT :
+    state_func_INIT();
+    break;
+  case TAKE_OFF :
+    state_func_TAKEOFF();
+    break;
+  case CRUISE :
+    state_func_CRUISE();
+    break;
+  case LAND :
+    state_func_LAND();
+    break;
   }
-  LOGGER.INFO("Current State: %d; Sent Goals:: Mean_Altitude=%f, Speed=%f, Heading=%f", current_state, goal_mean_altitude, goal_speed, goal_heading);
 
+  // Green heading marker
+  krpci_client.ClearDirections();
+  double x=0, y, z;
+  z = sin(goal_heading * PI/180.0);
+  y = cos(goal_heading * PI/180.0);
+  krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,0,1,0,30);
+
+  // Publish newly set goals
+  ksp_stearwing_controller::Control_Command new_command;
+  new_command.goal_altitude = goal_mean_altitude;
+  new_command.goal_speed = goal_speed;
+  new_command.goal_heading = goal_heading;
+  pid_control_publisher.publish(new_command);
 }
 //# End flight_control_timerCallback Marker
 

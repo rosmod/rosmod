@@ -18,16 +18,22 @@ public:
   Waypoint(double altitude, 
 	   double latitude, 
 	   double longitude,
-	   double speed) : 
+	   double speed,
+	   double lat_tolerance,
+	   double long_tolerance) : 
     altitude_(altitude),
     latitude_(latitude),
     longitude_(longitude),
-    speed_(speed){}
+    speed_(speed),
+    lat_tolerance_(lat_tolerance),
+    long_tolerance_(long_tolerance){}
 
   double altitude_;
   double latitude_;
   double longitude_;
   double speed_;
+  double lat_tolerance_;
+  double long_tolerance_;
 };
 
 class Save_State {
