@@ -75,7 +75,7 @@ else:
                 os.chdir(setup_path)
 
     print "SETUP::Installing wxPython Tools"
-    p = subprocess.Popen(['apt-get', 'install', 'python-wxtools'])
+    p = subprocess.Popen(['apt-get', 'install', 'python-wxgtk2.8'])
     p.wait()
 
     print "SETUP::Installing dtach"
