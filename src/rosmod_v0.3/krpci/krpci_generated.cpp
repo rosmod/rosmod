@@ -767,6 +767,193 @@ bool KRPCI::get_G_parseResponse(krpc::Response response, float& return_value)
   return true;
 }
 
+bool KRPCI::get_RailsWarpFactor_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_RailsWarpFactor");
+  return true;
+}
+
+bool KRPCI::get_RailsWarpFactor(int32_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_RailsWarpFactor_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_RailsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
+bool KRPCI::set_RailsWarpFactor_createRequest(int32_t value, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("set_RailsWarpFactor");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::set_RailsWarpFactor(int32_t value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::set_RailsWarpFactor_createRequest(value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::get_PhysicsWarpFactor_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_PhysicsWarpFactor");
+  return true;
+}
+
+bool KRPCI::get_PhysicsWarpFactor(int32_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_PhysicsWarpFactor_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_PhysicsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
+bool KRPCI::set_PhysicsWarpFactor_createRequest(int32_t value, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("set_PhysicsWarpFactor");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::set_PhysicsWarpFactor(int32_t value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::set_PhysicsWarpFactor_createRequest(value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::get_WarpMode_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpMode");
+  return true;
+}
+
+bool KRPCI::get_WarpMode(int32_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpMode_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpMode_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
+bool KRPCI::get_WarpRate_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpRate");
+  return true;
+}
+
+bool KRPCI::get_WarpRate(float& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpRate_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      get_WarpRate_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpRate_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
 bool KRPCI::get_FARAvailable_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -18812,4 +18999,417 @@ bool KRPCI::RemoveStream(uint32_t id)
   return true;
 }
 
+
+bool KRPCI::GetSensors_createRequest(krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("GetSensors");
+  return true;
+}
+
+bool KRPCI::GetSensors(std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::GetSensors_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      GetSensors_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensors_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensorTags_createRequest(krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("GetSensorTags");
+  return true;
+}
+
+bool KRPCI::GetSensorTags(std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::GetSensorTags_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      GetSensorTags_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensorTags_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensor_createRequest(std::string sensorTag, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("GetSensor");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::GetSensor(std::string sensorTag, uint64_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::GetSensor_createRequest(sensorTag, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      GetSensor_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensor_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Tag_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_Tag");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Tag(uint64_t KSPSensor_ID, std::string& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_Tag_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Tag_parseResponse(krpc::Response response, std::string& return_value)
+{
+  return true;
+}
+
+bool KRPCI::KSPSensor_set_Tag_createRequest(uint64_t KSPSensor_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_set_Tag");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::KSPSensor_set_Tag(uint64_t KSPSensor_ID, std::string value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_set_Tag_createRequest(KSPSensor_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::KSPSensor_get_Operational_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_Operational");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Operational(uint64_t KSPSensor_ID, bool& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_Operational_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Operational_parseResponse(krpc::Response response, bool& return_value)
+{
+  return true;
+}
+
+bool KRPCI::KSPSensor_set_Operational_createRequest(uint64_t KSPSensor_ID, bool value, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_set_Operational");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_set_Operational(uint64_t KSPSensor_ID, bool value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_set_Operational_createRequest(KSPSensor_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::KSPSensor_get_PositionVector_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_PositionVector");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_PositionVector(uint64_t KSPSensor_ID, std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_PositionVector_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KSPSensor_get_PositionVector_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_PositionVector_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_LatLonAlt_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_LatLonAlt");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_LatLonAlt(uint64_t KSPSensor_ID, std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_LatLonAlt_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KSPSensor_get_LatLonAlt_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_LatLonAlt_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Speed_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_Speed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Speed(uint64_t KSPSensor_ID, double& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_Speed_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KSPSensor_get_Speed_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Speed_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
 
