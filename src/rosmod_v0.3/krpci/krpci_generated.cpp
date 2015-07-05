@@ -19084,7 +19084,7 @@ bool KRPCI::GetSensorTags_parseResponse(krpc::Response response, std::vector<uin
   return true;
 }
 
-bool KRPCI::GetSensor_createRequest(std::string sensorTag, krpc::Request& request)
+bool KRPCI::GetSensor_createRequest(std::string sTag, krpc::Request& request)
 {
   request.set_service("Sensors");
   request.set_procedure("GetSensor");
@@ -19094,13 +19094,13 @@ bool KRPCI::GetSensor_createRequest(std::string sensorTag, krpc::Request& reques
   return true;
 }
 
-bool KRPCI::GetSensor(std::string sensorTag, uint64_t& return_value)
+bool KRPCI::GetSensor(std::string sTag, uint64_t& return_value)
 {
   if (!connected_)
     return false;
   krpc::Request request;
   krpc::Response response;
-  KRPCI::GetSensor_createRequest(sensorTag, request);
+  KRPCI::GetSensor_createRequest(sTag, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -19122,10 +19122,10 @@ bool KRPCI::GetSensor_parseResponse(krpc::Response response, uint64_t& return_va
   return true;
 }
 
-bool KRPCI::KSPSensor_get_Tag_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+bool KRPCI::KSPSensor_Fail_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
 {
   request.set_service("Sensors");
-  request.set_procedure("KSPSensor_get_Tag");
+  request.set_procedure("KSPSensor_Fail");
   krpc::Argument* argument;
   argument = request.add_arguments();
   argument->set_position(0);
@@ -19136,13 +19136,13 @@ bool KRPCI::KSPSensor_get_Tag_createRequest(uint64_t KSPSensor_ID, krpc::Request
   return true;
 }
 
-bool KRPCI::KSPSensor_get_Tag(uint64_t KSPSensor_ID, std::string& return_value)
+bool KRPCI::KSPSensor_Fail(uint64_t KSPSensor_ID)
 {
   if (!connected_)
     return false;
   krpc::Request request;
   krpc::Response response;
-  KRPCI::KSPSensor_get_Tag_createRequest(KSPSensor_ID, request);
+  KRPCI::KSPSensor_Fail_createRequest(KSPSensor_ID, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -19155,15 +19155,83 @@ bool KRPCI::KSPSensor_get_Tag(uint64_t KSPSensor_ID, std::string& return_value)
   return true;
 }
 
-bool KRPCI::KSPSensor_get_Tag_parseResponse(krpc::Response response, std::string& return_value)
+
+bool KRPCI::KSPSensor_Repair_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_Repair");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_Repair(uint64_t KSPSensor_ID)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_Repair_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::KSPSensor_get_SensorTag_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_SensorTag");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_SensorTag(uint64_t KSPSensor_ID, std::string& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_SensorTag_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_SensorTag_parseResponse(krpc::Response response, std::string& return_value)
 {
   return true;
 }
 
-bool KRPCI::KSPSensor_set_Tag_createRequest(uint64_t KSPSensor_ID, std::string value, krpc::Request& request)
+bool KRPCI::KSPSensor_set_SensorTag_createRequest(uint64_t KSPSensor_ID, std::string value, krpc::Request& request)
 {
   request.set_service("Sensors");
-  request.set_procedure("KSPSensor_set_Tag");
+  request.set_procedure("KSPSensor_set_SensorTag");
   krpc::Argument* argument;
   argument = request.add_arguments();
   argument->set_position(0);
@@ -19176,13 +19244,13 @@ bool KRPCI::KSPSensor_set_Tag_createRequest(uint64_t KSPSensor_ID, std::string v
   return true;
 }
 
-bool KRPCI::KSPSensor_set_Tag(uint64_t KSPSensor_ID, std::string value)
+bool KRPCI::KSPSensor_set_SensorTag(uint64_t KSPSensor_ID, std::string value)
 {
   if (!connected_)
     return false;
   krpc::Request request;
   krpc::Response response;
-  KRPCI::KSPSensor_set_Tag_createRequest(KSPSensor_ID, value, request);
+  KRPCI::KSPSensor_set_SensorTag_createRequest(KSPSensor_ID, value, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -19233,46 +19301,6 @@ bool KRPCI::KSPSensor_get_Operational_parseResponse(krpc::Response response, boo
 {
   return true;
 }
-
-bool KRPCI::KSPSensor_set_Operational_createRequest(uint64_t KSPSensor_ID, bool value, krpc::Request& request)
-{
-  request.set_service("Sensors");
-  request.set_procedure("KSPSensor_set_Operational");
-  krpc::Argument* argument;
-  argument = request.add_arguments();
-  argument->set_position(0);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  argument = request.add_arguments();
-  argument->set_position(1);
-  argument->mutable_value()->resize(10);
-  CodedOutputStream::WriteVarint32ToArray(value, 
-		      (unsigned char *)argument->mutable_value()->data());
-
-  return true;
-}
-
-bool KRPCI::KSPSensor_set_Operational(uint64_t KSPSensor_ID, bool value)
-{
-  if (!connected_)
-    return false;
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::KSPSensor_set_Operational_createRequest(KSPSensor_ID, value, request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-    }
-  return true;
-}
-
 
 bool KRPCI::KSPSensor_get_PositionVector_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
 {
