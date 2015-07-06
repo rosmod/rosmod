@@ -168,7 +168,7 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
   goal_heading = 90.0;
   current_state = INIT;
 
-  cruise_altitude = 1000.0f;
+  cruise_altitude = 500.0f;
   for (int i=0;i<node_argc;i++)
     {
       if (!strcmp(node_argv[i],"--cruise_alt"))
