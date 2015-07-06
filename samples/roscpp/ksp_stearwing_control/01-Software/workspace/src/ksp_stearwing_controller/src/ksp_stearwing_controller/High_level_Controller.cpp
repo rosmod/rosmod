@@ -198,11 +198,11 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
 
   // Starting point of CRUISE mode
   // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
-  Waypoint wp1(500.0, -1.5209, -73.5530, 180.0, 0.06, 0.5);
+  Waypoint wp1(500.0, -1.5109, -73.5530, 180.0, 0.06, 0.5);
   cruise_waypoints.push_back(wp1);
 
   // Last waypoint of CRUISE mode
-  Waypoint wp2(500.0, -1.5350, -71.9999, 0.0, 0.06, 0.35);
+  Waypoint wp2(500.0, -1.5150, -71.8999, 0.0, 0.06, 0.35);
   cruise_waypoints.push_back(wp2);
 
   wp_size = cruise_waypoints.size();
