@@ -175,6 +175,14 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
 	{
 	  cruise_altitude = atof(node_argv[i+1]);
 	}
+      if (!strcmp(node_argv[i],"--krpc_ip"))
+	{
+	  krpci_client.SetIP(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--krpc_port"))
+	{
+	  krpci_client.SetPort(atoi(node_argv[i+1]));	  
+	}      
     }
 
   // Set the history capacity

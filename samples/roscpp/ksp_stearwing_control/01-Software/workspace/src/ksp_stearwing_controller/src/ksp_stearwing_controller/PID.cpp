@@ -10,10 +10,17 @@ void PID::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
 
-  double ma_kp=0.05, ma_ki=0.0, ma_kd=0.05, ma_imax=50, ma_imin=-50;
-  double p_kp=0.5, p_ki=0.5, p_kd=0.05, p_imax=500, p_imin=-500;
+  /*
+    --cruise_alt 500 
+    --ma_kp 0.1 --ma_ki 0.0 --ma_kd 0.00001 --ma_imax 0 
+    --p_kp 0.03 --p_ki 0.055 --p_kd 0.0 --p_imax 10
+    --r_kp 0.05 --r_ki 0.0 --r_kd 0.005 --r_imax 500 --r_imin -500
+    --h_kp 0.1 --h_ki 0.0 --h_kd 5.5 --h_imax 500 --h_imin -500
+   */
+  double ma_kp=0.1, ma_ki=0.0, ma_kd=0.00001, ma_imax=0, ma_imin=0;
+  double p_kp=0.03, p_ki=0.055, p_kd=0.0, p_imax=10, p_imin=-10;
   double r_kp=0.05, r_ki=0.0, r_kd=0.005, r_imax=500, r_imin=-500;
-  double h_kp=0.05, h_ki=0.0, h_kd=0.005, h_imax=500, h_imin=-500;
+  double h_kp=0.1, h_ki=0.0, h_kd=5.5, h_imax=500, h_imin=-500;
 
   for (int i=0;i<node_argc;i++)
     {
