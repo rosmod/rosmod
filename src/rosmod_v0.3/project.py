@@ -47,6 +47,11 @@ class ROSMOD_Project(Drawable_Object):
         # Deployment Path
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
 
+        # Binaries path
+        self.binaries_path = os.path.join(self.project_path, "04-Binaries")
+        self.x86_path = os.path.join(self.binaries_path, "x86")
+        self.arm_path = os.path.join(self.binaries_path, "arm")
+
     # Create a new ROSMOD Project
     def new(self, 
             project_name = "",
@@ -84,6 +89,9 @@ class ROSMOD_Project(Drawable_Object):
         self.workspace_path = os.path.join(self.project_path, "01-Software")
         self.hardware_path = os.path.join(self.project_path, "02-Hardware")
         self.deployment_path = os.path.join(self.project_path, "03-Deployment")
+        self.binaries_path = os.path.join(self.project_path, "04-Binaries")
+        self.x86_path = os.path.join(self.binaries_path, "x86")
+        self.arm_path = os.path.join(self.binaries_path, "arm")
 
         # Create the directory structure & relevant objects
         if not os.path.exists(os.path.join(self.project_path, "01-Software")):
@@ -171,11 +179,19 @@ class ROSMOD_Project(Drawable_Object):
         self.deployment_builder.rdp.properties["rhw_reference"]=self.hardware_builder.rhw
         self.add(self.deployment_builder.rdp)
 
+        if not os.path.exists(os.path.join(self.project_path, "04-Binaries")):
+            os.makedirs(self.binaries_path)
+        if not os.path.exists(os.path.join(self.binaries_path, "x86")):
+            os.makedirs(self.x86_path) 
+        if not os.path.exists(os.path.join(self.binaries_path, "arm")):
+            os.makedirs(self.arm_path)
+
     # Open an existing ROSMOD Project
     def open(self, project_path, progressQ = None):
         self.children = []
         valid_project = False
         project_directories = []
+           
         for prj_file in os.listdir(project_path):
             if prj_file.endswith(".rosmod"):
                 logStr = "ROSMOD::Opening ROSMOD Project: {}".format(project_path)
@@ -209,6 +225,13 @@ class ROSMOD_Project(Drawable_Object):
                 self.parse_models(progressQ)
             else:
                 ros_tools_log(progressQ, "ROSMOD::ERROR::Invalid Project!")
+
+        if not os.path.exists(os.path.join(self.project_path, "04-Binaries")):
+            os.makedirs(self.binaries_path)
+        if not os.path.exists(os.path.join(self.binaries_path, "x86")):
+            os.makedirs(self.x86_path) 
+        if not os.path.exists(os.path.join(self.binaries_path, "arm")):
+            os.makedirs(self.arm_path)
                 
     # Go through dirname and load in all .msg files into message objects
     # load them into the ref dict according to their filename pkgName.msgName.msg

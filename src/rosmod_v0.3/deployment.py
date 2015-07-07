@@ -7,6 +7,7 @@ from fabric.api import task, run
 from collections import OrderedDict
 
 import multiprocessing
+import dialogs, wx
 
 env.use_ssh_config = False
 
@@ -262,6 +263,44 @@ def parallelMonitor(hostDict,updateQ):
                 updateQ.put(["{} DOWN".format(node.name),1])
     return host
 
+@parallel
+def Compile(img_name, img_path, rosmod_path, workspace_dir):
+
+    if img_name == "" and img_path == "":
+        print "ROSMOD::Skipping Cross compilation"
+
+    with cd(workspace_dir):
+        source_space = workspace_dir + '/src'
+        build_space = workspace_dir + '/build'
+        devel_prefix = '-DCATKIN_DEVEL_PREFIX=' + workspace_dir + '/devel'
+        install_prefix = '-DCMAKE_INSTALL_PREFIX=' + workspace_dir + '/install' 
+        local('catkin_make --directory ' + workspace_dir\
+              + ' --source ' + source_space\
+              + ' --build ' + build_space\
+              + ' ' + devel_prefix + ' ' + install_prefix)
+
+    with cd(rosmod_path):
+        local('sh move_binaries.sh ' + workspace_dir + ' ' + 'x86')
+
+    print "ROSMOD::Compilation complete for x86 architecture"
+
+    with cd(rosmod_path):
+        if img_name != None and img_path != None:        
+            if(os.path.exists(os.path.join(img_path, img_name))):            
+                # Prepare Qemu session
+                local('sh up.sh ' + os.path.join(img_path, img_name))
+                
+                # Start Qemu session
+                local('sh go.sh ' + workspace_dir + ' arm')
+                
+                # Stop Qemu session
+                local('sh dn.sh ' + os.path.join(img_path, img_name))
+                print "ROSMOD::Compilation complete for ARM architecture"
+            else:
+                print "ROSMOD::CROSSCOMPILER::ERROR::Unable to find RCPS-Testbed.img."
+        else:
+            print "ROSMOD::User cancelled workspace cross-compilation"
+
 def deployTest(self, progress_q):
     env.warn_only = False
     self.hostDict = execute(parallelDeploy,self.hostDict,progress_q)
@@ -277,6 +316,10 @@ def monitorTest(self, progress_q):
 def copyTest(self, exec_folder_path, xml_folder_path, progress_q):
     env.warn_only = True
     execute(parallelCopy, self.hostDict, exec_folder_path, xml_folder_path, progress_q)
+
+def buildTest(img_name, img_path, rosmod_path, workspace_dir):
+    env.warn_only = True
+    execute(Compile, img_name, img_path, rosmod_path, workspace_dir)
 
 def runCommandTest(self, command, progress_q):
     env.warn_only = True

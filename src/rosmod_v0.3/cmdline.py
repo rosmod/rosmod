@@ -152,6 +152,22 @@ class ROSMOD_Commandline:
                                       install_prefix])
                 p.wait()
 
+    def build_workspace_arm(self):
+        cc_path = str(os.getcwd())
+        p = subprocess.Popen(['sh', 
+                              'up.sh',
+                              'RCPS-Testbed.img'])
+        p.wait()
+        p = subprocess.Popen(['sh',
+                              'go.sh', 
+                              self.project.workspace_dir])
+        p.wait()
+        os.chdir(cc_path)
+        p = subprocess.Popen(['sh', 
+                              'dn.sh',
+                              'RCPS-Testbed.img'])
+        p.wait()
+
     def rebuild_workspace(self):        
         rosmod_path = str(os.getcwd())
         self.build_path = self.project.project_path\

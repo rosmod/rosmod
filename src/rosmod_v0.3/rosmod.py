@@ -10,7 +10,7 @@ tools through the use of toolbar buttons and subprocesses.
 
 import wx
 import wx.stc as stc
-import sys, os, inspect
+import sys, os, inspect, subprocess
 import copy
 import multiprocessing
 from threading import Thread
@@ -353,59 +353,30 @@ class Example(wx.Frame):
     def OnPackageBuild(self, e):
         rosmod_path = str(os.getcwd())
         if self.project.workspace_dir == "":
-            self.build_path = self.project.project_path\
-                              + '/01-Software/'\
-                              + self.project.getChildrenByKind('rml')[0].properties['name']
-            if not os.path.exists(self.build_path):
-                print "ROSMOD::ERROR::No Workspace Found! Generate a ROS workspace first"
-            else:
-                os.chdir(self.build_path + '/')
-                source_space = self.build_path + '/src'
-                build_space = self.build_path + '/build'
-                devel_prefix = '-DCATKIN_DEVEL_PREFIX=' + self.build_path + '/devel'
-                install_prefix = '-DCMAKE_INSTALL_PREFIX=' + self.build_path + '/install'
-                p = subprocess.Popen(['catkin_make', 
-                                      '--directory',
-                                      self.build_path,
-                                      '--source', 
-                                      source_space, 
-                                      '--build',
-                                      build_space,
-                                      devel_prefix, 
-                                      install_prefix],
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     shell=False)
-                out_thread1 = OutTextThread(sys.stdout,p.stdout)
-                out_thread1.start()
-                out_thread2 = OutTextThread(sys.stderr,p.stderr)
-                out_thread2.start()
+            self.project.workspace_dir = self.project.project_path\
+                                         + '/01-Software/'\
+                                         + self.project.getChildrenByKind('rml')[0].properties['name']
+
+
+        if not os.path.exists(self.project.workspace_dir):
+            print "ROSMOD::ERROR::No Workspace Found! Generate a ROS workspace first"
         else:
-            if not os.path.exists(self.project.workspace_dir):
-                print "ROSMOD::ERROR::Unexpected error! Please regenerate ROS workspace"
-            else:
-                os.chdir(self.project.workspace_dir)
-                source_space = self.project.workspace_dir + '/src'
-                build_space = self.project.workspace_dir + '/build'
-                devel_prefix = '-DCATKIN_DEVEL_PREFIX=' + self.project.workspace_dir + '/devel'
-                install_prefix = '-DCMAKE_INSTALL_PREFIX='\
-                                 + self.project.workspace_dir + '/install'
-                p = subprocess.Popen(['catkin_make', 
-                                      '--directory',
-                                      self.project.workspace_dir,
-                                      '--source',
-                                      source_space, 
-                                      '--build',
-                                      build_space,
-                                      devel_prefix,
-                                      install_prefix],
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     shell=False)
-                out_thread1 = OutTextThread(sys.stdout,p.stdout)
-                out_thread1.start() 
-                out_thread2 = OutTextThread(sys.stderr,p.stderr)
-                out_thread2.start()
+            # Choose Image for ARM Cross Compilation!
+            img_name, img_path = dialogs.RMLFileDialog(
+                parent = self,
+                fileTypes = "Image File (*.img)|*.img",
+                path = self.project_path,
+                prompt = "Choose a QEMU Image for Cross-Compilation",
+                fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
+            )
+            workspace_dir = self.project.workspace_dir
+            workerThread = WorkerThread\
+                           (func\
+                            = lambda : deployment.buildTest(img_name,
+                                                            img_path,
+                                                            rosmod_path,
+                                                            workspace_dir))
+            workerThread.start()
 
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()
