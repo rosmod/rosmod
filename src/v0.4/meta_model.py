@@ -12,20 +12,21 @@ but atoms do not contain anything
 
 Atoms provide the ability to add properties to objects and references
 between objects
+
+The Virtual_Base provides members common to all meta-meta-model objects
 """
-class Model:
+class Virtual_Base:
+    def __init__(self):
+        self.name = ""
+        self.kind = ""
+        self.view = None    # the viewer for the object, defines display name, etc.
+        self.control = None # the control for the object, defines validators, editing, etc.
+
+class Model(Virtual_Base):
     def __init__(self):
         self.models = []  # children of the object
         self.atoms = []   # properties of the object
-        self.name = ""
-        self.kind = "" # e.g. component, message, node
-        self.view = None # viewer for the model
-        self.control = None # controller for the model
 
-class Atom:
+class Atom(Virtual_Base):
     def __init__(self):
-        self.name = ""
-        self.kind = ""  # e.g. artifact, string, float, reference
         self.value = ""
-        self.view = None # viewer for the atom, coontains things like display namen
-        self.control = None # controller for the atom, contains things like validator reference

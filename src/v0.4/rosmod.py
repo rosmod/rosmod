@@ -6,6 +6,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from worker import *
+from meta_model import *
 
 class Rosmod(QtGui.QWidget):
     def __init__(self, parent = None):
