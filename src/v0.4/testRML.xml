@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="project-name-here">
+
+  <package name="client_server_package">
+    <component name="Client">
+      <client name="client_port" reference="client_server_package/Power"/>
+      <timer name="client_timer">
+	<period value="1.0"/>
+	<priority value="50"/>
+	<deadline value="3.0"/>
+      </timer>
+    </component>
+    <component name="Server">
+      <server name="server_port" reference="client_server_package/Power">
+	<priority value="50"/>
+	<deadline value="3.0"/>
+      </server>
+    </component>
+  </package>
+  
+  <rhw name="hardware">
+    <hardware name="laptop">
+      <ip_address value="localhost"/>
+      <username value="kelsier"/>
+      <sshkey value="path/to/key"/>
+      <deployment_path value="/path/to/deploy"/>
+      <arch value="x86"/>
+    </hardware>
+  </rhw>
+
+  <rdp name="deployment">
+    <hardware_reference value="hardware"/>
+    <node name="Client_Server_Node">
+      <reference value="hardware/laptop"/>
+      <priority value="50"/>
+      <component_instance name="Client_Instance">
+	<reference value="client_server_package/Client"/>
+	<scheduling_scheme value="FIFO"/>
+	<logging>
+	  <DEBUG value="True"/>
+	  <INFO value="True"/>
+	  <WARNING value="True"/>
+	  <ERROR value="True"/>
+	  <CRITICAL value="True"/>
+	</logging>
+      </component_instance>
+      <component_instance name="Server_Instance">
+	<reference value="client_server_package/Server"/>
+	<scheduling_scheme value="FIFO"/>
+	<logging>
+	  <DEBUG value="True"/>
+	  <INFO value="True"/>
+	  <WARNING value="True"/>
+	  <ERROR value="True"/>
+	  <CRITICAL value="True"/>
+	</logging>
+      </component_instance>
+    </node>
+  </rdp>
+
+</project>

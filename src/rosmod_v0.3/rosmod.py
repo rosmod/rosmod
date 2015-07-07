@@ -445,6 +445,7 @@ class Example(wx.Frame):
                 userName = host.properties['username'],
                 deploymentDir = host.properties['deployment_path'],
                 installDir = host.properties['install_path'],
+                arch = host.properties['arch'],
                 ipAddress = host.properties['ip_address'],
                 keyFile = host.properties['sshkey'],
                 nodes = nodeList,
@@ -482,7 +483,7 @@ class Example(wx.Frame):
             workerThread = WorkerThread(
                 func = lambda : deployment.copyTest(
                     self,
-                    self.project.project_path + "/01-Software/" + self.project.getChildrenByKind("rml")[0].properties['name'] + "/devel/lib/",
+                    self.project.project_path + "/04-Binaries/",
                     self.project.project_path + "/03-Deployment/"+ dep.properties['name'],
                     copyProgressQ)
             )
