@@ -34,7 +34,7 @@ class deployed_node():
         self.pids = pids
 
 class deployed_host():
-    def __init__(self,name,userName,ipAddress,keyFile,deploymentDir,installDir,nodes=[],envVars=OrderedDict()):
+    def __init__(self,name,userName,ipAddress,keyFile,deploymentDir,installDir,arch,nodes=[],envVars=OrderedDict()):
         self.name = name
         self.userName = userName
         self.ipAddress = ipAddress
@@ -43,6 +43,7 @@ class deployed_host():
         self.nodes = nodes
         self.envVars = envVars
         self.installDir = installDir
+        self.arch = arch
 
 def getStatusFromPS(psString, name):
     pass
@@ -98,8 +99,9 @@ def parallelDeploy(hostDict,updateQ=None):
 def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ=None):
     host = hostDict[env.host_string]
     copyList = []
+    exec_folder_path += "/" + host.arch
     copyList.append( 
-        [os.path.join(exec_folder_path, "node/node_main"), host.deploymentDir] 
+        [os.path.join(exec_folder_path, "node_main"), host.deploymentDir] 
     )
     for node in host.nodes:
         copyList.append( 
@@ -110,7 +112,7 @@ def parallelCopy(hostDict, exec_folder_path, deployment_folder_path, updateQ=Non
                 [os.path.join(exec_folder_path, lib), node.deploymentDir]
             )
         if node.deploymentDir != host.deploymentDir:
-            copyList.append( [os.path.join(exec_folder_path, "node/node_main"), node.deploymentDir] )
+            copyList.append( [os.path.join(exec_folder_path, "node_main"), node.deploymentDir] )
     if host.ipAddress not in local_ips:
         env.key_filename = host.keyFile
         env.host_string = "{}@{}".format(host.userName,host.ipAddress)

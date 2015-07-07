@@ -3,6 +3,15 @@
 Can we generate meta-models using just:
 * models and atoms
 * grammar
+
+All models will be XML, meta-models will also be xml,
+These models will be monolithic (single-file) and will
+allow for parsers based on type (which is a lot easier
+to use than antlr).  
+
+Using this basic model (below) we can generate xml files
+describing meta-models, which can then generate classes
+to check model files and build models.  
 """
 
 """
