@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-# Written by Robin Burchell
-# No licence specified or required, but please give credit where it's due,
-# and please let me know if this helped you. Feel free to contact with corrections or suggestions.
-#
-# We're using PySide, Nokia's official LGPL bindings.
-# You can however easily use PyQt (Riverside Computing's GPL bindings) by
-# commenting these and fixing the appropriate imports.
 #from PySide.QtCore import *
 #from PySide.QtGui import *
 from PyQt4 import QtCore
@@ -14,8 +6,6 @@ from PyQt4.QtGui import *
 import sys
 
 # This is our model. It will maintain, modify, and present data to our view(s).
-# For more information on list models, take a look at:
-# http://doc.trolltech.com/4.6/qabstractitemmodel.html
 class SimpleListModel(QAbstractListModel):
     def __init__(self, mlist):
         QAbstractListModel.__init__(self)
@@ -25,7 +15,6 @@ class SimpleListModel(QAbstractListModel):
     def rowCount(self, parent = QModelIndex()):
         return len(self._items)
     # view is asking us about some of our data.
-    # see tutorial #3 for more information on this.
     def data(self, index, role = Qt.DisplayRole):
         if role == Qt.DisplayRole:
             return QVariant(self._items[index.row()])
@@ -38,8 +27,6 @@ class SimpleListModel(QAbstractListModel):
     # the view is asking us to *change* some aspect of our data.
     # as in the above, it can be any aspect of the data, not *just* the information contained in the model.
     # remember to return true if you handle a data change, and false otherwise, always!
-    # for more information, see:
-    # http://doc.trolltech.com/4.6/qabstractitemmodel.html#setData
     def setData(self, index, value, role = Qt.EditRole):
         # You might be expecting Qt.DisplayRole here, but no.
         # Qt.DisplayRole is the *displayed* value of an item, like, a formatted currency value: "$44.00"
@@ -65,16 +52,12 @@ class SimpleListModel(QAbstractListModel):
     # by default, items are enabled, and selectable, but we want to make them editable too, so we need to
     # reimplement this. of course, this means you can make only specific items selectable, for example,
     # by using the 'index' parameter.
-    # For more information, see:
-    # http://doc.trolltech.com/4.6/qabstractitemmodel.html#flags
     def flags(self, index):
         return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
 
     # remove rows from our model.
     # 'row' is the row number to be removed, 'count' are the total number of rows to remove.
     # 'parent' is the 'parent' of the initial row: this is pretty much only relevant for tree models etc.
-    # For more information, see:
-    # http://doc.trolltech.com/4.6/qabstractitemmodel.html#removeRows
     def removeRows(self, row, count, parent = QModelIndex()):
         # make sure the index is valid, to avoid IndexErrors ;)
         if row < 0 or row > len(self._items):
@@ -100,10 +83,6 @@ class SimpleListModel(QAbstractListModel):
         self._items.append(str(item))
         self.endInsertRows()
     
-
-# This widget is our view of the readonly list.
-# For more information, see:
-# http://doc.trolltech.com/4.6/qlistview.html
 class SimpleListView(QListView):
     def __init__(self, parent = None):
         QListView.__init__(self, parent)
@@ -122,15 +101,11 @@ class SimpleListView(QListView):
         QObject.connect(a, SIGNAL("triggered()"), self, SLOT("onTriggered()"))
         self.addAction(a)
 
-    # this is a slot! we covered signals and slots in tutorial #2,
-    # but this is the first time we've created one ourselves.
     @pyqtSlot()
     def onTriggered(self):
         # tell our model to remove the selected row.
         self.model().removeRows(self.currentIndex().row(), 1)
 
-# Our main application window.
-# You should be used to this from previous tutorials.
 class MyMainWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self, None)
