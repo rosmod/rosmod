@@ -54,7 +54,7 @@ private:
   ros::Publisher control_command_pub;
 
   //# Start User Private Variables Marker
-    float current_heading;
+      float current_heading;
   float current_speed;
 
   float goal_heading;

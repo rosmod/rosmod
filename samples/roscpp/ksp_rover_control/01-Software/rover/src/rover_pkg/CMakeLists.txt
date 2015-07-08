@@ -64,11 +64,11 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  vessel_state.msg
+  goal_state.msg
 
   control_command.msg
 
-  goal_state.msg
+  vessel_state.msg
 
 )
 

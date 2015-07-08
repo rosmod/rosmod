@@ -54,7 +54,7 @@ package rover_pkg
     }       
   }
   // ROSMOD Component - high_level_controller
-  component high_level_controller : Base 
+  component high_level_controller : KSP 
   {
     // ROSMOD Publisher - goal_state_pub
     publisher <rover_pkg/goal_state> goal_state_pub;
