@@ -4,6 +4,7 @@
 
 from Cheetah.Template import Template
 import os, sys, inspect
+from pkg_resources import resource_filename
 
 # Template Compile Step -- Compiling tmpl files in templates
 # Generate template python files
@@ -212,20 +213,27 @@ class ROSMOD_Generator:
                 if not os.path.exists(self.krpci_src):
                     os.makedirs(self.krpci_src)
 
+                rosmod_path = str(os.getcwd())
+
                 # krpci.hpp
-                copyfile(os.path.abspath('krpci/krpci.hpp'), self.krpci_include + '/krpci.hpp')
+                copyfile(resource_filename('krpci', 'krpci.hpp'), 
+                         self.krpci_include + '/krpci.hpp')
 
                 # KRPC.pb.h
-                copyfile(os.path.abspath('krpci/KRPC.pb.h'), self.krpci_include + '/KRPC.pb.h')
+                copyfile(resource_filename('krpci', 'KRPC.pb.h', 
+                                           self.krpci_include + '/KRPC.pb.h')
 
                 # krpci_base.cpp
-                copyfile(os.path.abspath('krpci/krpci_base.cpp'), self.krpci_src + '/krpci_base.cpp')
+                copyfile(resource_filename('krpci', 'krpci_base.cpp'), 
+                         self.krpci_src + '/krpci_base.cpp')
 
                 # krpci_generated.cpp
-                copyfile(os.path.abspath('krpci/krpci_generated.cpp'), self.krpci_src + '/krpci_generated.cpp')
+                copyfile(resource_filename('krpci', 'krpci_generated.cpp'), 
+                         self.krpci_src + '/krpci_generated.cpp')
 
                 # KRPC.pb.cc
-                copyfile(os.path.abspath('krpci/KRPC.pb.cc'), self.krpci_src + '/KRPC.pb.cc')
+                copyfile(resource_filename('krpci', 'KRPC.pb.cc'), 
+                         self.krpci_src + '/KRPC.pb.cc')
 
             messages = []
             services = []
