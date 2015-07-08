@@ -3,6 +3,8 @@
 KRPCI krpci_client;
 
 //# Start User Globals Marker
+uint64_t vesselID;
+uint64_t controlID;
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,7 +13,22 @@ void actuator::Init(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering actuator::Init");
   // Initialize Here
-
+  krpci_client.SetIP("191.168.127.100");
+  for (int i=0;i<node_argc;i++)
+    {
+      if (!strcmp(node_argv[i],"--krpc_ip"))
+	{
+	  krpci_client.SetIP(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--krpc_port"))
+	{
+	  krpci_client.SetPort(atoi(node_argv[i+1]));
+	}      
+    }
+  if (krpci_client.Connect()) {
+    krpci_client.get_ActiveVessel(vesselID);
+    krpci_client.Vessel_get_Control(vesselID, controlID);
+  }
   // Stop Init Timer
   initOneShotTimer.stop();
   LOGGER.DEBUG("Exiting actuator::Init");
@@ -24,6 +41,17 @@ void actuator::control_command_sub_OnOneData(const rover_pkg::control_command::C
 {
   LOGGER.DEBUG("Entering actuator::control_command_sub_OnOneData");
   // Business Logic for control_command_sub Subscriber
+  float pitch = received_data->new_pitch;
+  float roll = received_data->new_roll;
+  float yaw = received_data->new_yaw;
+  float wheel_throttle = received_data->new_wheel_throttle;
+  float wheel_steering = received_data->new_wheel_steering;
+
+  krpci_client.Control_set_Pitch(controlID, pitch);
+  krpci_client.Control_set_Roll(controlID, roll);
+  krpci_client.Control_set_Yaw(controlID, yaw);
+  krpci_client.Control_set_Wheel_Throttle(controlID, wheel_throttle);
+  krpci_client.Control_set_Wheel_Steering(controlID, wheel_steering);
 
   LOGGER.DEBUG("Exiting actuator::control_command_sub_OnOneData");
 }
