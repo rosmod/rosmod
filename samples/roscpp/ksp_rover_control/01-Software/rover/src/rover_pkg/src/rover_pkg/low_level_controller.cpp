@@ -114,6 +114,10 @@ void low_level_controller::control_timerCallback(const ros::TimerEvent& event)
   new_wheel_steering = heading_pid.update(current_heading);  
   new_wheel_throttle = speed_pid.update(current_speed);
 
+  LOGGER.DEBUG("CURRENT SENSOR HEADING AND SPEED: %f ;  %f",current_heading, current_speed);
+  LOGGER.DEBUG("GOAL HEADING AND SPEED: %f ;  %f",goal_heading,goal_speed);
+  LOGGER.DEBUG("ACTUATOR STEERING AND THROTTLE: %f ;  %f",new_wheel_steering,new_wheel_throttle);
+
   rover_pkg::control_command new_command;
   new_command.new_wheel_throttle = new_wheel_throttle;
   new_command.new_wheel_steering = new_wheel_steering;
