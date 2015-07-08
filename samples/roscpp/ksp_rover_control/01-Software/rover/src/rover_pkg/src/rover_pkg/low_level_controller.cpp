@@ -10,8 +10,8 @@ void low_level_controller::Init(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering low_level_controller::Init");
   // Initialize Here
-  double s_kp=0.1, s_ki=0.0, s_kd=0.00001, s_imax=0, s_imin=0;
-  double h_kp=0.1, h_ki=0.0, h_kd=5.5, h_imax=500, h_imin=-500;
+  double s_kp=0.1, s_ki=0.01, s_kd=0.00001, s_imax=100, s_imin=0;
+  double h_kp=0.05, h_ki=0.0, h_kd=0.0, h_imax=100, h_imin=-100;
 
   for (int i=0;i<node_argc;i++)
     {
@@ -30,7 +30,10 @@ void low_level_controller::Init(const ros::TimerEvent& event)
       if (!strcmp(node_argv[i],"--s_imax"))
 	{
 	  s_imax = atof(node_argv[i+1]);
-	  s_imin = -s_imax;
+	}
+      if (!strcmp(node_argv[i],"--s_imin"))
+	{
+	  s_imin = atof(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i],"--h_kp"))
 	{
@@ -47,7 +50,10 @@ void low_level_controller::Init(const ros::TimerEvent& event)
       if (!strcmp(node_argv[i],"--h_imax"))
 	{
 	  h_imax = atof(node_argv[i+1]);
-	  h_imin = -h_imax;
+	}
+      if (!strcmp(node_argv[i],"--h_imin"))
+	{
+	  h_imin = atof(node_argv[i+1]);
 	}
     }
 
@@ -56,6 +62,7 @@ void low_level_controller::Init(const ros::TimerEvent& event)
   heading_pid.setKd(h_kd);
   heading_pid.setIntegratorMax(h_imax);
   heading_pid.setIntegratorMin(h_imin);
+  
   speed_pid.setKp(s_kp);
   speed_pid.setKi(s_ki);
   speed_pid.setKd(s_kd);

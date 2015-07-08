@@ -41,15 +41,15 @@ void actuator::control_command_sub_OnOneData(const rover_pkg::control_command::C
 {
   LOGGER.DEBUG("Entering actuator::control_command_sub_OnOneData");
   // Business Logic for control_command_sub Subscriber
-  float pitch = received_data->new_pitch;
-  float roll = received_data->new_roll;
-  float yaw = received_data->new_yaw;
+  //float pitch = received_data->new_pitch;
+  //float roll = received_data->new_roll;
+  //float yaw = received_data->new_yaw;
   float wheel_throttle = received_data->new_wheel_throttle;
   float wheel_steering = received_data->new_wheel_steering;
 
-  krpci_client.Control_set_Pitch(controlID, pitch);
-  krpci_client.Control_set_Roll(controlID, roll);
-  krpci_client.Control_set_Yaw(controlID, yaw);
+  //krpci_client.Control_set_Pitch(controlID, pitch);
+  //krpci_client.Control_set_Roll(controlID, roll);
+  //krpci_client.Control_set_Yaw(controlID, yaw);
   krpci_client.Control_set_WheelThrottle(controlID, wheel_throttle);
   krpci_client.Control_set_WheelSteering(controlID, wheel_steering);
 

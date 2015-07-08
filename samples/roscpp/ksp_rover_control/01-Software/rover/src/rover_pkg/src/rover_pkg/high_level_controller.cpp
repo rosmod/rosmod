@@ -48,7 +48,7 @@ bool high_level_controller::isGoalReached() {
 bool high_level_controller::state_func_INIT() {
   // Change State
   goal_heading = 90.0;
-  goal_speed = 180.0;
+  goal_speed = 7.0;
   current_state = CRUISE; 
   std::vector<uint64_t> return_vec;
   //krpci_client.Control_ActivateNextStage(controlID, return_vec);
