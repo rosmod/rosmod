@@ -220,8 +220,8 @@ class ROSMOD_Generator:
                          self.krpci_include + '/krpci.hpp')
 
                 # KRPC.pb.h
-                copyfile(resource_filename('krpci', 'KRPC.pb.h', 
-                                           self.krpci_include + '/KRPC.pb.h')
+                copyfile(resource_filename('krpci', 'KRPC.pb.h'), 
+                         self.krpci_include + '/KRPC.pb.h')
 
                 # krpci_base.cpp
                 copyfile(resource_filename('krpci', 'krpci_base.cpp'), 
