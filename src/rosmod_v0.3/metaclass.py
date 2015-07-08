@@ -230,6 +230,7 @@ meta_class_dict["cmakelists_packages"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_functions"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_include_dirs"] = Grammar_Field("hidden")
 meta_class_dict["cmakelists_cpp_marker"] = Grammar_Field("hidden")
+meta_class_dict["cmakelists_targetlinklibs_marker"] = Grammar_Field("hidden")
 
 # Grammar Metaclass to generate listener functions as part of the builder classes
 class Grammar_MetaClass(type):
