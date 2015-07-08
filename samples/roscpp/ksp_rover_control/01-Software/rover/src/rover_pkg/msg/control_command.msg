@@ -1,4 +1,5 @@
 float64 new_pitch
 float64 new_roll
 float64 new_yaw
-float64 new_wheel_input
+float64 new_wheel_throttle
+float64 new_wheel_steering

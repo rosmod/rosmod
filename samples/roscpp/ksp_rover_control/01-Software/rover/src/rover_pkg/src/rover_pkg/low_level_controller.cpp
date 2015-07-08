@@ -10,7 +10,57 @@ void low_level_controller::Init(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering low_level_controller::Init");
   // Initialize Here
+  double s_kp=0.1, s_ki=0.0, s_kd=0.00001, s_imax=0, s_imin=0;
+  double h_kp=0.1, h_ki=0.0, h_kd=5.5, h_imax=500, h_imin=-500;
 
+  for (int i=0;i<node_argc;i++)
+    {
+      if (!strcmp(node_argv[i],"--s_kp"))
+	{
+	  s_kp = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_ki"))
+	{
+	  s_ki = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_kd"))
+	{
+	  s_kd = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_imax"))
+	{
+	  s_imax = atof(node_argv[i+1]);
+	  s_imin = -s_imax;
+	}
+      if (!strcmp(node_argv[i],"--h_kp"))
+	{
+	  h_kp = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--h_ki"))
+	{
+	  h_ki = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--h_kd"))
+	{
+	  h_kd = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--h_imax"))
+	{
+	  h_imax = atof(node_argv[i+1]);
+	  h_imin = -h_imax;
+	}
+    }
+
+  heading_pid.setKp(h_kp);
+  heading_pid.setKi(h_ki);
+  heading_pid.setKd(h_kd);
+  heading_pid.setIntegratorMax(h_imax);
+  heading_pid.setIntegratorMin(h_imin);
+  speed_pid.setKp(s_kp);
+  speed_pid.setKi(s_ki);
+  speed_pid.setKd(s_kd);
+  speed_pid.setIntegratorMax(s_imax);
+  speed_pid.setIntegratorMin(s_imin);
   // Stop Init Timer
   initOneShotTimer.stop();
   LOGGER.DEBUG("Exiting low_level_controller::Init");
@@ -23,6 +73,8 @@ void low_level_controller::vessel_state_sub_OnOneData(const rover_pkg::vessel_st
 {
   LOGGER.DEBUG("Entering low_level_controller::vessel_state_sub_OnOneData");
   // Business Logic for vessel_state_sub Subscriber
+  current_heading = received_data->heading;
+  current_speed = received_data->speed;
 
   LOGGER.DEBUG("Exiting low_level_controller::vessel_state_sub_OnOneData");
 }
@@ -33,6 +85,8 @@ void low_level_controller::goal_state_sub_OnOneData(const rover_pkg::goal_state:
 {
   LOGGER.DEBUG("Entering low_level_controller::goal_state_sub_OnOneData");
   // Business Logic for goal_state_sub Subscriber
+  goal_heading = received_data->goal_heading;
+  goal_speed = received_data->goal_speed;
 
   LOGGER.DEBUG("Exiting low_level_controller::goal_state_sub_OnOneData");
 }
@@ -44,6 +98,17 @@ void low_level_controller::control_timerCallback(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering low_level_controller::control_timerCallback");
   // Business Logic for control_timer Timer
+  float new_wheel_throttle = 0;
+  float new_wheel_steering = 0;
+
+  // NEED TO DO PID HERE
+  new_wheel_steering = heading_pid.update(current_heading);  
+  new_wheel_throttle = speed_pid.update(current_speed);
+
+  rover_pkg::control_command new_command;
+  new_command.new_wheel_throttle = new_wheel_throttle;
+  new_command.new_wheel_steering = new_wheel_steering;
+  control_command_pub.publish(new_command);
 
   LOGGER.DEBUG("Exiting low_level_controller::control_timerCallback");
 }

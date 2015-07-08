@@ -82,7 +82,7 @@ void sensor::sensor_timerCallback(const ros::TimerEvent& event)
   state.speed = speed;
   state.landing_gear = landing_gear;
   state.brakes = brakes;
-  sensor_publisher.publish(state);
+  vessel_state_pub.publish(state);
   LOGGER.DEBUG("Exiting sensor::sensor_timerCallback");
 }
 //# End sensor_timerCallback Marker

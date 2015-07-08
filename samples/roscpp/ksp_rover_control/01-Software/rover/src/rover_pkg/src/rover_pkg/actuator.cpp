@@ -50,8 +50,8 @@ void actuator::control_command_sub_OnOneData(const rover_pkg::control_command::C
   krpci_client.Control_set_Pitch(controlID, pitch);
   krpci_client.Control_set_Roll(controlID, roll);
   krpci_client.Control_set_Yaw(controlID, yaw);
-  krpci_client.Control_set_Wheel_Throttle(controlID, wheel_throttle);
-  krpci_client.Control_set_Wheel_Steering(controlID, wheel_steering);
+  krpci_client.Control_set_WheelThrottle(controlID, wheel_throttle);
+  krpci_client.Control_set_WheelSteering(controlID, wheel_steering);
 
   LOGGER.DEBUG("Exiting actuator::control_command_sub_OnOneData");
 }

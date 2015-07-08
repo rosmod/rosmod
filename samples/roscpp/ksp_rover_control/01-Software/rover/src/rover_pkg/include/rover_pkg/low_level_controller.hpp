@@ -9,6 +9,7 @@
 
 
 //# Start User Includes Marker
+#include "rover_pkg/libpid.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -53,6 +54,14 @@ private:
   ros::Publisher control_command_pub;
 
   //# Start User Private Variables Marker
+    float current_heading;
+  float current_speed;
+
+  float goal_heading;
+  double goal_speed;
+
+  libpid heading_pid;
+  libpid speed_pid;
   //# End User Private Variables Marker
 };
 
