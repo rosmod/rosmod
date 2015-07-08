@@ -48,7 +48,7 @@ bool high_level_controller::isGoalReached() {
 bool high_level_controller::state_func_INIT() {
   // Change State
   goal_heading = 90.0;
-  goal_speed = 7.0;
+  goal_speed = 8.0;
   current_state = CRUISE; 
   std::vector<uint64_t> return_vec;
   //krpci_client.Control_ActivateNextStage(controlID, return_vec);
@@ -108,7 +108,7 @@ bool high_level_controller::state_func_CRUISE() {
 					      current_longitude,
 					      midpoint_latitude,
 					      midpoint_longitude);
-	  goal_speed = cruise_waypoints[current_waypoint].speed_ - 5; 
+	  goal_speed = cruise_waypoints[current_waypoint].speed_; 
 
 	  cruise_waypoints[current_waypoint].latitude_ = midpoint_latitude;
 	  cruise_waypoints[current_waypoint].longitude_ = midpoint_longitude;
@@ -152,11 +152,11 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 
   // Starting point of CRUISE mode
   // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
-  Waypoint wp1(-1.5109, -73.5530, 180.0, 0.06, 0.5);
+  Waypoint wp1(-1.5109, -73.5530, 8.0, 0.06, 0.5);
   cruise_waypoints.push_back(wp1);
 
   // Last waypoint of CRUISE mode
-  Waypoint wp2(-1.5240, -71.8999, 0.0, 0.06, 0.35);
+  Waypoint wp2(-1.5240, -71.8999, 8.0, 0.06, 0.35);
   cruise_waypoints.push_back(wp2);
 
   wp_size = cruise_waypoints.size();

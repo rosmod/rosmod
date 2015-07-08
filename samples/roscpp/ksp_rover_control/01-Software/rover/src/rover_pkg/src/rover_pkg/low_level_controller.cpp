@@ -94,6 +94,8 @@ void low_level_controller::goal_state_sub_OnOneData(const rover_pkg::goal_state:
   // Business Logic for goal_state_sub Subscriber
   goal_heading = received_data->goal_heading;
   goal_speed = received_data->goal_speed;
+  speed_pid.setPoint(goal_speed);
+  heading_pid.setPoint(goal_heading);
 
   LOGGER.DEBUG("Exiting low_level_controller::goal_state_sub_OnOneData");
 }
