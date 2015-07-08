@@ -299,6 +299,7 @@ High_level_Controller::~High_level_Controller()
 // Startup - Setup Component Ports & Timers
 void High_level_Controller::startUp()
 {
+  LOGGER.DEBUG("Entering High_level_Controller::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -334,7 +335,7 @@ void High_level_Controller::startUp()
   // Component Timer - flight_control_timer
   timer_options = 
     ros::TimerOptions
-    (ros::Duration(0.5), // 0.5 second timer
+    (ros::Duration(0.5),
      boost::bind(&High_level_Controller::flight_control_timerCallback, this, _1),
      &this->compQueue);
   this->flight_control_timer = nh.createTimer(timer_options);
@@ -360,6 +361,7 @@ void High_level_Controller::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting High_level_Controller::startUp");
 }
 
 extern "C" {

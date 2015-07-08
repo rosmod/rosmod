@@ -218,6 +218,7 @@ PID::~PID()
 // Startup - Setup Component Ports & Timers
 void PID::startUp()
 {
+  LOGGER.DEBUG("Entering PID::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -290,6 +291,7 @@ void PID::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  LOGGER.DEBUG("Exiting PID::startUp");
 }
 
 extern "C" {

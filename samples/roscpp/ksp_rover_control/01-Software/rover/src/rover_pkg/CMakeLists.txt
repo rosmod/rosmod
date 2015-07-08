@@ -253,5 +253,5 @@ add_library(KRPCI
             src/krpci/krpci_generated.cpp
 	    )
 target_link_libraries(KRPCI
-  boost_system boost_thread protobuf
+  boost_system boost_thread /usr/lib/libprotobuf.so
   )

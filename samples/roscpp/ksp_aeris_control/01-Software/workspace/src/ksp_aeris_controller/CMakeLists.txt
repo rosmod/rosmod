@@ -64,11 +64,11 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Sensor_Reading.msg
-
   Actuation_Command.msg
 
   Control_Command.msg
+
+  Sensor_Reading.msg
 
 )
 
@@ -253,5 +253,5 @@ add_library(KRPCI
             src/krpci/krpci_generated.cpp
 	    )
 target_link_libraries(KRPCI
-  boost_system boost_thread protobuf
+  boost_system boost_thread /usr/lib/libprotobuf.so
   )

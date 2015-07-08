@@ -65,6 +65,7 @@ Actuator_Component::~Actuator_Component()
 // Startup - Setup Component Ports & Timers
 void Actuator_Component::startUp()
 {
+  LOGGER.DEBUG("Entering Actuator_Component::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -112,6 +113,7 @@ void Actuator_Component::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Actuator_Component::startUp");
 }
 
 extern "C" {

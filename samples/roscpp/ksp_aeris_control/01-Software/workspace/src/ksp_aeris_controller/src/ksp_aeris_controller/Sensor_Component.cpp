@@ -107,6 +107,7 @@ Sensor_Component::~Sensor_Component()
 // Startup - Setup Component Ports & Timers
 void Sensor_Component::startUp()
 {
+  LOGGER.DEBUG("Entering Sensor_Component::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -155,6 +156,7 @@ void Sensor_Component::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Sensor_Component::startUp");
 }
 
 extern "C" {
