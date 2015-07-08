@@ -49,7 +49,7 @@ bool high_level_controller::isGoalReached() {
 bool high_level_controller::state_func_INIT() {
   // Change State
   goal_heading = 90.0;
-  goal_speed = 8.0;
+  goal_speed = 5.0;
   current_state = CRUISE; 
   std::vector<uint64_t> return_vec;
   //krpci_client.Control_ActivateNextStage(controlID, return_vec);
@@ -127,7 +127,7 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 
   // Starting point of CRUISE mode
   // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
-  Waypoint wp1(-1.5109, -73.5530, 8.0, 0.06, 0.5);
+  Waypoint wp1(-0.0969, -74.6004, 5.0, 0.06, 0.5);
   dynamicWP = wp1;
   cruise_waypoints.push_back(wp1);
 
@@ -135,6 +135,40 @@ void high_level_controller::Init(const ros::TimerEvent& event)
   Waypoint wp2(-1.5240, -71.8999, 8.0, 0.06, 0.35);
   cruise_waypoints.push_back(wp2);
 
+  // Rover Path:
+  // Lat, Long Pairs
+  // -0.0490 , -74.690
+  // -0.0511, -74.636
+  // -0.573, -74.631
+  // -0.0784, -74.618
+  // -0.08465, -74.627
+  // -0.08718, -74.6319
+  // -0.0899, -74.633
+  // -0.09255, -74.6337
+  // -0.09485, -74.635
+  // -0.097244, -74.6398
+  // -0.101377, -74.6421
+  // -0.108179, -74.6414
+  // -0.11145, -74.64298
+  // -0.1155, -74.6474
+  // -0.119366, -74.64865
+  // -0.12309, -74.6487
+  // -0.12400, -74.6479
+  // -0.1197, -74.6399
+  // -0.1197, -74.63712
+  // -0.1224, -74.63267
+  // -0.1215, -74.6294
+  // -0.1146, -74.6296
+  // -0.1121, -74.6278
+  // -0.11038, -74.6231
+  // -0.11099, -74.6161
+  // -0.11296, -74.6119
+  // -0.1193, -74.6041
+  // -0.12143, -74.5993
+  // -0.12485, -74.5988
+  // -0.12614, -74.5988
+  // -0.127327, -74.6006
+  
   wp_size = cruise_waypoints.size();
 
   for (int i=0;i<node_argc;i++)
