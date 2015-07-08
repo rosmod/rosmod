@@ -9,6 +9,8 @@ from collections import OrderedDict
 import multiprocessing
 import dialogs, wx
 
+from pkg_resources import resource_filename
+
 env.use_ssh_config = False
 
 local_ips = ["localhost","127.0.0.1"]
@@ -282,7 +284,7 @@ def Compile(img_name, img_path, rosmod_path, workspace_dir):
               + ' ' + devel_prefix + ' ' + install_prefix)
 
     with cd(rosmod_path):
-        local('sh move_binaries.sh ' + workspace_dir + ' ' + 'x86')
+        local('sh ' + resource_filename('compile_scripts', 'move_binaries.sh') + ' ' + workspace_dir + ' ' + 'x86')
 
     print "ROSMOD::Compilation complete for x86 architecture"
 
@@ -290,13 +292,13 @@ def Compile(img_name, img_path, rosmod_path, workspace_dir):
         if img_name != None and img_path != None:        
             if(os.path.exists(os.path.join(img_path, img_name))):            
                 # Prepare Qemu session
-                local('sh up.sh ' + os.path.join(img_path, img_name))
+                local('sh ' + resource_filename('compile_scripts', 'up.sh') + ' ' + os.path.join(img_path, img_name))
                 
                 # Start Qemu session
-                local('sh go.sh ' + workspace_dir + ' arm')
+                local('sh ' + resource_filename('compile_scripts', 'go.sh') + ' ' + workspace_dir + ' arm')
                 
                 # Stop Qemu session
-                local('sh dn.sh ' + os.path.join(img_path, img_name))
+                local('sh ' + resource_filename('compile_scripts', 'dn.sh') + ' ' + os.path.join(img_path, img_name))
                 print "ROSMOD::Compilation complete for ARM architecture"
             else:
                 print "ROSMOD::CROSSCOMPILER::ERROR::Unable to find RCPS-Testbed.img."
