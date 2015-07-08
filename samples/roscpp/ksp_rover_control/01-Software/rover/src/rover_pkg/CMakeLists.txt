@@ -218,7 +218,7 @@ add_dependencies(actuator
 add_library(low_level_controller
             src/rover_pkg/low_level_controller.cpp
             ## Start low_level_controller CPP Marker
-
+	    src/rover_pkg/libpid.cpp
             ## End low_level_controller CPP Marker
            )
 target_link_libraries(low_level_controller
