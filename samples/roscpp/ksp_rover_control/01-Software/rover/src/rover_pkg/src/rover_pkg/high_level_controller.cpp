@@ -8,7 +8,8 @@ KRPCI krpci_client;
 #define PI 3.14159265
 
 int current_waypoint = 0;
-std::vector<Waypoint>::size_type wp_size; 
+std::vector<Waypoint>::size_type wp_size;
+Waypoint dynamicWP;
 
 uint64_t vesselID;
 uint64_t controlID;
@@ -36,8 +37,8 @@ bool high_level_controller::isGoalReached() {
     if (previous_states.size() == 10) {
       for(boost::circular_buffer<Save_State>::iterator it = previous_states.begin(); 
 	  it != previous_states.end(); ++it) {
-	  if (abs(goal_heading - it->heading_) > heading_tolerance)
-	    return false;
+	if (abs(goal_heading - it->heading_) > heading_tolerance)
+	  return false;
       }
       return true;
     }
@@ -59,73 +60,47 @@ bool high_level_controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
   if (current_waypoint < wp_size) {
-    double target_latitude = cruise_waypoints[current_waypoint].latitude_;
-    double target_longitude = cruise_waypoints[current_waypoint].longitude_;
-    double wp_lat_tolerance = cruise_waypoints[current_waypoint].lat_tolerance_;
-    double wp_long_tolerance = cruise_waypoints[current_waypoint].long_tolerance_;
+    double target_lat = dynamicWP.latitude_;
+    double target_lon = dynamicWP.longitude_;
+    double target_lat_tolerance = dynamicWP.lat_tolerance_;
+    double target_lon_tolerance = dynamicWP.long_tolerance_;
 
-    if ((abs(target_latitude - current_latitude) < wp_lat_tolerance) && 
-	(abs(target_longitude - current_longitude) < wp_long_tolerance)) {
-      // Find midpoint between current waypoint & next waypoint
-      // Converge more gradually by choosing the midpoint between 2 waypoints!
-      if (current_waypoint < wp_size) {
+    Waypoint activeWP = cruise_waypoints[current_waypoint];    
+    double wp_lat = activeWP.latitude_;
+    double wp_lon = activeWP.longitude_;
+    double wp_lat_tolerance = activeWP.lat_tolerance_;
+    double wp_lon_tolerance = activeWP.long_tolerance_;
 
-	double next_wp_lat = cruise_waypoints[current_waypoint + 1].latitude_;
-	double next_wp_long = cruise_waypoints[current_waypoint + 1].longitude_;
+    double latDeltaToWP = abs(current_latitude-wp_lat);
+    double lonDeltaToWP = abs(current_latitude-wp_lon);
 
-	// If the midpoint is very close to next waypoint, we can stop converging..
-	if ((abs(next_wp_lat - current_latitude) < wp_lat_tolerance) && 
-	    (abs(next_wp_long - current_longitude) 
-	     < cruise_waypoints[current_waypoint].long_tolerance_)) {
-	  current_waypoint++;
-	}
-	// Else, find a midpoint and change current waypoint parameters
-	else {
-	  LOGGER.INFO("Calculating Midpoint! Current Latitude=%f, Longitude=%f", 
-		      current_latitude, current_longitude);
-	  double current_wp_lat = cruise_waypoints[current_waypoint].latitude_;
-	  double current_wp_long = cruise_waypoints[current_waypoint].longitude_;
-	  double current_wp_speed = cruise_waypoints[current_waypoint].speed_;
+    double latDeltaToTarget = abs(current_latitude-target_lat);
+    double lonDeltaToTarget = abs(current_longitude-target_lon);
 
-	  double current_wp_lat_tolerance = cruise_waypoints[current_waypoint].lat_tolerance_;
-	  double current_wp_long_tolerance = cruise_waypoints[current_waypoint].long_tolerance_;
+    // Find midpoint between current waypoint & next waypoint
+    // Converge more gradually by choosing the midpoint between 2 waypoints!
+    if (current_waypoint < wp_size) {
 
-	  double next_wp_lat = cruise_waypoints[current_waypoint + 1].latitude_;
-	  double next_wp_long = cruise_waypoints[current_waypoint + 1].longitude_;
-	  double next_wp_speed = cruise_waypoints[current_waypoint + 1].speed_;
-
-	  double next_wp_lat_tolerance = cruise_waypoints[current_waypoint + 1].lat_tolerance_;
-	  double next_wp_long_tolerance = cruise_waypoints[current_waypoint + 1].long_tolerance_;
-
-	  /*
-	    double midpoint_lat_tolerance = (current_wp_lat_tolerance + next_wp_lat_tolerance)/2;
-	    double midpoint_long_tolerance = (current_wp_long_tolerance + next_wp_long_tolerance)/2;
-	  */
-
-	  double midpoint_latitude = (current_wp_lat + next_wp_lat)/2;
-	  double midpoint_longitude = (current_wp_long + next_wp_long)/2;
-	  goal_heading = get_relative_heading(current_latitude,
-					      current_longitude,
-					      midpoint_latitude,
-					      midpoint_longitude);
-	  goal_speed = cruise_waypoints[current_waypoint].speed_; 
-
-	  cruise_waypoints[current_waypoint].latitude_ = midpoint_latitude;
-	  cruise_waypoints[current_waypoint].longitude_ = midpoint_longitude;
-	  cruise_waypoints[current_waypoint].speed_ = goal_speed;
-	}
+      // If the dynamic midpoint is very close to next waypoint, we update dynamic and current WP
+      if ( latDeltaToWP < wp_lat_tolerance && lonDeltaToWP < wp_lon_tolerance) {
+	current_waypoint++;
+	Waypoint activeWP = cruise_waypoints[current_waypoint];    
+	double wp_lat = activeWP.latitude_;
+	double wp_lon = activeWP.longitude_;
+	double wp_lat_tolerance = activeWP.lat_tolerance_;
+	double wp_long_tolerance = activeWP.long_tolerance_;
       }
-      else {
-	++current_waypoint;
-      }
-    }
-
-    else {
-      goal_heading = get_relative_heading(current_latitude, 
-					  current_longitude, 
-					  target_latitude,
-					  target_longitude);
-      goal_speed = cruise_waypoints[current_waypoint].speed_;
+      double midpoint_latitude = (target_lat + wp_lat)/2;
+      double midpoint_longitude = (target_lon + wp_lon)/2;
+      goal_heading = get_relative_heading(current_latitude,
+					  current_longitude,
+					  midpoint_latitude,
+					  midpoint_longitude);
+      goal_speed = activeWP.speed_; 
+	
+      dynamicWP.latitude_ = midpoint_latitude;
+      dynamicWP.longitude_ = midpoint_longitude;
+      dynamicWP.speed_ = goal_speed;
     }
   }
 }
@@ -153,6 +128,7 @@ void high_level_controller::Init(const ros::TimerEvent& event)
   // Starting point of CRUISE mode
   // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
   Waypoint wp1(-1.5109, -73.5530, 8.0, 0.06, 0.5);
+  dynamicWP = wp1;
   cruise_waypoints.push_back(wp1);
 
   // Last waypoint of CRUISE mode
@@ -263,11 +239,11 @@ void high_level_controller::startUp()
     advertiseName += "_" + portGroupMap["vessel_state_sub"];
   ros::SubscribeOptions vessel_state_sub_options;
   vessel_state_sub_options = ros::SubscribeOptions::create<rover_pkg::vessel_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&high_level_controller::vessel_state_sub_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&high_level_controller::vessel_state_sub_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->vessel_state_sub = nh.subscribe(vessel_state_sub_options);
 
   // Component Publisher - goal_state_pub

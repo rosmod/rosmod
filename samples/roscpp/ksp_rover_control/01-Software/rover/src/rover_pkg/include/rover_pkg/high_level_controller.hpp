@@ -13,8 +13,8 @@
 //# End User Includes Marker
 
 //# Start User Globals Marker
-class Waypoint {
-public:
+struct Waypoint {
+  Waypoint() {}
   Waypoint(double latitude, 
 	   double longitude,
 	   double speed,
@@ -33,8 +33,7 @@ public:
   double long_tolerance_;
 };
 
-class Save_State {
-public:
+struct Save_State {
   Save_State(float heading, 
 	     double speed) : 
     heading_(heading),
