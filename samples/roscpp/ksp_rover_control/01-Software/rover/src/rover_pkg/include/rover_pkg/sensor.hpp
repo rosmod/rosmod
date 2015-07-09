@@ -25,6 +25,9 @@ public:
   // Timer Callback - sensor_timer
   void sensor_timerCallback(const ros::TimerEvent& event);
 
+  // Timer Callback - LatLongTimer
+  void LatLongTimerCallback(const ros::TimerEvent& event);
+
   // Start up
   void startUp();
 
@@ -35,6 +38,9 @@ private:
 
   // Timer
   ros::Timer sensor_timer;
+
+  // Timer
+  ros::Timer LatLongTimer;
 
   // Publisher 
   ros::Publisher vessel_state_pub;
