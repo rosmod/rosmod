@@ -207,22 +207,22 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp14);
   Waypoint wp15(-0.119366, -74.64865,
-		cruising_speed,
+		cruising_speed/2,
 		waypoint_latitude_tolerance,
 		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp15);
   Waypoint wp16(-0.12309, -74.6487,
-		cruising_speed,
+		cruising_speed/2,
 		waypoint_latitude_tolerance,
 		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp16);
   Waypoint wp17(-0.12400, -74.6479,
-		cruising_speed,
+		cruising_speed/2,
 		waypoint_latitude_tolerance,
 		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp17);
   Waypoint wp18(-0.1197, -74.6399,
-		cruising_speed,
+		cruising_speed/2,
 		waypoint_latitude_tolerance,
 		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp18);
