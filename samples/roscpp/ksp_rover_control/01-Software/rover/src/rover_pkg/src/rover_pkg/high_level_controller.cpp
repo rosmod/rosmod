@@ -12,7 +12,7 @@ std::vector<Waypoint>::size_type wp_size;
 Waypoint dynamicWP;
 
 double cruising_speed = 20.0;
-double waypoint_latitude_tolerance = 0.01;
+double waypoint_latitude_tolerance = 0.005;
 double waypoint_longitude_tolerance = 0.005;
 
 uint64_t vesselID;
@@ -107,8 +107,8 @@ void high_level_controller::Init(const ros::TimerEvent& event)
   // Set Goal tolerances
   heading_tolerance = 1.0;
   speed_tolerance = 1.0;
-  lat_tolerance = 0.02;
-  long_tolerance = 0.21;
+  lat_tolerance = 0.01;
+  long_tolerance = 0.02;
   
   for (int i=0;i<node_argc;i++)
     {
