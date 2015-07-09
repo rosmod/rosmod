@@ -185,6 +185,16 @@ void PID::pid_timerCallback(const ros::TimerEvent& event)
   float new_AoA = 0;
 
   // NEED TO DO PID HERE
+ float dh1 = abs(goal_heading - current_heading);
+  float dh2 = 360-dh1;
+  if (dh2 < dh1)
+    {
+      if ( goal_heading < current_heading )
+	current_heading = current_heading - 360.0;
+      else if ( current_heading < goal_heading )
+	current_heading += 360.0;
+    }
+
   new_AoA = mean_altitude_pid.update(current_mean_altitude);
   pitch_pid.setPoint(new_AoA);
   new_pitch = pitch_pid.update(current_pitch);

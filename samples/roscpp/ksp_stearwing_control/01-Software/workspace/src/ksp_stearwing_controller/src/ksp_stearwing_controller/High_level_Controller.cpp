@@ -24,6 +24,10 @@ float get_relative_heading(double current_latitude,
   double relative_longitude = target_longitude - current_longitude;
   double relative_latitude = target_latitude - current_latitude;
   float heading = (90.0 - atan2(relative_latitude, relative_longitude) * 180/PI);
+  if (heading < 0)
+    heading = 360 + heading;
+  if (heading > 360.0)
+    heading = heading - 360;
   return heading;
 }
 
