@@ -94,9 +94,9 @@ void low_level_controller::goal_state_sub_OnOneData(const rover_pkg::goal_state:
   // Business Logic for goal_state_sub Subscriber
   goal_heading = received_data->goal_heading;
   goal_speed = received_data->goal_speed;
+  
   speed_pid.setPoint(goal_speed);
   heading_pid.setPoint(goal_heading);
-
   LOGGER.DEBUG("Exiting low_level_controller::goal_state_sub_OnOneData");
 }
 //# End goal_state_sub_OnOneData Marker
@@ -111,7 +111,18 @@ void low_level_controller::control_timerCallback(const ros::TimerEvent& event)
   float new_wheel_steering = 0;
 
   // NEED TO DO PID HERE
+  float dh1 = abs(goal_heading - current_heading);
+  float dh2 = 360-dh1;
+  if (dh2 < dh1)
+    {
+      if ( goal_heading < current_heading )
+	current_heading = current_heading - 360.0;
+      else if ( current_heading < goal_heading )
+	current_heading += 360.0;
+    }
+    
   new_wheel_steering = heading_pid.update(current_heading);  
+
   new_wheel_throttle = speed_pid.update(current_speed);
 
   LOGGER.DEBUG("CURRENT SENSOR HEADING AND SPEED: %f ;  %f",current_heading, current_speed);

@@ -29,23 +29,18 @@ float get_relative_heading(double current_latitude,
   double relative_longitude = target_longitude - current_longitude;
   double relative_latitude = target_latitude - current_latitude;
   float heading = (90.0 - atan2(relative_latitude, relative_longitude) * 180/PI);
+  if (heading < 0)
+    heading = 360 + heading;
+  if (heading > 360.0)
+    heading = heading - 360;
   return heading;
 }
 
 bool high_level_controller::isGoalReached() {
-
   // Check current sensor values
-  if (abs(goal_heading - current_heading) < heading_tolerance ) {
-
-    // Check last 10 sensor values
-    if (previous_states.size() == 10) {
-      for(boost::circular_buffer<Save_State>::iterator it = previous_states.begin(); 
-	  it != previous_states.end(); ++it) {
-	if (abs(goal_heading - it->heading_) > heading_tolerance)
-	  return false;
-      }
-      return true;
-    }
+  double headingDiff = abs(goal_heading - current_heading);
+  if ( headingDiff < heading_tolerance ) {
+    return true;
   }
   return false;
 }
@@ -53,7 +48,7 @@ bool high_level_controller::isGoalReached() {
 bool high_level_controller::state_func_INIT() {
   // Change State
   goal_heading = 90.0;
-  goal_speed = 5.0;
+  goal_speed = 15.0;
   current_state = CRUISE; 
   std::vector<uint64_t> return_vec;
   //krpci_client.Control_ActivateNextStage(controlID, return_vec);
@@ -63,50 +58,36 @@ bool high_level_controller::state_func_INIT() {
 bool high_level_controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
+  Waypoint activeWP = cruise_waypoints[current_waypoint];    
+  double wp_lat = activeWP.latitude_;
+  double wp_lon = activeWP.longitude_;
+  double wp_lat_tolerance = activeWP.lat_tolerance_;
+  double wp_lon_tolerance = activeWP.long_tolerance_;
+
+  // Find midpoint between current waypoint & next waypoint
+  // Converge more gradually by choosing the midpoint between 2 waypoints!
   if (current_waypoint < wp_size) {
-    double target_lat = dynamicWP.latitude_;
-    double target_lon = dynamicWP.longitude_;
-    double target_lat_tolerance = dynamicWP.lat_tolerance_;
-    double target_lon_tolerance = dynamicWP.long_tolerance_;
 
-    Waypoint activeWP = cruise_waypoints[current_waypoint];    
-    double wp_lat = activeWP.latitude_;
-    double wp_lon = activeWP.longitude_;
-    double wp_lat_tolerance = activeWP.lat_tolerance_;
-    double wp_lon_tolerance = activeWP.long_tolerance_;
+    double latDiff = abs(current_latitude - wp_lat);
+    double lonDiff = abs(current_longitude - wp_lon);
 
-    double latDeltaToWP = abs(current_latitude-wp_lat);
-    double lonDeltaToWP = abs(current_latitude-wp_lon);
-
-    double latDeltaToTarget = abs(current_latitude-target_lat);
-    double lonDeltaToTarget = abs(current_longitude-target_lon);
-
-    // Find midpoint between current waypoint & next waypoint
-    // Converge more gradually by choosing the midpoint between 2 waypoints!
-    if (current_waypoint < wp_size) {
-
-      // If the dynamic midpoint is very close to next waypoint, we update dynamic and current WP
-      if ( latDeltaToWP < wp_lat_tolerance && lonDeltaToWP < wp_lon_tolerance) {
-	current_waypoint++;
-	Waypoint activeWP = cruise_waypoints[current_waypoint];    
-	double wp_lat = activeWP.latitude_;
-	double wp_lon = activeWP.longitude_;
-	double wp_lat_tolerance = activeWP.lat_tolerance_;
-	double wp_long_tolerance = activeWP.long_tolerance_;
-      }
-      double midpoint_latitude = (target_lat + wp_lat)/2;
-      double midpoint_longitude = (target_lon + wp_lon)/2;
-      goal_heading = get_relative_heading(current_latitude,
-					  current_longitude,
-					  midpoint_latitude,
-					  midpoint_longitude);
-      goal_speed = activeWP.speed_; 
-	
-      dynamicWP.latitude_ = midpoint_latitude;
-      dynamicWP.longitude_ = midpoint_longitude;
-      dynamicWP.speed_ = goal_speed;
+    // If the dynamic midpoint is very close to next waypoint, we update dynamic and current WP
+    if ( latDiff < wp_lat_tolerance && lonDiff < wp_lon_tolerance) {
+      current_waypoint++;
+      activeWP = cruise_waypoints[current_waypoint];    
+      wp_lat = activeWP.latitude_;
+      wp_lon = activeWP.longitude_;
     }
+    double midpoint_latitude = (current_latitude + wp_lat)/2;
+    double midpoint_longitude = (current_longitude + wp_lon)/2;
+    goal_heading = get_relative_heading(current_latitude,
+					current_longitude,
+					midpoint_latitude,
+					midpoint_longitude);
+    goal_speed = activeWP.speed_; 
   }
+  else
+    current_waypoint = 0;
 }
 
 //# End User Globals Marker
@@ -124,8 +105,8 @@ void high_level_controller::Init(const ros::TimerEvent& event)
   previous_states.set_capacity(10);
 
   // Set Goal tolerances
-  heading_tolerance = 5.0;
-  speed_tolerance = 5.0;
+  heading_tolerance = 1.0;
+  speed_tolerance = 1.0;
   lat_tolerance = 0.02;
   long_tolerance = 0.21;
   
@@ -167,7 +148,7 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 	       waypoint_latitude_tolerance,
 	       waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp2);
-  Waypoint wp3(-0.573, -74.631,
+  Waypoint wp3(-0.0573, -74.631,
 	       cruising_speed,
 	       waypoint_latitude_tolerance,
 	       waypoint_longitude_tolerance);
@@ -203,114 +184,114 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 	       waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp9);
   Waypoint wp10(-0.097244, -74.6398,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp10);
   Waypoint wp11(-0.101377, -74.6421,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp11);
   Waypoint wp12(-0.108179, -74.6414,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp12);
   Waypoint wp13(-0.11145, -74.64298,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp13);
   Waypoint wp14(-0.1155, -74.6474,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp14);
   Waypoint wp15(-0.119366, -74.64865,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp15);
   Waypoint wp16(-0.12309, -74.6487,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp16);
   Waypoint wp17(-0.12400, -74.6479,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp17);
   Waypoint wp18(-0.1197, -74.6399,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp18);
   Waypoint wp19(-0.1197, -74.63712,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp19);
   Waypoint wp20(-0.1224, -74.63267,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp20);
   Waypoint wp21(-0.1215, -74.6294,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp21);
   Waypoint wp22(-0.1146, -74.6296,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp22);
   Waypoint wp23(-0.1121, -74.6278,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp23);
   Waypoint wp24(-0.11038, -74.6231,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp24);
   Waypoint wp25(-0.11099, -74.6161,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp25);
   Waypoint wp26(-0.11296, -74.6119,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp26);
   Waypoint wp27(-0.1193, -74.6041,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp27);
   Waypoint wp28(-0.12143, -74.5993,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp28);
   Waypoint wp29(-0.12485, -74.5988,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp29);
   Waypoint wp30(-0.12614, -74.5988,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp30);
   Waypoint wp31(-0.127327, -74.6006,
-	       cruising_speed,
-	       waypoint_latitude_tolerance,
-	       waypoint_longitude_tolerance);
+		cruising_speed,
+		waypoint_latitude_tolerance,
+		waypoint_longitude_tolerance);
   cruise_waypoints.push_back(wp31);
   
   wp_size = cruise_waypoints.size();
