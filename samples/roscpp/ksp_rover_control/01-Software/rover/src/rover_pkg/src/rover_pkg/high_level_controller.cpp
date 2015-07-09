@@ -107,8 +107,6 @@ void high_level_controller::Init(const ros::TimerEvent& event)
   // Set Goal tolerances
   heading_tolerance = 1.0;
   speed_tolerance = 1.0;
-  lat_tolerance = 0.01;
-  long_tolerance = 0.02;
   
   for (int i=0;i<node_argc;i++)
     {
@@ -126,11 +124,11 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 	}
       if (!strcmp(node_argv[i],"--lat_tolerance"))
 	{
-	  lat_tolerance = atof(node_argv[i+1]);
+	  waypoint_latitude_tolerance = atof(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i],"--long_tolerance"))
 	{
-	  long_tolerance = atof(node_argv[i+1]);
+	  waypoint_longitude_tolerance = atof(node_argv[i+1]);
 	}
     }
 

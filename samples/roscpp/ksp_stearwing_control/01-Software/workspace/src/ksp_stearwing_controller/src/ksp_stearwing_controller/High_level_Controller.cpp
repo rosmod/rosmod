@@ -151,27 +151,17 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
 
   // Starting point of CRUISE mode
   // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
-#if 0
-  Waypoint wp1(500.0, -1.5109, -73.5530, 180.0, 0.06, 0.5);
-  cruise_waypoints.push_back(wp1);
-
-  // Last waypoint of CRUISE mode
-  Waypoint wp2(500.0, -1.5240, -71.8999, 0.0, 0.06, 0.35);
-  cruise_waypoints.push_back(wp2);
-#else
-  Waypoint wp1(500.0, -0.5718, -73.75879, 180.0, 0.06, 0.35);
+  Waypoint wp1(500.0, -0.5718, -73.75879, 180.0, 0.06, 0.1);
   Waypoint wp2(500.0, -1.2979, -72.8931, 180.0, 0.06, 0.1);
   Waypoint wp3(300.0, -1.5187, -72.1472, 150.0, 0.03, 0.1);
   Waypoint wp4(300.0, -1.5157, -71.9859, 0.0, 0.03, 0.1);
   Waypoint wp5(150.0, -1.5157, -71.89, 0.0, 0.005, 0.05);
   Waypoint wp6(150.0, -1.5157, -71.89, 0.0, 0.005, 0.05);
-  //Waypoint wp6(500.0, -1.5009, -71.2000, 140.0, 0.01, 0.1); 
   cruise_waypoints.push_back(wp1);
   cruise_waypoints.push_back(wp2);
   cruise_waypoints.push_back(wp3);
   cruise_waypoints.push_back(wp4);
   cruise_waypoints.push_back(wp6);
-#endif
   wp_size = cruise_waypoints.size();
 
   // Connect to kRPC Server and obtain the vessel & control ID
