@@ -72,88 +72,37 @@ bool High_level_Controller::state_func_TAKEOFF() {
 bool High_level_Controller::state_func_CRUISE() {
   // Set goals for LAND state
   // Iterate through all waypoints in cruise_waypoints
+  Waypoint activeWP = cruise_waypoints[current_waypoint];    
+  double wp_lat = activeWP.latitude_;
+  double wp_lon = activeWP.longitude_;
+  double wp_lat_tolerance = activeWP.lat_tolerance_;
+  double wp_lon_tolerance = activeWP.long_tolerance_;
+
+  // Find midpoint between current waypoint & next waypoint
+  // Converge more gradually by choosing the midpoint between 2 waypoints!
   if (current_waypoint < wp_size) {
-    double target_latitude = cruise_waypoints[current_waypoint].latitude_;
-    double target_longitude = cruise_waypoints[current_waypoint].longitude_;
-    double wp_lat_tolerance = cruise_waypoints[current_waypoint].lat_tolerance_;
-    double wp_long_tolerance = cruise_waypoints[current_waypoint].long_tolerance_;
 
-    LOGGER.INFO("Waypoint=%d; isGoalReached=%d; Lat=%f; Lon=%f; Target_Lat=%f; Target_Lon=%f; Target_Speed=%f",
-		current_waypoint, isGoalReached(), current_latitude, current_longitude, 
-		target_latitude, target_longitude, goal_speed);
+    double latDiff = abs(current_latitude - wp_lat);
+    double lonDiff = abs(current_longitude - wp_lon);
 
-    if ((abs(target_latitude - current_latitude) < wp_lat_tolerance) && 
-	(abs(target_longitude - current_longitude) < wp_long_tolerance)) {
-      // Find midpoint between current waypoint & next waypoint
-      // Converge more gradually by choosing the midpoint between 2 waypoints!
-      if (current_waypoint < wp_size) {
-
-	double next_wp_lat = cruise_waypoints[current_waypoint + 1].latitude_;
-	double next_wp_long = cruise_waypoints[current_waypoint + 1].longitude_;
-
-	// If the midpoint is very close to next waypoint, we can stop converging..
-	if ((abs(next_wp_lat - current_latitude) < wp_lat_tolerance) && 
-	    (abs(next_wp_long - current_longitude) 
-	     < cruise_waypoints[current_waypoint].long_tolerance_)) {
-	  current_waypoint++;
-	}
-	// Else, find a midpoint and change current waypoint parameters
-	else {
-	  LOGGER.INFO("Calculating Midpoint! Current Latitude=%f, Longitude=%f", 
-		      current_latitude, current_longitude);
-	  double current_wp_lat = cruise_waypoints[current_waypoint].latitude_;
-	  double current_wp_long = cruise_waypoints[current_waypoint].longitude_;
-	  double current_wp_altitude = cruise_waypoints[current_waypoint].altitude_;
-	  double current_wp_speed = cruise_waypoints[current_waypoint].speed_;
-
-	  double current_wp_lat_tolerance = cruise_waypoints[current_waypoint].lat_tolerance_;
-	  double current_wp_long_tolerance = cruise_waypoints[current_waypoint].long_tolerance_;
-
-	  double next_wp_lat = cruise_waypoints[current_waypoint + 1].latitude_;
-	  double next_wp_long = cruise_waypoints[current_waypoint + 1].longitude_;
-	  double next_wp_altitude = cruise_waypoints[current_waypoint + 1].altitude_;
-	  double next_wp_speed = cruise_waypoints[current_waypoint + 1].speed_;
-
-	  double next_wp_lat_tolerance = cruise_waypoints[current_waypoint + 1].lat_tolerance_;
-	  double next_wp_long_tolerance = cruise_waypoints[current_waypoint + 1].long_tolerance_;
-
-	  /*
-	    double midpoint_lat_tolerance = (current_wp_lat_tolerance + next_wp_lat_tolerance)/2;
-	    double midpoint_long_tolerance = (current_wp_long_tolerance + next_wp_long_tolerance)/2;
-	  */
-
-	  double midpoint_latitude = (current_wp_lat + next_wp_lat)/2;
-	  double midpoint_longitude = (current_wp_long + next_wp_long)/2;
-	  goal_heading = get_relative_heading(current_latitude,
-					      current_longitude,
-					      midpoint_latitude,
-					      midpoint_longitude);
-	  goal_mean_altitude = current_wp_altitude;
-	  goal_speed = cruise_waypoints[current_waypoint].speed_ - 5; 
-
-	  LOGGER.INFO("Midpoint Latitude=%f, Longitude=%f, Speed=%f", 
-		      midpoint_latitude, midpoint_longitude, goal_speed);
-
-	  cruise_waypoints[current_waypoint].latitude_ = midpoint_latitude;
-	  cruise_waypoints[current_waypoint].longitude_ = midpoint_longitude;
-	  cruise_waypoints[current_waypoint].altitude_ = goal_mean_altitude;
-	  cruise_waypoints[current_waypoint].speed_ = goal_speed;
-	}
-      }
-      else {
-	++current_waypoint;
-      }
+    // If the dynamic midpoint is very close to next waypoint, we update dynamic and current WP
+    if ( latDiff < wp_lat_tolerance && lonDiff < wp_lon_tolerance) {
+      current_waypoint++;
+      activeWP = cruise_waypoints[current_waypoint];    
+      wp_lat = activeWP.latitude_;
+      wp_lon = activeWP.longitude_;
     }
-
-    else {
-      goal_heading = get_relative_heading(current_latitude, 
-					  current_longitude, 
-					  target_latitude,
-					  target_longitude);
-      goal_mean_altitude = cruise_waypoints[current_waypoint].altitude_;
-      goal_speed = cruise_waypoints[current_waypoint].speed_;
-    }
+    double midpoint_latitude = (current_latitude + wp_lat)/2;
+    double midpoint_longitude = (current_longitude + wp_lon)/2;
+    goal_heading = get_relative_heading(current_latitude,
+					current_longitude,
+					midpoint_latitude,
+					midpoint_longitude);
+    goal_mean_altitude = activeWP.altitude_;
+    goal_speed = activeWP.speed_; 
   }
+  else
+    current_waypoint = 0;
 }
 
 bool High_level_Controller::state_func_LAND() {
@@ -202,13 +151,27 @@ void High_level_Controller::Init(const ros::TimerEvent& event)
 
   // Starting point of CRUISE mode
   // Altitude, Latitude, Longitude, Speed, Lat. Tolerance, Long. Tolerance
+#if 0
   Waypoint wp1(500.0, -1.5109, -73.5530, 180.0, 0.06, 0.5);
   cruise_waypoints.push_back(wp1);
 
   // Last waypoint of CRUISE mode
   Waypoint wp2(500.0, -1.5240, -71.8999, 0.0, 0.06, 0.35);
   cruise_waypoints.push_back(wp2);
-
+#else
+  Waypoint wp1(500.0, -0.5718, -73.75879, 180.0, 0.06, 0.35);
+  Waypoint wp2(500.0, -1.2979, -72.8931, 180.0, 0.06, 0.1);
+  Waypoint wp3(300.0, -1.5187, -72.1472, 150.0, 0.03, 0.1);
+  Waypoint wp4(300.0, -1.5157, -71.9859, 0.0, 0.03, 0.1);
+  Waypoint wp5(150.0, -1.5157, -71.89, 0.0, 0.005, 0.05);
+  Waypoint wp6(150.0, -1.5157, -71.89, 0.0, 0.005, 0.05);
+  //Waypoint wp6(500.0, -1.5009, -71.2000, 140.0, 0.01, 0.1); 
+  cruise_waypoints.push_back(wp1);
+  cruise_waypoints.push_back(wp2);
+  cruise_waypoints.push_back(wp3);
+  cruise_waypoints.push_back(wp4);
+  cruise_waypoints.push_back(wp6);
+#endif
   wp_size = cruise_waypoints.size();
 
   // Connect to kRPC Server and obtain the vessel & control ID
