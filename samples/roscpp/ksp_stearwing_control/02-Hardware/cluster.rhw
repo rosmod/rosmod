@@ -9,7 +9,7 @@ hardware BBB_111
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu";
-  arch = armv7l;
+  arch = arm;
 }
 // Hardware - BBB_112
 hardware BBB_112
@@ -18,7 +18,7 @@ hardware BBB_112
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu/";
-  arch = armv7l;
+  arch = arm;
 }
 // Hardware - BBB_113
 hardware BBB_113
@@ -27,6 +27,6 @@ hardware BBB_113
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu";
-  arch = armv7l;
+  arch = arm;
 }
 

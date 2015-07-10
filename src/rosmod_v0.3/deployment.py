@@ -285,31 +285,29 @@ def Compile(img_name, img_path, rosmod_path, workspace_dir):
               + ' --build ' + build_space\
               + ' ' + devel_prefix + ' ' + install_prefix)
 
-    with cd(rosmod_path):
-        local('sh ' + resource_filename('compile_scripts', 'move_binaries.sh') + ' ' + workspace_dir + ' ' + 'x86')
+    local('sh ' + resource_filename('compile_scripts', 'move_binaries.sh') + ' ' + workspace_dir + ' ' + 'x86')
 
     print "ROSMOD::Compilation complete for x86 architecture"
 
-    with cd(rosmod_path):
-        if img_name != None and img_path != None:        
-            if(os.path.exists(os.path.join(img_path, img_name))):            
-                # Prepare Qemu session
-                local('sh ' + resource_filename('compile_scripts', 'up.sh') + ' ' + os.path.join(img_path, img_name))
+    if img_name != None and img_path != None:        
+        if(os.path.exists(os.path.join(img_path, img_name))):            
+            # Prepare Qemu session
+            local('sh ' + resource_filename('compile_scripts', 'up.sh') + ' ' + os.path.join(img_path, img_name), shell="/bin/bash")
                 
-                # Start Qemu session
-                local('sh ' + resource_filename('compile_scripts', 'go.sh') + ' ' + rosmod_path + ' ' + workspace_dir + ' arm')
+            # Start Qemu session
+            local('sh ' + resource_filename('compile_scripts', 'go.sh') + ' ' + resource_filename('compile_scripts', 'compile.sh') + ' ' + workspace_dir + ' arm', shell="/bin/bash")
                 
-                # Stop Qemu session
-                local('sh ' + resource_filename('compile_scripts', 'dn.sh') + ' ' + os.path.join(img_path, img_name))
+            # Stop Qemu session
+            local('sh ' + resource_filename('compile_scripts', 'dn.sh') + ' ' + os.path.join(img_path, img_name), shell="/bin/bash")
 
-                # Change permissions on cross-compiled binaries
-                local('sudo chown $USER ' + workspace_dir + '/../../04-Binaries/arm/*')
-                local('sudo chgrp $USER ' + workspace_dir + '/../../04-Binaries/arm/*')
-                print "ROSMOD::Compilation complete for ARM architecture"
-            else:
-                print "ROSMOD::CROSSCOMPILER::ERROR::Unable to find RCPS-Testbed.img."
+            # Change permissions on cross-compiled binaries
+            local('sudo chown $USER ' + workspace_dir + '/../../04-Binaries/arm/*')
+            local('sudo chgrp $USER ' + workspace_dir + '/../../04-Binaries/arm/*')
+            print "ROSMOD::Compilation complete for ARM architecture"
         else:
-            print "ROSMOD::User cancelled workspace cross-compilation"
+            print "ROSMOD::CROSSCOMPILER::ERROR::Unable to find RCPS-Testbed.img."
+    else:
+        print "ROSMOD::User cancelled workspace cross-compilation"
 
 def deployTest(self, progress_q):
     env.warn_only = False
