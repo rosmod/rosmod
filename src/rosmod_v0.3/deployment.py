@@ -295,7 +295,7 @@ def Compile(img_name, img_path, rosmod_path, workspace_dir):
                 local('sh ' + resource_filename('compile_scripts', 'up.sh') + ' ' + os.path.join(img_path, img_name))
                 
                 # Start Qemu session
-                local('sh ' + resource_filename('compile_scripts', 'go.sh') + ' ' + workspace_dir + ' arm')
+                local('sh ' + resource_filename('compile_scripts', 'go.sh') + ' ' + rosmod_path + ' ' + workspace_dir + ' arm')
                 
                 # Stop Qemu session
                 local('sh ' + resource_filename('compile_scripts', 'dn.sh') + ' ' + os.path.join(img_path, img_name))

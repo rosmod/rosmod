@@ -85,6 +85,10 @@ class log_Wrapper(object):
     def __init__(self,log,color):
         self.color = color
         self.log = log
+        
+    def isatty(self):
+        return False
+        
     def write(self,text):
         wx.CallAfter(self.log.write, text, self.color)
     def flush(self):
