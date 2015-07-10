@@ -10,6 +10,8 @@ import multiprocessing
 import dialogs, wx
 
 from pkg_resources import resource_filename
+#import logging
+#logging.basicConfig()
 
 env.use_ssh_config = False
 
