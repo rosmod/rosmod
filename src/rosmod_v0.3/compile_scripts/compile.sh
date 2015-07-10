@@ -10,6 +10,4 @@ mv $DEVEL_LIB_PATH/*.so $WORKSPACE_PATH/../../04-Binaries/$2/.
 mv $DEVEL_LIB_PATH/node/node_main $WORKSPACE_PATH/../../04-Binaries/$2/.
 rm -rf $WORKSPACE_PATH/devel
 rm -rf $WORKSPACE_PATH/build
-chown $3 $WORKSPACE_PATH/../../04-Binaries/$2/*
-chgrp $3 $WORKSPACE_PATH/../../04-Binaries/$2/*
 echo "Cross-compilation complete!"

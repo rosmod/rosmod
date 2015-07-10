@@ -299,6 +299,10 @@ def Compile(img_name, img_path, rosmod_path, workspace_dir):
                 
                 # Stop Qemu session
                 local('sh ' + resource_filename('compile_scripts', 'dn.sh') + ' ' + os.path.join(img_path, img_name))
+
+                # Change permissions on cross-compiled binaries
+                local('sudo chown $USER ' + workspace_dir + '/../../04-Binaries/arm/*')
+                local('sudo chgrp $USER ' + workspace_dir + '/../../04-Binaries/arm/*')
                 print "ROSMOD::Compilation complete for ARM architecture"
             else:
                 print "ROSMOD::CROSSCOMPILER::ERROR::Unable to find RCPS-Testbed.img."
