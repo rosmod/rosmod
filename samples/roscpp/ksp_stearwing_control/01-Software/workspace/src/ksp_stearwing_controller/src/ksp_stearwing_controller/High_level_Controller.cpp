@@ -227,7 +227,7 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
   }
 
   // Green heading marker
-  krpci_client.ClearDirections();
+  krpci_client.ClearDrawing();
   double x=0, y, z;
   z = sin(goal_heading * PI/180.0);
   y = cos(goal_heading * PI/180.0);
