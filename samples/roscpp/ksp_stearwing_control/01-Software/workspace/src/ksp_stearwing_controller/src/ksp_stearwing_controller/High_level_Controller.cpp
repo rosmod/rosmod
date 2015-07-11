@@ -31,6 +31,26 @@ float get_relative_heading(double current_latitude,
   return heading;
 }
 
+void convert_lat_lon( double slat,
+		      double slon,
+		      double elat,
+		      double elon,
+		      double radius,
+		      double& dist,
+		      double& heading) {
+  heading = get_relative_heading(slat,slon,elat,elon);
+  slat = slat * PI / 180.0f;
+  slon = slon * PI / 180.0f;
+  elat = elat * PI / 180.0f;
+  elon = elon * PI / 180.0f;
+  double dlat = elat - slat;
+  double dlon = elon - slon;
+  double a = sin(dlat/2) * sin(dlat/2) +
+    cos(slat) * cos(elat) * sin(dlon/2) * sin(dlon/2);
+  double c = 2 * atan2(sqrt(a),sqrt(1-a));
+  dist = radius * c;
+}
+
 bool High_level_Controller::isGoalReached() {
 
   // Check current sensor values
@@ -233,6 +253,30 @@ void High_level_Controller::flight_control_timerCallback(const ros::TimerEvent& 
   y = cos(goal_heading * PI/180.0);
   krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,0,1,0,30);
 
+  x = y = z = 0;
+  double ex,ey,ez;
+  double lon,lat, alt;
+  lon = cruise_waypoints[current_waypoint].longitude_;
+  lat = cruise_waypoints[current_waypoint].latitude_;
+  alt = cruise_waypoints[current_waypoint].altitude_;
+  double dist=0;
+  double heading;
+  convert_lat_lon( current_latitude,
+		   current_longitude,
+		   lat,
+		   lon,
+		   600000,
+		   dist,
+		   heading);
+
+  x = -current_mean_altitude;  // puts base at sea-level
+  ex = x + alt;  // puts top at goal altitude
+  y = ey = cos(heading*PI/180.0f)*dist;
+  z = ez = sin(heading*PI/180.0f)*dist;
+  krpci_client.TransformPosition(x,y,z,surfaceRefFrameID,orbitalRefFrameID,x,y,z);
+  krpci_client.TransformPosition(ex,ey,ez,surfaceRefFrameID,orbitalRefFrameID,ex,ey,ez);
+  krpci_client.DrawLine(x,y,z,ex,ey,ez,orbitalRefFrameID, 1,1,1);
+  
   // Publish newly set goals
   ksp_stearwing_controller::Control_Command new_command;
   new_command.goal_altitude = goal_mean_altitude;
