@@ -36,6 +36,26 @@ float get_relative_heading(double current_latitude,
   return heading;
 }
 
+void convert_lat_lon( double slat,
+		      double slon,
+		      double elat,
+		      double elon,
+		      double radius,
+		      double& dist,
+		      double& heading) {
+  heading = get_relative_heading(slat,slon,elat,elon);
+  slat = slat * PI / 180.0f;
+  slon = slon * PI / 180.0f;
+  elat = elat * PI / 180.0f;
+  elon = elon * PI / 180.0f;
+  double dlat = elat - slat;
+  double dlon = elon - slon;
+  double a = sin(dlat/2) * sin(dlat/2) +
+    cos(slat) * cos(elat) * sin(dlon/2) * sin(dlon/2);
+  double c = 2 * atan2(sqrt(a),sqrt(1-a));
+  dist = radius * c;
+}
+
 bool high_level_controller::isGoalReached() {
   // Check current sensor values
   double headingDiff = abs(goal_heading - current_heading);
@@ -1915,7 +1935,7 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 
   // Stop Init Timer
   initOneShotTimer.stop();
-  LOGGER.DEBUG("Exiting high_level_controller::Init");
+  //LOGGER.DEBUG("Exiting high_level_controller::Init");
 }
 //# End Init Marker
 
@@ -1923,7 +1943,7 @@ void high_level_controller::Init(const ros::TimerEvent& event)
 //# Start vessel_state_sub_OnOneData Marker
 void high_level_controller::vessel_state_sub_OnOneData(const rover_pkg::vessel_state::ConstPtr& received_data)
 {
-  LOGGER.DEBUG("Entering high_level_controller::vessel_state_sub_OnOneData");
+  //LOGGER.DEBUG("Entering high_level_controller::vessel_state_sub_OnOneData");
   // Business Logic for vessel_state_sub Subscriber
   current_heading = received_data->heading;
   current_latitude = received_data->latitude;
@@ -1934,7 +1954,7 @@ void high_level_controller::vessel_state_sub_OnOneData(const rover_pkg::vessel_s
   Save_State new_state(current_heading, current_speed);
   previous_states.push_back(new_state);
 
-  LOGGER.DEBUG("Exiting high_level_controller::vessel_state_sub_OnOneData");
+  //LOGGER.DEBUG("Exiting high_level_controller::vessel_state_sub_OnOneData");
 }
 //# End vessel_state_sub_OnOneData Marker
 
@@ -1942,7 +1962,7 @@ void high_level_controller::vessel_state_sub_OnOneData(const rover_pkg::vessel_s
 //# Start state_timerCallback Marker
 void high_level_controller::state_timerCallback(const ros::TimerEvent& event)
 {
-  LOGGER.DEBUG("Entering high_level_controller::state_timerCallback");
+  //LOGGER.DEBUG("Entering high_level_controller::state_timerCallback");
   // Business Logic for state_timer Timer
   switch(current_state) {
   case INIT :
@@ -1959,6 +1979,30 @@ void high_level_controller::state_timerCallback(const ros::TimerEvent& event)
   z = sin(goal_heading * PI/180.0);
   y = cos(goal_heading * PI/180.0);
   krpci_client.DrawDirection(x,y,z,surfaceRefFrameID,0,1,0,30);
+
+  x = y = z = 0;
+  double ex,ey,ez;
+  double lon,lat, alt;
+  lon = cruise_waypoints[current_waypoint].longitude_;
+  lat = cruise_waypoints[current_waypoint].latitude_;
+  
+  double dist=0;
+  double heading;
+  convert_lat_lon( current_latitude,
+		   current_longitude,
+		   lat,
+		   lon,
+		   600000,
+		   dist,
+		   heading);
+
+  x = 0;  // puts base at same altitude as vessel
+  ex = 15;  // puts top 15 M above vessel
+  y = ey = cos(heading*PI/180.0f)*dist;
+  z = ez = sin(heading*PI/180.0f)*dist;
+  krpci_client.TransformPosition(x,y,z,surfaceRefFrameID,orbitalRefFrameID,x,y,z);
+  krpci_client.TransformPosition(ex,ey,ez,surfaceRefFrameID,orbitalRefFrameID,ex,ey,ez);
+  krpci_client.DrawLine(x,y,z,ex,ey,ez,orbitalRefFrameID, 1,1,1);
 
   // Publish newly set goals
   rover_pkg::goal_state new_state;
