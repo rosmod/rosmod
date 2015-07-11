@@ -1,5 +1,6 @@
 #include "cluster_flight_application/TrajectoryPlanner.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -43,6 +44,7 @@ TrajectoryPlanner::~TrajectoryPlanner()
 // Startup - Setup Component Ports & Timers
 void TrajectoryPlanner::startUp()
 {
+  LOGGER.DEBUG("Entering TrajectoryPlanner::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -106,6 +108,8 @@ void TrajectoryPlanner::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  LOGGER.DEBUG("Exiting TrajectoryPlanner::startUp");
 }
 
 extern "C" {

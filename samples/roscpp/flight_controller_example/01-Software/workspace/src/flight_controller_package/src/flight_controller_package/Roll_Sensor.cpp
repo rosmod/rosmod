@@ -1,13 +1,13 @@
 #include "flight_controller_package/Roll_Sensor.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t refFrame;
 uint64_t flightID;
 float roll;
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -58,6 +58,7 @@ Roll_Sensor::~Roll_Sensor()
 // Startup - Setup Component Ports & Timers
 void Roll_Sensor::startUp()
 {
+  LOGGER.DEBUG("Entering Roll_Sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -106,6 +107,7 @@ void Roll_Sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Roll_Sensor::startUp");
 }
 
 extern "C" {

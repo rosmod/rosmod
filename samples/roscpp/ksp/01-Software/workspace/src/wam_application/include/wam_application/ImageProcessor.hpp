@@ -5,6 +5,8 @@
 #include "Component.hpp"
 #include "wam_application/HRImageVector.h"
 #include "wam_application/LRImageVector.h"
+
+
 //# Start User Includes Marker
 //# End User Includes Marker
 
@@ -43,6 +45,5 @@ private:
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };
-
 
 #endif

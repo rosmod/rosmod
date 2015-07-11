@@ -34,6 +34,20 @@ int main(int argc, char **argv)
     configFileName = configFile;
   if (nodeParser.Parse(configFileName))
   {      
+
+    for (int i=0;i<nodeParser.libList.size();i++)
+    {
+      void *hndl = dlopen(nodeParser.libList[i].c_str(), RTLD_LAZY | RTLD_GLOBAL);
+      if (hndl == NULL)
+      {
+	cerr << dlerror() << endl;
+	exit(-1);
+      }
+      else
+	ROS_INFO_STREAM("Opened " << nodeParser.libList[i]);
+    }
+
+    nodeName = nodeParser.nodeName;
     ros::init(argc, argv, nodeName.c_str());
 
     // Create Node Handle

@@ -180,8 +180,6 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(TrajectoryPlanner
-	    src/cluster_flight_application/Component.cpp
-            src/cluster_flight_application/Logger.cpp
             src/cluster_flight_application/TrajectoryPlanner.cpp
             ## Start TrajectoryPlanner CPP Marker
 
@@ -196,17 +194,4 @@ target_link_libraries(TrajectoryPlanner
 add_dependencies(TrajectoryPlanner
                  cluster_flight_application_generate_messages_cpp
                 )
-
-
-
-
-
-
-
-
-
-
-
-
-
 

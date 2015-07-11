@@ -83,28 +83,12 @@ void sensor::sensor_timerCallback(const ros::TimerEvent& event)
   vessel_state_pub.publish(state);
 }
 //# End sensor_timerCallback Marker
-// Timer Callback - LatLongTimer
-//# Start LatLongTimerCallback Marker
-void sensor::LatLongTimerCallback(const ros::TimerEvent& event)
-{
-  // Business Logic for LatLongTimer Timer
-  LOGGER.INFO("Waypoint wp%d(%f, %f, ", wp_count, latitude, longitude);
-  LOGGER.INFO("%f,", speed);
-  LOGGER.INFO("waypoint_latitude_tolerance,");
-  LOGGER.INFO("waypoint_longitude_tolerance);");
-  if (wp_count == 1)
-    LOGGER.INFO("dynamicWP = wp1;");
-  LOGGER.INFO("cruise_waypoints.push_back(wp%d);", wp_count);
-  wp_count++;
-}
-//# End LatLongTimerCallback Marker
 
 
 // Destructor - Cleanup Ports & Timers
 sensor::~sensor()
 {
   sensor_timer.stop();
-  LatLongTimer.stop();
   vessel_state_pub.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
@@ -113,6 +97,7 @@ sensor::~sensor()
 // Startup - Setup Component Ports & Timers
 void sensor::startUp()
 {
+  LOGGER.DEBUG("Entering sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -139,13 +124,6 @@ void sensor::startUp()
      boost::bind(&sensor::sensor_timerCallback, this, _1),
      &this->compQueue);
   this->sensor_timer = nh.createTimer(timer_options);
-  // Component Timer - LatLongTimer
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(1.0),
-     boost::bind(&sensor::LatLongTimerCallback, this, _1),
-     &this->compQueue);
-  this->LatLongTimer = nh.createTimer(timer_options);
 
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
@@ -168,6 +146,7 @@ void sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting sensor::startUp");
 }
 
 extern "C" {

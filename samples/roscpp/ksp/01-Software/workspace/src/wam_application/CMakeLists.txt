@@ -182,8 +182,6 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(HighResolutionImageProcessor
-	    src/wam_application/Component.cpp
-            src/wam_application/Logger.cpp
             src/wam_application/HighResolutionImageProcessor.cpp
             ## Start HighResolutionImageProcessor CPP Marker
 
@@ -200,8 +198,6 @@ add_dependencies(HighResolutionImageProcessor
                 )
 
 add_library(ImageProcessor
-	    src/wam_application/Component.cpp
-            src/wam_application/Logger.cpp
             src/wam_application/ImageProcessor.cpp
             ## Start ImageProcessor CPP Marker
 
@@ -218,8 +214,6 @@ add_dependencies(ImageProcessor
                 )
 
 add_library(LowResolutionImageProcessor
-	    src/wam_application/Component.cpp
-            src/wam_application/Logger.cpp
             src/wam_application/LowResolutionImageProcessor.cpp
             ## Start LowResolutionImageProcessor CPP Marker
 
@@ -234,17 +228,4 @@ target_link_libraries(LowResolutionImageProcessor
 add_dependencies(LowResolutionImageProcessor
                  wam_application_generate_messages_cpp
                 )
-
-
-
-
-
-
-
-
-
-
-
-
-
 

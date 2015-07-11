@@ -64,18 +64,18 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  SatState.msg
-
   GroundCommand.msg
+
+  SatState.msg
 
 )
 
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  ThrusterComm.srv
-
   SatelliteState.srv
+
+  ThrusterComm.srv
 
 )
 
@@ -189,8 +189,6 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(GroundInterface
-	    src/satellite_flight_application/Component.cpp
-            src/satellite_flight_application/Logger.cpp
             src/satellite_flight_application/GroundInterface.cpp
             ## Start GroundInterface CPP Marker
 
@@ -207,8 +205,6 @@ add_dependencies(GroundInterface
                 )
 
 add_library(OrbitController
-	    src/satellite_flight_application/Component.cpp
-            src/satellite_flight_application/Logger.cpp
             src/satellite_flight_application/OrbitController.cpp
             ## Start OrbitController CPP Marker
 
@@ -225,8 +221,6 @@ add_dependencies(OrbitController
                 )
 
 add_library(SatelliteBusInterface
-	    src/satellite_flight_application/Component.cpp
-            src/satellite_flight_application/Logger.cpp
             src/satellite_flight_application/SatelliteBusInterface.cpp
             ## Start SatelliteBusInterface CPP Marker
 	    src/krpci/krpci_generated.cpp
@@ -246,16 +240,11 @@ add_dependencies(SatelliteBusInterface
                  satellite_flight_application_generate_messages_cpp
                 )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+add_library(KRPCI
+            src/krpci/KRPC.pb.cc
+	    src/krpci/krpci_base.cpp
+            src/krpci/krpci_generated.cpp
+	    )
+target_link_libraries(KRPCI
+  boost_system boost_thread /usr/lib/libprotobuf.so.10
+  )

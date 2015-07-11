@@ -1,5 +1,6 @@
 #include "satellite_flight_application/OrbitController.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -46,6 +47,7 @@ OrbitController::~OrbitController()
 // Startup - Setup Component Ports & Timers
 void OrbitController::startUp()
 {
+  LOGGER.DEBUG("Entering OrbitController::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -90,7 +92,7 @@ void OrbitController::startUp()
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - timer.properties["name"]
+  // Component Timer - OrbitController_Timer
   timer_options = 
     ros::TimerOptions
     (ros::Duration(1.0),
@@ -117,6 +119,8 @@ void OrbitController::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  LOGGER.DEBUG("Exiting OrbitController::startUp");
 }
 
 extern "C" {

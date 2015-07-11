@@ -1,13 +1,13 @@
 #include "flight_controller_package/Altitude_Sensor.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t refFrame;
 uint64_t flightID;
 double altitude;
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -58,6 +58,7 @@ Altitude_Sensor::~Altitude_Sensor()
 // Startup - Setup Component Ports & Timers
 void Altitude_Sensor::startUp()
 {
+  LOGGER.DEBUG("Entering Altitude_Sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -106,6 +107,7 @@ void Altitude_Sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Altitude_Sensor::startUp");
 }
 
 extern "C" {

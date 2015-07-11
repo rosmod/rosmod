@@ -1,9 +1,9 @@
 #include "flight_controller_package/Roll_Actuator.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -39,6 +39,7 @@ Roll_Actuator::~Roll_Actuator()
 // Startup - Setup Component Ports & Timers
 void Roll_Actuator::startUp()
 {
+  LOGGER.DEBUG("Entering Roll_Actuator::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -85,6 +86,7 @@ void Roll_Actuator::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Roll_Actuator::startUp");
 }
 
 extern "C" {

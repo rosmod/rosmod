@@ -1,8 +1,8 @@
 #include "flight_controller_package/High_level_Controller.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
 
 // Initialization Function
 //# Start Init Marker
@@ -76,6 +76,7 @@ High_level_Controller::~High_level_Controller()
 // Startup - Setup Component Ports & Timers
 void High_level_Controller::startUp()
 {
+  LOGGER.DEBUG("Entering High_level_Controller::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -166,6 +167,7 @@ void High_level_Controller::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  LOGGER.DEBUG("Exiting High_level_Controller::startUp");
 }
 
 extern "C" {

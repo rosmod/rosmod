@@ -1,8 +1,8 @@
 #include "flight_controller_package/PID_Controller.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
 
 // Initialization Function
 //# Start Init Marker
@@ -81,6 +81,7 @@ PID_Controller::~PID_Controller()
 // Startup - Setup Component Ports & Timers
 void PID_Controller::startUp()
 {
+  LOGGER.DEBUG("Entering PID_Controller::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -198,6 +199,7 @@ void PID_Controller::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  LOGGER.DEBUG("Exiting PID_Controller::startUp");
 }
 
 extern "C" {

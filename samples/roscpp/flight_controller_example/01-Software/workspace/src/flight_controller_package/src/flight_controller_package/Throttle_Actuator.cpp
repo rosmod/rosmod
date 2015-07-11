@@ -1,12 +1,12 @@
 #include "flight_controller_package/Throttle_Actuator.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t partsID;
 std::vector<uint64_t> engineIDs;
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -69,6 +69,7 @@ Throttle_Actuator::~Throttle_Actuator()
 // Startup - Setup Component Ports & Timers
 void Throttle_Actuator::startUp()
 {
+  LOGGER.DEBUG("Entering Throttle_Actuator::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -115,6 +116,7 @@ void Throttle_Actuator::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Throttle_Actuator::startUp");
 }
 
 extern "C" {

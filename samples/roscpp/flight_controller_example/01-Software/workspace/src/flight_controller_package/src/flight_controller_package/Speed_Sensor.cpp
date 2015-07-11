@@ -1,9 +1,9 @@
 #include "flight_controller_package/Speed_Sensor.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -37,6 +37,7 @@ Speed_Sensor::~Speed_Sensor()
 // Startup - Setup Component Ports & Timers
 void Speed_Sensor::startUp()
 {
+  LOGGER.DEBUG("Entering Speed_Sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -85,6 +86,7 @@ void Speed_Sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Speed_Sensor::startUp");
 }
 
 extern "C" {

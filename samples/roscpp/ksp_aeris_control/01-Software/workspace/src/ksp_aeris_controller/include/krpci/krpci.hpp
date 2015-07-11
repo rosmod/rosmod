@@ -5,9 +5,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "KRPC.pb.h"
-#include <google/protobuf/io/zero_copy_stream.h>
-#include <google/protobuf/io/zero_copy_stream_impl.h>
-#include <google/protobuf/io/coded_stream.h>
+#include "/usr/include/google/protobuf/io/zero_copy_stream.h"
+#include "/usr/include/google/protobuf/io/zero_copy_stream_impl.h"
+#include "/usr/include/google/protobuf/io/coded_stream.h"
 using namespace google::protobuf::io;
 #include <boost/thread.hpp>
 #include <stdio.h>
@@ -77,8 +77,11 @@ public:
   bool GetLatestStreamData(std::string streamName, krpc::Response& res);
   static bool ClearTarget_createRequest(krpc::Request& request);
   bool ClearTarget();
-  static bool WarpTo_createRequest(double UT, float maxRate, krpc::Request& request);
-  bool WarpTo(double UT, float maxRate);
+  static bool CanRailsWarpAt_createRequest(int32_t factor, krpc::Request& request);
+  bool CanRailsWarpAt(int32_t factor, bool& return_value);
+  static bool CanRailsWarpAt_parseResponse(krpc::Response response, bool& return_value);
+  static bool WarpTo_createRequest(double UT, float maxRate, float maxPhysicsRate, krpc::Request& request);
+  bool WarpTo(double UT, float maxRate, float maxPhysicsRate);
   static bool TransformPosition_createRequest(double position_x, double position_y, double position_z, uint64_t from, uint64_t to, krpc::Request& request);
   bool TransformPosition(double position_x, double position_y, double position_z, uint64_t from, uint64_t to, double& x, double& y, double& z);
   static bool TransformPosition_parseResponse(krpc::Response response, double& x, double& y, double& z);
@@ -93,8 +96,10 @@ public:
   static bool TransformVelocity_parseResponse(krpc::Response response, double& x, double& y, double& z);
   static bool DrawDirection_createRequest(double direction_x, double direction_y, double direction_z, uint64_t referenceFrame, double color_x, double color_y, double color_z, float length, krpc::Request& request);
   bool DrawDirection(double direction_x, double direction_y, double direction_z, uint64_t referenceFrame, double color_x, double color_y, double color_z, float length);
-  static bool ClearDirections_createRequest(krpc::Request& request);
-  bool ClearDirections();
+  static bool DrawLine_createRequest(double start_x, double start_y, double start_z, double end_x, double end_y, double end_z, uint64_t referenceFrame, double color_x, double color_y, double color_z, krpc::Request& request);
+  bool DrawLine(double start_x, double start_y, double start_z, double end_x, double end_y, double end_z, uint64_t referenceFrame, double color_x, double color_y, double color_z);
+  static bool ClearDrawing_createRequest(krpc::Request& request);
+  bool ClearDrawing();
   static bool get_ActiveVessel_createRequest(krpc::Request& request);
   bool get_ActiveVessel(uint64_t& return_value);
   static bool get_ActiveVessel_parseResponse(krpc::Response response, uint64_t& return_value);
@@ -125,6 +130,15 @@ public:
   static bool get_G_createRequest(krpc::Request& request);
   bool get_G(float& return_value);
   static bool get_G_parseResponse(krpc::Response response, float& return_value);
+  static bool get_WarpMode_createRequest(krpc::Request& request);
+  bool get_WarpMode(int32_t& return_value);
+  static bool get_WarpMode_parseResponse(krpc::Response response, int32_t& return_value);
+  static bool get_WarpRate_createRequest(krpc::Request& request);
+  bool get_WarpRate(float& return_value);
+  static bool get_WarpRate_parseResponse(krpc::Response response, float& return_value);
+  static bool get_WarpFactor_createRequest(krpc::Request& request);
+  bool get_WarpFactor(float& return_value);
+  static bool get_WarpFactor_parseResponse(krpc::Response response, float& return_value);
   static bool get_RailsWarpFactor_createRequest(krpc::Request& request);
   bool get_RailsWarpFactor(int32_t& return_value);
   static bool get_RailsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value);
@@ -135,12 +149,9 @@ public:
   static bool get_PhysicsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value);
   static bool set_PhysicsWarpFactor_createRequest(int32_t value, krpc::Request& request);
   bool set_PhysicsWarpFactor(int32_t value);
-  static bool get_WarpMode_createRequest(krpc::Request& request);
-  bool get_WarpMode(int32_t& return_value);
-  static bool get_WarpMode_parseResponse(krpc::Response response, int32_t& return_value);
-  static bool get_WarpRate_createRequest(krpc::Request& request);
-  bool get_WarpRate(float& return_value);
-  static bool get_WarpRate_parseResponse(krpc::Response response, float& return_value);
+  static bool get_MaximumRailsWarpFactor_createRequest(krpc::Request& request);
+  bool get_MaximumRailsWarpFactor(int32_t& return_value);
+  static bool get_MaximumRailsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value);
   static bool get_FARAvailable_createRequest(krpc::Request& request);
   bool get_FARAvailable(bool& return_value);
   static bool get_FARAvailable_parseResponse(krpc::Response response, bool& return_value);
@@ -920,6 +931,9 @@ public:
   static bool Part_get_Parachute_createRequest(uint64_t Part_ID, krpc::Request& request);
   bool Part_get_Parachute(uint64_t Part_ID, uint64_t& return_value);
   static bool Part_get_Parachute_parseResponse(krpc::Response response, uint64_t& return_value);
+  static bool Part_get_Radiator_createRequest(uint64_t Part_ID, krpc::Request& request);
+  bool Part_get_Radiator(uint64_t Part_ID, uint64_t& return_value);
+  static bool Part_get_Radiator_parseResponse(krpc::Response response, uint64_t& return_value);
   static bool Part_get_ReactionWheel_createRequest(uint64_t Part_ID, krpc::Request& request);
   bool Part_get_ReactionWheel(uint64_t Part_ID, uint64_t& return_value);
   static bool Part_get_ReactionWheel_parseResponse(krpc::Response response, uint64_t& return_value);
@@ -988,6 +1002,9 @@ public:
   static bool Parts_get_Parachutes_createRequest(uint64_t Parts_ID, krpc::Request& request);
   bool Parts_get_Parachutes(uint64_t Parts_ID, std::vector<uint64_t>& return_vector);
   static bool Parts_get_Parachutes_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector);
+  static bool Parts_get_Radiators_createRequest(uint64_t Parts_ID, krpc::Request& request);
+  bool Parts_get_Radiators(uint64_t Parts_ID, std::vector<uint64_t>& return_vector);
+  static bool Parts_get_Radiators_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector);
   static bool Parts_get_ReactionWheels_createRequest(uint64_t Parts_ID, krpc::Request& request);
   bool Parts_get_ReactionWheels(uint64_t Parts_ID, std::vector<uint64_t>& return_vector);
   static bool Parts_get_ReactionWheels_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector);
@@ -1060,6 +1077,9 @@ public:
   static bool Resources_Density_createRequest(std::string name, krpc::Request& request);
   bool Resources_Density(std::string name, float& return_value);
   static bool Resources_Density_parseResponse(krpc::Response response, float& return_value);
+  static bool Resources_FlowMode_createRequest(std::string name, krpc::Request& request);
+  bool Resources_FlowMode(std::string name, int32_t& return_value);
+  static bool Resources_FlowMode_parseResponse(krpc::Response response, int32_t& return_value);
   static bool Resources_get_Names_createRequest(uint64_t Resources_ID, krpc::Request& request);
   bool Resources_get_Names(uint64_t Resources_ID, std::vector<uint64_t>& return_vector);
   static bool Resources_get_Names_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector);
@@ -1162,6 +1182,17 @@ public:
   static bool Vessel_get_SurfaceVelocityReferenceFrame_createRequest(uint64_t Vessel_ID, krpc::Request& request);
   bool Vessel_get_SurfaceVelocityReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value);
   static bool Vessel_get_SurfaceVelocityReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value);
+  static bool Radiator_get_Part_createRequest(uint64_t Radiator_ID, krpc::Request& request);
+  bool Radiator_get_Part(uint64_t Radiator_ID, uint64_t& return_value);
+  static bool Radiator_get_Part_parseResponse(krpc::Response response, uint64_t& return_value);
+  static bool Radiator_get_Deployed_createRequest(uint64_t Radiator_ID, krpc::Request& request);
+  bool Radiator_get_Deployed(uint64_t Radiator_ID, bool& return_value);
+  static bool Radiator_get_Deployed_parseResponse(krpc::Response response, bool& return_value);
+  static bool Radiator_set_Deployed_createRequest(uint64_t Radiator_ID, bool value, krpc::Request& request);
+  bool Radiator_set_Deployed(uint64_t Radiator_ID, bool value);
+  static bool Radiator_get_State_createRequest(uint64_t Radiator_ID, krpc::Request& request);
+  bool Radiator_get_State(uint64_t Radiator_ID, int32_t& return_value);
+  static bool Radiator_get_State_parseResponse(krpc::Response response, int32_t& return_value);
   static bool AlarmWithName_createRequest(std::string name, krpc::Request& request);
   bool AlarmWithName(std::string name, uint64_t& return_value);
   static bool AlarmWithName_parseResponse(krpc::Response response, uint64_t& return_value);

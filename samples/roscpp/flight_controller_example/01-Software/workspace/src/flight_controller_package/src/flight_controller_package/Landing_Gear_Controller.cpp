@@ -1,9 +1,9 @@
 #include "flight_controller_package/Landing_Gear_Controller.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -39,6 +39,7 @@ Landing_Gear_Controller::~Landing_Gear_Controller()
 // Startup - Setup Component Ports & Timers
 void Landing_Gear_Controller::startUp()
 {
+  LOGGER.DEBUG("Entering Landing_Gear_Controller::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -85,6 +86,7 @@ void Landing_Gear_Controller::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Landing_Gear_Controller::startUp");
 }
 
 extern "C" {

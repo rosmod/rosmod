@@ -1,5 +1,7 @@
 #include "satellite_flight_application/SatelliteBusInterface.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -57,13 +59,14 @@ SatelliteBusInterface::~SatelliteBusInterface()
   SatelliteState_Server.shutdown();
   ThrusterComm_Server.shutdown();
   //# Start Destructor Marker
-  krpc_client.Close();
+        krpc_client.Close();
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
 void SatelliteBusInterface::startUp()
 {
+  LOGGER.DEBUG("Entering SatelliteBusInterface::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -119,6 +122,9 @@ void SatelliteBusInterface::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting SatelliteBusInterface::startUp");
 }
 
 extern "C" {

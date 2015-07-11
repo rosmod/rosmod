@@ -1,5 +1,6 @@
 #include "wam_application/ImageProcessor.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -42,6 +43,7 @@ ImageProcessor::~ImageProcessor()
 // Startup - Setup Component Ports & Timers
 void ImageProcessor::startUp()
 {
+  LOGGER.DEBUG("Entering ImageProcessor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -99,6 +101,8 @@ void ImageProcessor::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  LOGGER.DEBUG("Exiting ImageProcessor::startUp");
 }
 
 extern "C" {

@@ -1,13 +1,13 @@
 #include "flight_controller_package/Heading_Sensor.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t refFrame;
 uint64_t flightID;
 float heading;
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -58,6 +58,7 @@ Heading_Sensor::~Heading_Sensor()
 // Startup - Setup Component Ports & Timers
 void Heading_Sensor::startUp()
 {
+  LOGGER.DEBUG("Entering Heading_Sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -106,6 +107,7 @@ void Heading_Sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Heading_Sensor::startUp");
 }
 
 extern "C" {

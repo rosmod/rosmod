@@ -64,7 +64,7 @@ package satellite_flight_application
     }       
   }
   // ROSMOD Component - SatelliteBusInterface
-  component SatelliteBusInterface : Base 
+  component SatelliteBusInterface : KSP 
   {
     // ROSMOD Server - SatelliteState_Server
     server <satellite_flight_application/SatelliteState> SatelliteState_Server 

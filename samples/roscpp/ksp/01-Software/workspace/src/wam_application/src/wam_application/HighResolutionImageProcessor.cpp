@@ -1,5 +1,6 @@
 #include "wam_application/HighResolutionImageProcessor.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -35,6 +36,7 @@ HighResolutionImageProcessor::~HighResolutionImageProcessor()
 // Startup - Setup Component Ports & Timers
 void HighResolutionImageProcessor::startUp()
 {
+  LOGGER.DEBUG("Entering HighResolutionImageProcessor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -54,7 +56,7 @@ void HighResolutionImageProcessor::startUp()
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - timer.properties["name"]
+  // Component Timer - HRImage_Timer
   timer_options = 
     ros::TimerOptions
     (ros::Duration(10.0),
@@ -81,6 +83,8 @@ void HighResolutionImageProcessor::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  LOGGER.DEBUG("Exiting HighResolutionImageProcessor::startUp");
 }
 
 extern "C" {

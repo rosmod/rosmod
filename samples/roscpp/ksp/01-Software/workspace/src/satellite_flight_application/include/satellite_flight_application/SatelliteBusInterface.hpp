@@ -5,6 +5,9 @@
 #include "Component.hpp"
 #include "satellite_flight_application/SatelliteState.h"
 #include "satellite_flight_application/ThrusterComm.h"
+
+#include "krpci/krpci.hpp"
+
 //# Start User Includes Marker
 #include "krpci/krpci.hpp"
 //# End User Includes Marker
@@ -53,6 +56,5 @@ private:
   uint64_t reference_frame_id;
   //# End User Private Variables Marker
 };
-
 
 #endif

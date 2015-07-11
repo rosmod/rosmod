@@ -1,13 +1,13 @@
 #include "flight_controller_package/Pitch_Sensor.hpp"
 
+KRPCI krpci_client;
+
 //# Start User Globals Marker
 uint64_t vesselID;
 uint64_t refFrame;
 uint64_t flightID;
 float pitch;
 //# End User Globals Marker
-
-KRPCI krpci_client;
 
 // Initialization Function
 //# Start Init Marker
@@ -60,13 +60,14 @@ Pitch_Sensor::~Pitch_Sensor()
   pitch_sensor_timer.stop();
   pitch_publisher.shutdown();
   //# Start Destructor Marker
-                                krpci_client.Close();
+                                  krpci_client.Close();
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
 void Pitch_Sensor::startUp()
 {
+  LOGGER.DEBUG("Entering Pitch_Sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -115,6 +116,7 @@ void Pitch_Sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
   krpci_client.SetName(nodeName + "_" + compName);
+  LOGGER.DEBUG("Exiting Pitch_Sensor::startUp");
 }
 
 extern "C" {

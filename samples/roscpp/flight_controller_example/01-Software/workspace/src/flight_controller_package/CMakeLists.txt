@@ -64,36 +64,36 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Speed.msg
-
-  Heading.msg
-
-  Pitch.msg
-
   Roll.msg
 
-  Yaw.msg
+  Latitude.msg
+
+  Speed.msg
 
   Longitude.msg
 
+  Yaw.msg
+
+  Heading.msg
+
   Altitude.msg
 
-  Latitude.msg
+  Pitch.msg
 
 )
 
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  Roll_Control.srv
-
-  Heading_Control.srv
+  Throttle_Control.srv
 
   Yaw_Control.srv
 
+  Roll_Control.srv
+
   Landing_Gear_Control.srv
 
-  Throttle_Control.srv
+  Heading_Control.srv
 
   Pitch_Control.srv
 
@@ -438,5 +438,5 @@ add_library(KRPCI
             src/krpci/krpci_generated.cpp
 	    )
 target_link_libraries(KRPCI
-  boost_system boost_thread protobuf
+  boost_system boost_thread /usr/lib/libprotobuf.so.10
   )

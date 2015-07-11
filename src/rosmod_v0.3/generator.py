@@ -216,11 +216,11 @@ class ROSMOD_Generator:
                 rosmod_path = str(os.getcwd())
 
                 # krpci.hpp
-                copyfile(resource_filename('krpci.src', 'krpci.hpp'), 
+                copyfile(resource_filename('krpci.src.krpci', 'krpci.hpp'), 
                          self.krpci_include + '/krpci.hpp')
 
                 # KRPC.pb.h
-                copyfile(resource_filename('krpci.src', 'KRPC.pb.h'), 
+                copyfile(resource_filename('krpci.src.krpci', 'KRPC.pb.h'), 
                          self.krpci_include + '/KRPC.pb.h')
 
                 # krpci_base.cpp

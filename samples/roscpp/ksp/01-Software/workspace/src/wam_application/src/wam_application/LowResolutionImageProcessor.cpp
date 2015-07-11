@@ -1,5 +1,6 @@
 #include "wam_application/LowResolutionImageProcessor.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -35,6 +36,7 @@ LowResolutionImageProcessor::~LowResolutionImageProcessor()
 // Startup - Setup Component Ports & Timers
 void LowResolutionImageProcessor::startUp()
 {
+  LOGGER.DEBUG("Entering LowResolutionImageProcessor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -54,7 +56,7 @@ void LowResolutionImageProcessor::startUp()
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - timer.properties["name"]
+  // Component Timer - LRImage_Timer
   timer_options = 
     ros::TimerOptions
     (ros::Duration(5.0),
@@ -81,6 +83,8 @@ void LowResolutionImageProcessor::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  LOGGER.DEBUG("Exiting LowResolutionImageProcessor::startUp");
 }
 
 extern "C" {

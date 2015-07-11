@@ -4,6 +4,8 @@
 #include "ros/ros.h"
 #include "Component.hpp"
 #include "satellite_flight_application/GroundCommand.h"
+
+
 //# Start User Includes Marker
 //# End User Includes Marker
 
@@ -39,6 +41,5 @@ private:
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };
-
 
 #endif

@@ -1,5 +1,6 @@
 #include "satellite_flight_application/GroundInterface.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
 
@@ -35,6 +36,7 @@ GroundInterface::~GroundInterface()
 // Startup - Setup Component Ports & Timers
 void GroundInterface::startUp()
 {
+  LOGGER.DEBUG("Entering GroundInterface::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -54,7 +56,7 @@ void GroundInterface::startUp()
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
   
-  // Component Timer - timer.properties["name"]
+  // Component Timer - GroundInterface_Timer
   timer_options = 
     ros::TimerOptions
     (ros::Duration(1.0),
@@ -81,6 +83,8 @@ void GroundInterface::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  LOGGER.DEBUG("Exiting GroundInterface::startUp");
 }
 
 extern "C" {

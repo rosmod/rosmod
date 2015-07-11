@@ -28,7 +28,41 @@ bool KRPCI::ClearTarget()
 }
 
 
-bool KRPCI::WarpTo_createRequest(double UT, float maxRate, krpc::Request& request)
+bool KRPCI::CanRailsWarpAt_createRequest(int32_t factor, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("CanRailsWarpAt");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::CanRailsWarpAt(int32_t factor, bool& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::CanRailsWarpAt_createRequest(factor, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::CanRailsWarpAt_parseResponse(krpc::Response response, bool& return_value)
+{
+  return true;
+}
+
+bool KRPCI::WarpTo_createRequest(double UT, float maxRate, float maxPhysicsRate, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
   request.set_procedure("WarpTo");
@@ -41,16 +75,20 @@ bool KRPCI::WarpTo_createRequest(double UT, float maxRate, krpc::Request& reques
   argument->set_position(1);
   argument->set_value((const char*)(&maxRate), sizeof(maxRate));
 
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&maxPhysicsRate), sizeof(maxPhysicsRate));
+
   return true;
 }
 
-bool KRPCI::WarpTo(double UT, float maxRate)
+bool KRPCI::WarpTo(double UT, float maxRate, float maxPhysicsRate)
 {
   if (!connected_)
     return false;
   krpc::Request request;
   krpc::Response response;
-  KRPCI::WarpTo_createRequest(UT, maxRate, request);
+  KRPCI::WarpTo_createRequest(UT, maxRate, maxPhysicsRate, request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -357,20 +395,81 @@ bool KRPCI::DrawDirection(double direction_x, double direction_y, double directi
 }
 
 
-bool KRPCI::ClearDirections_createRequest(krpc::Request& request)
+bool KRPCI::DrawLine_createRequest(double start_x, double start_y, double start_z, double end_x, double end_y, double end_z, uint64_t referenceFrame, double color_x, double color_y, double color_z, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
-  request.set_procedure("ClearDirections");
+  request.set_procedure("DrawLine");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  krpc::Tuple start;
+  KRPCI::EncodeTuple(start_x, 
+		     start_y, 
+		     start_z, 
+		     start); 
+  start.SerializeToString(argument->mutable_value());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  krpc::Tuple end;
+  KRPCI::EncodeTuple(end_x, 
+		     end_y, 
+		     end_z, 
+		     end); 
+  end.SerializeToString(argument->mutable_value());
+
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(referenceFrame, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(3);
+  krpc::Tuple color;
+  KRPCI::EncodeTuple(color_x, 
+		     color_y, 
+		     color_z, 
+		     color); 
+  color.SerializeToString(argument->mutable_value());
+
   return true;
 }
 
-bool KRPCI::ClearDirections()
+bool KRPCI::DrawLine(double start_x, double start_y, double start_z, double end_x, double end_y, double end_z, uint64_t referenceFrame, double color_x, double color_y, double color_z)
 {
   if (!connected_)
     return false;
   krpc::Request request;
   krpc::Response response;
-  KRPCI::ClearDirections_createRequest(request);
+  KRPCI::DrawLine_createRequest(start_x, start_y, start_z, end_x, end_y, end_z, referenceFrame, color_x, color_y, color_z, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::ClearDrawing_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("ClearDrawing");
+  return true;
+}
+
+bool KRPCI::ClearDrawing()
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::ClearDrawing_createRequest(request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -767,6 +866,105 @@ bool KRPCI::get_G_parseResponse(krpc::Response response, float& return_value)
   return true;
 }
 
+bool KRPCI::get_WarpMode_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpMode");
+  return true;
+}
+
+bool KRPCI::get_WarpMode(int32_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpMode_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpMode_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
+bool KRPCI::get_WarpRate_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpRate");
+  return true;
+}
+
+bool KRPCI::get_WarpRate(float& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpRate_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      get_WarpRate_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpRate_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
+bool KRPCI::get_WarpFactor_createRequest(krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("get_WarpFactor");
+  return true;
+}
+
+bool KRPCI::get_WarpFactor(float& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::get_WarpFactor_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      get_WarpFactor_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::get_WarpFactor_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
 bool KRPCI::get_RailsWarpFactor_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -889,20 +1087,20 @@ bool KRPCI::set_PhysicsWarpFactor(int32_t value)
 }
 
 
-bool KRPCI::get_WarpMode_createRequest(krpc::Request& request)
+bool KRPCI::get_MaximumRailsWarpFactor_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
-  request.set_procedure("get_WarpMode");
+  request.set_procedure("get_MaximumRailsWarpFactor");
   return true;
 }
 
-bool KRPCI::get_WarpMode(int32_t& return_value)
+bool KRPCI::get_MaximumRailsWarpFactor(int32_t& return_value)
 {
   if (!connected_)
     return false;
   krpc::Request request;
   krpc::Response response;
-  KRPCI::get_WarpMode_createRequest(request);
+  KRPCI::get_MaximumRailsWarpFactor_createRequest(request);
 
   if (getResponseFromRequest(request,response))
     {
@@ -915,42 +1113,8 @@ bool KRPCI::get_WarpMode(int32_t& return_value)
   return true;
 }
 
-bool KRPCI::get_WarpMode_parseResponse(krpc::Response response, int32_t& return_value)
+bool KRPCI::get_MaximumRailsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value)
 {
-  return true;
-}
-
-bool KRPCI::get_WarpRate_createRequest(krpc::Request& request)
-{
-  request.set_service("SpaceCenter");
-  request.set_procedure("get_WarpRate");
-  return true;
-}
-
-bool KRPCI::get_WarpRate(float& return_value)
-{
-  if (!connected_)
-    return false;
-  krpc::Request request;
-  krpc::Response response;
-  KRPCI::get_WarpRate_createRequest(request);
-
-  if (getResponseFromRequest(request,response))
-    {
-      if (response.has_error())
-	{
-	  std::cout << "Response error: " << response.error() << endl;
-	  return false;
-	}
-      get_WarpRate_parseResponse(response, return_value);
-    }
-  return true;
-}
-
-bool KRPCI::get_WarpRate_parseResponse(krpc::Response response, float& return_value)
-{
-  return_value = 0.0;
-  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12228,6 +12392,48 @@ bool KRPCI::Part_get_Parachute_parseResponse(krpc::Response response, uint64_t& 
   return true;
 }
 
+bool KRPCI::Part_get_Radiator_createRequest(uint64_t Part_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Part_get_Radiator");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Part_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Part_get_Radiator(uint64_t Part_ID, uint64_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Part_get_Radiator_createRequest(Part_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      Part_get_Radiator_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::Part_get_Radiator_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
+  return true;
+}
+
 bool KRPCI::Part_get_ReactionWheel_createRequest(uint64_t Part_ID, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -13311,6 +13517,55 @@ bool KRPCI::Parts_get_Parachutes_parseResponse(krpc::Response response, std::vec
   return true;
 }
 
+bool KRPCI::Parts_get_Radiators_createRequest(uint64_t Parts_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Parts_get_Radiators");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Parts_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Parts_get_Radiators(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Parts_get_Radiators_createRequest(Parts_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      Parts_get_Radiators_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_Radiators_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
 bool KRPCI::Parts_get_ReactionWheels_createRequest(uint64_t Parts_ID, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -14338,6 +14593,40 @@ bool KRPCI::Resources_Density_parseResponse(krpc::Response response, float& retu
 {
   return_value = 0.0;
   memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
+bool KRPCI::Resources_FlowMode_createRequest(std::string name, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Resources_FlowMode");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::Resources_FlowMode(std::string name, int32_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Resources_FlowMode_createRequest(name, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Resources_FlowMode_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -15823,6 +16112,164 @@ bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame_parseResponse(krpc::Respons
   KRPCI::DecodeVarint(return_value, 
 		      (char *)response.return_value().data(), 
 		      response.return_value().size());
+  return true;
+}
+
+bool KRPCI::Radiator_get_Part_createRequest(uint64_t Radiator_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Radiator_get_Part");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Radiator_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Radiator_get_Part(uint64_t Radiator_ID, uint64_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Radiator_get_Part_createRequest(Radiator_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      Radiator_get_Part_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::Radiator_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
+  return true;
+}
+
+bool KRPCI::Radiator_get_Deployed_createRequest(uint64_t Radiator_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Radiator_get_Deployed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Radiator_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Radiator_get_Deployed(uint64_t Radiator_ID, bool& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Radiator_get_Deployed_createRequest(Radiator_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Radiator_get_Deployed_parseResponse(krpc::Response response, bool& return_value)
+{
+  return true;
+}
+
+bool KRPCI::Radiator_set_Deployed_createRequest(uint64_t Radiator_ID, bool value, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Radiator_set_Deployed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Radiator_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint32ToArray(value, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Radiator_set_Deployed(uint64_t Radiator_ID, bool value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Radiator_set_Deployed_createRequest(Radiator_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::Radiator_get_State_createRequest(uint64_t Radiator_ID, krpc::Request& request)
+{
+  request.set_service("SpaceCenter");
+  request.set_procedure("Radiator_get_State");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(Radiator_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::Radiator_get_State(uint64_t Radiator_ID, int32_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::Radiator_get_State_createRequest(Radiator_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::Radiator_get_State_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 

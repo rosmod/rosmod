@@ -1,8 +1,8 @@
 #include "flight_controller_package/Longitude_Sensor.hpp"
 
+
 //# Start User Globals Marker
 //# End User Globals Marker
-
 
 // Initialization Function
 //# Start Init Marker
@@ -36,6 +36,7 @@ Longitude_Sensor::~Longitude_Sensor()
 // Startup - Setup Component Ports & Timers
 void Longitude_Sensor::startUp()
 {
+  LOGGER.DEBUG("Entering Longitude_Sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
@@ -83,6 +84,7 @@ void Longitude_Sensor::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  LOGGER.DEBUG("Exiting Longitude_Sensor::startUp");
 }
 
 extern "C" {
