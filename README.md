@@ -26,7 +26,7 @@ git submodule foreach git pull origin master
 cd rosmod
 sudo ./dependencies.py
 cd src/rosmod_v0.3
-./update_rosmod_egg <PATH_TO_EGG>
-alias rosmod='python <PATH_TO_EGG/rosmod.egg>'
+./update_rosmod_egg <SOME_PATH_TO_EGG>
+alias rosmod='python <SOME_PATH_TO_EGG/rosmod.egg>'
 rosmod
 ```
