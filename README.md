@@ -36,9 +36,9 @@ Using ROSMOD
 ------------
 
 ```bash
-git clone --recursive https://github.com/finger563/rosmod
+git clone --recursive https://github.com/rosmod/rosmod-gui
 git submodule foreach git pull origin master
-cd rosmod
+cd rosmod-gui
 sudo ./dependencies.py
 cd src/rosmod_v0.3
 ./update_rosmod_egg <SOME_PATH_TO_EGG>
