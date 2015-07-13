@@ -413,8 +413,10 @@ Timer NodeHandle::createTimer(TimerOptions& ops) const
   }
 
   Timer timer(ops);
-  if (ops.autostart)
+  if (ops.autostart) {
+    ROS_INFO("Starting Timer: %s", ops.callback_options.alias.c_str());
     timer.start();
+  }
   return timer;
 }
 
@@ -745,7 +747,7 @@ bool NodeHandle::searchParam(const std::string& key, std::string& result_out) co
 
 bool NodeHandle::ok() const
 {
-  return ok() && ok_;
+  return rosmod::ok() && ok_;
 }
 
 } // namespace rosmod

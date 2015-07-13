@@ -119,6 +119,7 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
       return;
     }
 
+    // Check scheduling scheme and enqueue based on choice
     callbacks_.push_back(info);
   }
 

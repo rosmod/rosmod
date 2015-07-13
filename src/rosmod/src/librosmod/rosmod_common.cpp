@@ -46,7 +46,7 @@
 
 using std::string;
 
-void disableAllSignalsInThisThread()
+void rosmod::disableAllSignalsInThisThread()
 {
 #if !defined(WIN32)
   // pthreads_win32, despite having an implementation of pthread_sigmask,
