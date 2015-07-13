@@ -102,7 +102,7 @@ Timer::Timer(const TimerOptions& ops)
   impl_->callback_ = ops.callback;
   impl_->callback_queue_ = ops.callback_queue;
   impl_->tracked_object_ = ops.tracked_object;
-  impl_->has_tracked_object_ = ops.tracked_object;
+  impl_->has_tracked_object_ = (bool)ops.tracked_object;
   impl_->oneshot_ = ops.oneshot;
   impl_->callback_options = ops.callback_options;
 }

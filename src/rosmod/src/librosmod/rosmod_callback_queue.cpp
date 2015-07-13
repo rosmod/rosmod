@@ -43,6 +43,12 @@ CallbackQueue::CallbackQueue(bool enabled)
 , enabled_(enabled)
 , scheduling_scheme(FIFO)
 {
+  if (scheduling_scheme == FIFO)
+    ROSMOD_LOGGER.DEBUG("CALLBACK SETUP::Scheduling Scheme = FIFO");
+  else if (scheduling_scheme == PFIFO)
+    ROSMOD_LOGGER.DEBUG("CALLBACK SETUP::Scheduling Scheme = PFIFO");
+  else if (scheduling_scheme == EDF)
+    ROSMOD_LOGGER.DEBUG("CALLBACK SETUP::Scheduling Scheme = EDF");  
 }
 
 CallbackQueue::~CallbackQueue()
@@ -104,13 +110,6 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
   info.removal_id = removal_id;
   info.callback_options = callback_options;
   
-  ROS_INFO("Enqueue:: Callback: %s, Scheme: %d, Priority: %d, Deadline Sec: %d, nSec: %d", 
-	   callback_options.alias.c_str(),
-	   scheduling_scheme,
-	   callback_options.priority,
-	   callback_options.deadline.sec,
-	   callback_options.deadline.nsec);
-
   {
     boost::mutex::scoped_lock lock(mutex_);
 
@@ -118,6 +117,12 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
     {
       return;
     }
+
+    ROSMOD_LOGGER.DEBUG("CALLBACK ENQUEUE::Alias=%s, Priority=%d, Deadline sec=%d, nsec=%d",
+			callback_options.alias.c_str(),
+			callback_options.priority,
+			callback_options.deadline.sec,
+			callback_options.deadline.nsec);
 
     // Check scheduling scheme and enqueue based on choice
     callbacks_.push_back(info);
@@ -412,12 +417,24 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
       return TryAgain;
     }
 
+    ROSMOD_LOGGER.DEBUG("CALLBACK INVOKED::Alias=%s, Priority=%d, Deadline sec=%d, nsec=%d",
+			info.callback_options.alias.c_str(),
+			info.callback_options.priority,
+			info.callback_options.deadline.sec,
+			info.callback_options.deadline.nsec);
+
     return Called;
   }
   else
   {
     tls->cb_it = tls->callbacks.erase(tls->cb_it);
   }
+
+  ROSMOD_LOGGER.DEBUG("CALLBACK INVOKED::Alias=%s, Priority=%d, Deadline sec=%d, nsec=%d",
+		      info.callback_options.alias.c_str(),
+		      info.callback_options.priority,
+		      info.callback_options.deadline.sec,
+		      info.callback_options.deadline.nsec);
 
   return Called;
 }

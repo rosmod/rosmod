@@ -43,6 +43,8 @@
 #include "ros/exceptions.h"
 #include "ros/datatypes.h"
 
+#include "rosmod/rosmod_logger.h"
+
 namespace rosmod
 {
 
