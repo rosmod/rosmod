@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<node name="led_control_node_424">
+  <component_instance name="led_controller_Instance">
+    <library name="libled_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="sub">
+      <port name="led_state_sub"/>
+      <group setting="group_31"/>
+    </port_instance>
+    <port_instance name="pub">
+      <port name="led_state_pub"/>
+      <group setting="group_32"/>
+    </port_instance>
+  </component_instance>
+</node>
+

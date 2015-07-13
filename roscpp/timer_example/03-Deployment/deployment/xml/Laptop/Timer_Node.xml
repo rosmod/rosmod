@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<node name="Timer_Node">
+  <component_instance name="Timer_Instance">
+    <library name="libTimer.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+

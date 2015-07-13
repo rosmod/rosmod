@@ -1,0 +1,3 @@
+float64 goal_altitude
+float64 goal_speed
+float64 goal_heading

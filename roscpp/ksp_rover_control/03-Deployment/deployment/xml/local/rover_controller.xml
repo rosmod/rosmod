@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<node name="rover_controller">
+  <library name="libKRPCI.so"/>
+  <component_instance name="sensor_i">
+    <library name="libsensor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+  <component_instance name="actuator_i">
+    <library name="libactuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+  <component_instance name="low_level_controller_i">
+    <library name="liblow_level_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+  <component_instance name="high_level_controller_i">
+    <library name="libhigh_level_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+

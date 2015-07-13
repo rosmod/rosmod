@@ -1,0 +1,14 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - Laptop
+hardware Laptop
+{
+  ip_address = "localhost";
+  username = "jeb";
+  sshkey = "/home/jeb/.ssh/id_rsa_rosmod"; 
+  deployment_path = "/home/jeb";
+  arch = x64;
+}
+

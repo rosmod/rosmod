@@ -1,0 +1,223 @@
+/*
+ * ROS Workspace Model
+ */
+
+// ROS Package - cluster_flight_application
+package cluster_flight_application
+{
+    // Set of ROS Messages
+    messages 
+    {
+        // ROS msg - TargetOrbit
+        msg TargetOrbit
+        {
+            int64 sat_id;
+            float64 inclination;
+            float64 longitudeAN;
+            float64 argumentOfPeriapsis;
+            float64 eccentricity;
+            float64 semimajorAxis;
+            float64 meanAnomaly;
+        } 
+    }
+
+
+    // Set of ROS Components
+    components
+    {
+        // ROS Component - TrajectoryPlanner_def
+	component TrajectoryPlanner_def
+	{
+	    publisher<TargetOrbit> targetOrbitPub;
+	    subscriber<satellite_flight_application/SatState> satStateSub;
+	    subscriber<satellite_flight_application/GroundCommand> satCommandSub;
+	}
+    }
+
+    // Set of ROS Nodes in this package
+    nodes
+    {
+        node clusterFlightNode 
+	{
+            // Instantiating components in ROS node
+     	    component<TrajectoryPlanner_def> trajectoryPlanner_comp;
+	}
+    }
+}
+// ROS Package - satellite_flight_application
+package satellite_flight_application
+{
+    // Set of ROS Messages
+    messages 
+    {
+        // ROS msg - GroundCommand
+        msg GroundCommand
+        {
+            int64 com_id;
+            string command;
+            float64[200] params;
+        } 
+        // ROS msg - SatState
+        msg SatState
+        {
+            string sat_id;
+            float64 alt;
+            float64 rpos_x;
+            float64 rpos_y;
+            float64 rpos_z;
+            float64 rvel_x;
+            float64 rvel_y;
+            float64 rvel_z;
+            float64 vrot_x;
+            float64 vrot_y;
+            float64 vrot_z;
+        } 
+    }
+
+    // Set of ROS Services
+    services
+    {
+        // ROS srv - SatelliteState
+        srv SatelliteState
+        {
+            request
+            {
+            }
+
+            response
+            {
+                satellite_flight_application/SatState state;
+                int64 retVal;
+            }
+        }
+        // ROS srv - ThrusterComm
+        srv ThrusterComm
+        {
+            request
+            {
+                int64 thruster_id;
+                float64 amount;
+                float64 duration;
+            }
+
+            response
+            {
+                int64 retVal;
+            }
+        }
+    }
+
+    // Set of ROS Components
+    components
+    {
+        // ROS Component - GroundInterface_def
+	component GroundInterface_def
+	{
+	    publisher<GroundCommand> gndCommandPub;
+	    timer Timer0
+	    {
+	        period = 1.0s;
+	    }
+	}
+        // ROS Component - OrbitController_def
+	component OrbitController_def
+	{
+	    requires SatelliteState;
+	    requires ThrusterComm;
+	    publisher<SatState> satStatePub;
+	    subscriber<cluster_flight_application/TargetOrbit> targetOrbitSub;
+	    timer Timer0
+	    {
+	        period = 1.0s;
+	    }
+	}
+        // ROS Component - SatelliteBusInterface_def
+	component SatelliteBusInterface_def
+	{
+            provides SatelliteState;
+            provides ThrusterComm;
+	}
+    }
+
+    // Set of ROS Nodes in this package
+    nodes
+    {
+        node satelliteFlightNode 
+	{
+            // Instantiating components in ROS node
+     	    component<GroundInterface_def> groundInterface_comp;
+     	    component<OrbitController_def> orbitController_comp;
+     	    component<SatelliteBusInterface_def> satBusIntf_comp;
+	}
+    }
+}
+// ROS Package - wam_application
+package wam_application
+{
+    // Set of ROS Messages
+    messages 
+    {
+        // ROS msg - LRImageVector
+        msg LRImageVector
+        {
+            string img_id;
+            float64[100] img;
+        } 
+        // ROS msg - HRImageVector
+        msg HRImageVector
+        {
+            string img_id;
+            float64[4000] img;
+        } 
+    }
+
+
+    // Set of ROS Components
+    components
+    {
+        // ROS Component - HighResolutionImageProducer_def
+	component HighResolutionImageProducer_def
+	{
+	    publisher<HRImageVector> hrImage_pub;
+	    timer Timer0
+	    {
+	        period = 10.0s;
+	    }
+	}
+        // ROS Component - ImageProcessor_def
+	component ImageProcessor_def
+	{
+     	    subscriber<HRImageVector> HRsub;
+     	    subscriber<LRImageVector> LRsub;
+	}
+        // ROS Component - LowResolutionIMageProducer_def
+	component LowResolutionIMageProducer_def
+	{
+	    publisher<LRImageVector> lrImage_pub;
+	    timer Timer0
+	    {
+	        period = 5.0s;
+	    }
+	}
+    }
+
+    // Set of ROS Nodes in this package
+    nodes
+    {
+        node imageProcessorNode 
+	{
+            // Instantiating components in ROS node
+     	    component<ImageProcessor_def> image_processor_comp;
+	}
+        node lowResolutionImager 
+	{
+            // Instantiating components in ROS node
+     	    component<LowResolutionIMageProducer_def> LR_sensor;
+	}
+        node highResolutionImager 
+	{
+            // Instantiating components in ROS node
+     	    component<HighResolutionImageProducer_def> HR_sensor;
+	}
+    }
+}

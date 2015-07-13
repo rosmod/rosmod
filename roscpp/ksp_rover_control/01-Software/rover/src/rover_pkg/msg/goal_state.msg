@@ -1,0 +1,2 @@
+float64 goal_heading
+float64 goal_speed

@@ -1,0 +1,32 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - BBB_111
+hardware BBB_111
+{
+  ip_address = "10.1.1.1";
+  username = "ubuntu";
+  sshkey = "/home/jeb/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  arch = arm;
+}
+// Hardware - BBB_112
+hardware BBB_112
+{
+  ip_address = "10.1.1.2";
+  username = "ubuntu";
+  sshkey = "/home/jeb/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  arch = arm;
+}
+// Hardware - BBB_113
+hardware BBB_113
+{
+  ip_address = "10.1.1.3";
+  username = "ubuntu";
+  sshkey = "/home/jeb/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  arch = arm;
+}
+

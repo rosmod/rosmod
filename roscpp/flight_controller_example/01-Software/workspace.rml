@@ -1,0 +1,229 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - flight_controller_package
+package flight_controller_package
+{
+  // ROSMOD Component - Pitch_Sensor
+  component Pitch_Sensor : KSP 
+  {
+    // ROSMOD Publisher - pitch_publisher
+    publisher <flight_controller_package/Pitch> pitch_publisher;
+    // ROSMOD Timer - pitch_sensor_timer
+    timer pitch_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Heading_Sensor
+  component Heading_Sensor : KSP 
+  {
+    // ROSMOD Publisher - heading_publisher
+    publisher <flight_controller_package/Heading> heading_publisher;
+    // ROSMOD Timer - heading_sensor_timer
+    timer heading_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - Roll_Sensor
+  component Roll_Sensor : KSP 
+  {
+    // ROSMOD Publisher - roll_publisher
+    publisher <flight_controller_package/Roll> roll_publisher;
+    // ROSMOD Timer - roll_sensor_timer
+    timer roll_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - Altitude_Sensor
+  component Altitude_Sensor : KSP 
+  {
+    // ROSMOD Publisher - altitude_publisher
+    publisher <flight_controller_package/Altitude> altitude_publisher;
+    // ROSMOD Timer - altitude_sensor_timer
+    timer altitude_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Pitch_Actuator
+  component Pitch_Actuator : KSP 
+  {
+    // ROSMOD Server - pitch_control_server
+    server <flight_controller_package/Pitch_Control> pitch_control_server 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Roll_Actuator
+  component Roll_Actuator : KSP 
+  {
+    // ROSMOD Server - roll_control_server
+    server <flight_controller_package/Roll_Control> roll_control_server 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Heading_Actuator
+  component Heading_Actuator : KSP 
+  {
+    // ROSMOD Server - heading_control_server
+    server <flight_controller_package/Heading_Control> heading_control_server 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Throttle_Actuator
+  component Throttle_Actuator : KSP 
+  {
+    // ROSMOD Server - throttle_control_server
+    server <flight_controller_package/Throttle_Control> throttle_control_server 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Landing_Gear_Controller
+  component Landing_Gear_Controller : KSP 
+  {
+    // ROSMOD Server - landing_gear_control_server
+    server <flight_controller_package/Landing_Gear_Control> landing_gear_control_server 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - PID_Controller
+  component PID_Controller : Base 
+  {
+    // ROSMOD Client - throttle_control_client
+    client <flight_controller_package/Throttle_Control> throttle_control_client;
+    // ROSMOD Client - pitch_control_client
+    client <flight_controller_package/Pitch_Control> pitch_control_client;
+    // ROSMOD Client - roll_control_client
+    client <flight_controller_package/Roll_Control> roll_control_client;
+    // ROSMOD Client - heading_control_client
+    client <flight_controller_package/Heading_Control> heading_control_client;
+    // ROSMOD Client - landing_gear_control_client
+    client <flight_controller_package/Landing_Gear_Control> landing_gear_control_client;
+    // ROSMOD Subscriber - pitch_subscriber
+    subscriber <flight_controller_package/Pitch> pitch_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - roll_subscriber
+    subscriber <flight_controller_package/Roll> roll_subscriber 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - heading_subscriber
+    subscriber <flight_controller_package/Heading> heading_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - altitude_subscriber
+    subscriber <flight_controller_package/Altitude> altitude_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+    // ROSMOD Timer - pid_control_timer
+    timer pid_control_timer 
+    {
+	period = 0.1;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - High_level_Controller
+  component High_level_Controller : Base 
+  {
+    // ROSMOD Subscriber - pitch_subscriber
+    subscriber <flight_controller_package/Pitch> pitch_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - roll_subscriber
+    subscriber <flight_controller_package/Roll> roll_subscriber 
+    {
+      priority = 50;
+      deadline = 0.4;
+    }       
+    // ROSMOD Subscriber - heading_subscriber
+    subscriber <flight_controller_package/Heading> heading_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+    // ROSMOD Subscriber - altitude_subscriber
+    subscriber <flight_controller_package/Altitude> altitude_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+    // ROSMOD Timer - high_level_timer
+    timer high_level_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.5;
+    }       
+  }
+  // ROSMOD Component - Speed_Sensor
+  component Speed_Sensor : KSP 
+  {
+    // ROSMOD Publisher - speed_publisher
+    publisher <flight_controller_package/Speed> speed_publisher;
+    // ROSMOD Timer - speed_sensor_timer
+    timer speed_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Latitude_Sensor
+  component Latitude_Sensor : Base 
+  {
+    // ROSMOD Publisher - latitude_publisher
+    publisher <flight_controller_package/Latitude> latitude_publisher;
+    // ROSMOD Timer - latitude_sensor_timer
+    timer latitude_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - Longitude_Sensor
+  component Longitude_Sensor : Base 
+  {
+    // ROSMOD Publisher - longitude_publisher
+    publisher <flight_controller_package/Longitude> longitude_publisher;
+    // ROSMOD Timer - longitude_sensor_timer
+    timer longitude_sensor_timer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+}

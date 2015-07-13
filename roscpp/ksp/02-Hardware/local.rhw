@@ -1,0 +1,14 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - local_machine
+hardware local_machine
+{
+  ip_address = "localhost";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb/";
+  arch = x64;
+}
+

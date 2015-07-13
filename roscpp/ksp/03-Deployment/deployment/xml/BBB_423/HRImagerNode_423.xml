@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<node name="HRImagerNode_423">
+  <component_instance name="HighResolutionImageProcessor_Instance">
+    <library name="libHighResolutionImageProcessor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+
