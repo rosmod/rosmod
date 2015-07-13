@@ -36,7 +36,7 @@ Using ROSMOD
 ------------
 
 ```bash
-git clone --recursive https://github.com/finger563/rosmod
+git clone --recursive https://github.com/rosmod/rosmod-gui
 git submodule foreach git pull origin master
 cd rosmod
 sudo ./dependencies.py
