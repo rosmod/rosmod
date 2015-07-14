@@ -2,4 +2,6 @@ bool deactivateSender
 bool meterSender
 float64 newSenderRate
 ---
-int64 retVal
+uint64 retVal
+string profileName
+uint64 uuid
