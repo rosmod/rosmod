@@ -54,7 +54,7 @@ void Timer::startUp()
   std::string advertiseName;
 
   // Scheduling Scheme is FIFO
-  this->compQueue.scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::FIFO;
+  this->compQueue.scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::PFIFO;
     
   rosmod::ROSMOD_Callback_Options callback_options;
   callback_options.alias = "Init_Timer";
