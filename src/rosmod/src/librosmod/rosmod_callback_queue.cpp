@@ -120,11 +120,11 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
 
     info.callback_options.enqueue_time = ros::Time::now();
     std::string scheme_string;
-    if (scheduling_scheme = FIFO)
+    if (scheduling_scheme == FIFO)
       scheme_string = "FIFO";
-    else if (scheduling_scheme = PFIFO)
+    else if (scheduling_scheme == PFIFO)
       scheme_string = "PFIFO";
-    else if (scheduling_scheme = EDF)
+    else if (scheduling_scheme == EDF)
       scheme_string = "EDF";
     ROSMOD_LOGGER.DEBUG("CALLBACK %s ENQUEUE::Alias=%s; Priority=%d; Deadline sec=%d, nsec=%d; Enqueue Time sec=%d, nsec=%d",
 			scheme_string.c_str(),
