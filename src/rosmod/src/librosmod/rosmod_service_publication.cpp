@@ -63,8 +63,9 @@ ServicePublication::ServicePublication(const std::string& name,
 , callback_queue_(callback_queue)
 , has_tracked_object_(false)
 , tracked_object_(tracked_object)
-, callback_options(_callback_options)
 {
+  callback_options = _callback_options;
+  helper_->callback_options_ = _callback_options;
   if (tracked_object)
   {
     has_tracked_object_ = true;
@@ -165,7 +166,7 @@ private:
 void ServicePublication::processRequest(boost::shared_array<uint8_t> buf, size_t num_bytes, const ServiceClientLinkPtr& link)
 {
   CallbackInterfacePtr cb(new ServiceCallback(helper_, buf, num_bytes, link, has_tracked_object_, tracked_object_));
-  callback_queue_->addCallback(cb, (uint64_t)this);
+  callback_queue_->addCallback(cb, (uint64_t)this, helper_->callback_options_);
 }
 
 void ServicePublication::addServiceClientLink(const ServiceClientLinkPtr& link)

@@ -136,6 +136,7 @@ class ROSCPP_DECL ServiceCallbackHelper
 public:
   virtual ~ServiceCallbackHelper() {}
   virtual bool call(ServiceCallbackHelperCallParams& params) = 0;
+  ROSMOD_Callback_Options callback_options_;
 };
 typedef boost::shared_ptr<ServiceCallbackHelper> ServiceCallbackHelperPtr;
 
@@ -186,6 +187,7 @@ public:
 
 private:
   Callback callback_;
+  ROSMOD_Callback_Options callback_options_;
   ReqCreateFunction create_req_;
   ResCreateFunction create_res_;
 };
