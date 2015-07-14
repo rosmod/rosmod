@@ -2,6 +2,7 @@
 #define NETWORK_PROFILE_HPP
 
 #include "CSVIterator.hpp"
+#include "Message.hpp"
 #include "log_macro.hpp"
 
 #include <stdio.h>
@@ -298,6 +299,21 @@ namespace Network {
   
     bool Initialized() const { return initialized; }
   };
+  
+  static long precision = 30;// for file output
+  int write_data(const char* fname, const std::vector<Message>& messages) {
+    std::ofstream file(fname);
+    if ( !file.is_open() )
+      return -1;
+    file << "%index, %time, %length\n";
+    for (long i=0;i<messages.size();i++) {
+      file << messages[i].Id() << "," << std::setprecision(precision)
+	   << messages[i].LastDoubleTime() << ","
+	   << messages[i].Bytes()
+	   << "\n";
+    }
+    return 0;
+  }
 
 };
 #endif

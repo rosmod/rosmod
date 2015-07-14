@@ -94,14 +94,14 @@ namespace Network {
       return retTimes;
     }
 
-    double FirstDoubleTime() {
+    double FirstDoubleTime() const {
       double retTime = 
 	(double)times.front().tv_sec + 
 	((double)times.front().tv_nsec)/(double)1000000000.0;
       return retTime;
     }
 
-    double LastDoubleTime() {
+    double LastDoubleTime() const {
       double retTime = 
 	(double)times.back().tv_sec + 
 	((double)times.back().tv_nsec)/(double)1000000000.0;
@@ -113,25 +113,25 @@ namespace Network {
       return retTimes;
     }
 
-    timespec FirstEpochTime() {
+    timespec FirstEpochTime() const {
       timespec retTime = times.front();
       return retTime;
     }
 
-    timespec LastEpochTime() {
+    timespec LastEpochTime() const {
       timespec retTime = times.back();
       return retTime;
     }
 
     void Clear() { buffer.clear(); }
 
-    long Id() { return id; }
+    long Id() const { return id; }
     void Id(long i) { id = i; }
 
-    long Bits() { return bits; }
+    long Bits() const { return bits; }
     void Bits(long b) { bits = b; }
 
-    long Bytes() { return ceil((double)bits/8.0f); }
+    long Bytes() const { return ceil((double)bits/8.0f); }
     void Bytes(long B) { bits = B*8; }
   };
 };
