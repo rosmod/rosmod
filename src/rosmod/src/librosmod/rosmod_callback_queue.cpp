@@ -119,16 +119,49 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
     }
 
     info.callback_options.enqueue_time = ros::Time::now();
-    ROSMOD_LOGGER.DEBUG("CALLBACK ENQUEUE::Alias=%s; Priority=%d; Deadline sec=%d, nsec=%d; Enqueue Time sec=%d, nsec=%d",
+    std::string scheme_string;
+    if (scheduling_scheme = FIFO)
+      scheme_string = "FIFO";
+    else if (scheduling_scheme = PFIFO)
+      scheme_string = "PFIFO";
+    else if (scheduling_scheme = EDF)
+      scheme_string = "EDF";
+    ROSMOD_LOGGER.DEBUG("CALLBACK %s ENQUEUE::Alias=%s; Priority=%d; Deadline sec=%d, nsec=%d; Enqueue Time sec=%d, nsec=%d",
+			scheme_string.c_str(),
 			info.callback_options.alias.c_str(),
 			info.callback_options.priority,
 			info.callback_options.deadline.sec,
 			info.callback_options.deadline.nsec,
 			info.callback_options.enqueue_time.sec,
-			info.callback_options.enqueue_time.nsec);
+			info.callback_options.enqueue_time.nsec); 
+    std::deque<CallbackInfo>::iterator it;
 
     // Check scheduling scheme and enqueue based on choice
-    callbacks_.push_back(info);
+    switch(scheduling_scheme) {
+    case FIFO:
+      callbacks_.push_back(info);     
+      break;
+    case PFIFO:
+      if (callbacks_.size() == 0)
+	callbacks_.push_back(info);
+      else {
+	for (it=callbacks_.begin(); it!=callbacks_.end(); ++it) {
+	  if(it->callback_options.priority < info.callback_options.priority) 
+	    callbacks_.insert(it, info);
+	}
+      }
+      break;
+    case EDF:
+      if (callbacks_.size() == 0)
+	callbacks_.push_back(info);
+      else {
+	for (it=callbacks_.begin(); it!=callbacks_.end(); ++it) {
+	  if(it->callback_options.deadline > info.callback_options.deadline) 
+	    callbacks_.insert(it, info);
+	}
+      }
+      break;
+    }
 
   }
 
