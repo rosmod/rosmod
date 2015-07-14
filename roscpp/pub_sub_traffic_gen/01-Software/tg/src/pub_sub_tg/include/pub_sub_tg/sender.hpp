@@ -9,6 +9,7 @@
 
 //# Start User Includes Marker
 #include "pub_sub_tg/NetworkProfile.hpp"
+#include "pub_sub_tg/Message.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -45,12 +46,19 @@ private:
 
   // NETWORK MIDDLEWARE INFO
   uint64_t uuid;
+
   std::string profileName;
-  NetworkProfile profile;
+  Network::NetworkProfile profile;
   ros::Time nextSendTime;
   bool deactivated;
   bool metered;
+
+  std::vector<Network::Message> messages;
+  uint64_t id;
+  uint64_t max_data_length;
+
   void message_pub_wrapper(const pub_sub_tg::message& msg);
+  void TrafficGeneratorTimer(const ros::TimerEvent& event);
   
   //# End User Private Variables Marker
 };

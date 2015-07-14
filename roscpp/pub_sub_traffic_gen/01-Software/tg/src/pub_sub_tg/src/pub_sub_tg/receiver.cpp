@@ -83,17 +83,6 @@ void receiver::startUp()
     advertiseName += "_" + portGroupMap["oob_client"];
   this->oob_client = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str());
 
-  // INITIALIZE N/W MIDDLEWARE HERE
-  // GET ALL OOB SERVER UUIDS FOR USE IN CALLBACK
-  pub_sub_tg::oob_comm oob_get_uuid;
-  oob_get_uuid.request.deactivateSender = false;
-  oob_get_uuid.request.meterSender = false;
-  oob_client.call(oob_get_uuid);
-  oob_map[oob_get_uuid.response.uuid] = &oob_client;
-  std::string profileName = oob_get_uuid.response.profileName;
-  // LOAD PROFILES
-  // SYNCHRONIZE HERE
-
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
@@ -123,6 +112,18 @@ void receiver::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+  
+
+  // INITIALIZE N/W MIDDLEWARE HERE
+  // GET ALL OOB SERVER UUIDS FOR USE IN CALLBACK
+  pub_sub_tg::oob_comm oob_get_uuid;
+  oob_get_uuid.request.deactivateSender = false;
+  oob_get_uuid.request.meterSender = false;
+  oob_client.call(oob_get_uuid);
+  oob_map[oob_get_uuid.response.uuid] = &oob_client;
+  std::string profileName = oob_get_uuid.response.profileName;
+  // LOAD PROFILES
+  // SYNCHRONIZE HERE
 
   LOGGER.DEBUG("Exiting receiver::startUp");
 }

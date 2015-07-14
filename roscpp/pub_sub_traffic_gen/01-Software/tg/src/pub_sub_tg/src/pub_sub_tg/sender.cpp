@@ -16,7 +16,7 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
       if (timeDiff < 0)
 	{
 	  LOGGER.ERROR("ERROR: message_pub tried to exceed profile!");
-	  throw Exceeded_Production_Profile();
+	  throw Network::Exceeded_Production_Profile();
 	}
       if (profile.resources.size() > 0) // has entries in profile
 	{
@@ -31,6 +31,32 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
   // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
   // AND RECORD IT AS A MEASUREMENT
   message_pub.publish(msg);
+}
+
+void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
+{
+  Network::Message new_msg;
+  messages.push_back(new_msg);
+  messages[id].Bytes(max_data_length);
+  messages[id].Id(id);
+  messages[id].TimeStamp();
+
+  pub_sub_tg::message msg;
+  msg.uuid = uuid;
+  msg.bytes.resize(100,0);
+  message_pub_wrapper(msg);
+
+  double timerDelay = profile.Delay(messages[id].Bytes(),messages[id].LastEpochTime());
+  id++;
+  ros::TimerOptions timer_options;
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(timerDelay),
+     boost::bind(&sender::TrafficGeneratorTimer, this, _1),
+     &this->compQueue,
+     true);
+  ros::NodeHandle nh;
+  nh.createTimer(timer_options);  
 }
 
 //# End User Globals Marker
@@ -102,14 +128,6 @@ void sender::startUp()
        &this->compQueue);
   this->oob_server = nh.advertiseService(oob_server_server_options);
 
-  // INITIALIZE N/W MIDDLEWARE HERE
-  // NEED TO GET UUID & NETWORK PROFILE FROM XML
-  metered = false;
-  deactivated = false;
-  uuid = 1024;
-  // LOAD NETWORK PROFILE HERE
-  // SYNCHRONIZE HERE
-
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
@@ -139,6 +157,28 @@ void sender::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+  // INITIALIZE N/W MIDDLEWARE HERE
+  // NEED TO GET UUID & NETWORK PROFILE FROM XML
+  metered = false;
+  deactivated = false;
+  uuid = 1024;
+  max_data_length = 8192;
+  // LOAD NETWORK PROFILE HERE
+  profile.initializeFromFile(profileName.c_str());
+  // SYNCHRONIZE HERE
+
+  // FINISH NETWORK MIDDLEWARE INIT
+  id = 0;
+
+  // CREATE TIMER HERE
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&sender::TrafficGeneratorTimer, this, _1),
+     &this->compQueue,
+     true);
+  nh.createTimer(timer_options);  
 
   LOGGER.DEBUG("Exiting sender::startUp");
 }
