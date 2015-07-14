@@ -90,7 +90,7 @@ $server.properties["business_logic"]//# End ${server.properties["service_referen
 // Timer Callback - $timer.properties["name"]
 #if $timer.properties["business_logic"] == ""
 //# Start ${timer.properties["name"]}Callback Marker
-void $component_name::${timer.properties["name"]}Callback(const ros::TimerEvent& event)
+void $component_name::${timer.properties["name"]}Callback(const ros${mod}::TimerEvent& event)
 {
 #if $mod != ""
   compQueue.ROSMOD_LOGGER.DEBUG("Entering $component_name::${timer.properties["name"]}Callback");
