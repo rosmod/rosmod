@@ -118,7 +118,7 @@ void Timer::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
-  compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_Debug.log");
+  compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_DEBUG." + nodeName + "." + compName + ".log");
 }
 
 extern "C" {
