@@ -4,8 +4,13 @@
 
 $hash_include <iostream>
 $hash_include <string>
+#if $mod != ""
+$hash_include "rosmod/rosmod_ros.h"
+$hash_include "rosmod/rosmod_callback_queue.h"
+#else
 $hash_include "ros/ros.h"
-$hash_include <ros/callback_queue.h>
+$hash_include "ros/callback_queue.h"
+#end if
 $hash_include "$package_name/xmlParser.hpp"
 $hash_include "$package_name/Logger.hpp"
 
@@ -18,7 +23,7 @@ public:
   virtual void startUp() = 0;
 
   // Initialization
-  virtual void Init(const ros::TimerEvent& event);
+  virtual void Init(const ros${mod}::TimerEvent& event);
 
   // Callback Queue Handler
   void processQueue();
@@ -34,8 +39,8 @@ protected:
   std::string compName;
   int node_argc;
   char **node_argv;
-  ros::Timer initOneShotTimer; 
-  ros::CallbackQueue compQueue;
+  ros${mod}::Timer initOneShotTimer; 
+  ros${mod}::CallbackQueue compQueue;
   Logger LOGGER;
 };
 

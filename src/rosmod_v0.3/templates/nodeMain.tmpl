@@ -1,4 +1,8 @@
+#if $mod != ""
+$hash_include "rosmod/rosmod_ros.h"
+#else
 $hash_include "ros/ros.h"
+#end if
 $hash_include <cstdlib>
 $hash_include <string.h>
 $hash_include <dlfcn.h>
@@ -48,10 +52,10 @@ int main(int argc, char **argv)
     }
 
     nodeName = nodeParser.nodeName;
-    ros::init(argc, argv, nodeName.c_str());
+    ros$mod::init(argc, argv, nodeName.c_str());
 
     // Create Node Handle
-    ros::NodeHandle n;
+    ros$mod::NodeHandle n;
 
     ROS_INFO_STREAM(nodeName << " thread id = " << boost::this_thread::get_id());
     

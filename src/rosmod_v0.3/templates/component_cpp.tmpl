@@ -1,3 +1,4 @@
+#unicode utf8
 $hash_include "$package_name/${component_name}.hpp"
 
 #if $component_type == "KSP"
@@ -15,14 +16,18 @@ $user_globals//# End User Globals Marker
 // Initialization Function
 #if $init_business_logic == ""
 //# Start Init Marker
-void $component_name::Init(const ros::TimerEvent& event)
+void $component_name::Init(const ros${mod}::TimerEvent& event)
 {
-  LOGGER.DEBUG("Entering ${component_name}::Init");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Entering $component_name::Init");
+#end if
   // Initialize Here
 
   // Stop Init Timer
   initOneShotTimer.stop();
-  LOGGER.DEBUG("Exiting ${component_name}::Init");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Exiting $component_name::Init");
+#end if  
 }
 //# End Init Marker
 #else
@@ -37,10 +42,14 @@ $init_business_logic//# End Init Marker
 //# Start ${sub.properties["name"]}_OnOneData Marker
 void $component_name::${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
 {
-  LOGGER.DEBUG("Entering $component_name::${sub.properties["name"]}_OnOneData");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Entering $component_name::${sub.properties["name"]}_OnOneData");
+#end if
   // Business Logic for $sub.properties["name"] Subscriber
 
-  LOGGER.DEBUG("Exiting $component_name::${sub.properties["name"]}_OnOneData");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Exiting $component_name::${sub.properties["name"]}_OnOneData");
+#end if
 }
 //# End ${sub.properties["name"]}_OnOneData Marker
 #else
@@ -58,10 +67,14 @@ $sub.properties["business_logic"]//# End ${sub.properties["name"]}_OnOneData Mar
 bool $component_name::${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request  &req,
   $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
 {
-  LOGGER.DEBUG("Entering $component_name::${server.properties["service_reference"].properties["name"]}Callback");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Entering $component_name::${server.properties["service_reference"].properties["name"]}Callback");
+#end if
   // Business Logic for $server.properties["name"] Server
 
-  LOGGER.DEBUG("Exiting $component_name::${server.properties["service_reference"].properties["name"]}Callback");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Exiting $component_name::${server.properties["service_reference"].properties["name"]}Callback");
+#end if
   return true;
 }
 //# End ${server.properties["service_reference"].properties["name"]}Callback Marker
@@ -79,10 +92,14 @@ $server.properties["business_logic"]//# End ${server.properties["service_referen
 //# Start ${timer.properties["name"]}Callback Marker
 void $component_name::${timer.properties["name"]}Callback(const ros::TimerEvent& event)
 {
-  LOGGER.DEBUG("Entering $component_name::${timer.properties["name"]}Callback");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Entering $component_name::${timer.properties["name"]}Callback");
+#end if
   // Business Logic for $timer.properties["name"] Timer
 
-  LOGGER.DEBUG("Exiting $component_name::${timer.properties["name"]}Callback");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.DEBUG("Exiting $component_name::${timer.properties["name"]}Callback");
+#end if
 }
 //# End ${timer.properties["name"]}Callback Marker
 #else
@@ -133,24 +150,46 @@ $component_name::~${component_name}()
 // Startup - Setup Component Ports & Timers
 void $component_name::startUp()
 {
-  LOGGER.DEBUG("Entering $component_name::startUp");
-  ros::NodeHandle nh;
+  ros${mod}::NodeHandle nh;
   std::string advertiseName;
+
+  // Scheduling Scheme is FIFO
+#if $mod != ""  
+  this->compQueue.scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::FIFO;
+  rosmod::ROSMOD_Callback_Options callback_options;
+#end if  
 
 #if $len($subscribers) > 0 
 #for $sub in $subscribers
+#if $mod != ""  
+  callback_options.alias = "${sub.properties["name"]}_OnOneData";
+  callback_options.priority = $sub.properties["priority"];
+  callback_options.deadline.sec = ${int(sub.properties["deadline"].split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (sub.properties["deadline"].split('.')[1]))*1000000000)};
+#end if  
   // Component Subscriber - $sub.properties["name"]
   advertiseName = "${sub.properties["message_reference"].properties["name"]}";
   if (portGroupMap.find("$sub.properties["name"]") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["${sub.properties['name']}"];
-  ros::SubscribeOptions ${sub.properties["name"]}_options;
-  ${sub.properties["name"]}_options = ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
+  ros${mod}::SubscribeOptions ${sub.properties["name"]}_options;
+#if $mod != ""  
+  ${sub.properties["name"]}_options = ros${mod}::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
       (advertiseName.c_str(),
        1000,
        boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+       ros${mod}::VoidPtr(),
+       &this->compQueue,
+       callback_options);
   this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
+#else
+  ${sub.properties["name"]}_options = ros${mod}::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
+      (advertiseName.c_str(),
+       1000,
+       boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
+       ros${mod}::VoidPtr(),
+       &this->compQueue);
+  this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);  
+#end if
 #end for
 
 #end if		
@@ -166,17 +205,33 @@ void $component_name::startUp()
 #end if
 #if $len($provided_services)
 #for $server in $servers
+#if $mod != ""  
+  callback_options.alias = "${server.properties["service_reference"].properties["name"]}Callback";
+  callback_options.priority = $server.properties["priority"];
+  callback_options.deadline.sec =${int(server.properties["deadline"].split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (server.properties["deadline"].split('.')[1]))*1000000000)};
+#end if    
   // Component Server - $server.properties["name"]
   advertiseName = "$server.properties["service_reference"].properties["name"]";
   if (portGroupMap.find("$server.properties["name"]") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["$server.properties["name"]"];
-  ros::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
-  ${server.properties["name"]}_server_options = ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
+  ros${mod}::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
+#if $mod != ""  
+  ${server.properties["name"]}_server_options = ros${mod}::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
       (advertiseName.c_str(),
        boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
-       ros::VoidPtr(),
-       &this->compQueue);
+       ros${mod}::VoidPtr(),
+       &this->compQueue,
+       callback_options);
   this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
+#else
+  ${server.properties["name"]}_server_options = ros${mod}::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
+      (advertiseName.c_str(),
+       boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
+       ros${mod}::VoidPtr(),
+       &this->compQueue);
+  this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);  
+#end if  
 #end for
  
 #end if
@@ -192,20 +247,63 @@ void $component_name::startUp()
 
 #end if
   // Init Timer
-  ros::TimerOptions timer_options;
+#if $mod != ""      
+  callback_options.alias = "Init_Timer";
+  callback_options.priority = 99;
+  callback_options.deadline.sec = 1;
+  callback_options.deadline.nsec = 0;
+  ros${mod}::TimerOptions timer_options;
   timer_options = 
-    ros::TimerOptions
+    ros${mod}::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&$component_name::Init, this, _1),
+     &this->compQueue,
+     callback_options
+     true,
+     true);
+  this->initOneShotTimer = nh.createTimer(timer_options);    
+#else  
+  ros${mod}::TimerOptions timer_options;
+  timer_options = 
+    ros${mod}::TimerOptions
     (ros::Duration(-1),
      boost::bind(&$component_name::Init, this, _1),
      &this->compQueue,
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);  
-  
+#end if  
 #if $len($timers)
 #for $timer in $timers
+#if $mod != ""      
+  callback_options.alias = "${timer.properties["name"]}Callback";
+  callback_options.priority = $timer.properties["priority"];
+  callback_options.deadline.sec = ${int(timer.properties["deadline"].split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (timer.properties["deadline"].split('.')[1]))*1000000000)};
   // Component Timer - $timer.properties["name"]
   timer_options = 
-    ros::TimerOptions
+    ros${mod}::TimerOptions
+#if $timer.properties["period"] == "0.0"
+    (ros::Duration(-1),
+#else
+    (ros::Duration($timer.properties["period"]),
+#end if
+     boost::bind(&$component_name::${timer.properties["name"]}Callback, this, _1),
+#if $timer.properties["period"] == "0.0"
+     &this->compQueue,
+     callback_options,
+     true,
+     true);
+#else
+     &this->compQueue,
+     callback_options,
+     false,
+     true);
+#end if 
+  this->$(timer.properties["name"]) = nh.createTimer(timer_options);  
+#else 
+  // Component Timer - $timer.properties["name"]
+  timer_options = 
+    ros${mod}::TimerOptions
 #if $timer.properties["period"] == "0.0"
     (ros::Duration(-1),
 #else
@@ -218,6 +316,7 @@ void $component_name::startUp()
      &this->compQueue);
 #end if 
   this->$(timer.properties["name"]) = nh.createTimer(timer_options);
+#end if
 #end for
 
 #end if
@@ -244,7 +343,9 @@ void $component_name::startUp()
 #if $component_type == "KSP"
   krpci_client.SetName(nodeName + "_" + compName);
 #end if
-  LOGGER.DEBUG("Exiting $component_name::startUp");
+#if $mod != ""
+  compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_DEBUG." + nodeName + "." + compName + ".log");
+#end if
 }
 
 extern "C" {

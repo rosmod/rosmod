@@ -1,7 +1,10 @@
 #ifndef ${define_guard}_HPP
 #define ${define_guard}_HPP
-
+#if $mod != ""
+$hash_include "rosmod/rosmod_ros.h"
+#else
 $hash_include "ros/ros.h"
+#end if
 $hash_include "Component.hpp"
 #for $topic in $topics
 $hash_include "$topic[0]/${topic[1]}.h"
@@ -37,7 +40,7 @@ public:
   ${component_name}(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
 
   // Initialization
-  void Init(const ros::TimerEvent& event);
+  void Init(const ros${mod}::TimerEvent& event);
 
 #if $len($subscribers) > 0
 #for $sub in $subscribers
@@ -57,7 +60,7 @@ public:
 #if $len($timers) > 0
 #for $timer in $timers
   // Timer Callback - $timer.properties["name"]
-  void ${timer.properties["name"]}Callback(const ros::TimerEvent& event);
+  void ${timer.properties["name"]}Callback(const ros${mod}::TimerEvent& event);
 
 #end for
 #end if
@@ -72,35 +75,35 @@ private:
 #if $len($timers) > 0
 #for $timer in $timers
   // Timer
-  ros::Timer $timer.properties["name"];
+  ros${mod}::Timer $timer.properties["name"];
 
 #end for
 #end if
 #if $len($subscribers) > 0
 #for $sub in $subscribers
   // Subscriber
-  ros::Subscriber $sub.properties["name"]; 
+  ros${mod}::Subscriber $sub.properties["name"]; 
 
 #end for
 #end if
 #if $len($publishers) > 0
 #for $pub in $publishers
   // Publisher 
-  ros::Publisher $pub.properties["name"];
+  ros${mod}::Publisher $pub.properties["name"];
 
 #end for
 #end if
 #if $len($provided_services) > 0
 #for $server in $servers
   // Server 
-  ros::ServiceServer ${server.properties["name"]};
+  ros${mod}::ServiceServer ${server.properties["name"]};
 
 #end for
 #end if
 #if $len($required_services) > 0
 #for $client in $clients
   // Client 
-  ros::ServiceClient $client.properties["name"];
+  ros${mod}::ServiceClient $client.properties["name"];
 
 #end for
 #end if

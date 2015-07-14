@@ -836,7 +836,18 @@ class Example(wx.Frame):
     Tools Menubar Menu Functions
     '''
     def GenerateCode(self):
-        self.project.generate_workspace()
+        properties = OrderedDict()
+        properties['communication_layer'] = "ROSMOD"
+        inputs = dialogs.EditorWindow(parent=self,
+                                      editDict=properties,
+                                      title="Generation Options",
+                                      referenceDict = None)
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                properties[key] = value
+
+        print "communication_layer=", properties['communication_layer']
+        self.project.generate_workspace(properties['communication_layer'])
         dialogs.InfoDialog(self,"Generated ROS Workspace.")
         self.statusbar.SetStatusText('Generated ROS Workspace')
     def GenerateXML(self):

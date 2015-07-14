@@ -45,10 +45,15 @@ import rdp as rdp_template
 
 from shutil import *
 
-class ROSMOD_Generator:
+class ROSMOD_Generator: 
     # Main Generate Function
-    def generate_workspace(self, workspace, path):
-        print "ROSMOD::Generating ROS Workspace..."
+    def generate_workspace(self, workspace, path, comm):
+        mod = ""
+        if (comm == "ROSCPP"):
+            mod = ""
+        elif (comm == "ROSMOD"):
+            mod = "mod"
+        print "ROSMOD::Generating " + comm + " Workspace..."
         # Make the workspace directory
         # Make the workspace directory
         self.workspace_dir = os.path.join(path, workspace.properties["name"])
@@ -104,7 +109,8 @@ class ROSMOD_Generator:
                                 "${CATKIN_PACKAGE_INCLUDE_DESTINATION}",
                                 'CATKIN_PACKAGE_SHARE_DESTINATION':
                                 "${CATKIN_PACKAGE_SHARE_DESTINATION}",
-                                'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}"}
+                                'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
+                                'mod': mod}
         t = node_CMakeLists(searchList=[cmakelists_namespace])
         self.cmakelists = str(t)
         with open(os.path.join(self.node_path, "CMakeLists.txt"), 'w') as temp_file:
@@ -114,9 +120,11 @@ class ROSMOD_Generator:
         self.cpp = self.src + "/node"
         self.hpp = self.include + "/node"
         base_cpp_namespace = {'hash_include': "#include", 
-                              'package_name': "node"}
+                              'package_name': "node",
+                              'mod': mod}
         base_hpp_namespace = {'hash_include': "#include", 
-                              'package_name': "node"}
+                              'package_name': "node",
+                              'mod': mod}
 
         if not os.path.exists(self.cpp):
             os.makedirs(self.cpp)
@@ -173,7 +181,8 @@ class ROSMOD_Generator:
         with open(os.path.join(self.hpp, "xmlParser.hpp"), 'w') as temp_file:
             temp_file.write(self.xmlParser_hpp)
 
-        node_namespace = {'hash_include' : "#include"}
+        node_namespace = {'hash_include' : "#include",
+                          'mod': mod}
         t = nodeMain(searchList=[node_namespace])
         self.nodeMain_str = str(t)
         node_filename = "node_main.cpp"
@@ -301,7 +310,8 @@ class ROSMOD_Generator:
             if not os.path.exists(self.cpp):
                 os.makedirs(self.cpp)
             base_cpp_namespace = {'hash_include': "#include", 
-                                      'package_name': package.properties["name"]}
+                                  'package_name': package.properties["name"],
+                                  'mod': mod}
             # Populate Base Component cpp template
             t = base_component_cpp(searchList=[base_cpp_namespace])
             self.base_cpp = str(t)
@@ -312,7 +322,8 @@ class ROSMOD_Generator:
             if not os.path.exists(self.hpp):
                 os.makedirs(self.hpp)
             base_hpp_namespace = {'hash_include': "#include", 
-                                      'package_name': package.properties["name"]}
+                                  'package_name': package.properties["name"],
+                                  'mod': mod}
             # Populate Base Component hpp template
             t = base_component_hpp(searchList=[base_hpp_namespace])
             self.base_hpp = str(t)
@@ -442,7 +453,8 @@ class ROSMOD_Generator:
                                        'provided_services': provided_services, 
                                        'required_services': required_services, 
                                        'timers': timers,
-                                       'component_type': component.properties['datatype']}
+                                       'component_type': component.properties['datatype'],
+                                       'mod': mod}
                 t = component_hpp(searchList=[component_namespace])
                 self.component_hpp_str = str(t)
                 # Write the component hpp file
@@ -487,7 +499,8 @@ class ROSMOD_Generator:
                                            "${CATKIN_PACKAGE_SHARE_DESTINATION}",
                                      'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
                                      'components': components,
-                                     'needs_io' : needs_io}
+                                     'needs_io' : needs_io,
+                                     'mod': mod}
             t = CMakeLists(searchList=[cmake_lists_namespace])
             self.cmake_lists = str(t)
             # Write CMakeLists file

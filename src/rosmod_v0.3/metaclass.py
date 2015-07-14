@@ -141,6 +141,15 @@ meta_class_dict["scheduling_scheme"] = Grammar_Field(
     lambda p,o,s,k : list_validator(valid_scheduling_schemes,p,o,s,k), 
     "Scheduling Scheme")
 
+valid_comm_layers = ["ROSMOD", "ROSCPP"]
+meta_class_dict["communication_layer"] = Grammar_Field(
+    "list", 
+    "", 
+    create_enterAtom, 
+    create_exitAtom, 
+    lambda p,o,s,k : list_validator(valid_comm_layers,p,o,s,k), 
+    "Communication Layer")
+
 meta_class_dict["reference"] = Grammar_Field(
     "hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
 meta_class_dict["period"] = Grammar_Field(
