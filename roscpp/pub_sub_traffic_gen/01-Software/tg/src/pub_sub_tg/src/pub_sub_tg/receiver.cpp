@@ -12,6 +12,7 @@ void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received
   // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
   // GET SENDER ID
   uint64_t uuid = received_data->uuid;
+  Network::NetworkProfile* profile = &profile_map[uuid];
   ros::ServiceClient* sender = oob_map[uuid];
   pub_sub_tg::oob_comm oob;
   oob.request.deactivateSender = true;
@@ -120,9 +121,12 @@ void receiver::startUp()
   oob_get_uuid.request.deactivateSender = false;
   oob_get_uuid.request.meterSender = false;
   oob_client.call(oob_get_uuid);
-  oob_map[oob_get_uuid.response.uuid] = &oob_client;
+  uint64_t uuid = oob_get_uuid.response.uuid;
+  oob_map[uuid] = &oob_client;
   std::string profileName = oob_get_uuid.response.profileName;
   // LOAD PROFILES
+  profile_map[uuid] = Network::NetworkProfile();
+  profile_map[uuid].initializeFromFile(profileName.c_str());
   // SYNCHRONIZE HERE
 
   LOGGER.DEBUG("Exiting receiver::startUp");

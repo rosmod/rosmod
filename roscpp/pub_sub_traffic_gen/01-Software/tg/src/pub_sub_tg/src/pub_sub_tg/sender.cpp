@@ -43,7 +43,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   pub_sub_tg::message msg;
   msg.uuid = uuid;
-  msg.bytes.resize(100,0);
+  msg.bytes.resize(max_data_length,0);
   message_pub_wrapper(msg);
 
   double timerDelay = profile.Delay(messages[id].Bytes(),messages[id].LastEpochTime());

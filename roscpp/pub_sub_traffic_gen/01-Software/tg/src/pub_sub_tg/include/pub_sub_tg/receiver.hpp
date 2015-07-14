@@ -9,6 +9,7 @@
 
 //# Start User Includes Marker
 #include "pub_sub_tg/NetworkProfile.hpp"
+#include "pub_sub_tg/Message.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -41,9 +42,12 @@ private:
   ros::ServiceClient oob_client;
 
   //# Start User Private Variables Marker
-  void message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received_data);
+  std::vector<Network::Message> messages;
+
   std::map<uint64_t,ros::ServiceClient*> oob_map;
   std::map<uint64_t,Network::NetworkProfile> profile_map;
+
+  void message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received_data);
   //# End User Private Variables Marker
 };
 
