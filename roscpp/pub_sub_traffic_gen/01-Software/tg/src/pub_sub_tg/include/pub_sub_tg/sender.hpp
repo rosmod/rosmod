@@ -41,6 +41,14 @@ private:
   ros::ServiceServer oob_server;
 
   //# Start User Private Variables Marker
+
+  // NETWORK MIDDLEWARE INFO
+  uint64_t uuid;
+  std::string profileName;
+  bool deactivated;
+  bool metered;
+  void message_pub_wrapper(const pub_sub_tg::message& msg);
+  
   //# End User Private Variables Marker
 };
 

@@ -10,13 +10,16 @@ void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received
   // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG
   // ( TAKE INTO ACCOUNT OTHER SENDERS )
   // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
+  // GET SENDER ID
+  uint64_t uuid = received_data->uuid;
+  ros::ServiceClient* sender = oob_map[uuid];
   pub_sub_tg::oob_comm oob;
-  oob.deactivateSender = true;
-  oob_client.call(oob);
+  oob.request.deactivateSender = true;
+  sender->call(oob);
+  // MEASURE AND RECORD DATA OUTPUT
   // FINALLY, PASS DATA THROUGH (IF IT'S ALRIGHT)
   this->message_sub_OnOneData(received_data);
 }
-
 //# End User Globals Marker
 
 // Initialization Function
@@ -25,7 +28,7 @@ void receiver::Init(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering receiver::Init");
   // Initialize Here
-
+  
   // Stop Init Timer
   initOneShotTimer.stop();
   LOGGER.DEBUG("Exiting receiver::Init");
@@ -60,8 +63,6 @@ void receiver::startUp()
   ros::NodeHandle nh;
   std::string advertiseName;
 
-  // INITIALIZE NETWORK PROFILE FOR COMPONENT
-
   // Component Subscriber - message_sub
   advertiseName = "message";
   if (portGroupMap.find("message_sub") != portGroupMap.end())
@@ -70,7 +71,7 @@ void receiver::startUp()
   message_sub_options = ros::SubscribeOptions::create<pub_sub_tg::message>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&receiver::message_sub_wrapper, this, _1),
+       boost::bind(&receiver::message_sub_OnOneData, this, _1),
        ros::VoidPtr(),
        &this->compQueue);
   this->message_sub = nh.subscribe(message_sub_options);
@@ -80,7 +81,18 @@ void receiver::startUp()
   advertiseName = "oob_comm";
   if (portGroupMap.find("oob_client") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["oob_client"];
-      this->oob_client = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str()); 
+  this->oob_client = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str());
+
+  // INITIALIZE N/W MIDDLEWARE HERE
+  // GET ALL OOB SERVER UUIDS FOR USE IN CALLBACK
+  pub_sub_tg::oob_comm oob_get_uuid;
+  oob_get_uuid.request.deactivateSender = false;
+  oob_get_uuid.request.meterSender = false;
+  oob_client.call(oob_get_uuid);
+  oob_map[oob_get_uuid.response.uuid] = &oob_client;
+  std::string profileName = oob_get_uuid.response.profileName;
+  // LOAD PROFILES
+  // SYNCHRONIZE HERE
 
   // Init Timer
   ros::TimerOptions timer_options;

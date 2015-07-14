@@ -6,8 +6,11 @@
 void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 {
   // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
+  if (deactivated)
+    return;
   // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
-  // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH:
+  // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
+  // AND RECORD IT AS A MEASUREMENT
   message_pub.publish(msg);
 }
 
@@ -34,6 +37,12 @@ bool sender::oob_commCallback(pub_sub_tg::oob_comm::Request  &req,
   LOGGER.DEBUG("Entering sender::oob_commCallback");
   // Business Logic for oob_server Server
 
+  deactivated = req.deactivateSender;
+
+  res.uuid = uuid;
+  res.profileName = profileName;
+  res.retVal = 0;
+  
   LOGGER.DEBUG("Exiting sender::oob_commCallback");
   return true;
 }
@@ -73,7 +82,15 @@ void sender::startUp()
        ros::VoidPtr(),
        &this->compQueue);
   this->oob_server = nh.advertiseService(oob_server_server_options);
- 
+
+  // INITIALIZE N/W MIDDLEWARE HERE
+  // NEED TO GET UUID & NETWORK PROFILE FROM XML
+  metered = false;
+  deactivated = false;
+  uuid = 1024;
+  // LOAD NETWORK PROFILE HERE
+  // SYNCHRONIZE HERE
+
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
