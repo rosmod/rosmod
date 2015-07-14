@@ -18,6 +18,12 @@ void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received
   oob.request.deactivateSender = true;
   sender->call(oob);
   // MEASURE AND RECORD DATA OUTPUT
+  Network::Message new_msg;
+  messages.push_back(new_msg);
+  messages[id].Bytes(sizeof(uint64_t) + received_data->bytes.size());
+  messages[id].Id(id);
+  messages[id].TimeStamp();
+  id++;
   // FINALLY, PASS DATA THROUGH (IF IT'S ALRIGHT)
   this->message_sub_OnOneData(received_data);
 }
@@ -127,6 +133,7 @@ void receiver::startUp()
   // LOAD PROFILES
   profile_map[uuid] = Network::NetworkProfile();
   profile_map[uuid].initializeFromFile(profileName.c_str());
+  id = 0;
   // SYNCHRONIZE HERE
 
   LOGGER.DEBUG("Exiting receiver::startUp");

@@ -43,6 +43,7 @@ private:
 
   //# Start User Private Variables Marker
   std::vector<Network::Message> messages;
+  uint64_t id;
 
   std::map<uint64_t,ros::ServiceClient*> oob_map;
   std::map<uint64_t,Network::NetworkProfile> profile_map;
