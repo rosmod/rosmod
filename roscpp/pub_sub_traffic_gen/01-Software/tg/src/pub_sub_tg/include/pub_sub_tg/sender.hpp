@@ -8,6 +8,7 @@
 
 
 //# Start User Includes Marker
+#include "pub_sub_tg/NetworkProfile.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -45,6 +46,7 @@ private:
   // NETWORK MIDDLEWARE INFO
   uint64_t uuid;
   std::string profileName;
+  NetworkProfile profile;
   bool deactivated;
   bool metered;
   void message_pub_wrapper(const pub_sub_tg::message& msg);
