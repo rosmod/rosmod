@@ -1,0 +1,32 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - pub_sub_tg
+package pub_sub_tg
+{
+  // ROSMOD Component - sender
+  component sender : Base 
+  {
+    // ROSMOD Server - oob_server
+    server <pub_sub_tg/oob_comm> oob_server 
+    {
+      priority = 55;
+      deadline = 0.1;
+    }       
+    // ROSMOD Publisher - message_pub
+    publisher <pub_sub_tg/message> message_pub;
+  }
+  // ROSMOD Component - receiver
+  component receiver : Base 
+  {
+    // ROSMOD Client - oob_client
+    client <pub_sub_tg/oob_comm> oob_client;
+    // ROSMOD Subscriber - message_sub
+    subscriber <pub_sub_tg/message> message_sub 
+    {
+      priority = 55;
+      deadline = 0.1;
+    }       
+  }
+}
