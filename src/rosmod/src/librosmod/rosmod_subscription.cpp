@@ -651,7 +651,9 @@ uint32_t Subscription::handleMessage(const SerializedMessage& m, bool ser, bool 
       }
       else
       {
-        info->callback_queue_->addCallback(info->subscription_queue_, (uint64_t)info.get());
+        info->callback_queue_->addCallback(info->subscription_queue_,
+					   (uint64_t)info.get(),
+					   info->callback_options);
       }
     }
   }
@@ -709,7 +711,9 @@ bool Subscription::addCallback(const SubscriptionCallbackHelperPtr& helper,
     CallbackInfoPtr info(new CallbackInfo);
     info->helper_ = helper;
     info->callback_queue_ = queue;
-    info->subscription_queue_.reset(new SubscriptionQueue(name_, queue_size, allow_concurrent_callbacks));
+    info->subscription_queue_.reset(new SubscriptionQueue(name_,
+							  queue_size,
+							  allow_concurrent_callbacks));
     info->tracked_object_ = tracked_object;
     info->has_tracked_object_ = false;
     info->callback_options = _callback_options;
@@ -751,6 +755,9 @@ bool Subscription::addCallback(const SubscriptionCallbackHelperPtr& helper,
               info->callback_queue_->addCallback(info->subscription_queue_, 
 						 (uint64_t)info.get(),
 						 info->callback_options);
+	      ROS_INFO("CallbackInfo Subscription.cpp Adding to Queue Alias=%s",
+		       info->callback_options.alias.c_str());
+
             }
           }
         }

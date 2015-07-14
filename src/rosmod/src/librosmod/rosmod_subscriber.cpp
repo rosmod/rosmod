@@ -59,12 +59,14 @@ namespace rosmod
   }
 
   Subscriber::Subscriber(const std::string& topic, const NodeHandle& node_handle, 
-			 const SubscriptionCallbackHelperPtr& helper)
+			 const SubscriptionCallbackHelperPtr& helper,
+			 ROSMOD_Callback_Options callback_options)
   : impl_(new Impl)
   {
     impl_->topic_ = topic;
     impl_->node_handle_ = NodeHandlePtr(new NodeHandle(node_handle));
     impl_->helper_ = helper;
+    impl_->callback_options_ = callback_options;
   }
 
   Subscriber::Subscriber(const Subscriber& rhs)

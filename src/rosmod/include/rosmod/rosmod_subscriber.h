@@ -88,7 +88,8 @@ public:
 private:
 
   Subscriber(const std::string& topic, const NodeHandle& node_handle, 
-	     const SubscriptionCallbackHelperPtr& helper);
+	     const SubscriptionCallbackHelperPtr& helper,
+	     ROSMOD_Callback_Options callback_options);
 
   class Impl
   {
@@ -103,6 +104,7 @@ private:
     NodeHandlePtr node_handle_;
     SubscriptionCallbackHelperPtr helper_;
     bool unsubscribed_;
+    ROSMOD_Callback_Options callback_options_;
   };
   typedef boost::shared_ptr<Impl> ImplPtr;
   typedef boost::weak_ptr<Impl> ImplWPtr;

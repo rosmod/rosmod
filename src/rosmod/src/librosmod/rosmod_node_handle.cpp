@@ -330,7 +330,7 @@ Subscriber NodeHandle::subscribe(SubscribeOptions& ops)
 
   if (TopicManager::instance()->subscribe(ops))
   {
-    Subscriber sub(ops.topic, *this, ops.helper);
+    Subscriber sub(ops.topic, *this, ops.helper, ops.callback_options);
 
     {
       boost::mutex::scoped_lock lock(collection_->mutex_);

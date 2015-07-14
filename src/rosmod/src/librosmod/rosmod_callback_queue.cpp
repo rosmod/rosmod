@@ -118,14 +118,18 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
       return;
     }
 
-    ROSMOD_LOGGER.DEBUG("CALLBACK ENQUEUE::Alias=%s, Priority=%d, Deadline sec=%d, nsec=%d",
-			callback_options.alias.c_str(),
-			callback_options.priority,
-			callback_options.deadline.sec,
-			callback_options.deadline.nsec);
+    info.callback_options.enqueue_time = ros::Time::now();
+    ROSMOD_LOGGER.DEBUG("CALLBACK ENQUEUE::Alias=%s; Priority=%d; Deadline sec=%d, nsec=%d; Enqueue Time sec=%d, nsec=%d",
+			info.callback_options.alias.c_str(),
+			info.callback_options.priority,
+			info.callback_options.deadline.sec,
+			info.callback_options.deadline.nsec,
+			info.callback_options.enqueue_time.sec,
+			info.callback_options.enqueue_time.nsec);
 
     // Check scheduling scheme and enqueue based on choice
     callbacks_.push_back(info);
+
   }
 
   {
@@ -417,11 +421,25 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
       return TryAgain;
     }
 
-    ROSMOD_LOGGER.DEBUG("CALLBACK INVOKED::Alias=%s, Priority=%d, Deadline sec=%d, nsec=%d",
+    info.callback_options.completion_time = ros::Time::now();
+    ros::Duration execution_time = info.callback_options.completion_time
+      - info.callback_options.enqueue_time;
+
+    ROSMOD_LOGGER.DEBUG("CALLBACK COMPLETED::Alias=%s; Completion Time sec=%d, nsec=%d; Execution Time sec=%d, nsec=%d",
 			info.callback_options.alias.c_str(),
-			info.callback_options.priority,
-			info.callback_options.deadline.sec,
-			info.callback_options.deadline.nsec);
+			info.callback_options.completion_time.sec,
+			info.callback_options.completion_time.nsec,
+			execution_time.sec,
+			execution_time.nsec);    
+
+    if (execution_time > info.callback_options.deadline) {
+      ROSMOD_LOGGER.DEBUG("ERROR::DEADLINE VIOLATION::Alias=%s; Execution Time sec=%d nsec=%d; Deadline sec=%d, nsec=%d",
+			  info.callback_options.alias.c_str(),
+			  execution_time.sec,
+			  execution_time.nsec,
+			  info.callback_options.deadline.sec,
+			  info.callback_options.deadline.nsec);
+    }
 
     return Called;
   }
@@ -430,11 +448,25 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
     tls->cb_it = tls->callbacks.erase(tls->cb_it);
   }
 
-  ROSMOD_LOGGER.DEBUG("CALLBACK INVOKED::Alias=%s, Priority=%d, Deadline sec=%d, nsec=%d",
+  info.callback_options.completion_time = ros::Time::now();
+  ros::Duration execution_time = info.callback_options.completion_time
+    - info.callback_options.enqueue_time;
+
+  ROSMOD_LOGGER.DEBUG("CALLBACK COMPLETED::Alias=%s; Completion Time sec=%d, nsec=%d; Execution Time sec=%d, nsec=%d",
 		      info.callback_options.alias.c_str(),
-		      info.callback_options.priority,
-		      info.callback_options.deadline.sec,
-		      info.callback_options.deadline.nsec);
+		      info.callback_options.completion_time.sec,
+		      info.callback_options.completion_time.nsec,
+		      execution_time.sec,
+		      execution_time.nsec);
+  
+  if (execution_time > info.callback_options.deadline) {
+    ROSMOD_LOGGER.DEBUG("ERROR::DEADLINE VIOLATION::Alias=%s; Execution Time sec=%d nsec=%d; Deadline sec=%d, nsec=%d",
+			info.callback_options.alias.c_str(),
+			execution_time.sec,
+			execution_time.nsec,
+			info.callback_options.deadline.sec,
+			info.callback_options.deadline.nsec);
+  }
 
   return Called;
 }

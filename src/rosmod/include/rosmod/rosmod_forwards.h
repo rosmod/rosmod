@@ -161,12 +161,18 @@ struct ROSMOD_Callback_Options
   std::string alias;
   int priority;
   Duration deadline;
+  Time enqueue_time;
+  Time completion_time;
   
   ROSMOD_Callback_Options() {
     alias = "";
     priority = -1;
     deadline.sec = -1;
     deadline.nsec = -1;
+    enqueue_time.sec = -1;
+    enqueue_time.nsec = -1;
+    completion_time.sec = -1;
+    completion_time.nsec = -1;
   }
 };
 
