@@ -9,6 +9,25 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
   if (deactivated)
     return;
   // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
+  if (profile.Initialized()) // profile is not in error state
+    {
+      ros::Time now = ros::Time::now();
+      double timeDiff = (now - nextSendTime).toSec();
+      if (timeDiff < 0)
+	{
+	  LOGGER.ERROR("ERROR: message_pub tried to exceed profile!");
+	  throw Exceeded_Production_Profile();
+	}
+      if (profile.resources.size() > 0) // has entries in profile
+	{
+	  size_t msgSize = sizeof(uint64_t) + msg.bytes.size();
+	  timespec current_time;
+	  current_time.tv_sec = now.sec;
+	  current_time.tv_nsec = now.nsec;
+	  timeDiff = profile.Delay(msgSize, current_time);
+	  nextSendTime = now + ros::Duration(timeDiff);
+	}
+    }
   // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
   // AND RECORD IT AS A MEASUREMENT
   message_pub.publish(msg);

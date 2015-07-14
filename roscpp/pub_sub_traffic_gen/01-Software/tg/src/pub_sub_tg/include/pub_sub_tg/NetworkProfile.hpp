@@ -19,6 +19,10 @@
 
 #define NETWORK_PROFILE_DEBUG 0
 
+class Exceeded_Production_Profile
+{
+};
+
 struct profileMemBuf : std::streambuf {
   profileMemBuf(char* begin, char* end) {
     this->setg(begin, begin, end);

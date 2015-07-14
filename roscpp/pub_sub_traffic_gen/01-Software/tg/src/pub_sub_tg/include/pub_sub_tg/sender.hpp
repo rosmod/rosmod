@@ -47,6 +47,7 @@ private:
   uint64_t uuid;
   std::string profileName;
   NetworkProfile profile;
+  ros::Time nextSendTime;
   bool deactivated;
   bool metered;
   void message_pub_wrapper(const pub_sub_tg::message& msg);
