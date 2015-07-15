@@ -6,13 +6,13 @@
 void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received_data)
 {
   LOGGER.DEBUG("CHECKING RECEIVED DATA AGAINST SENDER PROFILE");
+  // GET SENDER ID
+  uint64_t uuid = received_data->uuid;
   // CHECK NETWORK PROFILE HERE FOR SENDER
+  Network::NetworkProfile* profile = &profile_map[uuid];
   // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG
   // ( TAKE INTO ACCOUNT OTHER SENDERS )
   // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
-  // GET SENDER ID
-  uint64_t uuid = received_data->uuid;
-  Network::NetworkProfile* profile = &profile_map[uuid];
   ros::ServiceClient* sender = oob_map[uuid];
   pub_sub_tg::oob_comm oob;
   oob.request.deactivateSender = true;
@@ -78,7 +78,7 @@ void receiver::startUp()
   message_sub_options = ros::SubscribeOptions::create<pub_sub_tg::message>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&receiver::message_sub_OnOneData, this, _1),
+       boost::bind(&receiver::message_sub_wrapper, this, _1),
        ros::VoidPtr(),
        &this->compQueue);
   this->message_sub = nh.subscribe(message_sub_options);
