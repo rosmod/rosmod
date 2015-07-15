@@ -48,7 +48,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
     {
       message_pub_wrapper(msg);
     }
-  catch ( Network::Exceeded_Production_Profile() )
+  catch ( Network::Exceeded_Production_Profile& ex )
     {
       LOGGER.DEBUG("Sender has been prevented from sending data for now.");
     }
@@ -107,7 +107,7 @@ sender::~sender()
   message_pub.shutdown();
   oob_server.shutdown();
   //# Start Destructor Marker
-  std::string fName = nodeName + "." + compName + ".csv";
+  std::string fName = nodeName + "." + compName + ".network.csv";
   Network::write_data(fName.c_str(),messages);
   //# End Destructor Marker
 }
