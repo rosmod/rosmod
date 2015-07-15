@@ -47,7 +47,7 @@ from shutil import *
 
 class ROSMOD_Generator: 
     # Main Generate Function
-    def generate_workspace(self, workspace, path, comm):
+    def generate_workspace(self, workspace, path, comm, trafficGen):
         mod = ""
         if (comm == "ROSCPP"):
             mod = ""
@@ -243,6 +243,16 @@ class ROSMOD_Generator:
                 # KRPC.pb.cc
                 copyfile(resource_filename('krpci.src', 'KRPC.pb.cc'), 
                          self.krpci_src + '/KRPC.pb.cc')
+
+            if trafficGen == True:
+                self.middleware_include = self.include + '/network'
+                if not os.path.exists(self.middleware_include):
+                    os.makedirs(self.middleware_include)
+                rosmod_path = str(os.getcwd())
+                fileList = ['NetworkProfile.hpp','Message.hpp','CSVIterator.hpp']
+                for f in fileList:
+                    copyfile(resource_filename('network_middleware',f),
+                             self.middleware_include + '/' + f)
 
             messages = []
             services = []
@@ -454,7 +464,8 @@ class ROSMOD_Generator:
                                        'required_services': required_services, 
                                        'timers': timers,
                                        'component_type': component.properties['datatype'],
-                                       'mod': mod}
+                                       'mod': mod,
+                                       'trafficGen': trafficGen}
                 t = component_hpp(searchList=[component_namespace])
                 self.component_hpp_str = str(t)
                 # Write the component hpp file

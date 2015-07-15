@@ -141,15 +141,6 @@ meta_class_dict["scheduling_scheme"] = Grammar_Field(
     lambda p,o,s,k : list_validator(valid_scheduling_schemes,p,o,s,k), 
     "Scheduling Scheme")
 
-valid_comm_layers = ["ROSMOD", "ROSCPP"]
-meta_class_dict["communication_layer"] = Grammar_Field(
-    "list", 
-    "", 
-    create_enterAtom, 
-    create_exitAtom, 
-    lambda p,o,s,k : list_validator(valid_comm_layers,p,o,s,k), 
-    "Communication Layer")
-
 meta_class_dict["reference"] = Grammar_Field(
     "hidden", "Reference", create_enterAtom, create_exitAtom, None, "Reference")
 meta_class_dict["period"] = Grammar_Field(
@@ -194,14 +185,6 @@ meta_class_dict["system_network_profile"] = Grammar_Field(
     kind="code", 
     display_name = "System Network Profile\n<time,bandwidth,latency,interface>")
 
-# related only to deployment options
-meta_class_dict["numPeriods"] = Grammar_Field(
-    kind="string", 
-    display_name = "Number of Periods")
-meta_class_dict["command"] = Grammar_Field(
-    kind="string", 
-    display_name = "Remote Command")
-
 # Properties that are references
 meta_class_dict["message_reference"] = Grammar_Field(
     kind="reference",
@@ -227,6 +210,33 @@ meta_class_dict["hardware_reference"] = Grammar_Field(
     kind="reference",
     display_name="Hardware",
     input_validator=ref_validator)
+
+# SOFTWARE SPECIFIC - NOT PART OF THE MODEL
+valid_comm_layers = ["ROSMOD", "ROSCPP"]
+meta_class_dict["communication_layer"] = Grammar_Field(
+    "list", 
+    "", 
+    create_enterAtom, 
+    create_exitAtom, 
+    lambda p,o,s,k : list_validator(valid_comm_layers,p,o,s,k), 
+    "Communication Layer")
+meta_class_dict["network_middleware"] = Grammar_Field(
+    kind="boolean", 
+    input_validator=None, 
+    display_name="Traffic Generation and Management Code")
+valid_build_archs = ["local","armv7l","all"]
+meta_class_dict["build_architecture"] = Grammar_Field(
+    kind="list",
+    input_validator= lambda p,o,s,k : list_validator(valid_build_archs,p,o,s,k),
+    display_name="Build for which architecture(s)?")
+
+# DEPLOYMENT SPECIFIC - NOT PART OF THE MODEL
+meta_class_dict["numPeriods"] = Grammar_Field( # for analysis
+    kind="string", 
+    display_name = "Number of Periods")
+meta_class_dict["command"] = Grammar_Field( # for running remote commands
+    kind="string", 
+    display_name = "Remote Command")
 
 # code-generation/preserveration related properties : should be hidden from user
 meta_class_dict["init_business_logic"] = Grammar_Field("hidden")

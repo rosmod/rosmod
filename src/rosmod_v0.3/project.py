@@ -484,16 +484,16 @@ class ROSMOD_Project(Drawable_Object):
         business_logic.load(self.workspace_builder.rml, self.workspace_path)
 
     # Generate the ROS workspace corresponding to the input model
-    def generate_workspace(self, comm):
+    def generate_workspace(self, comm, trafficGen=False):
         # Check for an existing workspace in workspace_path
         self.check_workspace()
         # Instantiate a Generator Object
         workspace_generator = ROSMOD_Generator()
         # Use listener_object to generate ROS workspace
-        print "COMM = ", comm
         self.workspace_dir = workspace_generator.generate_workspace(self.workspace_builder.rml, 
                                                                     self.workspace_path,
-                                                                    comm) 
+                                                                    comm,
+                                                                    trafficGen) 
 
     # Generate Deployment XML files and relevant directories
     def generate_xml(self):

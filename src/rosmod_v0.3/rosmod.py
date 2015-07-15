@@ -361,22 +361,35 @@ class Example(wx.Frame):
         if not os.path.exists(self.project.workspace_dir):
             print "ROSMOD::ERROR::No Workspace Found! Generate a ROS workspace first"
         else:
-            # Choose Image for ARM Cross Compilation!
-            img_name, img_path = dialogs.RMLFileDialog(
-                parent = self,
-                fileTypes = "Image File (*.img)|*.img",
-                path = self.project_path,
-                prompt = "Choose a QEMU Image for Cross-Compilation",
-                fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
-            )
-            workspace_dir = self.project.workspace_dir
-            workerThread = WorkerThread\
-                           (func\
-                            = lambda : deployment.buildTest(img_name,
-                                                            img_path,
-                                                            rosmod_path,
-                                                            workspace_dir))
-            workerThread.start()
+            properties = OrderedDict()
+            properties['build_architecture'] = "local"
+            inputs = dialogs.EditorWindow(parent=self,
+                                          editDict=properties,
+                                          title="Build Options",
+                                          referenceDict = None)
+            if inputs != OrderedDict():
+                for key,value in inputs.iteritems():
+                    properties[key] = value
+                img_name = None
+                img_path = None
+                if properties['build_architecture'] == 'all' or\
+                   properties['build_architecture'] == 'armv7l':
+                    # Choose Image for ARM Cross Compilation!
+                    img_name, img_path = dialogs.RMLFileDialog(
+                        parent = self,
+                        fileTypes = "Image File (*.img)|*.img",
+                        path = self.project_path,
+                        prompt = "Choose a QEMU Image for Cross-Compilation",
+                        fd_flags = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST
+                    )
+                workspace_dir = self.project.workspace_dir
+                workerThread = WorkerThread\
+                               (func\
+                                = lambda : deployment.buildTest(img_name,
+                                                                img_path,
+                                                                rosmod_path,
+                                                                workspace_dir))
+                workerThread.start()
 
     def OnDeploymentAnalyze(self, e):
         selectedPage = self.activeAspect.GetSelection()
@@ -838,6 +851,7 @@ class Example(wx.Frame):
     def GenerateCode(self):
         properties = OrderedDict()
         properties['communication_layer'] = "ROSMOD"
+        properties['network_middleware'] = False
         inputs = dialogs.EditorWindow(parent=self,
                                       editDict=properties,
                                       title="Generation Options",
@@ -845,11 +859,9 @@ class Example(wx.Frame):
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 properties[key] = value
-
-        print "communication_layer=", properties['communication_layer']
-        self.project.generate_workspace(properties['communication_layer'])
-        dialogs.InfoDialog(self,"Generated ROS Workspace.")
-        self.statusbar.SetStatusText('Generated ROS Workspace')
+            self.project.generate_workspace(properties['communication_layer'])
+            dialogs.InfoDialog(self,"Generated ROS Workspace.")
+            self.statusbar.SetStatusText('Generated ROS Workspace')
     def GenerateXML(self):
         self.project.generate_xml()
         dialogs.InfoDialog(self,"Generated Deployment XML files")

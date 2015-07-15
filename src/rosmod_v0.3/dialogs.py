@@ -214,8 +214,11 @@ class EditDialog(wx.Dialog):
                 label = wx.StaticText(self.panel, label=meta_class_dict[key].display_name + ":")
                 growRow=True
                 field = stc.StyledTextCtrl(self.panel)
-
-                kwList = ["int32","string","int64","bool","float32","float64"]
+                sizeList = [8,16,32,64]
+                kwList = ["string","bool","float32","float64"]
+                for s in sizeList:
+                    kwList.append("int{}".format(s))
+                    kwList.append("uint{}".format(s))
                 field.SetSizeHints(50, 50)
                 field.SetLexer(stc.STC_LEX_CPP)
                 field.SetKeyWords(0, " ".join(kwList))
