@@ -107,6 +107,8 @@ sender::~sender()
   message_pub.shutdown();
   oob_server.shutdown();
   //# Start Destructor Marker
+  std::string fName = nodeName + "." + compName + ".csv";
+  Network::write_data(fName.c_str(),messages);
   //# End Destructor Marker
 }
 

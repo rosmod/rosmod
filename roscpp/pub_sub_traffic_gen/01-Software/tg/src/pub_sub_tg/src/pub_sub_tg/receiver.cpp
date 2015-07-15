@@ -60,6 +60,8 @@ receiver::~receiver()
   message_sub.shutdown();
   oob_client.shutdown();
   //# Start Destructor Marker
+  std::string fName = nodeName + "." + compName + ".csv";
+  Network::write_data(fName.c_str(),messages);
   //# End Destructor Marker
 }
 
