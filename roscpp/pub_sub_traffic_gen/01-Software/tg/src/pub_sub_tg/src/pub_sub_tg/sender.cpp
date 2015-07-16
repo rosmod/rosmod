@@ -20,7 +20,7 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 	}
       if (profile.resources.size() > 0) // has entries in profile
 	{
-	  msgSize = ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
+	  uint64_t msgSize = ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
 	  timespec current_time;
 	  current_time.tv_sec = now.sec;
 	  current_time.tv_nsec = now.nsec;

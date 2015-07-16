@@ -1,5 +1,6 @@
 #include "client_server_package/Server.hpp"
 
+
 //# Start User Globals Marker
 #include <math.h>
 //# End User Globals Marker
@@ -41,6 +42,8 @@ void Server::startUp()
   ros::NodeHandle nh;
   std::string advertiseName;
 
+  // Scheduling Scheme is FIFO
+
   // Component Server - server_port
   advertiseName = "Power";
   if (portGroupMap.find("server_port") != portGroupMap.end())
@@ -51,7 +54,7 @@ void Server::startUp()
        boost::bind(&Server::PowerCallback, this, _1, _2),
        ros::VoidPtr(),
        &this->compQueue);
-  this->server_port = nh.advertiseService(server_port_server_options);
+  this->server_port = nh.advertiseService(server_port_server_options);  
  
   // Init Timer
   ros::TimerOptions timer_options;
@@ -61,8 +64,8 @@ void Server::startUp()
      boost::bind(&Server::Init, this, _1),
      &this->compQueue,
      true);
-  this->initOneShotTimer = nh.createTimer(timer_options);  
-  
+  this->initOneShotTimer = nh.createTimer(timer_options);
+  this->initOneShotTimer.stop();
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -82,6 +85,27 @@ void Server::startUp()
   
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
+
+
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+  ros::SubscribeOptions comp_sync_sub_options;
+  comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&Server::component_synchronization_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) );
+  this->comp_sync_sub.shutdown();
+  this->comp_sync_pub.shutdown();
+
+  this->initOneShotTimer.start();
+  
 }
 
 extern "C" {
