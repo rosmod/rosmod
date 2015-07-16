@@ -261,7 +261,6 @@ void $component_name::startUp()
      callback_options
      true,
      true);
-  this->initOneShotTimer = nh.createTimer(timer_options);    
 #else  
   ros${mod}::TimerOptions timer_options;
   timer_options = 
@@ -270,8 +269,9 @@ void $component_name::startUp()
      boost::bind(&$component_name::Init, this, _1),
      &this->compQueue,
      true);
-  this->initOneShotTimer = nh.createTimer(timer_options);  
 #end if  
+  this->initOneShotTimer = nh.createTimer(timer_options);
+  this->initOneShotTimer.stop();
 #if $len($timers)
 #for $timer in $timers
 #if $mod != ""      
@@ -299,7 +299,6 @@ void $component_name::startUp()
      false,
      true);
 #end if 
-  this->$(timer.properties["name"]) = nh.createTimer(timer_options);  
 #else 
   // Component Timer - $timer.properties["name"]
   timer_options = 
@@ -315,8 +314,9 @@ void $component_name::startUp()
 #else
      &this->compQueue);
 #end if 
-  this->$(timer.properties["name"]) = nh.createTimer(timer_options);
 #end if
+  this->$(timer.properties["name"]) = nh.createTimer(timer_options);
+  this->$(timer.properties["name"]).stop();
 #end for
 
 #end if
@@ -343,6 +343,31 @@ void $component_name::startUp()
 #if $component_type == "KSP"
   krpci_client.SetName(nodeName + "_" + compName);
 #end if
+
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+  ros::SubscribeOptions comp_sync_sub_options;
+  comp_sync_sub_options = ros${mod}::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&$component_name::component_synchronization_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros${mod}::Time now = ros${mod}::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
+	  (ros${mod}::Time::now() - now) < ros${mod}::Duration(comp_sync_timeout) );
+  this->comp_sync_sub.shutdown();
+  this->comp_sync_pub.shutdown();
+
+  this->initOneShotTimer.start();
+#if $len($timers)
+#for $timer in $timers
+  this->$(timer.properties["name"]).stop();
+#end for
+#end if
+  
 #if $mod != ""
   compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_DEBUG." + nodeName + "." + compName + ".log");
 #end if
