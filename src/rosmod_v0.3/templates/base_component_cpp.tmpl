@@ -11,6 +11,14 @@ Component::Component(ComponentConfig &config, int argc, char **argv) {
   node_argv = argv;
   num_comps_to_sync = config.num_comps_to_sync;
   comp_sync_timeout = config.comp_sync_timeout;
+#if $mod != ""
+  if (config.schedulingScheme == "FIFO")
+    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::FIFO;
+  else if (config.schedulingScheme == "PFIFO")
+    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::PFIFO;
+  else if (config.schedulingScheme == "EDF")
+    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::EDF;
+#end if
 }
 
 // Destructor

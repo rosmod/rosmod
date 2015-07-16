@@ -155,7 +155,7 @@ void $component_name::startUp()
 
   // Scheduling Scheme is FIFO
 #if $mod != ""  
-  this->compQueue.scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::FIFO;
+  this->compQueue.scheduling_scheme = scheduling_scheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 #end if  
 

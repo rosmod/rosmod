@@ -41,6 +41,9 @@ protected:
   std::string hostName;
   std::string nodeName;
   std::string compName;
+#if $mod != ""
+  rosmod::CallbackQueue::SchedulingScheme scheduling_scheme;
+#end if
   int node_argc;
   char **node_argv;
   ros${mod}::Publisher comp_sync_pub;
