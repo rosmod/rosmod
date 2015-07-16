@@ -292,12 +292,12 @@ void $component_name::startUp()
      &this->compQueue,
      callback_options,
      true,
-     true);
+     false);
 #else
      &this->compQueue,
      callback_options,
      false,
-     true);
+     false);
 #end if 
 #else 
   // Component Timer - $timer.properties["name"]
@@ -310,13 +310,12 @@ void $component_name::startUp()
 #end if
      boost::bind(&$component_name::${timer.properties["name"]}Callback, this, _1),
 #if $timer.properties["period"] == "0.0"
-     &this->compQueue, true);
+     &this->compQueue, true, false);
 #else
-     &this->compQueue);
+     &this->compQueue, false, false);
 #end if 
 #end if
   this->$(timer.properties["name"]) = nh.createTimer(timer_options);
-  this->$(timer.properties["name"]).stop();
 #end for
 
 #end if
@@ -364,7 +363,7 @@ void $component_name::startUp()
   this->initOneShotTimer.start();
 #if $len($timers)
 #for $timer in $timers
-  this->$(timer.properties["name"]).stop();
+  this->$(timer.properties["name"]).start();
 #end for
 #end if
   
