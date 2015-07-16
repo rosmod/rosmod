@@ -41,9 +41,17 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+#if $mod != ""
+  <build_depend>rosmod</build_depend>
+#else
   <build_depend>roscpp</build_depend>
+#end if
   <build_depend>std_msgs</build_depend>
+#if $mod != ""
+  <run_depend>rosmod</run_depend>
+#else
   <run_depend>roscpp</run_depend>
+#end if
   <run_depend>std_msgs</run_depend>
 
 

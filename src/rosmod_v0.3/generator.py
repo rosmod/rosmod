@@ -90,7 +90,8 @@ class ROSMOD_Generator:
             os.makedirs(self.src)
 
         # Create package.xml
-        package_xml_namespace = {'package_name' : "node"}
+        package_xml_namespace = {'package_name' : "node",
+                                 'mod': mod}
         t = package_xml(searchList=[package_xml_namespace])
         self.package_xml = str(t)
         with open(os.path.join(self.node_path, "package.xml"), 'w') as temp_file:
@@ -280,7 +281,8 @@ class ROSMOD_Generator:
                     os.makedirs(self.srv)
 
             # Create package.xml
-            package_xml_namespace = {'package_name': package.properties["name"]}
+            package_xml_namespace = {'package_name': package.properties["name"],
+                                     'mod': mod}
             t = package_xml(searchList=[package_xml_namespace])
             self.package_xml = str(t)
             with open(os.path.join(self.package_path, "package.xml"), 'w') as temp_file:

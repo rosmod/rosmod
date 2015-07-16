@@ -182,11 +182,11 @@ void $component_name::startUp()
        callback_options);
   this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
 #else
-  ${sub.properties["name"]}_options = ros${mod}::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
+  ${sub.properties["name"]}_options = ros::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
       (advertiseName.c_str(),
        1000,
        boost::bind(&$component_name::${sub.properties["name"]}_OnOneData, this, _1),
-       ros${mod}::VoidPtr(),
+       ros::VoidPtr(),
        &this->compQueue);
   this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);  
 #end if
@@ -225,10 +225,10 @@ void $component_name::startUp()
        callback_options);
   this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
 #else
-  ${server.properties["name"]}_server_options = ros${mod}::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
+  ${server.properties["name"]}_server_options = ros::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
       (advertiseName.c_str(),
        boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}Callback, this, _1, _2),
-       ros${mod}::VoidPtr(),
+       ros::VoidPtr(),
        &this->compQueue);
   this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);  
 #end if  
@@ -258,7 +258,7 @@ void $component_name::startUp()
     (ros::Duration(-1),
      boost::bind(&$component_name::Init, this, _1),
      &this->compQueue,
-     callback_options
+     callback_options,
      true,
      true);
 #else  
@@ -345,13 +345,24 @@ void $component_name::startUp()
 
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::SubscribeOptions comp_sync_sub_options;
+  ros${mod}::SubscribeOptions comp_sync_sub_options;
+#if $mod != ""
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
   comp_sync_sub_options = ros${mod}::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,
      boost::bind(&$component_name::component_synchronization_OnOneData, this, _1),
-     ros::VoidPtr(),
+     ros${mod}::VoidPtr(),
+     &this->compQueue,
+     sync_callback_options);
+#else
+  comp_sync_sub_options = ros${mod}::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&$component_name::component_synchronization_OnOneData, this, _1),
+     ros${mod}::VoidPtr(),
      &this->compQueue);
+#end if
   this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
 
   ros${mod}::Time now = ros${mod}::Time::now();
