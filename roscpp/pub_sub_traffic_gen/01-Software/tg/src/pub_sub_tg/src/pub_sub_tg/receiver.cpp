@@ -3,11 +3,14 @@
 
 //# Start User Globals Marker
 
-void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received_data)
+void receiver::message_sub_wrapper(const ros::MessageEvent<pub_sub_tg::message const>& event)
 {
   LOGGER.DEBUG("CHECKING RECEIVED DATA AGAINST SENDER PROFILE");
+  const std::string& publisher_name = event.getPublisherName();
+  const ros::M_string& header = event.getConnectionHeader();
+  const pub_sub_tg::message::ConstPtr& input = event.getMessage();
   // GET SENDER ID
-  uint64_t uuid = received_data->uuid;
+  uint64_t uuid = input->uuid;
   // CHECK NETWORK PROFILE HERE FOR SENDER
   Network::NetworkProfile* profile = &profile_map[uuid];
   // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG
@@ -20,13 +23,14 @@ void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received
   // MEASURE AND RECORD DATA OUTPUT
   Network::Message new_msg;
   messages.push_back(new_msg);
-  messages[id].Bytes(sizeof(uint64_t) + received_data->bytes.size());
+  messages[id].Bytes(ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*input));
   messages[id].Id(id);
   messages[id].TimeStamp();
   id++;
   // FINALLY, PASS DATA THROUGH (IF IT'S ALRIGHT)
-  this->message_sub_OnOneData(received_data);
+  this->message_sub_OnOneData(input);
 }
+
 //# End User Globals Marker
 
 // Initialization Function

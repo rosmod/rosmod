@@ -180,8 +180,6 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(Client
-	    src/client_server_package/Component.cpp
-            src/client_server_package/Logger.cpp
             src/client_server_package/Client.cpp
             ## Start Client CPP Marker
 
@@ -198,8 +196,6 @@ add_dependencies(Client
                 )
 
 add_library(Server
-	    src/client_server_package/Component.cpp
-            src/client_server_package/Logger.cpp
             src/client_server_package/Server.cpp
             ## Start Server CPP Marker
 
@@ -214,17 +210,4 @@ target_link_libraries(Server
 add_dependencies(Server
                  client_server_package_generate_messages_cpp
                 )
-
-
-
-
-
-
-
-
-
-
-
-
-
 

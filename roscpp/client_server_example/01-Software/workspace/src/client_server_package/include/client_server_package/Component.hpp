@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <string>
+#include <std_msgs/Bool.h>
 #include "ros/ros.h"
-#include <ros/callback_queue.h>
+#include "ros/callback_queue.h"
 #include "client_server_package/xmlParser.hpp"
 #include "client_server_package/Logger.hpp"
 
@@ -18,6 +19,9 @@ public:
 
   // Initialization
   virtual void Init(const ros::TimerEvent& event);
+
+  // Synchronization
+  virtual void component_synchronization_OnOneData(const std_msgs::Bool::ConstPtr& received_data);
 
   // Callback Queue Handler
   void processQueue();
@@ -33,6 +37,10 @@ protected:
   std::string compName;
   int node_argc;
   char **node_argv;
+  ros::Publisher comp_sync_pub;
+  ros::Subscriber comp_sync_sub;
+  uint64_t num_comps_to_sync;
+  double comp_sync_timeout;
   ros::Timer initOneShotTimer; 
   ros::CallbackQueue compQueue;
   Logger LOGGER;

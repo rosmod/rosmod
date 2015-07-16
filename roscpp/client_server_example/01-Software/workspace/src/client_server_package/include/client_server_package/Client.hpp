@@ -1,9 +1,10 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
-
 #include "ros/ros.h"
 #include "Component.hpp"
 #include "client_server_package/Power.h"
+
+
 //# Start User Includes Marker
 //# End User Includes Marker
 
@@ -39,6 +40,5 @@ private:
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
 };
-
 
 #endif

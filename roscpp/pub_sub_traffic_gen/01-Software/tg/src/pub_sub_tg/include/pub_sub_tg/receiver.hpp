@@ -47,7 +47,7 @@ private:
   std::map<uint64_t,ros::ServiceClient*> oob_map;
   std::map<uint64_t,Network::NetworkProfile> profile_map;
 
-  void message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received_data);
+  void message_sub_wrapper(const ros::MessageEvent<pub_sub_tg::message const>& event);
   //# End User Private Variables Marker
 };
 
