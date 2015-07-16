@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<node name="three_component_node">
+  <component_instance name="Component_1_Instance">
+    <library name="libComponent_1.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="Name_Publisher">
+      <port name="Name_Publisher"/>
+      <group setting="PubSubGroup"/>
+    </port_instance>
+    <port_instance name="Name_Subscriber">
+      <port name="Name_Subscriber"/>
+      <group setting="PubSubGroup"/>
+    </port_instance>
+  </component_instance>
+  <component_instance name="Component_2_Instance">
+    <library name="libComponent_2.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="Name_Publisher">
+      <port name="Name_Publisher"/>
+      <group setting="PubSubGroup"/>
+    </port_instance>
+  </component_instance>
+  <component_instance name="Component_3_Instance">
+    <library name="libComponent_3.so"/>
+    <scheduling_scheme setting="EDF"/>
+    <logging>
+      <debug setting="False"/>
+      <info setting="True"/>
+      <warning setting="False"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+
