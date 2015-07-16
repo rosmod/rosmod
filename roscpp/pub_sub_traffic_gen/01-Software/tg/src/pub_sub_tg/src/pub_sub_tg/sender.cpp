@@ -20,7 +20,7 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 	}
       if (profile.resources.size() > 0) // has entries in profile
 	{
-	  size_t msgSize = sizeof(uint64_t) + msg.bytes.size();
+	  msgSize = ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
 	  timespec current_time;
 	  current_time.tv_sec = now.sec;
 	  current_time.tv_nsec = now.nsec;
@@ -145,8 +145,8 @@ void sender::startUp()
      boost::bind(&sender::Init, this, _1),
      &this->compQueue,
      true);
-  this->initOneShotTimer = nh.createTimer(timer_options);  
-  
+  this->initOneShotTimer = nh.createTimer(timer_options);
+    
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -187,7 +187,7 @@ void sender::startUp()
      boost::bind(&sender::TrafficGeneratorTimer, this, _1),
      &this->compQueue,
      true);
-  nh.createTimer(timer_options);  
+  nh.createTimer(timer_options);
 
   LOGGER.DEBUG("Exiting sender::startUp");
 }

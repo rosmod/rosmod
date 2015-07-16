@@ -27,6 +27,7 @@ void receiver::message_sub_wrapper(const pub_sub_tg::message::ConstPtr& received
   // FINALLY, PASS DATA THROUGH (IF IT'S ALRIGHT)
   this->message_sub_OnOneData(received_data);
 }
+
 //# End User Globals Marker
 
 // Initialization Function
