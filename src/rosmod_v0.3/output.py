@@ -2,7 +2,8 @@ import wx
 import wx.lib.agw.flatnotebook as fnb
 import wx.stc as stc
 from terminal import *        
-import subprocess    
+import subprocess   
+from fabric.api import * 
 
 from metaModel import model_dict
 import deployment
@@ -140,14 +141,16 @@ def OpenFile(self,kind,e):
     command = None
     if kind == 'cpp':
         fileName = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/src/' + packageName + '/' + componentName + '.cpp'
-        command = ['emacsclient',fileName]
+        command = 'emacsclient ' + fileName
     elif kind == 'hpp':
         fileName = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/include/' + packageName + '/' + componentName + '.hpp'
-        command = ['emacsclient',fileName]
+        command = 'emacsclient ' + fileName
     elif kind == 'all':
         fileName1 = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/src/' + packageName + '/' + componentName + '.cpp'
         fileName2 = self.project.workspace_path + '/' + workspaceName + '/src/' + packageName + '/include/' + packageName + '/' + componentName + '.hpp'
-        command = ['emacsclient',fileName1,fileName2]
+        args = """ --eval '(find-file "{file1}")' --eval '(split-window-horizontally)' --eval '(find-file-other-window "{file2}")' --eval '(switch-to-buffer-window "{file1}")' --eval '(switch-to-buffer-other-window "{file2}")'""".format(file1=fileName1, file2=fileName2)
+        command = 'emacsclient' + args
+        print args
     if command != None:
         if is_running("emacs"):
             pass
@@ -156,14 +159,16 @@ def OpenFile(self,kind,e):
                                    '-mm'],
                                   shell=False)
             time.sleep(2)
-        p = subprocess.Popen(command,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             shell=False)
-        out_thread1 = OutTextThread(sys.stdout,p.stdout)
-        out_thread1.start()
-        out_thread2 = OutTextThread(sys.stderr,p.stderr)
-        out_thread2.start()            
+        os.system(command + ' &')
+#        local(command, shell="/bin/bash")
+#        p = subprocess.Popen(command,
+#                             stdout=subprocess.PIPE,
+#                             stderr=subprocess.PIPE,
+#                             shell=False)
+#        out_thread1 = OutTextThread(sys.stdout,p.stdout)
+#        out_thread1.start()
+#        out_thread2 = OutTextThread(sys.stderr,p.stderr)
+#        out_thread2.start()            
 
 def SSHToHost(self,e):
     host = self.activeObject
