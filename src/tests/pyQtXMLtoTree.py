@@ -35,8 +35,8 @@ class XmlHandler(QtXml.QXmlDefaultHandler):
         if not setText:
             setText = qname
         self._item.setText(0, setText)
-        if self._item is not None:
-            self._item.setText(1, attributes.value('value'))
+        self._item.setText(1, attributes.value('value'))
+        self._item.setExpanded(True)
         self._text = ''
         return True
 
