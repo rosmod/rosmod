@@ -18,10 +18,6 @@ class Tree(QtGui.QTreeWidget):
                  subRowItem.setText(0, subRow)
 	
 class XmlHandler(QtXml.QXmlDefaultHandler):
-    qnames = [
-        "package", "component", "client", "timer", "server", "publisher",
-        "subscriber", "rhw", "hardware", "rdp", "node", "component_instance", "logging"
-    ]
     def __init__(self, root):
         QtXml.QXmlDefaultHandler.__init__(self)
         self._root = root
