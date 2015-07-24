@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtCore, QtGui, QtXml
 
 class Tree(QtGui.QTreeWidget):
 
@@ -17,9 +17,11 @@ class Tree(QtGui.QTreeWidget):
                  subRowItem = QtGui.QTreeWidgetItem(rowItem)
                  subRowItem.setText(0, subRow)
 	
-from PyQt4 import QtCore, QtGui, QtXml
-
 class XmlHandler(QtXml.QXmlDefaultHandler):
+    qnames = [
+        "package", "component", "client", "timer", "server", "publisher",
+        "subscriber", "rhw", "hardware", "rdp", "node", "component_instance", "logging"
+    ]
     def __init__(self, root):
         QtXml.QXmlDefaultHandler.__init__(self)
         self._root = root
@@ -28,26 +30,25 @@ class XmlHandler(QtXml.QXmlDefaultHandler):
         self._error = ''
 
     def startElement(self, namespace, name, qname, attributes):
-        if qname == 'folder' or qname == 'item':
-            if self._item is not None:
-                self._item = QtGui.QTreeWidgetItem(self._item)
-            else:
-                self._item = QtGui.QTreeWidgetItem(self._root)
-            self._item.setData(0, QtCore.Qt.UserRole, qname)
-            self._item.setText(0, 'Unknown Title')
-            if qname == 'folder':
-                self._item.setExpanded(True)
-            elif qname == 'item':
-                self._item.setText(1, attributes.value('type'))
+        if self._item is not None:
+            self._item = QtGui.QTreeWidgetItem(self._item)
+        else:
+            self._item = QtGui.QTreeWidgetItem(self._root)
+        self._item.setData(0, QtCore.Qt.UserRole, qname)
+        setText = attributes.value('name')
+        if not setText:
+            setText = qname
+        self._item.setText(0, setText)
+        if self._item is not None:
+            self._item.setText(1, attributes.value('value'))
         self._text = ''
         return True
 
     def endElement(self, namespace, name, qname):
-        if qname == 'title':
+        if qname == 'name':
             if self._item is not None:
                 self._item.setText(0, self._text)
-        elif qname == 'folder' or qname == 'item':
-            self._item = self._item.parent()
+        self._item = self._item.parent()
         return True
 
     def characters(self, text):
@@ -69,7 +70,7 @@ class Window(QtGui.QTreeWidget):
     def __init__(self):
         QtGui.QTreeWidget.__init__(self)
         self.header().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.setHeaderLabels(['Title', 'Type'])
+        self.setHeaderLabels(['Title', 'Value'])
         source = QtXml.QXmlInputSource()
         source.setData(xml)
         handler = XmlHandler(self)
@@ -79,44 +80,66 @@ class Window(QtGui.QTreeWidget):
         reader.parse(source)
 
 xml = """
-<root>
-    <folder>
-        <title>Folder One</title>
-        <item type="1">
-            <title>Item One</title>
-        </item>
-        <item type="1">
-            <title>Item Two</title>
-        </item>
-        <item type="2">
-            <title>Item Three</title>
-        </item>
-        <folder>
-            <title>Folder Two</title>
-            <item type="3">
-                <title>Item Four</title>
-            </item>
-            <item type="0">
-                <title>Item Five</title>
-            </item>
-            <item type="1">
-                <title>Item Six</title>
-            </item>
-        </folder>
-    </folder>
-    <folder>
-        <title>Folder Three</title>
-        <item type="0">
-            <title>Item Six</title>
-        </item>
-        <item type="2">
-            <title>Item Seven</title>
-        </item>
-        <item type="2">
-            <title>Item Eight</title>
-        </item>
-    </folder>
-</root>
+<project name="project-name-here">
+
+  <package name="client_server_package">
+    <component name="Client">
+      <client name="client_port" reference="client_server_package/Power"/>
+      <timer name="client_timer">
+	<period value="1.0"/>
+	<priority value="50"/>
+	<deadline value="3.0"/>
+      </timer>
+    </component>
+    <component name="Server">
+      <server name="server_port" reference="client_server_package/Power">
+	<priority value="50"/>
+	<deadline value="3.0"/>
+      </server>
+    </component>
+  </package>
+  
+  <rhw name="hardware">
+    <hardware name="laptop">
+      <ip_address value="localhost"/>
+      <username value="kelsier"/>
+      <sshkey value="path/to/key"/>
+      <deployment_path value="/path/to/deploy"/>
+      <arch value="x86"/>
+    </hardware>
+  </rhw>
+
+  <rdp name="deployment">
+    <hardware_reference value="hardware"/>
+    <node name="Client_Server_Node">
+      <reference value="hardware/laptop"/>
+      <priority value="50"/>
+      <component_instance name="Client_Instance">
+	<reference value="client_server_package/Client"/>
+	<scheduling_scheme value="FIFO"/>
+	<logging>
+	  <DEBUG value="True"/>
+	  <INFO value="True"/>
+	  <WARNING value="True"/>
+	  <ERROR value="True"/>
+	  <CRITICAL value="True"/>
+	</logging>
+      </component_instance>
+      <component_instance name="Server_Instance">
+	<reference value="client_server_package/Server"/>
+	<scheduling_scheme value="FIFO"/>
+	<logging>
+	  <DEBUG value="True"/>
+	  <INFO value="True"/>
+	  <WARNING value="True"/>
+	  <ERROR value="True"/>
+	  <CRITICAL value="True"/>
+	</logging>
+      </component_instance>
+    </node>
+  </rdp>
+
+</project>
 """
 
 if __name__ == '__main__':
