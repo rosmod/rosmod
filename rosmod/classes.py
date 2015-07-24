@@ -4,6 +4,17 @@
 
 from collections import OrderedDict
 
+class Attribute(object):
+    """Generic Attributes class
+
+    Each Attribute has the following:
+    kind -- The datatype of the attribute e.g. string, float, bool etc.
+    value -- The value of the attributes e.g. "my_component", 1.642 etc.
+    """
+    def __init__(self, kind, value):
+        self.kind = kind
+        self.value = value
+
 class Model(object):
     """Generic Model/Container class
 
@@ -25,23 +36,11 @@ class Model(object):
     def add_child(self, child_model):
         self.children.append(child_model)
 
+    def add_attribute(self, name, kind, value):
+        self.attributes[name] = Attribute(kind, value)
+
     def get_children(self, kind):
         return [child for child in self.children if child.kind == kind]
-
-class Attribute(object):
-    """Generic Attributes class
-
-    Every Model has an attributes dictionary.
-    The keys in this dictionary are the name of Model attributes.
-    The corresponding values map to an Attribute object.
-
-    Each Attribute has the following:
-    kind -- The datatype of the attribute e.g. string, float, bool etc.
-    value -- The value of the attributes e.g. "my_component", 1.642 etc.
-    """
-    def __init__(self, kind, value):
-        self.kind = kind
-        self.value = value
 
 class Project(Model):
     """Project Class
@@ -54,7 +53,9 @@ class Project(Model):
     """
     def __init__(self, name):
         self.kind = "Project"
-        self.attributes["name"] = name
+        self.add_attribute(name.__name__, 
+                           type(name),
+                           name)
 
 class Software(Model):
     """Software Class
