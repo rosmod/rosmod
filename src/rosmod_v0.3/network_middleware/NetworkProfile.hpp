@@ -122,28 +122,23 @@ namespace Network {
 	      if ( (*loop)[0].c_str()[0] != '#' )
 		{
 		  for (int i=0;i<(*loop).size();i++)
-		    {
-		      rowvec.push_back( atof( (*loop)[i].c_str() ) );
-		    }
+		    rowvec.push_back( atof( (*loop)[i].c_str() ) );
 		  csv.push_back(rowvec);
 		}
 	      else
 		{
 		  std::string row = "";
 		  for (int i=0;i<(*loop).size();i++)
-		    {
-		      row += (*loop)[i];
-		    }
+		    row += (*loop)[i];
+		  boost::trim_if(row, boost::is_any_of("# "));
 		  std::vector<std::string> strs;
-		  boost::split(strs, row, boost::is_any_of("#= "));
+		  boost::split(strs, row, boost::is_any_of("="));
+		  for (auto it = strs.begin(); it!=strs.end(); ++it)
+		    boost::trim(*it);
 		  if (!strcmp("period",strs[0].c_str()) )
-		    {
-		      setPeriod( atof(strs[1].c_str()) );
-		    }
+		    setPeriod( atof(strs[1].c_str()) );
 		  else if (!strcmp("start",strs[0].c_str()) )
-		    {
-		      setStartTime( atof(strs[1].c_str()) );
-		    }
+		    setStartTime( atof(strs[1].c_str()) );
 		}
 	    }
 	}

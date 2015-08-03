@@ -260,7 +260,7 @@ void $component_name::startUp()
      &this->compQueue,
      callback_options,
      true,
-     true);
+     false);
 #else  
   ros${mod}::TimerOptions timer_options;
   timer_options = 
@@ -268,7 +268,8 @@ void $component_name::startUp()
     (ros::Duration(-1),
      boost::bind(&$component_name::Init, this, _1),
      &this->compQueue,
-     true);
+     true,
+     false);
 #end if  
   this->initOneShotTimer = nh.createTimer(timer_options);
   this->initOneShotTimer.stop();

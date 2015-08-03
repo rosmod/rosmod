@@ -98,7 +98,7 @@ public:
 	
 	xml_node<> *profileName = comp_inst->first_node("profileName");
 	if (profileName != NULL)
-	  config.profileName = atof(profileName->first_attribute()->value());
+	  config.profileName = profileName->first_attribute()->value();
 	
 	xml_node<> *lib_location = comp_inst->first_node("library");
 	config.libraryLocation = lib_location->first_attribute()->value();
