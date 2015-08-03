@@ -25,7 +25,6 @@ public:
   double comp_sync_timeout;
   uint64_t oob_uuid;
   std::string profileName;
-  std::map<std::string, std::string> attrMap;
 };
 
 using namespace rapidxml;
@@ -37,12 +36,26 @@ public:
   std::vector<std::string> libList;
   std::string nodeName;
 
-  bool Return_Boolean(std::string value) 
+  bool Return_Boolean(std::string value) { return (value == "True"); }
+
+  void PrintNode(xml_node<> *node, std::string& prepend)
   {
-    if (value == "True") 
-      return true;
-    else
-      return false;
+    std::string local_prepend = prepend;
+    printf("%s%s:\n",local_prepend.c_str(),node->name());
+    for (xml_attribute<> *tmpAttr = node->first_attribute();
+	 tmpAttr; tmpAttr = tmpAttr->next_attribute())
+      {
+	printf("%s\t%s: %s\n",
+	       local_prepend.c_str(),
+	       tmpAttr->name(),
+	       tmpAttr->value());
+      }
+    local_prepend += "\t";
+    for (xml_node<> *tmpNode = node->first_node();
+	 tmpNode; tmpNode = tmpNode->next_sibling())
+      {
+	PrintNode(tmpNode, local_prepend);
+      }
   }
 
   bool Parse(std::string fName)
@@ -55,7 +68,7 @@ public:
 
     xml_node<> *node = doc.first_node("node");
     nodeName = node->first_attribute()->value();
-
+    
     for (xml_node<> *lib_location = node->first_node("library");
 	 lib_location; lib_location = lib_location->next_sibling("library"))
       {
@@ -71,14 +84,6 @@ public:
 	config.compName = comp_inst->first_attribute()->value();
 	config.nodeName = nodeName;
 
-	for (xml_node<> *tmpNode = comp_inst->first_node();
-	     tmpNode; tmpNode = tmpNode->next_sibling())
-	  {
-	    printf("%s , %s\n",
-		   tmpNode->first_attribute()->name(),
-		   tmpNode->first_attribute()->value());
-	  }
-	
 	xml_node<> *nCompsSync = comp_inst->first_node("numCompsToSync");
 	if (nCompsSync != NULL)
 	  config.num_comps_to_sync = atoi(nCompsSync->first_attribute()->value());
@@ -89,7 +94,7 @@ public:
 	
 	xml_node<> *oob_uuid = comp_inst->first_node("oob_uuid");
 	if (oob_uuid != NULL)
-	  config.oob_uuid = atof(oob_uuid->first_attribute()->value());
+	  config.oob_uuid = atoi(oob_uuid->first_attribute()->value());
 	
 	xml_node<> *profileName = comp_inst->first_node("profileName");
 	if (profileName != NULL)

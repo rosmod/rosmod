@@ -83,7 +83,7 @@ public:
 	config.comp_sync_timeout = 1.0;
 	config.compName = comp_inst->first_attribute()->value();
 	config.nodeName = nodeName;
-	
+
 	xml_node<> *nCompsSync = comp_inst->first_node("numCompsToSync");
 	if (nCompsSync != NULL)
 	  config.num_comps_to_sync = atoi(nCompsSync->first_attribute()->value());
