@@ -1,7 +1,8 @@
 #include "pub_sub_tg/Component.hpp"
 
 // Constructor
-Component::Component(ComponentConfig &config, int argc, char **argv) {
+Component::Component(ComponentConfig &_config, int argc, char **argv) {
+  this->config = _config;
   portGroupMap = config.portGroupMap;
   logLevels = config.logLevels;
   hostName = config.hostName;
@@ -9,6 +10,8 @@ Component::Component(ComponentConfig &config, int argc, char **argv) {
   compName = config.compName;
   node_argc = argc;
   node_argv = argv;
+  num_comps_to_sync = config.num_comps_to_sync;
+  comp_sync_timeout = config.comp_sync_timeout;
 }
 
 // Destructor
@@ -19,6 +22,9 @@ Component::~Component() {
 
 // Initialization
 void Component::Init(const ros::TimerEvent& event) {}
+
+// Synchronization
+void Component::component_synchronization_OnOneData(const std_msgs::Bool::ConstPtr& received_data) {}
 
 // Callback Queue Handler
 void Component::processQueue() {  

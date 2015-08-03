@@ -1,6 +1,5 @@
 #ifndef SENDER_HPP
 #define SENDER_HPP
-
 #include "ros/ros.h"
 #include "Component.hpp"
 #include "pub_sub_tg/message.h"
@@ -18,7 +17,7 @@ class sender : public Component
 {
 public:
   // Constructor
-  sender(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  sender(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);

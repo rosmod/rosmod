@@ -1,6 +1,5 @@
 #ifndef RECEIVER_HPP
 #define RECEIVER_HPP
-
 #include "ros/ros.h"
 #include "Component.hpp"
 #include "pub_sub_tg/message.h"
@@ -18,7 +17,7 @@ class receiver : public Component
 {
 public:
   // Constructor
-  receiver(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  receiver(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);

@@ -74,6 +74,29 @@ void sender::Init(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering sender::Init");
   // Initialize Here
+  
+  // INITIALIZE N/W MIDDLEWARE HERE
+  // NEED TO GET UUID & NETWORK PROFILE FROM XML
+  metered = false;
+  deactivated = false;
+  uuid = this->config.oob_uuid;
+  max_data_length = 8192;
+  // LOAD NETWORK PROFILE HERE
+  profileName = this->config.profileName;
+  profile.initializeFromFile(profileName.c_str());
+
+  // FINISH NETWORK MIDDLEWARE INIT
+  id = 0;
+
+  // CREATE TIMER HERE FOR SENDING DATA ACCORDING TO PROFILE
+  ros::NodeHandle nh;
+  ros::TimerOptions timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&sender::TrafficGeneratorTimer, this, _1),
+     &this->compQueue,
+     true);
+  nh.createTimer(timer_options);
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -115,9 +138,10 @@ sender::~sender()
 // Startup - Setup Component Ports & Timers
 void sender::startUp()
 {
-  LOGGER.DEBUG("Entering sender::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
+
+  // Scheduling Scheme is FIFO
 
   // Component Publisher - message_pub
   advertiseName = "message";
@@ -135,8 +159,8 @@ void sender::startUp()
        boost::bind(&sender::oob_commCallback, this, _1, _2),
        ros::VoidPtr(),
        &this->compQueue);
-  this->oob_server = nh.advertiseService(oob_server_server_options);
-
+  this->oob_server = nh.advertiseService(oob_server_server_options);  
+ 
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 
@@ -146,7 +170,7 @@ void sender::startUp()
      &this->compQueue,
      true);
   this->initOneShotTimer = nh.createTimer(timer_options);
-    
+  this->initOneShotTimer.stop();
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -167,29 +191,26 @@ void sender::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
-  // INITIALIZE N/W MIDDLEWARE HERE
-  // NEED TO GET UUID & NETWORK PROFILE FROM XML
-  metered = false;
-  deactivated = false;
-  uuid = 1024;
-  max_data_length = 8192;
-  // LOAD NETWORK PROFILE HERE
-  profile.initializeFromFile(profileName.c_str());
-  // SYNCHRONIZE HERE
 
-  // FINISH NETWORK MIDDLEWARE INIT
-  id = 0;
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+  ros::SubscribeOptions comp_sync_sub_options;
+  comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&sender::component_synchronization_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
 
-  // CREATE TIMER HERE
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&sender::TrafficGeneratorTimer, this, _1),
-     &this->compQueue,
-     true);
-  nh.createTimer(timer_options);
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) );
+  this->comp_sync_sub.shutdown();
+  this->comp_sync_pub.shutdown();
 
-  LOGGER.DEBUG("Exiting sender::startUp");
+  this->initOneShotTimer.start();
+  
 }
 
 extern "C" {
