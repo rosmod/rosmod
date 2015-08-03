@@ -859,7 +859,9 @@ class Example(wx.Frame):
         if inputs != OrderedDict():
             for key,value in inputs.iteritems():
                 properties[key] = value
-            self.project.generate_workspace(properties['communication_layer'])
+            self.project.generate_workspace(
+                properties['communication_layer'],
+                properties['network_middleware'])
             dialogs.InfoDialog(self,"Generated ROS Workspace.")
             self.statusbar.SetStatusText('Generated ROS Workspace')
     def GenerateXML(self):

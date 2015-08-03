@@ -3,7 +3,6 @@
 
 #include "CSVIterator.hpp"
 #include "Message.hpp"
-#include "log_macro.hpp"
 
 #include <stdio.h>
 #include <string.h>
@@ -15,6 +14,8 @@
 #include <list>
 #include <vector>
 #include <memory>
+
+#include <boost/algorithm/string.hpp>
 
 #include <time.h>
 
@@ -36,6 +37,7 @@ namespace Network {
   public:
     double time;
     unsigned long long bandwidth;
+    unsigned long long max_bandwidth;
     unsigned long long data;
     unsigned long long latency;
   };
@@ -112,15 +114,35 @@ namespace Network {
     {
       std::vector<std::vector<double> > csv;
 
-      for (CSVIterator loop(stream);loop != CSVIterator();++loop) {
-	std::vector<double> rowvec;
-	if ( (*loop).size() > 0 && (*loop)[0].c_str()[0] != '%' ) {
-	  for (int i=0;i<(*loop).size();i++) {
-	    rowvec.push_back( atof( (*loop)[i].c_str() ) );
-	  }
+      for (CSVIterator loop(stream);loop != CSVIterator();++loop)
+	{
+	  std::vector<double> rowvec;
+	  if ( (*loop).size() > 0 && (*loop)[0].c_str()[0] != '%' )
+	    {
+	      if ( (*loop)[0].c_str()[0] != '#' )
+		{
+		  for (int i=0;i<(*loop).size();i++)
+		    {
+		      rowvec.push_back( atof( (*loop)[i].c_str() ) );
+		    }
+		}
+	      else
+		{
+		  std::vector<std::string> strs;
+		  boost::split(strs, (*loop), boost::is_any_of("#= "));
+		  printf("%d\n",strs.size());
+		  if (!strcmp("period",strs[0].c_str()) )
+		    {
+		      setPeriod( atof(strs[1].c_str()) );
+		    }
+		  else if (!strcmp("start",strs[0].c_str()) )
+		    {
+		      setStartTime( atof(strs[1].c_str()) );
+		    }
+		}
+	    }
 	  csv.push_back(rowvec);
 	}
-      }
       if ( parse_csv(csv) )
 	return -1;
       else {
@@ -129,19 +151,32 @@ namespace Network {
       }
     }
 
-    int parse_csv(std::vector<std::vector<double> > csv) {
-      // first csv row contains profile start time and period
-      // each other csv row contains time,bandwidth,latency
+    int setStartTime(double t)
+    {
       double fractpart,intpart;
-      fractpart = modf(csv[0][0],&intpart);
+      fractpart = modf(t,&intpart);
       start_time.tv_sec = (unsigned long long)(intpart);
       start_time.tv_nsec = (unsigned long)(fractpart*1000000000.0);
-      period = csv[0][1];
+      return 0;
+    }
+
+    int setPeriod(double t) { period = t; }
+
+    int parse_csv(std::vector<std::vector<double> > csv) {
+      // each csv row contains time,bandwidth,latency
       for (int i=1;i<csv.size();i++) {
 	ResourceEntry entry;
 	entry.time = csv[i][0];                              // s
 	entry.bandwidth = (unsigned long long) (csv[i][1]);  // bps
-	entry.latency = (unsigned long long) (csv[i][2]);    // ms
+	if (csv[i].size() == 3)
+	  {
+	    entry.latency = (unsigned long long) (csv[i][2]);    // ms
+	  }
+	else if (csv[i].size() == 4)
+	  {
+	    entry.max_bandwidth = (unsigned long long) (csv[i][2]); // bps
+	    entry.latency = (unsigned long long) (csv[i][3]);       // ms
+	  }
 
 	if ( resources.size() > 0 ) {
 	  entry.data = resources.back().data +

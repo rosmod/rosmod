@@ -37,7 +37,7 @@ class $component_name : public Component
 {
 public:
   // Constructor
-  ${component_name}(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  ${component_name}(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros${mod}::TimerEvent& event);
