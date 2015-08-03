@@ -125,12 +125,17 @@ namespace Network {
 		    {
 		      rowvec.push_back( atof( (*loop)[i].c_str() ) );
 		    }
+		  csv.push_back(rowvec);
 		}
 	      else
 		{
+		  std::string row = "";
+		  for (int i=0;i<(*loop).size();i++)
+		    {
+		      row += (*loop)[i];
+		    }
 		  std::vector<std::string> strs;
-		  boost::split(strs, (*loop), boost::is_any_of("#= "));
-		  printf("%d\n",strs.size());
+		  boost::split(strs, row, boost::is_any_of("#= "));
 		  if (!strcmp("period",strs[0].c_str()) )
 		    {
 		      setPeriod( atof(strs[1].c_str()) );
@@ -141,7 +146,6 @@ namespace Network {
 		    }
 		}
 	    }
-	  csv.push_back(rowvec);
 	}
       if ( parse_csv(csv) )
 	return -1;
