@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<node name="pub3">
+  <component_instance name="sender_i">
+    <library name="libsender.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+
