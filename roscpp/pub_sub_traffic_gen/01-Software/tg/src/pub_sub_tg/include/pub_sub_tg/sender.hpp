@@ -7,7 +7,7 @@
 
 
 //# Start User Includes Marker
-#include "pub_sub_tg/NetworkProfile.hpp"
+#include "network/NetworkProfile.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
