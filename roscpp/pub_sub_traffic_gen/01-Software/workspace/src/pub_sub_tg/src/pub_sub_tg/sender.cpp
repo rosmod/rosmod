@@ -168,7 +168,8 @@ void sender::startUp()
     (ros::Duration(-1),
      boost::bind(&sender::Init, this, _1),
      &this->compQueue,
-     true);
+     true,
+     false);
   this->initOneShotTimer = nh.createTimer(timer_options);
   this->initOneShotTimer.stop();
   // Identify the pwd of Node Executable

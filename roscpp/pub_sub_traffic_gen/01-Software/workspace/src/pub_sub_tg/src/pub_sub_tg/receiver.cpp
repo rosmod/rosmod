@@ -114,7 +114,7 @@ void receiver::startUp()
   message_sub_options = ros::SubscribeOptions::create<pub_sub_tg::message>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&receiver::message_sub_wrapper, this, _1),
+       boost::bind(&receiver::message_sub_OnOneData, this, _1),
        ros::VoidPtr(),
        &this->compQueue);
   this->message_sub = nh.subscribe(message_sub_options);  
@@ -133,7 +133,8 @@ void receiver::startUp()
     (ros::Duration(-1),
      boost::bind(&receiver::Init, this, _1),
      &this->compQueue,
-     true);
+     true,
+     false);
   this->initOneShotTimer = nh.createTimer(timer_options);
   this->initOneShotTimer.stop();
   // Identify the pwd of Node Executable
