@@ -23,6 +23,7 @@ public:
   Log_Levels logLevels;
   uint64_t num_comps_to_sync;
   double comp_sync_timeout;
+  double tg_time;
   uint64_t oob_uuid;
   std::string profileName;
 };
@@ -99,6 +100,10 @@ public:
 	xml_node<> *profileName = comp_inst->first_node("profileName");
 	if (profileName != NULL)
 	  config.profileName = profileName->first_attribute()->value();
+	
+	xml_node<> *tg_time = comp_inst->first_node("tg_time");
+	if (tg_time != NULL)
+	  config.tg_time = atof(tg_time->first_attribute()->value());
 	
 	xml_node<> *lib_location = comp_inst->first_node("library");
 	config.libraryLocation = lib_location->first_attribute()->value();
