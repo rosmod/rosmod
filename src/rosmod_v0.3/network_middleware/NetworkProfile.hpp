@@ -185,6 +185,7 @@ namespace Network {
 	if (csv[i].size() == 3)
 	  {
 	    entry.latency = (unsigned long long) (csv[i][2]);    // ms
+	    entry.max_bandwidth = entry.bandwidth;
 	  }
 	else if (csv[i].size() == 4)
 	  {
