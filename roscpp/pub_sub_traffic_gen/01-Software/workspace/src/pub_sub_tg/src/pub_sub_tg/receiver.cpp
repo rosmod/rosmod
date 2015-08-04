@@ -83,8 +83,6 @@ message_buffer<Network::Message> buffer;
 /*
   Need to implement:
   * configuration of oob channels
-  * timer for receiving data according to receive profile
-  * buffer for storing data from the subscriber callback
   * monitoring code to check the buffer space and send back to publishers
  */
 
