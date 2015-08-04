@@ -191,17 +191,17 @@ def MonitorNodeLog(self,e):
     host = node.properties['hardware_reference']
     fileString = ""
     for compInst in node.children:
-        fileString += "{}/{}.{}.log ".format(host.properties["deployment_path"], node.properties['name'],compInst.properties['name'])
+        fileString += " {}/{}.{}.log".format(host.properties["deployment_path"], node.properties['name'],compInst.properties['name'])
     if host.properties["ip_address"] not in deployment.local_ips:
         command = "/usr/bin/ssh"
-        args = "-i {} {}@{} tail -f {}".format( 
+        args = "-i {} {}@{} tail -f{}".format( 
             os.path.expanduser(host.properties['sshkey']), 
             host.properties['username'],
             host.properties['ip_address'],
             fileString)
     else:
         command = "/usr/bin/tail"
-        args = "-f {}".format(fileString)
+        args = "-f{}".format(fileString)
 
     self.output.AddPage(TermEmulatorDemo(self.output,
                                          command=command,
