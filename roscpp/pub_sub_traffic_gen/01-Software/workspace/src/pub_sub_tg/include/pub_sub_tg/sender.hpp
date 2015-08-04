@@ -43,6 +43,9 @@ private:
   //# Start User Private Variables Marker
 
   // NETWORK MIDDLEWARE INFO
+  ros::Timer tgTimer;
+  ros::Time endTime;
+
   uint64_t uuid;
 
   std::string profileName;

@@ -20,7 +20,8 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 	}
       if (profile.resources.size() > 0) // has entries in profile
 	{
-	  uint64_t msgSize = ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
+	  uint64_t msgSize =
+	    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
 	  timespec current_time;
 	  current_time.tv_sec = now.sec;
 	  current_time.tv_nsec = now.nsec;
@@ -29,12 +30,12 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 	}
     }
   // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
-  // AND RECORD IT AS A MEASUREMENT
   message_pub.publish(msg);
 }
 
 void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 {
+  // AND A MEASUREMENT
   Network::Message new_msg;
   messages.push_back(new_msg);
   messages[id].Bytes(max_data_length);
@@ -55,15 +56,25 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   double timerDelay = profile.Delay(messages[id].Bytes(),messages[id].LastEpochTime());
   id++;
-  ros::TimerOptions timer_options;
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(timerDelay),
-     boost::bind(&sender::TrafficGeneratorTimer, this, _1),
-     &this->compQueue,
-     true);
-  ros::NodeHandle nh;
-  nh.createTimer(timer_options);  
+
+  if ( ros::Time::now() >= endTime )
+    {
+      std::string fName = nodeName + "." + compName + ".network.csv";
+      Network::write_data(fName.c_str(),messages);
+    }
+  else
+    {
+      ros::TimerOptions timer_options;
+      timer_options = 
+	ros::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&sender::TrafficGeneratorTimer, this, _1),
+	 &this->compQueue,
+	 true);
+      ros::NodeHandle nh;
+      tgTimer = nh.createTimer(timer_options);
+      tgTimer.start();
+    }
 }
 
 //# End User Globals Marker
@@ -76,6 +87,8 @@ void sender::Init(const ros::TimerEvent& event)
   // Initialize Here
   
   // INITIALIZE N/W MIDDLEWARE HERE
+  ros::Time now = ros::Time::now();
+  endTime = now + ros::Duration(config.tg_time);
   // NEED TO GET UUID & NETWORK PROFILE FROM XML
   metered = false;
   deactivated = false;
@@ -96,7 +109,8 @@ void sender::Init(const ros::TimerEvent& event)
      boost::bind(&sender::TrafficGeneratorTimer, this, _1),
      &this->compQueue,
      true);
-  nh.createTimer(timer_options);
+  tgTimer = nh.createTimer(timer_options);
+  tgTimer.start();
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -130,8 +144,6 @@ sender::~sender()
   message_pub.shutdown();
   oob_server.shutdown();
   //# Start Destructor Marker
-  std::string fName = nodeName + "." + compName + ".network.csv";
-  Network::write_data(fName.c_str(),messages);
   //# End Destructor Marker
 }
 

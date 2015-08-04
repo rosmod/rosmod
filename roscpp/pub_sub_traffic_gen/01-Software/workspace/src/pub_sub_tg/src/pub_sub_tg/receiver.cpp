@@ -43,6 +43,12 @@ void receiver::message_sub_wrapper(const ros::MessageEvent<pub_sub_tg::message c
   id++;
   // FINALLY, PASS DATA THROUGH (IF IT'S ALRIGHT)
   this->message_sub_OnOneData(input);
+
+  if ( ros::Time::now() >= endTime )
+    {
+      std::string fName = nodeName + "." + compName + ".network.csv";
+      Network::write_data(fName.c_str(),messages);
+    }
 }
 
 //# End User Globals Marker
@@ -55,6 +61,8 @@ void receiver::Init(const ros::TimerEvent& event)
   // Initialize Here
   
   // INITIALIZE N/W MIDDLEWARE HERE
+  ros::Time now = ros::Time::now();
+  endTime = now + ros::Duration(config.tg_time);
   // GET ALL OOB SERVER UUIDS FOR USE IN CALLBACK
   // FOR EACH OOB_CLIENT:
   pub_sub_tg::oob_comm oob_get_uuid;
@@ -93,8 +101,6 @@ receiver::~receiver()
   message_sub.shutdown();
   oob_client.shutdown();
   //# Start Destructor Marker
-  std::string fName = nodeName + "." + compName + ".network.csv";
-  Network::write_data(fName.c_str(),messages);
   //# End Destructor Marker
 }
 

@@ -11,9 +11,10 @@
       <critical setting="True"/>
     </logging>
     <numCompsToSync setting="4"/>
-    <syncTimeout setting="1.0"/>
+    <syncTimeout setting="100.0"/>
     <oob_uuid setting="1"/>
     <profileName name="required1.csv"/>
+    <tg_time setting="30.0"/>
   </component_instance>
 </node>
 

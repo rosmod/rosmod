@@ -40,6 +40,8 @@ private:
   ros::ServiceClient oob_client;
 
   //# Start User Private Variables Marker
+  ros::Timer tgTimer;
+  ros::Time endTime;
   std::vector<Network::Message> messages;
   uint64_t id;
 
