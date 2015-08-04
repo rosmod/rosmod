@@ -46,18 +46,19 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
   new_msg.Bytes(msgSizeBytes);
   new_msg.Id(id++);
   new_msg.TimeStamp();
-  messages.push_back(new_msg);
+
+  double timerDelay = 0;
 
   try
     {
       message_pub_wrapper(msg);
+      messages.push_back(new_msg);
+      timerDelay = profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
       LOGGER.DEBUG("Sender has been prevented from sending data for now.");
     }
-
-  double timerDelay = profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
 
   if ( ros::Time::now() >= endTime )
     {

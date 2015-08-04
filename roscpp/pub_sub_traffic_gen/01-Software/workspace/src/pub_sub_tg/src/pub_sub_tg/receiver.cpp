@@ -64,6 +64,10 @@ public:
     lock lk(monitor);
     return _maxSize;
   }
+  uint64_t capacity() {
+    lock lk(monitor);
+    return _capacity;
+  }
   void set_capacity(uint64_t capacity) {
     lock lk(monitor);
     _capacity = capacity;
@@ -144,6 +148,10 @@ void receiver::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Initialized Profile");
   LOGGER.DEBUG("%s",profile.toString().c_str());
 
+  buffer.set_capacity(300000);
+  LOGGER.DEBUG("Set Buffer Capacity to %lu", buffer.capacity());
+  LOGGER.DEBUG("Current Buffer Size is %lu", buffer.size());
+
   // CONFIGURE ALL OOB CHANNELS
   std::string advertiseName;
   advertiseName = "oob_comm_pub1";
@@ -196,6 +204,11 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
 {
   // GET SENDER ID
   uint64_t uuid = received_data->uuid;
+
+  // MEASURE SIZE OF INCOMING MESSAGE
+  uint64_t msgBytes =
+    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*received_data);
+
   // CHECK NETWORK PROFILE HERE FOR SENDER
   Network::NetworkProfile* profile = &profile_map[uuid];
   // DO I NEED RECEIVER PROFILE TO DESCRIBE THE RATE AT WHICH THE
@@ -204,16 +217,24 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   //   I.E. IF OUR REMAINING BUFFER SPACE IS TOO LOW (CALCULABLE BASED ON
   //   KNOWN PEAK RATES OF SENDERS)
   // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
-#if 0
-  ros::ServiceClient* sender = oob_map[uuid];
-  pub_sub_tg::oob_comm oob;
-  oob.request.deactivateSender = true;
-  sender->call(oob);
-#endif
-  // MEASURE AND RECORD DATA OUTPUT
-  uint64_t msgBytes =
-    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*received_data);
+  uint64_t currentSize = buffer.size();
+  uint64_t currentCapacity = buffer.capacity();
+  if ( currentCapacity > 0 )
+    {
+      double utilization = (double)currentSize/(double)currentCapacity;
 
+      LOGGER.DEBUG("Buffer Utilization: %f, Buffer Free: %lu, Msg Size: %lu",
+		   utilization, currentCapacity - currentSize, msgBytes);
+      if (utilization > 0.5)
+	{
+	  ros::ServiceClient* sender = oob_map[uuid];
+	  pub_sub_tg::oob_comm oob;
+	  oob.request.deactivateSender = true;
+	  sender->call(oob);
+	}
+  }
+  
+  // RECORD MESSAGE
   Network::Message new_msg;
   new_msg.Bytes(msgBytes);
   new_msg.Id(id++);
