@@ -40,6 +40,10 @@ private:
   ros::ServiceClient oob_client;
 
   //# Start User Private Variables Marker
+  ros::ServiceClient oob_client_pub1;
+  ros::ServiceClient oob_client_pub2;
+  ros::ServiceClient oob_client_pub3;
+
   Network::NetworkProfile profile;
   ros::Timer tgTimer;
   ros::Time endTime;

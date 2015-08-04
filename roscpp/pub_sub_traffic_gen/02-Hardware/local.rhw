@@ -8,7 +8,8 @@ hardware local
   ip_address = "localhost";
   username = "jeb";
   sshkey = "~/.ssh/id_rsa"; 
-  deployment_path = "/home/jeb";
+  deployment_path = "/home/jeb/ddos_test";
+  install_path = "/home/jeb/Repositories/ROS-Indigo/install_isolated";
   arch = x86;
 }
 

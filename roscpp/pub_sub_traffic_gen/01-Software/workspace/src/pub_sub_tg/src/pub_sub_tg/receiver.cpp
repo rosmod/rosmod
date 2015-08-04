@@ -103,7 +103,7 @@ void receiver::TrafficGeneratorTimer(const ros::TimerEvent& event)
     }
   if ( ros::Time::now() >= endTime )
     {
-      printf("WRITING LOG; max Size was: %lu; got %lu messages\n",
+      LOGGER.DEBUG("WRITING LOG; max Size was: %lu; got %lu messages",
 	     buffer.maxSize(), messages.size());
       std::string fName = nodeName + "." + compName + ".network.csv";
       Network::write_data(fName.c_str(),messages);
@@ -131,34 +131,50 @@ void receiver::Init(const ros::TimerEvent& event)
 {
   LOGGER.DEBUG("Entering receiver::Init");
   // Initialize Here
+
+  ros::NodeHandle nh;
   
   // INITIALIZE OUR PROFILE
-  printf("Initializing MW\n");
+  LOGGER.DEBUG("Initializing MW");
   // INITIALIZE N/W MIDDLEWARE HERE
   ros::Time now = ros::Time::now();
   endTime = now + ros::Duration(config.tg_time);
   // LOAD NETWORK PROFILE HERE
   profile.initializeFromFile(this->config.profileName.c_str());
-  printf("Initialized Profile\n");
-  printf("%s\n",profile.toString().c_str());
-#if 0
-  // GET ALL OOB SERVER UUIDS FOR USE IN CALLBACK
-  // FOR EACH OOB_CLIENT:
-  pub_sub_tg::oob_comm oob_get_uuid;
-  oob_get_uuid.request.deactivateSender = false;
-  oob_get_uuid.request.meterSender = false;
-  oob_client.call(oob_get_uuid);
-  uint64_t uuid = oob_get_uuid.response.uuid;
-  oob_map[uuid] = &oob_client;
-  std::string profileName = oob_get_uuid.response.profileName;
+  LOGGER.DEBUG("Initialized Profile");
+  LOGGER.DEBUG("%s",profile.toString().c_str());
+
+  // CONFIGURE ALL OOB CHANNELS
+  std::string advertiseName;
+  advertiseName = "oob_comm_pub1";
+  this->oob_client_pub1 = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str());
+  advertiseName = "oob_comm_pub2";
+  this->oob_client_pub2 = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str());
+  advertiseName = "oob_comm_pub3";
+  this->oob_client_pub3 = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str());
+  
+  // set up uuids for senders
+  uint64_t uuid_pub1 = 1;
+  uint64_t uuid_pub2 = 2;
+  uint64_t uuid_pub3 = 3;
+
+  oob_map[uuid_pub1] = &this->oob_client_pub1;
+  oob_map[uuid_pub2] = &this->oob_client_pub2;
+  oob_map[uuid_pub3] = &this->oob_client_pub3;
+
   // LOAD PROFILES
-  profile_map[uuid] = Network::NetworkProfile();
-  profile_map[uuid].initializeFromFile(profileName.c_str());
-#endif
+  profile_map[uuid_pub1] = Network::NetworkProfile();
+  profile_map[uuid_pub1].initializeFromFile("required1.csv");
+
+  profile_map[uuid_pub2] = Network::NetworkProfile();
+  profile_map[uuid_pub2].initializeFromFile("required2.csv");
+
+  profile_map[uuid_pub3] = Network::NetworkProfile();
+  profile_map[uuid_pub3].initializeFromFile("required3.csv");
+
   id = 0;
 
   // CREATE TIMER HERE FOR RECEIVING DATA ACCORDING TO PROFILE
-  ros::NodeHandle nh;
   ros::TimerOptions timer_options = 
     ros::TimerOptions
     (ros::Duration(-1),
@@ -166,7 +182,7 @@ void receiver::Init(const ros::TimerEvent& event)
      &this->compQueue,
      true);
   tgTimer = nh.createTimer(timer_options);
-  printf("Created Timer\n");
+  LOGGER.DEBUG("Created Timer");
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -244,7 +260,7 @@ void receiver::startUp()
   advertiseName = "oob_comm";
   if (portGroupMap.find("oob_client") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["oob_client"];
-      this->oob_client = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str()); 
+  this->oob_client = nh.serviceClient<pub_sub_tg::oob_comm>(advertiseName.c_str()); 
 
   // Init Timer
   ros::TimerOptions timer_options;

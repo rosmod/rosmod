@@ -61,7 +61,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   if ( ros::Time::now() >= endTime )
     {
-      printf("WRITING LOG\n");
+      LOGGER.DEBUG("WRITING LOG");
       std::string fName = nodeName + "." + compName + ".network.csv";
       Network::write_data(fName.c_str(),messages);
     }
