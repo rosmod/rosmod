@@ -15,15 +15,15 @@ class message_buffer : private boost::noncopyable
 {
 public:
   typedef boost::mutex::scoped_lock lock;
-  message_buffer() : _size(0), _maxSize(0), _capacity(0) {}
-  message_buffer(int n) : message_buffer() { _capacity = n; }
-  void send (T data, uint64_t len) {
+  message_buffer() : _bits(0), _maxSize(0), _capacity(0) {}
+  message_buffer(int bits) : message_buffer() { _capacity = bits; }
+  void send (T data, uint64_t bits) {
     lock lk(monitor);
     if (!_capacity ||
-	(_capacity && len <= (_capacity - _size)) ) {
-      _size += len;
-      _maxSize = max(_size,_maxSize);
-      sizes.push_back(len);
+	(_capacity && bits <= (_capacity - _bits)) ) {
+      _bits += bits;
+      _maxSize = max(_bits,_maxSize);
+      sizes.push_back(bits);
       q.push_back(data);
       buffer_not_empty.notify_one();
     }
@@ -34,9 +34,9 @@ public:
       buffer_not_empty.wait(lk);
     T data = q.front();
     q.pop_front();
-    uint64_t len = sizes.front();
+    uint64_t bits = sizes.front();
     sizes.pop_front();
-    _size = _size - len;
+    _bits = _bits - bits;
     return data;
   }
   T non_blocking_receive() {
@@ -54,26 +54,38 @@ public:
     lock lk(monitor);
     q.clear();
     sizes.clear();
-    _size = _maxSize = 0;
+    _bits = _maxSize = 0;
   }
-  uint64_t size() {
+  uint64_t bits() {
     lock lk(monitor);
-    return _size;
+    return _bits;
   }
-  uint64_t maxSize() {
+  uint64_t bytes() {
+    lock lk(monitor);
+    return _bits / 8;
+  }
+  uint64_t maxBits() {
     lock lk(monitor);
     return _maxSize;
   }
-  uint64_t capacity() {
+  uint64_t maxBytes() {
+    lock lk(monitor);
+    return _maxSize / 8;
+  }
+  uint64_t capacityBits() {
     lock lk(monitor);
     return _capacity;
+  }
+  uint64_t capacityBytes() {
+    lock lk(monitor);
+    return _capacity / 8;
   }
   void set_capacity(uint64_t capacity) {
     lock lk(monitor);
     _capacity = capacity;
   }
 private:
-  uint64_t _size;
+  uint64_t _bits;
   uint64_t _maxSize;
   uint64_t _capacity;
   boost::condition buffer_not_empty;
@@ -86,44 +98,41 @@ message_buffer<Network::Message> buffer;
 
 /*
   Need to implement:
-  * configuration of oob channels
   * monitoring code to check the buffer space and send back to publishers
  */
 
-void receiver::TrafficGeneratorTimer(const ros::TimerEvent& event)
+void receiver::bufferReceiveThread(void)
 {
-  // READ FROM THE BUFFER
-  double timerDelay = -1;
-  try
+  while ( true )
     {
-      Network::Message msg = buffer.non_blocking_receive();
-      msg.TimeStamp();
-      messages.push_back(msg);
-      // CHECK AGAINST RECEIVER PROFILE: LOOK UP WHEN I CAN READ NEXT
-      timerDelay = profile.Delay(msg.Bits(), msg.LastEpochTime());
-    }
-  catch ( Buffer_Empty& ex )
-    {
-    }
-  if ( ros::Time::now() >= endTime )
-    {
-      LOGGER.DEBUG("WRITING LOG; max Size was: %lu; got %lu messages",
-	     buffer.maxSize(), messages.size());
-      std::string fName = nodeName + "." + compName + ".network.csv";
-      Network::write_data(fName.c_str(),messages);
-    }
-  else
-    {
-      // RESTART TIMER FOR THAT TIME
-      ros::TimerOptions timer_options;
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&receiver::TrafficGeneratorTimer, this, _1),
-	 &this->compQueue,
-	 true);
-      ros::NodeHandle nh;
-      tgTimer = nh.createTimer(timer_options);
+      // READ FROM THE BUFFER
+      double timerDelay = -1;
+      try
+	{
+	  Network::Message msg = buffer.non_blocking_receive();
+	  msg.TimeStamp();
+	  messages.push_back(msg);
+	  // CHECK AGAINST RECEIVER PROFILE: LOOK UP WHEN I CAN READ NEXT
+	  timerDelay = profile.Delay(msg.Bits(), msg.LastEpochTime());
+	}
+      catch ( Buffer_Empty& ex )
+	{
+	}
+      if ( ros::Time::now() >= endTime )
+	{
+	  LOGGER.DEBUG("WRITING LOG; max Size was: %lu bits; got %lu messages",
+		       buffer.maxBits(), messages.size());
+	  std::string fName = nodeName + "." + compName + ".network.csv";
+	  Network::write_data(fName.c_str(),messages);
+	  LOGGER.DEBUG("EXITING BUFFER RECEIVE THREAD!");
+	  break;
+	}
+      else
+	{
+	  // SLEEP UNTIL NEXT TIME BUFFER CAN BE SERVICED
+	  if (timerDelay > 0)
+	    ros::Duration(timerDelay).sleep();
+	}
     }
 }
 
@@ -148,9 +157,9 @@ void receiver::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Initialized Profile");
   LOGGER.DEBUG("%s",profile.toString().c_str());
 
-  buffer.set_capacity(300000);
-  LOGGER.DEBUG("Set Buffer Capacity to %lu", buffer.capacity());
-  LOGGER.DEBUG("Current Buffer Size is %lu", buffer.size());
+  buffer.set_capacity(500000);
+  LOGGER.DEBUG("Set Buffer Capacity to %lu bits", buffer.capacityBits());
+  LOGGER.DEBUG("Current Buffer Size is %lu bits", buffer.bits());
 
   // CONFIGURE ALL OOB CHANNELS
   std::string advertiseName;
@@ -182,15 +191,10 @@ void receiver::Init(const ros::TimerEvent& event)
 
   id = 0;
 
-  // CREATE TIMER HERE FOR RECEIVING DATA ACCORDING TO PROFILE
-  ros::TimerOptions timer_options = 
-    ros::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&receiver::TrafficGeneratorTimer, this, _1),
-     &this->compQueue,
-     true);
-  tgTimer = nh.createTimer(timer_options);
-  LOGGER.DEBUG("Created Timer");
+  // CREATE THREAD HERE FOR RECEIVING DATA
+  boost::thread *tmr_thread =
+    new boost::thread( boost::bind(&receiver::bufferReceiveThread, this) );
+  LOGGER.DEBUG("Created Buffer Recv Thread");
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -217,15 +221,12 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   //   I.E. IF OUR REMAINING BUFFER SPACE IS TOO LOW (CALCULABLE BASED ON
   //   KNOWN PEAK RATES OF SENDERS)
   // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
-  uint64_t currentSize = buffer.size();
-  uint64_t currentCapacity = buffer.capacity();
+  uint64_t currentSize = buffer.bits();
+  uint64_t currentCapacity = buffer.capacityBits();
   if ( currentCapacity > 0 )
     {
       double utilization = (double)currentSize/(double)currentCapacity;
-
-      LOGGER.DEBUG("Buffer Utilization: %f, Buffer Free: %lu, Msg Size: %lu",
-		   utilization, currentCapacity - currentSize, msgBytes);
-      if (utilization > 0.5)
+      if (utilization > 0.95)
 	{
 	  ros::ServiceClient* sender = oob_map[uuid];
 	  pub_sub_tg::oob_comm oob;
@@ -241,7 +242,7 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   new_msg.TimeStamp();
 
   // PUT MESSAGE INTO A BUFFER
-  buffer.send(new_msg, msgBytes);
+  buffer.send(new_msg, msgBytes * 8);
 }
 //# End message_sub_OnOneData Marker
 
