@@ -2,37 +2,46 @@
 
 
 //# Start User Globals Marker
+#include <deque>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/circular_buffer.hpp>
 
 // Thread safe circular buffer 
 class Buffer_Empty {};
 
 template <typename T>
-class circ_buffer : private boost::noncopyable
+class message_buffer : private boost::noncopyable
 {
 public:
   typedef boost::mutex::scoped_lock lock;
-  circ_buffer() {}
-  circ_buffer(int n) {cb.set_capacity(n);}
-  void send (T data) {
+  message_buffer() : _size(0), _maxSize(0), _capacity(0) {}
+  message_buffer(int n) : message_buffer() { _capacity = n; }
+  void send (T data, uint64_t len) {
     lock lk(monitor);
-    cb.push_back(data);
-    buffer_not_empty.notify_one();
+    if (!_capacity ||
+	(_capacity && len <= (_capacity - _size)) ) {
+      _size += len;
+      _maxSize = max(_size,_maxSize);
+      sizes.push_back(len);
+      q.push_back(data);
+      buffer_not_empty.notify_one();
+    }
   }
   T receive() {
     lock lk(monitor);
-    while (cb.empty())
+    while (q.empty())
       buffer_not_empty.wait(lk);
-    T data = cb.front();
-    cb.pop_front();
+    T data = q.front();
+    q.pop_front();
+    uint64_t len = sizes.front();
+    sizes.pop_front();
+    _size = _size - len;
     return data;
   }
   T non_blocking_receive() {
     lock lk(monitor);
-    if (cb.empty()) {
+    if (q.empty()) {
       lk.unlock();
       throw Buffer_Empty();
     }
@@ -43,23 +52,33 @@ public:
   }
   void clear() {
     lock lk(monitor);
-    cb.clear();
+    q.clear();
+    sizes.clear();
+    _size = _maxSize = 0;
   }
-  int size() {
+  uint64_t size() {
     lock lk(monitor);
-    return cb.size();
+    return _size;
   }
-  void set_capacity(int capacity) {
+  uint64_t maxSize() {
     lock lk(monitor);
-    cb.set_capacity(capacity);
+    return _maxSize;
+  }
+  void set_capacity(uint64_t capacity) {
+    lock lk(monitor);
+    _capacity = capacity;
   }
 private:
+  uint64_t _size;
+  uint64_t _maxSize;
+  uint64_t _capacity;
   boost::condition buffer_not_empty;
   boost::mutex monitor;
-  boost::circular_buffer<T> cb;
+  std::deque<uint64_t> sizes;
+  std::deque<T> q;
 };
 
-circ_buffer<Network::Message> buffer(314000);
+message_buffer<Network::Message> buffer;
 
 /*
   Need to implement:
@@ -72,31 +91,27 @@ circ_buffer<Network::Message> buffer(314000);
 void receiver::TrafficGeneratorTimer(const ros::TimerEvent& event)
 {
   // READ FROM THE BUFFER
-  double timerDelay = 0.0001;
+  double timerDelay = -1;
   try
     {
       Network::Message msg = buffer.non_blocking_receive();
       msg.TimeStamp();
       messages.push_back(msg);
-
-      ros::Time now = ros::Time::now();
-      timespec ts_now = {now.sec, now.nsec};
       // CHECK AGAINST RECEIVER PROFILE: LOOK UP WHEN I CAN READ NEXT
-      timerDelay = profile.Delay(msg.Bytes() * 8, ts_now);
+      timerDelay = profile.Delay(msg.Bits(), msg.LastEpochTime());
     }
   catch ( Buffer_Empty& ex )
     {
     }
   if ( ros::Time::now() >= endTime )
     {
-      printf("WRITING LOG\n");
+      printf("WRITING LOG; max Size was: %lu; got %lu messages\n",
+	     buffer.maxSize(), messages.size());
       std::string fName = nodeName + "." + compName + ".network.csv";
       Network::write_data(fName.c_str(),messages);
     }
   else
     {
-      if ( timerDelay == 0.0 || timerDelay < 0 )
-	timerDelay = -1;
       // RESTART TIMER FOR THAT TIME
       ros::TimerOptions timer_options;
       timer_options = 
@@ -191,7 +206,7 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   new_msg.TimeStamp();
 
   // PUT MESSAGE INTO A BUFFER
-  buffer.send(new_msg);
+  buffer.send(new_msg, msgBytes);
 }
 //# End message_sub_OnOneData Marker
 
@@ -278,7 +293,9 @@ void receiver::startUp()
 
   ros::Time now = ros::Time::now();
   while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) );
+	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) )
+    ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
   this->comp_sync_sub.shutdown();
   this->comp_sync_pub.shutdown();
 

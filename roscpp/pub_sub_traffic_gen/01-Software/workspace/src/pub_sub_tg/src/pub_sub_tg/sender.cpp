@@ -43,10 +43,10 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
     ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
 
   Network::Message new_msg;
+  new_msg.Bytes(msgSizeBytes);
+  new_msg.Id(id++);
+  new_msg.TimeStamp();
   messages.push_back(new_msg);
-  messages[id].Bytes(msgSizeBytes);
-  messages[id].Id(id);
-  messages[id].TimeStamp();
 
   try
     {
@@ -57,8 +57,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
       LOGGER.DEBUG("Sender has been prevented from sending data for now.");
     }
 
-  double timerDelay = profile.Delay(messages[id].Bytes() * 8,messages[id].LastEpochTime());
-  id++;
+  double timerDelay = profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
 
   if ( ros::Time::now() >= endTime )
     {
@@ -223,7 +222,9 @@ void sender::startUp()
 
   ros::Time now = ros::Time::now();
   while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) );
+	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) )
+    ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
   this->comp_sync_sub.shutdown();
   this->comp_sync_pub.shutdown();
 
