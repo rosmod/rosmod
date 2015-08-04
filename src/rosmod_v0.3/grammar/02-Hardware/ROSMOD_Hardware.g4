@@ -79,7 +79,7 @@ init
 // An ID - one or more alphanumeric characters that must start with either an alphabet/underscore
 ID
     :   ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '/' | '~' | '.' | '-')
-        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | ':' | '.' | '/' )*
+        ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '-' | ':' | '.' | '/' )*
     ;
 
 
