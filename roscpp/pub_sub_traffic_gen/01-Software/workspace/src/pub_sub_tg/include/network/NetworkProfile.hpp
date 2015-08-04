@@ -19,8 +19,6 @@
 
 #include <time.h>
 
-#define NETWORK_PROFILE_DEBUG 0
-
 namespace Network {
 
   class Exceeded_Production_Profile
@@ -35,11 +33,19 @@ namespace Network {
 
   class ResourceEntry {
   public:
-    double time;
-    unsigned long long bandwidth;
-    unsigned long long max_bandwidth;
-    unsigned long long data;
-    unsigned long long latency;
+    double time;                      // sec
+    unsigned long long bandwidth;     // bits / sec
+    unsigned long long max_bandwidth; // bits / sec
+    unsigned long long data;          // bits
+    unsigned long long latency;       // msec
+
+    std::string toString() {
+      char charBuf[100];
+      sprintf(charBuf,"%f, %llu, %llu, %llu, %llu",
+	      time, bandwidth, max_bandwidth, data, latency);
+      std::string retStr = charBuf;
+      return retStr;
+    }
   };
 
   class NetworkProfile {
@@ -96,6 +102,26 @@ namespace Network {
       std::swap (start_time.tv_nsec, s.start_time.tv_nsec);
     }
 
+    std::string toString() {
+      std::string retStr = "";
+      for (auto it=resources.begin(); it != resources.end(); ++it)
+	{
+	  retStr += it->toString() + "\n";
+	}
+      return retStr;
+    }
+
+    int setStartTime(double t)
+    {
+      double fractpart,intpart;
+      fractpart = modf(t,&intpart);
+      start_time.tv_sec = (unsigned long long)(intpart);
+      start_time.tv_nsec = (unsigned long)(fractpart*1000000000.0);
+      return 0;
+    }
+
+    int setPeriod(double t) { period = t; }
+
     int initializeFromFile(const char* fname) {
       std::ifstream file(fname);
       if ( !file.is_open() ) {
@@ -150,20 +176,9 @@ namespace Network {
       }
     }
 
-    int setStartTime(double t)
-    {
-      double fractpart,intpart;
-      fractpart = modf(t,&intpart);
-      start_time.tv_sec = (unsigned long long)(intpart);
-      start_time.tv_nsec = (unsigned long)(fractpart*1000000000.0);
-      return 0;
-    }
-
-    int setPeriod(double t) { period = t; }
-
     int parse_csv(std::vector<std::vector<double> > csv) {
       // each csv row contains time,bandwidth,latency
-      for (int i=1;i<csv.size();i++) {
+      for (int i=0;i<csv.size();i++) {
 	ResourceEntry entry;
 	entry.time = csv[i][0];                              // s
 	entry.bandwidth = (unsigned long long) (csv[i][1]);  // bps
@@ -246,7 +261,7 @@ namespace Network {
       return 0;
     }
 
-    double Delay(unsigned long dataLen, timespec sentTime) {
+    double Delay(unsigned long dataLenBits, timespec sentTime) {
       if (resources.size () == 0)
 	return -1;
 
@@ -271,8 +286,8 @@ namespace Network {
       double timeDiff = 0;
       unsigned long long dataInPeriod = resources.back().data;
       unsigned long long dataToEnd = dataInPeriod - offsetData;
-      unsigned long long numPeriods = dataLen / dataInPeriod;
-      unsigned long long modData = dataLen % dataInPeriod;
+      unsigned long long numPeriods = dataLenBits / dataInPeriod;
+      unsigned long long modData = dataLenBits % dataInPeriod;
   
       if ( numPeriods > 0 ) { // will take more than numPeriods to send data
 	timeDiff += (double)numPeriods * period;
@@ -322,11 +337,11 @@ namespace Network {
     std::ofstream file(fname);
     if ( !file.is_open() )
       return -1;
-    file << "%index, %time, %length\n";
+    file << "%index, %time, %length (bits)\n";
     for (long i=0;i<messages.size();i++) {
       file << messages[i].Id() << "," << std::setprecision(precision)
 	   << messages[i].LastDoubleTime() << ","
-	   << messages[i].Bytes()
+	   << messages[i].Bytes() * 8
 	   << "\n";
     }
     return 0;

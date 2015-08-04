@@ -40,6 +40,7 @@ private:
   ros::ServiceClient oob_client;
 
   //# Start User Private Variables Marker
+  Network::NetworkProfile profile;
   ros::Timer tgTimer;
   ros::Time endTime;
   std::vector<Network::Message> messages;
@@ -48,7 +49,7 @@ private:
   std::map<uint64_t,ros::ServiceClient*> oob_map;
   std::map<uint64_t,Network::NetworkProfile> profile_map;
 
-  void message_sub_wrapper(const ros::MessageEvent<pub_sub_tg::message const>& event);
+  void TrafficGeneratorTimer(const ros::TimerEvent& event);
   //# End User Private Variables Marker
 };
 

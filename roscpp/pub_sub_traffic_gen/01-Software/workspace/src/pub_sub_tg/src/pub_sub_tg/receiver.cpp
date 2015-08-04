@@ -2,6 +2,64 @@
 
 
 //# Start User Globals Marker
+#include <boost/thread/condition.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/circular_buffer.hpp>
+
+// Thread safe circular buffer 
+class Buffer_Empty {};
+
+template <typename T>
+class circ_buffer : private boost::noncopyable
+{
+public:
+  typedef boost::mutex::scoped_lock lock;
+  circ_buffer() {}
+  circ_buffer(int n) {cb.set_capacity(n);}
+  void send (T data) {
+    lock lk(monitor);
+    cb.push_back(data);
+    buffer_not_empty.notify_one();
+  }
+  T receive() {
+    lock lk(monitor);
+    while (cb.empty())
+      buffer_not_empty.wait(lk);
+    T data = cb.front();
+    cb.pop_front();
+    return data;
+  }
+  T non_blocking_receive() {
+    lock lk(monitor);
+    if (cb.empty()) {
+      lk.unlock();
+      throw Buffer_Empty();
+    }
+    else {
+      lk.unlock();
+      return receive();
+    }
+  }
+  void clear() {
+    lock lk(monitor);
+    cb.clear();
+  }
+  int size() {
+    lock lk(monitor);
+    return cb.size();
+  }
+  void set_capacity(int capacity) {
+    lock lk(monitor);
+    cb.set_capacity(capacity);
+  }
+private:
+  boost::condition buffer_not_empty;
+  boost::mutex monitor;
+  boost::circular_buffer<T> cb;
+};
+
+circ_buffer<Network::Message> buffer(314000);
 
 /*
   Need to implement:
@@ -11,43 +69,44 @@
   * monitoring code to check the buffer space and send back to publishers
  */
 
-void receiver::message_sub_wrapper(const ros::MessageEvent<pub_sub_tg::message const>& event)
+void receiver::TrafficGeneratorTimer(const ros::TimerEvent& event)
 {
-  LOGGER.DEBUG("CHECKING RECEIVED DATA AGAINST SENDER PROFILE");
-  // publisher_name is the node-name from which the publish occurred
-  // unfortunately this is not as useful to us because many publishers can
-  // reside on a single node
-  const std::string& publisher_name = event.getPublisherName();
-  const ros::M_string& header = event.getConnectionHeader();
-  const pub_sub_tg::message::ConstPtr& input = event.getMessage();
-  // GET SENDER ID
-  uint64_t uuid = input->uuid;
-  // CHECK NETWORK PROFILE HERE FOR SENDER
-  Network::NetworkProfile* profile = &profile_map[uuid];
-  // DO I NEED RECEIVER PROFILE TO DESCRIBE THE RATE AT WHICH THE
-  //   RECEIVER PULLS FROM THE QUEUE?
-  // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG:
-  //   I.E. IF OUR REMAINING BUFFER SPACE IS TOO LOW (CALCULABLE BASED ON
-  //   KNOWN PEAK RATES OF SENDERS)
-  // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
-  ros::ServiceClient* sender = oob_map[uuid];
-  pub_sub_tg::oob_comm oob;
-  oob.request.deactivateSender = true;
-  sender->call(oob);
-  // MEASURE AND RECORD DATA OUTPUT
-  Network::Message new_msg;
-  messages.push_back(new_msg);
-  messages[id].Bytes(ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*input));
-  messages[id].Id(id);
-  messages[id].TimeStamp();
-  id++;
-  // FINALLY, PASS DATA THROUGH (IF IT'S ALRIGHT)
-  this->message_sub_OnOneData(input);
+  // READ FROM THE BUFFER
+  double timerDelay = 0.0001;
+  try
+    {
+      Network::Message msg = buffer.non_blocking_receive();
+      msg.TimeStamp();
+      messages.push_back(msg);
 
+      ros::Time now = ros::Time::now();
+      timespec ts_now = {now.sec, now.nsec};
+      // CHECK AGAINST RECEIVER PROFILE: LOOK UP WHEN I CAN READ NEXT
+      timerDelay = profile.Delay(msg.Bytes() * 8, ts_now);
+    }
+  catch ( Buffer_Empty& ex )
+    {
+    }
   if ( ros::Time::now() >= endTime )
     {
+      printf("WRITING LOG\n");
       std::string fName = nodeName + "." + compName + ".network.csv";
       Network::write_data(fName.c_str(),messages);
+    }
+  else
+    {
+      if ( timerDelay == 0.0 || timerDelay < 0 )
+	timerDelay = -1;
+      // RESTART TIMER FOR THAT TIME
+      ros::TimerOptions timer_options;
+      timer_options = 
+	ros::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&receiver::TrafficGeneratorTimer, this, _1),
+	 &this->compQueue,
+	 true);
+      ros::NodeHandle nh;
+      tgTimer = nh.createTimer(timer_options);
     }
 }
 
@@ -60,9 +119,16 @@ void receiver::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Entering receiver::Init");
   // Initialize Here
   
+  // INITIALIZE OUR PROFILE
+  printf("Initializing MW\n");
   // INITIALIZE N/W MIDDLEWARE HERE
   ros::Time now = ros::Time::now();
   endTime = now + ros::Duration(config.tg_time);
+  // LOAD NETWORK PROFILE HERE
+  profile.initializeFromFile(this->config.profileName.c_str());
+  printf("Initialized Profile\n");
+  printf("%s\n",profile.toString().c_str());
+#if 0
   // GET ALL OOB SERVER UUIDS FOR USE IN CALLBACK
   // FOR EACH OOB_CLIENT:
   pub_sub_tg::oob_comm oob_get_uuid;
@@ -75,7 +141,19 @@ void receiver::Init(const ros::TimerEvent& event)
   // LOAD PROFILES
   profile_map[uuid] = Network::NetworkProfile();
   profile_map[uuid].initializeFromFile(profileName.c_str());
+#endif
   id = 0;
+
+  // CREATE TIMER HERE FOR RECEIVING DATA ACCORDING TO PROFILE
+  ros::NodeHandle nh;
+  ros::TimerOptions timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&receiver::TrafficGeneratorTimer, this, _1),
+     &this->compQueue,
+     true);
+  tgTimer = nh.createTimer(timer_options);
+  printf("Created Timer\n");
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -87,10 +165,33 @@ void receiver::Init(const ros::TimerEvent& event)
 //# Start message_sub_OnOneData Marker
 void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& received_data)
 {
-  LOGGER.DEBUG("Entering receiver::message_sub_OnOneData");
-  // Business Logic for message_sub Subscriber
+  // GET SENDER ID
+  uint64_t uuid = received_data->uuid;
+  // CHECK NETWORK PROFILE HERE FOR SENDER
+  Network::NetworkProfile* profile = &profile_map[uuid];
+  // DO I NEED RECEIVER PROFILE TO DESCRIBE THE RATE AT WHICH THE
+  //   RECEIVER PULLS FROM THE QUEUE?
+  // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG:
+  //   I.E. IF OUR REMAINING BUFFER SPACE IS TOO LOW (CALCULABLE BASED ON
+  //   KNOWN PEAK RATES OF SENDERS)
+  // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
+#if 0
+  ros::ServiceClient* sender = oob_map[uuid];
+  pub_sub_tg::oob_comm oob;
+  oob.request.deactivateSender = true;
+  sender->call(oob);
+#endif
+  // MEASURE AND RECORD DATA OUTPUT
+  uint64_t msgBytes =
+    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*received_data);
 
-  LOGGER.DEBUG("Exiting receiver::message_sub_OnOneData");
+  Network::Message new_msg;
+  new_msg.Bytes(msgBytes);
+  new_msg.Id(id++);
+  new_msg.TimeStamp();
+
+  // PUT MESSAGE INTO A BUFFER
+  buffer.send(new_msg);
 }
 //# End message_sub_OnOneData Marker
 

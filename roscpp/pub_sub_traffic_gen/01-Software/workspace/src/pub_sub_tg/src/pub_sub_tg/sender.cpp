@@ -20,12 +20,12 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 	}
       if (profile.resources.size() > 0) // has entries in profile
 	{
-	  uint64_t msgSize =
+	  uint64_t msgSizeBytes =
 	    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
 	  timespec current_time;
 	  current_time.tv_sec = now.sec;
 	  current_time.tv_nsec = now.nsec;
-	  timeDiff = profile.Delay(msgSize, current_time);
+	  timeDiff = profile.Delay(msgSizeBytes * 8, current_time);
 	  nextSendTime = now + ros::Duration(timeDiff);
 	}
     }
@@ -36,15 +36,18 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 {
   // AND A MEASUREMENT
-  Network::Message new_msg;
-  messages.push_back(new_msg);
-  messages[id].Bytes(max_data_length);
-  messages[id].Id(id);
-  messages[id].TimeStamp();
-
   pub_sub_tg::message msg;
   msg.uuid = uuid;
   msg.bytes.resize(max_data_length,0);
+  uint64_t msgSizeBytes =
+    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
+
+  Network::Message new_msg;
+  messages.push_back(new_msg);
+  messages[id].Bytes(msgSizeBytes);
+  messages[id].Id(id);
+  messages[id].TimeStamp();
+
   try
     {
       message_pub_wrapper(msg);
@@ -54,11 +57,12 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
       LOGGER.DEBUG("Sender has been prevented from sending data for now.");
     }
 
-  double timerDelay = profile.Delay(messages[id].Bytes(),messages[id].LastEpochTime());
+  double timerDelay = profile.Delay(messages[id].Bytes() * 8,messages[id].LastEpochTime());
   id++;
 
   if ( ros::Time::now() >= endTime )
     {
+      printf("WRITING LOG\n");
       std::string fName = nodeName + "." + compName + ".network.csv";
       Network::write_data(fName.c_str(),messages);
     }
@@ -73,7 +77,6 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 	 true);
       ros::NodeHandle nh;
       tgTimer = nh.createTimer(timer_options);
-      tgTimer.start();
     }
 }
 
@@ -87,6 +90,7 @@ void sender::Init(const ros::TimerEvent& event)
   // Initialize Here
   
   // INITIALIZE N/W MIDDLEWARE HERE
+  printf("Initializing MW\n");
   ros::Time now = ros::Time::now();
   endTime = now + ros::Duration(config.tg_time);
   // NEED TO GET UUID & NETWORK PROFILE FROM XML
@@ -97,7 +101,8 @@ void sender::Init(const ros::TimerEvent& event)
   // LOAD NETWORK PROFILE HERE
   profileName = this->config.profileName;
   profile.initializeFromFile(profileName.c_str());
-
+  printf("Initialized Profile\n");
+  printf("%s\n",profile.toString().c_str());
   // FINISH NETWORK MIDDLEWARE INIT
   id = 0;
 
@@ -110,7 +115,7 @@ void sender::Init(const ros::TimerEvent& event)
      &this->compQueue,
      true);
   tgTimer = nh.createTimer(timer_options);
-  tgTimer.start();
+  printf("Created Timer\n");
 
   // Stop Init Timer
   initOneShotTimer.stop();
