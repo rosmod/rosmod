@@ -174,6 +174,9 @@ void receiver::Init(const ros::TimerEvent& event)
   uint64_t uuid_pub1 = 1;
   uint64_t uuid_pub2 = 2;
   uint64_t uuid_pub3 = 3;
+  uuids.push_back(uuid_pub1);
+  uuids.push_back(uuid_pub2);
+  uuids.push_back(uuid_pub3);
 
   oob_map[uuid_pub1] = &this->oob_client_pub1;
   oob_map[uuid_pub2] = &this->oob_client_pub2;
@@ -188,6 +191,11 @@ void receiver::Init(const ros::TimerEvent& event)
 
   profile_map[uuid_pub3] = Network::NetworkProfile();
   profile_map[uuid_pub3].initializeFromFile("required3.csv");
+
+  // prepare receive map
+  receive_map[uuid_pub1] = std::map<ros::Time, uint64_t>();
+  receive_map[uuid_pub2] = std::map<ros::Time, uint64_t>();
+  receive_map[uuid_pub3] = std::map<ros::Time, uint64_t>();
 
   id = 0;
 
@@ -213,6 +221,12 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   uint64_t msgBytes =
     ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*received_data);
 
+  ros::Time now = ros::Time::now();
+  uint64_t prevData = 0;
+  if ( receive_map[uuid].size() )
+    prevData = receive_map[uuid].end()->second;
+  receive_map[uuid][now] = msgBytes * 8 + prevData;
+
   // CHECK NETWORK PROFILE HERE FOR SENDER
   Network::NetworkProfile* profile = &profile_map[uuid];
   // DO I NEED RECEIVER PROFILE TO DESCRIBE THE RATE AT WHICH THE
@@ -228,10 +242,32 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
       double utilization = (double)currentSize/(double)currentCapacity;
       if (utilization > 0.95)
 	{
-	  ros::ServiceClient* sender = oob_map[uuid];
-	  pub_sub_tg::oob_comm oob;
-	  oob.request.deactivateSender = true;
-	  sender->call(oob);
+	  std::vector<uint64_t> bad_uuids;
+	  ros::Time prevTime = now - ros::Duration(1.0);
+	  for (auto uuid_it = uuids.begin();
+	       uuid_it != uuids.end(); ++uuid_it)
+	    {
+	      uint64_t d1 = receive_map[*uuid_it].lower_bound(prevTime)->second;
+	      ros::Time t1 = receive_map[*uuid_it].lower_bound(prevTime)->first;
+	      uint64_t d2 = receive_map[*uuid_it].end()->second;
+	      ros::Time t2 = receive_map[*uuid_it].end()->first;
+	      // get data @ t1 from profile, get data @ t2 from profile
+	      uint64_t pd1 = profile_map[*uuid_it].getDataAtTime({t1.sec, t1.nsec});
+	      uint64_t pd2 = profile_map[*uuid_it].getDataAtTime({t2.sec, t2.nsec});
+	      // if difference < (d2-d1) : they are sending too much
+	      uint64_t pDiff = pd2 - pd1;
+	      uint64_t diff = d2 - d1;
+	      if (diff > pDiff)
+		bad_uuids.push_back(*uuid_it);
+	    }
+	  for (auto uuid_it = bad_uuids.begin();
+	       uuid_it != bad_uuids.end(); ++uuid_it)
+	    {
+	      ros::ServiceClient* sender = oob_map[*uuid_it];
+	      pub_sub_tg::oob_comm oob;
+	      oob.request.deactivateSender = true;
+	      sender->call(oob);
+	    }
 	}
   }
   
