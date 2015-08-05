@@ -50,11 +50,14 @@ private:
   uint64_t id;
 
   std::vector<uint64_t> uuids;
+  std::vector<uint64_t> disabled_uuids;
   std::map<uint64_t, ros::ServiceClient*> oob_map;
   std::map<uint64_t, Network::NetworkProfile> profile_map;
   std::map<uint64_t, std::map<ros::Time, uint64_t>> receive_map; // time, data
   
   void bufferReceiveThread();
+  void unlimitDDoS();
+  void limitDDoS(ros::Time now, double timeWindow);
   //# End User Private Variables Marker
 };
 

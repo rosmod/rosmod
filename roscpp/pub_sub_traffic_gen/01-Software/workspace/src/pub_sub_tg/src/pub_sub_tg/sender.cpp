@@ -7,7 +7,7 @@ void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
 {
   // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
   if (deactivated)
-    return;
+    throw Network::Exceeded_Production_Profile();
   // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
   if (profile.Initialized()) // profile is not in error state
     {
@@ -44,7 +44,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   Network::Message new_msg;
   new_msg.Bytes(msgSizeBytes);
-  new_msg.Id(id++);
+  new_msg.Id(id);
   new_msg.TimeStamp();
 
   double timerDelay = 0;
@@ -54,10 +54,10 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
       message_pub_wrapper(msg);
       messages.push_back(new_msg);
       timerDelay = profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
+      id++;
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
-      LOGGER.DEBUG("Sender has been prevented from sending data for now.");
     }
 
   if ( ros::Time::now() >= endTime )
@@ -98,7 +98,23 @@ void sender::Init(const ros::TimerEvent& event)
   metered = false;
   deactivated = false;
   uuid = this->config.oob_uuid;
+
   max_data_length = 8192;
+
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--max_data_length_bytes"))
+	{
+	  max_data_length = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "--max_data_length_bits"))
+	{
+	  max_data_length = atoi(node_argv[i+1]) / 8;
+	}
+    }
+
+  LOGGER.DEBUG("Using data length of: %lu",max_data_length);
+
   // LOAD NETWORK PROFILE HERE
   profileName = this->config.profileName;
   profile.initializeFromFile(profileName.c_str());
@@ -129,16 +145,15 @@ void sender::Init(const ros::TimerEvent& event)
 bool sender::oob_commCallback(pub_sub_tg::oob_comm::Request  &req,
   pub_sub_tg::oob_comm::Response &res)
 {
-  LOGGER.DEBUG("Entering sender::oob_commCallback");
   // Business Logic for oob_server Server
 
   deactivated = req.deactivateSender;
+  LOGGER.DEBUG("Received request from server to %s", (deactivated) ? "deactivate" : "activate");
 
   res.uuid = uuid;
   res.profileName = profileName;
   res.retVal = 0;
   
-  LOGGER.DEBUG("Exiting sender::oob_commCallback");
   return true;
 }
 //# End oob_commCallback Marker

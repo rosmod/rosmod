@@ -86,9 +86,13 @@ public:
     lock lk(monitor);
     return _capacity / 8;
   }
-  void set_capacity(uint64_t capacity) {
+  void set_capacityBits(uint64_t capacityBits) {
     lock lk(monitor);
-    _capacity = capacity;
+    _capacity = capacityBits;
+  }
+  void set_capacityBytes(uint64_t capacityBytes) {
+    lock lk(monitor);
+    _capacity = capacityBytes * 8;
   }
 private:
   uint64_t _bits;
@@ -112,6 +116,15 @@ void receiver::bufferReceiveThread(void)
 {
   while ( true )
     {
+      // UPDATE SENDERS IF BUFFER IS CLEARING:
+      uint64_t currentSize = buffer.bits();
+      uint64_t currentCapacity = buffer.capacityBits();
+      if ( currentCapacity > 0 )
+	{
+	  double utilization = (double)currentSize/(double)currentCapacity;
+	  if ( utilization < 0.75 )
+	    unlimitDDoS();
+	}
       // READ FROM THE BUFFER
       double timerDelay = -1;
       try
@@ -149,6 +162,54 @@ void receiver::bufferReceiveThread(void)
     }
 }
 
+void receiver::unlimitDDoS(void)
+{
+  for (auto uuid_it = disabled_uuids.begin();
+       uuid_it != disabled_uuids.end(); ++uuid_it)
+    {
+      ros::ServiceClient* sender = oob_map[*uuid_it];
+      pub_sub_tg::oob_comm oob;
+      oob.request.deactivateSender = false;
+      sender->call(oob);
+    }
+  disabled_uuids.clear();
+}
+
+void receiver::limitDDoS(ros::Time now, double timeWindow)
+{
+  std::vector<uint64_t> bad_uuids;
+  ros::Time prevTime = now - ros::Duration(timeWindow);
+  for (auto uuid_it = uuids.begin();
+       uuid_it != uuids.end(); ++uuid_it)
+    {
+      uint64_t d1 = receive_map[*uuid_it].lower_bound(prevTime)->second;
+      ros::Time t1 = receive_map[*uuid_it].lower_bound(prevTime)->first;
+      uint64_t d2 = receive_map[*uuid_it].end()->second;
+      ros::Time t2 = receive_map[*uuid_it].end()->first;
+      // get data @ t1 from profile, get data @ t2 from profile
+      uint64_t pd1 = profile_map[*uuid_it].getDataAtTime({t1.sec, t1.nsec});
+      uint64_t pd2 = profile_map[*uuid_it].getDataAtTime({t2.sec, t2.nsec});
+      // if profile difference < (d2-d1) : they are sending too much
+      uint64_t pDiff = pd2 - pd1;
+      uint64_t diff = d2 - d1;
+      if (diff > pDiff) {
+	bad_uuids.push_back(*uuid_it);
+	if ( std::find(disabled_uuids.begin(),
+		       disabled_uuids.end(),
+		       *uuid_it) == disabled_uuids.end() )
+	  disabled_uuids.push_back(*uuid_it);
+      }
+    }
+  for (auto uuid_it = bad_uuids.begin();
+       uuid_it != bad_uuids.end(); ++uuid_it)
+    {
+      ros::ServiceClient* sender = oob_map[*uuid_it];
+      pub_sub_tg::oob_comm oob;
+      oob.request.deactivateSender = true;
+      sender->call(oob);
+    }
+}
+
 //# End User Globals Marker
 
 // Initialization Function
@@ -168,7 +229,20 @@ void receiver::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Initialized Profile");
   LOGGER.DEBUG("%s",profile.toString().c_str());
 
-  buffer.set_capacity(500000);
+  buffer.set_capacityBits(400000);
+
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
+	{
+	  buffer.set_capacityBits(atoi(node_argv[i+1]));
+	}
+      if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
+	{
+	  buffer.set_capacityBytes(atoi(node_argv[i+1]));
+	}
+    }
+  
   LOGGER.DEBUG("Set Buffer Capacity to %lu bits", buffer.capacityBits());
   LOGGER.DEBUG("Current Buffer Size is %lu bits", buffer.bits());
 
@@ -232,18 +306,14 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   uint64_t msgBytes =
     ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(*received_data);
 
+  // KEEP TRACK OF EACH SENDER'S INCOMING DATA PROFILE
   ros::Time now = ros::Time::now();
   uint64_t prevData = 0;
   if ( receive_map[uuid].size() )
     prevData = receive_map[uuid].end()->second;
   receive_map[uuid][now] = msgBytes * 8 + prevData;
 
-  // CHECK NETWORK PROFILE HERE FOR SENDER
-  Network::NetworkProfile* profile = &profile_map[uuid];
-  // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG:
-  //   I.E. IF OUR REMAINING BUFFER SPACE IS TOO LOW (CALCULABLE BASED ON
-  //   KNOWN PEAK RATES OF SENDERS)
-  // THEN SEND A REQUEST BACK TO SENDER(S) MIDDLEWARE TO METER OR STOP
+  // MANAGE AVAILABLE BUFFER SPACE
   uint64_t currentSize = buffer.bits();
   uint64_t currentCapacity = buffer.capacityBits();
   if ( currentCapacity > 0 )
@@ -251,34 +321,9 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
       double utilization = (double)currentSize/(double)currentCapacity;
       if (utilization > 0.95)
 	{
-	  std::vector<uint64_t> bad_uuids;
-	  ros::Time prevTime = now - ros::Duration(1.0); // RIGHT NOW ONLY LOOKING AT PREVIOUS SECOND
-	  for (auto uuid_it = uuids.begin();
-	       uuid_it != uuids.end(); ++uuid_it)
-	    {
-	      uint64_t d1 = receive_map[*uuid_it].lower_bound(prevTime)->second;
-	      ros::Time t1 = receive_map[*uuid_it].lower_bound(prevTime)->first;
-	      uint64_t d2 = receive_map[*uuid_it].end()->second;
-	      ros::Time t2 = receive_map[*uuid_it].end()->first;
-	      // get data @ t1 from profile, get data @ t2 from profile
-	      uint64_t pd1 = profile_map[*uuid_it].getDataAtTime({t1.sec, t1.nsec});
-	      uint64_t pd2 = profile_map[*uuid_it].getDataAtTime({t2.sec, t2.nsec});
-	      // if profile difference < (d2-d1) : they are sending too much
-	      uint64_t pDiff = pd2 - pd1;
-	      uint64_t diff = d2 - d1;
-	      if (diff > pDiff)
-		bad_uuids.push_back(*uuid_it);
-	    }
-	  for (auto uuid_it = bad_uuids.begin();
-	       uuid_it != bad_uuids.end(); ++uuid_it)
-	    {
-	      ros::ServiceClient* sender = oob_map[*uuid_it];
-	      pub_sub_tg::oob_comm oob;
-	      oob.request.deactivateSender = true;
-	      sender->call(oob);
-	    }
+	  limitDDoS(now, 1.0); // FOR NOW ONLY LOOKING AT PREVIOUS SECOND
 	}
-  }
+    }
   
   // RECORD MESSAGE
   Network::Message new_msg;
