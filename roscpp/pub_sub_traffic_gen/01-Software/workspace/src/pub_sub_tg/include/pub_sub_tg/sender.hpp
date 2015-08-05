@@ -1,7 +1,7 @@
 #ifndef SENDER_HPP
 #define SENDER_HPP
 #include "ros/ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "pub_sub_tg/message.h"
 #include "pub_sub_tg/oob_comm.h"
 
