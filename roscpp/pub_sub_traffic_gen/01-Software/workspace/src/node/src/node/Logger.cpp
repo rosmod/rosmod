@@ -26,6 +26,7 @@ bool Logger::CREATE_FILE(string target_log_path) {
  */ 
 bool Logger::WRITE_TO_FILE() {
   log_stream << log_content;
+  log_stream.flush();
   return true;
 }
 
