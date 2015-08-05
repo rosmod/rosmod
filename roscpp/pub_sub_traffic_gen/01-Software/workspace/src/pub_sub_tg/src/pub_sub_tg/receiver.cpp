@@ -28,10 +28,16 @@ public:
       buffer_not_empty.notify_one();
     }
   }
-  T receive() {
+  T receive(uint64_t timeout_ms = 0) {
+    boost::system_time const timeout =
+      boost::get_system_time()+ boost::posix_time::milliseconds(timeout_ms);
     lock lk(monitor);
-    while (q.empty())
-      buffer_not_empty.wait(lk);
+    while (q.empty()) {
+      if (!buffer_not_empty.timed_wait(lk, timeout)) {
+	lk.unlock();
+	throw Buffer_Empty();
+      }
+    }
     T data = q.front();
     q.pop_front();
     uint64_t bits = sizes.front();
@@ -110,7 +116,7 @@ void receiver::bufferReceiveThread(void)
       double timerDelay = -1;
       try
 	{
-	  Network::Message msg = buffer.receive();
+	  Network::Message msg = buffer.receive(1000);
 	  if (!receivedData)
 	    {
 	      ros::Time now = ros::Time::now();
