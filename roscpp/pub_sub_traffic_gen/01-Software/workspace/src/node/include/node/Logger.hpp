@@ -81,7 +81,7 @@ private:
   string log_content;
 
   // Max size of log_content before contents are written to file
-  const int max_log_unit = 1000;
+  const int max_log_unit = 1;
 
   // Log file stream
   ofstream log_stream;
