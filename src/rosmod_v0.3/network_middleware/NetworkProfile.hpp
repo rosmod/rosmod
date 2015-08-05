@@ -231,6 +231,27 @@ namespace Network {
       return offset;
     }
 
+    unsigned long long getDataAtTime( timespec t )
+    {
+      if (resources.size () == 0)
+	return 0;
+      unsigned long long retData = 0;
+      double offset = getOffset(t);
+      int i = 0;
+      for (int i = 0; i < resources.size(); i++)
+	{
+	  if ( resources[i].time > offset )
+	    break;
+	}
+      if ( i < resources.size() - 1 )
+	i = i - 1;
+      double end = resources[i].time;
+      unsigned long long bw = resources[i].bandwidth;
+      unsigned long long endData = resources[i].data;
+      retData = endData - bw * (end-offset);
+      return retData;
+    }
+
     int getNextInterval( timespec& start, unsigned long long& bandwidth, unsigned long long& latency ) {
       if (resources.size () == 0)
 	return -1;
