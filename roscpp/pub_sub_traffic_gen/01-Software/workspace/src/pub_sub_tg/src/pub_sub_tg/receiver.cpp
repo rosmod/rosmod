@@ -101,6 +101,7 @@ message_buffer<Network::Message> buffer;
   * monitoring code to check the buffer space and send back to publishers
  */
 
+bool receivedData = false;
 void receiver::bufferReceiveThread(void)
 {
   while ( true )
@@ -110,6 +111,12 @@ void receiver::bufferReceiveThread(void)
       try
 	{
 	  Network::Message msg = buffer.receive();
+	  if (!receivedData)
+	    {
+	      ros::Time now = ros::Time::now();
+	      endTime = now + ros::Duration(config.tg_time);
+	      receivedData = true;
+	    }
 	  msg.TimeStamp();
 	  messages.push_back(msg);
 	  // CHECK AGAINST RECEIVER PROFILE: LOOK UP WHEN I CAN READ NEXT
@@ -150,8 +157,6 @@ void receiver::Init(const ros::TimerEvent& event)
   // INITIALIZE OUR PROFILE
   LOGGER.DEBUG("Initializing MW");
   // INITIALIZE N/W MIDDLEWARE HERE
-  ros::Time now = ros::Time::now();
-  endTime = now + ros::Duration(config.tg_time);
   // LOAD NETWORK PROFILE HERE
   profile.initializeFromFile(this->config.profileName.c_str());
   LOGGER.DEBUG("Initialized Profile");
@@ -365,7 +370,6 @@ void receiver::startUp()
   while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
 	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) )
     ros::Duration(0.1).sleep();
-  ros::Duration(0.5).sleep();
   this->comp_sync_sub.shutdown();
   this->comp_sync_pub.shutdown();
 
