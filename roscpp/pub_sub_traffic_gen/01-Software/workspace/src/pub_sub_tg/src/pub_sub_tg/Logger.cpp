@@ -54,11 +54,8 @@ bool Logger::DEBUG(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -75,11 +72,8 @@ bool Logger::INFO(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "\nROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -96,11 +90,8 @@ bool Logger::WARNING(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "\nROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -138,11 +129,8 @@ bool Logger::CRITICAL(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "\nROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    CHECK_LOG_SIZE();
   }
   return true;
 }

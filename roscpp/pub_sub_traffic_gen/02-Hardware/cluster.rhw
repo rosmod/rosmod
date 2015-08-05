@@ -9,7 +9,7 @@ hardware bbb_111
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu";
-  install_path = "";
+  install_path = "/opt/ros/indigo";
   arch = armv7l;
 }
 // Hardware - bbb_112
@@ -19,7 +19,7 @@ hardware bbb_112
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu";
-  install_path = "";
+  install_path = "/opt/ros/indigo";
   arch = armv7l;
 }
 // Hardware - bbb_113
@@ -29,7 +29,7 @@ hardware bbb_113
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu";
-  install_path = "";
+  install_path = "/opt/ros/indigo";
   arch = armv7l;
 }
 // Hardware - bbb_114
@@ -39,7 +39,7 @@ hardware bbb_114
   username = "ubuntu";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
   deployment_path = "/home/ubuntu";
-  install_path = "";
+  install_path = "/opt/ros/indigo";
   arch = armv7l;
 }
 
