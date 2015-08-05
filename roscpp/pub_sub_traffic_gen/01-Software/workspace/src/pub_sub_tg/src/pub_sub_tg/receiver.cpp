@@ -229,8 +229,6 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
 
   // CHECK NETWORK PROFILE HERE FOR SENDER
   Network::NetworkProfile* profile = &profile_map[uuid];
-  // DO I NEED RECEIVER PROFILE TO DESCRIBE THE RATE AT WHICH THE
-  //   RECEIVER PULLS FROM THE QUEUE?
   // IF THE NETWORK PROFILE HAS BEEN EXCEEDED FOR TOO LONG:
   //   I.E. IF OUR REMAINING BUFFER SPACE IS TOO LOW (CALCULABLE BASED ON
   //   KNOWN PEAK RATES OF SENDERS)
@@ -243,7 +241,7 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
       if (utilization > 0.95)
 	{
 	  std::vector<uint64_t> bad_uuids;
-	  ros::Time prevTime = now - ros::Duration(1.0);
+	  ros::Time prevTime = now - ros::Duration(1.0); // RIGHT NOW ONLY LOOKING AT PREVIOUS SECOND
 	  for (auto uuid_it = uuids.begin();
 	       uuid_it != uuids.end(); ++uuid_it)
 	    {
@@ -254,7 +252,7 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
 	      // get data @ t1 from profile, get data @ t2 from profile
 	      uint64_t pd1 = profile_map[*uuid_it].getDataAtTime({t1.sec, t1.nsec});
 	      uint64_t pd2 = profile_map[*uuid_it].getDataAtTime({t2.sec, t2.nsec});
-	      // if difference < (d2-d1) : they are sending too much
+	      // if profile difference < (d2-d1) : they are sending too much
 	      uint64_t pDiff = pd2 - pd1;
 	      uint64_t diff = d2 - d1;
 	      if (diff > pDiff)
