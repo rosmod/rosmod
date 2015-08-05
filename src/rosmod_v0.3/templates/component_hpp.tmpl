@@ -5,7 +5,7 @@ $hash_include "rosmod/rosmod_ros.h"
 #else
 $hash_include "ros/ros.h"
 #end if
-$hash_include "Component.hpp"
+$hash_include "node/Component.hpp"
 #for $topic in $topics
 $hash_include "$topic[0]/${topic[1]}.h"
 #end for

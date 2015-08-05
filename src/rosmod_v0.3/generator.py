@@ -288,74 +288,12 @@ class ROSMOD_Generator:
             with open(os.path.join(self.package_path, "package.xml"), 'w') as temp_file:
                 temp_file.write(self.package_xml)
 
-            # Create rapidxml.hpp, rapidxml_utils.hpp, and xmlParser.hpp
-            self.cpp = self.src + "/" + package.properties["name"]
-            self.hpp = self.include + "/" + package.properties["name"]
-
-            if not os.path.exists(self.hpp):
-                os.makedirs(self.hpp)
-            xml_namespace = {'hash_include': "#include", 
-                                      'package_name': package.properties["name"]}
-
-            # Main RapidXML file
-            t = rapidxml_hpp(searchList=[xml_namespace])
-            self.rapidxml_hpp = str(t)
-            with open(os.path.join(self.hpp, "rapidxml.hpp"), 'w') as temp_file:
-                temp_file.write(self.rapidxml_hpp)
-
-            # RapidXML Utils file
-            t = rapidxml_utils_hpp(searchList=[xml_namespace])
-            self.rapidxml_utils_hpp = str(t)
-            with open(os.path.join(self.hpp, "rapidxml_utils.hpp"), 'w') as temp_file:
-                temp_file.write(self.rapidxml_utils_hpp)
-
-            # XML Parser file
-            t = xmlParser_hpp(searchList=[xml_namespace])
-            self.xmlParser_hpp = str(t)
-            with open(os.path.join(self.hpp, "xmlParser.hpp"), 'w') as temp_file:
-                temp_file.write(self.xmlParser_hpp)
-
             # Create Component.cpp and Component.hpp
             self.cpp = self.src + "/" + package.properties["name"]
             self.hpp = self.include + "/" + package.properties["name"]
 
             if not os.path.exists(self.cpp):
                 os.makedirs(self.cpp)
-            base_cpp_namespace = {'hash_include': "#include", 
-                                  'package_name': package.properties["name"],
-                                  'mod': mod}
-            # Populate Base Component cpp template
-            t = base_component_cpp(searchList=[base_cpp_namespace])
-            self.base_cpp = str(t)
-            # Write Component.cpp
-            with open(os.path.join(self.cpp, "Component.cpp"), 'w') as temp_file:
-                temp_file.write(self.base_cpp)
-
-            if not os.path.exists(self.hpp):
-                os.makedirs(self.hpp)
-            base_hpp_namespace = {'hash_include': "#include", 
-                                  'package_name': package.properties["name"],
-                                  'mod': mod}
-            # Populate Base Component hpp template
-            t = base_component_hpp(searchList=[base_hpp_namespace])
-            self.base_hpp = str(t)
-            # Write Component.hpp
-            with open(os.path.join(self.hpp, "Component.hpp"), 'w') as temp_file:
-                temp_file.write(self.base_hpp)
-
-            # Populate Logger cpp template
-            t = Logger_cpp(searchList=[base_cpp_namespace])
-            self.logger_cpp = str(t)
-            # Write Logger.cpp
-            with open(os.path.join(self.cpp, "Logger.cpp"), 'w') as temp_file:
-                temp_file.write(self.logger_cpp)
-
-            # Populate Logger hpp template
-            t = Logger_hpp(searchList=[base_hpp_namespace])
-            self.logger_hpp = str(t)
-            # Write Logger.hpp
-            with open(os.path.join(self.hpp, "Logger.hpp"), 'w') as temp_file:
-                temp_file.write(self.logger_hpp)
 
             # Create all package messages in msg folder
             for message in messages:
