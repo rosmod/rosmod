@@ -109,7 +109,7 @@ void receiver::bufferReceiveThread(void)
       double timerDelay = -1;
       try
 	{
-	  Network::Message msg = buffer.non_blocking_receive();
+	  Network::Message msg = buffer.receive();
 	  msg.TimeStamp();
 	  messages.push_back(msg);
 	  // CHECK AGAINST RECEIVER PROFILE: LOOK UP WHEN I CAN READ NEXT

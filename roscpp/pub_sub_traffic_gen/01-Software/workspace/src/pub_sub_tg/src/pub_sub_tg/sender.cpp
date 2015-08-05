@@ -90,7 +90,7 @@ void sender::Init(const ros::TimerEvent& event)
   // Initialize Here
   
   // INITIALIZE N/W MIDDLEWARE HERE
-  printf("Initializing MW\n");
+  LOGGER.DEBUG("Initializing MW");
   ros::Time now = ros::Time::now();
   endTime = now + ros::Duration(config.tg_time);
   // NEED TO GET UUID & NETWORK PROFILE FROM XML
@@ -101,8 +101,8 @@ void sender::Init(const ros::TimerEvent& event)
   // LOAD NETWORK PROFILE HERE
   profileName = this->config.profileName;
   profile.initializeFromFile(profileName.c_str());
-  printf("Initialized Profile\n");
-  printf("%s\n",profile.toString().c_str());
+  LOGGER.DEBUG("Initialized Profile");
+  LOGGER.DEBUG("%s",profile.toString().c_str());
   // FINISH NETWORK MIDDLEWARE INIT
   id = 0;
 
@@ -115,7 +115,7 @@ void sender::Init(const ros::TimerEvent& event)
      &this->compQueue,
      true);
   tgTimer = nh.createTimer(timer_options);
-  printf("Created Timer\n");
+  LOGGER.DEBUG("Created Timer");
 
   // Stop Init Timer
   initOneShotTimer.stop();
