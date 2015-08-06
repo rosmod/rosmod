@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node name="sub">
+  <component_instance name="receiver_i">
+    <library name="libreceiver.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <oob_uuid setting="4"/>
+    <profileName name="provided.csv"/>
+    <tg_time setting="30.0"/>
+  </component_instance>
+</node>
+

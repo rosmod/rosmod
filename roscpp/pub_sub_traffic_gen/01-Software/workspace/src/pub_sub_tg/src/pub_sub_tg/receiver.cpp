@@ -365,6 +365,9 @@ void receiver::startUp()
        boost::bind(&receiver::message_sub_OnOneData, this, _1),
        ros::VoidPtr(),
        &this->compQueue);
+  message_sub_options.transport_hints = ros::TransportHints()
+    .udp();
+
   this->message_sub = nh.subscribe(message_sub_options);  
 
   // Configure all required services associated with this component
