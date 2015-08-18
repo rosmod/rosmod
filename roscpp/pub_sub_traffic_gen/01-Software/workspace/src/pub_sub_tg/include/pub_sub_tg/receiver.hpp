@@ -3,11 +3,10 @@
 #include "ros/ros.h"
 #include "node/Component.hpp"
 #include "pub_sub_tg/message.h"
-#include "pub_sub_tg/oob_comm.h"
-
 
 //# Start User Includes Marker
 #include "network/NetworkProfile.hpp"
+#include "network/receiver.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -36,28 +35,9 @@ private:
   // Subscriber
   ros::Subscriber message_sub; 
 
-  // Client 
-  ros::ServiceClient oob_client;
-
   //# Start User Private Variables Marker
-  ros::ServiceClient oob_client_pub1;
-  ros::ServiceClient oob_client_pub2;
-  ros::ServiceClient oob_client_pub3;
-
-  Network::NetworkProfile profile;
-  ros::Time endTime;
-  std::vector<Network::Message> messages;
   uint64_t id;
-
-  std::vector<uint64_t> uuids;
-  std::vector<uint64_t> disabled_uuids;
-  std::map<uint64_t, ros::ServiceClient*> oob_map;
-  std::map<uint64_t, Network::NetworkProfile> profile_map;
-  std::map<uint64_t, std::map<ros::Time, uint64_t>> receive_map; // time, data
-  
-  void bufferReceiveThread();
-  void unlimitDDoS();
-  void limitDDoS(ros::Time now, double timeWindow);
+  Network::receiver ddos;
   //# End User Private Variables Marker
 };
 

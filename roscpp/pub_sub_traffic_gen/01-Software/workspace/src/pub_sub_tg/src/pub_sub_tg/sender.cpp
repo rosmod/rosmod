@@ -140,30 +140,10 @@ void sender::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
-// Server Callback - oob_server
-//# Start oob_commCallback Marker
-bool sender::oob_commCallback(pub_sub_tg::oob_comm::Request  &req,
-  pub_sub_tg::oob_comm::Response &res)
-{
-  // Business Logic for oob_server Server
-
-  deactivated = req.deactivateSender;
-  LOGGER.DEBUG("Received request from server to %s", (deactivated) ? "deactivate" : "activate");
-
-  res.uuid = uuid;
-  res.profileName = profileName;
-  res.retVal = 0;
-  
-  return true;
-}
-//# End oob_commCallback Marker
-
-
 // Destructor - Cleanup Ports & Timers
 sender::~sender()
 {
   message_pub.shutdown();
-  oob_server.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
@@ -182,18 +162,6 @@ void sender::startUp()
     advertiseName += "_" + portGroupMap["message_pub"];
   this->message_pub = nh.advertise<pub_sub_tg::message>(advertiseName.c_str(), 1000);
 
-  // Component Server - oob_server
-  advertiseName = "oob_comm";
-  if (portGroupMap.find("oob_server") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["oob_server"];
-  ros::AdvertiseServiceOptions oob_server_server_options;
-  oob_server_server_options = ros::AdvertiseServiceOptions::create<pub_sub_tg::oob_comm>
-      (advertiseName.c_str(),
-       boost::bind(&sender::oob_commCallback, this, _1, _2),
-       ros::VoidPtr(),
-       &this->compQueue);
-  this->oob_server = nh.advertiseService(oob_server_server_options);  
- 
   // Init Timer
   ros::TimerOptions timer_options;
   timer_options = 

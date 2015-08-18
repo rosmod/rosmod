@@ -37,9 +37,6 @@ private:
   // Publisher 
   ros::Publisher message_pub;
 
-  // Server 
-  ros::ServiceServer oob_server;
-
   //# Start User Private Variables Marker
 
   // NETWORK MIDDLEWARE INFO

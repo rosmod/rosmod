@@ -204,7 +204,7 @@ add_dependencies(sender
 add_library(receiver
             src/pub_sub_tg/receiver.cpp
             ## Start receiver CPP Marker
-
+	    src/network/receiver.cpp
             ## End receiver CPP Marker
            )
 target_link_libraries(receiver
