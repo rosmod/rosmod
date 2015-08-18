@@ -29,7 +29,7 @@ namespace Network
       if (!_capacity ||
 	  (_capacity && bits <= (_capacity - _bits)) ) {
 	_bits += bits;
-	_maxSize = max(_bits,_maxSize);
+	_maxSize = std::max(_bits,_maxSize);
 	sizes.push_back(bits);
 	q.push_back(data);
 	buffer_not_empty.notify_one();

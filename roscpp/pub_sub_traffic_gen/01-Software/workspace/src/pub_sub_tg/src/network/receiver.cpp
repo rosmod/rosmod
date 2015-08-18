@@ -104,8 +104,8 @@ void receiver::oob_send(std::vector<uint64_t>& send_uuids, bool val)
   for (auto uuid_it = send_uuids.begin();
        uuid_it != send_uuids.end(); ++uuid_it)
     {
-      oob_message(index,0) = *uuid_it;
-      oob_message(index,1) = uint64_t(val);
+      oob_message.data[index*2] = *uuid_it;
+      oob_message.data[index*2 + 1] = uint64_t(val);
     }
   oob_pub.publish(oob_message);
 }

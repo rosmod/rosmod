@@ -5,7 +5,6 @@
 #include "pub_sub_tg/message.h"
 
 //# Start User Includes Marker
-#include "network/NetworkProfile.hpp"
 #include "network/receiver.hpp"
 //# End User Includes Marker
 
