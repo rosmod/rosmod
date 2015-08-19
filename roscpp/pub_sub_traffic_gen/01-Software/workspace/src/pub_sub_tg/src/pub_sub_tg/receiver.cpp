@@ -39,7 +39,9 @@ void receiver::Init(const ros::TimerEvent& event)
   this->ddos.add_sender("required2.csv");
   this->ddos.add_sender("required3.csv");
 
-  this->ddos.set_duration(config.tg_time);
+  if (tg_duration < 0)
+    tg_duration = ddos.profile.period;
+  this->ddos.set_duration(tg_duration);
   std::string fName = nodeName + "." + compName + ".network.csv";
   this->ddos.set_output_filename(fName);
   // done initializing receiver middleware
