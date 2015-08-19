@@ -34,18 +34,15 @@ private:
   ros::Publisher message_pub;
 
   //# Start User Private Variables Marker
-
   // NETWORK MIDDLEWARE INFO
   ros::Timer tgTimer;
 
   Network::sender sender_middleware;
   std::string profileName;
-  ros::Time nextSendTime;
-  uint64_t id;
   uint64_t max_data_length;
 
   void TrafficGeneratorTimer(const ros::TimerEvent& event);
-  
+  // END NETWORK MIDDLEWARE INFO
   //# End User Private Variables Marker
 };
 

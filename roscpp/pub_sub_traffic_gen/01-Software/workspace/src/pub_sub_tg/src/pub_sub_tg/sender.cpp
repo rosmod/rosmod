@@ -8,22 +8,12 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
   pub_sub_tg::message msg;
   msg.uuid = sender_middleware.get_uuid();
   msg.bytes.resize(max_data_length,0);
-  uint64_t msgSizeBytes =
-    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
-
-  Network::Message new_msg;
-  new_msg.Bytes(msgSizeBytes);
-  new_msg.Id(id);
-  new_msg.TimeStamp();
 
   double timerDelay = 0;
 
   try
     {
-      sender_middleware.send<pub_sub_tg::message>(message_pub, msg);
-      sender_middleware.messages.push_back(new_msg);
-      timerDelay = sender_middleware.profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
-      id++;
+      timerDelay = sender_middleware.send<pub_sub_tg::message>(message_pub, msg);
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
@@ -31,10 +21,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   if ( ros::Time::now() >= sender_middleware.get_end_time() )
     {
-      LOGGER.DEBUG("WRITING LOG, sent %lu messages",
-		   sender_middleware.messages.size());
-      std::string fName = nodeName + "." + compName + ".network.csv";
-      Network::write_data(fName.c_str(), sender_middleware.messages);
+      sender_middleware.record();
     }
   else
     {
@@ -92,10 +79,10 @@ void sender::Init(const ros::TimerEvent& event)
     tg_duration = sender_middleware.profile.period;
 
   sender_middleware.set_duration(tg_duration);
+  std::string fName = nodeName + "." + compName + ".network.csv";
+  sender_middleware.set_output_filename( fName );
 
   LOGGER.DEBUG("Middleware Initialized");
-
-  id = 0;
 
   // CREATE TIMER HERE FOR SENDING DATA ACCORDING TO PROFILE
   ros::NodeHandle nh;

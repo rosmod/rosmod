@@ -5,6 +5,7 @@ using namespace Network;
 sender::sender()
 {
   deactivated = false;
+  id = 0;
 }
 
 void sender::init(std::string profileName)
@@ -17,25 +18,36 @@ void sender::init(std::string profileName)
 }
 
 template<typename T>
-void sender::send(ros::Publisher pub, const T& msg)
+double sender::send(ros::Publisher pub, const T& msg)
 {
+  double timeDiff = 0;
   // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
   if (deactivated)
     throw Network::Exceeded_Production_Profile();
   // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
   if (profile.Initialized()) // profile is not in error state
     {
+      uint64_t msgSizeBytes =
+	ros::serialization::Serializer<T>::serializedLength(msg);
+      // take a measurement
+      Network::Message new_msg;
+      new_msg.Bytes(msgSizeBytes);
+      new_msg.Id(id);
+      new_msg.TimeStamp();
+
       ros::Time now = ros::Time::now();
-      double timeDiff = (now - nextSendTime).toSec();
+      timeDiff = (now - nextSendTime).toSec();
       if (timeDiff < 0)
 	{
 	  throw Network::Exceeded_Production_Profile();
 	}
+      
+      // record the measurement
+      messages.push_back(new_msg);
+      id++;
+
       if (profile.resources.size() > 0) // has entries in profile
 	{
-	  msg.uuid = uuid;
-	  uint64_t msgSizeBytes =
-	    ros::serialization::Serializer<T>::serializedLength(msg);
 	  timespec current_time;
 	  current_time.tv_sec = now.sec;
 	  current_time.tv_nsec = now.nsec;
@@ -45,6 +57,12 @@ void sender::send(ros::Publisher pub, const T& msg)
     }
   // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
   pub.publish(msg);
+  return timeDiff;
+}
+
+void sender::record(void)
+{
+  Network::write_data(output_filename.c_str(), messages);
 }
 
 void sender::oob_recv(void)

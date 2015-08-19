@@ -25,8 +25,10 @@ namespace Network
     uint64_t get_uuid() const { return uuid; }
     ros::Time get_end_time() const { return ros::Time(endTime); }
 
+    void record();
+
     template <typename T>
-    void send(ros::Publisher pub, const T& msg);
+    double send(ros::Publisher pub, const T& msg);
     void oob_recv();
 
   public:
@@ -38,6 +40,7 @@ namespace Network
     ros::Time nextSendTime;
     uint64_t uuid;
     ros::Time endTime;
+    uint64_t id;
 
     int oob_recv_sockfd;
 
