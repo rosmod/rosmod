@@ -8,31 +8,38 @@
 
 namespace Network
 {
+  static const std::string oob_multicast_group = "224.0.0.251";
+  static const int oob_multicast_port = 12345;
+  
   class Exceeded_Production_profile {}; // sender-side exception
 
-  template <typename T>
   class sender
   {
   public:
     sender();
     void init(std::string profileName);
-    void set_duration(double dur);
-    void set_output_filename(std::string filename);
+
+    void set_duration(double dur) { endTime = ros::Time::now() + ros::Duration(dur); }
+    void set_output_filename(std::string filename) { output_filename = filename; }
+
+    uint64_t get_uuid() const { return uuid; }
+    ros::Time get_end_time() const { return ros::Time(endTime); }
+
+    template <typename T>
     void send(ros::Publisher pub, const T& msg);
     void oob_recv();
 
   public:
     std::vector<Network::Message> messages;
     Network::NetworkProfile profile;
-    ros::Duration duration;
+
+  private:
+    bool deactivated;
+    ros::Time nextSendTime;
     uint64_t uuid;
     ros::Time endTime;
 
-  private:
-    ros::Time nextSendTime;
-
-    ros::Subscriber oob_sub;
-    bool deactivated;
+    int oob_recv_sockfd;
 
     std::string output_filename;
   };

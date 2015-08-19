@@ -6,7 +6,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 {
   // AND A MEASUREMENT
   pub_sub_tg::message msg;
-  msg.uuid = sender_middleware.uuid;
+  msg.uuid = sender_middleware.get_uuid();
   msg.bytes.resize(max_data_length,0);
   uint64_t msgSizeBytes =
     ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
@@ -20,7 +20,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   try
     {
-      sender_middleware.send(message_pub, msg);
+      sender_middleware.send<pub_sub_tg::message>(message_pub, msg);
       sender_middleware.messages.push_back(new_msg);
       timerDelay = sender_middleware.profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
       id++;
@@ -29,7 +29,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
     {
     }
 
-  if ( ros::Time::now() >= sender_middleware.endTime )
+  if ( ros::Time::now() >= sender_middleware.get_end_time() )
     {
       LOGGER.DEBUG("WRITING LOG, sent %lu messages",
 		   sender_middleware.messages.size());
@@ -86,14 +86,14 @@ void sender::Init(const ros::TimerEvent& event)
 
   // LOAD NETWORK PROFILE HERE
   profileName = this->config.profileName;
-  sender_middleware.profile.initializeFromFile(profileName.c_str());
-  LOGGER.DEBUG("Initialized Profile");
-  LOGGER.DEBUG("%s",sender_middleware.profile.toString().c_str());
+  sender_middleware.init(profileName);
 
-  // FINISH NETWORK MIDDLEWARE INIT
   if (tg_duration < 0)
     tg_duration = sender_middleware.profile.period;
+
   sender_middleware.set_duration(tg_duration);
+
+  LOGGER.DEBUG("Middleware Initialized");
 
   id = 0;
 

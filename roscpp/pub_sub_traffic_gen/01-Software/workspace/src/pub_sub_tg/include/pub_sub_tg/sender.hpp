@@ -38,7 +38,7 @@ private:
   // NETWORK MIDDLEWARE INFO
   ros::Timer tgTimer;
 
-  Network::sender<pub_sub_tg::message> sender_middleware;
+  Network::sender sender_middleware;
   std::string profileName;
   ros::Time nextSendTime;
   uint64_t id;

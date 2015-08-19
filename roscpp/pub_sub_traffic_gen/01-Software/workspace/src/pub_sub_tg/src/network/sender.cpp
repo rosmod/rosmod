@@ -2,38 +2,22 @@
 
 using namespace Network;
 
-template<typename T>
-sender<T>::sender()
+sender::sender()
 {
   deactivated = false;
+}
+
+void sender::init(std::string profileName)
+{
+  profile.initializeFromFile(profileName.c_str());
+  uuid = profile.uuid;
 
   // BIND TO MULTICAST SOCKET FOR RECEIVING OOB
-
   // CREATE THREAD FOR RECEIVING OOB COMMUNICATIONS
 }
 
 template<typename T>
-void sender<T>::init(std::string profileName)
-{
-  profile.initializeFromFile(profileName.c_str());
-  uuid = profile.uuid;
-}
-
-template<typename T>
-void sender<T>::set_duration(double dur)
-{
-  duration = ros::Duration(dur);
-  endTime = ros::Time::now() + duration;
-}
-
-template<typename T>
-void sender<T>::set_output_filename(std::string filename)
-{
-  output_filename = filename;
-}
-
-template<typename T>
-void sender<T>::send(ros::Publisher pub, const T& msg)
+void sender::send(ros::Publisher pub, const T& msg)
 {
   // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
   if (deactivated)
@@ -63,8 +47,7 @@ void sender<T>::send(ros::Publisher pub, const T& msg)
   pub.publish(msg);
 }
 
-template<typename T>
-void sender<T>::oob_recv(void)
+void sender::oob_recv(void)
 {
   // receive udp multicast message here
   // parse if for a list of UUIDs and their deactivated setting
