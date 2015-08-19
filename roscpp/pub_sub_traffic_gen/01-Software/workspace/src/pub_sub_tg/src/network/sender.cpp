@@ -13,7 +13,7 @@ int sender::init(std::string profileName)
   profile.initializeFromFile(profileName.c_str());
   uuid = profile.uuid;
 
-  // BIND TO MULTICAST SOCKET FOR RECEIVING OOB
+  // create the multicast receive socket
   if ( (oob_mc_recv_sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
       perror("socket");
@@ -22,7 +22,8 @@ int sender::init(std::string profileName)
   memset(&oob_mc_recv_sockaddr, 0, sizeof(oob_mc_recv_sockaddr));
   oob_mc_recv_sockaddr.sin_family = AF_INET;
   oob_mc_recv_sockaddr.sin_port = htons(oob_mc_port);
-  oob_mc_recv_sockaddr.sin_addr.s_addr = INADDR_ANY;
+  oob_mc_recv_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  // bind to the addrress
   if ( bind( oob_mc_recv_sockfd,
 	     (struct sockaddr *)&oob_mc_recv_sockaddr,
 	     sizeof(oob_mc_recv_sockaddr)) )
@@ -30,15 +31,34 @@ int sender::init(std::string profileName)
       perror("binding");
       return -1;
     }
+  // joine the multicast group
   struct ip_mreq group;
   group.imr_multiaddr.s_addr = inet_addr(oob_mc_group.c_str());
-  group.imr_interface.s_addr = inet_addr("localhost");
-  if ( setsockopt( oob_mc_recv_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group)) < 0 )
+  group.imr_interface.s_addr = INADDR_ANY;
+  if ( setsockopt( oob_mc_recv_sockfd,
+		   IPPROTO_IP,
+		   IP_ADD_MEMBERSHIP,
+		   (char *)&group,
+		   sizeof(group) ) < 0 )
     {
       perror("multicast group");
       return -1;
     }
+  // set the receive timeout
+  struct timespec tv;
+  tv.tv_sec = 1;
+  tv.tv_nsec = 0;
+  if ( setsockopt( oob_mc_recv_sockfd,
+		   SOL_SOCKET,
+		   SO_RCVTIMEO,
+		   &tv,
+		   sizeof(tv) ) < 0 )
+    {
+      perror("timeout setting");
+      return -1;
+    }
   // CREATE THREAD FOR RECEIVING OOB COMMUNICATIONS
+  boost::thread oob_recv_thread = boost::thread(&sender::oob_recv_threadfunc, this);
   return 0;
 }
 
@@ -90,9 +110,53 @@ void sender::record(void)
   Network::write_data(output_filename.c_str(), messages);
 }
 
-void sender::oob_recv(void)
+void sender::oob_recv_threadfunc(void)
 {
-  // receive udp multicast message here
-  // parse if for a list of UUIDs and their deactivated setting
-  // if our uuid is in the list, set our deactivated variable accordingly
+  while (1)
+    {
+      // receive udp multicast message here
+      int status;
+      char buffer[max_recv_buffer_size];
+
+      struct sockaddr_in saddr;
+      int socklen;
+      memset(&saddr, 0, sizeof(saddr));
+
+      status = recvfrom( oob_mc_recv_sockfd,
+			 buffer,
+			 max_recv_buffer_size,
+			 0,
+			 (struct sockaddr *)&saddr,
+			 (socklen_t *)&socklen );
+      if ( status > 0 )
+	{
+	  bool has_uuid = false;
+	  bool my_val = false;
+	  // parse if for a list of UUIDs and their deactivated setting
+	  std::string s = buffer;
+	  std::stringstream iss(s);
+	  std::string substr;
+	  while ( std::getline(iss, substr, ';') )
+	    {
+	      std::stringstream t_iss(substr);
+	      std::string u;
+	      std::string val;
+	      std::getline(t_iss, u, ',');
+	      std::getline(t_iss, val);
+	      uint64_t tmp_uuid = (uint64_t) atoi(u.c_str());
+	      bool tmp_val = (bool) atoi(val.c_str());
+	      if (tmp_uuid == uuid)
+		{
+		  has_uuid = true;
+		  my_val = tmp_val;
+		  break;
+		}
+	    }
+	  // if our uuid is in the list, set our deactivated variable accordingly
+	  if ( has_uuid )
+	    {
+	      deactivated = my_val;
+	    }
+	}
+    }
 }

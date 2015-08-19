@@ -8,7 +8,7 @@ receiver::receiver()
 
   // CREATE THREAD HERE FOR RECEIVING DATA
   boost::thread *tmr_thread =
-    new boost::thread( boost::bind(&receiver::buffer_receive_thread, this) );
+    new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
 }
 
 int receiver::init(std::string profileName, uint64_t buffer_capacity_bits)
@@ -48,7 +48,7 @@ void receiver::update_sender_stream(uint64_t uuid, ros::Time t, uint64_t new_siz
   receive_map[uuid][t] = new_size + prevData;
 }
 
-void receiver::buffer_receive_thread(void)
+void receiver::buffer_recv_threadfunc(void)
 {
   while ( true )
     {
@@ -109,7 +109,7 @@ int receiver::oob_send(std::vector<uint64_t>& send_uuids, bool val)
   // SEND FORMATTED DATA
   if ( (sendto( oob_mc_send_sockfd,
 		msg,
-		(num_disabled+2) * 16,
+		strlen(msg),
 		0,
 		(struct sockaddr*)&oob_mc_send_sockaddr,
 		sizeof(oob_mc_send_sockaddr) )

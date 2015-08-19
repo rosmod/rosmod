@@ -32,7 +32,7 @@ namespace Network
 
     int oob_send(std::vector<uint64_t>& send_uuids, bool val);
 
-    void buffer_receive_thread(void);
+    void buffer_recv_threadfunc(void);
 
     int unlimit_ddos(void);
     int limit_ddos(ros::Time now, double timeWindow);

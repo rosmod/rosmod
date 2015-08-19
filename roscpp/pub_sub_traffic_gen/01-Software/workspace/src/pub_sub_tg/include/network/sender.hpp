@@ -5,6 +5,7 @@
 #include "ros/ros.h"
 
 #include "network/NetworkProfile.hpp"
+#include <boost/thread/thread.hpp>
 #include <std_msgs/UInt64MultiArray.h>
 
 namespace Network
@@ -30,7 +31,7 @@ namespace Network
 
     template <typename T>
     double send(ros::Publisher pub, const T& msg);
-    void oob_recv();
+    void oob_recv_threadfunc();
 
   public:
     std::vector<Network::Message> messages;
@@ -44,6 +45,7 @@ namespace Network
     uint64_t id;
 
     int oob_mc_recv_sockfd;
+    const int max_recv_buffer_size = 2000;
     struct sockaddr_in oob_mc_recv_sockaddr;
 
     std::string output_filename;
