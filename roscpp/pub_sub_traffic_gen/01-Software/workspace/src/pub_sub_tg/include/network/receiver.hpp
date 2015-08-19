@@ -3,6 +3,7 @@
 
 #include "ros/ros.h"
 
+#include <arpa/inet.h>
 #include <boost/thread/thread.hpp>
 
 #include "network/NetworkProfile.hpp"
@@ -11,12 +12,15 @@
 
 namespace Network
 {
+  static const std::string oob_mc_group = "224.0.0.251";
+  static const int oob_mc_port = 12345;
+  
   class receiver
   {
   public:
     receiver();
 
-    void init(std::string profileName, uint64_t buffer_capacity_bits);
+    int init(std::string profileName, uint64_t buffer_capacity_bits);
     void add_sender(std::string profileName);
 
     void set_duration(double dur) { duration = ros::Duration(dur); }
@@ -26,12 +30,12 @@ namespace Network
 
     ros::Time get_end_time() const { return ros::Time(endTime); }
 
-    void oob_send(std::vector<uint64_t>& send_uuids, bool val);
+    int oob_send(std::vector<uint64_t>& send_uuids, bool val);
 
     void buffer_receive_thread(void);
 
-    void unlimit_ddos(void);
-    void limit_ddos(ros::Time now, double timeWindow);
+    int unlimit_ddos(void);
+    int limit_ddos(ros::Time now, double timeWindow);
 
   public:
     message_buffer<Network::Message> buffer;
@@ -43,6 +47,7 @@ namespace Network
     ros::Time endTime;
     bool received_data;
 
+    struct sockaddr_in oob_mc_send_sockaddr;
     int oob_mc_send_sockfd;
 
     std::string output_filename;

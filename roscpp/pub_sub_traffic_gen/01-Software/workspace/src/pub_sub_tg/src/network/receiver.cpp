@@ -6,17 +6,28 @@ receiver::receiver()
 {
   received_data = false;
 
-  // NEED TO CREATE MC SOCKET FOR SENDING OOB DATA
-
   // CREATE THREAD HERE FOR RECEIVING DATA
   boost::thread *tmr_thread =
     new boost::thread( boost::bind(&receiver::buffer_receive_thread, this) );
 }
 
-void receiver::init(std::string profileName, uint64_t buffer_capacity_bits)
+int receiver::init(std::string profileName, uint64_t buffer_capacity_bits)
 {
   profile.initializeFromFile(profileName.c_str());
   buffer.set_capacityBits(buffer_capacity_bits);
+
+    // NEED TO CREATE MC SOCKET FOR SENDING OOB DATA
+  if ( (oob_mc_send_sockfd = socket(AF_INET, SOCK_DGRAM, 0)) <0)
+    {
+      perror("socket");
+      return -1;
+    }
+  memset(&oob_mc_send_sockaddr, 0, sizeof(oob_mc_send_sockaddr));
+  oob_mc_send_sockaddr.sin_family = AF_INET;
+  oob_mc_send_sockaddr.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
+  oob_mc_send_sockaddr.sin_port = htons(oob_mc_port);
+
+  return 0;
 }
 
 void receiver::add_sender(std::string profileName)
@@ -83,21 +94,42 @@ void receiver::buffer_receive_thread(void)
     }
 }
 
-void receiver::oob_send(std::vector<uint64_t>& send_uuids, bool val)
+int receiver::oob_send(std::vector<uint64_t>& send_uuids, bool val)
 {
   int num_disabled = send_uuids.size();
 
   // FORMAT DATA
+  char msg[(num_disabled+2) * 16];
+  memset(msg,0,(num_disabled+2)*16);
+  for (auto it = send_uuids.begin(); it != send_uuids.end(); ++it)
+    {
+      sprintf(msg,"%s%lu,%d;", msg, *it, (int)val);
+    }
+
   // SEND FORMATTED DATA
+  if ( (sendto( oob_mc_send_sockfd,
+		msg,
+		(num_disabled+2) * 16,
+		0,
+		(struct sockaddr*)&oob_mc_send_sockaddr,
+		sizeof(oob_mc_send_sockaddr) )
+	) < 0 )
+    {
+      perror("sendto");
+      return -1;
+    }
+  return 0;
 }
 
-void receiver::unlimit_ddos(void)
+int receiver::unlimit_ddos(void)
 {
-  oob_send(disabled_uuids, false);
+  if ( oob_send(disabled_uuids, false) < 0 )
+    return -1;
   disabled_uuids.clear();
+  return 0;
 }
 
-void receiver::limit_ddos(ros::Time now, double timeWindow)
+int receiver::limit_ddos(ros::Time now, double timeWindow)
 {
   std::vector<uint64_t> bad_uuids;
   ros::Time prevTime = now - ros::Duration(timeWindow);
@@ -122,5 +154,5 @@ void receiver::limit_ddos(ros::Time now, double timeWindow)
 	  disabled_uuids.push_back(*uuid_it);
       }
     }
-  oob_send(bad_uuids, true);
+  return oob_send(bad_uuids, true);
 }
