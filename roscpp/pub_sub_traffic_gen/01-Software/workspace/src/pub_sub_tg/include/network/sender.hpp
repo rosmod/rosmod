@@ -42,7 +42,7 @@ namespace Network
     ros::Time endTime;
     uint64_t id;
 
-    int oob_recv_sockfd;
+    int oob_mc_recv_sockfd;
 
     std::string output_filename;
   };

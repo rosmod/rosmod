@@ -11,32 +11,28 @@ void receiver::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Entering receiver::Init");
   // Initialize Here
 
-  ros::NodeHandle nh;
-  
-  // INITIALIZE OUR PROFILE
-  LOGGER.DEBUG("Initializing MW");
-  // INITIALIZE N/W MIDDLEWARE HERE
-  // LOAD NETWORK PROFILE HERE
-  ddos.profile.initializeFromFile(this->config.profileName.c_str());
-  LOGGER.DEBUG("Initialized Profile");
-  LOGGER.DEBUG("%s",ddos.profile.toString().c_str());
-
-  ddos.buffer.set_capacityBits(400000);
+  double tg_duration = -1;
+  uint64_t capacityBits = 0;
 
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
 	{
-	  ddos.buffer.set_capacityBits(atoi(node_argv[i+1]));
+	  capacityBits = atoi(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
 	{
-	  ddos.buffer.set_capacityBytes(atoi(node_argv[i+1]));
+	  capacityBits = atoi(node_argv[i+1]) * 8;
+	}
+      if (!strcmp(node_argv[i], "--tg_time"))
+	{
+	  tg_duration = atof(node_argv[i+1]);
 	}
     }
   
-  LOGGER.DEBUG("Set Buffer Capacity to %lu bits", ddos.buffer.capacityBits());
-  LOGGER.DEBUG("Current Buffer Size is %lu bits", ddos.buffer.bits());
+  LOGGER.DEBUG("Initializing MW");
+
+  ddos.init(config.profileName, capacityBits);
 
   // set up uuids for senders
   this->ddos.add_sender("required1.csv");
@@ -46,7 +42,8 @@ void receiver::Init(const ros::TimerEvent& event)
   this->ddos.set_duration(config.tg_time);
   std::string fName = nodeName + "." + compName + ".network.csv";
   this->ddos.set_output_filename(fName);
-  
+  // done initializing receiver middleware
+
   id = 0;
 
   // Stop Init Timer

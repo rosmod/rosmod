@@ -6,22 +6,17 @@ receiver::receiver()
 {
   received_data = false;
 
-  ros::NodeHandle nh;
-  oob_pub = nh.advertise<std_msgs::UInt64MultiArray>("oob_control", 1000);
+  // NEED TO CREATE MC SOCKET FOR SENDING OOB DATA
 
   // CREATE THREAD HERE FOR RECEIVING DATA
   boost::thread *tmr_thread =
     new boost::thread( boost::bind(&receiver::buffer_receive_thread, this) );
 }
 
-void receiver::set_duration(double dur)
+void receiver::init(std::string profileName, uint64_t buffer_capacity_bits)
 {
-  duration = ros::Duration(dur);
-}
-
-void receiver::set_output_filename(std::string filename)
-{
-  output_filename = filename;
+  profile.initializeFromFile(profileName.c_str());
+  buffer.set_capacityBits(buffer_capacity_bits);
 }
 
 void receiver::add_sender(std::string profileName)
@@ -92,24 +87,8 @@ void receiver::oob_send(std::vector<uint64_t>& send_uuids, bool val)
 {
   int num_disabled = send_uuids.size();
 
-  std_msgs::UInt64MultiArray oob_message;
-    
-  oob_message.layout.dim[0].label = "uuid";
-  oob_message.layout.dim[0].size = 1;
-  oob_message.layout.dim[0].stride = 2;
-  oob_message.layout.dim[1].label = "enabled";
-  oob_message.layout.dim[1].size = 1;
-  oob_message.layout.dim[1].stride = 1;
-  oob_message.layout.data_offset = 0;
-  
-  int index = 0;
-  for (auto uuid_it = send_uuids.begin();
-       uuid_it != send_uuids.end(); ++uuid_it)
-    {
-      oob_message.data[index*2] = *uuid_it;
-      oob_message.data[index*2 + 1] = uint64_t(val);
-    }
-  oob_pub.publish(oob_message);
+  // FORMAT DATA
+  // SEND FORMATTED DATA
 }
 
 void receiver::unlimit_ddos(void)
