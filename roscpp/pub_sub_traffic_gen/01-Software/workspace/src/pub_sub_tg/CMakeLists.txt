@@ -201,14 +201,6 @@ add_dependencies(sender
                  pub_sub_tg_generate_messages_cpp
                 )
 
-add_library(network_middleware
-  src/network/receiver.cpp
-  src/network/sender.cpp
-  )
-target_link_libraries(network_middleware
-  ${catkin_LIBRARIES}
-  )
-
 add_library(receiver
             src/pub_sub_tg/receiver.cpp
             ## Start receiver CPP Marker

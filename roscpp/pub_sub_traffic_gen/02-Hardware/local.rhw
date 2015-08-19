@@ -9,7 +9,7 @@ hardware local
   username = "jeb";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb/ddos_test";
-  install_path = "/opt/ros/jade";
+  install_path = "/opt/ros/indigo";
   arch = x86;
 }
 
