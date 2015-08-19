@@ -18,7 +18,7 @@ namespace Network
   {
   public:
     sender();
-    void init(std::string profileName);
+    int init(std::string profileName);
 
     void set_duration(double dur) { endTime = ros::Time::now() + ros::Duration(dur); }
     void set_output_filename(std::string filename) { output_filename = filename; }
@@ -44,6 +44,7 @@ namespace Network
     uint64_t id;
 
     int oob_mc_recv_sockfd;
+    struct sockaddr_in oob_mc_recv_sockaddr;
 
     std::string output_filename;
   };

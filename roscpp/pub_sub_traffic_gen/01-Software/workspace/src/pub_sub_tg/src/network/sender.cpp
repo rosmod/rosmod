@@ -8,13 +8,38 @@ sender::sender()
   id = 0;
 }
 
-void sender::init(std::string profileName)
+int sender::init(std::string profileName)
 {
   profile.initializeFromFile(profileName.c_str());
   uuid = profile.uuid;
 
   // BIND TO MULTICAST SOCKET FOR RECEIVING OOB
+  if ( (oob_mc_recv_sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    {
+      perror("socket");
+      return -1;
+    }
+  memset(&oob_mc_recv_sockaddr, 0, sizeof(oob_mc_recv_sockaddr));
+  oob_mc_recv_sockaddr.sin_family = AF_INET;
+  oob_mc_recv_sockaddr.sin_port = htons(oob_mc_port);
+  oob_mc_recv_sockaddr.sin_addr.s_addr = INADDR_ANY;
+  if ( bind( oob_mc_recv_sockfd,
+	     (struct sockaddr *)&oob_mc_recv_sockaddr,
+	     sizeof(oob_mc_recv_sockaddr)) )
+    {
+      perror("binding");
+      return -1;
+    }
+  struct ip_mreq group;
+  group.imr_multiaddr.s_addr = inet_addr(oob_mc_group.c_str());
+  group.imr_interface.s_addr = inet_addr("localhost");
+  if ( setsockopt( oob_mc_recv_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group)) < 0 )
+    {
+      perror("multicast group");
+      return -1;
+    }
   // CREATE THREAD FOR RECEIVING OOB COMMUNICATIONS
+  return 0;
 }
 
 template<typename T>
