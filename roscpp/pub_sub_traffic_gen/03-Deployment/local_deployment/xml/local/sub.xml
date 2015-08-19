@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="sub">
+  <library name="libnetwork_middleware.so"/>
   <component_instance name="receiver_i">
     <library name="libreceiver.so"/>
     <scheduling_scheme setting="FIFO"/>

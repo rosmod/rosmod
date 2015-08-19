@@ -354,7 +354,7 @@ namespace Network {
     bool Initialized() const { return initialized; }
   };
   
-  static long precision = 30;// for file output
+  long precision = 30;// for file output
   int write_data(const char* fname, const std::vector<Message>& messages) {
     std::ofstream file(fname);
     if ( !file.is_open() )
