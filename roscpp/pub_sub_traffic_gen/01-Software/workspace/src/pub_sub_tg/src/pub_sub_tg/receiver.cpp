@@ -39,9 +39,9 @@ void receiver::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Current Buffer Size is %lu bits", ddos.buffer.bits());
 
   // set up uuids for senders
-  this->ddos.add_sender(1, "required1.csv");
-  this->ddos.add_sender(2, "required2.csv");
-  this->ddos.add_sender(3, "required3.csv");
+  this->ddos.add_sender("required1.csv");
+  this->ddos.add_sender("required2.csv");
+  this->ddos.add_sender("required3.csv");
 
   this->ddos.set_duration(config.tg_time);
   std::string fName = nodeName + "." + compName + ".network.csv";

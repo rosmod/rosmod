@@ -24,12 +24,14 @@ void receiver::set_output_filename(std::string filename)
   output_filename = filename;
 }
 
-void receiver::add_sender(uint64_t uuid, std::string profileName)
+void receiver::add_sender(std::string profileName)
 {
-  uuids.push_back(uuid);
-  profile_map[uuid] = Network::NetworkProfile();
-  profile_map[uuid].initializeFromFile(profileName.c_str());
-  receive_map[uuid] = std::map<ros::Time, uint64_t>();
+  Network::NetworkProfile p;
+  p.initializeFromFile(profileName.c_str());
+
+  uuids.push_back(p.uuid);
+  profile_map[p.uuid] = p;
+  receive_map[p.uuid] = std::map<ros::Time, uint64_t>();
 }
 
 void receiver::update_sender_stream(uint64_t uuid, ros::Time t, uint64_t new_size)

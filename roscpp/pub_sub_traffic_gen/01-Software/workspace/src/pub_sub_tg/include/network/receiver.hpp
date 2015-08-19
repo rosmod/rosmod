@@ -115,7 +115,7 @@ namespace Network
   {
   public:
     receiver();
-    void add_sender(uint64_t uuid, std::string profileName);
+    void add_sender(std::string profileName);
     void set_duration(double dur);
     void set_output_filename(std::string filename);
     void oob_send(std::vector<uint64_t>& send_uuids, bool val);

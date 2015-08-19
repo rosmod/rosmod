@@ -2,42 +2,11 @@
 
 
 //# Start User Globals Marker
-
-void sender::message_pub_wrapper(const pub_sub_tg::message& msg)
-{
-  // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
-  if (deactivated)
-    throw Network::Exceeded_Production_Profile();
-  // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
-  if (profile.Initialized()) // profile is not in error state
-    {
-      ros::Time now = ros::Time::now();
-      double timeDiff = (now - nextSendTime).toSec();
-      if (timeDiff < 0)
-	{
-	  LOGGER.ERROR("ERROR: message_pub tried to exceed profile!");
-	  throw Network::Exceeded_Production_Profile();
-	}
-      if (profile.resources.size() > 0) // has entries in profile
-	{
-	  uint64_t msgSizeBytes =
-	    ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
-	  timespec current_time;
-	  current_time.tv_sec = now.sec;
-	  current_time.tv_nsec = now.nsec;
-	  timeDiff = profile.Delay(msgSizeBytes * 8, current_time);
-	  nextSendTime = now + ros::Duration(timeDiff);
-	}
-    }
-  // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
-  message_pub.publish(msg);
-}
-
 void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 {
   // AND A MEASUREMENT
   pub_sub_tg::message msg;
-  msg.uuid = uuid;
+  msg.uuid = sender_middleware.uuid;
   msg.bytes.resize(max_data_length,0);
   uint64_t msgSizeBytes =
     ros::serialization::Serializer<pub_sub_tg::message>::serializedLength(msg);
@@ -51,21 +20,21 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   try
     {
-      message_pub_wrapper(msg);
-      messages.push_back(new_msg);
-      timerDelay = profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
+      sender_middleware.send(message_pub, msg);
+      sender_middleware.messages.push_back(new_msg);
+      timerDelay = sender_middleware.profile.Delay(new_msg.Bits(), new_msg.LastEpochTime());
       id++;
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
     }
 
-  if ( ros::Time::now() >= endTime )
+  if ( ros::Time::now() >= sender_middleware.endTime )
     {
       LOGGER.DEBUG("WRITING LOG, sent %lu messages",
-		   messages.size());
+		   sender_middleware.messages.size());
       std::string fName = nodeName + "." + compName + ".network.csv";
-      Network::write_data(fName.c_str(),messages);
+      Network::write_data(fName.c_str(), sender_middleware.messages);
     }
   else
     {
@@ -92,12 +61,8 @@ void sender::Init(const ros::TimerEvent& event)
   
   // INITIALIZE N/W MIDDLEWARE HERE
   LOGGER.DEBUG("Initializing MW");
-  ros::Time now = ros::Time::now();
-  endTime = now + ros::Duration(config.tg_time);
-  // NEED TO GET UUID & NETWORK PROFILE FROM XML
-  metered = false;
-  deactivated = false;
-  uuid = this->config.oob_uuid;
+
+  double tg_duration = -1;
 
   max_data_length = 8192;
 
@@ -111,16 +76,25 @@ void sender::Init(const ros::TimerEvent& event)
 	{
 	  max_data_length = atoi(node_argv[i+1]) / 8;
 	}
+      if (!strcmp(node_argv[i], "--tg_time"))
+	{
+	  tg_duration = atof(node_argv[i+1]);
+	}
     }
 
   LOGGER.DEBUG("Using data length of: %lu",max_data_length);
 
   // LOAD NETWORK PROFILE HERE
   profileName = this->config.profileName;
-  profile.initializeFromFile(profileName.c_str());
+  sender_middleware.profile.initializeFromFile(profileName.c_str());
   LOGGER.DEBUG("Initialized Profile");
-  LOGGER.DEBUG("%s",profile.toString().c_str());
+  LOGGER.DEBUG("%s",sender_middleware.profile.toString().c_str());
+
   // FINISH NETWORK MIDDLEWARE INIT
+  if (tg_duration < 0)
+    tg_duration = sender_middleware.profile.period;
+  sender_middleware.set_duration(tg_duration);
+
   id = 0;
 
   // CREATE TIMER HERE FOR SENDING DATA ACCORDING TO PROFILE

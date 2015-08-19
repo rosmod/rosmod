@@ -7,7 +7,7 @@
 
 
 //# Start User Includes Marker
-#include "network/NetworkProfile.hpp"
+#include "network/sender.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -21,10 +21,6 @@ public:
 
   // Initialization
   void Init(const ros::TimerEvent& event);
-
-  // Server Callback - oob_server
-  bool oob_commCallback(pub_sub_tg::oob_comm::Request &req, 
-    pub_sub_tg::oob_comm::Response &res);
 
   // Start up
   void startUp();
@@ -41,21 +37,13 @@ private:
 
   // NETWORK MIDDLEWARE INFO
   ros::Timer tgTimer;
-  ros::Time endTime;
 
-  uint64_t uuid;
-
+  Network::sender<pub_sub_tg::message> sender_middleware;
   std::string profileName;
-  Network::NetworkProfile profile;
   ros::Time nextSendTime;
-  bool deactivated;
-  bool metered;
-
-  std::vector<Network::Message> messages;
   uint64_t id;
   uint64_t max_data_length;
 
-  void message_pub_wrapper(const pub_sub_tg::message& msg);
   void TrafficGeneratorTimer(const ros::TimerEvent& event);
   
   //# End User Private Variables Marker

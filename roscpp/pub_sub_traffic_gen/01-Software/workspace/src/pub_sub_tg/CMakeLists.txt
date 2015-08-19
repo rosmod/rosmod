@@ -203,6 +203,7 @@ add_dependencies(sender
 
 add_library(network_middleware
   src/network/receiver.cpp
+  src/network/sender.cpp
   )
 target_link_libraries(network_middleware
   ${catkin_LIBRARIES}
