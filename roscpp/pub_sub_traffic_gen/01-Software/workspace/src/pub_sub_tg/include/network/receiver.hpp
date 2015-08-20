@@ -40,7 +40,7 @@ namespace Network
     {
       Network::NetworkProfile p;
       p.initializeFromFile(profileName.c_str());
-
+      printf("added uuid: %lu\n",p.uuid);
       uuids.push_back(p.uuid);
       profile_map[p.uuid] = p;
       receive_map[p.uuid] = std::map<ros::Time, uint64_t>();
@@ -74,7 +74,7 @@ namespace Network
 	}
 
       socket_.send_to(boost::asio::buffer(msg, strlen(msg)), endpoint_);
-      printf("sent %d data to %d senders.\n", strlen(msg), num_disabled);
+      printf("sent %s data to %d senders.\n", msg, num_disabled);
       return 0;
     }
 

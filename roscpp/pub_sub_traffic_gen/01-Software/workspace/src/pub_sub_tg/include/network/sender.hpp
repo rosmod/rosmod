@@ -33,7 +33,6 @@ namespace Network
 			oob_mc_port);
       socket_.open(listen_endpoint.protocol());
       socket_.set_option(boost::asio::ip::udp::socket::reuse_address(true));
-      socket_.set_option(boost::asio::ip::udp::socket::timeout(1.0));
       socket_.bind(listen_endpoint);
 
       // Join the multicast group.
@@ -108,11 +107,16 @@ namespace Network
     {
       while (1)
 	{
-	  udp::endpoint sender_endpoint;
+	  boost::asio::socket_base::non_blocking_io command(true);
+	  //socket_.io_control(command);
+	  printf("going into receive_from\n");
+                       
+	  boost::asio::ip::udp::endpoint sender_endpoint;
 	  size_t length = socket_.receive_from(
 					       boost::asio::buffer(data_,
 								   max_recv_buffer_size),
 					       sender_endpoint);
+	  printf("coming out of receive_from\n");
 	  if (length > 0)
 	    {
 	      printf("got message!\n");
@@ -144,6 +148,11 @@ namespace Network
 		  printf("got val: %d\n",my_val);
 		  deactivated = my_val;
 		}
+	    }
+	  else
+	    {
+	      boost::this_thread::sleep(
+					boost::posix_time::milliseconds(1));
 	    }
 	}
     }

@@ -63,7 +63,9 @@ namespace Network {
     NetworkProfile()
       : initialized(false),
 	resources (0),
-	period (0)
+	period (0),
+	priority (0),
+	uuid (0)
     {
       start_time.tv_sec = 0;
       start_time.tv_nsec = 0;
