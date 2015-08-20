@@ -34,6 +34,8 @@ void receiver::Init(const ros::TimerEvent& event)
 
   ddos.init(config.profileName, capacityBits);
 
+  printf("INITIALIZED DDOS\n");
+
   // set up uuids for senders
   this->ddos.add_sender("required1.csv");
   this->ddos.add_sender("required2.csv");

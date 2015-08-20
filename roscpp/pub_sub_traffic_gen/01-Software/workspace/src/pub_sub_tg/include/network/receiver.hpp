@@ -20,10 +20,6 @@ namespace Network
     receiver()
     {
       received_data = false;
-
-      // CREATE THREAD HERE FOR RECEIVING DATA
-      boost::thread *tmr_thread =
-	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
     }
 
     int init(std::string profileName, uint64_t buffer_capacity_bits)
@@ -31,17 +27,44 @@ namespace Network
       profile.initializeFromFile(profileName.c_str());
       buffer.set_capacityBits(buffer_capacity_bits);
 
+      // CREATE THREAD HERE FOR RECEIVING DATA
+      boost::thread *tmr_thread =
+	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
+
       // NEED TO CREATE MC SOCKET FOR SENDING OOB DATA
-      if ( (oob_mc_send_sockfd = socket(AF_INET, SOCK_DGRAM, 0)) <0)
+      if ( (oob_mc_send_sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) <0)
 	{
 	  perror("socket");
 	  return -1;
 	}
-      memset(&oob_mc_send_sockaddr, 0, sizeof(oob_mc_send_sockaddr));
-      oob_mc_send_sockaddr.sin_family = AF_INET;
-      oob_mc_send_sockaddr.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
-      oob_mc_send_sockaddr.sin_port = htons(oob_mc_port);
 
+      unsigned char ttl = 3;
+      struct in_addr iaddr;
+      memset(&iaddr, 0, sizeof(struct in_addr));
+      memset(&oob_mc_send_sockaddr, 0, sizeof(struct sockaddr_in));
+
+      oob_mc_send_sockaddr.sin_family = AF_INET;
+      oob_mc_send_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+      oob_mc_send_sockaddr.sin_port = htons(0);
+
+      if ( bind( oob_mc_send_sockfd,
+		 (struct sockaddr *)&oob_mc_send_sockaddr,
+		 sizeof(oob_mc_send_sockaddr) ) < 0 )
+	{
+	  perror("bind");
+	  return -1;
+	}
+
+      iaddr.s_addr = INADDR_ANY;  // use DEFAULT interface
+
+      // Set the outgoing interface to DEFAULT
+      setsockopt(oob_mc_send_sockfd, IPPROTO_IP, IP_MULTICAST_IF, &iaddr,
+		 sizeof(iaddr));
+
+      // Set multicast packet TTL to 3; default TTL is 1
+      setsockopt(oob_mc_send_sockfd, IPPROTO_IP, IP_MULTICAST_TTL, &ttl,
+		 sizeof(ttl));
+      
       return 0;
     }
 
@@ -81,6 +104,11 @@ namespace Network
 	}
 
       // SEND FORMATTED DATA
+      // set destination multicast address
+      oob_mc_send_sockaddr.sin_family = PF_INET;
+      oob_mc_send_sockaddr.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
+      oob_mc_send_sockaddr.sin_port = htons(oob_mc_port);
+
       if ( (sendto( oob_mc_send_sockfd,
 		    msg,
 		    strlen(msg),

@@ -1,11 +1,11 @@
 #ifndef NETWORK_SENDER_HPP
 #define NETWORK_SENDER_HPP
 
-#include <arpa/inet.h>
 #include "ros/ros.h"
 
 #include "network/NetworkProfile.hpp"
 #include <boost/thread/thread.hpp>
+#include <boost/asio.hpp>
 
 namespace Network
 {
@@ -24,49 +24,16 @@ namespace Network
       uuid = profile.uuid;
 
       // create the multicast receive socket
-      if ( (oob_mc_recv_sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-	{
-	  perror("socket");
-	  return -1;
-	}
-      memset(&oob_mc_recv_sockaddr, 0, sizeof(oob_mc_recv_sockaddr));
-      oob_mc_recv_sockaddr.sin_family = AF_INET;
-      oob_mc_recv_sockaddr.sin_port = htons(oob_mc_port);
-      oob_mc_recv_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-      // bind to the addrress
-      if ( bind( oob_mc_recv_sockfd,
-		 (struct sockaddr *)&oob_mc_recv_sockaddr,
-		 sizeof(oob_mc_recv_sockaddr)) )
-	{
-	  perror("binding");
-	  return -1;
-	}
-      // joine the multicast group
-      struct ip_mreq group;
-      group.imr_multiaddr.s_addr = inet_addr(oob_mc_group.c_str());
-      group.imr_interface.s_addr = INADDR_ANY;
-      if ( setsockopt( oob_mc_recv_sockfd,
-		       IPPROTO_IP,
-		       IP_ADD_MEMBERSHIP,
-		       (char *)&group,
-		       sizeof(group) ) < 0 )
-	{
-	  perror("multicast group");
-	  return -1;
-	}
-      // set the receive timeout
-      struct timespec tv;
-      tv.tv_sec = 1;
-      tv.tv_nsec = 0;
-      if ( setsockopt( oob_mc_recv_sockfd,
-		       SOL_SOCKET,
-		       SO_RCVTIMEO,
-		       &tv,
-		       sizeof(tv) ) < 0 )
-	{
-	  perror("timeout setting");
-	  return -1;
-	}
+      boost::asio::io_service io_service;
+      udp::socket s(io_service, udp::endpoint(udp::v4(), 0))
+
+      listenInterface( boost::asio::ip::address::from_string("0.0.0.0") );
+      localEndpoint = boost::asio::ip::udp::endpoint( listenInterface, oob_mc_port );
+      socket.bind( localEndpoint );
+      socket.set_option(
+			boost::asio::ip::multicast::join_group(
+							       boost::asio::ip::address::from_string( oob_mc_group ) ) );
+
       // CREATE THREAD FOR RECEIVING OOB COMMUNICATIONS
       boost::thread oob_recv_thread = boost::thread(&sender::oob_recv_threadfunc, this);
       return 0;
@@ -130,15 +97,12 @@ namespace Network
 	  int status;
 	  char buffer[max_recv_buffer_size];
 
-	  struct sockaddr_in saddr;
 	  int socklen;
-	  memset(&saddr, 0, sizeof(saddr));
-
 	  status = recvfrom( oob_mc_recv_sockfd,
 			     buffer,
 			     max_recv_buffer_size,
 			     0,
-			     (struct sockaddr *)&saddr,
+			     (struct sockaddr *)&oob_mc_recv_sockaddr,
 			     (socklen_t *)&socklen );
 	  if ( status > 0 )
 	    {
@@ -171,6 +135,10 @@ namespace Network
 		  printf("got val: %d\n",my_val);
 		  deactivated = my_val;
 		}
+	    }
+	  else
+	    {
+	      printf("timeout!\n");
 	    }
 	}
     }
