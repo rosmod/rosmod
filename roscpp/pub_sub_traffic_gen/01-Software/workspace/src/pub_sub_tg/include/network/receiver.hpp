@@ -1,12 +1,13 @@
 #ifndef NETWORK_RECEIVER_HPP
 #define NETWORK_RECEIVER_HPP
 
-#include <arpa/inet.h>
 #include "ros/ros.h"
 
-#include "network/NetworkProfile.hpp"
 #include <boost/thread/thread.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
 
+#include "network/NetworkProfile.hpp"
 #include "network/buffer.hpp"
 
 namespace Network
@@ -18,6 +19,8 @@ namespace Network
   {
   public:
     receiver()
+      : endpoint_(boost::asio::ip::address::from_string(oob_mc_group), oob_mc_port),
+	socket_(io_service_, endpoint_.protocol())
     {
       received_data = false;
     }
@@ -27,44 +30,9 @@ namespace Network
       profile.initializeFromFile(profileName.c_str());
       buffer.set_capacityBits(buffer_capacity_bits);
 
-      // CREATE THREAD HERE FOR RECEIVING DATA
       boost::thread *tmr_thread =
 	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
 
-      // NEED TO CREATE MC SOCKET FOR SENDING OOB DATA
-      if ( (oob_mc_send_sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) <0)
-	{
-	  perror("socket");
-	  return -1;
-	}
-
-      unsigned char ttl = 3;
-      struct in_addr iaddr;
-      memset(&iaddr, 0, sizeof(struct in_addr));
-      memset(&oob_mc_send_sockaddr, 0, sizeof(struct sockaddr_in));
-
-      oob_mc_send_sockaddr.sin_family = AF_INET;
-      oob_mc_send_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-      oob_mc_send_sockaddr.sin_port = htons(0);
-
-      if ( bind( oob_mc_send_sockfd,
-		 (struct sockaddr *)&oob_mc_send_sockaddr,
-		 sizeof(oob_mc_send_sockaddr) ) < 0 )
-	{
-	  perror("bind");
-	  return -1;
-	}
-
-      iaddr.s_addr = INADDR_ANY;  // use DEFAULT interface
-
-      // Set the outgoing interface to DEFAULT
-      setsockopt(oob_mc_send_sockfd, IPPROTO_IP, IP_MULTICAST_IF, &iaddr,
-		 sizeof(iaddr));
-
-      // Set multicast packet TTL to 3; default TTL is 1
-      setsockopt(oob_mc_send_sockfd, IPPROTO_IP, IP_MULTICAST_TTL, &ttl,
-		 sizeof(ttl));
-      
       return 0;
     }
 
@@ -103,23 +71,8 @@ namespace Network
 	  sprintf(msg,"%s%lu,%d;", msg, *it, (int)val);
 	}
 
-      // SEND FORMATTED DATA
-      // set destination multicast address
-      oob_mc_send_sockaddr.sin_family = PF_INET;
-      oob_mc_send_sockaddr.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
-      oob_mc_send_sockaddr.sin_port = htons(oob_mc_port);
+      socket_.send_to(boost::asio::buffer(msg, strlen(msg)), endpoint_);
 
-      if ( (sendto( oob_mc_send_sockfd,
-		    msg,
-		    strlen(msg),
-		    0,
-		    (struct sockaddr*)&oob_mc_send_sockaddr,
-		    sizeof(oob_mc_send_sockaddr) )
-	    ) < 0 )
-	{
-	  perror("sendto");
-	  return -1;
-	}
       printf("send data to %lu senders!\n",send_uuids.size());
       return 0;
     }
@@ -214,9 +167,10 @@ namespace Network
     ros::Duration duration;
     ros::Time endTime;
     bool received_data;
-
-    struct sockaddr_in oob_mc_send_sockaddr;
-    int oob_mc_send_sockfd;
+    
+    boost::asio::io_service io_service_;
+    boost::asio::ip::udp::socket socket_;
+    boost::asio::ip::udp::endpoint endpoint_;
 
     std::string output_filename;
 
