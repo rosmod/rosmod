@@ -12,7 +12,7 @@ void receiver::Init(const ros::TimerEvent& event)
   // Initialize Here
 
   double tg_duration = -1;
-  uint64_t capacityBits = 0;
+  uint64_t capacityBits = 400000;
 
   for (int i=0; i<node_argc; i++)
     {

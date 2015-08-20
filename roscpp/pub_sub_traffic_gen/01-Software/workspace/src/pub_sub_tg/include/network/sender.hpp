@@ -33,6 +33,7 @@ namespace Network
 			oob_mc_port);
       socket_.open(listen_endpoint.protocol());
       socket_.set_option(boost::asio::ip::udp::socket::reuse_address(true));
+      socket_.set_option(boost::asio::ip::udp::socket::timeout(1.0));
       socket_.bind(listen_endpoint);
 
       // Join the multicast group.
@@ -41,20 +42,14 @@ namespace Network
       socket_.set_option(
 			 boost::asio::ip::multicast::join_group(multicast_address));
 
-      socket_.async_receive_from(
-				 boost::asio::buffer(data_, max_recv_buffer_size),
-				 endpoint_,
-				 boost::bind(&sender::handle_receive_from, this,
-					     boost::asio::placeholders::error,
-					     boost::asio::placeholders::bytes_transferred));
-      printf("sender constructed\n");
+      boost::thread *io_thread =
+	new boost::thread( boost::bind(&sender::oob_recv_threadfunc, this) );
     }
 
     int init(std::string profileName)
     {
       profile.initializeFromFile(profileName.c_str());
       uuid = profile.uuid;
-      printf("sender init done\n");
       return 0;
     }
 
@@ -109,50 +104,47 @@ namespace Network
       return timeDiff;
     }
 
-    void handle_receive_from(const boost::system::error_code& error,
-			     size_t bytes_recvd)
+    void oob_recv_threadfunc()
     {
-      printf("in receive from\n");
-      if (!error && bytes_recvd > 0)
+      while (1)
 	{
-	  printf("got message!\n");
-	  bool has_uuid = false;
-	  bool my_val = false;
-	  // parse if for a list of UUIDs and their deactivated setting
-	  std::string s = data_;
-	  std::stringstream iss(s);
-	  std::string substr;
-	  while ( std::getline(iss, substr, ';') )
+	  udp::endpoint sender_endpoint;
+	  size_t length = socket_.receive_from(
+					       boost::asio::buffer(data_,
+								   max_recv_buffer_size),
+					       sender_endpoint);
+	  if (length > 0)
 	    {
-	      std::stringstream t_iss(substr);
-	      std::string u;
-	      std::string val;
-	      std::getline(t_iss, u, ',');
-	      std::getline(t_iss, val);
-	      uint64_t tmp_uuid = (uint64_t) atoi(u.c_str());
-	      bool tmp_val = (bool) atoi(val.c_str());
-	      if (tmp_uuid == uuid)
+	      printf("got message!\n");
+	      bool has_uuid = false;
+	      bool my_val = false;
+	      // parse if for a list of UUIDs and their deactivated setting
+	      std::string s = data_;
+	      std::stringstream iss(s);
+	      std::string substr;
+	      while ( std::getline(iss, substr, ';') )
 		{
-		  has_uuid = true;
-		  my_val = tmp_val;
-		  break;
+		  std::stringstream t_iss(substr);
+		  std::string u;
+		  std::string val;
+		  std::getline(t_iss, u, ',');
+		  std::getline(t_iss, val);
+		  uint64_t tmp_uuid = (uint64_t) atoi(u.c_str());
+		  bool tmp_val = (bool) atoi(val.c_str());
+		  if (tmp_uuid == uuid)
+		    {
+		      has_uuid = true;
+		      my_val = tmp_val;
+		      break;
+		    }
+		}
+	      // if our uuid is in the list, set our deactivated variable accordingly
+	      if ( has_uuid )
+		{
+		  printf("got val: %d\n",my_val);
+		  deactivated = my_val;
 		}
 	    }
-	  // if our uuid is in the list, set our deactivated variable accordingly
-	  if ( has_uuid )
-	    {
-	      printf("got val: %d\n",my_val);
-	      deactivated = my_val;
-	    }
-	}
-      else
-	{
-	  socket_.async_receive_from(
-				     boost::asio::buffer(data_, max_recv_buffer_size),
-				     endpoint_,
-				     boost::bind(&sender::handle_receive_from, this,
-						 boost::asio::placeholders::error,
-						 boost::asio::placeholders::bytes_transferred));
 	}
     }
 

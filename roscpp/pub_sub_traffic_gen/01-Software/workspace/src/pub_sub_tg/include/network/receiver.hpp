@@ -19,7 +19,7 @@ namespace Network
   {
   public:
     receiver()
-      : endpoint_(boost::asio::ip::address::from_string(oob_mc_group), 0),
+      : endpoint_(boost::asio::ip::address::from_string(oob_mc_group), oob_mc_port),
 	socket_(io_service_, endpoint_.protocol())
     {
       received_data = false;
@@ -33,7 +33,6 @@ namespace Network
       boost::thread *tmr_thread =
 	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
 
-      printf("receiver init done\n");
       return 0;
     }
 
@@ -62,8 +61,9 @@ namespace Network
 
     int oob_send(std::vector<uint64_t>& send_uuids, bool val)
     {
-      printf("sending oob\n");
       int num_disabled = send_uuids.size();
+      if (!num_disabled)
+	return 0;
 
       // FORMAT DATA
       char msg[(num_disabled+2) * 16];
@@ -74,8 +74,7 @@ namespace Network
 	}
 
       socket_.send_to(boost::asio::buffer(msg, strlen(msg)), endpoint_);
-
-      printf("send data to %lu senders!\n",send_uuids.size());
+      printf("sent %d data to %d senders.\n", strlen(msg), num_disabled);
       return 0;
     }
 
@@ -114,6 +113,8 @@ namespace Network
 	  if ( ros::Time::now() >= endTime )
 	    {
 	      printf("writing output\n");
+	      printf("max buffer: %lu\n", buffer.maxBits());
+	      printf("received msgs: %lu\n", messages.size());
 	      Network::write_data(output_filename.c_str(),messages);
 	      break;
 	    }
