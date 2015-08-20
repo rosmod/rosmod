@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <node name="sub">
-  <library name="libnetwork_middleware.so"/>
   <component_instance name="receiver_i">
     <library name="libreceiver.so"/>
     <scheduling_scheme setting="FIFO"/>
@@ -13,9 +12,7 @@
     </logging>
     <numCompsToSync setting="4"/>
     <syncTimeout setting="100.0"/>
-    <oob_uuid setting="4"/>
     <profileName name="provided.csv"/>
-    <tg_time setting="30.0"/>
   </component_instance>
 </node>
 

@@ -21,6 +21,7 @@ void sender::TrafficGeneratorTimer(const ros::TimerEvent& event)
 
   if ( ros::Time::now() >= sender_middleware.get_end_time() )
     {
+      printf("writing output\n");
       sender_middleware.record();
     }
   else
@@ -77,7 +78,7 @@ void sender::Init(const ros::TimerEvent& event)
 
   if (tg_duration < 0)
     tg_duration = sender_middleware.profile.period;
-
+  printf("running for %f seconds\n",tg_duration);
   sender_middleware.set_duration(tg_duration);
   std::string fName = nodeName + "." + compName + ".network.csv";
   sender_middleware.set_output_filename( fName );

@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <node name="pub3">
-  <library name="libnetwork_middleware.so"/>
   <component_instance name="sender_i">
     <library name="libsender.so"/>
     <scheduling_scheme setting="FIFO"/>
@@ -11,14 +10,9 @@
       <error setting="True"/>
       <critical setting="True"/>
     </logging>
-    <port_instance name="oob_pub3">
-      <port name="oob_server"/>
-      <group setting="pub3"/>
-    </port_instance>
     <numCompsToSync setting="4"/>
     <syncTimeout setting="100.0"/>
     <profileName name="required3.csv"/>
-    <tg_time setting="30.0"/>
   </component_instance>
 </node>
 

@@ -20,23 +20,41 @@ namespace Network
   {
   public:
     sender()
-      : socket_(io_service_, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), oob_mc_port))
+      : socket_(io_service_)
     {
       deactivated = false;
       id = 0;
       // create the multicast receive socket
+      boost::asio::ip::address
+	listen_address = boost::asio::ip::address::from_string("0.0.0.0");
+      boost::asio::ip::udp::endpoint
+	listen_endpoint(
+			listen_address,
+			oob_mc_port);
+      socket_.open(listen_endpoint.protocol());
+      socket_.set_option(boost::asio::ip::udp::socket::reuse_address(true));
+      socket_.bind(listen_endpoint);
+
+      // Join the multicast group.
+      boost::asio::ip::address
+	multicast_address = boost::asio::ip::address::from_string(oob_mc_group);
+      socket_.set_option(
+			 boost::asio::ip::multicast::join_group(multicast_address));
+
       socket_.async_receive_from(
 				 boost::asio::buffer(data_, max_recv_buffer_size),
 				 endpoint_,
 				 boost::bind(&sender::handle_receive_from, this,
 					     boost::asio::placeholders::error,
 					     boost::asio::placeholders::bytes_transferred));
+      printf("sender constructed\n");
     }
 
     int init(std::string profileName)
     {
       profile.initializeFromFile(profileName.c_str());
       uuid = profile.uuid;
+      printf("sender init done\n");
       return 0;
     }
 
@@ -94,6 +112,7 @@ namespace Network
     void handle_receive_from(const boost::system::error_code& error,
 			     size_t bytes_recvd)
     {
+      printf("in receive from\n");
       if (!error && bytes_recvd > 0)
 	{
 	  printf("got message!\n");

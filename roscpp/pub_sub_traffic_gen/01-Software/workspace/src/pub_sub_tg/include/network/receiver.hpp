@@ -13,13 +13,13 @@
 namespace Network
 {
   static const std::string oob_mc_group = "224.0.0.251";
-  static const int oob_mc_port = 12345;
+  static const int oob_mc_port = 12346;
   
   class receiver
   {
   public:
     receiver()
-      : endpoint_(boost::asio::ip::address::from_string(oob_mc_group), oob_mc_port),
+      : endpoint_(boost::asio::ip::address::from_string(oob_mc_group), 0),
 	socket_(io_service_, endpoint_.protocol())
     {
       received_data = false;
@@ -33,6 +33,7 @@ namespace Network
       boost::thread *tmr_thread =
 	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
 
+      printf("receiver init done\n");
       return 0;
     }
 
@@ -61,6 +62,7 @@ namespace Network
 
     int oob_send(std::vector<uint64_t>& send_uuids, bool val)
     {
+      printf("sending oob\n");
       int num_disabled = send_uuids.size();
 
       // FORMAT DATA
@@ -111,6 +113,7 @@ namespace Network
 	    }
 	  if ( ros::Time::now() >= endTime )
 	    {
+	      printf("writing output\n");
 	      Network::write_data(output_filename.c_str(),messages);
 	      break;
 	    }

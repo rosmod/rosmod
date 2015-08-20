@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <node name="pub2">
-  <library name="libnetwork_middleware.so"/>
   <component_instance name="sender_i">
     <library name="libsender.so"/>
     <scheduling_scheme setting="FIFO"/>
@@ -18,7 +17,6 @@
     <numCompsToSync setting="4"/>
     <syncTimeout setting="100.0"/>
     <profileName name="required2.csv"/>
-    <tg_time setting="30.0"/>
   </component_instance>
 </node>
 

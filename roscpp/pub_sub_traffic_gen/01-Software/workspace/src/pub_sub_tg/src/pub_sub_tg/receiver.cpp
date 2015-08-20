@@ -34,18 +34,17 @@ void receiver::Init(const ros::TimerEvent& event)
 
   ddos.init(config.profileName, capacityBits);
 
-  printf("INITIALIZED DDOS\n");
-
   // set up uuids for senders
-  this->ddos.add_sender("required1.csv");
-  this->ddos.add_sender("required2.csv");
-  this->ddos.add_sender("required3.csv");
+  ddos.add_sender("required1.csv");
+  ddos.add_sender("required2.csv");
+  ddos.add_sender("required3.csv");
 
   if (tg_duration < 0)
     tg_duration = ddos.profile.period;
-  this->ddos.set_duration(tg_duration);
+  printf("running for %f seconds\n",tg_duration);
+  ddos.set_duration(tg_duration);
   std::string fName = nodeName + "." + compName + ".network.csv";
-  this->ddos.set_output_filename(fName);
+  ddos.set_output_filename(fName);
   // done initializing receiver middleware
 
   id = 0;
