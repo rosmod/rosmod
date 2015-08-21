@@ -35,7 +35,7 @@ namespace Network
       /* group address of 225.1.1.1 and port 5555. */
       memset((char *) &groupSock, 0, sizeof(groupSock));
       groupSock.sin_family = AF_INET;
-      groupSock.sin_addr.s_addr = inet_addr("224.0.0.0");
+      groupSock.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
       groupSock.sin_port = htons(oob_mc_port);
 
       /* Disable loopback so you do not receive your own datagrams.

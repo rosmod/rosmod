@@ -73,7 +73,7 @@ namespace Network
       /* called for each local interface over which the multicast */
       /* datagrams are to be received. */
       struct ip_mreq group;
-      group.imr_multiaddr.s_addr = inet_addr("224.0.0.0");
+      group.imr_multiaddr.s_addr = inet_addr(oob_mc_group.c_str());
       group.imr_interface.s_addr = inet_addr("0.0.0.0");
       if(setsockopt(sd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group)) < 0)
 	{
