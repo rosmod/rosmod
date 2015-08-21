@@ -12,7 +12,7 @@ generator_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(generator_dir + "/templates")
 
 # Recursively compile on template files in templates directory
-os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl > /dev/null 2>&1")
+os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl") # > /dev/null 2>&1")
 ros_templates = os.path.realpath(os.path.abspath
                                  (os.path.join
                                   (os.path.split
@@ -159,8 +159,6 @@ class ROSMOD_Generator:
         with open(os.path.join(self.hpp, "Logger.hpp"), 'w') as temp_file:
             temp_file.write(self.logger_hpp)
 
-        if not os.path.exists(self.hpp):
-            os.makedirs(self.hpp)
         xml_namespace = {'hash_include': "#include", 
                          'package_name': "node"}
 
@@ -294,6 +292,8 @@ class ROSMOD_Generator:
 
             if not os.path.exists(self.cpp):
                 os.makedirs(self.cpp)
+            if not os.path.exists(self.hpp):
+                os.makedirs(self.hpp)
 
             # Create all package messages in msg folder
             for message in messages:

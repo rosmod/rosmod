@@ -23,15 +23,17 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
 #end if
   // Initialize Here
 
-#if ${trafficGen}
+#if $trafficGen
   srand (time(NULL));
   double tg_duration = -1;
+  std::string fName;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--tg_time"))
 	{
 	  tg_duration = atof(node_argv[i+1]);
 	}
+    }
 #if $len($subscribers) > 0
   uint64_t capacityBits = 400000;
   for (int i=0; i<node_argc; i++)
@@ -45,16 +47,15 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
 	  capacityBits = atoi(node_argv[i+1]) * 8;
 	}
     }
-  std::string fName;
 #for $sub in $subscribers
-  $sub.properties['name']_recv_mw.init(node_argc, node_argv, config.profileName, capacityBits);
+  ${sub.properties['name']}_recv_mw.init(node_argc, node_argv, config.profileName, capacityBits);
   if ( tg_duration < 0 )
-    $sub.properties['name']_recv_mw.set_duration($sub.properties['name']_recv_mw.profile.period);
+    ${sub.properties['name']}_recv_mw.set_duration(${sub.properties['name']}_recv_mw.profile.period);
   else
-    $sub.properties['name']_recv_mw.set_duration(tg_duration);
+    ${sub.properties['name']}_recv_mw.set_duration(tg_duration);
   fName = nodeName + "." + compName + ".${sub.properties['name']}.network.csv";
-  $sub.properties['name']_recv_mw.set_output_filename(fName);
-  $sub.properties['name']_id = 0;
+  ${sub.properties['name']}_recv_mw.set_output_filename(fName);
+  ${sub.properties['name']}_id = 0;
 #end for
 #end if
 #if $len($publishers) > 0
@@ -73,22 +74,22 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
   ros::NodeHandle nh;
   ros::TimerOptions timer_options;
 #for $pub in $publishers
-  $pub.properites['name']_send_mw.init(node_argc, node_argv, config.profileName);
+  ${pub.properties['name']}_send_mw.init(node_argc, node_argv, config.profileName);
   if ( tg_duration < 0 )
-    $pub.properties['name']_send_mw.set_duration($pub.properties['name']_send_mw.profile.period);
+    ${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);
   else
-    $pub.properties['name']_send_mw.set_duration(tg_duration);
+    ${pub.properties['name']}_send_mw.set_duration(tg_duration);
   fName = nodeName + "." + compName + ".${pub.properties['name']}.network.csv";
-  $pub.properties['name']_send_mw.set_output_filename(fName);
+  ${pub.properties['name']}_send_mw.set_output_filename(fName);
   uint64_t uuid = (uint64_t)rand();
-  $pub.properties['name']_send_mw.set_uuid(uuid);
+  ${pub.properties['name']}_send_mw.set_uuid(uuid);
   timer_options = 
     ros::TimerOptions
     (ros::Duration(-1),
-     boost::bind(&$component_name::$pub.properties['name']_timerCallback, this, _1),
+     boost::bind(&$component_name::${pub.properties['name']}_timerCallback, this, _1),
      &this->compQueue,
      true);
-  $pub.properties['name']_timer = nh.createTimer(timer_options);
+  ${pub.properties['name']}_timer = nh.createTimer(timer_options);
 #end for
 #end if
 #end if
@@ -111,22 +112,22 @@ $init_business_logic//# End Init Marker
 void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEvent& event)
 {
   $pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]} msg;
-  msg.uuid = $pub.properties['name']_send_mw.get_uuid();
+  msg.uuid = ${pub.properties['name']}_send_mw.get_uuid();
   msg.bytes.resize(max_data_length,0);
   double timerDelay = 0;
   try
     {
       timerDelay =
-	$pub.properties['name']_send_mw.send<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>($pub.properties['name'], msg);
+	${pub.properties['name']}_send_mw.send<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>($pub.properties['name'], msg);
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
     }
 
-  if ( ros::Time::now() >= $pub.properties['name']_send_mw.get_end_time() )
+  if ( ros::Time::now() >= ${pub.properties['name']}_send_mw.get_end_time() )
     {
       LOGGER.DEBUG("writing output\n");
-      $pub.properties['name']_send_mw.record();
+      ${pub.properties['name']}_send_mw.record();
     }
   else
     {
@@ -138,7 +139,7 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
 	 &this->compQueue,
 	 true);
       ros::NodeHandle nh;
-      tgTimer = nh.createTimer(timer_options);
+      ${pub.properties['name']}_timer = nh.createTimer(timer_options);
     }
 }
 #end for
@@ -160,20 +161,20 @@ void $component_name::${sub.properties["name"]}_OnOneData(const $sub.properties[
   uint64_t uuid = received_data->uuid;
   uint64_t msgBytes = ros::serialization::Serializer<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>::serializedLength(*received_data);
   ros::Time now = ros::Time::now();
-  $sub.properties['name']_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
-  uint64_t currentSize = $sub.properties['name']_recv_mw.buffer.bits();
-  uint64_t currentCapacity = $sub.properties['name']_recv_mw.buffer.capacityBits();
+  ${sub.properties['name']}_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
+  uint64_t currentSize = ${sub.properties['name']}_recv_mw.buffer.bits();
+  uint64_t currentCapacity = ${sub.properties['name']}_recv_mw.buffer.capacityBits();
   if ( currentCapacity > 0 )
     {
       double utilization = (double)currentSize/(double)currentCapacity;
       if ( utilization > 0.95 )
-	$sub.properties['name']_recv_mw.limit_ddos(now, 1.0);
+	${sub.properties['name']}_recv_mw.limit_ddos(now, 1.0);
     }
   Network::Message new_msg;
   new_msg.Bytes(msgBytes);
-  new_msg.Id($sub.properties['name']_id++);
+  new_msg.Id(${sub.properties['name']}_id++);
   new_msg.TimeStamp();
-  $sub.properties['name']_recv_mw.buffer.send(new_msg, msgBytes * 8);
+  ${sub.properties['name']}_recv_mw.buffer.send(new_msg, msgBytes * 8);
 #end if
   
 #if $mod != ""

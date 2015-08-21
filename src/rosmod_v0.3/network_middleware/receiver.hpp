@@ -52,7 +52,7 @@ namespace Network
 	printf("Setting the local interface...OK\n");
     }
 
-    int init(std::string profileName, uint64_t buffer_capacity_bits)
+    int init(int argc, char **argv, std::string profileName, uint64_t buffer_capacity_bits)
     {
       profile.initializeFromFile(profileName.c_str());
       buffer.set_capacityBits(buffer_capacity_bits);
