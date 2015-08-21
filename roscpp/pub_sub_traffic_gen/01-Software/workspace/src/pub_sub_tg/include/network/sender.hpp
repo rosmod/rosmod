@@ -74,7 +74,7 @@ namespace Network
       /* datagrams are to be received. */
       struct ip_mreq group;
       group.imr_multiaddr.s_addr = inet_addr("224.0.0.0");
-      group.imr_interface.s_addr = inet_addr("192.168.1.4");
+      group.imr_interface.s_addr = inet_addr("0.0.0.0");
       if(setsockopt(sd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group)) < 0)
 	{
 	  perror("Adding multicast group error");

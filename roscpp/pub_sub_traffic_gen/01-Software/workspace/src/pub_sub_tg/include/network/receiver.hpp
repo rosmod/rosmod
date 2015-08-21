@@ -56,7 +56,7 @@ namespace Network
       /* The IP address specified must be associated with a local, */
       /* multicast capable interface. */
       struct in_addr localInterface;
-      localInterface.s_addr = inet_addr("192.168.1.4");
+      localInterface.s_addr = inet_addr("0.0.0.0");
       if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface)) < 0)
 	{
 	  perror("Setting local interface error");
