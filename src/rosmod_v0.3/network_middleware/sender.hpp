@@ -12,12 +12,10 @@
 #include <netinet/in.h>
 
 #include "network/NetworkProfile.hpp"
+#include "network/oob.hpp"
 
 namespace Network
 {
-  static const std::string oob_mc_group = "224.0.0.251";
-  static const int oob_mc_port = 12345;
-  
   class Exceeded_Production_profile {}; // sender-side exception
 
   class sender

@@ -248,7 +248,7 @@ class ROSMOD_Generator:
                 if not os.path.exists(self.network_middleware_include):
                     os.makedirs(self.network_middleware_include)
                 rosmod_path = str(os.getcwd())
-                fileList = ['sender.hpp','receiver.hpp','buffer.hpp','NetworkProfile.hpp','Message.hpp','CSVIterator.hpp']
+                fileList = ['oob.hpp','sender.hpp','receiver.hpp','buffer.hpp','NetworkProfile.hpp','Message.hpp','CSVIterator.hpp']
                 for f in fileList:
                     copyfile(resource_filename('network_middleware',f),
                              self.network_middleware_include + '/' + f)
@@ -480,7 +480,18 @@ class ROSMOD_Generator:
                 for comp_inst in node.children:
                     if comp_inst.properties['component_reference'].properties['datatype'] == 'KSP':
                         needs_io = True
-                xml_namespace = {'node': node, 'needs_io':needs_io}
+                project = deployment.parent
+                port_uuids = {}
+                ports = project.getChildrenByKind('Subscriber')
+                ports.extend(project.getChildrenByKind('Publisher'))
+                id = 0
+                for p in ports:
+                    port_uuids[p.properties['name']] = id
+                    id += 1
+                xml_namespace = {'node': node,
+                                 'needs_io':needs_io,
+                                 'project':project,
+                                 'port_uuids':port_uuids}
                 t = xml(searchList=[xml_namespace])
                 xml_content = str(t)
                 with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:
