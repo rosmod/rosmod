@@ -32,20 +32,22 @@ void receiver::Init(const ros::TimerEvent& event)
   
   LOGGER.DEBUG("Initializing MW");
   printf("init mw\n");
-  receiver_middleware.init(node_argc, node_argv, config.profile, capacityBits);
-
-  // set up uuids for senders
-  for (auto it = config.senders.begin(); it != config.senders.end(); ++it)
+  
+  if (config.profileMap.find("message_sub") != config.profileMap.end())
     {
-      receiver_middleware.add_sender( it->first, it->second );
+      receiver_middleware.init(node_argc,
+			       node_argv,
+			       config.profileMap["message_pub"],
+			       capacityBits);
+
+      // set up uuids for senders
+      for (auto it = config.portSenderMap["message_sub"].begin();
+	   it != config.portSenderMap["message_sub"].end(); ++it)
+	{
+	  receiver_middleware.add_sender( it->first, it->second );
+	}
     }
 
-  if (tg_duration < 0)
-    tg_duration = receiver_middleware.profile.period;
-  printf("running for %f seconds\n",tg_duration);
-  receiver_middleware.set_duration(tg_duration);
-  std::string fName = nodeName + "." + compName + ".network.csv";
-  receiver_middleware.set_output_filename(fName);
   // done initializing receiver middleware
 
   id = 0;

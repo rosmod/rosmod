@@ -23,9 +23,9 @@ public:
   Log_Levels logLevels;
   uint64_t num_comps_to_sync;
   double comp_sync_timeout;
-  uint64_t uuid;
-  std::string profile;
-  std::map<uint64_t,std::string> senders;
+  std::map<std::string,uint64_t> uuidMap;
+  std::map<std::string,std::string> profileMap;
+  std::map<std::string,std::map<uint64_t,std::string>> portSenderMap;
 };
 
 using namespace rapidxml;
@@ -92,23 +92,26 @@ public:
 	xml_node<> *syncTimeout = comp_inst->first_node("syncTimeout");
 	if (syncTimeout != NULL)
 	  config.comp_sync_timeout = atof(syncTimeout->first_attribute()->value());
-	
-	xml_node<> *uuid = comp_inst->first_node("uuid");
-	if (uuid != NULL)
-	  config.uuid = atoi(uuid->first_attribute()->value());
-	
-	xml_node<> *profile = comp_inst->first_node("profile");
-	if (profile != NULL)
-	  {
-	    config.profile = profile->value();
-	  }
 
-	for (xml_node<> *sender = comp_inst->first_node("sender");
-	     sender; sender = sender->next_sibling("sender"))
+	for (xml_node<> *port = comp_inst->first_node("port");
+	     port; port = port->next_sibling("port"))
 	  {
-	    uint64_t u = atoi(sender->first_attribute()->value());
-	    std::string p = sender->first_node("profile")->value();
-	    config.senders.insert(std::pair<uint64_t,std::string>(u,p));
+	    std::string portName = port->first_attribute()->value();
+	    uint64_t u = atoi(port->first_node("uuid")->value());
+	    std::string p = port->first_node("profile")->value();
+	    config.uuidMap.insert(std::pair<std::string,uint64_t>(portName,u));
+	    config.profileMap.insert(std::pair<std::string,std::string>(portName,p));
+	    
+	
+	    for (xml_node<> *sender = port->first_node("sender");
+		 sender; sender = sender->next_sibling("sender"))
+	      {
+		uint64_t u = atoi(sender->first_attribute()->value());
+		std::string p = sender->first_node("profile")->value();
+		std::map<uint64_t,std::string> upM;
+		upM.insert(std::pair<uint64_t,std::string>(u,p));
+		config.portSenderMap.insert(std::pair<std::string,std::map<uint64_t,std::string>>(portName,upM));
+	      }
 	  }
 	
 	xml_node<> *lib_location = comp_inst->first_node("library");

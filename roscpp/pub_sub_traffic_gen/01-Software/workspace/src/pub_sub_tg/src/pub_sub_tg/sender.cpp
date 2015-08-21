@@ -74,14 +74,14 @@ void sender::Init(const ros::TimerEvent& event)
 
   // LOAD NETWORK PROFILE HERE
   printf("init mw\n");
-  sender_middleware.init(node_argc, node_argv, config.uuid, config.profile);
 
-  if (tg_duration < 0)
-    tg_duration = sender_middleware.profile.period;
-  printf("running for %f seconds\n",tg_duration);
-  sender_middleware.set_duration(tg_duration);
-  std::string fName = nodeName + "." + compName + ".network.csv";
-  sender_middleware.set_output_filename( fName );
+  if (config.profileMap.find("message_pub") != config.profileMap.end())
+    {
+      sender_middleware.init(node_argc,
+			     node_argv,
+			     config.uuidMap["message_pub"],
+			     config.profileMap["message_pub"]);
+    }
 
   LOGGER.DEBUG("Middleware Initialized");
 

@@ -12,40 +12,42 @@
     </logging>
     <numCompsToSync setting="1"/>
     <syncTimeout setting="100.0"/>
-    <profile>
+    <port name="message_sub">
+      <profile>
 # period = 10
 0,0,0
 1,1,1
 2,2,2
-    </profile>
-    <uuid setting="0"/> add this
-    <sender uuid="1"> add this
-      <profile>
+      </profile>
+      <uuid>0</uuid>
+      <sender uuid="1">
+	<profile>
 # period = 10
 0,0,0
 1,1,1
 2,2,2
 3,3,3
-      </profile>
-    </sender>
-    <sender uuid="2"> add this
-      <profile>
+	</profile>
+      </sender>
+      <sender uuid="2">
+	<profile>
 # period = 10
 0,0,0
 1,3,1
 2,3,2
 3,3,3
-      </profile>
-    </sender>
-    <sender uuid="3"> add this
-      <profile>
+	</profile>
+      </sender>
+      <sender uuid="3">
+	<profile>
 # period = 10
 0,2,0
 1,2,1
 2,2,2
 3,2,3
-      </profile>
-    </sender>
+	</profile>
+      </sender>
+    </port>
   </component_instance>
 </node>
 
