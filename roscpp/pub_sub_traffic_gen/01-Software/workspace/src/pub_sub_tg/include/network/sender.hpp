@@ -151,10 +151,8 @@ namespace Network
       while (1)
 	{
 	  int length = read(sd, data_, sizeof(data_));
-	  printf("got length: %d\n",length);
 	  if (length > 0)
 	    {
-	      printf("got message!\n");
 	      bool has_uuid = false;
 	      bool my_val = false;
 	      // parse if for a list of UUIDs and their deactivated setting
@@ -180,7 +178,6 @@ namespace Network
 	      // if our uuid is in the list, set our deactivated variable accordingly
 	      if ( has_uuid )
 		{
-		  printf("got val: %d\n",my_val);
 		  deactivated = my_val;
 		}
 	    }

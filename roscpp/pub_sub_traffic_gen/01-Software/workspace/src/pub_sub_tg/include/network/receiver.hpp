@@ -38,20 +38,6 @@ namespace Network
       groupSock.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
       groupSock.sin_port = htons(oob_mc_port);
 
-      /* Disable loopback so you do not receive your own datagrams.
-	 {
-	 char loopch = 0;
-	 if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_LOOP, (char *)&loopch, sizeof(loopch)) < 0)
-	 {
-	 perror("Setting IP_MULTICAST_LOOP error");
-	 close(sd);
-	 exit(1);
-	 }
-	 else
-	 printf("Disabling the loopback...OK.\n");
-	 }
-      */
-
       /* Set local interface for outbound multicast datagrams. */
       /* The IP address specified must be associated with a local, */
       /* multicast capable interface. */
@@ -116,7 +102,6 @@ namespace Network
 
       int len = sendto(sd, msg, strlen(msg)+1,
 		       0, (struct sockaddr*)&groupSock, sizeof(groupSock));
-      printf("sent %s data to %d senders: %d.\n", msg, num_disabled, len);
       return 0;
     }
 
