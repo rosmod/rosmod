@@ -36,7 +36,7 @@ private:
 
   //# Start User Private Variables Marker
   uint64_t id;
-  Network::receiver ddos;
+  Network::receiver receiver_middleware;
   //# End User Private Variables Marker
 };
 

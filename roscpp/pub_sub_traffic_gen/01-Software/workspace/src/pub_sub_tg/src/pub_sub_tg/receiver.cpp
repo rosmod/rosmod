@@ -32,19 +32,19 @@ void receiver::Init(const ros::TimerEvent& event)
   
   LOGGER.DEBUG("Initializing MW");
 
-  ddos.init(config.profileName, capacityBits);
+  receiver_middleware.init(config.profileName, capacityBits);
 
   // set up uuids for senders
-  ddos.add_sender("required1.csv");
-  ddos.add_sender("required2.csv");
-  ddos.add_sender("required3.csv");
+  receiver_middleware.add_sender("required1.csv");
+  receiver_middleware.add_sender("required2.csv");
+  receiver_middleware.add_sender("required3.csv");
 
   if (tg_duration < 0)
-    tg_duration = ddos.profile.period;
+    tg_duration = receiver_middleware.profile.period;
   printf("running for %f seconds\n",tg_duration);
-  ddos.set_duration(tg_duration);
+  receiver_middleware.set_duration(tg_duration);
   std::string fName = nodeName + "." + compName + ".network.csv";
-  ddos.set_output_filename(fName);
+  receiver_middleware.set_output_filename(fName);
   // done initializing receiver middleware
 
   id = 0;
@@ -68,17 +68,17 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
 
   // KEEP TRACK OF EACH SENDER'S INCOMING DATA PROFILE
   ros::Time now = ros::Time::now();
-  ddos.update_sender_stream(uuid, now, msgBytes * 8);
+  receiver_middleware.update_sender_stream(uuid, now, msgBytes * 8);
 
   // MANAGE AVAILABLE BUFFER SPACE
-  uint64_t currentSize = ddos.buffer.bits();
-  uint64_t currentCapacity = ddos.buffer.capacityBits();
+  uint64_t currentSize = receiver_middleware.buffer.bits();
+  uint64_t currentCapacity = receiver_middleware.buffer.capacityBits();
   if ( currentCapacity > 0 )
     {
       double utilization = (double)currentSize/(double)currentCapacity;
       if (utilization > 0.95)
 	{
-	  ddos.limit_ddos(now, 1.0); // FOR NOW ONLY LOOKING AT PREVIOUS SECOND
+	  receiver_middleware.limit_ddos(now, 1.0); // FOR NOW ONLY LOOKING AT PREVIOUS SECOND
 	}
     }
   
@@ -89,7 +89,7 @@ void receiver::message_sub_OnOneData(const pub_sub_tg::message::ConstPtr& receiv
   new_msg.TimeStamp();
 
   // PUT MESSAGE INTO A BUFFER
-  ddos.buffer.send(new_msg, msgBytes * 8);
+  receiver_middleware.buffer.send(new_msg, msgBytes * 8);
 }
 //# End message_sub_OnOneData Marker
 
