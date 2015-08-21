@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<node name="n1">
-  <component_instance name="comp_1_i">
-    <library name="libcomp_1.so"/>
+<node name="n3">
+  <component_instance name="sender_1_i">
+    <library name="libsender_1.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="4"/>
     <syncTimeout setting="100.0"/>
@@ -13,7 +13,7 @@
       <critical setting="True"/>
     </logging>
     <port name="pub1">
-      <uuid>1</uuid>
+      <uuid>4</uuid>
       <profile>
 # period = 10
 # start = 0
@@ -26,35 +26,6 @@
 6,1100000,0
 7,0,0
       </profile>
-    </port>
-    <port name="sub2">
-      <uuid>0</uuid>
-      <profile>
-# period = 10
-# start = 0
-0,2400000,0
-1,2480000,0
-2,2760000,0
-3,3024000,0
-4,3040000,0
-5,3320000,0
-6,3600000,0
-7,0,0
-      </profile>
-      <sender uuid="3">
-	<profile>
-# period = 10
-# start = 0
-0,800000,0
-1,850000,0
-2,1024000,0
-3,1000000,0
-4,1005000,0
-5,1050000,0
-6,1100000,0
-7,0,0
-	</profile>
-      </sender>
     </port>
   </component_instance>
 </node>

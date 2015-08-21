@@ -29,4 +29,16 @@ package pkg
       deadline = 0.1;
     }       
   }
+  // ROSMOD Component - sender_1
+  component sender_1 : Base 
+  {
+    // ROSMOD Publisher - pub1
+    publisher <pkg/msg1> pub1;
+  }
+  // ROSMOD Component - sender_2
+  component sender_2 : Base 
+  {
+    // ROSMOD Publisher - pub2
+    publisher <pkg/msg2> pub2;
+  }
 }
