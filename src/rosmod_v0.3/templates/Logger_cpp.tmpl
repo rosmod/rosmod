@@ -4,10 +4,7 @@ $hash_include "$package_name/Logger.hpp"
  * Write remaining log contents to file
  */
 Logger::~Logger() {
-  if (SIZE_OF_LOG() > 0) {
-    WRITE_TO_FILE();
-    log_content = "";
-  }
+  WRITE_TO_FILE();
   log_stream.close();
 }
 
@@ -56,7 +53,6 @@ bool Logger::DEBUG(const char * format, ...) {
     va_end (args);
 
     log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
-    CHECK_LOG_SIZE();
   }
   return true;
 }
