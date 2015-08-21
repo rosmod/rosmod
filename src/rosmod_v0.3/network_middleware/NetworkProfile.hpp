@@ -55,13 +55,17 @@ namespace Network {
     std::vector<ResourceEntry> resources;
     timespec start_time;
     double period;
+    uint64_t priority;
+    uint64_t uuid;
 
   public:
 
     NetworkProfile()
       : initialized(false),
 	resources (0),
-	period (0)
+	period (0),
+	priority (0),
+	uuid (0)
     {
       start_time.tv_sec = 0;
       start_time.tv_nsec = 0;
@@ -70,7 +74,9 @@ namespace Network {
     NetworkProfile (const NetworkProfile &s)
       : initialized(s.initialized),
 	resources(s.resources),
-	period(s.period)
+	period(s.period),
+	priority(s.priority),
+	uuid(s.uuid)
     {
       start_time.tv_sec = s.start_time.tv_sec;
       start_time.tv_nsec = s.start_time.tv_nsec;
@@ -98,6 +104,8 @@ namespace Network {
       std::swap (initialized, s.initialized);
       std::swap (resources, s.resources);
       std::swap (period, s.period);
+      std::swap (priority, s.priority);
+      std::swap (uuid, s.uuid);
       std::swap (start_time.tv_sec, s.start_time.tv_sec);
       std::swap (start_time.tv_nsec, s.start_time.tv_nsec);
     }
@@ -120,7 +128,11 @@ namespace Network {
       return 0;
     }
 
-    int setPeriod(double t) { period = t; }
+    void setPeriod(double t) { period = t; }
+
+    void setPriority(uint64_t p) { priority = p; }
+
+    void setUUID(uint64_t u) { uuid = u; }
 
     int initializeFromFile(const char* fname) {
       std::ifstream file(fname);
@@ -161,10 +173,14 @@ namespace Network {
 		  boost::split(strs, row, boost::is_any_of("="));
 		  for (auto it = strs.begin(); it!=strs.end(); ++it)
 		    boost::trim(*it);
-		  if (!strcmp("period",strs[0].c_str()) )
+		  if (!strcmp("period", strs[0].c_str()) )
 		    setPeriod( atof(strs[1].c_str()) );
-		  else if (!strcmp("start",strs[0].c_str()) )
+		  else if (!strcmp("start", strs[0].c_str()) )
 		    setStartTime( atof(strs[1].c_str()) );
+		  else if (!strcmp("priority", strs[0].c_str()) )
+		    setPriority( atoi(strs[1].c_str()) );
+		  else if (!strcmp("uuid", strs[0].c_str()) )
+		    setUUID( atoi(strs[1].c_str()) );
 		}
 	    }
 	}
@@ -355,7 +371,7 @@ namespace Network {
   };
   
   static long precision = 30;// for file output
-  int write_data(const char* fname, const std::vector<Message>& messages) {
+  static int write_data(const char* fname, const std::vector<Message>& messages) {
     std::ofstream file(fname);
     if ( !file.is_open() )
       return -1;

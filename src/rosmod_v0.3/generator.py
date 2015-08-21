@@ -246,14 +246,14 @@ class ROSMOD_Generator:
                          self.krpci_src + '/KRPC.pb.cc')
 
             if trafficGen == True:
-                self.middleware_include = self.include + '/network'
-                if not os.path.exists(self.middleware_include):
-                    os.makedirs(self.middleware_include)
+                self.network_middleware_include = self.include + '/network'
+                if not os.path.exists(self.network_middleware_include):
+                    os.makedirs(self.network_middleware_include)
                 rosmod_path = str(os.getcwd())
-                fileList = ['NetworkProfile.hpp','Message.hpp','CSVIterator.hpp']
+                fileList = ['sender.hpp','receiver.hpp','buffer.hpp','NetworkProfile.hpp','Message.hpp','CSVIterator.hpp']
                 for f in fileList:
                     copyfile(resource_filename('network_middleware',f),
-                             self.middleware_include + '/' + f)
+                             self.network_middleware_include + '/' + f)
 
             messages = []
             services = []
