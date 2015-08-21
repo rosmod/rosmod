@@ -496,12 +496,14 @@ class ROSMOD_Project(Drawable_Object):
                                                                     trafficGen) 
 
     # Generate Deployment XML files and relevant directories
-    def generate_xml(self):
+    def generate_xml(self, num_comps_to_sync, sync_timeout):
         # Instantiate a Generator Object
         deployment_generator = ROSMOD_Generator()
         # Use existing deployment objects to generate necessary xml files
         deployment_generator.generate_xml(self.getChildrenByKind("rdp"),
-                                          self.deployment_path)
+                                          self.deployment_path,
+                                          num_comps_to_sync,
+                                          sync_timeout)
         print "ROSMOD::Generated Deployment-Specific XML files at: " + self.deployment_path
 
     # Generate CPN Timing Analysis Model for each deployment

@@ -9,6 +9,8 @@
   <component_instance name="$comp_instance.properties["name"]">
     <library name="lib${comp_instance.properties["component_reference"].properties["name"]}.so"/>
     <scheduling_scheme setting="$comp_instance.properties["scheduling_scheme"]"/>
+    <numCompsToSync setting="$num_comps_to_sync"/>
+    <syncTimeout setting="$sync_timeout"/>
     <logging>
       <debug setting="$comp_instance.properties["logging_debug"]"/>
       <info setting="$comp_instance.properties["logging_info"]"/>
@@ -19,19 +21,21 @@
 #for $port in $comp_instance.properties['component_reference'].children
 #if $port.kind == 'Subscriber' or $port.kind == 'Publisher'
     <port name="$port.properties['name']">
-      <uuid>$port_uuids[$port.properties['name']]</uuid>
+      <uuid>${port_uuids[comp_instance.parent.properties['name'] + '_' + comp_instance.properties['name'] + '_' + port.properties['name']]}</uuid>
       <profile>
 $port.properties['port_network_profile']
       </profile>
 #if $port.kind == 'Subscriber'
-#for $p in $project.getChildrenByKind('Publisher')
+#for $ci in $node.parent.getChildrenByKind('Component_Instance')
+#for $p in $ci.properties['component_reference'].getChildrenByKind('Publisher')
 #if $p.properties['message_reference'] == $port.properties['message_reference']
-      <sender uuid="$port_uuids[$p.properties['name']]">
+      <sender uuid="${port_uuids[ci.parent.properties['name'] + '_' + ci.properties['name'] + '_' + p.properties['name']]}">
 	<profile>
 $p.properties['port_network_profile']
 	</profile>
       </sender>
 #end if
+#end for
 #end for
 #end if
     </port>

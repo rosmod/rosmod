@@ -231,6 +231,15 @@ meta_class_dict["build_architecture"] = Grammar_Field(
     display_name="Build for which architecture(s)?")
 
 # DEPLOYMENT SPECIFIC - NOT PART OF THE MODEL
+valid_comp_sync = ['all','none']
+meta_class_dict["num_comps_to_sync"] = Grammar_Field(
+    kind="list",
+    input_validator=lambda p,o,s,k : list_validator(valid_comp_sync,p,o,s,k),
+    display_name = "Component Synchronization")
+meta_class_dict["sync_timeout"] = Grammar_Field(
+    kind="double", 
+    display_name = "Synchronization Timeout")
+
 meta_class_dict["numPeriods"] = Grammar_Field( # for analysis
     kind="string", 
     display_name = "Number of Periods")

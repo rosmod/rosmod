@@ -460,7 +460,8 @@ class ROSMOD_Generator:
 
         return self.workspace_dir
 
-    def generate_xml(self, deployments, deployment_path):
+    def generate_xml(self, deployments, deployment_path,
+                     num_comps_to_sync = 1, sync_timeout = 100.0):
         for deployment in deployments:
             deployment_folder = deployment_path + "/" + deployment.properties["name"]
             if not os.path.exists(deployment_folder):
@@ -471,6 +472,21 @@ class ROSMOD_Generator:
             bin_folder = deployment_folder + "/bin"
             if not os.path.exists(bin_folder):
                 os.makedirs(bin_folder)
+            project = deployment.parent
+            port_uuids = {}
+            comp_insts = deployment.getChildrenByKind('Component_Instance')
+            id = 0
+            for ci in comp_insts:
+                c = ci.properties['component_reference']
+                ports = c.getChildrenByKind('Subscriber')
+                ports.extend(c.getChildrenByKind('Publisher'))
+                for p in ports:
+                    port_uuids["{}_{}_{}".format(ci.parent.properties['name'],ci.properties['name'],p.properties['name'])] = id
+                    id += 1
+            if num_comps_to_sync == 'all':
+                num_comps_to_sync = len(deployment.getChildrenByKind("Component_Instance"))
+            else:
+                num_comps_to_sync = 1
             for node in deployment.children:
                 hardware_folder = xml_folder + "/" + node.properties["hardware_reference"].properties["name"]
                 if not os.path.exists(hardware_folder):
@@ -480,18 +496,12 @@ class ROSMOD_Generator:
                 for comp_inst in node.children:
                     if comp_inst.properties['component_reference'].properties['datatype'] == 'KSP':
                         needs_io = True
-                project = deployment.parent
-                port_uuids = {}
-                ports = project.getChildrenByKind('Subscriber')
-                ports.extend(project.getChildrenByKind('Publisher'))
-                id = 0
-                for p in ports:
-                    port_uuids[p.properties['name']] = id
-                    id += 1
                 xml_namespace = {'node': node,
                                  'needs_io':needs_io,
                                  'project':project,
-                                 'port_uuids':port_uuids}
+                                 'port_uuids':port_uuids,
+                                 'sync_timeout':sync_timeout,
+                                 'num_comps_to_sync':num_comps_to_sync}
                 t = xml(searchList=[xml_namespace])
                 xml_content = str(t)
                 with open(os.path.join(hardware_folder, xml_filename), 'w') as temp_file:

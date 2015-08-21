@@ -865,9 +865,19 @@ class Example(wx.Frame):
             dialogs.InfoDialog(self,"Generated ROS Workspace.")
             self.statusbar.SetStatusText('Generated ROS Workspace')
     def GenerateXML(self):
-        self.project.generate_xml()
-        dialogs.InfoDialog(self,"Generated Deployment XML files")
-        self.statusbar.SetStatusText("Generated Deployment XML files")
+        properties = OrderedDict()
+        properties['num_comps_to_sync'] = "none"
+        properties['sync_timeout'] = 100.0
+        inputs = dialogs.EditorWindow(parent=self,
+                                      editDict=properties,
+                                      title="Generation Options",
+                                      referenceDict = None)
+        if inputs != OrderedDict():
+            for key,value in inputs.iteritems():
+                properties[key] = value
+            self.project.generate_xml(properties['num_comps_to_sync'], properties['sync_timeout'])
+            dialogs.InfoDialog(self,"Generated Deployment XML files")
+            self.statusbar.SetStatusText("Generated Deployment XML files")
 
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
