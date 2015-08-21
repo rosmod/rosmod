@@ -17,6 +17,15 @@ $hash_include "$service[0]/${service[1]}.h"
 $hash_include "krpci/krpci.hpp"
 #end if
 
+#if $trafficGen
+#if $len($publishers) > 0
+$hash_include "network/sender.hpp"
+#end if
+#if $len($subscribers) > 0
+$hash_include "network/receiver.hpp"
+#end if
+#end if
+
 #if $user_includes == ""
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -82,14 +91,32 @@ private:
 #if $len($subscribers) > 0
 #for $sub in $subscribers
   // Subscriber
-  ros${mod}::Subscriber $sub.properties["name"]; 
+  ros${mod}::Subscriber $sub.properties["name"];
+#if $trafficGen
+  // message id for this data stream
+  uint64_t $sub.properties['name']_id;
+  // subscriber receiver middleware
+  Network::receiver $sub.properties['name']_recv_mw;
+#end if
 
 #end for
 #end if
 #if $len($publishers) > 0
+#if $trafficGen
+  // size of messages generated
+  uint64_t max_data_length;
+#end if
 #for $pub in $publishers
   // Publisher 
   ros${mod}::Publisher $pub.properties["name"];
+#if $trafficGen
+  // Timer for generating traffic
+  ros::Timer $pub.properties['name']_timer;
+  // Timer callback for traffic generation
+  void $pub.properties['name']_timerCallback(const ros::TimerEvent& event);
+  // publisher sender middleware
+  Network::sender $pub.properties['name']_send_mw;
+#end if
 
 #end for
 #end if
