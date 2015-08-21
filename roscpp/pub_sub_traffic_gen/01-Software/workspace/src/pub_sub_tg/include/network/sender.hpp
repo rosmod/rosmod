@@ -88,6 +88,13 @@ namespace Network
 	new boost::thread( boost::bind(&sender::oob_recv_threadfunc, this) );
     }
 
+    int init(int argc, char **argv, uint64_t u, std::string prof_str)
+    {
+      uuid = u;
+      profile.initializeFromString((char *)prof_str.c_str());
+      return 0;
+    }
+
     int init(int argc, char **argv, std::string profileName)
     {
       profile.initializeFromFile(profileName.c_str());

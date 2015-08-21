@@ -31,13 +31,14 @@ void receiver::Init(const ros::TimerEvent& event)
     }
   
   LOGGER.DEBUG("Initializing MW");
-
-  receiver_middleware.init(node_argc, node_argv, config.profileName, capacityBits);
+  printf("init mw\n");
+  receiver_middleware.init(node_argc, node_argv, config.profile, capacityBits);
 
   // set up uuids for senders
-  receiver_middleware.add_sender("required1.csv");
-  receiver_middleware.add_sender("required2.csv");
-  receiver_middleware.add_sender("required3.csv");
+  for (auto it = config.senders.begin(); it != config.senders.end(); ++it)
+    {
+      receiver_middleware.add_sender( it->first, it->second );
+    }
 
   if (tg_duration < 0)
     tg_duration = receiver_middleware.profile.period;

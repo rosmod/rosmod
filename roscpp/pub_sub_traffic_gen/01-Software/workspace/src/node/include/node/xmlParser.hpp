@@ -23,9 +23,9 @@ public:
   Log_Levels logLevels;
   uint64_t num_comps_to_sync;
   double comp_sync_timeout;
-  double tg_time;
-  uint64_t oob_uuid;
-  std::string profileName;
+  uint64_t uuid;
+  std::string profile;
+  std::map<uint64_t,std::string> senders;
 };
 
 using namespace rapidxml;
@@ -93,17 +93,23 @@ public:
 	if (syncTimeout != NULL)
 	  config.comp_sync_timeout = atof(syncTimeout->first_attribute()->value());
 	
-	xml_node<> *oob_uuid = comp_inst->first_node("oob_uuid");
-	if (oob_uuid != NULL)
-	  config.oob_uuid = atoi(oob_uuid->first_attribute()->value());
+	xml_node<> *uuid = comp_inst->first_node("uuid");
+	if (uuid != NULL)
+	  config.uuid = atoi(uuid->first_attribute()->value());
 	
-	xml_node<> *profileName = comp_inst->first_node("profileName");
-	if (profileName != NULL)
-	  config.profileName = profileName->first_attribute()->value();
-	
-	xml_node<> *tg_time = comp_inst->first_node("tg_time");
-	if (tg_time != NULL)
-	  config.tg_time = atof(tg_time->first_attribute()->value());
+	xml_node<> *profile = comp_inst->first_node("profile");
+	if (profile != NULL)
+	  {
+	    config.profile = profile->value();
+	  }
+
+	for (xml_node<> *sender = comp_inst->first_node("sender");
+	     sender; sender = sender->next_sibling("sender"))
+	  {
+	    uint64_t u = atoi(sender->first_attribute()->value());
+	    std::string p = sender->first_node("profile")->value();
+	    config.senders.insert(std::pair<uint64_t,std::string>(u,p));
+	  }
 	
 	xml_node<> *lib_location = comp_inst->first_node("library");
 	config.libraryLocation = lib_location->first_attribute()->value();
