@@ -38,7 +38,6 @@ private:
   ros::Timer tgTimer;
 
   Network::sender sender_middleware;
-  std::string profileName;
   uint64_t max_data_length;
 
   void TrafficGeneratorTimer(const ros::TimerEvent& event);
