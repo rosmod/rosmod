@@ -27,7 +27,10 @@ namespace Network
     {
       deactivated = false;
       id = 0;
+    }
 
+    int create_oob_mc_socket()
+    {
       // create the multicast receive socket
       sd = socket(AF_INET, SOCK_DGRAM, 0);
       if(sd < 0)
@@ -86,12 +89,22 @@ namespace Network
 
       boost::thread *io_thread =
 	new boost::thread( boost::bind(&sender::oob_recv_threadfunc, this) );
+      return 0;
+    }
+
+    int init(int argc, char **argv, uint64_t u, std::string prof_str)
+    {
+      uuid = u;
+      profile.initializeFromString((char *)prof_str.c_str());
+      create_oob_mc_socket();
+      return 0;
     }
 
     int init(int argc, char **argv, std::string profileName)
     {
       profile.initializeFromFile(profileName.c_str());
       uuid = profile.uuid;
+      create_oob_mc_socket();
       return 0;
     }
 

@@ -16,6 +16,27 @@
       <error setting="$comp_instance.properties["logging_error"]"/>
       <critical setting="$comp_instance.properties["logging_critical"]"/>
     </logging>
+#for $port in $comp_instance.properties['component_reference'].children
+#if $port.kind == 'Subscriber' or $port.kind == 'Publisher'
+    <port name="$port.properties['name']">
+      <uuid>$port_uuids[$port.properties['name']]</uuid>
+      <profile>
+$port.properties['port_network_profile']
+      </profile>
+#if $port.kind == 'Subscriber'
+#for $p in $project.getChildrenByKind('Publisher')
+#if $p.properties['message_reference'] == $port.properties['message_reference']
+      <sender uuid="$port_uuids[$p.properties['name']]">
+	<profile>
+$p.properties['port_network_profile']
+	</profile>
+      </sender>
+#end if
+#end for
+#end if
+    </port>
+#end if
+#end for
 #if $comp_instance.children != []
 #for $port_instance in $comp_instance.children
     <port_instance name="$port_instance.properties["name"]">

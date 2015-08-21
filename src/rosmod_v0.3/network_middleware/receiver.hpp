@@ -52,9 +52,9 @@ namespace Network
 	printf("Setting the local interface...OK\n");
     }
 
-    int init(int argc, char **argv, std::string profileName, uint64_t buffer_capacity_bits)
+    int init(int argc, char ** argv, std::string prof_str, uint64_t buffer_capacity_bits)
     {
-      profile.initializeFromFile(profileName.c_str());
+      profile.initializeFromString((char *)prof_str.c_str());
       buffer.set_capacityBits(buffer_capacity_bits);
 
       boost::thread *tmr_thread =
@@ -63,14 +63,24 @@ namespace Network
       return 0;
     }
 
+    void add_sender(uint64_t id, std::string profile)
+    {
+      Network::NetworkProfile p;
+      p.initializeFromString((char *)profile.c_str());
+      uuids.push_back(id);
+      profile_map[id] = p;
+      receive_map[id] = std::map<ros::Time, uint64_t>();      
+      printf("added uuid: %lu\n",id);
+    }
+
     void add_sender(std::string profileName)
     {
       Network::NetworkProfile p;
       p.initializeFromFile(profileName.c_str());
-      printf("added uuid: %lu\n",p.uuid);
       uuids.push_back(p.uuid);
       profile_map[p.uuid] = p;
       receive_map[p.uuid] = std::map<ros::Time, uint64_t>();
+      printf("added uuid: %lu\n",p.uuid);
     }
 
     void set_duration(double dur) { duration = ros::Duration(dur); }
