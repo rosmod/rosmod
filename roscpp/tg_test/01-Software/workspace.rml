@@ -1,0 +1,32 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - pkg
+package pkg
+{
+  // ROSMOD Component - comp_1
+  component comp_1 : Base 
+  {
+    // ROSMOD Publisher - pub1
+    publisher <pkg/msg1> pub1;
+    // ROSMOD Subscriber - sub2
+    subscriber <pkg/msg2> sub2 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - comp_2
+  component comp_2 : Base 
+  {
+    // ROSMOD Publisher - pub2
+    publisher <pkg/msg2> pub2;
+    // ROSMOD Subscriber - sub1
+    subscriber <pkg/msg1> sub1 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+}

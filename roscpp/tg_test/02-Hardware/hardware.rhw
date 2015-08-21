@@ -1,0 +1,15 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - local
+hardware local
+{
+  ip_address = "localhost";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/home/jeb/Repositories/ROS-Indigo/install_isolated";
+  arch = x86;
+}
+

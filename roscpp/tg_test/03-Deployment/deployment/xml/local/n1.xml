@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<node name="n1">
+  <component_instance name="comp_1_i">
+    <library name="libcomp_1.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="pub1">
+      <uuid>2</uuid>
+      <profile>
+# period = 10
+0,1,0,0
+1,1,1,1
+2,2,2,2
+      </profile>
+    </port>
+    <port name="sub2">
+      <uuid>0</uuid>
+      <profile>
+# period = 10
+0,0,0,0
+1,1,1,1
+2,2,2,2
+      </profile>
+      <sender uuid="3">
+	<profile>
+# period = 10
+0,0,0,0
+1,1,1,1
+2,2,2,2
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+
