@@ -102,16 +102,15 @@ public:
 	    config.uuidMap.insert(std::pair<std::string,uint64_t>(portName,u));
 	    config.profileMap.insert(std::pair<std::string,std::string>(portName,p));
 	    
-	
+	    std::map<uint64_t,std::string> upM;
 	    for (xml_node<> *sender = port->first_node("sender");
 		 sender; sender = sender->next_sibling("sender"))
 	      {
 		uint64_t u = atoi(sender->first_attribute()->value());
 		std::string p = sender->first_node("profile")->value();
-		std::map<uint64_t,std::string> upM;
 		upM.insert(std::pair<uint64_t,std::string>(u,p));
-		config.portSenderMap.insert(std::pair<std::string,std::map<uint64_t,std::string>>(portName,upM));
 	      }
+	    config.portSenderMap.insert(std::pair<std::string,std::map<uint64_t,std::string>>(portName,upM));
 	  }
 	
 	xml_node<> *lib_location = comp_inst->first_node("library");
