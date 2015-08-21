@@ -19,10 +19,51 @@ namespace Network
   {
   public:
     receiver()
-      : endpoint_(boost::asio::ip::address::from_string(oob_mc_group), oob_mc_port),
-	socket_(io_service_, endpoint_.protocol())
     {
       received_data = false;
+      
+      sd = socket(AF_INET, SOCK_DGRAM, 0);
+      if(sd < 0)
+	{
+	  perror("Opening datagram socket error");
+	  exit(1);
+	}
+      else
+	printf("Opening the datagram socket...OK.\n");
+
+      /* Initialize the group sockaddr structure with a */
+      /* group address of 225.1.1.1 and port 5555. */
+      memset((char *) &groupSock, 0, sizeof(groupSock));
+      groupSock.sin_family = AF_INET;
+      groupSock.sin_addr.s_addr = inet_addr("224.0.0.0");
+      groupSock.sin_port = htons(oob_mc_port);
+
+      /* Disable loopback so you do not receive your own datagrams.
+	 {
+	 char loopch = 0;
+	 if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_LOOP, (char *)&loopch, sizeof(loopch)) < 0)
+	 {
+	 perror("Setting IP_MULTICAST_LOOP error");
+	 close(sd);
+	 exit(1);
+	 }
+	 else
+	 printf("Disabling the loopback...OK.\n");
+	 }
+      */
+
+      /* Set local interface for outbound multicast datagrams. */
+      /* The IP address specified must be associated with a local, */
+      /* multicast capable interface. */
+      struct in_addr localInterface;
+      localInterface.s_addr = inet_addr("192.168.1.4");
+      if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface)) < 0)
+	{
+	  perror("Setting local interface error");
+	  exit(1);
+	}
+      else
+	printf("Setting the local interface...OK\n");
     }
 
     int init(std::string profileName, uint64_t buffer_capacity_bits)
@@ -73,8 +114,9 @@ namespace Network
 	  sprintf(msg,"%s%lu,%d;", msg, *it, (int)val);
 	}
 
-      socket_.send_to(boost::asio::buffer(msg, strlen(msg)), endpoint_);
-      printf("sent %s data to %d senders.\n", msg, num_disabled);
+      int len = sendto(sd, msg, strlen(msg)+1,
+		       0, (struct sockaddr*)&groupSock, sizeof(groupSock));
+      printf("sent %s data to %d senders: %d.\n", msg, num_disabled, len);
       return 0;
     }
 
@@ -172,9 +214,8 @@ namespace Network
     ros::Time endTime;
     bool received_data;
     
-    boost::asio::io_service io_service_;
-    boost::asio::ip::udp::socket socket_;
-    boost::asio::ip::udp::endpoint endpoint_;
+    int sd;
+    struct sockaddr_in groupSock;
 
     std::string output_filename;
 

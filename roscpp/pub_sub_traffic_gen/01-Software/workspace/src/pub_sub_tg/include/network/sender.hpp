@@ -7,6 +7,10 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
 #include "network/NetworkProfile.hpp"
 
 namespace Network
@@ -20,26 +24,65 @@ namespace Network
   {
   public:
     sender()
-      : socket_(io_service_)
     {
       deactivated = false;
       id = 0;
-      // create the multicast receive socket
-      boost::asio::ip::address
-	listen_address = boost::asio::ip::address::from_string("0.0.0.0");
-      boost::asio::ip::udp::endpoint
-	listen_endpoint(
-			listen_address,
-			oob_mc_port);
-      socket_.open(listen_endpoint.protocol());
-      socket_.set_option(boost::asio::ip::udp::socket::reuse_address(true));
-      socket_.bind(listen_endpoint);
 
-      // Join the multicast group.
-      boost::asio::ip::address
-	multicast_address = boost::asio::ip::address::from_string(oob_mc_group);
-      socket_.set_option(
-			 boost::asio::ip::multicast::join_group(multicast_address));
+      // create the multicast receive socket
+      sd = socket(AF_INET, SOCK_DGRAM, 0);
+      if(sd < 0)
+	{
+	  perror("Opening datagram socket error");
+	  exit(1);
+	}
+      else
+	printf("Opening datagram socket....OK.\n");
+
+      /* Enable SO_REUSEADDR to allow multiple instances of this */
+      /* application to receive copies of the multicast datagrams. */
+      {
+	int reuse = 1;
+	if(setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, (char *)&reuse, sizeof(reuse)) < 0)
+	  {
+	    perror("Setting SO_REUSEADDR error");
+	    close(sd);
+	    exit(1);
+	  }
+	else
+	  printf("Setting SO_REUSEADDR...OK.\n");
+      }
+
+      /* Bind to the proper port number with the IP address */
+      /* specified as INADDR_ANY. */
+      struct sockaddr_in localSock;
+      memset((char *) &localSock, 0, sizeof(localSock));
+      localSock.sin_family = AF_INET;
+      localSock.sin_port = htons(oob_mc_port);
+      localSock.sin_addr.s_addr = INADDR_ANY;
+      if(bind(sd, (struct sockaddr*)&localSock, sizeof(localSock)))
+	{
+	  perror("Binding datagram socket error");
+	  close(sd);
+	  exit(1);
+	}
+      else
+	printf("Binding datagram socket...OK.\n");
+
+      /* Join the multicast group 226.1.1.1 on the local 203.106.93.94 */
+      /* interface. Note that this IP_ADD_MEMBERSHIP option must be */
+      /* called for each local interface over which the multicast */
+      /* datagrams are to be received. */
+      struct ip_mreq group;
+      group.imr_multiaddr.s_addr = inet_addr("224.0.0.0");
+      group.imr_interface.s_addr = inet_addr("192.168.1.4");
+      if(setsockopt(sd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group)) < 0)
+	{
+	  perror("Adding multicast group error");
+	  close(sd);
+	  exit(1);
+	}
+      else
+	printf("Adding multicast group...OK.\n");
 
       boost::thread *io_thread =
 	new boost::thread( boost::bind(&sender::oob_recv_threadfunc, this) );
@@ -107,16 +150,8 @@ namespace Network
     {
       while (1)
 	{
-	  boost::asio::socket_base::non_blocking_io command(true);
-	  //socket_.io_control(command);
-	  printf("going into receive_from\n");
-                       
-	  boost::asio::ip::udp::endpoint sender_endpoint;
-	  size_t length = socket_.receive_from(
-					       boost::asio::buffer(data_,
-								   max_recv_buffer_size),
-					       sender_endpoint);
-	  printf("coming out of receive_from\n");
+	  int length = read(sd, data_, sizeof(data_));
+	  printf("got length: %d\n",length);
 	  if (length > 0)
 	    {
 	      printf("got message!\n");
@@ -169,11 +204,8 @@ namespace Network
     uint64_t id;
 
     static const int max_recv_buffer_size = 2000;
-    boost::asio::io_service io_service_;
-    boost::asio::ip::udp::socket socket_;
-    boost::asio::ip::udp::endpoint endpoint_;
+    int sd;
     char data_[max_recv_buffer_size];
-
 
     std::string output_filename;
   };
