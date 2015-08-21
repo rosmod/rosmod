@@ -32,7 +32,7 @@ void receiver::Init(const ros::TimerEvent& event)
   
   LOGGER.DEBUG("Initializing MW");
 
-  receiver_middleware.init(config.profileName, capacityBits);
+  receiver_middleware.init(node_argc, node_argv, config.profileName, capacityBits);
 
   // set up uuids for senders
   receiver_middleware.add_sender("required1.csv");

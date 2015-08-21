@@ -73,7 +73,7 @@ void sender::Init(const ros::TimerEvent& event)
   LOGGER.DEBUG("Using data length of: %lu",max_data_length);
 
   // LOAD NETWORK PROFILE HERE
-  sender_middleware.init(config.profileName);
+  sender_middleware.init(node_argc, node_argv, config.profileName);
 
   if (tg_duration < 0)
     tg_duration = sender_middleware.profile.period;
