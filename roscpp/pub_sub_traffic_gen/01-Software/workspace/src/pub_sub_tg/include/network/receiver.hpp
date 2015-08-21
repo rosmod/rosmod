@@ -13,7 +13,7 @@
 namespace Network
 {
   static const std::string oob_mc_group = "224.0.0.251";
-  static const int oob_mc_port = 12346;
+  static const int oob_mc_port = 12345;
   
   class receiver
   {
