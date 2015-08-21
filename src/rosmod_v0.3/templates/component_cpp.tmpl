@@ -48,14 +48,29 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
 	}
     }
 #for $sub in $subscribers
-  ${sub.properties['name']}_recv_mw.init(node_argc, node_argv, config.profileName, capacityBits);
-  if ( tg_duration < 0 )
-    ${sub.properties['name']}_recv_mw.set_duration(${sub.properties['name']}_recv_mw.profile.period);
-  else
-    ${sub.properties['name']}_recv_mw.set_duration(tg_duration);
-  fName = nodeName + "." + compName + ".${sub.properties['name']}.network.csv";
-  ${sub.properties['name']}_recv_mw.set_output_filename(fName);
-  ${sub.properties['name']}_id = 0;
+  if (config.profileMap.find("$sub.properties['name']") != config.profileMap.end())
+    {
+      ${sub.properties['name']}_recv_mw.init(node_argc,
+					     node_argv,
+					     config.profileMap["$sub.properties['name']"],
+					     capacityBits);
+      if ( tg_duration < 0 )
+	${sub.properties['name']}_recv_mw.set_duration(${sub.properties['name']}_recv_mw.profile.period);
+      else
+	${sub.properties['name']}_recv_mw.set_duration(tg_duration);
+      fName = nodeName + "." + compName + ".${sub.properties['name']}.network.csv";
+      ${sub.properties['name']}_recv_mw.set_output_filename(fName);
+      ${sub.properties['name']}_id = 0;
+    }
+  if (config.portSenderMap.find("$sub.properties['name']") != config.portSenderMap.end())
+    {
+      for (auto it=config.portSenderMap["$sub.properties['name']"].begin();
+	   it != config.portSenderMap["$sub.properties['name']"].end(); ++it)
+	{
+	  ${sub.properties['name']}_recv_mw.add_sender( it->first, it->second );
+	}
+    }
+  
 #end for
 #end if
 #if $len($publishers) > 0
@@ -74,26 +89,30 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
   ros::NodeHandle nh;
   ros::TimerOptions timer_options;
 #for $pub in $publishers
-  ${pub.properties['name']}_send_mw.init(node_argc, node_argv, config.profileName);
-  if ( tg_duration < 0 )
-    ${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);
-  else
-    ${pub.properties['name']}_send_mw.set_duration(tg_duration);
-  fName = nodeName + "." + compName + ".${pub.properties['name']}.network.csv";
-  ${pub.properties['name']}_send_mw.set_output_filename(fName);
-  uint64_t uuid = (uint64_t)rand();
-  ${pub.properties['name']}_send_mw.set_uuid(uuid);
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&$component_name::${pub.properties['name']}_timerCallback, this, _1),
-     &this->compQueue,
-     true);
-  ${pub.properties['name']}_timer = nh.createTimer(timer_options);
+  if (config.profileMap.find("$pub.properties['name']") != config.profileMap.end())
+    {
+      ${pub.properties['name']}_send_mw.init(node_argc,
+					     node_argv,
+					     config.uuidMap["$pub.properties['name']"],
+					     config.profileMap["$pub.properties['name']"]);
+      if ( tg_duration < 0 )
+	${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);
+      else
+	${pub.properties['name']}_send_mw.set_duration(tg_duration);
+      fName = nodeName + "." + compName + ".${pub.properties['name']}.network.csv";
+      ${pub.properties['name']}_send_mw.set_output_filename(fName);
+
+      timer_options = 
+	ros::TimerOptions
+	(ros::Duration(-1),
+	 boost::bind(&$component_name::${pub.properties['name']}_timerCallback, this, _1),
+	 &this->compQueue,
+	 true);
+      ${pub.properties['name']}_timer = nh.createTimer(timer_options);
+    }
 #end for
 #end if
 #end if
-  
   // Stop Init Timer
   initOneShotTimer.stop();
 #if $mod != ""
