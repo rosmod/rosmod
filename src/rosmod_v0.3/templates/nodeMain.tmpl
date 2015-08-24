@@ -19,11 +19,13 @@ void componentThreadFunc(Component* compPtr)
 }
 
 std::vector<Component*> compObjects;
+std::vector<boost::thread*> compThreads;	
 
 void signal_handler(int sig) {
-  for (auto it = compObjects.begin(); it != compObjects.end(); ++it) {
+  for (int i=0;i<compThreads.size();i++)
+    compThreads[i]->join();
+  for (auto it = compObjects.begin(); it != compObjects.end(); ++it)
     delete *it;
-  }
   abort(); 
 }
 
@@ -47,7 +49,6 @@ int main(int argc, char **argv)
       configFile = argv[i+1];
   }
 
-  std::vector<boost::thread*> compThreads;
   XMLParser nodeParser;
   std::string configFileName = nodeName + ".xml";
   if (configFile.length() > 0)

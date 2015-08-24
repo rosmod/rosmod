@@ -391,7 +391,7 @@ void $component_name::startUp()
   advertiseName = "$client.properties["service_reference"].properties["name"]";
   if (portGroupMap.find("$client.properties["name"]") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["$client.properties["name"]"];
-  this->${client.properties["name"]} = nh.serviceClient<$client.properties["service_reference"].parent.properties["name"]::$client.properties["service_reference"].properties["name"]>(advertiseName.c_str()); 
+  this->${client.properties["name"]} = nh.serviceClient<$client.properties["service_reference"].parent.properties["name"]::$client.properties["service_reference"].properties["name"]>(advertiseName.c_str(), true); 
 #end for
 
 #end if
