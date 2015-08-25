@@ -240,6 +240,11 @@ meta_class_dict["sync_timeout"] = Grammar_Field(
     kind="double", 
     display_name = "Synchronization Timeout")
 
+meta_class_dict['signal'] = Grammar_Field(
+    kind="string",
+    display_name = "Signal"
+)
+
 meta_class_dict["numPeriods"] = Grammar_Field( # for analysis
     kind="string", 
     display_name = "Number of Periods")

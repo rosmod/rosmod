@@ -153,7 +153,7 @@ def parallelStop(hostDict,updateQ=None):
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
                     try:
-                        run('kill -9 {}'.format(pid))
+                        run('kill -SIGTERM {0} && kill -SIGINT {0}'.format(pid))
                     except SystemExit:
                         pass
             updateQ.put(["Killed {}".format(node.name),1])
@@ -163,7 +163,7 @@ def parallelStop(hostDict,updateQ=None):
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
                     try:
-                        local('kill -9 {}'.format(pid),capture=True, shell="/bin/bash")
+                        local('kill -SIGTERM {0} && kill -SIGINT {0}'.format(pid),capture=True, shell="/bin/bash")
                     except SystemExit:
                         pass
             if updateQ != None:
@@ -230,10 +230,28 @@ def stopNode(self,e):
             env.key_filename = host.keyFile
             env.host_string = "{}@{}".format(host.userName,host.ipAddress)
             for pid in nodeprops.pids:
-                run('kill -9 {}'.format(pid))
+                run('kill - SIGTERM {0} && kill -SIGINT {0}'.format(pid))
         else:
             for pid in nodeprops.pids:
-                local('kill -9 {}'.format(pid),capture=True, shell="/bin/bash")
+                local('kill -SIGTERM {0} && kill -SIGINT {0}'.format(pid),capture=True, shell="/bin/bash")
+            nodeprops.pids = []
+    else:
+        print >> sys.stderr, "ERROR: you must be running a deployment and node must be part of current deployment!"
+
+def signalNode(self,e, signal_str):
+    node = self.activeObject
+    if self.deployed == True and node in self.runningDeployment.children and self.hostDict != None and \
+       node.properties['hardware_reference'].properties['name'] in self.hostDict.keys():
+        host = self.hostDict[node.properties['hardware_reference'].properties['name']]
+        nodeprops = [x for x in host.nodes if x.name == node.properties['name']][0]
+        if host.ipAddress not in local_ips:
+            env.key_filename = host.keyFile
+            env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+            for pid in nodeprops.pids:
+                run('kill -{} {}'.format(signal_str,pid))
+        else:
+            for pid in nodeprops.pids:
+                local('kill -{} {}'.format(signal_str,pid),capture=True, shell="/bin/bash")
             nodeprops.pids = []
     else:
         print >> sys.stderr, "ERROR: you must be running a deployment and node must be part of current deployment!"

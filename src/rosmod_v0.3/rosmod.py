@@ -163,7 +163,8 @@ class Example(wx.Frame):
         model_dict['Node'].context_funcs = OrderedDict(
             [("View Logs",lambda e : MonitorNodeLog(self,e)),
              ("Start Node",lambda e : deployment.startNode(self,e)),
-             ("Stop Node",lambda e : deployment.stopNode(self,e))]
+             ("Stop Node",lambda e : deployment.stopNode(self,e)),
+             ("Signal Node", lambda e : self.sendSignal(e))]
         )
         model_dict['Component_Instance'].context_funcs = OrderedDict(
             [("View Log",lambda e : MonitorCompInstLog(self,e))]
@@ -171,6 +172,16 @@ class Example(wx.Frame):
 
         wx.EVT_CLOSE(self, self.OnQuit)
 
+
+    def sendSignal(self, e):
+        properties = OrderedDict()
+        properties['signal'] = "SIGTERM"
+        inputs = dialogs.EditorWindow(parent=self,
+                                      editDict=properties,
+                                      title="Signal To Send",
+                                      referenceDict = None)
+        if inputs != OrderedDict():
+            deployment.signalNode(self,e, inputs['signal'])
 
     def DrawModel(self, model, canvas):
         c = canvas.ViewPortCenter
