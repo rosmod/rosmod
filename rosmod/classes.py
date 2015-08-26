@@ -55,6 +55,120 @@ class Attribute(object):
         self.kind = kind
         self.value = value
 
+class Name(Attribute):
+    """Name Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Path(Attribute):
+    """Path Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Message_Definition(Attribute):
+    """Definition Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Service_Definition(Attribute):
+    """Definition Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Component_Type(Attribute):
+    """Type Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Network_Profile(Attribute):
+    """Network_Profile Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Abstract_Business_Logic(Attribute):
+    """Abstract_Business_Logic Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Priority(Attribute):
+    """Priority Attribute"""
+    def __init__(self, value):
+        self.kind = "integer"
+        self.value = value
+
+class Deadline(Attribute):
+    """Deadline Attribute"""
+    def __init__(self, value):
+        self.kind = "double"
+        self.value = value
+
+class Period(Attribute):
+    """Period Attribute"""
+    def __init__(self, value):
+        self.kind = "double"
+        self.value = value
+
+class IP_Address(Attribute):
+    """IP_Address Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Username(Attribute):
+    """Username Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class SSH_Key(Attribute):
+    """SSH_Key Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Deployment_Path(Attribute):
+    """Deployment_Path Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class ROS_Install_Path(Attribute):
+    """ROS_Install_Path Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Init_Script(Attribute):
+    """Init_Script Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Arch(Attribute):
+    """Architecture Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Cmd_Args(Attribute):
+    """Cmd_Args Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
+class Scheduling_Scheme(Attribute):
+    """Scheduling_Scheme Attribute"""
+    def __init__(self, value):
+        self.kind = "string"
+        self.value = value
+
 class Model(object):
     """Generic Model/Container class
 
@@ -242,34 +356,35 @@ class Component_Instance(Model):
 
 import json, jsonpickle
 
-project = Project("NewProject", "")
+project = Project(Name("NewProject"), 
+                  Path(""))
 project.children = Children(allowed=[Software(), Hardware(), Deployment()], 
                             cardinality={str(type(Software())) : '1',
                                          str(type(Hardware())) : '1..*',
                                          str(type(Deployment())) : '1..*'})
 
-software = Software(Attribute("string", "Software"))
+software = Software(Name("Software"))
 software.parent = project
 software.children = Children(allowed=[Package()], 
                              cardinality = {str(type(Package())) : '1..*'})
 
-package = Package(Attribute("string", "Package"))
+package = Package(Name("Package"))
 package.parent = software
 package.children = Children(allowed=[Message(), Service(), Component()],
                             cardinality={str(type(Message())) : '0..*', 
                                          str(type(Service())) : '0..*',
                                          str(type(Component())) : '1..*'})
 
-message = Message(Attribute("string", "Message"), 
-                  Attribute("string", "definition"))
+message = Message(Name("Message"), 
+                  Message_Definition("int64 value\nbool return_value"))
 message.parent = package
 
-service = Service(Attribute("string", "Service"), 
-                  Attribute("string", "definition"))
+service = Service(Name("Service"), 
+                  Service_Definition("float64 request\n---\nfloat64 response"))
 service.parent = package
 
-component = Component(Attribute("string", "Component"), 
-                      Attribute("string", "type"))
+component = Component(Name("Component"), 
+                      Component_Type("BASE"))
 component.parent = package
 component.children = Children(allowed=[Client(), Server(), Publisher(), Subscriber(), Timer()],
                               cardinality={str(type(Client())) : '0..*', 
@@ -278,10 +393,10 @@ component.children = Children(allowed=[Client(), Server(), Publisher(), Subscrib
                                            str(type(Subscriber())) : '0..*', 
                                            str(type(Timer())) : '0..*'}) 
 
-hardware = Hardware(Attribute("string", "Hardware"))
+hardware = Hardware(Name("Hardware"))
 hardware.parent = project
 
-deployment = Deployment(Attribute("string", "Deployment"))
+deployment = Deployment(Name("Deployment"))
 deployment.parent = project
 
 # Establish tree
@@ -295,9 +410,4 @@ print encoder_output
 with open('metamodel.txt', 'w') as metamodel:
     metamodel.write(encoder_output)
 
-print "ABout to decode"
-with open('metamodel.txt', 'r') as input_model:
-    decoder_output = jsonpickle.decode(input_model.read())
-    print "Done decoding"
-    print decoder_output.children._cardinality[str(type(Hardware()))]
-    print type(decoder_output)
+

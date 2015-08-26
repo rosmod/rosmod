@@ -1,5 +1,5 @@
 {
-    "py/object": "__main__.Project", 
+    "py/object": "classes.Project", 
     "attributes": {
         "py/object": "collections.OrderedDict", 
         "__reduce__": [
@@ -11,11 +11,19 @@
                     [
                         [
                             "name", 
-                            "NewProject"
+                            {
+                                "py/object": "classes.Name", 
+                                "kind": "string", 
+                                "value": "NewProject"
+                            }
                         ], 
                         [
                             "path", 
-                            ""
+                            {
+                                "py/object": "classes.Path", 
+                                "kind": "string", 
+                                "value": ""
+                            }
                         ]
                     ]
                 ]
@@ -24,21 +32,21 @@
     }, 
     "kind": "Project", 
     "children": {
-        "py/object": "__main__.Children", 
+        "py/object": "classes.Children", 
         "_allowed": [
             {
-                "py/type": "__main__.Software"
+                "py/type": "classes.Software"
             }, 
             {
-                "py/type": "__main__.Hardware"
+                "py/type": "classes.Hardware"
             }, 
             {
-                "py/type": "__main__.Deployment"
+                "py/type": "classes.Deployment"
             }
         ], 
         "_inner": [
             {
-                "py/object": "__main__.Software", 
+                "py/object": "classes.Software", 
                 "attributes": {
                     "py/object": "collections.OrderedDict", 
                     "__reduce__": [
@@ -51,7 +59,7 @@
                                     [
                                         "name", 
                                         {
-                                            "py/object": "__main__.Attribute", 
+                                            "py/object": "classes.Name", 
                                             "kind": "string", 
                                             "value": "Software"
                                         }
@@ -63,15 +71,15 @@
                 }, 
                 "kind": "Software", 
                 "children": {
-                    "py/object": "__main__.Children", 
+                    "py/object": "classes.Children", 
                     "_allowed": [
                         {
-                            "py/type": "__main__.Package"
+                            "py/type": "classes.Package"
                         }
                     ], 
                     "_inner": [], 
                     "_cardinality": {
-                        "<class '__main__.Package'>": "1..*"
+                        "<class 'classes.Package'>": "1..*"
                     }, 
                     "py/seq": []
                 }, 
@@ -81,13 +89,13 @@
             }
         ], 
         "_cardinality": {
-            "<class '__main__.Hardware'>": "1..*", 
-            "<class '__main__.Deployment'>": "1..*", 
-            "<class '__main__.Software'>": "1"
+            "<class 'classes.Deployment'>": "1..*", 
+            "<class 'classes.Hardware'>": "1..*", 
+            "<class 'classes.Software'>": "1"
         }, 
         "py/seq": [
             {
-                "py/id": 8
+                "py/id": 10
             }
         ]
     }, 
