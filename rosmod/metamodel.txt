@@ -1,0 +1,95 @@
+{
+    "py/object": "__main__.Project", 
+    "attributes": {
+        "py/object": "collections.OrderedDict", 
+        "__reduce__": [
+            {
+                "py/type": "collections.OrderedDict"
+            }, 
+            {
+                "py/tuple": [
+                    [
+                        [
+                            "name", 
+                            "NewProject"
+                        ], 
+                        [
+                            "path", 
+                            ""
+                        ]
+                    ]
+                ]
+            }
+        ]
+    }, 
+    "kind": "Project", 
+    "children": {
+        "py/object": "__main__.Children", 
+        "_allowed": [
+            {
+                "py/type": "__main__.Software"
+            }, 
+            {
+                "py/type": "__main__.Hardware"
+            }, 
+            {
+                "py/type": "__main__.Deployment"
+            }
+        ], 
+        "_inner": [
+            {
+                "py/object": "__main__.Software", 
+                "attributes": {
+                    "py/object": "collections.OrderedDict", 
+                    "__reduce__": [
+                        {
+                            "py/type": "collections.OrderedDict"
+                        }, 
+                        {
+                            "py/tuple": [
+                                [
+                                    [
+                                        "name", 
+                                        {
+                                            "py/object": "__main__.Attribute", 
+                                            "kind": "string", 
+                                            "value": "Software"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }, 
+                "kind": "Software", 
+                "children": {
+                    "py/object": "__main__.Children", 
+                    "_allowed": [
+                        {
+                            "py/type": "__main__.Package"
+                        }
+                    ], 
+                    "_inner": [], 
+                    "_cardinality": {
+                        "<class '__main__.Package'>": "1..*"
+                    }, 
+                    "py/seq": []
+                }, 
+                "parent": {
+                    "py/id": 0
+                }
+            }
+        ], 
+        "_cardinality": {
+            "<class '__main__.Hardware'>": "1..*", 
+            "<class '__main__.Deployment'>": "1..*", 
+            "<class '__main__.Software'>": "1"
+        }, 
+        "py/seq": [
+            {
+                "py/id": 8
+            }
+        ]
+    }, 
+    "parent": null
+}

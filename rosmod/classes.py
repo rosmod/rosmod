@@ -2,7 +2,46 @@
 # Author: Pranav Srinivas Kumar
 # Date: 2015.07.22
 
-from collections import OrderedDict
+from collections import OrderedDict, MutableSequence
+
+class Children(MutableSequence):
+    """Children List
+    
+    _inner -- Contents of the list
+    _allowed -- Type Constraints on the list entries
+    The list will accept only object types contained in _allowed
+    """
+    def __init__(self, it=(), allowed=(), cardinality=()):
+        self._inner = list(it)
+        self._allowed = list(type(a) for a in allowed)
+        self._cardinality = cardinality
+
+    def __len__(self):
+        return len(self._inner)
+    def __iter__(self):
+        return iter(self._inner)
+    def __contains__(self, item):
+        return item in self._inner
+    def __getitem__(self, index):
+        return self._inner[index]
+    def __setitem__(self, index, value):
+        self._inner[index] = value
+    def __delitem__(self, index):
+        del self._inner[index]
+    def __repr__(self):
+        return 'Children({})'.format(self._inner)
+    def insert(self, index, item):
+        if type(item) in self._allowed:
+            if item not in self._inner:
+                item_cardinality = self._cardinality[str(type(item))]
+                children_types = [str(type(val)) for val in self._inner]
+                if item_cardinality == '1' and str(type(item)) not in children_types:
+                    return self._inner.insert(index, item)
+                else:
+                    print "ERROR::Cardinality Error!"
+        else:
+            print "ERROR::Cannot add child: " + str(item)
+            return self._inner
 
 class Attribute(object):
     """Generic Attributes class
@@ -29,7 +68,7 @@ class Model(object):
         super(Model, self).__init__()
         self.kind = ""
         self.parent = None
-        self.children = []
+        self.children = None
         self.attributes = OrderedDict() 
 
     def __getitem__(self, key):
@@ -56,10 +95,11 @@ class Project(Model):
     Hardware -- Describes the hardware configuration
     Deployment -- Maps software instances and hardware computers
     """
-    def __init__(self, name):
+    def __init__(self, name, path):
         super(Project, self).__init__()
         self.kind = "Project"
         self['name'] = name
+        self['path'] = path
 
 class Software(Model):
     """Software Class
@@ -70,40 +110,40 @@ class Software(Model):
     Services -- Define a ROS Service
     Components -- Define ROSMOD component building blocks for applications
     """
-    def __init__(self, name):
+    def __init__(self, name=None):
         super(Software, self).__init__()
         self.kind = "Software"
         self["name"] = name
 
 class Package(Model):
-    def __init__(self, name):
+    def __init__(self, name=None):
         super(Package, self).__init__()
         self.kind = "Package"
         self["name"] = name
 
 class Message(Model):
-    def __init__(self, name, definition):
+    def __init__(self, name=None, definition=None):
         super(Message, self).__init__()
         self.kind = "Message"
         self["name"] = name
         self["definition"] = definition
 
 class Service(Model):
-    def __init__(self, name, definition):
+    def __init__(self, name=None, definition=None):
         super(Service, self).__init__()
         self.kind = "Service"
         self["name"] = name
         self["definition"] = definition
 
 class Component(Model):
-    def __init__(self, name, component_type):
+    def __init__(self, name=None, component_type=None):
         super(Component, self).__init__()
         self.kind = "Component"
         self["name"] = name
         self["type"] = component_type
 
 class Client(Model):
-    def __init__(self, name, service_reference, network_profile):
+    def __init__(self, name=None, service_reference=None, network_profile=None):
         super(Client, self).__init__()
         self.kind = "Client"
         self["name"] = name
@@ -111,7 +151,9 @@ class Client(Model):
         self["network_profile"] = network_profile
 
 class Server(Model):
-    def __init__(self, name, service_reference, priority, deadline, business_logic):
+    def __init__(self, name=None, 
+                 service_reference=None, 
+                 priority=None, deadline=None, business_logic=None):
         super(Server, self).__init__()
         self.kind = "Server"
         self["name"] = name
@@ -121,7 +163,7 @@ class Server(Model):
         self["business_logic"] = business_logic
 
 class Publisher(Model):
-    def __init__(self, name, message_reference, network_profile):
+    def __init__(self, name=None, message_reference=None, network_profile=None):
         super(Publisher, self).__init__()
         self.kind = "Publisher"
         self["name"] = name
@@ -129,7 +171,7 @@ class Publisher(Model):
         self["network_profile"] = network_profile
 
 class Subscriber(Model):
-    def __init__(self, message_reference, priority, deadline, business_logic):
+    def __init__(self, name=None, message_reference=None, priority=None, deadline=None, business_logic=None):
         super(Subscriber, self).__init__()
         self.kind = "Subscriber"
         self["name"] = name
@@ -139,7 +181,7 @@ class Subscriber(Model):
         self["business_logic"] = business_logic
 
 class Timer(Model):
-    def __init__(self, name, period, priority, deadline, business_logic):
+    def __init__(self, name=None, period=None, priority=None, deadline=None, business_logic=None):
         super(Timer, self).__init__()
         self.kind = "Timer"
         self["name"] = name
@@ -149,7 +191,7 @@ class Timer(Model):
         self["business_logic"] = business_logic
 
 class Hardware(Model):
-    def __init__(self, name):
+    def __init__(self, name=None):
         super(Hardware, self).__init__()
         self.kind = "Hardware"
         self["name"] = name
@@ -170,7 +212,7 @@ class Computer(Model):
         self["network_profile"] = network_profile
 
 class Deployment(Model):
-    def __init__(self, name):
+    def __init__(self, name=None):
         super(Deployment, self).__init__()
         self.kind = "Deployment"
         self['name'] = name
@@ -194,6 +236,68 @@ class Component_Instance(Model):
         self["component_reference"] = component
         self["scheduling_scheme"] = scheduling_scheme
         self["logging"] = logging
+
+
         
 
+import json, jsonpickle
 
+project = Project("NewProject", "")
+project.children = Children(allowed=[Software(), Hardware(), Deployment()], 
+                            cardinality={str(type(Software())) : '1',
+                                         str(type(Hardware())) : '1..*',
+                                         str(type(Deployment())) : '1..*'})
+
+software = Software(Attribute("string", "Software"))
+software.parent = project
+software.children = Children(allowed=[Package()], 
+                             cardinality = {str(type(Package())) : '1..*'})
+
+package = Package(Attribute("string", "Package"))
+package.parent = software
+package.children = Children(allowed=[Message(), Service(), Component()],
+                            cardinality={str(type(Message())) : '0..*', 
+                                         str(type(Service())) : '0..*',
+                                         str(type(Component())) : '1..*'})
+
+message = Message(Attribute("string", "Message"), 
+                  Attribute("string", "definition"))
+message.parent = package
+
+service = Service(Attribute("string", "Service"), 
+                  Attribute("string", "definition"))
+service.parent = package
+
+component = Component(Attribute("string", "Component"), 
+                      Attribute("string", "type"))
+component.parent = package
+component.children = Children(allowed=[Client(), Server(), Publisher(), Subscriber(), Timer()],
+                              cardinality={str(type(Client())) : '0..*', 
+                                           str(type(Server())) : '0..*', 
+                                           str(type(Publisher())) : '0..*', 
+                                           str(type(Subscriber())) : '0..*', 
+                                           str(type(Timer())) : '0..*'}) 
+
+hardware = Hardware(Attribute("string", "Hardware"))
+hardware.parent = project
+
+deployment = Deployment(Attribute("string", "Deployment"))
+deployment.parent = project
+
+# Establish tree
+software.add_child(package)
+project.add_child(software)
+project.add_child(hardware)
+project.add_child(deployment)
+
+encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
+print encoder_output
+with open('metamodel.txt', 'w') as metamodel:
+    metamodel.write(encoder_output)
+
+print "ABout to decode"
+with open('metamodel.txt', 'r') as input_model:
+    decoder_output = jsonpickle.decode(input_model.read())
+    print "Done decoding"
+    print decoder_output.children._cardinality[str(type(Hardware()))]
+    print type(decoder_output)
