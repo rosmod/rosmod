@@ -59,9 +59,7 @@ class Project(Model):
     def __init__(self, name):
         super(Project, self).__init__()
         self.kind = "Project"
-        self.add_attribute(name.__name__, 
-                           type(name),
-                           name)
+        self['name'] = name
 
 class Software(Model):
     """Software Class
