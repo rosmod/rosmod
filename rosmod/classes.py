@@ -12,6 +12,7 @@ class Attribute(object):
     value -- The value of the attributes e.g. "my_component", 1.642 etc.
     """
     def __init__(self, kind, value):
+        super(Attribute, self).__init__()
         self.kind = kind
         self.value = value
 
@@ -25,6 +26,7 @@ class Model(object):
     attributes -- A dictionary of attributes.
     """
     def __init__(self):
+        super(Model, self).__init__()
         self.kind = ""
         self.parent = None
         self.children = []
@@ -33,11 +35,14 @@ class Model(object):
     def __getitem__(self, key):
         return self.attributes[key]
 
+    def __setitem__(self, key, value):
+        self.attributes[key] = value
+
     def add_child(self, child_model):
         self.children.append(child_model)
 
     def add_attribute(self, name, kind, value):
-        self.attributes[name] = Attribute(kind, value)
+        self[name] = Attribute(kind, value)
 
     def get_children(self, kind):
         return [child for child in self.children if child.kind == kind]
@@ -52,6 +57,7 @@ class Project(Model):
     Deployment -- Maps software instances and hardware computers
     """
     def __init__(self, name):
+        super(Project, self).__init__()
         self.kind = "Project"
         self.add_attribute(name.__name__, 
                            type(name),
@@ -67,113 +73,129 @@ class Software(Model):
     Components -- Define ROSMOD component building blocks for applications
     """
     def __init__(self, name):
+        super(Software, self).__init__()
         self.kind = "Software"
-        self.attributes["name"] = name
+        self["name"] = name
 
 class Package(Model):
     def __init__(self, name):
+        super(Package, self).__init__()
         self.kind = "Package"
-        self.attributes["name"] = name
+        self["name"] = name
 
 class Message(Model):
     def __init__(self, name, definition):
+        super(Message, self).__init__()
         self.kind = "Message"
-        self.attributes["name"] = name
-        self.attributes["definition"] = definition
+        self["name"] = name
+        self["definition"] = definition
 
 class Service(Model):
     def __init__(self, name, definition):
+        super(Service, self).__init__()
         self.kind = "Service"
-        self.attributes["name"] = name
-        self.attributes["definition"] = definition
+        self["name"] = name
+        self["definition"] = definition
 
 class Component(Model):
     def __init__(self, name, component_type):
+        super(Component, self).__init__()
         self.kind = "Component"
-        self.attributes["name"] = name
-        self.attributes["type"] = component_type
+        self["name"] = name
+        self["type"] = component_type
 
 class Client(Model):
     def __init__(self, name, service_reference, network_profile):
+        super(Client, self).__init__()
         self.kind = "Client"
-        self.attributes["name"] = name
-        self.attributes["service_reference"] = service_reference
-        self.attributes["network_profile"] = network_profile
+        self["name"] = name
+        self["service_reference"] = service_reference
+        self["network_profile"] = network_profile
 
 class Server(Model):
     def __init__(self, name, service_reference, priority, deadline, business_logic):
+        super(Server, self).__init__()
         self.kind = "Server"
-        self.attributes["name"] = name
-        self.attributes["service_reference"] = service_reference
-        self.attributes["priority"] = priority
-        self.attributes["deadline"] = deadline
-        self.attributes["business_logic"] = business_logic
+        self["name"] = name
+        self["service_reference"] = service_reference
+        self["priority"] = priority
+        self["deadline"] = deadline
+        self["business_logic"] = business_logic
 
 class Publisher(Model):
     def __init__(self, name, message_reference, network_profile):
+        super(Publisher, self).__init__()
         self.kind = "Publisher"
-        self.attributes["name"] = name
-        self.attributes["message_reference"] = message_reference
-        self.attributes["network_profile"] = network_profile
+        self["name"] = name
+        self["message_reference"] = message_reference
+        self["network_profile"] = network_profile
 
 class Subscriber(Model):
     def __init__(self, message_reference, priority, deadline, business_logic):
+        super(Subscriber, self).__init__()
         self.kind = "Subscriber"
-        self.attributes["name"] = name
-        self.attributes["message_reference"] = message_reference
-        self.attributes["priority"] = priority
-        self.attributes["deadline"] = deadline
-        self.attributes["business_logic"] = business_logic
+        self["name"] = name
+        self["message_reference"] = message_reference
+        self["priority"] = priority
+        self["deadline"] = deadline
+        self["business_logic"] = business_logic
 
 class Timer(Model):
     def __init__(self, name, period, priority, deadline, business_logic):
+        super(Timer, self).__init__()
         self.kind = "Timer"
-        self.attributes["name"] = name
-        self.attributes["period"] = period
-        self.attributes["priority"] = priority
-        self.attributes["deadline"] = deadline
-        self.attributes["business_logic"] = business_logic
+        self["name"] = name
+        self["period"] = period
+        self["priority"] = priority
+        self["deadline"] = deadline
+        self["business_logic"] = business_logic
 
 class Hardware(Model):
     def __init__(self, name):
+        super(Hardware, self).__init__()
         self.kind = "Hardware"
-        self.attributes["name"] = name
+        self["name"] = name
 
 class Computer(Model):
     def __init__(self, name, ip_address, username, sshkey, deployment_path,
                  ros_install_path, init_script, arch, network_profile):
+        super(Computer, self).__init__()
         self.kind = "Computer"
-        self.attributes["name"] = name
-        self.attributes["ip_address"] = ip_address
-        self.attributes["username"] = username
-        self.attributes["sshkey"] = sshkey
-        self.attributes["deployment_path"] = deployment_path
-        self.attributes["ros_install_path"] = ros_install_path
-        self.attributes["init_script"] = init_script
-        self.attributes["arch"] = arch
-        self.attributes["network_profile"] = network_profile
+        self["name"] = name
+        self["ip_address"] = ip_address
+        self["username"] = username
+        self["sshkey"] = sshkey
+        self["deployment_path"] = deployment_path
+        self["ros_install_path"] = ros_install_path
+        self["init_script"] = init_script
+        self["arch"] = arch
+        self["network_profile"] = network_profile
 
 class Deployment(Model):
-    def __init__(self):
+    def __init__(self, name):
+        super(Deployment, self).__init__()
         self.kind = "Deployment"
+        self['name'] = name
 
 class Node(Model):
     def __init__(self, name, hardware_reference, priority, cmd_args, 
                  deployment_path):
+        super(Node, self).__init__()
         self.kind = "Node"
-        self.attributes["name"] = name
-        self.attributes["hardware_reference"] = hardware_reference
-        self.attributes["priority"] = priority
-        self.attributes["cmd_args"] = cmd_args
-        self.attributes["deployment_path"] = deployment_path
+        self["name"] = name
+        self["hardware_reference"] = hardware_reference
+        self["priority"] = priority
+        self["cmd_args"] = cmd_args
+        self["deployment_path"] = deployment_path
 
 class Component_Instance(Model):
     def __init__(self, name, component_reference, scheduling_scheme, logging):
+        super(Component_Instance, self).__init__()
         self.kind = "Component_Instance"
-        self.attributes["name"] = name
-        self.attributes["component_reference"] = component
-        self.attributes["scheduling_scheme"] = scheduling_scheme
-        self.attributes["logging"] = logging
+        self["name"] = name
+        self["component_reference"] = component
+        self["scheduling_scheme"] = scheduling_scheme
+        self["logging"] = logging
         
 
 
