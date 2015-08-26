@@ -11,3 +11,4 @@ with open('metamodel.txt', 'r') as input_model:
 #    print decoder_output.children._cardinality[str(type(Hardware()))]
     print type(decoder_output)
     print decoder_output
+    print decoder_output.children._inner

@@ -35,10 +35,11 @@ class Children(MutableSequence):
             if item not in self._inner:
                 item_cardinality = self._cardinality[str(type(item))]
                 children_types = [str(type(val)) for val in self._inner]
-                if item_cardinality == '1' and str(type(item)) not in children_types:
-                    return self._inner.insert(index, item)
-                else:
-                    print "ERROR::Cardinality Error!"
+                if item_cardinality == '1':
+                    if str(type(item)) not in children_types:
+                        return self._inner.insert(index, item)
+                    else:
+                        print "ERROR::Cardinality Error!"
         else:
             print "ERROR::Cannot add child: " + str(item)
             return self._inner
