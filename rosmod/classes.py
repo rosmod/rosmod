@@ -256,6 +256,7 @@ class Message(Model):
         self.parent = parent
         self["name"] = name
         self["definition"] = definition
+        self.children = Children(allowed=[], cardinality={})
 
 class Service(Model):
     def __init__(self, name=None, definition=None, parent=None):
@@ -264,6 +265,7 @@ class Service(Model):
         self.parent = parent
         self["name"] = name
         self["definition"] = definition
+        self.children = Children(allowed=[], cardinality={})
 
 class Component(Model):
     def __init__(self, name=None, component_type=None, parent=None):
@@ -287,6 +289,7 @@ class Client(Model):
         self["name"] = name
         self["service_reference"] = service_reference
         self["network_profile"] = network_profile
+        self.children = Children(allowed=[], cardinality={})
 
 class Server(Model):
     def __init__(self, name=None, 
@@ -300,6 +303,7 @@ class Server(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+        self.children = Children(allowed=[], cardinality={})
 
 class Publisher(Model):
     def __init__(self, name=None, message_reference=None, network_profile=None, parent=None):
@@ -309,6 +313,7 @@ class Publisher(Model):
         self["name"] = name
         self["message_reference"] = message_reference
         self["network_profile"] = network_profile
+        self.children = Children(allowed=[], cardinality={})
 
 class Subscriber(Model):
     def __init__(self, name=None, message_reference=None, priority=None, deadline=None, business_logic=None, parent=None):
@@ -320,6 +325,7 @@ class Subscriber(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+        self.children = Children(allowed=[], cardinality={})
 
 class Timer(Model):
     def __init__(self, name=None, period=None, priority=None, deadline=None, business_logic=None, parent=None):
@@ -331,6 +337,7 @@ class Timer(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+        self.children = Children(allowed=[], cardinality={})
 
 class Hardware(Model):
     def __init__(self, name=None, parent=None):
@@ -338,10 +345,12 @@ class Hardware(Model):
         self.kind = "Hardware"
         self.parent = parent
         self["name"] = name
+        self.children = Children(allowed=[Computer()], 
+                                 cardinality={str(type(Computer())) : '1..*'})
 
 class Computer(Model):
-    def __init__(self, name, ip_address, username, sshkey, deployment_path,
-                 ros_install_path, init_script, arch, network_profile, parent=None):
+    def __init__(self, name=None, ip_address=None, username=None, sshkey=None, deployment_path=None,
+                 ros_install_path=None, init_script=None, arch=None, network_profile=None, parent=None):
         super(Computer, self).__init__()
         self.kind = "Computer"
         self.parent = parent
@@ -354,6 +363,7 @@ class Computer(Model):
         self["init_script"] = init_script
         self["arch"] = arch
         self["network_profile"] = network_profile
+        self.children = Children(allowed=[], cardinality={})
 
 class Deployment(Model):
     def __init__(self, name=None, parent=None):
@@ -361,10 +371,11 @@ class Deployment(Model):
         self.kind = "Deployment"
         self.parent = parent
         self['name'] = name
+        self.children = Children(allowed=[Node()], cardinality={str(type(Node())) : '1..*'})
 
 class Node(Model):
-    def __init__(self, name, hardware_reference, priority, cmd_args, 
-                 deployment_path, parent=None):
+    def __init__(self, name=None, hardware_reference=None, priority=None, cmd_args=None, 
+                 deployment_path=None, parent=None):
         super(Node, self).__init__()
         self.kind = "Node"
         self.parent = parent
@@ -373,16 +384,18 @@ class Node(Model):
         self["priority"] = priority
         self["cmd_args"] = cmd_args
         self["deployment_path"] = deployment_path
+        self.children = Children(allowed=[Component_Instance()], cardinality={str(type(Component_Instance())) : '1..*'})
 
 class Component_Instance(Model):
-    def __init__(self, name, component_reference, scheduling_scheme, logging, parent=None):
+    def __init__(self, name=None, component_reference=None, scheduling_scheme=None, logging=None, parent=None):
         super(Component_Instance, self).__init__()
         self.kind = "Component_Instance"
         self.parent = parent
         self["name"] = name
-        self["component_reference"] = component
+        self["component_reference"] = component_reference
         self["scheduling_scheme"] = scheduling_scheme
         self["logging"] = logging
+        self.children = Children(allowed=[], cardinality={})
 
 import json, jsonpickle
 
