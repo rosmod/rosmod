@@ -58,131 +58,168 @@ class Attribute(object):
         self.kind = kind
         self.value = value
 
-class Name(Attribute):
-    
-    # Tooltip
-    # Options
-    # Display name
-    # Validator function
-    
+class Name(Attribute):  
     """Name Attribute"""
+    tooltip = "A Name is a word or term used for identification"
+    display = "Name"
     def __init__(self, value):
         super(Name, self).__init__("string",value)
 
 class Path(Attribute):
     """Path Attribute"""
+    tooltip = "Path refers to an absolute path to a folder/file"
+    display = "Path"
     def __init__(self, value):
         super(Path, self).__init__("string",value)
 
 class Message_Definition(Attribute):
     """Definition Attribute"""
+    tooltip = "Describes a message that ROS nodes publish"
+    display = "Message Definition"
     def __init__(self, value):
         super(Message_Definition, self).__init__("string",value)
 
 class Service_Definition(Attribute):
     """Definition Attribute"""
+    tooltip = "Describes a ROS service interface"
+    display = "Service Definition"
     def __init__(self, value):
         super(Service_Definition, self).__init__("string",value)
 
 class Component_Type(Attribute):
     """Type Attribute"""
+    tooltip = "Type of the ROSMOD Component"
+    display = "Component Type"
+    options = ["BASE", "KSP", "SUMO"]
     def __init__(self, value):
-        super(Component_Type, self).__init__("string",value)
+        super(Component_Type, self).__init__("list_entry",value)
 
 class Service_Reference(Attribute):
     """Service Reference Attribute"""
+    tooltip = "Reference to a predefined service"
+    display = "Service Reference"
     def __init__(self, value):
         super(Service_Reference, self).__init__("reference", value)
 
 class Message_Reference(Attribute):
     """Message Reference Attribute"""
+    tooltip = "Reference to a predefined message"
+    display = "Message Reference"
     def __init__(self, value):
         super(Message_Reference, self).__init__("reference", value)
 
 class Network_Profile(Attribute):
     """Network_Profile Attribute"""
+    tooltip = "Network Profile of a port/system"
+    display = "Network Profile"
     def __init__(self, value):
         super(Network_Profile, self).__init__("code",value)
 
 class Abstract_Business_Logic(Attribute):
     """Abstract_Business_Logic Attribute"""
+    tooltip = "Abstract Business Logic of a Component Operation"
+    display = "Abstract Business Logic"
     def __init__(self, value):
         super(Abstract_Business_Logic, self).__init__("code",value)
 
 class Priority(Attribute):
     """Priority Attribute"""
+    tooltip = "Priority (1-99) of a ROS node or component operation "
+    display = "Priority"
     def __init__(self, value):
         super(Priority, self).__init__("integer",value)
 
 class Deadline(Attribute):
     """Deadline Attribute"""
+    tooltip = "Deadline of a component operation expressed in seconds"
+    display = "Deadline"
     def __init__(self, value):
         super(Deadline, self).__init__("double",value)
 
 class Logging(Attribute):
     """Logging Attribute"""
+    tooltip = "Levels of logging enforced in a component instance"
+    display = "Logging Levels"
     def __init__(self, value):
         super(Logging, self).__init__("dictionary_bool", value)
 
 class Period(Attribute):
     """Period Attribute"""
+    tooltip = "Period of a Timer expressed in seconds"
+    display = "Period"
     def __init__(self, value):
         super(Period, self).__init__("double",value)
 
 class Hardware_Reference(Attribute):
     """Hardware Reference Attribute"""
+    tooltip = "Reference to a predefined hardware model"
+    display = "Hardware Reference"
     def __init__(self, value):
         super(Hardware_Reference, self).__init__("reference", value)
 
 class Component_Reference(Attribute):
     """Component Reference Attribute"""
+    tooltip = "Reference to a predefined component"
+    display = "Component Reference"
     def __init__(self, value):
         super(Component_Reference, self).__init__("reference", value)
 
 class IP_Address(Attribute):
     """IP_Address Attribute"""
+    tooltip = "IP Address of a computer"
+    display = "IP Address"
     def __init__(self, value):
         super(IP_Address, self).__init__("string",value)
 
 class Username(Attribute):
     """Username Attribute"""
+    tooltip = "Name of the user who is deploying on a computer"
+    display = "Name"
     def __init__(self, value):
         super(Username, self).__init__("string",value)
 
 class SSH_Key(Attribute):
     """SSH_Key Attribute"""
+    tooltip = "Absolute path to an SSH Key to access a computer"
+    display = "SSH Key"
     def __init__(self, value):
         super(SSH_Key, self).__init__("string",value)
 
 class Deployment_Path(Attribute):
     """Deployment_Path Attribute"""
+    tooltip = "Absolute path on the target where deployment files are to be copied"
+    display = "Target Deployment Path"
     def __init__(self, value):
         super(Deployment_Path, self).__init__("string",value)
 
 class ROS_Install_Path(Attribute):
     """ROS_Install_Path Attribute"""
+    tooltip = "Absolute path to ROS Install directory e.g. /opt/ros/indigo"
+    display = "ROS Installation Path"
     def __init__(self, value):
         super(ROS_Install_Path, self).__init__("string",value)
 
-class Init_Script(Attribute):
-    """Init_Script Attribute"""
-    def __init__(self, value):
-        super(Init_Script, self).__init__("string",value)
-
 class Arch(Attribute):
     """Architecture Attribute"""
+    tooltip = "Architecture of the target system e.g. arm"
+    display = "Target Architecture"
     def __init__(self, value):
         super(Arch, self).__init__("string",value)
 
 class Cmd_Args(Attribute):
     """Cmd_Args Attribute"""
+    tooltip = "Commandline arguments to a ROS node spawn"
+    display = "Commandline Arguments"
     def __init__(self, value):
         super(Cmd_Args, self).__init__("string",value)
 
 class Scheduling_Scheme(Attribute):
     """Scheduling_Scheme Attribute"""
+    tooltip = "Scheduling scheme of the component-level scheduler"
+    display = "Scheduling Scheme"
+    options = ["FIFO", "PFIFO", "EDF"]
     def __init__(self, value):
-        super(Scheduling_Scheme, self).__init__("string",value)
+        super(Scheduling_Scheme, self).__init__("list_entry",value)
 
 class Model(object):
     """Generic Model/Container class
@@ -452,8 +489,8 @@ class Computer(Model):
     def __init__(self, name=Name(""), ip_address=IP_Address(""), 
                  username=Username(""), sshkey=SSH_Key(""), 
                  deployment_path=Deployment_Path(""), 
-                 ros_install_path=ROS_Install_Path(""), init_script=Init_Script(""), 
-                 arch=Arch(""), network_profile=Network_Profile(""), parent=None):
+                 ros_install_path=ROS_Install_Path(""), arch=Arch(""), 
+                 network_profile=Network_Profile(""), parent=None):
         super(Computer, self).__init__()
         self.kind = "Computer"
 
@@ -464,7 +501,6 @@ class Computer(Model):
         assert sshkey != None, "Computer sshkey is None!"
         assert deployment_path != None, "Computer deployment path is None!"
         assert ros_install_path != None, "Computer ros install path is None!"
-        assert init_script != None, "Computer init script is None!"
         assert arch != None, "Computer architecture is None!"
         assert network_profile != None, "Computer network profile is None!"
 
@@ -475,7 +511,6 @@ class Computer(Model):
         self["sshkey"] = sshkey
         self["deployment_path"] = deployment_path
         self["ros_install_path"] = ros_install_path
-        self["init_script"] = init_script
         self["arch"] = arch
         self["network_profile"] = network_profile
 
