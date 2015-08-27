@@ -280,7 +280,11 @@
                                                                         [
                                                                             "service_reference", 
                                                                             {
-                                                                                "py/id": 36
+                                                                                "py/object": "classes.Service_Reference", 
+                                                                                "kind": "reference", 
+                                                                                "value": {
+                                                                                    "py/id": 36
+                                                                                }
                                                                             }
                                                                         ], 
                                                                         [
@@ -307,6 +311,256 @@
                                                     "parent": {
                                                         "py/id": 46
                                                     }
+                                                }, 
+                                                {
+                                                    "py/object": "classes.Server", 
+                                                    "attributes": {
+                                                        "py/object": "collections.OrderedDict", 
+                                                        "__reduce__": [
+                                                            {
+                                                                "py/type": "collections.OrderedDict"
+                                                            }, 
+                                                            {
+                                                                "py/tuple": [
+                                                                    [
+                                                                        [
+                                                                            "name", 
+                                                                            {
+                                                                                "py/object": "classes.Name", 
+                                                                                "kind": "string", 
+                                                                                "value": "myServer"
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "service_reference", 
+                                                                            {
+                                                                                "py/object": "classes.Service_Reference", 
+                                                                                "kind": "reference", 
+                                                                                "value": {
+                                                                                    "py/id": 36
+                                                                                }
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "priority", 
+                                                                            null
+                                                                        ], 
+                                                                        [
+                                                                            "deadline", 
+                                                                            null
+                                                                        ], 
+                                                                        [
+                                                                            "business_logic", 
+                                                                            null
+                                                                        ], 
+                                                                        [
+                                                                            "network_profile", 
+                                                                            {
+                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "kind": "code", 
+                                                                                "value": "myProfile"
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }, 
+                                                    "kind": "Server", 
+                                                    "children": {
+                                                        "py/object": "classes.Children", 
+                                                        "_allowed": [], 
+                                                        "_inner": [], 
+                                                        "_cardinality": {}, 
+                                                        "py/seq": []
+                                                    }, 
+                                                    "parent": {
+                                                        "py/id": 46
+                                                    }
+                                                }, 
+                                                {
+                                                    "py/object": "classes.Publisher", 
+                                                    "attributes": {
+                                                        "py/object": "collections.OrderedDict", 
+                                                        "__reduce__": [
+                                                            {
+                                                                "py/type": "collections.OrderedDict"
+                                                            }, 
+                                                            {
+                                                                "py/tuple": [
+                                                                    [
+                                                                        [
+                                                                            "name", 
+                                                                            {
+                                                                                "py/object": "classes.Name", 
+                                                                                "kind": "string", 
+                                                                                "value": "myPub"
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "message_reference", 
+                                                                            {
+                                                                                "py/object": "classes.Message_Reference", 
+                                                                                "kind": "reference", 
+                                                                                "value": {
+                                                                                    "py/id": 26
+                                                                                }
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "network_profile", 
+                                                                            {
+                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "kind": "code", 
+                                                                                "value": "myProf"
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }, 
+                                                    "kind": "Publisher", 
+                                                    "children": {
+                                                        "py/object": "classes.Children", 
+                                                        "_allowed": [], 
+                                                        "_inner": [], 
+                                                        "_cardinality": {}, 
+                                                        "py/seq": []
+                                                    }, 
+                                                    "parent": {
+                                                        "py/id": 46
+                                                    }
+                                                }, 
+                                                {
+                                                    "py/object": "classes.Subscriber", 
+                                                    "attributes": {
+                                                        "py/object": "collections.OrderedDict", 
+                                                        "__reduce__": [
+                                                            {
+                                                                "py/type": "collections.OrderedDict"
+                                                            }, 
+                                                            {
+                                                                "py/tuple": [
+                                                                    [
+                                                                        [
+                                                                            "name", 
+                                                                            {
+                                                                                "py/object": "classes.Name", 
+                                                                                "kind": "string", 
+                                                                                "value": "mySub"
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "message_reference", 
+                                                                            {
+                                                                                "py/object": "classes.Message_Reference", 
+                                                                                "kind": "reference", 
+                                                                                "value": {
+                                                                                    "py/id": 26
+                                                                                }
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "priority", 
+                                                                            null
+                                                                        ], 
+                                                                        [
+                                                                            "deadline", 
+                                                                            null
+                                                                        ], 
+                                                                        [
+                                                                            "business_logic", 
+                                                                            null
+                                                                        ], 
+                                                                        [
+                                                                            "network_profile", 
+                                                                            {
+                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "kind": "code", 
+                                                                                "value": "myProf"
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }, 
+                                                    "kind": "Subscriber", 
+                                                    "children": {
+                                                        "py/object": "classes.Children", 
+                                                        "_allowed": [], 
+                                                        "_inner": [], 
+                                                        "_cardinality": {}, 
+                                                        "py/seq": []
+                                                    }, 
+                                                    "parent": {
+                                                        "py/id": 46
+                                                    }
+                                                }, 
+                                                {
+                                                    "py/object": "classes.Timer", 
+                                                    "attributes": {
+                                                        "py/object": "collections.OrderedDict", 
+                                                        "__reduce__": [
+                                                            {
+                                                                "py/type": "collections.OrderedDict"
+                                                            }, 
+                                                            {
+                                                                "py/tuple": [
+                                                                    [
+                                                                        [
+                                                                            "name", 
+                                                                            {
+                                                                                "py/object": "classes.Name", 
+                                                                                "kind": "string", 
+                                                                                "value": "myTimer"
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "period", 
+                                                                            {
+                                                                                "py/object": "classes.Period", 
+                                                                                "kind": "double", 
+                                                                                "value": 0.1
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "priority", 
+                                                                            {
+                                                                                "py/object": "classes.Priority", 
+                                                                                "kind": "integer", 
+                                                                                "value": 10
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "deadline", 
+                                                                            {
+                                                                                "py/object": "classes.Deadline", 
+                                                                                "kind": "double", 
+                                                                                "value": 0.1
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "business_logic", 
+                                                                            null
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }, 
+                                                    "kind": "Timer", 
+                                                    "children": {
+                                                        "py/object": "classes.Children", 
+                                                        "_allowed": [], 
+                                                        "_inner": [], 
+                                                        "_cardinality": {}, 
+                                                        "py/seq": []
+                                                    }, 
+                                                    "parent": {
+                                                        "py/id": 46
+                                                    }
                                                 }
                                             ], 
                                             "_cardinality": {
@@ -319,6 +573,18 @@
                                             "py/seq": [
                                                 {
                                                     "py/id": 56
+                                                }, 
+                                                {
+                                                    "py/id": 68
+                                                }, 
+                                                {
+                                                    "py/id": 83
+                                                }, 
+                                                {
+                                                    "py/id": 95
+                                                }, 
+                                                {
+                                                    "py/id": 110
                                                 }
                                             ]
                                         }, 
@@ -457,10 +723,10 @@
                 "py/id": 10
             }, 
             {
-                "py/id": 67
+                "py/id": 125
             }, 
             {
-                "py/id": 75
+                "py/id": 133
             }
         ]
     }, 

@@ -83,6 +83,16 @@ class Component_Type(Attribute):
     def __init__(self, value):
         super(Component_Type, self).__init__("string",value)
 
+class Service_Reference(Attribute):
+    """Service Reference Attribute"""
+    def __init__(self, value):
+        super(Service_Reference, self).__init__("reference", value)
+
+class Message_Reference(Attribute):
+    """Service Reference Attribute"""
+    def __init__(self, value):
+        super(Message_Reference, self).__init__("reference", value)
+
 class Network_Profile(Attribute):
     """Network_Profile Attribute"""
     def __init__(self, value):
@@ -277,7 +287,8 @@ class Client(Model):
 class Server(Model):
     def __init__(self, name=None, 
                  service_reference=None, 
-                 priority=None, deadline=None, business_logic=None, parent=None):
+                 priority=None, deadline=None, business_logic=None,
+                 network_profile=None, parent=None):
         super(Server, self).__init__()
         self.kind = "Server"
         self.parent = parent
@@ -286,6 +297,7 @@ class Server(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+        self["network_profile"] = network_profile
         self.children = Children(allowed=[], cardinality={})
 
 class Publisher(Model):
@@ -299,7 +311,9 @@ class Publisher(Model):
         self.children = Children(allowed=[], cardinality={})
 
 class Subscriber(Model):
-    def __init__(self, name=None, message_reference=None, priority=None, deadline=None, business_logic=None, parent=None):
+    def __init__(self, name=None, message_reference=None,
+                 priority=None, deadline=None, business_logic=None,
+                 network_profile=None, parent=None):
         super(Subscriber, self).__init__()
         self.kind = "Subscriber"
         self.parent = parent
@@ -308,6 +322,7 @@ class Subscriber(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+        self["network_profile"] = network_profile
         self.children = Children(allowed=[], cardinality={})
 
 class Timer(Model):
@@ -405,9 +420,31 @@ component = Component(Name("Component"),
                       parent=package)
 
 client = Client(name=Name("myClient"),
-                service_reference=service,
+                service_reference=Service_Reference(service),
                 network_profile=Network_Profile("myProfile"),
                 parent=component)
+
+server = Server(name=Name("myServer"),
+                service_reference=Service_Reference(service),
+                network_profile=Network_Profile("myProfile"),
+                parent=component)
+
+publisher = Publisher( name = Name("myPub"),
+                       message_reference = Message_Reference(message),
+                       network_profile = Network_Profile("myProf"),
+                       parent = component)
+
+subscriber = Subscriber( name = Name("mySub"),
+                         message_reference = Message_Reference(message),
+                         network_profile = Network_Profile("myProf"),
+                         parent = component)
+
+timer = Timer( name = Name("myTimer"),
+               period = Period(0.1),
+               priority = Priority(10),
+               deadline = Deadline(0.1),
+               parent = component)
+               
 
 hardware = Hardware(Name("Hardware"), 
                     parent=project)
@@ -417,6 +454,10 @@ deployment = Deployment(Name("Deployment"),
 
 # Establish tree
 component.add_child(client)
+component.add_child(server)
+component.add_child(publisher)
+component.add_child(subscriber)
+component.add_child(timer)
 package.add_child(message)
 package.add_child(service)
 package.add_child(component)
