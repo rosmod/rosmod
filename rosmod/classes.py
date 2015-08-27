@@ -186,6 +186,7 @@ class Model(object):
         self.attributes[key] = value
 
     def add_child(self, child_model):
+        child_model.parent = self
         self.children.append(child_model)
 
     def add_attribute(self, name, kind, value):
@@ -461,16 +462,18 @@ component.add_child(timer)
 package.add_child(message)
 package.add_child(service)
 package.add_child(component)
-print type(package)
+#print type(package)
 software.add_child(package)
-print software.children
+#print software.children
 project.add_child(software)
 project.add_child(hardware)
 project.add_child(deployment)
 
-encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
-print encoder_output
-with open('model.txt', 'w') as metamodel:
-    metamodel.write(encoder_output)
+if __name__ == '__main__':
+
+    encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
+    print encoder_output
+    with open('model.txt', 'w') as metamodel:
+        metamodel.write(encoder_output)
 
 
