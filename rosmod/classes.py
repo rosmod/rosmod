@@ -210,11 +210,16 @@ class Project(Model):
     Hardware -- Describes the hardware configuration
     Deployment -- Maps software instances and hardware computers
     """
-    def __init__(self, name, path):
+    def __init__(self, name, path, parent=None):
         super(Project, self).__init__()
         self.kind = "Project"
+        self.parent = parent
         self['name'] = name
         self['path'] = path
+        self.children = Children(allowed=[Software(), Hardware(), Deployment()], 
+                                 cardinality={str(type(Software())) : '1',
+                                              str(type(Hardware())) : '1..*',
+                                              str(type(Deployment())) : '1..*'})
 
 class Software(Model):
     """Software Class
@@ -225,42 +230,60 @@ class Software(Model):
     Services -- Define a ROS Service
     Components -- Define ROSMOD component building blocks for applications
     """
-    def __init__(self, name=None):
+    def __init__(self, name=None, parent=None):
         super(Software, self).__init__()
         self.kind = "Software"
+        self.parent = parent
         self["name"] = name
+        self.children = Children(allowed=[Package()], 
+                                 cardinality = {str(type(Package())) : '1..*'})
 
 class Package(Model):
-    def __init__(self, name=None):
+    def __init__(self, name=None, parent=None):
         super(Package, self).__init__()
         self.kind = "Package"
+        self.parent = parent
         self["name"] = name
+        self.children = Children(allowed=[Message(), Service(), Component()],
+                                 cardinality={str(type(Message())) : '0..*', 
+                                              str(type(Service())) : '0..*',
+                                              str(type(Component())) : '1..*'})
 
 class Message(Model):
-    def __init__(self, name=None, definition=None):
+    def __init__(self, name=None, definition=None, parent=None):
         super(Message, self).__init__()
         self.kind = "Message"
+        self.parent = parent
         self["name"] = name
         self["definition"] = definition
 
 class Service(Model):
-    def __init__(self, name=None, definition=None):
+    def __init__(self, name=None, definition=None, parent=None):
         super(Service, self).__init__()
         self.kind = "Service"
+        self.parent = parent
         self["name"] = name
         self["definition"] = definition
 
 class Component(Model):
-    def __init__(self, name=None, component_type=None):
+    def __init__(self, name=None, component_type=None, parent=None):
         super(Component, self).__init__()
         self.kind = "Component"
+        self.parent = parent
         self["name"] = name
         self["type"] = component_type
+        self.children = Children(allowed=[Client(), Server(), Publisher(), Subscriber(), Timer()],
+                                 cardinality={str(type(Client())) : '0..*', 
+                                              str(type(Server())) : '0..*', 
+                                              str(type(Publisher())) : '0..*', 
+                                              str(type(Subscriber())) : '0..*', 
+                                              str(type(Timer())) : '0..*'}) 
 
 class Client(Model):
-    def __init__(self, name=None, service_reference=None, network_profile=None):
+    def __init__(self, name=None, service_reference=None, network_profile=None, parent=None):
         super(Client, self).__init__()
         self.kind = "Client"
+        self.parent = parent
         self["name"] = name
         self["service_reference"] = service_reference
         self["network_profile"] = network_profile
@@ -268,9 +291,10 @@ class Client(Model):
 class Server(Model):
     def __init__(self, name=None, 
                  service_reference=None, 
-                 priority=None, deadline=None, business_logic=None):
+                 priority=None, deadline=None, business_logic=None, parent=None):
         super(Server, self).__init__()
         self.kind = "Server"
+        self.parent = parent
         self["name"] = name
         self["service_reference"] = service_reference
         self["priority"] = priority
@@ -278,17 +302,19 @@ class Server(Model):
         self["business_logic"] = business_logic
 
 class Publisher(Model):
-    def __init__(self, name=None, message_reference=None, network_profile=None):
+    def __init__(self, name=None, message_reference=None, network_profile=None, parent=None):
         super(Publisher, self).__init__()
         self.kind = "Publisher"
+        self.parent = parent
         self["name"] = name
         self["message_reference"] = message_reference
         self["network_profile"] = network_profile
 
 class Subscriber(Model):
-    def __init__(self, name=None, message_reference=None, priority=None, deadline=None, business_logic=None):
+    def __init__(self, name=None, message_reference=None, priority=None, deadline=None, business_logic=None, parent=None):
         super(Subscriber, self).__init__()
         self.kind = "Subscriber"
+        self.parent = parent
         self["name"] = name
         self["message_reference"] = message_reference
         self["priority"] = priority
@@ -296,9 +322,10 @@ class Subscriber(Model):
         self["business_logic"] = business_logic
 
 class Timer(Model):
-    def __init__(self, name=None, period=None, priority=None, deadline=None, business_logic=None):
+    def __init__(self, name=None, period=None, priority=None, deadline=None, business_logic=None, parent=None):
         super(Timer, self).__init__()
         self.kind = "Timer"
+        self.parent = parent
         self["name"] = name
         self["period"] = period
         self["priority"] = priority
@@ -306,16 +333,18 @@ class Timer(Model):
         self["business_logic"] = business_logic
 
 class Hardware(Model):
-    def __init__(self, name=None):
+    def __init__(self, name=None, parent=None):
         super(Hardware, self).__init__()
         self.kind = "Hardware"
+        self.parent = parent
         self["name"] = name
 
 class Computer(Model):
     def __init__(self, name, ip_address, username, sshkey, deployment_path,
-                 ros_install_path, init_script, arch, network_profile):
+                 ros_install_path, init_script, arch, network_profile, parent=None):
         super(Computer, self).__init__()
         self.kind = "Computer"
+        self.parent = parent
         self["name"] = name
         self["ip_address"] = ip_address
         self["username"] = username
@@ -327,16 +356,18 @@ class Computer(Model):
         self["network_profile"] = network_profile
 
 class Deployment(Model):
-    def __init__(self, name=None):
+    def __init__(self, name=None, parent=None):
         super(Deployment, self).__init__()
         self.kind = "Deployment"
+        self.parent = parent
         self['name'] = name
 
 class Node(Model):
     def __init__(self, name, hardware_reference, priority, cmd_args, 
-                 deployment_path):
+                 deployment_path, parent=None):
         super(Node, self).__init__()
         self.kind = "Node"
+        self.parent = parent
         self["name"] = name
         self["hardware_reference"] = hardware_reference
         self["priority"] = priority
@@ -344,61 +375,44 @@ class Node(Model):
         self["deployment_path"] = deployment_path
 
 class Component_Instance(Model):
-    def __init__(self, name, component_reference, scheduling_scheme, logging):
+    def __init__(self, name, component_reference, scheduling_scheme, logging, parent=None):
         super(Component_Instance, self).__init__()
         self.kind = "Component_Instance"
+        self.parent = parent
         self["name"] = name
         self["component_reference"] = component
         self["scheduling_scheme"] = scheduling_scheme
         self["logging"] = logging
 
-
-        
-
 import json, jsonpickle
 
 project = Project(Name("NewProject"), 
-                  Path(""))
-project.children = Children(allowed=[Software(), Hardware(), Deployment()], 
-                            cardinality={str(type(Software())) : '1',
-                                         str(type(Hardware())) : '1..*',
-                                         str(type(Deployment())) : '1..*'})
+                  Path(""), 
+                  parent=None)
 
-software = Software(Name("Software"))
-software.parent = project
-software.children = Children(allowed=[Package()], 
-                             cardinality = {str(type(Package())) : '1..*'})
+software = Software(Name("Software"), 
+                    parent=project)
 
-package = Package(Name("Package"))
-package.parent = software
-package.children = Children(allowed=[Message(), Service(), Component()],
-                            cardinality={str(type(Message())) : '0..*', 
-                                         str(type(Service())) : '0..*',
-                                         str(type(Component())) : '1..*'})
+package = Package(Name("Package"), 
+                  parent=software)
 
 message = Message(Name("Message"), 
-                  Message_Definition("int64 value\nbool return_value"))
-message.parent = package
+                  Message_Definition("int64 value\nbool return_value"), 
+                  parent=package)
 
 service = Service(Name("Service"), 
-                  Service_Definition("float64 request\n---\nfloat64 response"))
-service.parent = package
+                  Service_Definition("float64 request\n---\nfloat64 response"), 
+                  parent=package)
 
 component = Component(Name("Component"), 
-                      Component_Type("BASE"))
-component.parent = package
-component.children = Children(allowed=[Client(), Server(), Publisher(), Subscriber(), Timer()],
-                              cardinality={str(type(Client())) : '0..*', 
-                                           str(type(Server())) : '0..*', 
-                                           str(type(Publisher())) : '0..*', 
-                                           str(type(Subscriber())) : '0..*', 
-                                           str(type(Timer())) : '0..*'}) 
+                      Component_Type("BASE"), 
+                      parent=package)
 
-hardware = Hardware(Name("Hardware"))
-hardware.parent = project
+hardware = Hardware(Name("Hardware"), 
+                    parent=project)
 
-deployment = Deployment(Name("Deployment"))
-deployment.parent = project
+deployment = Deployment(Name("Deployment"), 
+                        parent=project)
 
 # Establish tree
 software.add_child(package)
@@ -408,7 +422,7 @@ project.add_child(deployment)
 
 encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
 print encoder_output
-with open('metamodel.txt', 'w') as metamodel:
+with open('model.txt', 'w') as metamodel:
     metamodel.write(encoder_output)
 
 
