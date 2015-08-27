@@ -61,116 +61,97 @@ class Attribute(object):
 class Name(Attribute):
     """Name Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Name, self).__init__("string",value)
 
 class Path(Attribute):
     """Path Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Path, self).__init__("string",value)
 
 class Message_Definition(Attribute):
     """Definition Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Message_Definition, self).__init__("string",value)
 
 class Service_Definition(Attribute):
     """Definition Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Service_Definition, self).__init__("string",value)
 
 class Component_Type(Attribute):
     """Type Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Component_Type, self).__init__("string",value)
 
 class Network_Profile(Attribute):
     """Network_Profile Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Network_Profile, self).__init__("code",value)
 
 class Abstract_Business_Logic(Attribute):
     """Abstract_Business_Logic Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Abstract_Business_Logic, self).__init__("code",value)
 
 class Priority(Attribute):
     """Priority Attribute"""
     def __init__(self, value):
-        self.kind = "integer"
-        self.value = value
+        super(Priority, self).__init__("integer",value)
 
 class Deadline(Attribute):
     """Deadline Attribute"""
     def __init__(self, value):
-        self.kind = "double"
-        self.value = value
+        super(Deadline, self).__init__("double",value)
 
 class Period(Attribute):
     """Period Attribute"""
     def __init__(self, value):
-        self.kind = "double"
-        self.value = value
+        super(Period, self).__init__("double",value)
 
 class IP_Address(Attribute):
     """IP_Address Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(IP_Address, self).__init__("string",value)
 
 class Username(Attribute):
     """Username Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Username, self).__init__("string",value)
 
 class SSH_Key(Attribute):
     """SSH_Key Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(SSH_Key, self).__init__("string",value)
 
 class Deployment_Path(Attribute):
     """Deployment_Path Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Deployment_Path, self).__init__("string",value)
 
 class ROS_Install_Path(Attribute):
     """ROS_Install_Path Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(ROS_Install_Path, self).__init__("string",value)
 
 class Init_Script(Attribute):
     """Init_Script Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Init_Script, self).__init__("string",value)
 
 class Arch(Attribute):
     """Architecture Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Arch, self).__init__("string",value)
 
 class Cmd_Args(Attribute):
     """Cmd_Args Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Cmd_Args, self).__init__("string",value)
 
 class Scheduling_Scheme(Attribute):
     """Scheduling_Scheme Attribute"""
     def __init__(self, value):
-        self.kind = "string"
-        self.value = value
+        super(Scheduling_Scheme, self).__init__("string",value)
 
 class Model(object):
     """Generic Model/Container class
