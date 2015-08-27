@@ -40,6 +40,8 @@ class Children(MutableSequence):
                         return self._inner.insert(index, item)
                     else:
                         print "ERROR::Cardinality Error!"
+                else:
+                    return self._inner.insert(index, item)
         else:
             print "ERROR::Cannot add child: " + str(item)
             return self._inner
@@ -421,6 +423,11 @@ component = Component(Name("Component"),
                       Component_Type("BASE"), 
                       parent=package)
 
+client = Client(name=Name("myClient"),
+                service_reference=service,
+                network_profile=Network_Profile("myProfile"),
+                parent=component)
+
 hardware = Hardware(Name("Hardware"), 
                     parent=project)
 
@@ -428,7 +435,13 @@ deployment = Deployment(Name("Deployment"),
                         parent=project)
 
 # Establish tree
+component.add_child(client)
+package.add_child(message)
+package.add_child(service)
+package.add_child(component)
+print type(package)
 software.add_child(package)
+print software.children
 project.add_child(software)
 project.add_child(hardware)
 project.add_child(deployment)

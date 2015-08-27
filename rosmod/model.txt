@@ -77,9 +77,368 @@
                             "py/type": "classes.Package"
                         }
                     ], 
-                    "_inner": [], 
+                    "_inner": [
+                        {
+                            "py/object": "classes.Package", 
+                            "attributes": {
+                                "py/object": "collections.OrderedDict", 
+                                "__reduce__": [
+                                    {
+                                        "py/type": "collections.OrderedDict"
+                                    }, 
+                                    {
+                                        "py/tuple": [
+                                            [
+                                                [
+                                                    "name", 
+                                                    {
+                                                        "py/object": "classes.Name", 
+                                                        "kind": "string", 
+                                                        "value": "Package"
+                                                    }
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }, 
+                            "kind": "Package", 
+                            "children": {
+                                "py/object": "classes.Children", 
+                                "_allowed": [
+                                    {
+                                        "py/type": "classes.Message"
+                                    }, 
+                                    {
+                                        "py/type": "classes.Service"
+                                    }, 
+                                    {
+                                        "py/type": "classes.Component"
+                                    }
+                                ], 
+                                "_inner": [
+                                    {
+                                        "py/object": "classes.Message", 
+                                        "attributes": {
+                                            "py/object": "collections.OrderedDict", 
+                                            "__reduce__": [
+                                                {
+                                                    "py/type": "collections.OrderedDict"
+                                                }, 
+                                                {
+                                                    "py/tuple": [
+                                                        [
+                                                            [
+                                                                "name", 
+                                                                {
+                                                                    "py/object": "classes.Name", 
+                                                                    "kind": "string", 
+                                                                    "value": "Message"
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "definition", 
+                                                                {
+                                                                    "py/object": "classes.Message_Definition", 
+                                                                    "kind": "string", 
+                                                                    "value": "int64 value\nbool return_value"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }, 
+                                        "kind": "Message", 
+                                        "children": {
+                                            "py/object": "classes.Children", 
+                                            "_allowed": [], 
+                                            "_inner": [], 
+                                            "_cardinality": {}, 
+                                            "py/seq": []
+                                        }, 
+                                        "parent": {
+                                            "py/id": 18
+                                        }
+                                    }, 
+                                    {
+                                        "py/object": "classes.Service", 
+                                        "attributes": {
+                                            "py/object": "collections.OrderedDict", 
+                                            "__reduce__": [
+                                                {
+                                                    "py/type": "collections.OrderedDict"
+                                                }, 
+                                                {
+                                                    "py/tuple": [
+                                                        [
+                                                            [
+                                                                "name", 
+                                                                {
+                                                                    "py/object": "classes.Name", 
+                                                                    "kind": "string", 
+                                                                    "value": "Service"
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "definition", 
+                                                                {
+                                                                    "py/object": "classes.Service_Definition", 
+                                                                    "kind": "string", 
+                                                                    "value": "float64 request\n---\nfloat64 response"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }, 
+                                        "kind": "Service", 
+                                        "children": {
+                                            "py/object": "classes.Children", 
+                                            "_allowed": [], 
+                                            "_inner": [], 
+                                            "_cardinality": {}, 
+                                            "py/seq": []
+                                        }, 
+                                        "parent": {
+                                            "py/id": 18
+                                        }
+                                    }, 
+                                    {
+                                        "py/object": "classes.Component", 
+                                        "attributes": {
+                                            "py/object": "collections.OrderedDict", 
+                                            "__reduce__": [
+                                                {
+                                                    "py/type": "collections.OrderedDict"
+                                                }, 
+                                                {
+                                                    "py/tuple": [
+                                                        [
+                                                            [
+                                                                "name", 
+                                                                {
+                                                                    "py/object": "classes.Name", 
+                                                                    "kind": "string", 
+                                                                    "value": "Component"
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "type", 
+                                                                {
+                                                                    "py/object": "classes.Component_Type", 
+                                                                    "kind": "string", 
+                                                                    "value": "BASE"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }, 
+                                        "kind": "Component", 
+                                        "children": {
+                                            "py/object": "classes.Children", 
+                                            "_allowed": [
+                                                {
+                                                    "py/type": "classes.Client"
+                                                }, 
+                                                {
+                                                    "py/type": "classes.Server"
+                                                }, 
+                                                {
+                                                    "py/type": "classes.Publisher"
+                                                }, 
+                                                {
+                                                    "py/type": "classes.Subscriber"
+                                                }, 
+                                                {
+                                                    "py/type": "classes.Timer"
+                                                }
+                                            ], 
+                                            "_inner": [
+                                                {
+                                                    "py/object": "classes.Client", 
+                                                    "attributes": {
+                                                        "py/object": "collections.OrderedDict", 
+                                                        "__reduce__": [
+                                                            {
+                                                                "py/type": "collections.OrderedDict"
+                                                            }, 
+                                                            {
+                                                                "py/tuple": [
+                                                                    [
+                                                                        [
+                                                                            "name", 
+                                                                            {
+                                                                                "py/object": "classes.Name", 
+                                                                                "kind": "string", 
+                                                                                "value": "myClient"
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "service_reference", 
+                                                                            {
+                                                                                "py/id": 36
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "network_profile", 
+                                                                            {
+                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "kind": "string", 
+                                                                                "value": "myProfile"
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }, 
+                                                    "kind": "Client", 
+                                                    "children": {
+                                                        "py/object": "classes.Children", 
+                                                        "_allowed": [], 
+                                                        "_inner": [], 
+                                                        "_cardinality": {}, 
+                                                        "py/seq": []
+                                                    }, 
+                                                    "parent": {
+                                                        "py/id": 46
+                                                    }
+                                                }
+                                            ], 
+                                            "_cardinality": {
+                                                "<class 'classes.Subscriber'>": "0..*", 
+                                                "<class 'classes.Timer'>": "0..*", 
+                                                "<class 'classes.Client'>": "0..*", 
+                                                "<class 'classes.Publisher'>": "0..*", 
+                                                "<class 'classes.Server'>": "0..*"
+                                            }, 
+                                            "py/seq": [
+                                                {
+                                                    "py/id": 56
+                                                }
+                                            ]
+                                        }, 
+                                        "parent": {
+                                            "py/id": 18
+                                        }
+                                    }
+                                ], 
+                                "_cardinality": {
+                                    "<class 'classes.Service'>": "0..*", 
+                                    "<class 'classes.Component'>": "1..*", 
+                                    "<class 'classes.Message'>": "0..*"
+                                }, 
+                                "py/seq": [
+                                    {
+                                        "py/id": 26
+                                    }, 
+                                    {
+                                        "py/id": 36
+                                    }, 
+                                    {
+                                        "py/id": 46
+                                    }
+                                ]
+                            }, 
+                            "parent": {
+                                "py/id": 10
+                            }
+                        }
+                    ], 
                     "_cardinality": {
                         "<class 'classes.Package'>": "1..*"
+                    }, 
+                    "py/seq": [
+                        {
+                            "py/id": 18
+                        }
+                    ]
+                }, 
+                "parent": {
+                    "py/id": 0
+                }
+            }, 
+            {
+                "py/object": "classes.Hardware", 
+                "attributes": {
+                    "py/object": "collections.OrderedDict", 
+                    "__reduce__": [
+                        {
+                            "py/type": "collections.OrderedDict"
+                        }, 
+                        {
+                            "py/tuple": [
+                                [
+                                    [
+                                        "name", 
+                                        {
+                                            "py/object": "classes.Name", 
+                                            "kind": "string", 
+                                            "value": "Hardware"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }, 
+                "kind": "Hardware", 
+                "children": {
+                    "py/object": "classes.Children", 
+                    "_allowed": [
+                        {
+                            "py/type": "classes.Computer"
+                        }
+                    ], 
+                    "_inner": [], 
+                    "_cardinality": {
+                        "<class 'classes.Computer'>": "1..*"
+                    }, 
+                    "py/seq": []
+                }, 
+                "parent": {
+                    "py/id": 0
+                }
+            }, 
+            {
+                "py/object": "classes.Deployment", 
+                "attributes": {
+                    "py/object": "collections.OrderedDict", 
+                    "__reduce__": [
+                        {
+                            "py/type": "collections.OrderedDict"
+                        }, 
+                        {
+                            "py/tuple": [
+                                [
+                                    [
+                                        "name", 
+                                        {
+                                            "py/object": "classes.Name", 
+                                            "kind": "string", 
+                                            "value": "Deployment"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }, 
+                "kind": "Deployment", 
+                "children": {
+                    "py/object": "classes.Children", 
+                    "_allowed": [
+                        {
+                            "py/type": "classes.Node"
+                        }
+                    ], 
+                    "_inner": [], 
+                    "_cardinality": {
+                        "<class 'classes.Node'>": "1..*"
                     }, 
                     "py/seq": []
                 }, 
@@ -96,6 +455,12 @@
         "py/seq": [
             {
                 "py/id": 10
+            }, 
+            {
+                "py/id": 67
+            }, 
+            {
+                "py/id": 75
             }
         ]
     }, 
