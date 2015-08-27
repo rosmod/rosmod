@@ -140,6 +140,7 @@ class Logging(Attribute):
     """Logging Attribute"""
     tooltip = "Levels of logging enforced in a component instance"
     display = "Logging Levels"
+    keys = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     def __init__(self, value):
         super(Logging, self).__init__("dictionary_bool", value)
 
