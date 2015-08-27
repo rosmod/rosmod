@@ -11,4 +11,9 @@ with open('model.txt', 'r') as input_model:
 #    print decoder_output.children._cardinality[str(type(Hardware()))]
     print type(decoder_output)
     print decoder_output
-    print decoder_output.children._inner[0].children
+
+    # The following prints will point to the same object!
+    # Service defined in a package
+    print decoder_output.children._inner[0].children[0].children[1]
+    # Client's service_reference 
+    print decoder_output.children._inner[0].children[0].children[2].children[0]["service_reference"]
