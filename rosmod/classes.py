@@ -89,7 +89,7 @@ class Service_Reference(Attribute):
         super(Service_Reference, self).__init__("reference", value)
 
 class Message_Reference(Attribute):
-    """Service Reference Attribute"""
+    """Message Reference Attribute"""
     def __init__(self, value):
         super(Message_Reference, self).__init__("reference", value)
 
@@ -194,26 +194,6 @@ class Model(object):
 
     def get_children(self, kind):
         return [child for child in self.children if child.kind == kind]
-
-class Project(Model):
-    """Project Class
-    
-    The Project class is the root of a ROSMOD model.
-    This object contains the following types of children:
-    Software -- Describes the software workspace
-    Hardware -- Describes the hardware configuration
-    Deployment -- Maps software instances and hardware computers
-    """
-    def __init__(self, name, path, parent=None):
-        super(Project, self).__init__()
-        self.kind = "Project"
-        self.parent = parent
-        self['name'] = name
-        self['path'] = path
-        self.children = Children(allowed=[Software(), Hardware(), Deployment()], 
-                                 cardinality={str(type(Software())) : '1',
-                                              str(type(Hardware())) : '1..*',
-                                              str(type(Deployment())) : '1..*'})
 
 class Software(Model):
     """Software Class
@@ -395,6 +375,27 @@ class Component_Instance(Model):
         self["scheduling_scheme"] = scheduling_scheme
         self["logging"] = logging
         self.children = Children(allowed=[], cardinality={})
+
+class Project(Model):
+    """Project Class
+    
+    The Project class is the root of a ROSMOD model.
+    This object contains the following types of children:
+    Software -- Describes the software workspace
+    Hardware -- Describes the hardware configuration
+    Deployment -- Maps software instances and hardware computers
+    """
+    def __init__(self, name, path, parent=None):
+        super(Project, self).__init__()
+        self.kind = "Project"
+        self.parent = parent
+        self['name'] = name
+        self['path'] = path
+        self.children = Children(allowed=[Software(), Hardware(), Deployment()], 
+                                 cardinality={str(type(Software())) : '1',
+                                              str(type(Hardware())) : '1..*',
+                                              str(type(Deployment())) : '1..*'})
+
 
 import json, jsonpickle
 # Sample Project

@@ -1,5 +1,5 @@
 {
-    "py/object": "classes.Project", 
+    "py/object": "__main__.Project", 
     "attributes": {
         "py/object": "collections.OrderedDict", 
         "__reduce__": [
@@ -12,7 +12,7 @@
                         [
                             "name", 
                             {
-                                "py/object": "classes.Name", 
+                                "py/object": "__main__.Name", 
                                 "kind": "string", 
                                 "value": "NewProject"
                             }
@@ -20,7 +20,7 @@
                         [
                             "path", 
                             {
-                                "py/object": "classes.Path", 
+                                "py/object": "__main__.Path", 
                                 "kind": "string", 
                                 "value": ""
                             }
@@ -32,21 +32,21 @@
     }, 
     "kind": "Project", 
     "children": {
-        "py/object": "classes.Children", 
+        "py/object": "__main__.Children", 
         "_allowed": [
             {
-                "py/type": "classes.Software"
+                "py/type": "__main__.Software"
             }, 
             {
-                "py/type": "classes.Hardware"
+                "py/type": "__main__.Hardware"
             }, 
             {
-                "py/type": "classes.Deployment"
+                "py/type": "__main__.Deployment"
             }
         ], 
         "_inner": [
             {
-                "py/object": "classes.Software", 
+                "py/object": "__main__.Software", 
                 "attributes": {
                     "py/object": "collections.OrderedDict", 
                     "__reduce__": [
@@ -59,7 +59,7 @@
                                     [
                                         "name", 
                                         {
-                                            "py/object": "classes.Name", 
+                                            "py/object": "__main__.Name", 
                                             "kind": "string", 
                                             "value": "Software"
                                         }
@@ -71,15 +71,15 @@
                 }, 
                 "kind": "Software", 
                 "children": {
-                    "py/object": "classes.Children", 
+                    "py/object": "__main__.Children", 
                     "_allowed": [
                         {
-                            "py/type": "classes.Package"
+                            "py/type": "__main__.Package"
                         }
                     ], 
                     "_inner": [
                         {
-                            "py/object": "classes.Package", 
+                            "py/object": "__main__.Package", 
                             "attributes": {
                                 "py/object": "collections.OrderedDict", 
                                 "__reduce__": [
@@ -92,7 +92,7 @@
                                                 [
                                                     "name", 
                                                     {
-                                                        "py/object": "classes.Name", 
+                                                        "py/object": "__main__.Name", 
                                                         "kind": "string", 
                                                         "value": "Package"
                                                     }
@@ -104,21 +104,21 @@
                             }, 
                             "kind": "Package", 
                             "children": {
-                                "py/object": "classes.Children", 
+                                "py/object": "__main__.Children", 
                                 "_allowed": [
                                     {
-                                        "py/type": "classes.Message"
+                                        "py/type": "__main__.Message"
                                     }, 
                                     {
-                                        "py/type": "classes.Service"
+                                        "py/type": "__main__.Service"
                                     }, 
                                     {
-                                        "py/type": "classes.Component"
+                                        "py/type": "__main__.Component"
                                     }
                                 ], 
                                 "_inner": [
                                     {
-                                        "py/object": "classes.Message", 
+                                        "py/object": "__main__.Message", 
                                         "attributes": {
                                             "py/object": "collections.OrderedDict", 
                                             "__reduce__": [
@@ -131,7 +131,7 @@
                                                             [
                                                                 "name", 
                                                                 {
-                                                                    "py/object": "classes.Name", 
+                                                                    "py/object": "__main__.Name", 
                                                                     "kind": "string", 
                                                                     "value": "Message"
                                                                 }
@@ -139,7 +139,7 @@
                                                             [
                                                                 "definition", 
                                                                 {
-                                                                    "py/object": "classes.Message_Definition", 
+                                                                    "py/object": "__main__.Message_Definition", 
                                                                     "kind": "string", 
                                                                     "value": "int64 value\nbool return_value"
                                                                 }
@@ -151,7 +151,7 @@
                                         }, 
                                         "kind": "Message", 
                                         "children": {
-                                            "py/object": "classes.Children", 
+                                            "py/object": "__main__.Children", 
                                             "_allowed": [], 
                                             "_inner": [], 
                                             "_cardinality": {}, 
@@ -162,7 +162,7 @@
                                         }
                                     }, 
                                     {
-                                        "py/object": "classes.Service", 
+                                        "py/object": "__main__.Service", 
                                         "attributes": {
                                             "py/object": "collections.OrderedDict", 
                                             "__reduce__": [
@@ -175,7 +175,7 @@
                                                             [
                                                                 "name", 
                                                                 {
-                                                                    "py/object": "classes.Name", 
+                                                                    "py/object": "__main__.Name", 
                                                                     "kind": "string", 
                                                                     "value": "Service"
                                                                 }
@@ -183,7 +183,7 @@
                                                             [
                                                                 "definition", 
                                                                 {
-                                                                    "py/object": "classes.Service_Definition", 
+                                                                    "py/object": "__main__.Service_Definition", 
                                                                     "kind": "string", 
                                                                     "value": "float64 request\n---\nfloat64 response"
                                                                 }
@@ -195,7 +195,7 @@
                                         }, 
                                         "kind": "Service", 
                                         "children": {
-                                            "py/object": "classes.Children", 
+                                            "py/object": "__main__.Children", 
                                             "_allowed": [], 
                                             "_inner": [], 
                                             "_cardinality": {}, 
@@ -206,7 +206,7 @@
                                         }
                                     }, 
                                     {
-                                        "py/object": "classes.Component", 
+                                        "py/object": "__main__.Component", 
                                         "attributes": {
                                             "py/object": "collections.OrderedDict", 
                                             "__reduce__": [
@@ -219,7 +219,7 @@
                                                             [
                                                                 "name", 
                                                                 {
-                                                                    "py/object": "classes.Name", 
+                                                                    "py/object": "__main__.Name", 
                                                                     "kind": "string", 
                                                                     "value": "Component"
                                                                 }
@@ -227,7 +227,7 @@
                                                             [
                                                                 "type", 
                                                                 {
-                                                                    "py/object": "classes.Component_Type", 
+                                                                    "py/object": "__main__.Component_Type", 
                                                                     "kind": "string", 
                                                                     "value": "BASE"
                                                                 }
@@ -239,27 +239,27 @@
                                         }, 
                                         "kind": "Component", 
                                         "children": {
-                                            "py/object": "classes.Children", 
+                                            "py/object": "__main__.Children", 
                                             "_allowed": [
                                                 {
-                                                    "py/type": "classes.Client"
+                                                    "py/type": "__main__.Client"
                                                 }, 
                                                 {
-                                                    "py/type": "classes.Server"
+                                                    "py/type": "__main__.Server"
                                                 }, 
                                                 {
-                                                    "py/type": "classes.Publisher"
+                                                    "py/type": "__main__.Publisher"
                                                 }, 
                                                 {
-                                                    "py/type": "classes.Subscriber"
+                                                    "py/type": "__main__.Subscriber"
                                                 }, 
                                                 {
-                                                    "py/type": "classes.Timer"
+                                                    "py/type": "__main__.Timer"
                                                 }
                                             ], 
                                             "_inner": [
                                                 {
-                                                    "py/object": "classes.Client", 
+                                                    "py/object": "__main__.Client", 
                                                     "attributes": {
                                                         "py/object": "collections.OrderedDict", 
                                                         "__reduce__": [
@@ -272,7 +272,7 @@
                                                                         [
                                                                             "name", 
                                                                             {
-                                                                                "py/object": "classes.Name", 
+                                                                                "py/object": "__main__.Name", 
                                                                                 "kind": "string", 
                                                                                 "value": "myClient"
                                                                             }
@@ -280,7 +280,7 @@
                                                                         [
                                                                             "service_reference", 
                                                                             {
-                                                                                "py/object": "classes.Service_Reference", 
+                                                                                "py/object": "__main__.Service_Reference", 
                                                                                 "kind": "reference", 
                                                                                 "value": {
                                                                                     "py/id": 36
@@ -290,7 +290,7 @@
                                                                         [
                                                                             "network_profile", 
                                                                             {
-                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "py/object": "__main__.Network_Profile", 
                                                                                 "kind": "code", 
                                                                                 "value": "myProfile"
                                                                             }
@@ -302,7 +302,7 @@
                                                     }, 
                                                     "kind": "Client", 
                                                     "children": {
-                                                        "py/object": "classes.Children", 
+                                                        "py/object": "__main__.Children", 
                                                         "_allowed": [], 
                                                         "_inner": [], 
                                                         "_cardinality": {}, 
@@ -313,7 +313,7 @@
                                                     }
                                                 }, 
                                                 {
-                                                    "py/object": "classes.Server", 
+                                                    "py/object": "__main__.Server", 
                                                     "attributes": {
                                                         "py/object": "collections.OrderedDict", 
                                                         "__reduce__": [
@@ -326,7 +326,7 @@
                                                                         [
                                                                             "name", 
                                                                             {
-                                                                                "py/object": "classes.Name", 
+                                                                                "py/object": "__main__.Name", 
                                                                                 "kind": "string", 
                                                                                 "value": "myServer"
                                                                             }
@@ -334,7 +334,7 @@
                                                                         [
                                                                             "service_reference", 
                                                                             {
-                                                                                "py/object": "classes.Service_Reference", 
+                                                                                "py/object": "__main__.Service_Reference", 
                                                                                 "kind": "reference", 
                                                                                 "value": {
                                                                                     "py/id": 36
@@ -356,7 +356,7 @@
                                                                         [
                                                                             "network_profile", 
                                                                             {
-                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "py/object": "__main__.Network_Profile", 
                                                                                 "kind": "code", 
                                                                                 "value": "myProfile"
                                                                             }
@@ -368,7 +368,7 @@
                                                     }, 
                                                     "kind": "Server", 
                                                     "children": {
-                                                        "py/object": "classes.Children", 
+                                                        "py/object": "__main__.Children", 
                                                         "_allowed": [], 
                                                         "_inner": [], 
                                                         "_cardinality": {}, 
@@ -379,7 +379,7 @@
                                                     }
                                                 }, 
                                                 {
-                                                    "py/object": "classes.Publisher", 
+                                                    "py/object": "__main__.Publisher", 
                                                     "attributes": {
                                                         "py/object": "collections.OrderedDict", 
                                                         "__reduce__": [
@@ -392,7 +392,7 @@
                                                                         [
                                                                             "name", 
                                                                             {
-                                                                                "py/object": "classes.Name", 
+                                                                                "py/object": "__main__.Name", 
                                                                                 "kind": "string", 
                                                                                 "value": "myPub"
                                                                             }
@@ -400,7 +400,7 @@
                                                                         [
                                                                             "message_reference", 
                                                                             {
-                                                                                "py/object": "classes.Message_Reference", 
+                                                                                "py/object": "__main__.Message_Reference", 
                                                                                 "kind": "reference", 
                                                                                 "value": {
                                                                                     "py/id": 26
@@ -410,7 +410,7 @@
                                                                         [
                                                                             "network_profile", 
                                                                             {
-                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "py/object": "__main__.Network_Profile", 
                                                                                 "kind": "code", 
                                                                                 "value": "myProf"
                                                                             }
@@ -422,7 +422,7 @@
                                                     }, 
                                                     "kind": "Publisher", 
                                                     "children": {
-                                                        "py/object": "classes.Children", 
+                                                        "py/object": "__main__.Children", 
                                                         "_allowed": [], 
                                                         "_inner": [], 
                                                         "_cardinality": {}, 
@@ -433,7 +433,7 @@
                                                     }
                                                 }, 
                                                 {
-                                                    "py/object": "classes.Subscriber", 
+                                                    "py/object": "__main__.Subscriber", 
                                                     "attributes": {
                                                         "py/object": "collections.OrderedDict", 
                                                         "__reduce__": [
@@ -446,7 +446,7 @@
                                                                         [
                                                                             "name", 
                                                                             {
-                                                                                "py/object": "classes.Name", 
+                                                                                "py/object": "__main__.Name", 
                                                                                 "kind": "string", 
                                                                                 "value": "mySub"
                                                                             }
@@ -454,7 +454,7 @@
                                                                         [
                                                                             "message_reference", 
                                                                             {
-                                                                                "py/object": "classes.Message_Reference", 
+                                                                                "py/object": "__main__.Message_Reference", 
                                                                                 "kind": "reference", 
                                                                                 "value": {
                                                                                     "py/id": 26
@@ -476,7 +476,7 @@
                                                                         [
                                                                             "network_profile", 
                                                                             {
-                                                                                "py/object": "classes.Network_Profile", 
+                                                                                "py/object": "__main__.Network_Profile", 
                                                                                 "kind": "code", 
                                                                                 "value": "myProf"
                                                                             }
@@ -488,7 +488,7 @@
                                                     }, 
                                                     "kind": "Subscriber", 
                                                     "children": {
-                                                        "py/object": "classes.Children", 
+                                                        "py/object": "__main__.Children", 
                                                         "_allowed": [], 
                                                         "_inner": [], 
                                                         "_cardinality": {}, 
@@ -499,7 +499,7 @@
                                                     }
                                                 }, 
                                                 {
-                                                    "py/object": "classes.Timer", 
+                                                    "py/object": "__main__.Timer", 
                                                     "attributes": {
                                                         "py/object": "collections.OrderedDict", 
                                                         "__reduce__": [
@@ -512,7 +512,7 @@
                                                                         [
                                                                             "name", 
                                                                             {
-                                                                                "py/object": "classes.Name", 
+                                                                                "py/object": "__main__.Name", 
                                                                                 "kind": "string", 
                                                                                 "value": "myTimer"
                                                                             }
@@ -520,7 +520,7 @@
                                                                         [
                                                                             "period", 
                                                                             {
-                                                                                "py/object": "classes.Period", 
+                                                                                "py/object": "__main__.Period", 
                                                                                 "kind": "double", 
                                                                                 "value": 0.1
                                                                             }
@@ -528,7 +528,7 @@
                                                                         [
                                                                             "priority", 
                                                                             {
-                                                                                "py/object": "classes.Priority", 
+                                                                                "py/object": "__main__.Priority", 
                                                                                 "kind": "integer", 
                                                                                 "value": 10
                                                                             }
@@ -536,7 +536,7 @@
                                                                         [
                                                                             "deadline", 
                                                                             {
-                                                                                "py/object": "classes.Deadline", 
+                                                                                "py/object": "__main__.Deadline", 
                                                                                 "kind": "double", 
                                                                                 "value": 0.1
                                                                             }
@@ -552,7 +552,7 @@
                                                     }, 
                                                     "kind": "Timer", 
                                                     "children": {
-                                                        "py/object": "classes.Children", 
+                                                        "py/object": "__main__.Children", 
                                                         "_allowed": [], 
                                                         "_inner": [], 
                                                         "_cardinality": {}, 
@@ -564,11 +564,11 @@
                                                 }
                                             ], 
                                             "_cardinality": {
-                                                "<class 'classes.Subscriber'>": "0..*", 
-                                                "<class 'classes.Timer'>": "0..*", 
-                                                "<class 'classes.Client'>": "0..*", 
-                                                "<class 'classes.Publisher'>": "0..*", 
-                                                "<class 'classes.Server'>": "0..*"
+                                                "<class '__main__.Client'>": "0..*", 
+                                                "<class '__main__.Publisher'>": "0..*", 
+                                                "<class '__main__.Server'>": "0..*", 
+                                                "<class '__main__.Timer'>": "0..*", 
+                                                "<class '__main__.Subscriber'>": "0..*"
                                             }, 
                                             "py/seq": [
                                                 {
@@ -594,9 +594,9 @@
                                     }
                                 ], 
                                 "_cardinality": {
-                                    "<class 'classes.Service'>": "0..*", 
-                                    "<class 'classes.Component'>": "1..*", 
-                                    "<class 'classes.Message'>": "0..*"
+                                    "<class '__main__.Message'>": "0..*", 
+                                    "<class '__main__.Component'>": "1..*", 
+                                    "<class '__main__.Service'>": "0..*"
                                 }, 
                                 "py/seq": [
                                     {
@@ -616,7 +616,7 @@
                         }
                     ], 
                     "_cardinality": {
-                        "<class 'classes.Package'>": "1..*"
+                        "<class '__main__.Package'>": "1..*"
                     }, 
                     "py/seq": [
                         {
@@ -629,7 +629,7 @@
                 }
             }, 
             {
-                "py/object": "classes.Hardware", 
+                "py/object": "__main__.Hardware", 
                 "attributes": {
                     "py/object": "collections.OrderedDict", 
                     "__reduce__": [
@@ -642,7 +642,7 @@
                                     [
                                         "name", 
                                         {
-                                            "py/object": "classes.Name", 
+                                            "py/object": "__main__.Name", 
                                             "kind": "string", 
                                             "value": "Hardware"
                                         }
@@ -654,15 +654,15 @@
                 }, 
                 "kind": "Hardware", 
                 "children": {
-                    "py/object": "classes.Children", 
+                    "py/object": "__main__.Children", 
                     "_allowed": [
                         {
-                            "py/type": "classes.Computer"
+                            "py/type": "__main__.Computer"
                         }
                     ], 
                     "_inner": [], 
                     "_cardinality": {
-                        "<class 'classes.Computer'>": "1..*"
+                        "<class '__main__.Computer'>": "1..*"
                     }, 
                     "py/seq": []
                 }, 
@@ -671,7 +671,7 @@
                 }
             }, 
             {
-                "py/object": "classes.Deployment", 
+                "py/object": "__main__.Deployment", 
                 "attributes": {
                     "py/object": "collections.OrderedDict", 
                     "__reduce__": [
@@ -684,7 +684,7 @@
                                     [
                                         "name", 
                                         {
-                                            "py/object": "classes.Name", 
+                                            "py/object": "__main__.Name", 
                                             "kind": "string", 
                                             "value": "Deployment"
                                         }
@@ -696,15 +696,15 @@
                 }, 
                 "kind": "Deployment", 
                 "children": {
-                    "py/object": "classes.Children", 
+                    "py/object": "__main__.Children", 
                     "_allowed": [
                         {
-                            "py/type": "classes.Node"
+                            "py/type": "__main__.Node"
                         }
                     ], 
                     "_inner": [], 
                     "_cardinality": {
-                        "<class 'classes.Node'>": "1..*"
+                        "<class '__main__.Node'>": "1..*"
                     }, 
                     "py/seq": []
                 }, 
@@ -714,9 +714,9 @@
             }
         ], 
         "_cardinality": {
-            "<class 'classes.Deployment'>": "1..*", 
-            "<class 'classes.Hardware'>": "1..*", 
-            "<class 'classes.Software'>": "1"
+            "<class '__main__.Hardware'>": "1..*", 
+            "<class '__main__.Deployment'>": "1..*", 
+            "<class '__main__.Software'>": "1"
         }, 
         "py/seq": [
             {
