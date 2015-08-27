@@ -59,6 +59,12 @@ class Attribute(object):
         self.value = value
 
 class Name(Attribute):
+    
+    # Tooltip
+    # Options
+    # Display name
+    # Validator function
+    
     """Name Attribute"""
     def __init__(self, value):
         super(Name, self).__init__("string",value)
@@ -113,10 +119,25 @@ class Deadline(Attribute):
     def __init__(self, value):
         super(Deadline, self).__init__("double",value)
 
+class Logging(Attribute):
+    """Logging Attribute"""
+    def __init__(self, value):
+        super(Logging, self).__init__("dictionary_bool", value)
+
 class Period(Attribute):
     """Period Attribute"""
     def __init__(self, value):
         super(Period, self).__init__("double",value)
+
+class Hardware_Reference(Attribute):
+    """Hardware Reference Attribute"""
+    def __init__(self, value):
+        super(Hardware_Reference, self).__init__("reference", value)
+
+class Component_Reference(Attribute):
+    """Component Reference Attribute"""
+    def __init__(self, value):
+        super(Component_Reference, self).__init__("reference", value)
 
 class IP_Address(Attribute):
     """IP_Address Attribute"""
@@ -204,74 +225,137 @@ class Software(Model):
     Services -- Define a ROS Service
     Components -- Define ROSMOD component building blocks for applications
     """
-    def __init__(self, name=None, parent=None):
+    def __init__(self, name=Name(""), parent=None):
         super(Software, self).__init__()
         self.kind = "Software"
+
+        assert parent != None, "Software parent is None!"
+        assert name != None, "Software name is None!"
+
         self.parent = parent
         self["name"] = name
-        self.children = Children(allowed=[Package()], 
-                                 cardinality = {str(type(Package())) : '1..*'})
+
+        self.children = Children(allowed=[Package(parent=self)], 
+                                 cardinality = {str(type(Package(parent=self)))\
+                                                : '1..*'})
 
 class Package(Model):
-    def __init__(self, name=None, parent=None):
+    def __init__(self, name=Name(""), parent=None):
         super(Package, self).__init__()
         self.kind = "Package"
+
+        assert parent != None, "Package parent is None!"
+        assert name != None, "Package name is None!"
+
         self.parent = parent
         self["name"] = name
-        self.children = Children(allowed=[Message(), Service(), Component()],
-                                 cardinality={str(type(Message())) : '0..*', 
-                                              str(type(Service())) : '0..*',
-                                              str(type(Component())) : '1..*'})
+
+        self.children = Children(allowed=[Message(parent=self), 
+                                          Service(parent=self), 
+                                          Component(parent=self)],
+                                 cardinality={str(type(Message(parent=self)))\
+                                              : '0..*', 
+                                              str(type(Service(parent=self)))\
+                                              : '0..*',
+                                              str(type(Component(parent=self)))\
+                                              : '1..*'})
 
 class Message(Model):
-    def __init__(self, name=None, definition=None, parent=None):
+    def __init__(self, name=Name(""), definition=Message_Definition(""), 
+                 parent=None):
         super(Message, self).__init__()
         self.kind = "Message"
+
+        assert parent != None, "Message parent is None!"
+        assert name != None, "Message name is None!"
+        assert definition != None, "Message definition is None!"
+
         self.parent = parent
         self["name"] = name
         self["definition"] = definition
+
         self.children = Children(allowed=[], cardinality={})
 
 class Service(Model):
-    def __init__(self, name=None, definition=None, parent=None):
+    def __init__(self, name=Name(""), definition=Service_Definition(""), 
+                 parent=None):
         super(Service, self).__init__()
         self.kind = "Service"
+
+        assert parent != None, "Service parent is None!"
+        assert name != None, "Service name is None!"
+        assert definition != None, "Service definition is None!"
+
         self.parent = parent
         self["name"] = name
         self["definition"] = definition
+
         self.children = Children(allowed=[], cardinality={})
 
 class Component(Model):
-    def __init__(self, name=None, component_type=None, parent=None):
+    def __init__(self, name=Name(""), component_type=Component_Type("BASE"), 
+                 parent=None):
         super(Component, self).__init__()
         self.kind = "Component"
+
+        assert parent != None, "Component parent is None!"
+        assert name != None, "Component name is None!"
+        assert component_type != None, "Component type is None!"
+
         self.parent = parent
         self["name"] = name
         self["type"] = component_type
-        self.children = Children(allowed=[Client(), Server(), Publisher(), Subscriber(), Timer()],
-                                 cardinality={str(type(Client())) : '0..*', 
-                                              str(type(Server())) : '0..*', 
-                                              str(type(Publisher())) : '0..*', 
-                                              str(type(Subscriber())) : '0..*', 
-                                              str(type(Timer())) : '0..*'}) 
+
+        self.children = Children(allowed=[Client(parent=self), 
+                                          Server(parent=self), 
+                                          Publisher(parent=self), 
+                                          Subscriber(parent=self), 
+                                          Timer(parent=self)],
+                                 cardinality={str(type(Client(parent=self)))\
+                                              : '0..*', 
+                                              str(type(Server(parent=self)))\
+                                              : '0..*', 
+                                              str(type(Publisher(parent=self)))\
+                                              : '0..*', 
+                                              str(type(Subscriber(parent=self)))\
+                                              : '0..*', 
+                                              str(type(Timer(parent=self)))\
+                                              : '0..*'}) 
 
 class Client(Model):
-    def __init__(self, name=None, service_reference=None, network_profile=None, parent=None):
+    def __init__(self, name=Name(""), service_reference=Service_Reference(None), 
+                 network_profile=Network_Profile(""), parent=None):
         super(Client, self).__init__()
         self.kind = "Client"
+
+        assert parent != None, "Client parent is None!"
+        assert name != None, "Client name is None!"
+        assert service_reference != None, "Client service reference is None!"
+        assert network_profile != None, "Client network profile is None!"
+
         self.parent = parent
         self["name"] = name
         self["service_reference"] = service_reference
         self["network_profile"] = network_profile
+
         self.children = Children(allowed=[], cardinality={})
 
 class Server(Model):
-    def __init__(self, name=None, 
-                 service_reference=None, 
-                 priority=None, deadline=None, business_logic=None,
-                 network_profile=None, parent=None):
+    def __init__(self, name=Name(""), service_reference=Service_Reference(None), 
+                 priority=Priority(0), deadline=Deadline(0.0), 
+                 business_logic=Abstract_Business_Logic(""),
+                 network_profile=Network_Profile(""), parent=None):
         super(Server, self).__init__()
         self.kind = "Server"
+
+        assert parent != None, "Server parent is None!"
+        assert name != None, "Server name is None!"
+        assert service_reference != None, "Server service reference is None!"
+        assert priority != None, "Server priority is None!"
+        assert deadline != None, "Server deadline is None!"
+        assert business_logic != None, "Server abstract business logic is None!"
+        assert network_profile != None, "Server network profile is None!"
+
         self.parent = parent
         self["name"] = name
         self["service_reference"] = service_reference
@@ -279,24 +363,43 @@ class Server(Model):
         self["deadline"] = deadline
         self["business_logic"] = business_logic
         self["network_profile"] = network_profile
+
         self.children = Children(allowed=[], cardinality={})
 
 class Publisher(Model):
-    def __init__(self, name=None, message_reference=None, network_profile=None, parent=None):
+    def __init__(self, name=Name(""), message_reference=Message_Reference(None), 
+                 network_profile=Network_Profile(""), parent=None):
         super(Publisher, self).__init__()
         self.kind = "Publisher"
+
+        assert parent != None, "Publisher parent is None!"
+        assert name != None, "Publisher name is None!"
+        assert message_reference != None, "Publisher message reference is None!"
+        assert network_profile != None, "Publisher network profile is None!"
+
         self.parent = parent
         self["name"] = name
         self["message_reference"] = message_reference
         self["network_profile"] = network_profile
+
         self.children = Children(allowed=[], cardinality={})
 
 class Subscriber(Model):
-    def __init__(self, name=None, message_reference=None,
-                 priority=None, deadline=None, business_logic=None,
-                 network_profile=None, parent=None):
+    def __init__(self, name=Name(""), message_reference=Message_Reference(None),
+                 priority=Priority(0), deadline=Deadline(0.0), 
+                 business_logic=Abstract_Business_Logic(""),
+                 network_profile=Network_Profile(""), parent=None):
         super(Subscriber, self).__init__()
         self.kind = "Subscriber"
+
+        assert parent != None, "Subscriber parent is None!"
+        assert name != None,  "Subscriber name is None!"
+        assert message_reference != None, "Subscriber message reference is None!"
+        assert priority != None, "Subscriber priority is None!"
+        assert deadline != None, "Subscriber deadline is None!"
+        assert business_logic != None, "Subscriber abstract business logic is None!"
+        assert network_profile != None, "Subscriber network profile is None!"
+
         self.parent = parent
         self["name"] = name
         self["message_reference"] = message_reference
@@ -304,34 +407,67 @@ class Subscriber(Model):
         self["deadline"] = deadline
         self["business_logic"] = business_logic
         self["network_profile"] = network_profile
+
         self.children = Children(allowed=[], cardinality={})
 
 class Timer(Model):
-    def __init__(self, name=None, period=None, priority=None, deadline=None, business_logic=None, parent=None):
+    def __init__(self, name=Name(""), period=Period(0.0), priority=Priority(0), 
+                 deadline=Deadline(0.0), business_logic=Abstract_Business_Logic(""), 
+                 parent=None):
         super(Timer, self).__init__()
         self.kind = "Timer"
+
+        assert parent != None, "Timer parent is None!"
+        assert name != None,  "Timer name is None!"
+        assert period != None, "Timer period is None!"
+        assert priority != None, "Timer priority is None!"
+        assert deadline != None, "Timer deadline is None!"
+        assert business_logic != None, "Timer abstract business logic is None!"
+
         self.parent = parent
         self["name"] = name
         self["period"] = period
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+
         self.children = Children(allowed=[], cardinality={})
 
 class Hardware(Model):
-    def __init__(self, name=None, parent=None):
+    def __init__(self, name=Name(""), parent=None):
         super(Hardware, self).__init__()
         self.kind = "Hardware"
+
+        assert name != None, "Hardware name is None!"
+        assert parent != None, "Hardware parent is None!"
+
         self.parent = parent
         self["name"] = name
-        self.children = Children(allowed=[Computer()], 
-                                 cardinality={str(type(Computer())) : '1..*'})
+
+        self.children = Children(allowed=[Computer(parent=self)], 
+                                 cardinality={str(type(Computer(parent=self)))\
+                                              : '1..*'})
 
 class Computer(Model):
-    def __init__(self, name=None, ip_address=None, username=None, sshkey=None, deployment_path=None,
-                 ros_install_path=None, init_script=None, arch=None, network_profile=None, parent=None):
+    def __init__(self, name=Name(""), ip_address=IP_Address(""), 
+                 username=Username(""), sshkey=SSH_Key(""), 
+                 deployment_path=Deployment_Path(""), 
+                 ros_install_path=ROS_Install_Path(""), init_script=Init_Script(""), 
+                 arch=Arch(""), network_profile=Network_Profile(""), parent=None):
         super(Computer, self).__init__()
         self.kind = "Computer"
+
+        assert name != None, "Computer name is None!"
+        assert parent != None, "Computer parent is None!"
+        assert ip_address != None, "Computer IP address is None!"
+        assert username != None, "Computer username is None!"
+        assert sshkey != None, "Computer sshkey is None!"
+        assert deployment_path != None, "Computer deployment path is None!"
+        assert ros_install_path != None, "Computer ros install path is None!"
+        assert init_script != None, "Computer init script is None!"
+        assert arch != None, "Computer architecture is None!"
+        assert network_profile != None, "Computer network profile is None!"
+
         self.parent = parent
         self["name"] = name
         self["ip_address"] = ip_address
@@ -342,38 +478,68 @@ class Computer(Model):
         self["init_script"] = init_script
         self["arch"] = arch
         self["network_profile"] = network_profile
+
         self.children = Children(allowed=[], cardinality={})
 
 class Deployment(Model):
-    def __init__(self, name=None, parent=None):
+    def __init__(self, name=Name(""), parent=None):
         super(Deployment, self).__init__()
         self.kind = "Deployment"
+
+        assert name != None, "Deployment name is None!"
+        assert parent != None, "Deployment parent is None!"
+
         self.parent = parent
         self['name'] = name
-        self.children = Children(allowed=[Node()], cardinality={str(type(Node())) : '1..*'})
+
+        self.children = Children(allowed=[Node(parent=self)], 
+                                 cardinality={str(type(Node(parent=self))) : '1..*'})
 
 class Node(Model):
-    def __init__(self, name=None, hardware_reference=None, priority=None, cmd_args=None, 
-                 deployment_path=None, parent=None):
+    def __init__(self, name=Name(""), hardware_reference=Hardware_Reference(None), 
+                 priority=Priority(0), cmd_args=Cmd_Args(""), 
+                 deployment_path=Deployment_Path(""), parent=None):
         super(Node, self).__init__()
         self.kind = "Node"
+
+        assert name != None, "Node name is None!"
+        assert parent != None, "Node parent is None!"
+        assert hardware_reference != None, "Node hardware reference is None!"
+        assert priority != None, "Node priority is None!"
+        assert cmd_args != None, "Node cmdline args is None!"
+        assert deployment_path != None, "Node deployment path is None!"
+
         self.parent = parent
         self["name"] = name
         self["hardware_reference"] = hardware_reference
         self["priority"] = priority
         self["cmd_args"] = cmd_args
         self["deployment_path"] = deployment_path
-        self.children = Children(allowed=[Component_Instance()], cardinality={str(type(Component_Instance())) : '1..*'})
+
+        self.children = Children(allowed=[Component_Instance(parent=self)], 
+                                 cardinality=\
+                                 {str(type(Component_Instance(parent=self)))\
+                                  : '1..*'})
 
 class Component_Instance(Model):
-    def __init__(self, name=None, component_reference=None, scheduling_scheme=None, logging=None, parent=None):
+    def __init__(self, name=Name(""), component_reference=Component_Reference(None), 
+                 scheduling_scheme=Scheduling_Scheme(""), logging=Logging(None), 
+                 parent=None):
         super(Component_Instance, self).__init__()
         self.kind = "Component_Instance"
+
+        assert name != None, "Component instance name is None!"
+        assert parent != None, "Component instance parent is None!"
+        assert component_reference != None, "Component component reference is None!"
+        assert scheduling_scheme != None, "Component scheduling scheme is None!"
+        assert logging != None, "Component logging is None!"
+
         self.parent = parent
         self["name"] = name
         self["component_reference"] = component_reference
         self["scheduling_scheme"] = scheduling_scheme
         self["logging"] = logging
+
         self.children = Children(allowed=[], cardinality={})
 
 class Project(Model):
@@ -385,22 +551,31 @@ class Project(Model):
     Hardware -- Describes the hardware configuration
     Deployment -- Maps software instances and hardware computers
     """
-    def __init__(self, name, path, parent=None):
+    def __init__(self, name=Name(""), path=Path(""), parent=None):
         super(Project, self).__init__()
         self.kind = "Project"
+
+        assert parent == None, "Project parent is not None!"
+        assert name != None, "Project name is None!"
+        assert path != None, "Project path is None!"
+
         self.parent = parent
         self['name'] = name
         self['path'] = path
-        self.children = Children(allowed=[Software(), Hardware(), Deployment()], 
-                                 cardinality={str(type(Software())) : '1',
-                                              str(type(Hardware())) : '1..*',
-                                              str(type(Deployment())) : '1..*'})
 
+        self.children = Children(allowed=[Software(parent=self), 
+                                          Hardware(parent=self), 
+                                          Deployment(parent=self)], 
+                                 cardinality={str(type(Software(parent=self))) : '1',
+                                              str(type(Hardware(parent=self)))\
+                                              : '1..*',
+                                              str(type(Deployment(parent=self)))\
+                                              : '1..*'})
 
 import json, jsonpickle
 # Sample Project
-project = Project(Name("NewProject"), 
-                  Path(""), 
+project = Project(name=Name("NewProject"), 
+                  path=Path(""), 
                   parent=None)
 
 software = Software(Name("Software"), 

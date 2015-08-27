@@ -343,15 +343,27 @@
                                                                         ], 
                                                                         [
                                                                             "priority", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Priority", 
+                                                                                "kind": "integer", 
+                                                                                "value": 0
+                                                                            }
                                                                         ], 
                                                                         [
                                                                             "deadline", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Deadline", 
+                                                                                "kind": "double", 
+                                                                                "value": 0.0
+                                                                            }
                                                                         ], 
                                                                         [
                                                                             "business_logic", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Abstract_Business_Logic", 
+                                                                                "kind": "code", 
+                                                                                "value": ""
+                                                                            }
                                                                         ], 
                                                                         [
                                                                             "network_profile", 
@@ -463,15 +475,27 @@
                                                                         ], 
                                                                         [
                                                                             "priority", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Priority", 
+                                                                                "kind": "integer", 
+                                                                                "value": 0
+                                                                            }
                                                                         ], 
                                                                         [
                                                                             "deadline", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Deadline", 
+                                                                                "kind": "double", 
+                                                                                "value": 0.0
+                                                                            }
                                                                         ], 
                                                                         [
                                                                             "business_logic", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Abstract_Business_Logic", 
+                                                                                "kind": "code", 
+                                                                                "value": ""
+                                                                            }
                                                                         ], 
                                                                         [
                                                                             "network_profile", 
@@ -543,7 +567,11 @@
                                                                         ], 
                                                                         [
                                                                             "business_logic", 
-                                                                            null
+                                                                            {
+                                                                                "py/object": "__main__.Abstract_Business_Logic", 
+                                                                                "kind": "code", 
+                                                                                "value": ""
+                                                                            }
                                                                         ]
                                                                     ]
                                                                 ]
@@ -578,13 +606,13 @@
                                                     "py/id": 68
                                                 }, 
                                                 {
-                                                    "py/id": 83
+                                                    "py/id": 86
                                                 }, 
                                                 {
-                                                    "py/id": 95
+                                                    "py/id": 98
                                                 }, 
                                                 {
-                                                    "py/id": 110
+                                                    "py/id": 116
                                                 }
                                             ]
                                         }, 
@@ -723,10 +751,10 @@
                 "py/id": 10
             }, 
             {
-                "py/id": 125
+                "py/id": 132
             }, 
             {
-                "py/id": 133
+                "py/id": 140
             }
         ]
     }, 
