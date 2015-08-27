@@ -8,8 +8,8 @@ class Children(MutableSequence):
     """Children List
     
     _inner -- Contents of the list
-    _allowed -- Type Constraints on the list entries
-    The list will accept only object types contained in _allowed
+    _allowed -- The list will accept only object types contained in _allowed
+    _cardinality -- Cardinality of each accepted type
     """
     def __init__(self, it=(), allowed=(), cardinality=()):
         self._inner = list(it)
@@ -397,7 +397,7 @@ class Component_Instance(Model):
         self.children = Children(allowed=[], cardinality={})
 
 import json, jsonpickle
-
+# Sample Project
 project = Project(Name("NewProject"), 
                   Path(""), 
                   parent=None)
@@ -462,9 +462,7 @@ component.add_child(timer)
 package.add_child(message)
 package.add_child(service)
 package.add_child(component)
-#print type(package)
 software.add_child(package)
-#print software.children
 project.add_child(software)
 project.add_child(hardware)
 project.add_child(deployment)
