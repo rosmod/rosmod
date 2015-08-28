@@ -160,6 +160,13 @@ class Hardware_Reference(Attribute):
     def __init__(self, value):
         super(Hardware_Reference, self).__init__("reference", value)
 
+class Computer_Reference(Attribute):
+    """Computer Reference Attribute"""
+    tooltip = "Reference to a predefined computer"
+    display = "Computer Reference"
+    def __init__(self, value):
+        super(Computer_Reference, self).__init__("reference", value)
+
 class Component_Reference(Attribute):
     """Component Reference Attribute"""
     tooltip = "Reference to a predefined component"
@@ -508,34 +515,38 @@ class Computer(Model):
         self.children = Children(allowed=[], cardinality={})
 
 class Deployment(Model):
-    def __init__(self, name=Name(""), parent=None):
+    def __init__(self, name=Name(""), hardware_reference=Hardware_Reference(None),
+                 parent=None):
         super(Deployment, self).__init__()
         self.kind = "Deployment"
 
         assert name != None, "Deployment name is None!"
+        assert hardware_reference != None, "Deployment hardware reference is None!"
 
         self.parent = parent
         self['name'] = name
+        self["hardware_reference"] = hardware_reference
 
         self.children = Children(allowed=[Node()], 
                                  cardinality={str(type(Node())) : '1..*'})
 
 class Node(Model):
-    def __init__(self, name=Name(""), hardware_reference=Hardware_Reference(None), 
+    def __init__(self, name=Name(""), computer_reference=Computer_Reference(None), 
                  priority=Priority(0), cmd_args=Cmd_Args(""), 
                  deployment_path=Deployment_Path(""), parent=None):
         super(Node, self).__init__()
         self.kind = "Node"
 
         assert name != None, "Node name is None!"
-        assert hardware_reference != None, "Node hardware reference is None!"
+        assert computer_reference != None, "Node computer reference is None!"
         assert priority != None, "Node priority is None!"
         assert cmd_args != None, "Node cmdline args is None!"
         assert deployment_path != None, "Node deployment path is None!"
 
         self.parent = parent
         self["name"] = name
-        self["hardware_reference"] = hardware_reference
+        self['computer_reference'] = computer_reference
+
         self["priority"] = priority
         self["cmd_args"] = cmd_args
         self["deployment_path"] = deployment_path
@@ -547,7 +558,7 @@ class Node(Model):
 
 class Component_Instance(Model):
     def __init__(self, name=Name(""), component_reference=Component_Reference(None), 
-                 scheduling_scheme=Scheduling_Scheme(""), logging=Logging(None), 
+                 scheduling_scheme=Scheduling_Scheme("FIFO"), logging=Logging(None), 
                  parent=None):
         super(Component_Instance, self).__init__()
         self.kind = "Component_Instance"
@@ -632,18 +643,58 @@ class Project(Model):
         assert model != "", "Project path is empty!"
         with open(model, 'r') as input_model:
             self = jsonpickle.decode(input_model.read())
-            print self['name'].value
         
 if __name__ == '__main__':
+
+    # Simple Timer Example
+    my_software = Software("software")
+    timer_package = Package("timer_package")
+    timer_component = Component(Name("Timer_Component"), 
+                                Component_Type("BASE"))
+    timer = Timer(name = Name("periodic_timer"),
+                  period = Period(1.0),
+                  priority = Priority(50),
+                  deadline = Deadline(0.01))
+
+    my_hardware = Hardware("hardware")
+    bbb_111 = Computer(name = Name("BBB_111"),
+                       ip_address = IP_Address("10.1.1.1"),
+                       username = Username("ubuntu"),
+                       sshkey = SSH_Key("/home/jeb/.ssh/id_rsa_jetsontk1"),
+                       deployment_path = Deployment_Path("/home/ubuntu"),
+                       ros_install_path = ROS_Install_Path("/opt/ros/indigo"),
+                       arch = Arch("arm"))
+
+    my_deployment = Deployment(name = Name("deployment"), 
+                               hardware_reference = Hardware_Reference(my_hardware))
+    timer_node = Node(name = Name("Timer_Node"),
+                      computer_reference = Computer_Reference(bbb_111),
+                      priority = Priority(80))
+    timer_component_i = Component_Instance(name = Name("Timer_Component_i"),
+                                           component_reference = \
+                                           Component_Reference(timer_component),
+                                           scheduling_scheme =\
+                                           Scheduling_Scheme("PFIFO"),
+                                           logging = Logging({"DEBUG" : True,
+                                                              "INFO" : False,
+                                                              "WARNING" : False,
+                                                              "ERROR" : False,
+                                                              "CRITICAL" : False}))
+    # Establish Tree
+    timer_component.add_child(timer)
+    timer_package.add_child(timer_component)
+    my_software.add_child(timer_package)
+    my_hardware.add_child(bbb_111)
+    timer_node.add_child(timer_component_i)
+    my_deployment.add_child(timer_node)
+
     project = Project()
     project.new(name=Name("timer_example"),
-                path=Path("/home/jeb/pranav/rosmod/samples/"))
+                path=Path("/home/jeb/pranav/rosmod/samples/"),
+                software=my_software,
+                hardware=my_hardware,
+                deployment=my_deployment)
+    
     project.save()
     project.open("/home/jeb/pranav/rosmod/samples/timer_example/timer_example.rml")
-
-    #encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
-    #print encoder_output
-    #with open('model.txt', 'w') as metamodel:
-    #    metamodel.write(encoder_output)
-
 

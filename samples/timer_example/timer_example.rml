@@ -58,11 +58,7 @@
                                 [
                                     [
                                         "name", 
-                                        {
-                                            "py/object": "__main__.Name", 
-                                            "kind": "string", 
-                                            "value": "NewSoftware"
-                                        }
+                                        "software"
                                     ]
                                 ]
                             ]
@@ -77,11 +73,206 @@
                             "py/type": "__main__.Package"
                         }
                     ], 
-                    "_inner": [], 
+                    "_inner": [
+                        {
+                            "py/object": "__main__.Package", 
+                            "attributes": {
+                                "py/object": "collections.OrderedDict", 
+                                "__reduce__": [
+                                    {
+                                        "py/type": "collections.OrderedDict"
+                                    }, 
+                                    {
+                                        "py/tuple": [
+                                            [
+                                                [
+                                                    "name", 
+                                                    "timer_package"
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }, 
+                            "kind": "Package", 
+                            "children": {
+                                "py/object": "__main__.Children", 
+                                "_allowed": [
+                                    {
+                                        "py/type": "__main__.Message"
+                                    }, 
+                                    {
+                                        "py/type": "__main__.Service"
+                                    }, 
+                                    {
+                                        "py/type": "__main__.Component"
+                                    }
+                                ], 
+                                "_inner": [
+                                    {
+                                        "py/object": "__main__.Component", 
+                                        "attributes": {
+                                            "py/object": "collections.OrderedDict", 
+                                            "__reduce__": [
+                                                {
+                                                    "py/type": "collections.OrderedDict"
+                                                }, 
+                                                {
+                                                    "py/tuple": [
+                                                        [
+                                                            [
+                                                                "name", 
+                                                                {
+                                                                    "py/object": "__main__.Name", 
+                                                                    "kind": "string", 
+                                                                    "value": "Timer_Component"
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "type", 
+                                                                {
+                                                                    "py/object": "__main__.Component_Type", 
+                                                                    "kind": "list_entry", 
+                                                                    "value": "BASE"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }, 
+                                        "kind": "Component", 
+                                        "children": {
+                                            "py/object": "__main__.Children", 
+                                            "_allowed": [
+                                                {
+                                                    "py/type": "__main__.Client"
+                                                }, 
+                                                {
+                                                    "py/type": "__main__.Server"
+                                                }, 
+                                                {
+                                                    "py/type": "__main__.Publisher"
+                                                }, 
+                                                {
+                                                    "py/type": "__main__.Subscriber"
+                                                }, 
+                                                {
+                                                    "py/type": "__main__.Timer"
+                                                }
+                                            ], 
+                                            "_inner": [
+                                                {
+                                                    "py/object": "__main__.Timer", 
+                                                    "attributes": {
+                                                        "py/object": "collections.OrderedDict", 
+                                                        "__reduce__": [
+                                                            {
+                                                                "py/type": "collections.OrderedDict"
+                                                            }, 
+                                                            {
+                                                                "py/tuple": [
+                                                                    [
+                                                                        [
+                                                                            "name", 
+                                                                            {
+                                                                                "py/object": "__main__.Name", 
+                                                                                "kind": "string", 
+                                                                                "value": "periodic_timer"
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "period", 
+                                                                            {
+                                                                                "py/object": "__main__.Period", 
+                                                                                "kind": "double", 
+                                                                                "value": 1.0
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "priority", 
+                                                                            {
+                                                                                "py/object": "__main__.Priority", 
+                                                                                "kind": "integer", 
+                                                                                "value": 50
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "deadline", 
+                                                                            {
+                                                                                "py/object": "__main__.Deadline", 
+                                                                                "kind": "double", 
+                                                                                "value": 0.01
+                                                                            }
+                                                                        ], 
+                                                                        [
+                                                                            "business_logic", 
+                                                                            {
+                                                                                "py/object": "__main__.Abstract_Business_Logic", 
+                                                                                "kind": "code", 
+                                                                                "value": ""
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }, 
+                                                    "kind": "Timer", 
+                                                    "children": {
+                                                        "py/object": "__main__.Children", 
+                                                        "_allowed": [], 
+                                                        "_inner": [], 
+                                                        "_cardinality": {}, 
+                                                        "py/seq": []
+                                                    }, 
+                                                    "parent": {
+                                                        "py/id": 24
+                                                    }
+                                                }
+                                            ], 
+                                            "_cardinality": {
+                                                "<class '__main__.Client'>": "0..*", 
+                                                "<class '__main__.Publisher'>": "0..*", 
+                                                "<class '__main__.Server'>": "0..*", 
+                                                "<class '__main__.Timer'>": "0..*", 
+                                                "<class '__main__.Subscriber'>": "0..*"
+                                            }, 
+                                            "py/seq": [
+                                                {
+                                                    "py/id": 34
+                                                }
+                                            ]
+                                        }, 
+                                        "parent": {
+                                            "py/id": 17
+                                        }
+                                    }
+                                ], 
+                                "_cardinality": {
+                                    "<class '__main__.Message'>": "0..*", 
+                                    "<class '__main__.Component'>": "1..*", 
+                                    "<class '__main__.Service'>": "0..*"
+                                }, 
+                                "py/seq": [
+                                    {
+                                        "py/id": 24
+                                    }
+                                ]
+                            }, 
+                            "parent": {
+                                "py/id": 10
+                            }
+                        }
+                    ], 
                     "_cardinality": {
                         "<class '__main__.Package'>": "1..*"
                     }, 
-                    "py/seq": []
+                    "py/seq": [
+                        {
+                            "py/id": 17
+                        }
+                    ]
                 }, 
                 "parent": {
                     "py/id": 0
@@ -100,11 +291,7 @@
                                 [
                                     [
                                         "name", 
-                                        {
-                                            "py/object": "__main__.Name", 
-                                            "kind": "string", 
-                                            "value": "NewHardware"
-                                        }
+                                        "hardware"
                                     ]
                                 ]
                             ]
@@ -119,11 +306,108 @@
                             "py/type": "__main__.Computer"
                         }
                     ], 
-                    "_inner": [], 
+                    "_inner": [
+                        {
+                            "py/object": "__main__.Computer", 
+                            "attributes": {
+                                "py/object": "collections.OrderedDict", 
+                                "__reduce__": [
+                                    {
+                                        "py/type": "collections.OrderedDict"
+                                    }, 
+                                    {
+                                        "py/tuple": [
+                                            [
+                                                [
+                                                    "name", 
+                                                    {
+                                                        "py/object": "__main__.Name", 
+                                                        "kind": "string", 
+                                                        "value": "BBB_111"
+                                                    }
+                                                ], 
+                                                [
+                                                    "ip_address", 
+                                                    {
+                                                        "py/object": "__main__.IP_Address", 
+                                                        "kind": "string", 
+                                                        "value": "10.1.1.1"
+                                                    }
+                                                ], 
+                                                [
+                                                    "username", 
+                                                    {
+                                                        "py/object": "__main__.Username", 
+                                                        "kind": "string", 
+                                                        "value": "ubuntu"
+                                                    }
+                                                ], 
+                                                [
+                                                    "sshkey", 
+                                                    {
+                                                        "py/object": "__main__.SSH_Key", 
+                                                        "kind": "string", 
+                                                        "value": "/home/jeb/.ssh/id_rsa_jetsontk1"
+                                                    }
+                                                ], 
+                                                [
+                                                    "deployment_path", 
+                                                    {
+                                                        "py/object": "__main__.Deployment_Path", 
+                                                        "kind": "string", 
+                                                        "value": "/home/ubuntu"
+                                                    }
+                                                ], 
+                                                [
+                                                    "ros_install_path", 
+                                                    {
+                                                        "py/object": "__main__.ROS_Install_Path", 
+                                                        "kind": "string", 
+                                                        "value": "/opt/ros/indigo"
+                                                    }
+                                                ], 
+                                                [
+                                                    "arch", 
+                                                    {
+                                                        "py/object": "__main__.Arch", 
+                                                        "kind": "string", 
+                                                        "value": "arm"
+                                                    }
+                                                ], 
+                                                [
+                                                    "network_profile", 
+                                                    {
+                                                        "py/object": "__main__.Network_Profile", 
+                                                        "kind": "code", 
+                                                        "value": ""
+                                                    }
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }, 
+                            "kind": "Computer", 
+                            "children": {
+                                "py/object": "__main__.Children", 
+                                "_allowed": [], 
+                                "_inner": [], 
+                                "_cardinality": {}, 
+                                "py/seq": []
+                            }, 
+                            "parent": {
+                                "py/id": 50
+                            }
+                        }
+                    ], 
                     "_cardinality": {
                         "<class '__main__.Computer'>": "1..*"
                     }, 
-                    "py/seq": []
+                    "py/seq": [
+                        {
+                            "py/id": 57
+                        }
+                    ]
                 }, 
                 "parent": {
                     "py/id": 0
@@ -145,7 +429,17 @@
                                         {
                                             "py/object": "__main__.Name", 
                                             "kind": "string", 
-                                            "value": "NewDeployment"
+                                            "value": "deployment"
+                                        }
+                                    ], 
+                                    [
+                                        "hardware_reference", 
+                                        {
+                                            "py/object": "__main__.Hardware_Reference", 
+                                            "kind": "reference", 
+                                            "value": {
+                                                "py/id": 50
+                                            }
                                         }
                                     ]
                                 ]
@@ -161,11 +455,165 @@
                             "py/type": "__main__.Node"
                         }
                     ], 
-                    "_inner": [], 
+                    "_inner": [
+                        {
+                            "py/object": "__main__.Node", 
+                            "attributes": {
+                                "py/object": "collections.OrderedDict", 
+                                "__reduce__": [
+                                    {
+                                        "py/type": "collections.OrderedDict"
+                                    }, 
+                                    {
+                                        "py/tuple": [
+                                            [
+                                                [
+                                                    "name", 
+                                                    {
+                                                        "py/object": "__main__.Name", 
+                                                        "kind": "string", 
+                                                        "value": "Timer_Node"
+                                                    }
+                                                ], 
+                                                [
+                                                    "computer_reference", 
+                                                    {
+                                                        "py/object": "__main__.Computer_Reference", 
+                                                        "kind": "reference", 
+                                                        "value": {
+                                                            "py/id": 57
+                                                        }
+                                                    }
+                                                ], 
+                                                [
+                                                    "priority", 
+                                                    {
+                                                        "py/object": "__main__.Priority", 
+                                                        "kind": "integer", 
+                                                        "value": 80
+                                                    }
+                                                ], 
+                                                [
+                                                    "cmd_args", 
+                                                    {
+                                                        "py/object": "__main__.Cmd_Args", 
+                                                        "kind": "string", 
+                                                        "value": ""
+                                                    }
+                                                ], 
+                                                [
+                                                    "deployment_path", 
+                                                    {
+                                                        "py/object": "__main__.Deployment_Path", 
+                                                        "kind": "string", 
+                                                        "value": ""
+                                                    }
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }, 
+                            "kind": "Node", 
+                            "children": {
+                                "py/object": "__main__.Children", 
+                                "_allowed": [
+                                    {
+                                        "py/type": "__main__.Component_Instance"
+                                    }
+                                ], 
+                                "_inner": [
+                                    {
+                                        "py/object": "__main__.Component_Instance", 
+                                        "attributes": {
+                                            "py/object": "collections.OrderedDict", 
+                                            "__reduce__": [
+                                                {
+                                                    "py/type": "collections.OrderedDict"
+                                                }, 
+                                                {
+                                                    "py/tuple": [
+                                                        [
+                                                            [
+                                                                "name", 
+                                                                {
+                                                                    "py/object": "__main__.Name", 
+                                                                    "kind": "string", 
+                                                                    "value": "Timer_Component_i"
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "component_reference", 
+                                                                {
+                                                                    "py/object": "__main__.Component_Reference", 
+                                                                    "kind": "reference", 
+                                                                    "value": {
+                                                                        "py/id": 24
+                                                                    }
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "scheduling_scheme", 
+                                                                {
+                                                                    "py/object": "__main__.Scheduling_Scheme", 
+                                                                    "kind": "list_entry", 
+                                                                    "value": "PFIFO"
+                                                                }
+                                                            ], 
+                                                            [
+                                                                "logging", 
+                                                                {
+                                                                    "py/object": "__main__.Logging", 
+                                                                    "kind": "dictionary_bool", 
+                                                                    "value": {
+                                                                        "DEBUG": true, 
+                                                                        "INFO": false, 
+                                                                        "CRITICAL": false, 
+                                                                        "WARNING": false, 
+                                                                        "ERROR": false
+                                                                    }
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }, 
+                                        "kind": "Component_Instance", 
+                                        "children": {
+                                            "py/object": "__main__.Children", 
+                                            "_allowed": [], 
+                                            "_inner": [], 
+                                            "_cardinality": {}, 
+                                            "py/seq": []
+                                        }, 
+                                        "parent": {
+                                            "py/id": 89
+                                        }
+                                    }
+                                ], 
+                                "_cardinality": {
+                                    "<class '__main__.Component_Instance'>": "1..*"
+                                }, 
+                                "py/seq": [
+                                    {
+                                        "py/id": 105
+                                    }
+                                ]
+                            }, 
+                            "parent": {
+                                "py/id": 79
+                            }
+                        }
+                    ], 
                     "_cardinality": {
                         "<class '__main__.Node'>": "1..*"
                     }, 
-                    "py/seq": []
+                    "py/seq": [
+                        {
+                            "py/id": 89
+                        }
+                    ]
                 }, 
                 "parent": {
                     "py/id": 0
@@ -182,10 +630,10 @@
                 "py/id": 10
             }, 
             {
-                "py/id": 18
+                "py/id": 50
             }, 
             {
-                "py/id": 26
+                "py/id": 79
             }
         ]
     }, 
