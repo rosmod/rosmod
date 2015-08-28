@@ -1,0 +1,193 @@
+{
+    "py/object": "__main__.Project", 
+    "attributes": {
+        "py/object": "collections.OrderedDict", 
+        "__reduce__": [
+            {
+                "py/type": "collections.OrderedDict"
+            }, 
+            {
+                "py/tuple": [
+                    [
+                        [
+                            "name", 
+                            {
+                                "py/object": "__main__.Name", 
+                                "kind": "string", 
+                                "value": "timer_example"
+                            }
+                        ], 
+                        [
+                            "path", 
+                            {
+                                "py/object": "__main__.Path", 
+                                "kind": "string", 
+                                "value": "/home/jeb/pranav/rosmod/samples/"
+                            }
+                        ]
+                    ]
+                ]
+            }
+        ]
+    }, 
+    "kind": "Project", 
+    "children": {
+        "py/object": "__main__.Children", 
+        "_allowed": [
+            {
+                "py/type": "__main__.Software"
+            }, 
+            {
+                "py/type": "__main__.Hardware"
+            }, 
+            {
+                "py/type": "__main__.Deployment"
+            }
+        ], 
+        "_inner": [
+            {
+                "py/object": "__main__.Software", 
+                "attributes": {
+                    "py/object": "collections.OrderedDict", 
+                    "__reduce__": [
+                        {
+                            "py/type": "collections.OrderedDict"
+                        }, 
+                        {
+                            "py/tuple": [
+                                [
+                                    [
+                                        "name", 
+                                        {
+                                            "py/object": "__main__.Name", 
+                                            "kind": "string", 
+                                            "value": "NewSoftware"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }, 
+                "kind": "Software", 
+                "children": {
+                    "py/object": "__main__.Children", 
+                    "_allowed": [
+                        {
+                            "py/type": "__main__.Package"
+                        }
+                    ], 
+                    "_inner": [], 
+                    "_cardinality": {
+                        "<class '__main__.Package'>": "1..*"
+                    }, 
+                    "py/seq": []
+                }, 
+                "parent": {
+                    "py/id": 0
+                }
+            }, 
+            {
+                "py/object": "__main__.Hardware", 
+                "attributes": {
+                    "py/object": "collections.OrderedDict", 
+                    "__reduce__": [
+                        {
+                            "py/type": "collections.OrderedDict"
+                        }, 
+                        {
+                            "py/tuple": [
+                                [
+                                    [
+                                        "name", 
+                                        {
+                                            "py/object": "__main__.Name", 
+                                            "kind": "string", 
+                                            "value": "NewHardware"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }, 
+                "kind": "Hardware", 
+                "children": {
+                    "py/object": "__main__.Children", 
+                    "_allowed": [
+                        {
+                            "py/type": "__main__.Computer"
+                        }
+                    ], 
+                    "_inner": [], 
+                    "_cardinality": {
+                        "<class '__main__.Computer'>": "1..*"
+                    }, 
+                    "py/seq": []
+                }, 
+                "parent": {
+                    "py/id": 0
+                }
+            }, 
+            {
+                "py/object": "__main__.Deployment", 
+                "attributes": {
+                    "py/object": "collections.OrderedDict", 
+                    "__reduce__": [
+                        {
+                            "py/type": "collections.OrderedDict"
+                        }, 
+                        {
+                            "py/tuple": [
+                                [
+                                    [
+                                        "name", 
+                                        {
+                                            "py/object": "__main__.Name", 
+                                            "kind": "string", 
+                                            "value": "NewDeployment"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }, 
+                "kind": "Deployment", 
+                "children": {
+                    "py/object": "__main__.Children", 
+                    "_allowed": [
+                        {
+                            "py/type": "__main__.Node"
+                        }
+                    ], 
+                    "_inner": [], 
+                    "_cardinality": {
+                        "<class '__main__.Node'>": "1..*"
+                    }, 
+                    "py/seq": []
+                }, 
+                "parent": {
+                    "py/id": 0
+                }
+            }
+        ], 
+        "_cardinality": {
+            "<class '__main__.Hardware'>": "1..*", 
+            "<class '__main__.Deployment'>": "1..*", 
+            "<class '__main__.Software'>": "1"
+        }, 
+        "py/seq": [
+            {
+                "py/id": 10
+            }, 
+            {
+                "py/id": 18
+            }, 
+            {
+                "py/id": 26
+            }
+        ]
+    }, 
+    "parent": null
+}

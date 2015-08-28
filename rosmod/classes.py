@@ -3,6 +3,8 @@
 # Date: 2015.07.22
 
 from collections import OrderedDict, MutableSequence
+import os
+import json, jsonpickle
 
 class Children(MutableSequence):
     """Children List
@@ -267,14 +269,13 @@ class Software(Model):
         super(Software, self).__init__()
         self.kind = "Software"
 
-        assert parent != None, "Software parent is None!"
         assert name != None, "Software name is None!"
 
         self.parent = parent
         self["name"] = name
 
-        self.children = Children(allowed=[Package(parent=self)], 
-                                 cardinality = {str(type(Package(parent=self)))\
+        self.children = Children(allowed=[Package()], 
+                                 cardinality = {str(type(Package()))\
                                                 : '1..*'})
 
 class Package(Model):
@@ -282,20 +283,19 @@ class Package(Model):
         super(Package, self).__init__()
         self.kind = "Package"
 
-        assert parent != None, "Package parent is None!"
         assert name != None, "Package name is None!"
 
         self.parent = parent
         self["name"] = name
 
-        self.children = Children(allowed=[Message(parent=self), 
-                                          Service(parent=self), 
-                                          Component(parent=self)],
-                                 cardinality={str(type(Message(parent=self)))\
+        self.children = Children(allowed=[Message(), 
+                                          Service(), 
+                                          Component()],
+                                 cardinality={str(type(Message()))\
                                               : '0..*', 
-                                              str(type(Service(parent=self)))\
+                                              str(type(Service()))\
                                               : '0..*',
-                                              str(type(Component(parent=self)))\
+                                              str(type(Component()))\
                                               : '1..*'})
 
 class Message(Model):
@@ -304,7 +304,6 @@ class Message(Model):
         super(Message, self).__init__()
         self.kind = "Message"
 
-        assert parent != None, "Message parent is None!"
         assert name != None, "Message name is None!"
         assert definition != None, "Message definition is None!"
 
@@ -320,7 +319,6 @@ class Service(Model):
         super(Service, self).__init__()
         self.kind = "Service"
 
-        assert parent != None, "Service parent is None!"
         assert name != None, "Service name is None!"
         assert definition != None, "Service definition is None!"
 
@@ -336,7 +334,6 @@ class Component(Model):
         super(Component, self).__init__()
         self.kind = "Component"
 
-        assert parent != None, "Component parent is None!"
         assert name != None, "Component name is None!"
         assert component_type != None, "Component type is None!"
 
@@ -344,20 +341,20 @@ class Component(Model):
         self["name"] = name
         self["type"] = component_type
 
-        self.children = Children(allowed=[Client(parent=self), 
-                                          Server(parent=self), 
-                                          Publisher(parent=self), 
-                                          Subscriber(parent=self), 
-                                          Timer(parent=self)],
-                                 cardinality={str(type(Client(parent=self)))\
+        self.children = Children(allowed=[Client(), 
+                                          Server(), 
+                                          Publisher(), 
+                                          Subscriber(), 
+                                          Timer()],
+                                 cardinality={str(type(Client()))\
                                               : '0..*', 
-                                              str(type(Server(parent=self)))\
+                                              str(type(Server()))\
                                               : '0..*', 
-                                              str(type(Publisher(parent=self)))\
+                                              str(type(Publisher()))\
                                               : '0..*', 
-                                              str(type(Subscriber(parent=self)))\
+                                              str(type(Subscriber()))\
                                               : '0..*', 
-                                              str(type(Timer(parent=self)))\
+                                              str(type(Timer()))\
                                               : '0..*'}) 
 
 class Client(Model):
@@ -366,7 +363,6 @@ class Client(Model):
         super(Client, self).__init__()
         self.kind = "Client"
 
-        assert parent != None, "Client parent is None!"
         assert name != None, "Client name is None!"
         assert service_reference != None, "Client service reference is None!"
         assert network_profile != None, "Client network profile is None!"
@@ -386,7 +382,6 @@ class Server(Model):
         super(Server, self).__init__()
         self.kind = "Server"
 
-        assert parent != None, "Server parent is None!"
         assert name != None, "Server name is None!"
         assert service_reference != None, "Server service reference is None!"
         assert priority != None, "Server priority is None!"
@@ -410,7 +405,6 @@ class Publisher(Model):
         super(Publisher, self).__init__()
         self.kind = "Publisher"
 
-        assert parent != None, "Publisher parent is None!"
         assert name != None, "Publisher name is None!"
         assert message_reference != None, "Publisher message reference is None!"
         assert network_profile != None, "Publisher network profile is None!"
@@ -430,7 +424,6 @@ class Subscriber(Model):
         super(Subscriber, self).__init__()
         self.kind = "Subscriber"
 
-        assert parent != None, "Subscriber parent is None!"
         assert name != None,  "Subscriber name is None!"
         assert message_reference != None, "Subscriber message reference is None!"
         assert priority != None, "Subscriber priority is None!"
@@ -455,7 +448,6 @@ class Timer(Model):
         super(Timer, self).__init__()
         self.kind = "Timer"
 
-        assert parent != None, "Timer parent is None!"
         assert name != None,  "Timer name is None!"
         assert period != None, "Timer period is None!"
         assert priority != None, "Timer priority is None!"
@@ -477,13 +469,12 @@ class Hardware(Model):
         self.kind = "Hardware"
 
         assert name != None, "Hardware name is None!"
-        assert parent != None, "Hardware parent is None!"
 
         self.parent = parent
         self["name"] = name
 
-        self.children = Children(allowed=[Computer(parent=self)], 
-                                 cardinality={str(type(Computer(parent=self)))\
+        self.children = Children(allowed=[Computer()], 
+                                 cardinality={str(type(Computer()))\
                                               : '1..*'})
 
 class Computer(Model):
@@ -496,7 +487,6 @@ class Computer(Model):
         self.kind = "Computer"
 
         assert name != None, "Computer name is None!"
-        assert parent != None, "Computer parent is None!"
         assert ip_address != None, "Computer IP address is None!"
         assert username != None, "Computer username is None!"
         assert sshkey != None, "Computer sshkey is None!"
@@ -523,13 +513,12 @@ class Deployment(Model):
         self.kind = "Deployment"
 
         assert name != None, "Deployment name is None!"
-        assert parent != None, "Deployment parent is None!"
 
         self.parent = parent
         self['name'] = name
 
-        self.children = Children(allowed=[Node(parent=self)], 
-                                 cardinality={str(type(Node(parent=self))) : '1..*'})
+        self.children = Children(allowed=[Node()], 
+                                 cardinality={str(type(Node())) : '1..*'})
 
 class Node(Model):
     def __init__(self, name=Name(""), hardware_reference=Hardware_Reference(None), 
@@ -539,7 +528,6 @@ class Node(Model):
         self.kind = "Node"
 
         assert name != None, "Node name is None!"
-        assert parent != None, "Node parent is None!"
         assert hardware_reference != None, "Node hardware reference is None!"
         assert priority != None, "Node priority is None!"
         assert cmd_args != None, "Node cmdline args is None!"
@@ -552,9 +540,9 @@ class Node(Model):
         self["cmd_args"] = cmd_args
         self["deployment_path"] = deployment_path
 
-        self.children = Children(allowed=[Component_Instance(parent=self)], 
+        self.children = Children(allowed=[Component_Instance()], 
                                  cardinality=\
-                                 {str(type(Component_Instance(parent=self)))\
+                                 {str(type(Component_Instance()))\
                                   : '1..*'})
 
 class Component_Instance(Model):
@@ -565,7 +553,6 @@ class Component_Instance(Model):
         self.kind = "Component_Instance"
 
         assert name != None, "Component instance name is None!"
-        assert parent != None, "Component instance parent is None!"
         assert component_reference != None, "Component component reference is None!"
         assert scheduling_scheme != None, "Component scheduling scheme is None!"
         assert logging != None, "Component logging is None!"
@@ -587,11 +574,10 @@ class Project(Model):
     Hardware -- Describes the hardware configuration
     Deployment -- Maps software instances and hardware computers
     """
-    def __init__(self, name=Name(""), path=Path(""), parent=None):
+    def __init__(self, name=Name("NewProject"), path=Path(""), parent=None):
         super(Project, self).__init__()
         self.kind = "Project"
 
-        assert parent == None, "Project parent is not None!"
         assert name != None, "Project name is None!"
         assert path != None, "Project path is None!"
 
@@ -599,91 +585,65 @@ class Project(Model):
         self['name'] = name
         self['path'] = path
 
-        self.children = Children(allowed=[Software(parent=self), 
-                                          Hardware(parent=self), 
-                                          Deployment(parent=self)], 
-                                 cardinality={str(type(Software(parent=self))) : '1',
-                                              str(type(Hardware(parent=self)))\
+        self.children = Children(allowed=[Software(), 
+                                          Hardware(), 
+                                          Deployment()], 
+                                 cardinality={str(type(Software())) : '1',
+                                              str(type(Hardware()))\
                                               : '1..*',
-                                              str(type(Deployment(parent=self)))\
+                                              str(type(Deployment()))\
                                               : '1..*'})
 
-import json, jsonpickle
-# Sample Project
-project = Project(name=Name("NewProject"), 
-                  path=Path(""), 
-                  parent=None)
+    def new(self, 
+            name=Name("NewProject"), 
+            path=Path(""),
+            software=Software(Name("NewSoftware")),
+            hardware=Hardware(Name("NewHardware")),
+            deployment=Deployment(Name("NewDeployment")) ):
 
-software = Software(Name("Software"), 
-                    parent=project)
+        assert name != None, "Project name is None!"
+        assert path != None, "Project path is None!"        
+        assert software != None, "Project Software Model is None!"
+        assert hardware != None, "Project Hardware Model is None!"
+        assert deployment != None, "Project Deployment Model is None!"
 
-package = Package(Name("Package"), 
-                  parent=software)
+        assert name.value != "", "Project name is empty!"
+        assert path.value != "", "Project path is empty!"
 
-message = Message(Name("Message"), 
-                  Message_Definition("int64 value\nbool return_value"), 
-                  parent=package)
+        self['name'] = name
+        self['path'] = path
 
-service = Service(Name("Service"), 
-                  Service_Definition("float64 request\n---\nfloat64 response"), 
-                  parent=package)
+        self.add_child(software)
+        self.add_child(hardware)
+        self.add_child(deployment)
 
-component = Component(Name("Component"), 
-                      Component_Type("BASE"), 
-                      parent=package)
+        project_dir = os.path.join(path.value, name.value)
+        if not os.path.exists(project_dir):
+            os.makedirs(project_dir)
 
-client = Client(name=Name("myClient"),
-                service_reference=Service_Reference(service),
-                network_profile=Network_Profile("myProfile"),
-                parent=component)
+    def save(self):
+        encoder_output = json.dumps(json.loads(jsonpickle.encode(self)), indent=4)  
+        project_dir = os.path.join(self['path'].value, self['name'].value) 
+        model = os.path.join(project_dir, self['name'].value + '.rml')
+        with open(model, 'w') as model_file:
+            model_file.write(encoder_output)
 
-server = Server(name=Name("myServer"),
-                service_reference=Service_Reference(service),
-                network_profile=Network_Profile("myProfile"),
-                parent=component)
-
-publisher = Publisher( name = Name("myPub"),
-                       message_reference = Message_Reference(message),
-                       network_profile = Network_Profile("myProf"),
-                       parent = component)
-
-subscriber = Subscriber( name = Name("mySub"),
-                         message_reference = Message_Reference(message),
-                         network_profile = Network_Profile("myProf"),
-                         parent = component)
-
-timer = Timer( name = Name("myTimer"),
-               period = Period(0.1),
-               priority = Priority(10),
-               deadline = Deadline(0.1),
-               parent = component)
-               
-
-hardware = Hardware(Name("Hardware"), 
-                    parent=project)
-
-deployment = Deployment(Name("Deployment"), 
-                        parent=project)
-
-# Establish tree
-component.add_child(client)
-component.add_child(server)
-component.add_child(publisher)
-component.add_child(subscriber)
-component.add_child(timer)
-package.add_child(message)
-package.add_child(service)
-package.add_child(component)
-software.add_child(package)
-project.add_child(software)
-project.add_child(hardware)
-project.add_child(deployment)
-
+    def open(self, model=""):        
+        assert model != "", "Project path is empty!"
+        with open(model, 'r') as input_model:
+            self = jsonpickle.decode(input_model.read())
+            print self['name'].value
+        
 if __name__ == '__main__':
+    project = Project()
+    project.new(name=Name("timer_example"),
+                path=Path("/home/jeb/pranav/rosmod/samples/"))
+    project.save()
+    project.open("/home/jeb/pranav/rosmod/samples/timer_example/timer_example.rml")
 
-    encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
-    print encoder_output
-    with open('model.txt', 'w') as metamodel:
-        metamodel.write(encoder_output)
+    #encoder_output = json.dumps(json.loads(jsonpickle.encode(project)), indent=4)
+    #print encoder_output
+    #with open('model.txt', 'w') as metamodel:
+    #    metamodel.write(encoder_output)
 
 
