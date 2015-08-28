@@ -639,6 +639,18 @@ class Project(Model):
         with open(model, 'w') as model_file:
             model_file.write(encoder_output)
 
+    def save_as(self, name=None, path=None):
+        assert name != None and name.value != "", "Project name is None!"
+        assert path != None and path.value != "", "Project path is None!"
+
+        self['name'] = name
+        self['path'] = path
+
+        project_dir = os.path.join(path.value, name.value)
+        if not os.path.exists(project_dir):
+            os.makedirs(project_dir)
+        self.save()
+
     def open(self, model=""):        
         assert model != "", "Project path is empty!"
         with open(model, 'r') as input_model:
