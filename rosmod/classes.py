@@ -656,11 +656,10 @@ class Project(Model):
         with open(model, 'r') as input_model:
             self = jsonpickle.decode(input_model.read())
         
-if __name__ == '__main__':
-
+def test_project():
     # Simple Timer Example
-    my_software = Software("software")
-    timer_package = Package("timer_package")
+    my_software = Software(Name("software"))
+    timer_package = Package(Name("timer_package"))
     timer_component = Component(Name("Timer_Component"), 
                                 Component_Type("BASE"))
     timer = Timer(name = Name("periodic_timer"),
@@ -668,7 +667,7 @@ if __name__ == '__main__':
                   priority = Priority(50),
                   deadline = Deadline(0.01))
 
-    my_hardware = Hardware("hardware")
+    my_hardware = Hardware(Name("hardware"))
     bbb_111 = Computer(name = Name("BBB_111"),
                        ip_address = IP_Address("10.1.1.1"),
                        username = Username("ubuntu"),
@@ -706,7 +705,11 @@ if __name__ == '__main__':
                 software=my_software,
                 hardware=my_hardware,
                 deployment=my_deployment)
-    
+    return project
+
+if __name__ == '__main__':
+
+    project = test_project()
     project.save()
     project.open("/home/jeb/pranav/rosmod/samples/timer_example/timer_example.rml")
 
