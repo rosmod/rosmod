@@ -55,6 +55,10 @@ class Attribute(object):
     kind -- The datatype of the attribute e.g. string, float, bool etc.
     value -- The value of the attributes e.g. "my_component", 1.642 etc.
     """
+    tooltip = ''
+    display = ''
+    options = []
+    editable = True
     def __init__(self, kind, value):
         super(Attribute, self).__init__()
         self.kind = kind
