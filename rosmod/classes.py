@@ -4,7 +4,7 @@
 
 from collections import OrderedDict, MutableSequence
 import os
-import json, jsonpickle
+import jsonpickle
 
 class Children(MutableSequence):
     """Children List
@@ -637,7 +637,8 @@ class Project(Model):
             os.makedirs(project_dir)
 
     def save(self):
-        encoder_output = json.dumps(json.loads(jsonpickle.encode(self)), indent=4)  
+        jsonpickle.set_encoder_options('simplejson',indent=4)
+        encoder_output = jsonpickle.encode(self)
         project_dir = os.path.join(self['path'].value, self['name'].value) 
         model = os.path.join(project_dir, self['name'].value + '.rml')
         with open(model, 'w') as model_file:
