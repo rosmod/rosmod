@@ -64,6 +64,12 @@ class Attribute(object):
         self.kind = kind
         self.value = value
 
+    def __setitem__(self, key, val):
+        self.value[key] = val
+
+    def __getitem__(self, key):
+        return self.value[key]
+
 class Name(Attribute):  
     """Name Attribute"""
     tooltip = "A Name is a word or term used for identification"
@@ -265,7 +271,13 @@ class Model(object):
         self[name] = Attribute(kind, value)
 
     def get_children(self, kind):
-        return [child for child in self.children if child.kind == kind]
+        if self.kind == kind:
+            return [self]
+        else:
+            kids = []
+            for c in self.children:
+                kids.extend(c.get_children(kind))
+            return kids
 
 class Software(Model):
     """Software Class
