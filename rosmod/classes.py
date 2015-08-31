@@ -661,6 +661,8 @@ class Project(Model):
         with open(model, 'r') as input_model:
             self = jsonpickle.decode(input_model.read())
         
+root = Project()
+
 def test_project():
     # Simple Timer Example
     my_software = Software(Name("software"))
