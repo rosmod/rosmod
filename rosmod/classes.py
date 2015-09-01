@@ -689,6 +689,14 @@ def test_project():
                                  Component_Type("BASE"))
     receiver_component = Component(Name("Receiver_Component"),
                                    Component_Type("BASE"))
+    client = Client(Name("client"),
+                    Service_Reference(service))
+    server = Server(Name("server"),
+                    Service_Reference(service))
+    pub = Publisher(Name("pub"),
+                    Message_Reference(message))
+    sub = Subscriber(Name("sub"),
+                     Service_Reference(message))
     timer = Timer(name = Name("periodic_timer"),
                   period = Period(1.0),
                   priority = Priority(50),
@@ -725,6 +733,10 @@ def test_project():
     # Establish Tree
     timer_component.add_child(timer)
     sender_component.add_child(timer2)
+    sender_component.add_child(pub)
+    sender_component.add_child(client)
+    receiver_component.add_child(server)
+    receiver_component.add_child(sub)
     timer_package.add_child(service)
     timer_package.add_child(message)
     timer_package.add_child(receiver_component)
