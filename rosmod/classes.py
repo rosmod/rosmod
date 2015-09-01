@@ -89,14 +89,14 @@ class Message_Definition(Attribute):
     tooltip = "Describes a message that ROS nodes publish"
     display = "Message Definition"
     def __init__(self, value):
-        super(Message_Definition, self).__init__("string",value)
+        super(Message_Definition, self).__init__("code",value)
 
 class Service_Definition(Attribute):
     """Definition Attribute"""
     tooltip = "Describes a ROS service interface"
     display = "Service Definition"
     def __init__(self, value):
-        super(Service_Definition, self).__init__("string",value)
+        super(Service_Definition, self).__init__("code",value)
 
 class Component_Type(Attribute):
     """Type Attribute"""
@@ -679,9 +679,21 @@ def test_project():
     # Simple Timer Example
     my_software = Software(Name("software"))
     timer_package = Package(Name("timer_package"))
+    message = Message(Name("msg1"),
+                      Message_Definition("int8 test"))
+    service = Service(Name("srv1"),
+                      Service_Definition("int8 test\n---\nbool retVal"))
     timer_component = Component(Name("Timer_Component"), 
                                 Component_Type("BASE"))
+    sender_component = Component(Name("Sender_Component"),
+                                 Component_Type("BASE"))
+    receiver_component = Component(Name("Receiver_Component"),
+                                   Component_Type("BASE"))
     timer = Timer(name = Name("periodic_timer"),
+                  period = Period(1.0),
+                  priority = Priority(50),
+                  deadline = Deadline(0.01))
+    timer2 = Timer(name = Name("sender_timer"),
                   period = Period(1.0),
                   priority = Priority(50),
                   deadline = Deadline(0.01))
@@ -712,6 +724,11 @@ def test_project():
                                                               "CRITICAL" : False}))
     # Establish Tree
     timer_component.add_child(timer)
+    sender_component.add_child(timer2)
+    timer_package.add_child(service)
+    timer_package.add_child(message)
+    timer_package.add_child(receiver_component)
+    timer_package.add_child(sender_component)
     timer_package.add_child(timer_component)
     my_software.add_child(timer_package)
     my_hardware.add_child(bbb_111)
