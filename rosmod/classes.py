@@ -1,10 +1,19 @@
-# ROSMOD Classes
-# Author: Pranav Srinivas Kumar
-# Date: 2015.07.22
+#!/usr/bin/env python
 
-from collections import OrderedDict, MutableSequence
+"""This file defines the ROSMOD metamodel."""
+
+__author__ = "Pranav Srinivas Kumar"
+__copyright__ = "Copyright 2015, ROSMOD"
+__credits__ = ["Pranav Srinivas Kumar", "William Emfinger"]
+__license__ = "GPL"
+__version__ = "0.4"
+__maintainer__ = "Pranav Srinivas Kumar"
+__email__ = "pkumar@isis.vanderbilt.edu"
+__status__ = "Production"
+
 import os
 import jsonpickle
+from collections import OrderedDict, MutableSequence
 
 class Children(MutableSequence):
     """Children List
