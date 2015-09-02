@@ -36,6 +36,7 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
     }
 #if $len($subscribers) > 0
   uint64_t capacityBits = 400000;
+  bool enable_sendback = true;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
@@ -45,6 +46,10 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
       if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
 	{
 	  capacityBits = atoi(node_argv[i+1]) * 8;
+	}
+      if (!strcmp(node_argv[i], "--disable_sendback"))
+	{
+	  enable_sendback = false;
 	}
     }
 #for $sub in $subscribers
@@ -59,7 +64,9 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
       else
 	${sub.properties['name']}_recv_mw.set_duration(tg_duration);
       fName = nodeName + "." + compName + ".${sub.properties['name']}.network.csv";
+      ${sub.properties['name']}_recv_mw.set_enable_sendback(enable_sendback);
       ${sub.properties['name']}_recv_mw.set_output_filename(fName);
+      ${sub.properties['name']}_recv_mw.set_recv_done_callback(boost::bind(&$component_name::mw_recv_done_callback, this, &${sub.properties['name']}_recv_mw));
       ${sub.properties['name']}_id = 0;
     }
   if (config.portSenderMap.find("$sub.properties['name']") != config.portSenderMap.end())
@@ -75,6 +82,7 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
 #end if
 #if $len($publishers) > 0
   max_data_length = 8192;
+  tg_misbehave = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--max_data_length_bytes"))
@@ -84,6 +92,10 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
       if (!strcmp(node_argv[i], "--max_data_length_bits"))
 	{
 	  max_data_length = atoi(node_argv[i+1]) / 8;
+	}
+      if (!strcmp(node_argv[i], "--tg_misbehave"))
+	{
+	  tg_misbehave = true;
 	}
     }
   ros::NodeHandle nh;
@@ -141,6 +153,7 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
+      LOGGER.DEBUG("Prevented from sending on the network!");
     }
 
   if ( ros::Time::now() >= ${pub.properties['name']}_send_mw.get_end_time() )
@@ -150,6 +163,8 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
     }
   else
     {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
       ros::TimerOptions timer_options;
       timer_options = 
 	ros::TimerOptions
@@ -165,6 +180,15 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
 #end if
 
 #if $len($subscribers) > 0
+#if $trafficGen
+void $component_name::mw_recv_done_callback(Network::receiver* receiver_mw)
+{
+  LOGGER.DEBUG("Writing middleware log.");
+  LOGGER.DEBUG("Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
+  receiver_mw->record();
+}
+#end if
+
 #for $sub in $subscribers
 // Subscriber Callback - ${sub.properties["name"]}
 #if $sub.properties["business_logic"] == ""
@@ -181,14 +205,6 @@ void $component_name::${sub.properties["name"]}_OnOneData(const $sub.properties[
   uint64_t msgBytes = ros::serialization::Serializer<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>::serializedLength(*received_data);
   ros::Time now = ros::Time::now();
   ${sub.properties['name']}_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
-  uint64_t currentSize = ${sub.properties['name']}_recv_mw.buffer.bits();
-  uint64_t currentCapacity = ${sub.properties['name']}_recv_mw.buffer.capacityBits();
-  if ( currentCapacity > 0 )
-    {
-      double utilization = (double)currentSize/(double)currentCapacity;
-      if ( utilization > 0.95 )
-	${sub.properties['name']}_recv_mw.limit_ddos(now, 1.0);
-    }
   Network::Message new_msg;
   new_msg.Bytes(msgBytes);
   new_msg.Id(${sub.properties['name']}_id++);

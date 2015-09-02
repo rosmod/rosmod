@@ -89,6 +89,10 @@ private:
 #end for
 #end if
 #if $len($subscribers) > 0
+#if $trafficGen
+  // callback func for when servers are done receiving data
+  void mw_recv_done_callback(Network::receiver* receiver_mw);
+#end if
 #for $sub in $subscribers
   // Subscriber
   ros${mod}::Subscriber $sub.properties["name"];
@@ -103,6 +107,8 @@ private:
 #end if
 #if $len($publishers) > 0
 #if $trafficGen
+  // do we abide by the profiles?
+  bool tg_misbehave;
   // size of messages generated
   uint64_t max_data_length;
 #end if

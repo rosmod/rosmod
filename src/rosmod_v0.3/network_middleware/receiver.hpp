@@ -17,9 +17,9 @@ namespace Network
   {
   public:
     receiver()
+      : enable_sendback(true),
+	received_data(false)
     {
-      received_data = false;
-      
       sd = socket(AF_INET, SOCK_DGRAM, 0);
       if(sd < 0)
 	{
@@ -50,10 +50,12 @@ namespace Network
 	printf("Setting the local interface...OK\n");
     }
 
-    int init(int argc, char ** argv, std::string prof_str, uint64_t buffer_capacity_bits)
+    int init(int argc, char ** argv, std::string prof_str, uint64_t buff_capacity_bits)
     {
+      this->buffer_capacity_bits = buff_capacity_bits;
       profile.initializeFromString((char *)prof_str.c_str());
-      buffer.set_capacityBits(buffer_capacity_bits);
+      //buffer.set_capacityBits(this->buffer_capacity_bits);
+      buffer.set_capacityBits(0);
 
       boost::thread *tmr_thread =
 	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
@@ -83,6 +85,8 @@ namespace Network
 
     void set_duration(double dur) { duration = ros::Duration(dur); }
     void set_output_filename(std::string filename) { output_filename = filename; }
+    void set_recv_done_callback(boost::function<void()> func) { callback_func = func; }
+    void set_enable_sendback(bool sendback) { enable_sendback = sendback; }
 
     void update_sender_stream(uint64_t uuid, ros::Time t, uint64_t new_size)
     {
@@ -119,12 +123,15 @@ namespace Network
 	{
 	  // UPDATE SENDERS IF BUFFER IS CLEARING:
 	  uint64_t currentSize = buffer.bits();
-	  uint64_t currentCapacity = buffer.capacityBits();
-	  if ( currentCapacity > 0 )
+	  uint64_t currentCapacity = this->buffer_capacity_bits;//buffer.capacityBits();
+	  if ( currentCapacity > 0 and enable_sendback )
 	    {
 	      double utilization = (double)currentSize/(double)currentCapacity;
+	      ros::Time now = ros::Time::now();
 	      if ( utilization < 0.75 )
 		unlimit_ddos();
+	      else if (utilization > 0.9)
+		limit_ddos(now, 1.0);
 	    }
 	  // READ FROM THE BUFFER
 	  double timerDelay = -1;
@@ -147,10 +154,8 @@ namespace Network
 	    }
 	  if ( ros::Time::now() >= endTime )
 	    {
-	      printf("writing output\n");
-	      printf("max buffer: %lu\n", buffer.maxBits());
-	      printf("received msgs: %lu\n", messages.size());
-	      Network::write_data(output_filename.c_str(),messages);
+	      if (this->callback_func)
+		this->callback_func();
 	      break;
 	    }
 	  else
@@ -160,6 +165,14 @@ namespace Network
 		ros::Duration(timerDelay).sleep();
 	    }
 	}
+    }
+
+    void record()
+    {
+      printf("writing output\n");
+      printf("max buffer: %lu\n", buffer.maxBits());
+      printf("received msgs: %lu\n", messages.size());
+      Network::write_data(output_filename.c_str(),messages);
     }
 
     int unlimit_ddos(void)
@@ -206,9 +219,14 @@ namespace Network
     ros::Duration duration;
     ros::Time endTime;
     bool received_data;
+    bool enable_sendback;
+
+    uint64_t buffer_capacity_bits;
     
     int sd;
     struct sockaddr_in groupSock;
+
+    boost::function<void()> callback_func;
 
     std::string output_filename;
 
