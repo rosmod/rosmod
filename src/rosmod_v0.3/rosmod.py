@@ -902,7 +902,13 @@ class Example(wx.Frame):
         if inputs != OrderedDict():
             numPeriods = int(inputs['numPeriods'])
             multicast = bool(inputs['multicast'])
-            analysis.AnalyzeDeployment(dep,period,numPeriods)
+            class options:
+                def __init__(self, mc, np, p):
+                    self.num_periods = np
+                    self.multicast = mc
+                    self.plot = p
+            opts = options(numPeriods, multicast, True)
+            analysis.AnalyzeDeployment(dep,opts)
 
     def AnalyzeTiming(self, dep):
         self.project.generate_cpn()

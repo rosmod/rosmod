@@ -243,6 +243,47 @@ def analyze_config(config, options):
                                                                        config,
                                                                        options)
 
+def AnalyzeDeployment( deployment, options ):
+    config = Config()
+    rhw = deployment.properties['rhw_reference']
+    if config.ParseFromString( rhw.properties['system_network_profile'] ) == - 1:
+        print >> sys.stderr, "ERROR, COULD NOT PARSE CONFIG IN {}".format( rhw.properties['name'] )
+        return -1
+
+    hostToNodeListMap = {}
+    for node in deployment.getChildrenByKind("Node"):
+        host = node.properties['hardware_reference']
+        host_name = host.properties['name']
+        hostProf = Profile()
+        if hostProf.ParseFromString(host.properties['system_network_profile']) == -1:
+            print >> sys.stderr, "ERROR: Couldn't parse profile for {}".format(host_name)
+            return -1
+        hostProf.node_id = host_name
+        hostProf.kind = 'provided'
+        config.addProfile(hostProf)
+        hostToNodeListMap.setdefault(host,[]).append(node)
+
+    for host,nodes in hostToNodeListMap.iteritems():
+        for node in nodes:
+            for compInst in node.children:
+                for port in compInst.properties['component_reference'].children:
+                    if 'port_network_profile' in port.properties and\
+                       ',' in port.properties['port_network_profile']:
+                        portProf = Profile()
+                        port_name = port.properties['name']
+                        if portProf.ParseFromString(port.properties['port_network_profile']) == -1:
+                            print >> sys.stderr, "ERROR: Couldn't parse profile for {}".format(port_name)
+                            return -1
+                        # UPDATE PROFILE HERE FOR NODE, FLOW TYPE, KIND
+
+    for fName in fNames:
+        newProf = Profile()
+        if newProf.ParseFromFile(fName) == -1:
+            print "ERROR: could not parse {}".format(fName)
+            return -1
+        print "Profile {} has a period of {} seconds".format(fName, newProf.period)
+        config.addProfile(newProf)
+
 def main(argv):
     """
     Performs the main analysis of the profiles using the following steps:
