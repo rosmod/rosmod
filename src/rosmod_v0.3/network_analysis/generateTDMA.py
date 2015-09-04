@@ -64,7 +64,15 @@ class Options:
         return 0
 
 class TDMA:
+    """
+    A TDMA period describes when nodes can transmit in which slots on the network during a given period.
+    """
     def __init__(self,period,slots,selectedSlot):
+        """
+        :param double period: the period of the TDMA profile
+        :param int slots: number of slots this TDMA profile has
+        :param int selectedSlot: which slot are we analyzing?
+        """
         self.period = period
         self.slots = slots
         self.selectedSlot = selectedSlot
@@ -94,6 +102,12 @@ class ProfileEntry:
         self.interface = fields[3]
 
 def generateNewProfile(oldProfile,tdma):
+    """
+    Create a TDMA profile network Profile from a regular network Profile
+
+    :param list oldProfile: list of :class:`networkProfile.ProfileEntry` describing the original profile
+    :param class tdma: a :class:`generateTDMA.TDMA` object describing the TDMA scheme
+    """
     newProfile = []
     for interval in oldProfile:
         tdmaBandwidth = interval.bandwidth * tdma.slots

@@ -245,6 +245,9 @@ meta_class_dict['signal'] = Grammar_Field(
     display_name = "Signal"
 )
 
+meta_class_dict["multicast"] = Grammar_Field( # for analysis
+    kind="boolean", 
+    display_name = "Multicast Enabled?")
 meta_class_dict["numPeriods"] = Grammar_Field( # for analysis
     kind="string", 
     display_name = "Number of Periods")

@@ -57,7 +57,7 @@ network_analysis = os.path.realpath(os.path.abspath
                             ))
 if network_analysis not in sys.path:
     sys.path.insert(0, network_analysis)
-import acceptance
+import analysis
 
 def MakeAdd(self,kind):
     def GenericAdd(e):
@@ -893,16 +893,16 @@ class Example(wx.Frame):
     def AnalyzeNetwork(self, dep):
         print "Analyzing network characteristics for deployment: {}".format(dep.properties["name"])
         properties = OrderedDict()
-        properties['period'] = "5400"
+        properties['multicast'] = True
         properties['numPeriods'] = "1"
         inputs = dialogs.EditorWindow( parent = self,
                                  editObj = None,
                                  editDict = properties,
                                  title = 'Network Analysis Options')
         if inputs != OrderedDict():
-            period = float(inputs['period'])
             numPeriods = int(inputs['numPeriods'])
-            acceptance.AnalyzeDeployment(dep,period,numPeriods)
+            multicast = bool(inputs['multicast'])
+            analysis.AnalyzeDeployment(dep,period,numPeriods)
 
     def AnalyzeTiming(self, dep):
         self.project.generate_cpn()

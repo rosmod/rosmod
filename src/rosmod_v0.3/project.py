@@ -329,7 +329,13 @@ class ROSMOD_Project(Drawable_Object):
             return
         #print "ROSMOD::Parsing System Network Profiles!"
         for filename in os.listdir(dirname):
-            if len(filename.split('.')) == 3:
+            if len(filename.split('.')) == 2:
+                rhw_name = filename.split('.')[0]
+                snp_file = open(os.path.join(dirname, filename), 'r')
+                for rhw in self.getChildrenByKind("rhw"):
+                    if rhw.properties['name'] == rhw_name:
+                        rhw.properties['system_network_profile'] = snp_file.read()
+            elif len(filename.split('.')) == 3:
                 rhw_name = filename.split('.')[0]
                 hardware_name = filename.split('.')[1]
                 snp_file = open(os.path.join(dirname, filename), 'r')
@@ -582,6 +588,16 @@ class ROSMOD_Project(Drawable_Object):
                 temp_file.write(self.rhw)
                 temp_file.close()
             print "ROSMOD::Saving " + rhw.properties["name"] + ".rhw " + "at " + path
+
+            if "system_network_profile" in rhw.properties.keys():
+                path = self.hardware_path + "/snp"
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                filename = rhw.properties["name"] + ".snp"
+                if rhw.properties["system_network_profile"] != "":
+                    with open(os.path.join(path, filename), 'w') as temp_file:
+                        temp_file.write(rhw.properties["system_network_profile"])
+            
             for hardware in rhw.children:
                 self.save_snp(hardware)
 

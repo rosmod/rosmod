@@ -1,523 +1,472 @@
+"""
+Network Profile implements the Profile class.  
+This class provides all the members and functions neccessary to 
+model, compose, and analyze network profiles for applications 
+and systems.  
+"""
 
-import sys, os, csv, copy, glob
-from acceptancemathlib import *
-havePLT = False
-try:
-    import matplotlib.pyplot as plt
-    havePLT=True
-except ImportError:
-    pass
+import copy,sys
+import utils
+from collections import OrderedDict
+from decimal import *
 
-PLOT_WIDTH = 4 # line width for plots
-FONT_SIZE = 25 # font size for plots
+class Profile:
+    """
+    Profile contains the information about a single network profie.
+    A network profile has a kind (e.g. 'provided'), a period (in seconds),
+    and a lists of relevant data vs time series (e.g. bandwidth, latency, data, etc.).
+    """
 
-class ProfileEntry:
-    def __init__(self,start=0,end=0,bandwidth=0,data=0,interface='none',ptype='none'):
-        self.start = start
-        self.end = end
-        self.bandwidth = bandwidth
-        self.data = data
-        self.interface = interface
-        self.ptype = ptype
-
-    def __lt__(self, other):
-        return self.start < other.start
-
-    def __repr__(self):
-        return "ProfileEntry()"
+    #: Sepearates fileds in a line in a profile file
+    field_delimeter = ','
+    #: Denotes headers (profile properties) in a profile file
+    header_delimeter = '#'
+    #: Denotes commends in the profile file
+    comment_delimeter = '%'
+    #: Splits lines in a profile file
+    line_delimeter = '\n'
+    #: Strip lines starting with these delimeters to get just profile data
+    special_delimeters = [header_delimeter, comment_delimeter]
+    #: Which profiles are interpolated between points
+    interpolated_profiles = ['data','latency']
     
-    def __str__(self):
-        return "{0},{1},{2},{3},{4},{5}".format(self.start,self.end,self.bandwidth,self.data,self.interface,self.ptype)
+    def __init__(self, kind = None, period = 0, priority = 0,
+                 node = 0, flow_type = None, num_periods = 1, sender_names = []):
+        """
+        :param string kind: what kind of profile is it?
+        :param double period: what is the periodicity (in seconds) of the profile
+        :param int priority: what is the priority of the flow in the system
+        :param int source: what is the node id from which the data on this profile will be sent
+        :param int dest: what is the node id to which the data on this profile will be sent
+        """
+        self.kind = kind              #: The kind of this profile, e.g. 'required'
+        self.period = period          #: The length of one period of this profile
+        self.priority = priority      #: The priority of the profile; relevant for 'required' profiles
+        self.node_id = node           #: The node ID which is the source of this profile
+        self.flow_type = flow_type    #: This flow is the reciever for which sender flows?
+        self.entries = OrderedDict()  #: Dictionary of 'type name' : 'list of [x,y] points' k:v pairs 
 
-class NodeProfile:
-    def __init__(self,period,num_periods):
-        self.profile = []
-        self.required = []
-        self.apps = []
-        self.provided = []
-        self.link = []
-        self.period = period
-        self.num_periods = num_periods
-        self.buffer = [0,0,0]
-        self.delay = [0,0,0]
-        self.interfaces = []
+    def ParseHeader(self, header):
+        """
+        Parses information from the profile's header if it exists:
 
-    def getProvidedProfile(self,interface):
-        retProfile = []
-        for e in self.provided:
-            if e.interface == interface:
-                retProfile.append(e)
-        return retProfile
+        * period
+        * priority
+        * node ID
+        * flow_type             (for matching senders <--> receivers)
+        * profile kind          (provided, required, receiver, output, leftover)
 
-    def addProvidedProfile(self,profile):
-        p = profile.split('\n')
-        self.provided = []
-        if p == None or profile == '':
-            return
+        A profile header is at the top of the file and has the following syntax::
+
+            # <property> = <value>
+
+        """
+        if header:
+            for line in header:
+                line.strip('#')
+                prop, value = line.split('=')
+                if "period" in prop:
+                    self.period = Decimal(value)
+                elif "priority" in prop:
+                    self.priority = int(value)
+                elif "node ID" in prop:
+                    self.node_id = value.strip()
+                elif "flow type" in prop:
+                    self.flow_type = value.strip()
+                elif "kind" in prop:
+                    self.kind = value.strip()
+
+    def ParseFromFile(self, prof_fName):
+        """
+        Builds the entries from a properly formatted CSV file.  
+        Internally calls :func:`Profile.ParseFromString`.
+        """
+        prof_str = None
+        try:
+            with open(prof_fName, 'r+') as f:
+                prof_str = f.read()
+        except:
+            print >> sys.stderr, "ERROR: Couldn't find/open {}".format(prof_fName)
+            return -1
+        if prof_str == None:
+            return -1
+        return self.ParseFromString( prof_str )
+
+    def ParseFromString(self, prof_str):
+        """
+        Builds the entries from a string (line list of csv's formatted as per
+        :func:`ParseEntriesFromLine`).
+        """
+        if not prof_str:
+            print >> sys.stderr, "ERROR: String contains no profile spec!"
+            return -1
+        lines = prof_str.split(self.line_delimeter)
+        header = [l for l in lines if self.header_delimeter in l]
+        self.ParseHeader(header)
+        p = copy.copy(lines)
+        for s in self.special_delimeters:
+            p = [l for l in p if s not in l]
         for line in p:
-            entry = get_entry_from_line(line)
-            if entry != None:
-                entry.ptype = 'provided'
-                self.provided.append(entry)
-        if len(self.provided) == 0:
-            return
-        for i in range(0,len(self.provided)-1):
-            if self.provided[i].interface not in self.interfaces:
-                self.interfaces.append(self.provided[i].interface)
-            if self.provided[i].interface == self.provided[i+1].interface:
-                self.provided[i].end = self.provided[i+1].start
+            if self.ParseEntriesFromLine(line):
+                return -1
+        self.EntriesRemoveDegenerates()
+        self.EntriesStartFill()
+        return 0
+
+    def ParseEntriesFromLine(self, line_str):
+        """
+        Builds the [time, value] list for each type of value into entries:
+        
+        * slope
+        * max slope
+        * latency
+
+        These values are formatted in the csv as::
+
+            <time>, <slope>, <max slope>, <latency>
+
+        """
+        if line_str:
+            fields = line_str.split(self.field_delimeter)
+            if len(fields) == 4:
+                time = Decimal(fields[0])
+                slope = Decimal(fields[1])
+                maxSlope = Decimal(fields[2])
+                latency = Decimal(fields[3])
+                self.entries.setdefault('slope',[]).append([time, slope])
+                self.entries.setdefault('max slope',[]).append([time, maxSlope])
+                self.entries.setdefault('latency',[]).append([time, latency])
             else:
-                self.provided[i].end = self.period
-        self.provided[-1].end = self.period        
-        self.provided = sorted(self.provided)
-        for intf in self.interfaces:
-            prof = self.getProvidedProfile(intf)
-            if prof[0].start > 0:
-                entry = ProfileEntry()
-                entry.start = 0
-                entry.end = prof[0].start
-                entry.ptype = 'provided'
-                entry.interface = intf
-                self.provided.insert(0,entry)
-
-        originalProvided = copy.deepcopy(self.provided)
-        pData = {}
-        for intf in self.interfaces:
-            prof = self.getProvidedProfile(intf)
-            pData[intf] = prof[-1].data
-        for i in range(1,self.num_periods):
-            tmpProvided = copy.deepcopy(originalProvided)
-            for e in tmpProvided:
-                e.data += pData[e.interface]
-                e.start += self.period*i
-                e.end += self.period*i
-                self.provided.append(e)
-            for data in pData:
-                data += data
-        return
-
-    def addRequiredEntry(self, entry):
-        if self.required == [] or entry.start >= self.required[-1].end:
-            self.required.append(entry)
-        elif entry.start > self.required[-1].start:
-            entry.bandwidth += self.required[-1].bandwidth
-            self.required[-1].end = entry.start
-            self.required.append(entry)
-        elif entry.end < self.required[0].start:
-            self.required.insert(0,entry)
-        else:
-            for i in range(0,len(self.required)):
-                if entry.start <= self.required[i].start:
-                    endTime = entry.end
-                    addedBW = entry.bandwidth
-                    if i != 0:
-                        self.required[i-1].end = entry.start
-                        entry.bandwidth = self.required[i-1].bandwidth + addedBW
-                    if endTime >= self.required[i-1].end:
-                        entry.end = self.required[i].start
-                        self.required.insert(i,entry)
-                        i+=1                        
-                    while i < len(self.required) and endTime >= self.required[i].end:
-                        self.required[i].bandwidth += addedBW
-                        i+=1
-                    if i < len(self.required) and endTime < self.required[i].end:
-                        remainingEntry = ProfileEntry(start=endTime,end=self.required[i].end,bandwidth=self.required[i].bandwidth,ptype='required')
-                        self.required[i].bandwidth += addedBW
-                        self.required[i].end = endTime
-                        self.required.insert(i+1,remainingEntry)
-                    break
-            for r in self.required:
-                if r.start == r.end:
-                    self.required.remove(r)
-        return
-
-    def addRequiredProfile(self,profile):
-        if profile == '':
-            return -1
-        p = profile.split('\n')
-        if p == '' or p == None:
-            return -1
-
-        entryList = []
-        for line in p:
-            entry = get_entry_from_line(line)
-            if entry != None:
-                entry.ptype = 'required'
-                entryList.append(entry)
-        entryList = sorted(entryList)
-        for i in range(0,len(entryList)-1):
-            entryList[i].end = entryList[i+1].start
-        entryList[-1].end = self.period
-
-        appList = copy.deepcopy(entryList)
-        for a in appList:
-            a.ptype = 'app'
-        self.apps.append(appList)
-
-        if len(self.required) == 0:
-            for e in entryList:
-                self.required.append(e)
-        else:
-            for e in entryList:
-                self.addRequiredEntry(e)
-        if len(self.required) > 0 and self.required[0].start > 0:
-            entry = ProfileEntry()
-            entry.start = 0
-            entry.end = self.required[0].start
-            entry.ptype = 'required'
-            self.required.insert(0,entry)
-
-        if len(self.required) > 0:
-            originalRequired = copy.deepcopy(self.required)
-            pData = self.required[-1].data
-            for i in range(1,self.num_periods):
-                tmpRequired = copy.deepcopy(originalRequired)
-                for e in tmpRequired:
-                    e.data += pData
-                    e.start += self.period*i
-                    e.end += self.period*i
-                    self.required.append(e)
-                pData += pData
-        return
-
-    def convolve(self,interface):
-        if len(self.required) == 0:
-            print "ERROR: no required profiles on this node!"
-            return -1
-        if len(self.provided) == 0:
-            print "ERROR: no provided profiles on this node"
-            return -1
-        self.profile = []
-        for e in self.provided:
-            if e.interface == interface:
-                self.profile.append(e)
-        for e in self.required:
-            self.profile.append(e)
-        self.profile = sorted(self.profile)
-        pInterval = None
-        rInterval = None
-        self.link = []
-        buff = 0
-        delay = [0,0,0]
-        pOffset = 0
-        pEndData = 0
-        rEndData = 0
-        for e in self.profile:
-            if e.ptype == 'provided':
-                pInterval = e
-            else:
-                rInterval = e
-            # note: the way intervals are created, the
-            #       req and prov intervals will always overlap
-            #       and adjacent intervals will never overlap
-            if pInterval != None and rInterval != None:
-                start = 0
-                end = 0
-                # get the later start value
-                if pInterval.start < rInterval.start:
-                    start = rInterval.start
-                elif pInterval.start == rInterval.start:
-                    start = rInterval.start
-                elif pInterval.start > rInterval.start:
-                    start = pInterval.start
-                # get the earlier end value
-                if pInterval.end < rInterval.end:
-                    end = pInterval.end
-                    pEndData = pInterval.data - pOffset
-                    rEndData = rInterval.data - rInterval.bandwidth*(rInterval.end-end)
-                elif pInterval.end == rInterval.end:
-                    end = pInterval.end
-                    pEndData = pInterval.data - pOffset
-                    rEndData = rInterval.data
-                elif pInterval.end > rInterval.end:
-                    end = rInterval.end
-                    pEndData = pInterval.data - pOffset - pInterval.bandwidth*(pInterval.end-end)
-                    rEndData = rInterval.data 
-                # create interval entry for link profile
-                entry = ProfileEntry()
-                entry.ptype = 'link'
-                entry.start = start
-                entry.end = end
-                # link interval time bounds configured; now to calc data
-                if pEndData <= rEndData:
-                    # set entry data
-                    entry.data = pEndData
-                    buff = rEndData - pEndData
-                    if buff > self.buffer[2]:
-                        self.buffer = [entry.end,entry.data,buff]
-                else:
-                    # set entry data and see if there was a profile crossing
-                    if len(self.link) == 0 or self.link[-1].data < rEndData:
-                        rData = rInterval.bandwidth*(rInterval.end - start)
-                        rStart= rInterval.data - rInterval.bandwidth*(rInterval.end - rInterval.start)
-                        pStart= pInterval.data - pOffset - pInterval.bandwidth*(pInterval.end - pInterval.start)
-                        point = get_intersection([pInterval.start,pStart],[pInterval.end,pInterval.data-pOffset],[rInterval.start,rStart],[rInterval.end,rInterval.data])
-                        if point[0] != -1:
-                            xEntry = ProfileEntry()
-                            xEntry.ptype = 'link'
-                            xEntry.start = start
-                            xEntry.end = point[0]
-                            xEntry.data = point[1]
-                            self.link.append(xEntry)
-                            entry.start = xEntry.end
-                    entry.data = rEndData
-                self.link.append(entry)
-                # do we need to add to the offset?
-                if pEndData >= rEndData:
-                    pOffset += pEndData - rEndData
-        self.link = [e for e in self.link if e.start != e.end]
-        lData = 0
-        for e in self.link:
-            e.bandwidth = (e.data - lData)/(e.end-e.start)
-            lData = e.data
-        self.calcDelay()
+                print >> sys.stderr,"{} must be formatted:".format(line_str)
+                print >> sys.stderr,"\t<time>, <slope>, <max slope>, <latency>"
+                return -1
         return 0
 
-    def calcDelay(self):
-        if len(self.required) == 0:
-            print "ERROR: no required profiles on this node!"
-            return -1
-        if len(self.link) == 0:
-            print "ERROR: profiles have not been convolved; no link profile exists!"
-            return -1
-        delay = [0,0,0]
-        # match required points to link profile horizontally
-        for r in self.required:
-            for l in self.link:
-                if l.data > r.data:
-                    offset = l.end-(l.data-r.data)/l.bandwidth
-                    timeDiff = offset-r.end
-                    if timeDiff > delay[2] and delay[1] != r.data:
-                        delay = [r.end,r.data,timeDiff]
-                    break
-                elif l.data == r.data:
-                    timeDiff = l.end - r.end
-                    if timeDiff > delay[2] and delay[1] != r.data:
-                        delay = [r.end,r.data,timeDiff]
-                    break
-        # match link points to required profile horizontally
-        for l in self.link:
-            for r in self.required:
-                if l.data < r.data:
-                    offset = r.end-(r.data-l.data)/r.bandwidth
-                    timeDiff = l.end - offset
-                    if timeDiff > delay[2] and l.data != delay[1]:
-                        delay = [offset,l.data,timeDiff]
-                    break
-        self.delay = delay
-        return 0
+    def EntriesRemoveDegenerates(self):
+        """Remove duplicate entries by time stamp."""
+        for key, values in self.entries.iteritems():
+            values = utils.remove_degenerates(values)
+        
+    def AggregateSlopes(self):
+        """Remove sequential entries which have the same slope."""
+        self.entries['slope'] = utils.aggregate(self.entries['slope'])
 
-    def calcData(self):
-        if len(self.required) == 0:
-            print "ERROR: no required profiles on this node!"
-            return -1
-        if len(self.provided) == 0:
-            print "ERROR: no provided profiles on this node"
-            return -1
-        rData = 0
-        pData = {}
-        for intf in self.interfaces:
-            pData[intf] = 0
-        for e in self.required:
-            rData += e.bandwidth*(e.end-e.start)
-            e.data = int(rData)
-        for e in self.provided:
-            pData[e.interface] += e.bandwidth*(e.end-e.start)
-            e.data = int(pData[e.interface])
-        for a in self.apps:
-            rData = 0
-            for e in a:
-                rData += e.bandwidth*(e.end-e.start)
-                e.data = int(rData)
-        return 0
+    def EntriesStartFill(self):
+        """Make sure all entries have a start time of 0."""
+        for name, values in self.entries.iteritems():
+            if values[0][0] > 0:
+                values.insert(0,[0,0])
 
-    def plotProfile(self,dtype,profile,ptype,dashes,label=''):
-        xvals = []
-        yvals = []
-        if dtype == 'data':
-            xvals.append(0)
-            yvals.append(0)
-        for e in profile:
-            if e.ptype == ptype:
-                if dtype == 'bandwidth':
-                    xvals.append(e.start)
-                    yvals.append(e.bandwidth)
-                    yvals.append(e.bandwidth)
-                else:
-                    yvals.append(e.data)
-                xvals.append(e.end)
+    def Repeat(self, num_periods):
+        """Copy the current profile entries over some number of its periods."""
+        keys = ['slope', 'max slope', 'latency']
+        for key in keys:
+            if key in self.entries:
+                self.entries[key] = utils.repeat(self.entries[key], self.period, num_periods)
 
-        line, =plt.plot(xvals,yvals,label=r"{0}{1} {2}".format(label,ptype,dtype),linewidth=PLOT_WIDTH)
-        line.set_dashes(dashes)  
-        return
+    def Integrate(self, time):
+        """Integrates the slope entries to produce data entries up to *time*"""
+        self.AggregateSlopes()
+        self.entries['data'] = utils.integrate(self.entries['slope'], time)
 
-    def plotData(self):
-        if not havePLT:
-            print >> sys.stderr, "ERROR DISPLAYING PLOT: you must have python-matplotlib installed!"
-            return
-        plt.figure(2)
-        plt.hold(True)
-        self.plotProfile('data',self.profile,'required',[8,4,2,4,2,4],'r[t]: ')
-        self.plotProfile('data',self.profile,'provided',[2,4],'p[t]: ')
-        self.plotProfile('data',self.link,'link',[6,12],'l[t]: ')
+    def Derive(self):
+        """Derives the slope entries from the data entries"""
+        self.entries['slope'] = utils.derive( self.entries['data'] )
+        self.AggregateSlopes()
 
-        buffplotx = [self.buffer[0],self.buffer[0]]
-        buffploty = [self.buffer[1],self.buffer[1]+self.buffer[2]]
-        plt.plot(buffplotx,buffploty,'0.5',label=r"Buffer",linewidth=PLOT_WIDTH) #:%d B"%(int(buff)/8)
-
-        delayplotx = [self.delay[0],self.delay[0]+self.delay[2]]
-        delayploty = [self.delay[1],self.delay[1]]
-        plt.plot(delayplotx,delayploty,'0.8',label=r"Delay",linewidth=PLOT_WIDTH) #:%0.4f s"%float(delay)
+    def IsKind(self, kind):
+        """Returns True if the profile is of type *kind*, False otherwise."""
+        return kind in self.kind
     
-        '''
-        line, =plt.plot([orbital_period,orbital_period],[0,max(column(req,1))],linewidth=2,color='black', label=r"Period End")
-        for i in range(2,num_periods+1):
-        line, =plt.plot([orbital_period*i,orbital_period*i],[0,max(column(req,1))],linewidth=2,color='black')
-        '''
+    def Kind(self,kind):
+        """Set the kind of the profile."""
+        self.kind = kind
 
-        plt.title("Network Traffic vs. Time over %d period(s)"%self.num_periods)
-        plt.ylabel("Data (bits)")
-        plt.xlabel("Time (s)")
-        plt.legend(loc='upper left')
-        #plt.grid(True)
-        frame1 = plt.gca()
-        frame1.axes.get_xaxis().set_ticks([])
-        frame1.axes.get_yaxis().set_ticks([])
-        plt.show()
-        return
+    def Shrink(self, t):
+        """Shrink the profile to be <= *t*."""
+        for key, values in self.entries.iteritems():
+            self.entries[key], r = utils.split(values, t)
+        del self.entries['slope'][-1]
 
-    def plotBandwidth(self):
-        if not havePLT:
-            print >> sys.stderr, "ERROR DISPLAYING PLOT: you must have python-matplotlib installed!"
-            return
-        plt.figure(1)
-        plt.hold(True)
-        self.plotProfile('bandwidth',self.profile,'required',[4,8])
-        self.plotProfile('bandwidth',self.profile,'provided',[2,4])
-        self.plotProfile('bandwidth',self.link,'link',[2,4])
-    
-        '''
-        line, =plt.plot([orbital_period,orbital_period],[0,max(column(linkbw,1))],linewidth=2,color='black', label=r"Period End")
-        for i in range(2,num_periods+1):
-        line, =plt.plot([orbital_period*i,orbital_period*i],[0,max(column(linkbw,1))],linewidth=2,color='black')
-        '''
+    def AddProfile(self,profile):
+        """
+        Compose this profile with an input profile by adding their slopes together.
 
-        plt.title("Network Bandwidth vs. Time over %d period(s)"%self.num_periods)
-        plt.ylabel("Bandwidth (bps)")
-        plt.xlabel("Time (s)")
-        plt.legend(loc='lower left')
-        #plt.grid(True)
-        plt.show()
-        return
+        :rtype: :class:`Profile`
+        """
+        new_slopes = utils.add_values(
+            self.entries['slope'],
+            profile.entries['slope'],
+            interpolate = 'slope' in self.interpolated_profiles
+        )
+        retProf = copy.deepcopy(self)
+        retProf.entries['slope'] = new_slopes
+        return retProf
 
-    def __repr__(self):
-        return "NodeProfile()"
+    def SubtractProfile(self,profile):
+        """
+        Compose this profile with an input profile by subtracting the input profile's slopes.
 
-    def __str__(self):
-        retStr = 'Buffer: {0}\nDelay: {1}\n'.format(self.buffer,self.delay)
-        retStr += "Provided:\n"
-        for e in self.provided:
-            retStr += "{0}\n".format(e)
-        retStr += "Apps:\n"
-        for i in range(0,len(self.apps)):
-            retStr += "App {0} profile:\n".format(i+1)
-            for e in self.apps[i]:
-                retStr += "{0}\n".format(e)
-        retStr += "Required:\n"
-        for e in self.required:
-            retStr += "{0}\n".format(e)
-        retStr += "Link:\n"
-        for e in self.link:
-            retStr += "{0}\n".format(e)
-        return retStr
+        :rtype: :class:`Profile`
+        """
+        new_slopes = utils.subtract_values(
+            self.entries['slope'],
+            profile.entries['slope'],
+            interpolate = 'slope' in self.interpolated_profiles
+        )
+        retProf = copy.deepcopy(self)
+        retProf.entries['slope'] = new_slopes
+        return retProf
 
-class NetworkProfile:
-    def __init__(self,_period):
-        self.nodeProfiles = {}
-        self.period = _period        
+    def MakeGraphPointsSlope(self):
+        """Return matplotlib plottable x and y series for the slope of the profile."""
+        return utils.convert_values_to_graph(self.entries['slope'], interpolate = 'slope' in self.interpolated_profiles)
 
-    def addNodeProfile(self,node,profile):
-        self.nodeProfiles[node] = profile
+    def MakeGraphPointsData(self):
+        """Return matplotlib plottable x and y series for the data of the profile."""
+        return utils.convert_values_to_graph(self.entries['data'], interpolate = 'data' in self.interpolated_profiles)
 
-    def calcData(self):
-        for n,p in self.nodeProfiles.iteritems():
-            p.calcData()
+    def GetValueAtTime(self, key, t, interpolate = True):
+        """Return the value at time *t* from series *key*, optionally interpolating between."""
+        return utils.get_value_at_time(self.entries[key], t, interpolate)
 
-    def convolve(self,node,interface):
-        self.nodeProfiles[node].convolve(interface)
-        return self.nodeProfiles[node]
+    def ToString(self, prefix = ''):
+        """
+        Returns a string version of the profile, with all values properly tabulated.
 
-    def __repr__(self):
-        return "NetworkProfile()"
+        :rtype: :func:`string`
 
-    def __str__(self):
-        retStr = "NetworkProfile:\n"
-        retStr += "has period {0} and node profiles:\n".format(self.period)
-        for n,p in self.nodeProfiles.iteritems():
-            retStr += "Node {0} has profiles:\n{1}\n".format(n,p)
-        return retStr
+        :param in prefix: string to be prepended to every line of the returned string.
+        """
+        retstr = ''
+        try:
+            from tabulate import tabulate
+            newDict = OrderedDict()
+            times = []
+            for key,values in self.entries.iteritems():
+                for val in values:
+                    if val[0] not in times:
+                        times.append(val[0])
+            newDict['time(s)'] = sorted(times)
+            for key,values in self.entries.iteritems():
+                for t in times:
+                    newDict.setdefault(key,[]).append(
+                        float(utils.get_value_at_time(
+                            values,
+                            t,
+                            interpolate= key in self.interpolated_profiles
+                        ))
+                    )
+            retstr = tabulate(newDict, headers='keys',floatfmt='.1f')
+            r = retstr
+            retstr = ''
+            for line in r.split('\n'):
+                retstr += '{}{}\n'.format(prefix,line)
+        except ImportError:
+            print >> sys.stderr, "Tabulate module should be installed for printing profiles."
+        return retstr
 
-def get_entry_from_line(line=None):
-    if line == None or len(line) == 0:
-        return None
-    fields = line.split(',')
-    if len(fields) == 0 or fields[0][0] == '%':
-        return None
-    entry = ProfileEntry()
-    entry.start = float(fields[0])
-    entry.bandwidth = float(fields[1])
-    entry.latency = float(fields[2])
-    if len(fields) == 4:
-        entry.interface = fields[3]
-    return entry
+    def ConvertToNC(self,filterFunc, step = 0):
+        """
+        Perform time-window based integration to generate a Network Calculus curve
+        from the profile.  The conversion is configurable based on time-window step-size
+        and a filter function (e.g. min or max).  Passing :func:`max` will create an arrival
+        curve, while passing :func:`min` will create a service curve.
 
-def gen_network_profile(nodeProfiles,appProfiles,app_node_map,period):
-    profiles = NetworkProfile()
-    for node,apps in app_node_map.iteritems():
-        nodeProfile = NodeProfile()
-        nodeProfile.addProvidedProfile(nodeProfiles[node])
-        for app in profiles:
-            nodeProfile.addRequiredProfile(profiles[app])
-        profiles.addNodeProfile(node,nodeProfile)
+        :rtype: :class:`Profile`, the network-calculus version of the *self* profile
 
-def get_app_node_map(nodes,apps):
-    app_node_map = {}
-    for node,nprofile in nodes.iteritems():
-        for app,aprofile in apps.iteritems():
-            if app.find(node) != -1:
-                if app_node_map.has_key(node):
-                    app_node_map[node].append(app)
-                else:
-                    app_node_map[node] = [app]
-    return app_node_map
+        .. note:: Requires the profile to have been integrated
 
-def get_appProfiles(folder):
-    profile_dir = os.getcwd()+os.sep+folder
-    apps = {}
-    if os.path.isdir(profile_dir):
-        print 'Found ',profile_dir
-        for file in glob.glob(profile_dir+os.sep+'*profile.csv'):
-            app_name = file.replace('_profile.csv','')
-            app_name = app_name.replace(profile_dir+os.sep,'')
-            with open(file,'r+') as f:
-                content = f.read()
-                apps[app_name] = content
-    else:
-        print "ERROR: ",profile_dir," doesn't exist!"
-    return apps
+        """
+        time_list = []
+        data_list = []
+        for t,d in self.entries['data']:
+            time_list.append(t)
+            data_list.append(-d)
+        new_datas = []
+        if step <= 0: step = min( [x for x in time_list if x > 0] )
+        for tw in time_list:
+            extreme_data = -filterFunc(data_list)
+            t = tw
+            while t <= time_list[-1]:
+                start_data = utils.get_value_at_time(self.entries['data'],
+                                                     t - tw,
+                                                     interpolate = 'data' in self.interpolated_profiles)
+                end_data = utils.get_value_at_time(self.entries['data'],
+                                                   t,
+                                                   interpolate = 'data' in self.interpolated_profiles)
+                diff = end_data - start_data
+                extreme_data = filterFunc([diff,extreme_data])
+                t += step
+            new_datas.append([tw, extreme_data])
+            
+        new_datas = utils.remove_degenerates(new_datas)
+        retProf = Profile(kind = self.kind)
+        retProf.entries['data'] = new_datas
+        retProf.Derive()
+        return retProf
 
-def get_nodeProfiles(folder):
-    profile_dir = os.getcwd()+os.sep+folder
-    nodes = {}
-    if os.path.isdir(profile_dir):
-        print 'Found ',profile_dir
-        for file in glob.glob(profile_dir+os.sep+'*config.csv'):
-            node_name = file.replace('_crm_config.csv','')
-            node_name = node_name.replace(profile_dir+os.sep,'')
-            if node_name != 'crm_config.csv':
-                with open(file,'r+') as f:
-                    content = f.read()
-                    nodes[node_name] = content
-    else:
-        print "ERROR: ",profile_dir," doesn't exist!"
-    return nodes
+    def CalcDelay(self, output):
+        """
+        Compute the maximum horizontal distance between this profile and the input profile.  
+
+        This function implements the operation (see :ref:`network_math_formalism`):
+
+        .. math::
+            delay = sup\{l^{-1}[y]-r^{-1}[y] : y \in \mathbb{N}\}
+
+        Where
+
+        * :math:`l^{-1}[y]` is the inverse map of the ouptut profile, 
+          e.g. a function mapping output data to time
+        * :math:`r^{-1}[y]` is the inverse map of the required profile, 
+          e.g. a function mapping required data to time
+
+        :rtype: :func:`list` of the form::
+        
+            [ <time>, <data>, <length of delay> ]
+        
+        :param in output: a :class:`Profile` describing the output profile
+        """
+        r = self.entries['data']
+        o = output.entries['data']
+        delay = utils.max_horizontal_difference(r, o,
+                                                interpolate = 'data' in self.interpolated_profiles)
+        return delay
+
+    def CalcBuffer(self, output):
+        """
+        Compute the maximum vertical distance between this profile and the input profile.  
+
+        This function implements the operation (see :ref:`network_math_formalism`): 
+
+        .. math::
+            buffer= sup\{r[t] - l[t] : t \in \mathbb{N}\}
+
+        Where
+
+        * :math:`l[t]` is the output profile (see :func:`Profile.Convolve`)
+        * :math:`r[t]` is the required profile (*self*)
+
+        :rtype: :func:`list` of the form::
+
+            [ <time>, <data>, <size of the buffer> ]
+        
+        :param in output: a :class:`Profile` describing the output profile
+        """
+        r = self.entries['data']
+        o = output.entries['data']
+        buff = utils.max_vertical_difference(r, o,
+                                             interpolate = 'data' in self.interpolated_profiles)
+        return buff
+
+    def Delay(self, delayProf):
+        """
+        Compute the delayed profile composed of *self* profile and *delayProf*,
+        received by a node for which this *self* profile is the output profile on the sender side.
+        The delay profile describes the delay as a function of time for the link.
+
+        This function implements the operation: 
+
+        .. math::
+            o[t + \delta[t]] = l[t]
+
+        Where
+
+        * :math:`\delta[t]` is the delay profile
+        * :math:`l[t]` is the profile transmitted into the link (*self*)
+        * :math:`o[t]` is the output profile received at the other end of the link
+
+        :rtype: :class:`Profile`, :math:`o[t]`
+
+        :param in delayProf: :class:`Profile` describing the delay
+        """
+        delays = delayProf.entries['latency']
+        all0 = True
+        for time, delay in delays:
+            if delay != 0:
+                all0 = False
+        if all0: return copy.deepcopy(self)
+        datas = self.entries['data']
+        endTime = datas[-1][0]
+        times = [ x[0] for x in delays ]
+        times.extend( [ x[0] for x in datas ] )
+        times = sorted(list(set(times)))
+        newDatas = []
+        for t in times:
+            d = utils.get_value_at_time(datas, t)
+            delay = utils.get_value_at_time(delays, t, interpolate = 'latency' in self.interpolated_profiles)
+            newDatas.append([ t + delay, d ])
+        newDatas = utils.remove_degenerates(newDatas)
+        newDatas, remainder = utils.split(newDatas, endTime)
+        if remainder:
+            t = -remainder[0][0]
+            utils.shift(remainder, t)
+            r_slopes = utils.derive(remainder)
+            d_slopes = utils.derive(newDatas)
+            d_slopes = utils.add_values(d_slopes,r_slopes)
+            newDatas = utils.integrate(d_slopes, endTime)
+
+        retProf = Profile()
+        retProf.entries['data'] = newDatas
+        retProf.Derive()
+        return retProf
+
+    def Convolve(self, provided):
+        """
+        Use min-plus calculus to convolve this *required* profile with an input *provided* profile.
+
+        This function implements the operation (see :ref:`network_math_formalism`):
+
+        .. math::
+            y=l[t] &= (r \otimes p)[t] = min( r[t] , p[t] - (p[t-1] -l[t-1]) )
+
+        Where
+
+        * :math:`r[t]` is the data profile required by the application (*self*)
+        * :math:`p[t]` is the data profile provided by the node's link
+        * :math:`l[t]` is the data profile transmitted onto the link
+
+        :rtype: :class:`Profile`, :math:`l[t]`
+
+        :param in provided: a :class:`Profile` describing the node's provided link profile
+        """
+        r = self.entries['data']
+        p = provided.entries['data']
+        o = []
+
+        times = [ x[0] for x in p ]
+        times.extend( [ x[0] for x in r ] )
+        times = sorted(list(set(times)))
+        offset = 0
+        prevDiff = 0
+        prevTime = None
+        r_prev = None
+        p_prev = None
+        for t in times:
+            r_data = utils.get_value_at_time(r, t, interpolate = 'data' in self.interpolated_profiles)
+            p_data = utils.get_value_at_time(p, t, interpolate = 'data' in self.interpolated_profiles) - offset
+            diff = p_data - r_data
+            if diff > 0:
+                offset += diff
+                if cmp(diff,0) != cmp(prevDiff,0):
+                    intersection = utils.get_intersection(
+                        [ prevTime, r_prev ],
+                        [ t, r_data ],
+                        [ prevTime, p_prev ],
+                        [ t, p_data ]
+                    )
+                    if intersection:
+                        o.append(intersection)
+            newPoint = [t, p_data - max(0,diff)]
+            o.append(newPoint)
+            prevDiff = diff
+            prevTime = t
+            r_prev = r_data
+            p_prev = p_data
+        o = utils.remove_degenerates(o)
+
+        output = Profile(kind='output')
+        output.entries['data'] = o
+        output.Derive()
+        return output
