@@ -78,6 +78,8 @@ class ROSMOD_Software_Builder(ROSMOD_SoftwareListener):
                               ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.rml.parent = project
         self.rml.kind = "rml"
+        for prop in model_dict[self.rml.kind].properties:
+            self.rml.properties[prop] = ''
         self.active_objects = [self.rml]
 
 # Build ROS Hardware from Hardware Model
@@ -91,6 +93,8 @@ class ROSMOD_Hardware_Builder(ROSMOD_HardwareListener):
                         ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.rhw.parent = project
         self.rhw.kind = "rhw"
+        for prop in model_dict[self.rhw.kind].properties:
+            self.rhw.properties[prop] = ''
         self.active_objects = [self.rhw]
 
 
@@ -105,6 +109,8 @@ class ROSMOD_Deployment_Builder(ROSMOD_DeploymentListener):
                         ( object, Drawable_Object, ), { '__init__' : Drawable_Object.__init__ })()
         self.rdp.parent = project
         self.rdp.kind = "rdp"
+        for prop in model_dict[self.rdp.kind].properties:
+            self.rdp.properties[prop] = ''
         self.active_objects = [self.rdp]
 
 
