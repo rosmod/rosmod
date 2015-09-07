@@ -243,6 +243,7 @@ add_dependencies(${component.properties["name"]}
 #end for
 #end if
 #if $needs_io
+#if 'KSP' in $io_types
 add_library(KRPCI
             src/krpci/KRPC.pb.cc
 	    src/krpci/krpci_base.cpp
@@ -251,4 +252,15 @@ add_library(KRPCI
 target_link_libraries(KRPCI
   boost_system boost_thread /usr/lib/libprotobuf.so.10
   )
+#end if
+#if 'SUMO' in $io_types
+include_directories(include ${catkin_INCLUDE_DIRS}
+	include/sumo
+)
+add_library(sumo
+            src/sumo/sumo_client.cpp
+	    include/sumo/foreign/tcpip/socket.cpp
+	    include/sumo/foreign/tcpip/storage.cpp
+	    )
+#end if
 #end if

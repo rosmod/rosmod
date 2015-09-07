@@ -442,12 +442,19 @@ class Example(wx.Frame):
             )
             libs = []
             needs_io = False
+            io_types = []
             for child in node.children:
                 libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
                 if child.properties['component_reference'].properties['datatype'] == 'KSP':
+                    if child.properties['component_reference'].properties['datatype'] not in io_types:
+                        io_types.append(
+                            child.properties['component_reference'].properties['datatype'])
                     needs_io = True
             if needs_io:
-                libs.append("libKRPCI.so")
+                if 'KSP' in io_types:
+                    libs.append("libKRPCI.so")
+                if 'SUMO' in io_types:
+                    libs.append("libsumo.so")
             newNode = deployment.deployed_node(
                 name = node.properties['name'],
                 executable = deploymentPath + '/node_main',

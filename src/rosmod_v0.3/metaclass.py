@@ -124,7 +124,7 @@ meta_class_dict["logging_error"] = Grammar_Field(
 meta_class_dict["logging_critical"] = Grammar_Field(
     "boolean", "Logging_critical", create_enterAtom, create_exitAtom, None, "Log Level - CRITICAL")
 
-valid_datatypes = ["Base", "KSP"]
+valid_datatypes = ["Base", "KSP", "SUMO"]
 valid_scheduling_schemes = ["FIFO", "PFIFO", "EDF"]
 meta_class_dict["datatype"] = Grammar_Field(
     "list", 

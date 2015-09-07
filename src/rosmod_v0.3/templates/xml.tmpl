@@ -3,7 +3,12 @@
 <node name="$node.properties["name"]">
 #if $node.children != []
 #if $needs_io
+#if 'KSP' in $io_type
   <library name="libKRPCI.so"/>
+#end if
+#if 'SUMO' in $io_type
+  <library name="libsumo.so"/>
+#end if
 #end if
 #for $comp_instance in $node.children
   <component_instance name="$comp_instance.properties["name"]">

@@ -208,41 +208,61 @@ class ROSMOD_Generator:
                 os.makedirs(self.src)
 
             needs_io = False
+            io_types = []
             for comp in package.getChildrenByKind("Component"):
-                if comp.properties['datatype'] == 'KSP':
+                if comp.properties['datatype'] in ['KSP','SUMO']:
                     needs_io = True
+                    if comp.properties['datatype'] not in io_types:
+                        io_types.append(comp.properties['datatype'])
 
+            io_output = {}
+            io_output['KSP'] = {
+                'include dir' : self.include + '/krpci',
+                'src dir' : self.src + '/krpci',
+                'files' : [
+                    [ 'krpci.src.krpci', 'include dir', 'krpci.hpp' ],
+                    [ 'krpci.src.krpci', 'include dir', 'KRPC.pb.h' ],
+                    [ 'krpci.src', 'src dir', 'krpci_base.cpp' ],
+                    [ 'krpci.src', 'src dir', 'krpci_generated.cpp' ],
+                    [ 'krpci.src', 'src dir', 'KRPC.pb.cc' ],
+                ],
+                'dirs' : []
+            }
+                        
+            io_output['SUMO'] = {
+                'include dir' : self.include + '/sumo',
+                'src dir' : self.src + '/sumo',
+                'files' : [
+                    [ 'sumocpp.src', 'include dir', 'config.h' ],
+                    [ 'sumocpp.src', 'include dir', 'sumo_client.hpp' ],
+                    [ 'sumocpp.src', 'src dir', 'sumo_client.cpp' ],
+                ],
+                'dirs' : [
+                    [ 'sumocpp.src', 'include dir', 'foreign' ],
+                    [ 'sumocpp.src', 'include dir', 'traci-server' ],
+                    [ 'sumocpp.src', 'include dir', 'utils' ],
+                ]
+            }
+                        
             if needs_io == True:
-                self.krpci_include = self.include + '/krpci'
-                if not os.path.exists(self.krpci_include):
-                    os.makedirs(self.krpci_include)
-
-                self.krpci_src = self.src + '/krpci'
-                if not os.path.exists(self.krpci_src):
-                    os.makedirs(self.krpci_src)
-
-                rosmod_path = str(os.getcwd())
-
-                # krpci.hpp
-                copyfile(resource_filename('krpci.src.krpci', 'krpci.hpp'), 
-                         self.krpci_include + '/krpci.hpp')
-
-                # KRPC.pb.h
-                copyfile(resource_filename('krpci.src.krpci', 'KRPC.pb.h'), 
-                         self.krpci_include + '/KRPC.pb.h')
-
-                # krpci_base.cpp
-                copyfile(resource_filename('krpci.src', 'krpci_base.cpp'), 
-                         self.krpci_src + '/krpci_base.cpp')
-
-                # krpci_generated.cpp
-                copyfile(resource_filename('krpci.src', 'krpci_generated.cpp'), 
-                         self.krpci_src + '/krpci_generated.cpp')
-
-                # KRPC.pb.cc
-                copyfile(resource_filename('krpci.src', 'KRPC.pb.cc'), 
-                         self.krpci_src + '/KRPC.pb.cc')
-
+                for io in io_types:
+                    if io in io_output:
+                        include_dir = io_output[io]['include dir']
+                        src_dir = io_output[io]['src dir']
+                        if os.path.exists(include_dir):
+                            rmtree(include_dir)
+                        os.makedirs(include_dir)
+                        if os.path.exists(src_dir):
+                            rmtree(src_dir)
+                        os.makedirs(src_dir)
+                        rosmod_path = str(os.getcwd())
+                        for _module, _key, _file in io_output[io]['files']:
+                            _dir = include_dir if 'include' in _key else src_dir
+                            copyfile(resource_filename(_module, _file), _dir + '/' + _file)
+                        for _module, _key, _file in io_output[io]['dirs']:
+                            _dir = include_dir if 'include' in _key else src_dir
+                            copytree(resource_filename(_module, _file), _dir + '/' + _file)
+                                     
             if trafficGen == True:
                 self.network_middleware_include = self.include + '/network'
                 if not os.path.exists(self.network_middleware_include):
@@ -451,6 +471,7 @@ class ROSMOD_Generator:
                                      'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
                                      'components': components,
                                      'needs_io' : needs_io,
+                                     'io_types' : io_types,
                                      'mod': mod}
             t = CMakeLists(searchList=[cmake_lists_namespace])
             self.cmake_lists = str(t)
@@ -494,10 +515,11 @@ class ROSMOD_Generator:
                 xml_filename = node.properties["name"] + ".xml"
                 needs_io = False
                 for comp_inst in node.children:
-                    if comp_inst.properties['component_reference'].properties['datatype'] == 'KSP':
+                    if comp_inst.properties['component_reference'].properties['datatype'] in ['KSP', 'SUMO']:
                         needs_io = True
                 xml_namespace = {'node': node,
                                  'needs_io':needs_io,
+                                 'io_type':comp_inst.properties['component_reference'].properties['datatype'],
                                  'project':project,
                                  'port_uuids':port_uuids,
                                  'sync_timeout':sync_timeout,
