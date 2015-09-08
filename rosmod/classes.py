@@ -57,6 +57,31 @@ class Children(MutableSequence):
             print "ERROR::Cannot add child: " + str(item)
             return self._inner
 
+class Artifact(object):
+    """Generic Artifact object
+    
+    Each Artifact has the following:
+    kind -- the type of artifact e.g. code, build_system, analysis, file etc.
+    value -- The value of the artifact e.g. "#include <...", "<?xml version" etc.
+    name -- file/folder name of the artifact
+    destination -- destination directory of the artifact
+    source -- source directory of a "file/static" artifact if any e.g. node_main.cpp
+    """
+    tooltip = ''
+    display = ''
+    def __init__(self, kind=None, value="", name=None, destination=None, 
+                 source=None, order=[]):
+        assert kind != None, "Artifact kind is None!"
+        assert isinstance(value, basestring) == True,\
+            "Artifact value is not a string!"
+
+        self.kind = kind
+        self.value = value
+        self.name = name
+        self.destination = destination
+        self.source = source
+        self.order = order
+
 class Attribute(object):
     """Generic Attributes class
 
@@ -265,6 +290,7 @@ class Model(object):
         self.parent = None
         self.children = None
         self.attributes = OrderedDict() 
+        self.artifacts = []
 
     def __getitem__(self, key):
         return self.attributes[key]
@@ -288,6 +314,50 @@ class Model(object):
                 kids.extend(c.get_children(kind))
             return kids
 
+    def get_artifact(self, name):
+        for a in self.artifacts:
+            if a.name == name:
+                return a
+
+    def update_artifacts(self):
+        return
+
+    def resolve_artifacts(self, artifact_list=None):
+        if artifact_list == None:
+            artifact_list = self.artifacts
+        for artifact in artifact_list:
+            if artifact.kind == "code":
+                for o in artifact.order:
+                    sub_artifact = self.get_artifact(o)
+                    if sub_artifact != None:
+                        artifact.value += sub_artifact.value
+                    else:
+                        for child in self.children:
+                            child_artifact = child.get_artifact(o)
+                            if child_artifact != None:
+                                artifact.value += child_artifact.value
+
+    def generate(self):
+        self.update_artifacts()
+        self.resolve_artifacts(self.artifacts)
+        if self.artifacts != None:
+            for artifact in self.artifacts:
+                if artifact.kind == "folder":
+                    folder = os.path.join(artifact.destination, artifact.name)
+                    if not os.path.exists(folder):
+                        os.makedirs(folder)
+
+        for child in self.children:
+            child.generate()
+
+        if self.artifacts != None:
+            for artifact in self.artifacts:
+                if artifact.kind == "code":                    
+                    print artifact.value
+                    file_artifact = os.path.join(artifact.destination, artifact.name)
+                    with open(file_artifact, 'w') as art_file:
+                        art_file.write(artifact.value)
+
 class Software(Model):
     """Software Class
 
@@ -310,6 +380,20 @@ class Software(Model):
                                  cardinality = {str(type(Package()))\
                                                 : '1..*'})
 
+    def update_artifacts(self):
+        src_dest = os.path.join(self.parent.get_artifact("workspace").destination, 
+                               "workspace")
+        src_dir = os.path.join(src_dest, "src")
+
+        # workspace/src directory artifact
+        self.artifacts = [Artifact(kind="folder", name="src", 
+                                   destination=src_dest)]
+        for child in self.children:
+            # package directory artifact
+            self.artifacts.append(Artifact(kind="folder", 
+                                           name=child['name'].value,
+                                           destination=src_dir))
+
 class Package(Model):
     def __init__(self, name=Name(""), parent=None):
         super(Package, self).__init__()
@@ -330,6 +414,30 @@ class Package(Model):
                                               str(type(Component()))\
                                               : '1..*'})
 
+    def update_artifacts(self):
+        package_dir = os.path.join(self.parent.get_artifact(self["name"].value).\
+                                    destination, self["name"].value)
+        if self.get_children("Message") != []:
+            # Message files directory
+            self.artifacts.append(Artifact(kind="folder",
+                                           name="msg",
+                                           destination=package_dir))
+        if self.get_children("Service") != []:
+            # Service files directory
+            self.artifacts.append(Artifact(kind="folder",
+                                           name="srv",
+                                           destination=package_dir))
+
+        # Source directory
+        self.artifacts.append(Artifact(kind="folder", 
+                                        name="src", 
+                                        destination=package_dir))
+
+        # Include directory
+        self.artifacts.append(Artifact(kind="folder", 
+                                       name="include", 
+                                       destination=package_dir))
+
 class Message(Model):
     def __init__(self, name=Name(""), definition=Message_Definition(""), 
                  parent=None):
@@ -345,6 +453,14 @@ class Message(Model):
 
         self.children = Children(allowed=[], cardinality={})
 
+    def update_artifacts(self):
+        message_dir = os.path.join(self.parent.get_artifact("msg").destination,
+                                   "msg")
+        self.artifacts.append(Artifact(kind="file", 
+                                       name=self['name'].value + ".msg",
+                                       destination=message_dir, 
+                                       value=self['definition'].value))
+
 class Service(Model):
     def __init__(self, name=Name(""), definition=Service_Definition(""), 
                  parent=None):
@@ -359,6 +475,14 @@ class Service(Model):
         self["definition"] = definition
 
         self.children = Children(allowed=[], cardinality={})
+
+    def update_artifacts(self):
+        service_dir = os.path.join(self.parent.get_artifact("srv").destination,
+                                   "srv")
+        self.artifacts.append(Artifact(kind="file", 
+                                       name=self['name'].value + ".srv",
+                                       destination=service_dir, 
+                                       value=self['definition'].value))        
 
 class Component(Model):
     def __init__(self, name=Name(""), component_type=Component_Type("BASE"), 
@@ -388,6 +512,45 @@ class Component(Model):
                                               : '0..*', 
                                               str(type(Timer()))\
                                               : '0..*'}) 
+
+    def update_artifacts(self):
+        src_dir = os.path.join(self.parent.get_artifact("src").destination, 
+                               "src")
+        include_dir = os.path.join(self.parent.get_artifact("include").destination, 
+                               "include")
+
+        src_artifact = Artifact(kind="folder", 
+                                destination=src_dir,
+                                name=self.parent['name'].value)
+
+        include_artifact = Artifact(kind="folder", 
+                                    destination=include_dir,
+                                    name=self.parent['name'].value)
+
+        self.artifacts.append(src_artifact)
+        self.artifacts.append(include_artifact)
+
+        cpp_dir = os.path.join(src_dir, self.parent['name'].value)
+        cpp_artifact = Artifact(kind="code", 
+                                destination=cpp_dir,
+                                name=self['name'].value + ".cpp")
+        cpp_artifact.order = ["headers", 
+                              "initialization", 
+                              "timer_callback", 
+                              "server_callback",
+                              "subscriber_callback",
+                              "destructor",
+                              "startup"]
+        self.artifacts.append(cpp_artifact)
+
+        self.artifacts.append(Artifact(kind="snippet",
+                                       name="headers",
+                                       value="#include \"" +\
+                                       self.parent["name"].value +\
+                                       '/' + self['name'].value + ".hpp\"\n\n"))
+
+        for child in self.children:
+            child.update_artifacts()                      
 
 class Client(Model):
     def __init__(self, name=Name(""), service_reference=Service_Reference(None), 
@@ -473,6 +636,21 @@ class Subscriber(Model):
 
         self.children = Children(allowed=[], cardinality={})
 
+    def update_artifacts(self):
+        subscriber_artifact = Artifact(kind="snippet", 
+                                       name="subscriber_callback")
+
+        subscriber_artifact.value = "void " + self.parent['name'].value +\
+                                    "::" + self['name'].value + "_callback(" +\
+                                    "const " + self["message_reference"].value\
+                                    .parent["name"].value + "::" +\
+                                    self["message_reference"].value["name"].value +\
+                                    "::ConstPtr & received_data) {\n\n" +\
+                                    "  // Business Logic for " +\
+                                    self['name'].value + " subscriber\n\n" + "}"
+
+        self.artifacts.append(subscriber_artifact)
+
 class Timer(Model):
     def __init__(self, name=Name(""), period=Period(0.0), priority=Priority(0), 
                  deadline=Deadline(0.0), business_logic=Abstract_Business_Logic(""), 
@@ -494,6 +672,19 @@ class Timer(Model):
         self["business_logic"] = business_logic
 
         self.children = Children(allowed=[], cardinality={})
+
+    def update_artifacts(self):
+        timer_artifact = Artifact(kind="snippet", 
+                                  name="timer_callback")
+
+        timer_artifact.value = "void " + self.parent['name'].value +\
+                               "::" + self['name'].value + "_callback(" +\
+                               "const rosmod::TimerEvent& event) {\n\n" +\
+                               "  // Business Logic for " + self['name'].value +\
+                               " timer\n\n" +\
+                               "}"
+
+        self.artifacts.append(timer_artifact)
 
 class Hardware(Model):
     def __init__(self, name=Name(""), parent=None):
@@ -630,6 +821,11 @@ class Project(Model):
                                               str(type(Deployment()))\
                                               : '1..*'})
 
+    def update_artifacts(self):
+        self.artifacts = [Artifact(kind="folder", name="workspace", 
+                                   destination=self['path'].value +\
+                                   self['name'].value)]  
+              
     def new(self, 
             name=Name("NewProject"), 
             path=Path(""),
@@ -665,6 +861,9 @@ class Project(Model):
         with open(model, 'w') as model_file:
             model_file.write(encoder_output)
 
+    def generate_artifacts(self):
+        self.generate()
+
     def save_as(self, name=None, path=None):
         assert name != None and name.value != "", "Project name is None!"
         assert path != None and path.value != "", "Project path is None!"
@@ -682,14 +881,12 @@ class Project(Model):
         with open(model, 'r') as input_model:
             self = jsonpickle.decode(input_model.read())
         
-root = Project()
-
 def test_project():
     # Simple Timer Example
     my_software = Software(Name("software"))
     timer_package = Package(Name("timer_package"))
     message = Message(Name("msg1"),
-                      Message_Definition("int8 test"))
+                      Message_Definition("int8 test\nfloat64 soemthing"))
     service = Service(Name("srv1"),
                       Service_Definition("int8 test\n---\nbool retVal"))
     timer_component = Component(Name("Timer_Component"), 
@@ -758,7 +955,7 @@ def test_project():
 
     project = Project()
     project.new(name=Name("timer_example"),
-                path=Path("/home/jeb/pranav/rosmod/samples/"),
+                path=Path("/home/jeb/samples/"),
                 software=my_software,
                 hardware=my_hardware,
                 deployment=my_deployment)
@@ -768,5 +965,11 @@ if __name__ == '__main__':
 
     project = test_project()
     project.save()
-    project.open("/home/jeb/pranav/rosmod/samples/timer_example/timer_example.rml")
+    project.open("/home/jeb/samples/timer_example/timer_example.rml")
+    project.generate_artifacts()
 
+    comp = project.get_children("Component")
+#    for c in comp:
+#        for a in c.artifacts:
+#            if a.kind == "code":
+#                print a.value

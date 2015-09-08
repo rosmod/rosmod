@@ -11,18 +11,43 @@ __maintainer__ = "Pranav Srinivas Kumar"
 __email__ = "pkumar@isis.vanderbilt.edu"
 __status__ = "Production"
 
+from classes import *
+
 class ROSMOD():
     def __init__(self, editor = None):
         assert editor != None, "ERROR::Editor Object is None!"
         self._editor = editor
 
-        self.project = None
+        self.project = Project()
  
     def init_ui(self):
 
-    def callback_new(self):
-        
-        self.project = Project(Name(name), Path(path))
+    def new_project(self 
+            name=Name("NewProject"), 
+            path=Path(""),
+            software=Software(Name("NewSoftware")),
+            hardware=Hardware(Name("NewHardware")),
+            deployment=Deployment(Name("NewDeployment"))):
+
+        assert name != None, "Project name is None!"
+        assert path != None, "Project path is None!"        
+        assert software != None, "Project Software Model is None!"
+        assert hardware != None, "Project Hardware Model is None!"
+        assert deployment != None, "Project Deployment Model is None!"
+
+        assert name.value != "", "Project name is empty!"
+        assert path.value != "", "Project path is empty!"
+
+        self.project['name'] = name
+        self.project['path'] = path
+
+        self.project.add_child(software)
+        self.project.add_child(hardware)
+        self.project.add_child(deployment)
+
+        project_dir = os.path.join(path.value, name.value)
+        if not os.path.exists(project_dir):
+            os.makedirs(project_dir)
         
     def create_action(self, icon="", name="", shortcut="", status_tip="", 
                       function=None):
