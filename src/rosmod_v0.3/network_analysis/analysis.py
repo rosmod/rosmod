@@ -208,7 +208,7 @@ def analyze_config(config, options):
             
             print ''
             if options.print_profiles:
-                print "Analyzing:"
+                print "Analyzing Profile:"
                 print required.ToString('\t')
                 print "along route: {}".format(route)
             
@@ -224,7 +224,11 @@ def analyze_config(config, options):
 
                 if print_profiles:
                     print nodes[node_id].provided.ToString('\t')
-                print "(Re-)transmitter {} analysis:".format(node_id)
+                print "Flow {} from {} to {}:\n\t(Re-)transmitter {} analysis:".format(
+                    required.flow_type,
+                    route[0],
+                    recv_node,
+                    node_id)
                 output, remaining, received, buf, delay = analyze_profile(
                     required, nodes[node_id].provided,
                     config,
@@ -244,6 +248,7 @@ def analyze_config(config, options):
                                                                        options)
 
 def AnalyzeDeployment( deployment, options ):
+    import sys
     config = Config()
     rhw = deployment.properties['rhw_reference']
     if config.ParseFromString( rhw.properties['system_network_profile'] ) == - 1:
@@ -274,15 +279,17 @@ def AnalyzeDeployment( deployment, options ):
                         if portProf.ParseFromString(port.properties['port_network_profile']) == -1:
                             print >> sys.stderr, "ERROR: Couldn't parse profile for {}".format(port_name)
                             return -1
-                        # UPDATE PROFILE HERE FOR NODE, FLOW TYPE, KIND
+                        # UPDATE PROFILE HERE FOR HOST, FLOW TYPE, KIND
+                        portProf.kind = 'required' if port.kind in ['Publisher'] else 'receiver'
+                        portProf.node_id = host.properties['name']
+                        portProf.flow_type = port.properties['message_reference'].properties['name']
+                        config.addProfile(portProf)
 
-    for fName in fNames:
-        newProf = Profile()
-        if newProf.ParseFromFile(fName) == -1:
-            print "ERROR: could not parse {}".format(fName)
-            return -1
-        print "Profile {} has a period of {} seconds".format(fName, newProf.period)
-        config.addProfile(newProf)
+    opts = Options()
+    opts.num_periods = options.num_periods
+    opts.plot_dict['plot'] = options.plot
+    config.multicast = options.multicast
+    analyze_config( config, opts )
 
 def main(argv):
     """

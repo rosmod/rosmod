@@ -4,6 +4,9 @@ $hash_include "$package_name/${component_name}.hpp"
 #if $component_type == "KSP"
 KRPCI krpci_client;
 #end if
+#if $component_type == "SUMO"
+SUMO_CLIENT sumo_client;
+#end if
 
 #if $user_globals == ""
 //# Start User Globals Marker
@@ -22,7 +25,39 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
   compQueue.ROSMOD_LOGGER.DEBUG("Entering $component_name::Init");
 #end if
   // Initialize Here
-
+#if $component_type == "SUMO"
+  std::string sumo_host;
+  int sumo_port;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--sumo_host"))
+	{
+	  sumo_host = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i], "--sumo_port"))
+	{
+	  sumo_port = atoi(node_argv[i+1]);
+	}
+    }
+  sumo_client.create_connection(sumo_port, sumo_hostname);
+#end if
+#if $component_type == "KSP"
+  std::string ksp_host;
+  int ksp_port;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--ksp_host"))
+	{
+	  ksp_host = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i], "--ksp_port"))
+	{
+	  ksp_port = atoi(node_argv[i+1]);
+	}
+    }
+  krpci_client.SetPort(ksp_port);
+  krpci_client.SetIP(ksp_host);
+#end if
 #if $trafficGen
   srand (time(NULL));
   double tg_duration = -1;
@@ -509,15 +544,15 @@ void $component_name::startUp()
   krpci_client.SetName(nodeName + "_" + compName);
 #end if
 
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  This->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
   
-  ros${mod}::SubscribeOptions comp_sync_sub_options;
-#if $mod != ""
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
-  comp_sync_sub_options = ros${mod}::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
+  Ros${Mod}::Subscribeoptions Comp_Sync_Sub_Options;
+#If $mod != ""
+  Rosmod::Rosmod_Callback_Options Sync_Callback_Options;
+  Comp_sync_sub_options = ros${mod}::SubscribeOptions::Create<Std_Msgs::Bool>
+    ("Component_Synchronization",
      1000,
-     boost::bind(&$component_name::component_synchronization_OnOneData, this, _1),
+     Boost::Bind(&$component_Name::Component_Synchronization_OnOneData, this, _1),
      ros${mod}::VoidPtr(),
      &this->compQueue,
      sync_callback_options);

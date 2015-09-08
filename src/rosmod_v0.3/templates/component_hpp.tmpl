@@ -16,6 +16,9 @@ $hash_include "$service[0]/${service[1]}.h"
 #if $component_type == 'KSP'
 $hash_include "krpci/krpci.hpp"
 #end if
+#if $component_type == 'SUMO'
+$hash_include "sumocpp/sumo_client.hpp"
+#end if
 
 #if $trafficGen
 #if $len($publishers) > 0
