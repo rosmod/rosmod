@@ -12,4 +12,14 @@ hardware local
   install_path = "/home/jeb/Repositories/ROS-Indigo/install_isolated";
   arch = x86;
 }
+// Hardware - host2
+hardware host2
+{
+  ip_address = "10.1.1.1";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/indigo";
+  arch = x86;
+}
 

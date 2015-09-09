@@ -3,7 +3,7 @@
   <component_instance name="comp_1_i">
     <library name="libcomp_1.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="4"/>
+    <numCompsToSync setting="1"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -41,20 +41,6 @@
 6,3600000,0
 7,0,0
       </profile>
-      <sender uuid="3">
-	<profile>
-# period = 10
-# start = 0
-0,800000,0
-1,850000,0
-2,1024000,0
-3,1000000,0
-4,1005000,0
-5,1050000,0
-6,1100000,0
-7,0,0
-	</profile>
-      </sender>
     </port>
   </component_instance>
 </node>
