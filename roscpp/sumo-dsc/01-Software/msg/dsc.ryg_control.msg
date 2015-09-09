@@ -1,0 +1,2 @@
+string intersection
+string state
