@@ -109,4 +109,22 @@ package dsc
 	deadline = 0.1;
     }       
   }
+  // ROSMOD Component - il_sensor_stream_ddos
+  component il_sensor_stream_ddos : Base 
+  {
+    // ROSMOD Publisher - il_sensor_stream_ddos_pub
+    publisher <dsc/sensor_state> il_sensor_stream_ddos_pub;
+  }
+  // ROSMOD Component - control_stream_ddos
+  component control_stream_ddos : Base 
+  {
+    // ROSMOD Publisher - control_stream_ddos_pub
+    publisher <dsc/ryg_control> control_stream_ddos_pub;
+  }
+  // ROSMOD Component - tl_sensor_stream_ddos
+  component tl_sensor_stream_ddos : Base 
+  {
+    // ROSMOD Publisher - tl_sensor_stream_ddos_pub
+    publisher <dsc/ryg_state> tl_sensor_stream_ddos_pub;
+  }
 }

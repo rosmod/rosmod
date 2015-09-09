@@ -1,2 +1,0 @@
-string intersection_name
-string state
