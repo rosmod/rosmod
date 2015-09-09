@@ -14,6 +14,7 @@ __status__ = "Production"
 import os
 import jsonpickle
 from collections import OrderedDict, MutableSequence
+from string import Template
 
 class Children(MutableSequence):
     """Children List
@@ -549,6 +550,19 @@ class Component(Model):
                                        self.parent["name"].value +\
                                        '/' + self['name'].value + ".hpp\"\n\n"))
 
+        init_artifact = Artifact(kind="snippet",
+                                 name="initialization")
+        init_artifact.value = "void " + self['name'].value + "::init(const " +\
+                              "rosmod::TimerEvent& event) {\n\n" +\
+                              "// Initialize " + self['name'].value + " component" +\
+                              "\n\n" + "}\n\n"
+        self.artifacts.append(init_artifact)
+
+        destructor_artifact = Artifact(kind="snippet",
+                                       name="destructor")
+        destructor_artifact.value = ""
+        self.artifacts.append(destructor_artifact)
+
         for child in self.children:
             child.update_artifacts()                      
 
@@ -593,6 +607,24 @@ class Server(Model):
         self["network_profile"] = network_profile
 
         self.children = Children(allowed=[], cardinality={})
+
+    def update_artifacts(self):
+        server_artifact = Artifact(kind="snippet", 
+                                   name="server_callback")
+
+        service = self['service_reference'].value
+        service_name = service['name'].value
+        package_name = service.parent['name'].value
+
+        server_artifact.value = "bool " + self.parent["name"].value +\
+                                "::" + self['name'].value + '_callback(' +\
+                                package_name + "::" + service_name + "::" +\
+                                "Request &req,\n  " + package_name + "::" +\
+                                service_name + "::Response &res) {\n\n" +\
+                                "  // Business Logic for " + self['name'].value +\
+                                " server\n\n" + "}\n\n"
+        
+        self.artifacts.append(server_artifact)
 
 class Publisher(Model):
     def __init__(self, name=Name(""), message_reference=Message_Reference(None), 
@@ -647,7 +679,7 @@ class Subscriber(Model):
                                     self["message_reference"].value["name"].value +\
                                     "::ConstPtr & received_data) {\n\n" +\
                                     "  // Business Logic for " +\
-                                    self['name'].value + " subscriber\n\n" + "}"
+                                    self['name'].value + " subscriber\n\n" + "}\n\n"
 
         self.artifacts.append(subscriber_artifact)
 
@@ -677,12 +709,22 @@ class Timer(Model):
         timer_artifact = Artifact(kind="snippet", 
                                   name="timer_callback")
 
-        timer_artifact.value = "void " + self.parent['name'].value +\
-                               "::" + self['name'].value + "_callback(" +\
-                               "const rosmod::TimerEvent& event) {\n\n" +\
-                               "  // Business Logic for " + self['name'].value +\
-                               " timer\n\n" +\
-                               "}"
+        # Template for a timer operation
+        timer_template = Template('$return_type $component::$callback($args) {\n\n' +\
+                                  '$comment' +\
+                                  '\n\n}' +\
+                                  '\n\n')
+
+        # Resolving the template 
+        component_name = self.parent['name'].value
+        callback_name = self['name'].value + "_callback"
+        callback_args = "const rosmod::TiemrEvent& event"
+        comment = "  // Business Logic for " + callback_name + " timer"
+        timer_artifact.value = timer_template.substitute(return_type='void',
+                                                         component=component_name,
+                                                         callback=callback_name, 
+                                                         args=callback_args,
+                                                         comment=comment)
 
         self.artifacts.append(timer_artifact)
 
