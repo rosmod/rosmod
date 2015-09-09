@@ -1,0 +1,63 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - dsc
+package dsc
+{
+  // ROSMOD Component - ik_controller
+  component ik_controller : Base 
+  {
+  }
+  // ROSMOD Component - lj_controller
+  component lj_controller : Base 
+  {
+  }
+  // ROSMOD Component - gd_controller
+  component gd_controller : Base 
+  {
+  }
+  // ROSMOD Component - fh_controller
+  component fh_controller : Base 
+  {
+  }
+  // ROSMOD Component - ac_controller
+  component ac_controller : Base 
+  {
+  }
+  // ROSMOD Component - sumo_intf
+  component sumo_intf : SUMO 
+  {
+    // ROSMOD Server - sumo_il_get_vehicle_number_server
+    server <dsc/sumo_il_get_vehicle_number> sumo_il_get_vehicle_number_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - sumo_il_get_vehicle_ids_server
+    server <dsc/sumo_il_get_vehicle_ids> sumo_il_get_vehicle_ids_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - sumo_tlc_get_ryg_state_server
+    server <dsc/sumo_tlc_get_ryg_state> sumo_tlc_get_ryg_state_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - sumo_tlc_set_ryg_state_server
+    server <dsc/sumo_tlc_set_ryg_state> sumo_tlc_set_ryg_state_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - sumo_step_timer
+    timer sumo_step_timer 
+    {
+	period = 0.1;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+}
