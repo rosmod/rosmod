@@ -1,2 +1,2 @@
-string intersection
+string intersection_name
 string state
