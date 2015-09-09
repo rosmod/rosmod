@@ -6,9 +6,6 @@
 #include "dsc/sumo_il_get_vehicle_ids.h"
 #include "dsc/sumo_il_get_vehicle_number.h"
 
-
-#include "network/sender.hpp"
-
 //# Start User Includes Marker
 //# End User Includes Marker
 
@@ -38,18 +35,8 @@ private:
   // Timer
   ros::Timer il_update_timer;
 
-  // do we abide by the profiles?
-  bool tg_misbehave;
-  // size of messages generated
-  uint64_t max_data_length;
   // Publisher 
   ros::Publisher sensor_state_pub;
-  // Timer for generating traffic
-  ros::Timer sensor_state_pub_timer;
-  // Timer callback for traffic generation
-  void sensor_state_pub_timerCallback(const ros::TimerEvent& event);
-  // publisher sender middleware
-  Network::sender sensor_state_pub_send_mw;
 
   // Client 
   ros::ServiceClient il_get_vehicle_ids_client;
@@ -58,6 +45,9 @@ private:
   ros::ServiceClient il_get_vehicle_number_client;
 
   //# Start User Private Variables Marker
+  std::string _id;
+  int _last_num_vehicles;
+  std::vector<std::string> _last_vehicle_ids;
   //# End User Private Variables Marker
 };
 

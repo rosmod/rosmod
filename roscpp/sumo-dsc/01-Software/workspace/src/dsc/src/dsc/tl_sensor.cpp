@@ -9,106 +9,38 @@
 void tl_sensor::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  _last_state = "";
+  _id = "";
+  for (int i=0;i<node_argc;i++)
+    {
+      if (!strcmp(node_argv[i],"--id"))
+	{
+	  _id = node_argv[i+1];
+	}
+    }
 
-  srand (time(NULL));
-  double tg_duration = -1;
-  std::string fName;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--tg_time"))
-	{
-	  tg_duration = atof(node_argv[i+1]);
-	}
-    }
-  max_data_length = 8192;
-  tg_misbehave = false;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--max_data_length_bytes"))
-	{
-	  max_data_length = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i], "--max_data_length_bits"))
-	{
-	  max_data_length = atoi(node_argv[i+1]) / 8;
-	}
-      if (!strcmp(node_argv[i], "--tg_misbehave"))
-	{
-	  tg_misbehave = true;
-	}
-    }
-  ros::NodeHandle nh;
-  ros::TimerOptions timer_options;
-  if (config.profileMap.find("ryg_state_pub") != config.profileMap.end())
-    {
-      ryg_state_pub_send_mw.init(node_argc,
-					     node_argv,
-					     config.uuidMap["ryg_state_pub"],
-					     config.profileMap["ryg_state_pub"]);
-      if ( tg_duration < 0 )
-	ryg_state_pub_send_mw.set_duration(ryg_state_pub_send_mw.profile.period);
-      else
-	ryg_state_pub_send_mw.set_duration(tg_duration);
-      fName = nodeName + "." + compName + ".ryg_state_pub.network.csv";
-      ryg_state_pub_send_mw.set_output_filename(fName);
-
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(-1),
-	 boost::bind(&tl_sensor::ryg_state_pub_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      ryg_state_pub_timer = nh.createTimer(timer_options);
-    }
   // Stop Init Timer
   initOneShotTimer.stop();
 }
 //# End Init Marker
-
-
-void tl_sensor::ryg_state_pub_timerCallback(const ros::TimerEvent& event)
-{
-  dsc::ryg_state msg;
-  msg.uuid = ryg_state_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
-  double timerDelay = 0;
-  try
-    {
-      timerDelay =
-	ryg_state_pub_send_mw.send<dsc::ryg_state>(ryg_state_pub, msg);
-    }
-  catch ( Network::Exceeded_Production_Profile& ex )
-    {
-      LOGGER.DEBUG("Prevented from sending on the network!");
-    }
-
-  if ( ros::Time::now() >= ryg_state_pub_send_mw.get_end_time() )
-    {
-      LOGGER.DEBUG("writing output\n");
-      ryg_state_pub_send_mw.record();
-    }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-      ros::TimerOptions timer_options;
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&tl_sensor::ryg_state_pub_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      ros::NodeHandle nh;
-      ryg_state_pub_timer = nh.createTimer(timer_options);
-    }
-}
 
 // Timer Callback - tl_update_timer
 //# Start tl_update_timerCallback Marker
 void tl_sensor::tl_update_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for tl_update_timer Timer
+  
+  dsc::sumo_tlc_get_ryg_state sumo_ryg_state;
+  sumo_ryg_state.request.intersection_name = _id;
+  if ( tlc_get_ryg_state_client.exists() && tlc_get_ryg_state_client.call(ryg_state))
+    {
+      _last_state = sumo_ryg_state.response.ryg_state;
+    }
 
+  dsc::ryg_state local_ryg_state;
+  local_ryg_state.intersection_name = _id;
+  local_ryg_state.state = _last_state;
+  ryg_state_pub.publish(local_ryg_state);
 }
 //# End tl_update_timerCallback Marker
 
