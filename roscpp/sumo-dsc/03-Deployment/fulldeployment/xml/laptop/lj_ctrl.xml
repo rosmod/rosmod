@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<node name="lj_ctrl">
+  <component_instance name="ctrl_i">
+    <library name="libcontroller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="ryg_control_pub">
+      <uuid>13</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_state_sub">
+      <uuid>11</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="8">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="16">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="17">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="18">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="19">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="20">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="21">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="27">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="28">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="30">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="32">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="38">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="39">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="40">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="41">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="42">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="49">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="50">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="51">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="52">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="53">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="54">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="55">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="56">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="ryg_state_sub">
+      <uuid>12</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="26">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="37">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="48">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

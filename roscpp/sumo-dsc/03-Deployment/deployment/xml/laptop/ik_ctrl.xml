@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<node name="ik_ctrl">
+  <component_instance name="ctrl_i">
+    <library name="libcontroller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="10"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="ryg_control_pub">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_state_sub">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="8">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="ryg_state_sub">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+
