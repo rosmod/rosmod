@@ -25,6 +25,9 @@ void tl_actuator::ryg_control_sub_OnOneData(const dsc::ryg_control::ConstPtr& re
   dsc::sumo_tlc_set_ryg_state state;
   state.request.intersection_name = received_data->intersection_name;
   state.request.ryg_state = received_data->state;
+  LOGGER.DEBUG("Setting TL state for :: %s , %s",
+	       received_data->intersection_name.c_str(),
+	       received_data->state.c_str());
   tlc_set_ryg_state_client.call(state);
 }
 //# End ryg_control_sub_OnOneData Marker
@@ -65,7 +68,7 @@ void tl_actuator::startUp()
   advertiseName = "sumo_tlc_set_ryg_state";
   if (portGroupMap.find("tlc_set_ryg_state_client") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["tlc_set_ryg_state_client"];
-  this->tlc_set_ryg_state_client = nh.serviceClient<dsc::sumo_tlc_set_ryg_state>(advertiseName.c_str(), true); 
+  this->tlc_set_ryg_state_client = nh.serviceClient<dsc::sumo_tlc_set_ryg_state>(advertiseName.c_str()); 
 
   // Init Timer
   ros::TimerOptions timer_options;

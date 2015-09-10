@@ -117,9 +117,13 @@ void controller::controller_main(std::string& tl_state,
 	}
     }
   dsc::ryg_control new_control;
-  new_control.intersection_name = _id;
-  new_control.state = tl_state;
-  ryg_control_pub.publish(new_control);
+  if (_id.length() > 0)
+    {
+      LOGGER.DEBUG("Publishing new TL state:: %s = %s", _id.c_str(), tl_state.c_str());
+      new_control.intersection_name = _id;
+      new_control.state = tl_state;
+      ryg_control_pub.publish(new_control);
+    }
 }
 //# End User Globals Marker
 
@@ -129,6 +133,7 @@ void controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
   _id = "IK";
+  _state = WEGREEN;
   _Light_Min = 30;
   _Light_Max = 120;
   _s_NS = 4;
@@ -180,7 +185,8 @@ void controller::Init(const ros::TimerEvent& event)
 void controller::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& received_data)
 {
   // Business Logic for ryg_state_sub Subscriber
-  _state = received_data->state;
+  if (received_data->state.length())
+    _current_state = received_data->state;
 }
 //# End ryg_state_sub_OnOneData Marker
 // Subscriber Callback - l1_ew_in
@@ -249,8 +255,10 @@ void controller::controller_timerCallback(const ros::TimerEvent& event)
   vehicle_number( "l1_ew_in", "l1_ew_out", queue_l1 );
   vehicle_number( "l2_ew_in", "l2_ew_out", queue_l2 );
   _queue[0] = queue_l1 + queue_l2;
+  LOGGER.DEBUG("EW Q :: %d",_queue[0]);
   //Then we compute the length in North-South direction
   vehicle_number( "l1_ns_in", "l1_ns_out", _queue[1] );
+  LOGGER.DEBUG("NS Q :: %d",_queue[1]);
   //Now we compute the clock value of the traffic lights(value k in the paper)
   clock_value ( NSGREEN, _clock[0], _clock[1], _state );
   //Now we need to design the traffic light control logic

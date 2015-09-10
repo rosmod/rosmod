@@ -30,17 +30,21 @@ void tl_sensor::Init(const ros::TimerEvent& event)
 void tl_sensor::tl_update_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for tl_update_timer Timer
-  
+  LOGGER.DEBUG("Getting TL sensor state for :: %s", _id.c_str());
   dsc::sumo_tlc_get_ryg_state sumo_ryg_state;
   sumo_ryg_state.request.intersection_name = _id;
-  if ( tlc_get_ryg_state_client.exists() && tlc_get_ryg_state_client.call(sumo_ryg_state))
+  if ( tlc_get_ryg_state_client.call(sumo_ryg_state))
     {
       _last_state = sumo_ryg_state.response.ryg_state;
     }
-
+  else
+    {
+      LOGGER.DEBUG("ERROR:: client not found for TLC_GET_RYG_STATE");
+    }
   dsc::ryg_state local_ryg_state;
   local_ryg_state.intersection_name = _id;
   local_ryg_state.state = _last_state;
+  LOGGER.DEBUG("Publishing TL sensor state for :: %s : %s", _id.c_str(), _last_state.c_str());
   ryg_state_pub.publish(local_ryg_state);
 }
 //# End tl_update_timerCallback Marker
@@ -62,40 +66,6 @@ void tl_sensor::startUp()
   ros::NodeHandle nh;
   std::string advertiseName;
 
-  // Scheduling Scheme is FIFO
-
-  // Component Publisher - ryg_state_pub
-  advertiseName = "ryg_state";
-  if (portGroupMap.find("ryg_state_pub") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["ryg_state_pub"];
-  this->ryg_state_pub = nh.advertise<dsc::ryg_state>(advertiseName.c_str(), 1000);
-
-  // Configure all required services associated with this component
-  // Component Client - tlc_get_ryg_state_client
-  advertiseName = "sumo_tlc_get_ryg_state";
-  if (portGroupMap.find("tlc_get_ryg_state_client") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["tlc_get_ryg_state_client"];
-  this->tlc_get_ryg_state_client = nh.serviceClient<dsc::sumo_tlc_get_ryg_state>(advertiseName.c_str(), true); 
-
-  // Init Timer
-  ros::TimerOptions timer_options;
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&tl_sensor::Init, this, _1),
-     &this->compQueue,
-     true,
-     false);
-  this->initOneShotTimer = nh.createTimer(timer_options);
-  this->initOneShotTimer.stop();
-  // Component Timer - tl_update_timer
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(0.1),
-     boost::bind(&tl_sensor::tl_update_timerCallback, this, _1),
-     &this->compQueue, false, false);
-  this->tl_update_timer = nh.createTimer(timer_options);
-
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -116,6 +86,40 @@ void tl_sensor::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  // Scheduling Scheme is FIFO
+
+  // Component Publisher - ryg_state_pub
+  advertiseName = "ryg_state";
+  if (portGroupMap.find("ryg_state_pub") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["ryg_state_pub"];
+  this->ryg_state_pub = nh.advertise<dsc::ryg_state>(advertiseName.c_str(), 1000);
+
+  // Configure all required services associated with this component
+  // Component Client - tlc_get_ryg_state_client
+  advertiseName = "sumo_tlc_get_ryg_state";
+  if (portGroupMap.find("tlc_get_ryg_state_client") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["tlc_get_ryg_state_client"];
+  LOGGER.DEBUG("advertise name:: %s",advertiseName.c_str());
+  this->tlc_get_ryg_state_client = nh.serviceClient<dsc::sumo_tlc_get_ryg_state>(advertiseName.c_str()); 
+
+  // Init Timer
+  ros::TimerOptions timer_options;
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&tl_sensor::Init, this, _1),
+     &this->compQueue,
+     true,
+     false);
+  this->initOneShotTimer = nh.createTimer(timer_options);
+  this->initOneShotTimer.stop();
+  // Component Timer - tl_update_timer
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(0.1),
+     boost::bind(&tl_sensor::tl_update_timerCallback, this, _1),
+     &this->compQueue, false, false);
+  this->tl_update_timer = nh.createTimer(timer_options);
 
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   

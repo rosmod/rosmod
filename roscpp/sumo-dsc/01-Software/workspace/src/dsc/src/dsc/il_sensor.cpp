@@ -30,22 +30,33 @@ void il_sensor::Init(const ros::TimerEvent& event)
 //# Start il_update_timerCallback Marker
 void il_sensor::il_update_timerCallback(const ros::TimerEvent& event)
 {
+  LOGGER.DEBUG("Getting IL sensor state for :: %s", _id.c_str());
   // Business Logic for il_update_timer Timer
   dsc::sumo_il_get_vehicle_number vehicle_num;
   vehicle_num.request.sensor_name = _id;
-  if ( il_get_vehicle_number_client.exists() && il_get_vehicle_number_client.call(vehicle_num))
+  if (il_get_vehicle_number_client.call(vehicle_num))
     {
       _last_num_vehicles = vehicle_num.response.num_vehicles;
     }
+  else
+    {
+      LOGGER.DEBUG("ERROR:: client not found for IL_GET_VEHICLE_NUMBER");
+    }
   dsc::sumo_il_get_vehicle_ids vehicle_ids;
-  if ( il_get_vehicle_ids_client.exists() && il_get_vehicle_ids_client.call(vehicle_ids))
+  vehicle_ids.request.sensor_name = _id;
+  if ( il_get_vehicle_ids_client.call(vehicle_ids))
     {
       _last_vehicle_ids = vehicle_ids.response.vehicle_ids;
+    }
+  else
+    {
+      LOGGER.DEBUG("ERROR:: client not found for IL_GET_VEHICLE_IDS");
     }
   dsc::sensor_state local_sensor_state;
   local_sensor_state.sensor_name = _id;
   local_sensor_state.num_vehicles = _last_num_vehicles;
   local_sensor_state.vehicle_ids = _last_vehicle_ids;
+  LOGGER.DEBUG("Publishing IL sensor state for :: %s : %d", _id.c_str(), _last_num_vehicles);
   sensor_state_pub.publish(local_sensor_state);
 }
 //# End il_update_timerCallback Marker
@@ -81,12 +92,12 @@ void il_sensor::startUp()
   advertiseName = "sumo_il_get_vehicle_ids";
   if (portGroupMap.find("il_get_vehicle_ids_client") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["il_get_vehicle_ids_client"];
-  this->il_get_vehicle_ids_client = nh.serviceClient<dsc::sumo_il_get_vehicle_ids>(advertiseName.c_str(), true); 
+  this->il_get_vehicle_ids_client = nh.serviceClient<dsc::sumo_il_get_vehicle_ids>(advertiseName.c_str()); 
   // Component Client - il_get_vehicle_number_client
   advertiseName = "sumo_il_get_vehicle_number";
   if (portGroupMap.find("il_get_vehicle_number_client") != portGroupMap.end())
     advertiseName += "_" + portGroupMap["il_get_vehicle_number_client"];
-  this->il_get_vehicle_number_client = nh.serviceClient<dsc::sumo_il_get_vehicle_number>(advertiseName.c_str(), true); 
+  this->il_get_vehicle_number_client = nh.serviceClient<dsc::sumo_il_get_vehicle_number>(advertiseName.c_str()); 
 
   // Init Timer
   ros::TimerOptions timer_options;

@@ -66,7 +66,7 @@ bool sumo_intf::sumo_tlc_set_ryg_stateCallback(dsc::sumo_tlc_set_ryg_state::Requ
   dsc::sumo_tlc_set_ryg_state::Response &res)
 {
   // Business Logic for sumo_tlc_set_ryg_state_server Server
-  sumo_client.getRedYellowGreenState( req.intersection_name, req.ryg_state );
+  sumo_client.setRedYellowGreenState( req.intersection_name, req.ryg_state );
   return true;
 }
 //# End sumo_tlc_set_ryg_stateCallback Marker

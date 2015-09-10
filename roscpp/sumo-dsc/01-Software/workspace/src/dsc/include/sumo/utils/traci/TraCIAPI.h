@@ -668,7 +668,6 @@ public:
     VehicleTypeScope vehicletype;
 
 
-protected:
     /// @name Command sending methods
     /// @{
 
@@ -676,6 +675,7 @@ protected:
      */
     void send_commandSimulationStep(SUMOTime time) const;
 
+protected:
 
     /** @brief Sends a Close command
      */
