@@ -7,6 +7,7 @@
 #include "dsc/sumo_tlc_get_ryg_state.h"
 #include "dsc/sumo_tlc_set_ryg_state.h"
 
+#include "sumocpp/sumo_client.hpp"
 
 
 //# Start User Includes Marker

@@ -69,12 +69,6 @@ void tl_actuator::Init(const ros::TimerEvent& event)
 
 
 
-void tl_actuator::mw_recv_done_callback(Network::receiver* receiver_mw)
-{
-  LOGGER.DEBUG("Writing middleware log.");
-  LOGGER.DEBUG("Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
-  receiver_mw->record();
-}
 
 // Subscriber Callback - ryg_control_sub
 //# Start ryg_control_sub_OnOneData Marker
@@ -165,9 +159,9 @@ void tl_actuator::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
   
-  ros::SubscribeOptions comp_sync_sub_options;
+  ros::Subscribeoptions Comp_Sync_Sub_Options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,

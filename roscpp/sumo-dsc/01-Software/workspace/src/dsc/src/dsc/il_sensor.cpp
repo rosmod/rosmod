@@ -25,6 +25,44 @@ void il_sensor::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
+
+void il_sensor::sensor_state_pub_timerCallback(const ros::TimerEvent& event)
+{
+  dsc::sensor_state msg;
+  msg.uuid = sensor_state_pub_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	sensor_state_pub_send_mw.send<dsc::sensor_state>(sensor_state_pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      LOGGER.DEBUG("Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= sensor_state_pub_send_mw.get_end_time() )
+    {
+      LOGGER.DEBUG("writing output\n");
+      sensor_state_pub_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+      ros::TimerOptions timer_options;
+      timer_options = 
+	ros::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&il_sensor::sensor_state_pub_timerCallback, this, _1),
+	 &this->compQueue,
+	 true);
+      ros::NodeHandle nh;
+      sensor_state_pub_timer = nh.createTimer(timer_options);
+    }
+}
+
 // Timer Callback - il_update_timer
 //# Start il_update_timerCallback Marker
 void il_sensor::il_update_timerCallback(const ros::TimerEvent& event)
@@ -127,9 +165,9 @@ void il_sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
   
-  ros::SubscribeOptions comp_sync_sub_options;
+  ros::Subscribeoptions Comp_Sync_Sub_Options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,

@@ -1,5 +1,6 @@
 #include "dsc/sumo_intf.hpp"
 
+SUMO_CLIENT sumo_client;
 
 //# Start User Globals Marker
 //# End User Globals Marker
@@ -9,17 +10,20 @@
 void sumo_intf::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-
-  srand (time(NULL));
-  double tg_duration = -1;
-  std::string fName;
+  std::string sumo_host;
+  int sumo_port;
   for (int i=0; i<node_argc; i++)
     {
-      if (!strcmp(node_argv[i], "--tg_time"))
+      if (!strcmp(node_argv[i], "--sumo_host"))
 	{
-	  tg_duration = atof(node_argv[i+1]);
+	  sumo_host = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i], "--sumo_port"))
+	{
+	  sumo_port = atoi(node_argv[i+1]);
 	}
     }
+  sumo_client.create_connection(sumo_port, sumo_hostname);
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -33,7 +37,7 @@ bool sumo_intf::sumo_il_get_vehicle_numberCallback(dsc::sumo_il_get_vehicle_numb
   dsc::sumo_il_get_vehicle_number::Response &res)
 {
   // Business Logic for sumo_il_get_vehicle_number_server Server
-
+  sumo_client.getLastStepInductionLoopVehicleNumber( req.sensor_name, res.vehicle_num );
   return true;
 }
 //# End sumo_il_get_vehicle_numberCallback Marker
@@ -43,7 +47,7 @@ bool sumo_intf::sumo_il_get_vehicle_idsCallback(dsc::sumo_il_get_vehicle_ids::Re
   dsc::sumo_il_get_vehicle_ids::Response &res)
 {
   // Business Logic for sumo_il_get_vehicle_ids_server Server
-
+  sumo_client.getLastStepInductionLoopVehicleNumber( req.sensor_name, res.vehicle_ids );
   return true;
 }
 //# End sumo_il_get_vehicle_idsCallback Marker
@@ -53,7 +57,7 @@ bool sumo_intf::sumo_tlc_get_ryg_stateCallback(dsc::sumo_tlc_get_ryg_state::Requ
   dsc::sumo_tlc_get_ryg_state::Response &res)
 {
   // Business Logic for sumo_tlc_get_ryg_state_server Server
-
+  sumo_client.getRedYellowGreenState( req.intersection_name, res.state );
   return true;
 }
 //# End sumo_tlc_get_ryg_stateCallback Marker
@@ -63,7 +67,7 @@ bool sumo_intf::sumo_tlc_set_ryg_stateCallback(dsc::sumo_tlc_set_ryg_state::Requ
   dsc::sumo_tlc_set_ryg_state::Response &res)
 {
   // Business Logic for sumo_tlc_set_ryg_state_server Server
-
+  sumo_client.getRedYellowGreenState( req.intersection_name, req.state );
   return true;
 }
 //# End sumo_tlc_set_ryg_stateCallback Marker
@@ -73,7 +77,7 @@ bool sumo_intf::sumo_tlc_set_ryg_stateCallback(dsc::sumo_tlc_set_ryg_state::Requ
 void sumo_intf::sumo_step_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for sumo_step_timer Timer
-
+  sumo_client.commandSimulationStep(0);
 }
 //# End sumo_step_timerCallback Marker
 
@@ -183,9 +187,9 @@ void sumo_intf::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
   
-  ros::SubscribeOptions comp_sync_sub_options;
+  ros::Subscribeoptions Comp_Sync_Sub_Options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,

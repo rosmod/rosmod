@@ -6,7 +6,6 @@
 #include "dsc/sumo_tlc_set_ryg_state.h"
 
 
-#include "network/receiver.hpp"
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -34,14 +33,8 @@ public:
 
 private:
 
-  // callback func for when servers are done receiving data
-  void mw_recv_done_callback(Network::receiver* receiver_mw);
   // Subscriber
   ros::Subscriber ryg_control_sub;
-  // message id for this data stream
-  uint64_t ryg_control_sub_id;
-  // subscriber receiver middleware
-  Network::receiver ryg_control_sub_recv_mw;
 
   // Client 
   ros::ServiceClient tlc_set_ryg_state_client;
