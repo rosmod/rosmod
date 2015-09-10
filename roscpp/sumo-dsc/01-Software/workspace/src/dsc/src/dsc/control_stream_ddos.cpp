@@ -10,98 +10,11 @@ void control_stream_ddos::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
 
-  srand (time(NULL));
-  double tg_duration = -1;
-  std::string fName;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--tg_time"))
-	{
-	  tg_duration = atof(node_argv[i+1]);
-	}
-    }
-  max_data_length = 8192;
-  tg_misbehave = false;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--max_data_length_bytes"))
-	{
-	  max_data_length = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i], "--max_data_length_bits"))
-	{
-	  max_data_length = atoi(node_argv[i+1]) / 8;
-	}
-      if (!strcmp(node_argv[i], "--tg_misbehave"))
-	{
-	  tg_misbehave = true;
-	}
-    }
-  ros::NodeHandle nh;
-  ros::TimerOptions timer_options;
-  if (config.profileMap.find("control_stream_ddos_pub") != config.profileMap.end())
-    {
-      control_stream_ddos_pub_send_mw.init(node_argc,
-					     node_argv,
-					     config.uuidMap["control_stream_ddos_pub"],
-					     config.profileMap["control_stream_ddos_pub"]);
-      if ( tg_duration < 0 )
-	control_stream_ddos_pub_send_mw.set_duration(control_stream_ddos_pub_send_mw.profile.period);
-      else
-	control_stream_ddos_pub_send_mw.set_duration(tg_duration);
-      fName = nodeName + "." + compName + ".control_stream_ddos_pub.network.csv";
-      control_stream_ddos_pub_send_mw.set_output_filename(fName);
-
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(-1),
-	 boost::bind(&control_stream_ddos::control_stream_ddos_pub_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      control_stream_ddos_pub_timer = nh.createTimer(timer_options);
-    }
   // Stop Init Timer
   initOneShotTimer.stop();
 }
 //# End Init Marker
 
-
-void control_stream_ddos::control_stream_ddos_pub_timerCallback(const ros::TimerEvent& event)
-{
-  dsc::ryg_control msg;
-  msg.uuid = control_stream_ddos_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
-  double timerDelay = 0;
-  try
-    {
-      timerDelay =
-	control_stream_ddos_pub_send_mw.send<dsc::ryg_control>(control_stream_ddos_pub, msg);
-    }
-  catch ( Network::Exceeded_Production_Profile& ex )
-    {
-      LOGGER.DEBUG("Prevented from sending on the network!");
-    }
-
-  if ( ros::Time::now() >= control_stream_ddos_pub_send_mw.get_end_time() )
-    {
-      LOGGER.DEBUG("writing output\n");
-      control_stream_ddos_pub_send_mw.record();
-    }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-      ros::TimerOptions timer_options;
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&control_stream_ddos::control_stream_ddos_pub_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      ros::NodeHandle nh;
-      control_stream_ddos_pub_timer = nh.createTimer(timer_options);
-    }
-}
 
 
 // Destructor - Cleanup Ports & Timers
@@ -158,9 +71,9 @@ void control_stream_ddos::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::Subscribeoptions Comp_Sync_Sub_Options;
+  ros::SubscribeOptions comp_sync_sub_options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,

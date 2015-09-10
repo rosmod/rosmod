@@ -10,63 +10,10 @@ void tl_actuator::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
 
-  srand (time(NULL));
-  double tg_duration = -1;
-  std::string fName;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--tg_time"))
-	{
-	  tg_duration = atof(node_argv[i+1]);
-	}
-    }
-  uint64_t capacityBits = 400000;
-  bool enable_sendback = true;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
-	{
-	  capacityBits = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
-	{
-	  capacityBits = atoi(node_argv[i+1]) * 8;
-	}
-      if (!strcmp(node_argv[i], "--disable_sendback"))
-	{
-	  enable_sendback = false;
-	}
-    }
-  if (config.profileMap.find("ryg_control_sub") != config.profileMap.end())
-    {
-      ryg_control_sub_recv_mw.init(node_argc,
-					     node_argv,
-					     config.profileMap["ryg_control_sub"],
-					     capacityBits);
-      if ( tg_duration < 0 )
-	ryg_control_sub_recv_mw.set_duration(ryg_control_sub_recv_mw.profile.period);
-      else
-	ryg_control_sub_recv_mw.set_duration(tg_duration);
-      fName = nodeName + "." + compName + ".ryg_control_sub.network.csv";
-      ryg_control_sub_recv_mw.set_enable_sendback(enable_sendback);
-      ryg_control_sub_recv_mw.set_output_filename(fName);
-      ryg_control_sub_recv_mw.set_recv_done_callback(boost::bind(&tl_actuator::mw_recv_done_callback, this, &ryg_control_sub_recv_mw));
-      ryg_control_sub_id = 0;
-    }
-  if (config.portSenderMap.find("ryg_control_sub") != config.portSenderMap.end())
-    {
-      for (auto it=config.portSenderMap["ryg_control_sub"].begin();
-	   it != config.portSenderMap["ryg_control_sub"].end(); ++it)
-	{
-	  ryg_control_sub_recv_mw.add_sender( it->first, it->second );
-	}
-    }
-  
   // Stop Init Timer
   initOneShotTimer.stop();
 }
 //# End Init Marker
-
 
 
 
@@ -75,17 +22,10 @@ void tl_actuator::Init(const ros::TimerEvent& event)
 void tl_actuator::ryg_control_sub_OnOneData(const dsc::ryg_control::ConstPtr& received_data)
 {
   // Business Logic for ryg_control_sub Subscriber
-
-  uint64_t uuid = received_data->uuid;
-  uint64_t msgBytes = ros::serialization::Serializer<dsc::ryg_control>::serializedLength(*received_data);
-  ros::Time now = ros::Time::now();
-  ryg_control_sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
-  Network::Message new_msg;
-  new_msg.Bytes(msgBytes);
-  new_msg.Id(ryg_control_sub_id++);
-  new_msg.TimeStamp();
-  ryg_control_sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
-  
+  dsc::sumo_tlc_set_ryg_state state;
+  state.request.intersection_name = received_data->intersection_name;
+  state.request.ryg_state = received_data->state;
+  tlc_set_ryg_state_client.call(state);
 }
 //# End ryg_control_sub_OnOneData Marker
 
@@ -159,9 +99,9 @@ void tl_actuator::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::Subscribeoptions Comp_Sync_Sub_Options;
+  ros::SubscribeOptions comp_sync_sub_options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,

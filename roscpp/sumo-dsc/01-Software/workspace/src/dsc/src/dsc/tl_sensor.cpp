@@ -24,6 +24,7 @@ void tl_sensor::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
+
 // Timer Callback - tl_update_timer
 //# Start tl_update_timerCallback Marker
 void tl_sensor::tl_update_timerCallback(const ros::TimerEvent& event)
@@ -32,7 +33,7 @@ void tl_sensor::tl_update_timerCallback(const ros::TimerEvent& event)
   
   dsc::sumo_tlc_get_ryg_state sumo_ryg_state;
   sumo_ryg_state.request.intersection_name = _id;
-  if ( tlc_get_ryg_state_client.exists() && tlc_get_ryg_state_client.call(ryg_state))
+  if ( tlc_get_ryg_state_client.exists() && tlc_get_ryg_state_client.call(sumo_ryg_state))
     {
       _last_state = sumo_ryg_state.response.ryg_state;
     }
@@ -116,9 +117,9 @@ void tl_sensor::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::Subscribeoptions Comp_Sync_Sub_Options;
+  ros::SubscribeOptions comp_sync_sub_options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,

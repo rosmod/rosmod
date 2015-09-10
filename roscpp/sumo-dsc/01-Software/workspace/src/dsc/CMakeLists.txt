@@ -64,24 +64,24 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  sensor_state.msg
-
   ryg_state.msg
 
   ryg_control.msg
+
+  sensor_state.msg
 
 )
 
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
-  sumo_tlc_get_ryg_state.srv
-
   sumo_tlc_set_ryg_state.srv
+
+  sumo_il_get_vehicle_ids.srv
 
   sumo_il_get_vehicle_number.srv
 
-  sumo_il_get_vehicle_ids.srv
+  sumo_tlc_get_ryg_state.srv
 
 )
 

@@ -53,6 +53,7 @@ private:
   ros::Publisher ryg_control_pub;
 
   //# Start User Private Variables Marker
+  std::string _id;
   //# End User Private Variables Marker
 };
 

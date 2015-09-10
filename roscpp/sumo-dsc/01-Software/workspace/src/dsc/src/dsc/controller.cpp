@@ -2,6 +2,220 @@
 
 
 //# Start User Globals Marker
+int Light_Min = 30; 
+int Light_Max = 120; //the constrains of the length of traffic lights for intersection
+
+int s_NS = 4; 
+int s_WE = 15; //the threshold of North-South and West-East direction for intersection
+
+const std::string NSGREEN = "Grr";
+const std::string NSYELLOW = "yrr";
+const std::string WEGREEN = "rGG";
+const std::string WEYELLOW = "ryy";
+
+const std::string NSGREEN1 = "GGrr";
+const std::string NSYELLOW1 = "yyrr";
+const std::string WEGREEN1 = "rrGG";
+const std::string WEYELLOW1 = "rryy";
+
+int _clock[2] = {0,0};
+int _queue[2] = {0,0};
+
+std::string id_S[2][2];
+std::string _state;
+
+int step = 0;
+
+int total_latency=0;
+int car_number=0;
+int car_latency=0;
+int truck_number=0;
+int truck_latency=0;
+
+
+void vehicle_number(std::string sensor1,
+		    std::string sensor2,
+		    std::string& id_T1,
+		    std::string& id_S1,
+		    int& sum_sensor1,
+		    int& sum_sensor2,
+		    int& queue_length)
+{
+  int numVehicles = 0;
+  //client.getLastStepInductionLoopVehicleNumber(sensor1, numVehicles);
+  if (numVehicles == 0)
+    id_T1="";
+  else
+    {
+      std::vector<std::string> list_T1;
+      //client.getLastStepInductionLoopVehicleIDs(sensor1, list_T1);
+      for ( std::vector<std::string>::iterator it = list_T1.begin(); it != list_T1.end(); ++it)
+	{
+	  if ( *it != id_T1 )
+	    {
+	      id_T1 = *it;
+	      sum_sensor1 += 1;
+	    }
+	}
+    }
+  //client.getLastStepInductionLoopVehicleNumber(sensor2, numVehicles);
+  if (numVehicles == 0)
+    id_S1="";
+  else
+    {
+      std::vector<std::string> list_S1;
+      //client.getLastStepInductionLoopVehicleIDs(sensor2, list_S1);
+      for ( std::vector<std::string>::iterator it = list_S1.begin(); it != list_S1.end(); ++it)
+	{
+	  if ( *it != id_S1 )
+	    {
+	      id_S1 = *it;
+	      sum_sensor2 += 1;
+	    }
+	}
+    }
+  queue_length = sum_sensor1-sum_sensor2 + 1 ;
+}
+
+void clock_value(std::string intersection,
+		 int& clock_WE,
+		 int& clock_NS,
+		 std::string& tl_state)
+{
+  //client.getRedYellowGreenState(intersection, tl_state);
+  if (!tl_state.compare(NSGREEN))
+    {
+      clock_NS = clock_NS + 1;
+      clock_WE = 0;
+    }
+  else
+    {
+      clock_WE = clock_WE + 1;
+      clock_NS = 0;
+    }
+}
+
+void clock_value1(std::string intersection,
+		  int& clock_WE,
+		  int& clock_NS,
+		  std::string& tl_state)
+{
+  //client.getRedYellowGreenState(intersection, tl_state);
+  if (!tl_state.compare(NSGREEN1))
+    {
+      clock_NS = clock_NS + 1;
+      clock_WE = 0;
+    }
+  else
+    {
+      clock_WE = clock_WE + 1;
+      clock_NS = 0;
+    }
+}
+
+void controller_main(std::string intersection,
+		     std::string& tl_state,
+		     int queue_WE,
+		     int queue_NS,
+		     int& clock_WE,
+		     int& clock_NS,
+		     int Light_Min,
+		     int Light_Max,
+		     int s_WE,
+		     int s_NS)
+{
+  if ((queue_WE < s_WE && queue_NS < s_NS) || (queue_WE >= s_WE && queue_NS >= s_NS))
+    {
+      if ( !tl_state.compare(WEGREEN) && clock_WE > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, NSGREEN);
+	  clock_WE = 0;
+	}
+      if ( !tl_state.compare(NSGREEN) && clock_NS > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, WEGREEN);
+	  clock_NS = 0;
+	}
+    }
+  else if (queue_WE >= s_WE && queue_NS <s_NS)
+    {
+      if ( !tl_state.compare(NSGREEN) && clock_NS > Light_Min )
+	{
+	  //client.setRedYellowGreenState(intersection, WEGREEN);
+	  clock_NS = 0;
+	}
+      if ( !tl_state.compare(WEGREEN) && clock_WE > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, NSGREEN);
+	  clock_WE = 0;
+	}
+    }
+  else
+    {
+      if ( !tl_state.compare(WEGREEN) && clock_WE > Light_Min )
+	{
+	  //client.setRedYellowGreenState(intersection, NSGREEN);
+	  clock_WE = 0;
+	}
+      if ( !tl_state.compare(NSGREEN) && clock_NS > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, WEGREEN);
+	  clock_NS = 0;
+	}
+    }
+}
+
+void controller1_main(std::string intersection,
+		      std::string& tl_state,
+		      int queue_WE,
+		      int queue_NS,
+		      int& clock_WE,
+		      int& clock_NS,
+		      int Light_Min,
+		      int Light_Max,
+		      int s_WE,
+		      int s_NS)
+{
+  if ((queue_WE < s_WE && queue_NS < s_NS) || (queue_WE >= s_WE && queue_NS >= s_NS))
+    {
+      if ( !tl_state.compare(WEGREEN1) && clock_WE > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, NSGREEN1);
+	  clock_WE = 0;
+	}
+      if ( !tl_state.compare(NSGREEN1) && clock_NS > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, WEGREEN1);
+	  clock_NS = 0;
+	}
+    }
+  else if (queue_WE >= s_WE && queue_NS <s_NS)
+    {
+      if ( !tl_state.compare(NSGREEN1) && clock_NS > Light_Min )
+	{
+	  //client.setRedYellowGreenState(intersection, WEGREEN1);
+	  clock_NS = 0;
+	}
+      if ( !tl_state.compare(WEGREEN1) && clock_WE > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, NSGREEN1);
+	  clock_WE = 0;
+	}
+    }
+  else
+    {
+      if ( !tl_state.compare(WEGREEN1) && clock_WE > Light_Min )
+	{
+	  //client.setRedYellowGreenState(intersection, NSGREEN1);
+	  clock_WE = 0;
+	}
+      if ( !tl_state.compare(NSGREEN1) && clock_NS > Light_Max )
+	{
+	  //client.setRedYellowGreenState(intersection, WEGREEN1);
+	  clock_NS = 0;
+	}
+    }
+}
 //# End User Globals Marker
 
 // Initialization Function
@@ -9,166 +223,36 @@
 void controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  _id = "";
+  for (int i=0;i<node_argc;i++)
+    {
+      if (!strcmp(node_argv[i],"--id"))
+	{
+	  _id = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i],"--light_min"))
+	{
+	  Light_Min = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--light_max"))
+	{
+	  Light_Max = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_NS"))
+	{
+	  s_NS = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_WE"))
+	{
+	  s_WE = atoi(node_argv[i+1]);
+	}
+    }
 
-  srand (time(NULL));
-  double tg_duration = -1;
-  std::string fName;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--tg_time"))
-	{
-	  tg_duration = atof(node_argv[i+1]);
-	}
-    }
-  uint64_t capacityBits = 400000;
-  bool enable_sendback = true;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
-	{
-	  capacityBits = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
-	{
-	  capacityBits = atoi(node_argv[i+1]) * 8;
-	}
-      if (!strcmp(node_argv[i], "--disable_sendback"))
-	{
-	  enable_sendback = false;
-	}
-    }
-  if (config.profileMap.find("sensor_state_sub") != config.profileMap.end())
-    {
-      sensor_state_sub_recv_mw.init(node_argc,
-					     node_argv,
-					     config.profileMap["sensor_state_sub"],
-					     capacityBits);
-      if ( tg_duration < 0 )
-	sensor_state_sub_recv_mw.set_duration(sensor_state_sub_recv_mw.profile.period);
-      else
-	sensor_state_sub_recv_mw.set_duration(tg_duration);
-      fName = nodeName + "." + compName + ".sensor_state_sub.network.csv";
-      sensor_state_sub_recv_mw.set_enable_sendback(enable_sendback);
-      sensor_state_sub_recv_mw.set_output_filename(fName);
-      sensor_state_sub_recv_mw.set_recv_done_callback(boost::bind(&controller::mw_recv_done_callback, this, &sensor_state_sub_recv_mw));
-      sensor_state_sub_id = 0;
-    }
-  if (config.portSenderMap.find("sensor_state_sub") != config.portSenderMap.end())
-    {
-      for (auto it=config.portSenderMap["sensor_state_sub"].begin();
-	   it != config.portSenderMap["sensor_state_sub"].end(); ++it)
-	{
-	  sensor_state_sub_recv_mw.add_sender( it->first, it->second );
-	}
-    }
-  
-  if (config.profileMap.find("ryg_state_sub") != config.profileMap.end())
-    {
-      ryg_state_sub_recv_mw.init(node_argc,
-					     node_argv,
-					     config.profileMap["ryg_state_sub"],
-					     capacityBits);
-      if ( tg_duration < 0 )
-	ryg_state_sub_recv_mw.set_duration(ryg_state_sub_recv_mw.profile.period);
-      else
-	ryg_state_sub_recv_mw.set_duration(tg_duration);
-      fName = nodeName + "." + compName + ".ryg_state_sub.network.csv";
-      ryg_state_sub_recv_mw.set_enable_sendback(enable_sendback);
-      ryg_state_sub_recv_mw.set_output_filename(fName);
-      ryg_state_sub_recv_mw.set_recv_done_callback(boost::bind(&controller::mw_recv_done_callback, this, &ryg_state_sub_recv_mw));
-      ryg_state_sub_id = 0;
-    }
-  if (config.portSenderMap.find("ryg_state_sub") != config.portSenderMap.end())
-    {
-      for (auto it=config.portSenderMap["ryg_state_sub"].begin();
-	   it != config.portSenderMap["ryg_state_sub"].end(); ++it)
-	{
-	  ryg_state_sub_recv_mw.add_sender( it->first, it->second );
-	}
-    }
-  
-  max_data_length = 8192;
-  tg_misbehave = false;
-  for (int i=0; i<node_argc; i++)
-    {
-      if (!strcmp(node_argv[i], "--max_data_length_bytes"))
-	{
-	  max_data_length = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i], "--max_data_length_bits"))
-	{
-	  max_data_length = atoi(node_argv[i+1]) / 8;
-	}
-      if (!strcmp(node_argv[i], "--tg_misbehave"))
-	{
-	  tg_misbehave = true;
-	}
-    }
-  ros::NodeHandle nh;
-  ros::TimerOptions timer_options;
-  if (config.profileMap.find("ryg_control_pub") != config.profileMap.end())
-    {
-      ryg_control_pub_send_mw.init(node_argc,
-					     node_argv,
-					     config.uuidMap["ryg_control_pub"],
-					     config.profileMap["ryg_control_pub"]);
-      if ( tg_duration < 0 )
-	ryg_control_pub_send_mw.set_duration(ryg_control_pub_send_mw.profile.period);
-      else
-	ryg_control_pub_send_mw.set_duration(tg_duration);
-      fName = nodeName + "." + compName + ".ryg_control_pub.network.csv";
-      ryg_control_pub_send_mw.set_output_filename(fName);
-
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(-1),
-	 boost::bind(&controller::ryg_control_pub_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      ryg_control_pub_timer = nh.createTimer(timer_options);
-    }
   // Stop Init Timer
   initOneShotTimer.stop();
 }
 //# End Init Marker
 
-
-void controller::ryg_control_pub_timerCallback(const ros::TimerEvent& event)
-{
-  dsc::ryg_control msg;
-  msg.uuid = ryg_control_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
-  double timerDelay = 0;
-  try
-    {
-      timerDelay =
-	ryg_control_pub_send_mw.send<dsc::ryg_control>(ryg_control_pub, msg);
-    }
-  catch ( Network::Exceeded_Production_Profile& ex )
-    {
-      LOGGER.DEBUG("Prevented from sending on the network!");
-    }
-
-  if ( ros::Time::now() >= ryg_control_pub_send_mw.get_end_time() )
-    {
-      LOGGER.DEBUG("writing output\n");
-      ryg_control_pub_send_mw.record();
-    }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-      ros::TimerOptions timer_options;
-      timer_options = 
-	ros::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&controller::ryg_control_pub_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      ros::NodeHandle nh;
-      ryg_control_pub_timer = nh.createTimer(timer_options);
-    }
-}
 
 
 // Subscriber Callback - sensor_state_sub
@@ -176,16 +260,6 @@ void controller::ryg_control_pub_timerCallback(const ros::TimerEvent& event)
 void controller::sensor_state_sub_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for sensor_state_sub Subscriber
-
-  uint64_t uuid = received_data->uuid;
-  uint64_t msgBytes = ros::serialization::Serializer<dsc::sensor_state>::serializedLength(*received_data);
-  ros::Time now = ros::Time::now();
-  sensor_state_sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
-  Network::Message new_msg;
-  new_msg.Bytes(msgBytes);
-  new_msg.Id(sensor_state_sub_id++);
-  new_msg.TimeStamp();
-  sensor_state_sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
   
 }
 //# End sensor_state_sub_OnOneData Marker
@@ -195,16 +269,6 @@ void controller::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& receive
 {
   // Business Logic for ryg_state_sub Subscriber
 
-  uint64_t uuid = received_data->uuid;
-  uint64_t msgBytes = ros::serialization::Serializer<dsc::ryg_state>::serializedLength(*received_data);
-  ros::Time now = ros::Time::now();
-  ryg_state_sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
-  Network::Message new_msg;
-  new_msg.Bytes(msgBytes);
-  new_msg.Id(ryg_state_sub_id++);
-  new_msg.TimeStamp();
-  ryg_state_sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
-  
 }
 //# End ryg_state_sub_OnOneData Marker
 
@@ -308,9 +372,9 @@ void controller::startUp()
   LOGGER.SET_LOG_LEVELS(logLevels);
 
 
-  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::Subscribeoptions Comp_Sync_Sub_Options;
+  ros::SubscribeOptions comp_sync_sub_options;
   comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,
