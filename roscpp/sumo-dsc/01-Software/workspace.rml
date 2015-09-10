@@ -45,14 +45,44 @@ package dsc
   {
     // ROSMOD Publisher - ryg_control_pub
     publisher <dsc/ryg_control> ryg_control_pub;
-    // ROSMOD Subscriber - sensor_state_sub
-    subscriber <dsc/sensor_state> sensor_state_sub 
+    // ROSMOD Subscriber - ryg_state_sub
+    subscriber <dsc/ryg_state> ryg_state_sub 
     {
       priority = 50;
       deadline = 0.1;
     }       
-    // ROSMOD Subscriber - ryg_state_sub
-    subscriber <dsc/ryg_state> ryg_state_sub 
+    // ROSMOD Subscriber - l1_ew_in
+    subscriber <dsc/sensor_state> l1_ew_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ew_out
+    subscriber <dsc/sensor_state> l1_ew_out 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l2_ew_in
+    subscriber <dsc/sensor_state> l2_ew_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l2_ew_out
+    subscriber <dsc/sensor_state> l2_ew_out 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ns_in
+    subscriber <dsc/sensor_state> l1_ns_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ns_out
+    subscriber <dsc/sensor_state> l1_ns_out 
     {
       priority = 50;
       deadline = 0.1;
@@ -126,5 +156,72 @@ package dsc
   {
     // ROSMOD Publisher - tl_sensor_stream_ddos_pub
     publisher <dsc/ryg_state> tl_sensor_stream_ddos_pub;
+  }
+  // ROSMOD Component - controller_1
+  component controller_1 : Base 
+  {
+    // ROSMOD Publisher - ryg_control_pub
+    publisher <dsc/ryg_control> ryg_control_pub;
+    // ROSMOD Subscriber - ryg_state_sub
+    subscriber <dsc/ryg_state> ryg_state_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ew_in
+    subscriber <dsc/sensor_state> l1_ew_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ew_out
+    subscriber <dsc/sensor_state> l1_ew_out 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l2_ew_in
+    subscriber <dsc/sensor_state> l2_ew_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l2_ew_out
+    subscriber <dsc/sensor_state> l2_ew_out 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ns_in
+    subscriber <dsc/sensor_state> l1_ns_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l1_ns_out
+    subscriber <dsc/sensor_state> l1_ns_out 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l2_ns_in
+    subscriber <dsc/sensor_state> l2_ns_in 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - l2_ns_out
+    subscriber <dsc/sensor_state> l2_ns_out 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - controller_timer
+    timer controller_timer 
+    {
+	period = 0.1;
+	priority = 50;
+	deadline = 0.1;
+    }       
   }
 }

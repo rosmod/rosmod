@@ -1,9 +1,11 @@
-#ifndef CONTROLLER_HPP
-#define CONTROLLER_HPP
+#ifndef CONTROLLER_1_HPP
+#define CONTROLLER_1_HPP
 #include "ros/ros.h"
 #include "node/Component.hpp"
 #include "dsc/ryg_control.h"
 #include "dsc/ryg_state.h"
+#include "dsc/sensor_state.h"
+#include "dsc/sensor_state.h"
 #include "dsc/sensor_state.h"
 #include "dsc/sensor_state.h"
 #include "dsc/sensor_state.h"
@@ -19,11 +21,11 @@
 //# Start User Globals Marker
 //# End User Globals Marker
 
-class controller : public Component
+class controller_1 : public Component
 {
 public:
   // Constructor
-  controller(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
+  controller_1(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);
@@ -49,6 +51,12 @@ public:
   // Subscriber Callback - l1_ns_out
   void l1_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data); 
  
+  // Subscriber Callback - l2_ns_in
+  void l2_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data); 
+ 
+  // Subscriber Callback - l2_ns_out
+  void l2_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data); 
+ 
   // Timer Callback - controller_timer
   void controller_timerCallback(const ros::TimerEvent& event);
 
@@ -56,7 +64,7 @@ public:
   void startUp();
 
   // Destructor
-  ~controller();
+  ~controller_1();
 
 private:
 
@@ -84,11 +92,16 @@ private:
   // Subscriber
   ros::Subscriber l1_ns_out;
 
+  // Subscriber
+  ros::Subscriber l2_ns_in;
+
+  // Subscriber
+  ros::Subscriber l2_ns_out;
+
   // Publisher 
   ros::Publisher ryg_control_pub;
 
   //# Start User Private Variables Marker
-  std::string _id;
   //# End User Private Variables Marker
 };
 

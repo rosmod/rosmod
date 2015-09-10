@@ -323,6 +323,22 @@ add_dependencies(tl_sensor_stream_ddos
                  dsc_generate_messages_cpp
                 )
 
+add_library(controller_1
+            src/dsc/controller_1.cpp
+            ## Start controller_1 CPP Marker
+
+            ## End controller_1 CPP Marker
+           )
+target_link_libraries(controller_1
+                      ## Start controller_1 Target Link Libraries Marker
+
+                      ## End controller_1 Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(controller_1
+                 dsc_generate_messages_cpp
+                )
+
 include_directories(include ${catkin_INCLUDE_DIRS}
 	include/sumo
 )
