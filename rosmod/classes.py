@@ -616,13 +616,28 @@ class Server(Model):
         service_name = service['name'].value
         package_name = service.parent['name'].value
 
-        server_artifact.value = "bool " + self.parent["name"].value +\
-                                "::" + self['name'].value + '_callback(' +\
-                                package_name + "::" + service_name + "::" +\
-                                "Request &req,\n  " + package_name + "::" +\
-                                service_name + "::Response &res) {\n\n" +\
-                                "  // Business Logic for " + self['name'].value +\
-                                " server\n\n" + "}\n\n"
+        # Template for a subscriber operation
+        server_template\
+            = Template('$return_type $component::$callback($args) {\n\n' +\
+                       '$comment' +\
+                       '\n\n}' +\
+                       '\n\n')
+
+        # Resolving the template 
+        return_type = "bool"
+        component_name = self.parent['name'].value
+        callback_name = "{}_callback".format(self['name'].value)
+        service_name = self['service_reference'].value['name'].value
+        service_parent = self['service_reference'].value.parent['name'].value
+        callback_args = "const {0}::{1}::Request& req,\n  {0}::{1}::Response &res"\
+            .format(service_parent, service_name)
+        comment = "  // Business Logic for {} server".format(callback_name)
+        server_artifact.value = server_template.\
+                                substitute(return_type=return_type,
+                                           component=component_name,
+                                           callback=callback_name, 
+                                           args=callback_args,
+                                           comment=comment)
         
         self.artifacts.append(server_artifact)
 
@@ -672,14 +687,28 @@ class Subscriber(Model):
         subscriber_artifact = Artifact(kind="snippet", 
                                        name="subscriber_callback")
 
-        subscriber_artifact.value = "void " + self.parent['name'].value +\
-                                    "::" + self['name'].value + "_callback(" +\
-                                    "const " + self["message_reference"].value\
-                                    .parent["name"].value + "::" +\
-                                    self["message_reference"].value["name"].value +\
-                                    "::ConstPtr & received_data) {\n\n" +\
-                                    "  // Business Logic for " +\
-                                    self['name'].value + " subscriber\n\n" + "}\n\n"
+        # Template for a subscriber operation
+        subscriber_template\
+            = Template('$return_type $component::$callback($args) {\n\n' +\
+                       '$comment' +\
+                       '\n\n}' +\
+                       '\n\n')
+
+        # Resolving the template 
+        return_type = "void"
+        component_name = self.parent['name'].value
+        callback_name = "{}_callback".format(self['name'].value)
+        message_name = self['message_reference'].value['name'].value
+        message_parent = self['message_reference'].value.parent['name'].value
+        callback_args = "const {}::{}::ConstPtr& received_data".format\
+                        (message_parent, message_name)
+        comment = "  // Business Logic for {} subscriber".format(callback_name)
+        subscriber_artifact.value = subscriber_template.\
+                                    substitute(return_type=return_type,
+                                               component=component_name,
+                                               callback=callback_name, 
+                                               args=callback_args,
+                                               comment=comment)
 
         self.artifacts.append(subscriber_artifact)
 
@@ -710,17 +739,19 @@ class Timer(Model):
                                   name="timer_callback")
 
         # Template for a timer operation
-        timer_template = Template('$return_type $component::$callback($args) {\n\n' +\
-                                  '$comment' +\
-                                  '\n\n}' +\
-                                  '\n\n')
+        timer_template\
+            = Template('$return_type $component::$callback($args) {\n\n' +\
+                       '$comment' +\
+                       '\n\n}' +\
+                       '\n\n')
 
         # Resolving the template 
+        return_type = "void"
         component_name = self.parent['name'].value
-        callback_name = self['name'].value + "_callback"
-        callback_args = "const rosmod::TiemrEvent& event"
-        comment = "  // Business Logic for " + callback_name + " timer"
-        timer_artifact.value = timer_template.substitute(return_type='void',
+        callback_name = "{}_callback".format(self['name'].value)
+        callback_args = "const rosmod::TimerEvent& event"
+        comment = "  // Business Logic for {} timer".format(callback_name)
+        timer_artifact.value = timer_template.substitute(return_type=return_type,
                                                          component=component_name,
                                                          callback=callback_name, 
                                                          args=callback_args,
