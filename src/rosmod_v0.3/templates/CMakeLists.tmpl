@@ -259,6 +259,7 @@ include_directories(include ${catkin_INCLUDE_DIRS}
 )
 add_library(sumo
             src/sumo/sumo_client.cpp
+	    include/sumo/utils/traci/TraCIAPI.cpp
 	    include/sumo/foreign/tcpip/socket.cpp
 	    include/sumo/foreign/tcpip/storage.cpp
 	    )

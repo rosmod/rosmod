@@ -444,11 +444,12 @@ class Example(wx.Frame):
             needs_io = False
             io_types = []
             for child in node.children:
-                libs.append("lib" + child.properties['component_reference'].properties['name'] + ".so")
-                if child.properties['component_reference'].properties['datatype'] == 'KSP':
-                    if child.properties['component_reference'].properties['datatype'] not in io_types:
-                        io_types.append(
-                            child.properties['component_reference'].properties['datatype'])
+                libs.append("lib" +
+                            child.properties['component_reference'].properties['name'] + ".so")
+                _data_type = child.properties['component_reference'].properties['datatype']
+                if _data_type in ['KSP','SUMO']:
+                    if _data_type not in io_types:
+                        io_types.append(_data_type)
                     needs_io = True
             if needs_io:
                 if 'KSP' in io_types:
