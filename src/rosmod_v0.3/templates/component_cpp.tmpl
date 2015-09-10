@@ -39,7 +39,7 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
 	  sumo_port = atoi(node_argv[i+1]);
 	}
     }
-  sumo_client.create_connection(sumo_port, sumo_hostname);
+  sumo_client.create_connection(sumo_port, sumo_host);
 #end if
 #if $component_type == "KSP"
   std::string ksp_host;
@@ -172,7 +172,7 @@ void $component_name::Init(const ros${mod}::TimerEvent& event)
 $init_business_logic//# End Init Marker
 #end if
 
-
+#if $trafficGen
 #if $len($publishers) > 0
 #for $pub in $publishers
 void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEvent& event)
@@ -212,6 +212,7 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
     }
 }
 #end for
+#end if
 #end if
 
 #if $len($subscribers) > 0
@@ -544,15 +545,15 @@ void $component_name::startUp()
   krpci_client.SetName(nodeName + "_" + compName);
 #end if
 
-  this->Comp_Sync_Pub = Nh.Advertise<Std_Msgs::Bool>("Component_Synchronization", 1000);
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros${mod}::Subscribeoptions Comp_Sync_Sub_Options;
+  ros${mod}::SubscribeOptions comp_sync_sub_options;
 #if $mod != ""
-  rosmod::rosmod_Callback_Options Sync_Callback_Options;
-  Comp_sync_sub_options = ros${mod}::SubscribeOptions::Create<Std_Msgs::Bool>
+  rosmod::rosmod_callback_options sync_callback_options;
+  Comp_sync_sub_options = ros${mod}::SubscribeOptions::Create<std_msgs::Bool>
     ("Component_Synchronization",
      1000,
-     Boost::Bind(&$component_Name::Component_Synchronization_OnOneData, this, _1),
+     boost::bind(&$component_name::component_synchronization_OnOneData, this, _1),
      ros${mod}::VoidPtr(),
      &this->compQueue,
      sync_callback_options);
