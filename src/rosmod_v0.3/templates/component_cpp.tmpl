@@ -354,6 +354,26 @@ void $component_name::startUp()
   ros${mod}::NodeHandle nh;
   std::string advertiseName;
 
+  // Identify the pwd of Node Executable
+  std::string s = node_argv[0];
+  std::string exec_path = s;
+  std::string delimiter = "/";
+  std::string exec, pwd;
+  size_t pos = 0;
+  while ((pos = s.find(delimiter)) != std::string::npos) {
+    exec = s.substr(0, pos);
+    s.erase(0, pos + delimiter.length());
+  }
+  exec = s.substr(0, pos);
+  pwd = exec_path.erase(exec_path.find(exec), exec.length());
+  std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+  
+  // Create the log file & open file stream
+  LOGGER.CREATE_FILE(log_file_path);
+  
+  // Establish log levels of LOGGER
+  LOGGER.SET_LOG_LEVELS(logLevels);
+
   // Scheduling Scheme is FIFO
 #if $mod != ""  
   this->compQueue.scheduling_scheme = scheduling_scheme;
@@ -521,25 +541,6 @@ void $component_name::startUp()
 #end for
 
 #end if
-  // Identify the pwd of Node Executable
-  std::string s = node_argv[0];
-  std::string exec_path = s;
-  std::string delimiter = "/";
-  std::string exec, pwd;
-  size_t pos = 0;
-  while ((pos = s.find(delimiter)) != std::string::npos) {
-    exec = s.substr(0, pos);
-    s.erase(0, pos + delimiter.length());
-  }
-  exec = s.substr(0, pos);
-  pwd = exec_path.erase(exec_path.find(exec), exec.length());
-  std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
-  
-  // Create the log file & open file stream
-  LOGGER.CREATE_FILE(log_file_path);
-  
-  // Establish log levels of LOGGER
-  LOGGER.SET_LOG_LEVELS(logLevels);
 
 #if $component_type == "KSP"
   krpci_client.SetName(nodeName + "_" + compName);
