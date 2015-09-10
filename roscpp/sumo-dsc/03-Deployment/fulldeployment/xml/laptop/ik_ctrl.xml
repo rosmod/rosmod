@@ -13,72 +13,78 @@
       <critical setting="True"/>
     </logging>
     <port name="ryg_control_pub">
-      <uuid>2</uuid>
+      <uuid>7</uuid>
       <profile>
 
       </profile>
     </port>
-    <port name="sensor_state_sub">
+    <port name="ryg_state_sub">
       <uuid>0</uuid>
       <profile>
 
       </profile>
-      <sender uuid="5">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="6">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="7">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="8">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="9">
 	<profile>
 
 	</profile>
       </sender>
+      <sender uuid="25">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="41">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="57">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="73">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="l1_ew_in">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
       <sender uuid="10">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="16">
+      <sender uuid="11">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="17">
+      <sender uuid="12">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="18">
+      <sender uuid="13">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="19">
+      <sender uuid="14">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="20">
+      <sender uuid="15">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="21">
+      <sender uuid="26">
 	<profile>
 
 	</profile>
@@ -108,31 +114,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="32">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="38">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="39">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="40">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="41">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="42">
 	<profile>
 
@@ -143,53 +124,123 @@
 
 	</profile>
       </sender>
-      <sender uuid="49">
+      <sender uuid="44">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="50">
+      <sender uuid="45">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="51">
+      <sender uuid="46">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="52">
+      <sender uuid="47">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="53">
+      <sender uuid="58">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="54">
+      <sender uuid="59">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="55">
+      <sender uuid="60">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="56">
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="62">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="63">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="74">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="75">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="76">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="77">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="78">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="79">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="80">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="81">
 	<profile>
 
 	</profile>
       </sender>
     </port>
-    <port name="ryg_state_sub">
-      <uuid>1</uuid>
+    <port name="l1_ew_out">
+      <uuid>2</uuid>
       <profile>
 
       </profile>
-      <sender uuid="4">
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="14">
 	<profile>
 
 	</profile>
@@ -204,12 +255,791 @@
 
 	</profile>
       </sender>
-      <sender uuid="37">
+      <sender uuid="27">
 	<profile>
 
 	</profile>
       </sender>
-      <sender uuid="48">
+      <sender uuid="28">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="30">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="42">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="44">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="45">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="46">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="47">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="58">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="59">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="60">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="62">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="63">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="74">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="75">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="76">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="77">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="78">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="79">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="80">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="l2_ew_in">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="14">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="26">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="27">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="28">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="30">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="42">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="44">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="45">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="46">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="47">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="58">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="59">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="60">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="62">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="63">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="74">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="75">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="76">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="77">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="78">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="79">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="80">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="l2_ew_out">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="14">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="26">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="27">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="28">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="30">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="42">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="44">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="45">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="46">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="47">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="58">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="59">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="60">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="62">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="63">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="74">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="75">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="76">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="77">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="78">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="79">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="80">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="l1_ns_in">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="14">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="26">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="27">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="28">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="30">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="42">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="44">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="45">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="46">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="47">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="58">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="59">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="60">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="62">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="63">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="74">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="75">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="76">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="77">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="78">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="79">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="80">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="l1_ns_out">
+      <uuid>6</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="14">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="26">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="27">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="28">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="30">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="42">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="44">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="45">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="46">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="47">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="58">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="59">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="60">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="62">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="63">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="74">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="75">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="76">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="77">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="78">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="79">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="80">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="81">
 	<profile>
 
 	</profile>

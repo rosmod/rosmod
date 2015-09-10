@@ -13,16 +13,20 @@
       <critical setting="True"/>
     </logging>
     <port name="ryg_control_sub">
-      <uuid>3</uuid>
+      <uuid>8</uuid>
       <profile>
 
       </profile>
-      <sender uuid="2">
+      <sender uuid="7">
 	<profile>
 
 	</profile>
       </sender>
     </port>
+    <port_instance name="ryg_control_ik">
+      <port name="ryg_control_sub"/>
+      <group setting="ik"/>
+    </port_instance>
   </component_instance>
 </node>
 

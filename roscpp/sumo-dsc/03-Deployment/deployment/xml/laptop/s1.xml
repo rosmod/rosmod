@@ -13,11 +13,15 @@
       <critical setting="True"/>
     </logging>
     <port name="sensor_state_pub">
-      <uuid>10</uuid>
+      <uuid>15</uuid>
       <profile>
 
       </profile>
     </port>
+    <port_instance name="s1">
+      <port name="sensor_state_pub"/>
+      <group setting="s1"/>
+    </port_instance>
   </component_instance>
 </node>
 

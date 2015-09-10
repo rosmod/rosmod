@@ -13,11 +13,15 @@
       <critical setting="True"/>
     </logging>
     <port name="ryg_state_pub">
-      <uuid>4</uuid>
+      <uuid>9</uuid>
       <profile>
 
       </profile>
     </port>
+    <port_instance name="ryg_state_ik">
+      <port name="ryg_state_pub"/>
+      <group setting="ik"/>
+    </port_instance>
   </component_instance>
 </node>
 
