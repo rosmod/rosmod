@@ -2,12 +2,6 @@
 
 
 //# Start User Globals Marker
-int _Light_Min = 30; 
-int _Light_Max = 120; //the constrains of the length of traffic lights for intersection
-
-int _s_NS = 4; 
-int _s_WE = 15; //the threshold of North-South and West-East direction for intersection
-
 const std::string NSGREEN = "Grr";
 const std::string NSYELLOW = "yrr";
 const std::string WEGREEN = "rGG";
@@ -174,7 +168,6 @@ void controller::Init(const ros::TimerEvent& event)
 	  _s_WE = atoi(node_argv[i+1]);
 	}
     }
-
   // Stop Init Timer
   initOneShotTimer.stop();
 }
@@ -254,7 +247,7 @@ void controller::controller_timerCallback(const ros::TimerEvent& event)
   //First we compute the queue length of West-East direction
   int queue_l1, queue_l2;
   vehicle_number( "l1_ew_in", "l1_ew_out", queue_l1 );
-  vehicle_number( "l2_ew_in", "l2_ew_out", queue_l1 );
+  vehicle_number( "l2_ew_in", "l2_ew_out", queue_l2 );
   _queue[0] = queue_l1 + queue_l2;
   //Then we compute the length in North-South direction
   vehicle_number( "l1_ns_in", "l1_ns_out", _queue[1] );
