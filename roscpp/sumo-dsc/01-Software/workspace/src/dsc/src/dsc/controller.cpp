@@ -2,11 +2,11 @@
 
 
 //# Start User Globals Marker
-int Light_Min = 30; 
-int Light_Max = 120; //the constrains of the length of traffic lights for intersection
+int _Light_Min = 30; 
+int _Light_Max = 120; //the constrains of the length of traffic lights for intersection
 
-int s_NS = 4; 
-int s_WE = 15; //the threshold of North-South and West-East direction for intersection
+int _s_NS = 4; 
+int _s_WE = 15; //the threshold of North-South and West-East direction for intersection
 
 const std::string NSGREEN = "Grr";
 const std::string NSYELLOW = "yrr";
@@ -18,72 +18,51 @@ const std::string NSYELLOW1 = "yyrr";
 const std::string WEGREEN1 = "rrGG";
 const std::string WEYELLOW1 = "rryy";
 
-int _clock[2] = {0,0};
-int _queue[2] = {0,0};
-
-std::string id_S[2][2];
-std::string _state;
-
 int step = 0;
 
-int total_latency=0;
-int car_number=0;
-int car_latency=0;
-int truck_number=0;
-int truck_latency=0;
-
-
-void vehicle_number(std::string sensor1,
-		    std::string sensor2,
-		    std::string& id_T1,
-		    std::string& id_S1,
-		    int& sum_sensor1,
-		    int& sum_sensor2,
-		    int& queue_length)
+void controller::vehicle_number(std::string sensor1,
+				std::string sensor2,
+				int& queue_length)
 {
-  int numVehicles = 0;
-  //client.getLastStepInductionLoopVehicleNumber(sensor1, numVehicles);
+  int numVehicles = _num_vehicles_map[sensor1];
   if (numVehicles == 0)
-    id_T1="";
+    _id_map[sensor1] = "";
   else
     {
-      std::vector<std::string> list_T1;
-      //client.getLastStepInductionLoopVehicleIDs(sensor1, list_T1);
+      std::vector<std::string> list_T1 = _vehicle_ids_map[sensor1];
       for ( std::vector<std::string>::iterator it = list_T1.begin(); it != list_T1.end(); ++it)
 	{
-	  if ( *it != id_T1 )
+	  if ( *it != _id_map[sensor1] )
 	    {
-	      id_T1 = *it;
-	      sum_sensor1 += 1;
+	      _id_map[sensor1] = *it;
+	      _sum_map[sensor1] += 1;
 	    }
 	}
     }
-  //client.getLastStepInductionLoopVehicleNumber(sensor2, numVehicles);
+  numVehicles = _num_vehicles_map[sensor2];
   if (numVehicles == 0)
-    id_S1="";
+    _id_map[sensor2] = "";
   else
     {
-      std::vector<std::string> list_S1;
-      //client.getLastStepInductionLoopVehicleIDs(sensor2, list_S1);
+      std::vector<std::string> list_S1 = _vehicle_ids_map[sensor2];
       for ( std::vector<std::string>::iterator it = list_S1.begin(); it != list_S1.end(); ++it)
 	{
-	  if ( *it != id_S1 )
+	  if ( *it != _id_map[sensor2] )
 	    {
-	      id_S1 = *it;
-	      sum_sensor2 += 1;
+	      _id_map[sensor2] = *it;
+	      _sum_map[sensor2] += 1;
 	    }
 	}
     }
-  queue_length = sum_sensor1-sum_sensor2 + 1 ;
+  queue_length = _sum_map[sensor1]-_sum_map[sensor2] + 1 ;
 }
 
-void clock_value(std::string intersection,
-		 int& clock_WE,
-		 int& clock_NS,
-		 std::string& tl_state)
+void controller::clock_value(const std::string& ns_state,
+			     int& clock_WE,
+			     int& clock_NS,
+			     std::string& tl_state)
 {
-  //client.getRedYellowGreenState(intersection, tl_state);
-  if (!tl_state.compare(NSGREEN))
+  if (!tl_state.compare(ns_state))
     {
       clock_NS = clock_NS + 1;
       clock_WE = 0;
@@ -95,126 +74,58 @@ void clock_value(std::string intersection,
     }
 }
 
-void clock_value1(std::string intersection,
-		  int& clock_WE,
-		  int& clock_NS,
-		  std::string& tl_state)
-{
-  //client.getRedYellowGreenState(intersection, tl_state);
-  if (!tl_state.compare(NSGREEN1))
-    {
-      clock_NS = clock_NS + 1;
-      clock_WE = 0;
-    }
-  else
-    {
-      clock_WE = clock_WE + 1;
-      clock_NS = 0;
-    }
-}
 
-void controller_main(std::string intersection,
-		     std::string& tl_state,
-		     int queue_WE,
-		     int queue_NS,
-		     int& clock_WE,
-		     int& clock_NS,
-		     int Light_Min,
-		     int Light_Max,
-		     int s_WE,
-		     int s_NS)
+void controller::controller_main(std::string& tl_state,
+				 const std::string& we_state,
+				 const std::string& ns_state,
+				 int queue_WE,
+				 int queue_NS,
+				 int& clock_WE,
+				 int& clock_NS)
 {
-  if ((queue_WE < s_WE && queue_NS < s_NS) || (queue_WE >= s_WE && queue_NS >= s_NS))
+  if ((queue_WE < _s_WE && queue_NS < _s_NS) || (queue_WE >= _s_WE && queue_NS >= _s_NS))
     {
-      if ( !tl_state.compare(WEGREEN) && clock_WE > Light_Max )
+      if ( !tl_state.compare(we_state) && clock_WE > _Light_Max )
 	{
-	  //client.setRedYellowGreenState(intersection, NSGREEN);
+	  tl_state = ns_state;
 	  clock_WE = 0;
 	}
-      if ( !tl_state.compare(NSGREEN) && clock_NS > Light_Max )
+      if ( !tl_state.compare(ns_state) && clock_NS > _Light_Max )
 	{
-	  //client.setRedYellowGreenState(intersection, WEGREEN);
+	  tl_state = we_state;
 	  clock_NS = 0;
 	}
     }
-  else if (queue_WE >= s_WE && queue_NS <s_NS)
+  else if (queue_WE >= _s_WE && queue_NS < _s_NS)
     {
-      if ( !tl_state.compare(NSGREEN) && clock_NS > Light_Min )
+      if ( !tl_state.compare(ns_state) && clock_NS > _Light_Min )
 	{
-	  //client.setRedYellowGreenState(intersection, WEGREEN);
+	  tl_state = we_state;
 	  clock_NS = 0;
 	}
-      if ( !tl_state.compare(WEGREEN) && clock_WE > Light_Max )
+      if ( !tl_state.compare(we_state) && clock_WE > _Light_Max )
 	{
-	  //client.setRedYellowGreenState(intersection, NSGREEN);
+	  tl_state = ns_state;
 	  clock_WE = 0;
 	}
     }
   else
     {
-      if ( !tl_state.compare(WEGREEN) && clock_WE > Light_Min )
+      if ( !tl_state.compare(we_state) && clock_WE > _Light_Min )
 	{
-	  //client.setRedYellowGreenState(intersection, NSGREEN);
+	  tl_state = ns_state;
 	  clock_WE = 0;
 	}
-      if ( !tl_state.compare(NSGREEN) && clock_NS > Light_Max )
+      if ( !tl_state.compare(ns_state) && clock_NS > _Light_Max )
 	{
-	  //client.setRedYellowGreenState(intersection, WEGREEN);
+	  tl_state = we_state;
 	  clock_NS = 0;
 	}
     }
-}
-
-void controller1_main(std::string intersection,
-		      std::string& tl_state,
-		      int queue_WE,
-		      int queue_NS,
-		      int& clock_WE,
-		      int& clock_NS,
-		      int Light_Min,
-		      int Light_Max,
-		      int s_WE,
-		      int s_NS)
-{
-  if ((queue_WE < s_WE && queue_NS < s_NS) || (queue_WE >= s_WE && queue_NS >= s_NS))
-    {
-      if ( !tl_state.compare(WEGREEN1) && clock_WE > Light_Max )
-	{
-	  //client.setRedYellowGreenState(intersection, NSGREEN1);
-	  clock_WE = 0;
-	}
-      if ( !tl_state.compare(NSGREEN1) && clock_NS > Light_Max )
-	{
-	  //client.setRedYellowGreenState(intersection, WEGREEN1);
-	  clock_NS = 0;
-	}
-    }
-  else if (queue_WE >= s_WE && queue_NS <s_NS)
-    {
-      if ( !tl_state.compare(NSGREEN1) && clock_NS > Light_Min )
-	{
-	  //client.setRedYellowGreenState(intersection, WEGREEN1);
-	  clock_NS = 0;
-	}
-      if ( !tl_state.compare(WEGREEN1) && clock_WE > Light_Max )
-	{
-	  //client.setRedYellowGreenState(intersection, NSGREEN1);
-	  clock_WE = 0;
-	}
-    }
-  else
-    {
-      if ( !tl_state.compare(WEGREEN1) && clock_WE > Light_Min )
-	{
-	  //client.setRedYellowGreenState(intersection, NSGREEN1);
-	  clock_WE = 0;
-	}
-      if ( !tl_state.compare(NSGREEN1) && clock_NS > Light_Max )
-	{
-	  //client.setRedYellowGreenState(intersection, WEGREEN1);
-	  clock_NS = 0;
-	}
-    }
+  dsc::ryg_control new_control;
+  new_control.intersection_name = _id;
+  new_control.state = tl_state;
+  ryg_control_pub.publish(new_control);
 }
 //# End User Globals Marker
 
@@ -223,7 +134,23 @@ void controller1_main(std::string intersection,
 void controller::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
-  _id = "";
+  _id = "IK";
+  _Light_Min = 30;
+  _Light_Max = 120;
+  _s_NS = 4;
+  _s_WE = 15;
+  _clock[0] = 0; _clock[1] = 0;
+  _queue[0] = 0; _queue[1] = 0;
+  std::vector<std::string> sensors = {"l1_ew_in","l1_ew_out",
+				      "l2_ew_in","l2_ew_out",
+				      "l1_ns_in","l1_ns_out"};
+  for (auto it = sensors.begin(); it != sensors.end(); ++it)
+    {
+      _sum_map[*it] = 0;
+      _num_vehicles_map[*it] = 0;
+      _id_map[*it] = std::string();
+      _vehicle_ids_map[*it] = std::vector<std::string>();
+    }
   for (int i=0;i<node_argc;i++)
     {
       if (!strcmp(node_argv[i],"--id"))
@@ -232,19 +159,19 @@ void controller::Init(const ros::TimerEvent& event)
 	}
       if (!strcmp(node_argv[i],"--light_min"))
 	{
-	  Light_Min = atoi(node_argv[i+1]);
+	  _Light_Min = atoi(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i],"--light_max"))
 	{
-	  Light_Max = atoi(node_argv[i+1]);
+	  _Light_Max = atoi(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i],"--s_NS"))
 	{
-	  s_NS = atoi(node_argv[i+1]);
+	  _s_NS = atoi(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i],"--s_WE"))
 	{
-	  s_WE = atoi(node_argv[i+1]);
+	  _s_WE = atoi(node_argv[i+1]);
 	}
     }
 
@@ -260,7 +187,7 @@ void controller::Init(const ros::TimerEvent& event)
 void controller::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& received_data)
 {
   // Business Logic for ryg_state_sub Subscriber
-
+  _state = received_data->state;
 }
 //# End ryg_state_sub_OnOneData Marker
 // Subscriber Callback - l1_ew_in
@@ -268,8 +195,8 @@ void controller::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& receive
 void controller::l1_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ew_in Subscriber
-
-  
+  _num_vehicles_map["l1_ew_in"] = received_data->num_vehicles;
+  _vehicle_ids_map["l1_ew_in"] = received_data->vehicle_ids;
 }
 //# End l1_ew_in_OnOneData Marker
 // Subscriber Callback - l1_ew_out
@@ -277,8 +204,8 @@ void controller::l1_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_
 void controller::l1_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ew_out Subscriber
-
-  
+  _num_vehicles_map["l1_ew_out"] = received_data->num_vehicles;
+  _vehicle_ids_map["l1_ew_out"] = received_data->vehicle_ids;
 }
 //# End l1_ew_out_OnOneData Marker
 // Subscriber Callback - l2_ew_in
@@ -286,8 +213,8 @@ void controller::l1_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received
 void controller::l2_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ew_in Subscriber
-
-  
+  _num_vehicles_map["l2_ew_in"] = received_data->num_vehicles;
+  _vehicle_ids_map["l2_ew_in"] = received_data->vehicle_ids;
 }
 //# End l2_ew_in_OnOneData Marker
 // Subscriber Callback - l2_ew_out
@@ -295,8 +222,8 @@ void controller::l2_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_
 void controller::l2_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ew_out Subscriber
-
-  
+  _num_vehicles_map["l2_ew_out"] = received_data->num_vehicles;
+  _vehicle_ids_map["l2_ew_out"] = received_data->vehicle_ids;
 }
 //# End l2_ew_out_OnOneData Marker
 // Subscriber Callback - l1_ns_in
@@ -304,8 +231,8 @@ void controller::l2_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received
 void controller::l1_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ns_in Subscriber
-
-  
+  _num_vehicles_map["l1_ns_in"] = received_data->num_vehicles;
+  _vehicle_ids_map["l1_ns_in"] = received_data->vehicle_ids;
 }
 //# End l1_ns_in_OnOneData Marker
 // Subscriber Callback - l1_ns_out
@@ -313,8 +240,8 @@ void controller::l1_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_
 void controller::l1_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ns_out Subscriber
-
-  
+  _num_vehicles_map["l1_ns_out"] = received_data->num_vehicles;
+  _vehicle_ids_map["l1_ns_out"] = received_data->vehicle_ids;
 }
 //# End l1_ns_out_OnOneData Marker
 
@@ -324,6 +251,17 @@ void controller::controller_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for controller_timer Timer
 
+  //First we compute the queue length of West-East direction
+  int queue_l1, queue_l2;
+  vehicle_number( "l1_ew_in", "l1_ew_out", queue_l1 );
+  vehicle_number( "l2_ew_in", "l2_ew_out", queue_l1 );
+  _queue[0] = queue_l1 + queue_l2;
+  //Then we compute the length in North-South direction
+  vehicle_number( "l1_ns_in", "l1_ns_out", _queue[1] );
+  //Now we compute the clock value of the traffic lights(value k in the paper)
+  clock_value ( NSGREEN, _clock[0], _clock[1], _state );
+  //Now we need to design the traffic light control logic
+  controller_main( _state, WEGREEN, NSGREEN, _queue[0], _queue[1], _clock[0], _clock[1] );
 }
 //# End controller_timerCallback Marker
 
