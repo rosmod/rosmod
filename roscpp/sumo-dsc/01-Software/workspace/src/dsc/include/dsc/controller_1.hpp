@@ -110,6 +110,7 @@ private:
   int _s_NS;     // need to init
   int _s_WE;     // need to init
   std::string _state;
+  std::string _current_state;
   int _total_latency;
   int _car_number;
   int _car_latency;

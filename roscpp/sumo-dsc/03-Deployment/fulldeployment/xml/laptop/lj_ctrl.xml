@@ -3,7 +3,7 @@
   <component_instance name="ctrl_i">
     <library name="libcontroller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="48"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -43,7 +43,7 @@
 
 	</profile>
       </sender>
-      <sender uuid="73">
+      <sender uuid="75">
 	<profile>
 
 	</profile>
@@ -174,16 +174,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="74">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="75">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="76">
 	<profile>
 
@@ -210,6 +200,16 @@
 	</profile>
       </sender>
       <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="82">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="83">
 	<profile>
 
 	</profile>
@@ -340,16 +340,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="74">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="75">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="76">
 	<profile>
 
@@ -376,6 +366,16 @@
 	</profile>
       </sender>
       <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="82">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="83">
 	<profile>
 
 	</profile>
@@ -506,16 +506,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="74">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="75">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="76">
 	<profile>
 
@@ -542,6 +532,16 @@
 	</profile>
       </sender>
       <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="82">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="83">
 	<profile>
 
 	</profile>
@@ -672,16 +672,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="74">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="75">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="76">
 	<profile>
 
@@ -708,6 +698,16 @@
 	</profile>
       </sender>
       <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="82">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="83">
 	<profile>
 
 	</profile>
@@ -838,16 +838,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="74">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="75">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="76">
 	<profile>
 
@@ -874,6 +864,16 @@
 	</profile>
       </sender>
       <sender uuid="81">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="82">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="83">
 	<profile>
 
 	</profile>
@@ -1004,16 +1004,6 @@
 
 	</profile>
       </sender>
-      <sender uuid="74">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="75">
-	<profile>
-
-	</profile>
-      </sender>
       <sender uuid="76">
 	<profile>
 
@@ -1044,7 +1034,49 @@
 
 	</profile>
       </sender>
+      <sender uuid="82">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="83">
+	<profile>
+
+	</profile>
+      </sender>
     </port>
+    <port_instance name="ryg_control_lj">
+      <port name="ryg_control_pub"/>
+      <group setting="lj"/>
+    </port_instance>
+    <port_instance name="ryg_state_lj">
+      <port name="ryg_state_sub"/>
+      <group setting="lj"/>
+    </port_instance>
+    <port_instance name="v3">
+      <port name="l1_ew_in"/>
+      <group setting="v3"/>
+    </port_instance>
+    <port_instance name="u3">
+      <port name="l1_ew_out"/>
+      <group setting="u3"/>
+    </port_instance>
+    <port_instance name="v4">
+      <port name="l2_ew_in"/>
+      <group setting="v4"/>
+    </port_instance>
+    <port_instance name="u4">
+      <port name="l2_ew_out"/>
+      <group setting="u4"/>
+    </port_instance>
+    <port_instance name="t3">
+      <port name="l1_ns_in"/>
+      <group setting="t3"/>
+    </port_instance>
+    <port_instance name="s3">
+      <port name="l1_ns_out"/>
+      <group setting="s3"/>
+    </port_instance>
   </component_instance>
 </node>
 

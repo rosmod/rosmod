@@ -117,9 +117,13 @@ void controller_1::controller_main(std::string& tl_state,
 	}
     }
   dsc::ryg_control new_control;
-  new_control.intersection_name = _id;
-  new_control.state = tl_state;
-  ryg_control_pub.publish(new_control);
+  if (_id.length() > 0)
+    {
+      LOGGER.DEBUG("Publishing new TL state:: %s = %s", _id.c_str(), tl_state.c_str());
+      new_control.intersection_name = _id;
+      new_control.state = tl_state;
+      ryg_control_pub.publish(new_control);
+    }
 }
 //# End User Globals Marker
 
@@ -129,6 +133,7 @@ void controller_1::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
   _id = "AC";
+  _state = WEGREEN1;
   _Light_Min = 30;
   _Light_Max = 120;
   _s_NS = 4;
@@ -181,7 +186,8 @@ void controller_1::Init(const ros::TimerEvent& event)
 void controller_1::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& received_data)
 {
   // Business Logic for ryg_state_sub Subscriber
-  _state = received_data->state;
+  if (received_data->state.length())
+    _current_state = received_data->state;
 }
 //# End ryg_state_sub_OnOneData Marker
 // Subscriber Callback - l1_ew_in

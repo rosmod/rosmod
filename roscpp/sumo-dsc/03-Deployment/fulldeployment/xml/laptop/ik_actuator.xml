@@ -3,7 +3,7 @@
   <component_instance name="tl_act_i">
     <library name="libtl_actuator.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="48"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -37,12 +37,16 @@
 
 	</profile>
       </sender>
-      <sender uuid="71">
+      <sender uuid="73">
 	<profile>
 
 	</profile>
       </sender>
     </port>
+    <port_instance name="ryg_control_ik">
+      <port name="ryg_control_sub"/>
+      <group setting="ik"/>
+    </port_instance>
   </component_instance>
 </node>
 

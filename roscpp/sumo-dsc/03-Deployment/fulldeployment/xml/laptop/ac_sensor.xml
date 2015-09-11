@@ -3,7 +3,7 @@
   <component_instance name="tl_sensor_i">
     <library name="libtl_sensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="48"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -13,11 +13,15 @@
       <critical setting="True"/>
     </logging>
     <port name="ryg_state_pub">
-      <uuid>73</uuid>
+      <uuid>75</uuid>
       <profile>
 
       </profile>
     </port>
+    <port_instance name="ryg_state_ac">
+      <port name="ryg_state_pub"/>
+      <group setting="ac"/>
+    </port_instance>
   </component_instance>
 </node>
 

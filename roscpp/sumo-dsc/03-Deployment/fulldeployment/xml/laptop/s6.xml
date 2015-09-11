@@ -3,7 +3,7 @@
   <component_instance name="il_sensor_i">
     <library name="libil_sensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="48"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -13,11 +13,15 @@
       <critical setting="True"/>
     </logging>
     <port name="sensor_state_pub">
-      <uuid>81</uuid>
+      <uuid>83</uuid>
       <profile>
 
       </profile>
     </port>
+    <port_instance name="s6">
+      <port name="sensor_state_pub"/>
+      <group setting="s6"/>
+    </port_instance>
   </component_instance>
 </node>
 
