@@ -3,7 +3,7 @@
   <component_instance name="ctrl_i">
     <library name="libcontroller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="48"/>
+    <numCompsToSync setting="52"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -214,6 +214,34 @@
 
 	</profile>
       </sender>
+      <sender uuid="84">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="85">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="86">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="87">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
     </port>
     <port name="l1_ew_out">
       <uuid>2</uuid>
@@ -378,6 +406,34 @@
       <sender uuid="83">
 	<profile>
 
+	</profile>
+      </sender>
+      <sender uuid="84">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="85">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="86">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="87">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
 	</profile>
       </sender>
     </port>
@@ -546,6 +602,34 @@
 
 	</profile>
       </sender>
+      <sender uuid="84">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="85">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="86">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="87">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
     </port>
     <port name="l2_ew_out">
       <uuid>4</uuid>
@@ -710,6 +794,34 @@
       <sender uuid="83">
 	<profile>
 
+	</profile>
+      </sender>
+      <sender uuid="84">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="85">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="86">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="87">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
 	</profile>
       </sender>
     </port>
@@ -878,6 +990,34 @@
 
 	</profile>
       </sender>
+      <sender uuid="84">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="85">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="86">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="87">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
     </port>
     <port name="l1_ns_out">
       <uuid>6</uuid>
@@ -1042,6 +1182,34 @@
       <sender uuid="83">
 	<profile>
 
+	</profile>
+      </sender>
+      <sender uuid="84">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="85">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="86">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
+	</profile>
+      </sender>
+      <sender uuid="87">
+	<profile>
+# period = 30
+0,0,0,0
+10,100000000,0,0
 	</profile>
       </sender>
     </port>
