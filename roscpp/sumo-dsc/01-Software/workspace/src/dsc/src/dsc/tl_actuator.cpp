@@ -9,6 +9,14 @@
 void tl_actuator::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
+  _id = "V1";
+  for (int i=0;i<node_argc;i++)
+    {
+      if (!strcmp(node_argv[i],"--id"))
+	{
+	  _id = node_argv[i+1];
+	}
+    }
 
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -24,11 +32,14 @@ void tl_actuator::ryg_control_sub_OnOneData(const dsc::ryg_control::ConstPtr& re
   // Business Logic for ryg_control_sub Subscriber
   dsc::sumo_tlc_set_ryg_state state;
   state.request.intersection_name = received_data->intersection_name;
-  state.request.ryg_state = received_data->state;
-  LOGGER.DEBUG("Setting TL state for :: %s , %s",
-	       received_data->intersection_name.c_str(),
-	       received_data->state.c_str());
-  tlc_set_ryg_state_client.call(state);
+  if ( !_id.compare(state.request.intersection_name) )
+    {
+      state.request.ryg_state = received_data->state;
+      LOGGER.DEBUG("Setting TL state for :: %s , %s",
+		   received_data->intersection_name.c_str(),
+		   received_data->state.c_str());
+      tlc_set_ryg_state_client.call(state);
+    }
 }
 //# End ryg_control_sub_OnOneData Marker
 

@@ -15,8 +15,8 @@ const std::string WEYELLOW1 = "rryy";
 int step = 0;
 
 void controller_1::vehicle_number(std::string sensor1,
-				std::string sensor2,
-				int& queue_length)
+				  std::string sensor2,
+				  int& queue_length)
 {
   int numVehicles = _num_vehicles_map[sensor1];
   if (numVehicles == 0)
@@ -52,9 +52,9 @@ void controller_1::vehicle_number(std::string sensor1,
 }
 
 void controller_1::clock_value(const std::string& ns_state,
-			     int& clock_WE,
-			     int& clock_NS,
-			     std::string& tl_state)
+			       int& clock_WE,
+			       int& clock_NS,
+			       std::string& tl_state)
 {
   if (!tl_state.compare(ns_state))
     {
@@ -70,12 +70,12 @@ void controller_1::clock_value(const std::string& ns_state,
 
 
 void controller_1::controller_main(std::string& tl_state,
-				 const std::string& we_state,
-				 const std::string& ns_state,
-				 int queue_WE,
-				 int queue_NS,
-				 int& clock_WE,
-				 int& clock_NS)
+				   const std::string& we_state,
+				   const std::string& ns_state,
+				   int queue_WE,
+				   int queue_NS,
+				   int& clock_WE,
+				   int& clock_NS)
 {
   if ((queue_WE < _s_WE && queue_NS < _s_NS) || (queue_WE >= _s_WE && queue_NS >= _s_NS))
     {
@@ -146,6 +146,7 @@ void controller_1::Init(const ros::TimerEvent& event)
 				      "l2_ns_in","l2_ns_out"};
   for (auto it = sensors.begin(); it != sensors.end(); ++it)
     {
+      _sensor_id_map[*it] = std::string();
       _sum_map[*it] = 0;
       _num_vehicles_map[*it] = 0;
       _id_map[*it] = std::string();
@@ -173,6 +174,19 @@ void controller_1::Init(const ros::TimerEvent& event)
 	{
 	  _s_WE = atoi(node_argv[i+1]);
 	}
+      for (auto it = sensors.begin(); it != sensors.end(); ++it)
+	{
+	  std::string cmpstr = "--";
+	  cmpstr += *it;
+	  if (!cmpstr.compare(node_argv[i]))
+	    {
+	      _sensor_id_map[*it] = node_argv[i+1];
+	      LOGGER.DEBUG("%s using sensor ID %s",
+			   it->c_str(),
+			   node_argv[i+1]);
+	      break;
+	    }
+	}
     }
   // Stop Init Timer
   initOneShotTimer.stop();
@@ -186,7 +200,7 @@ void controller_1::Init(const ros::TimerEvent& event)
 void controller_1::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& received_data)
 {
   // Business Logic for ryg_state_sub Subscriber
-  if (received_data->state.length())
+  if (received_data->state.length() && !_id.compare(received_data->intersection_name))
     _current_state = received_data->state;
 }
 //# End ryg_state_sub_OnOneData Marker
@@ -195,8 +209,11 @@ void controller_1::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& recei
 void controller_1::l1_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ew_in Subscriber
-  _num_vehicles_map["l1_ew_in"] = received_data->num_vehicles;
-  _vehicle_ids_map["l1_ew_in"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l1_ew_in"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l1_ew_in"] = received_data->num_vehicles;
+      _vehicle_ids_map["l1_ew_in"] = received_data->vehicle_ids;
+    }
 }
 //# End l1_ew_in_OnOneData Marker
 // Subscriber Callback - l1_ew_out
@@ -204,8 +221,11 @@ void controller_1::l1_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& receive
 void controller_1::l1_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ew_out Subscriber
-  _num_vehicles_map["l1_ew_out"] = received_data->num_vehicles;
-  _vehicle_ids_map["l1_ew_out"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l1_ew_out"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l1_ew_out"] = received_data->num_vehicles;
+      _vehicle_ids_map["l1_ew_out"] = received_data->vehicle_ids;
+    }
 }
 //# End l1_ew_out_OnOneData Marker
 // Subscriber Callback - l2_ew_in
@@ -213,8 +233,11 @@ void controller_1::l1_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& receiv
 void controller_1::l2_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ew_in Subscriber
-  _num_vehicles_map["l2_ew_in"] = received_data->num_vehicles;
-  _vehicle_ids_map["l2_ew_in"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l2_ew_in"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l2_ew_in"] = received_data->num_vehicles;
+      _vehicle_ids_map["l2_ew_in"] = received_data->vehicle_ids;
+    }
 }
 //# End l2_ew_in_OnOneData Marker
 // Subscriber Callback - l2_ew_out
@@ -222,8 +245,11 @@ void controller_1::l2_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& receive
 void controller_1::l2_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ew_out Subscriber
-  _num_vehicles_map["l2_ew_out"] = received_data->num_vehicles;
-  _vehicle_ids_map["l2_ew_out"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l2_ew_out"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l2_ew_out"] = received_data->num_vehicles;
+      _vehicle_ids_map["l2_ew_out"] = received_data->vehicle_ids;
+    }
 }
 //# End l2_ew_out_OnOneData Marker
 // Subscriber Callback - l1_ns_in
@@ -231,8 +257,11 @@ void controller_1::l2_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& receiv
 void controller_1::l1_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ns_in Subscriber
-  _num_vehicles_map["l1_ns_in"] = received_data->num_vehicles;
-  _vehicle_ids_map["l1_ns_in"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l1_ns_in"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l1_ns_in"] = received_data->num_vehicles;
+      _vehicle_ids_map["l1_ns_in"] = received_data->vehicle_ids;
+    }
 }
 //# End l1_ns_in_OnOneData Marker
 // Subscriber Callback - l1_ns_out
@@ -240,8 +269,11 @@ void controller_1::l1_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& receive
 void controller_1::l1_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ns_out Subscriber
-  _num_vehicles_map["l1_ns_out"] = received_data->num_vehicles;
-  _vehicle_ids_map["l1_ns_out"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l1_ns_out"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l1_ns_out"] = received_data->num_vehicles;
+      _vehicle_ids_map["l1_ns_out"] = received_data->vehicle_ids;
+    }
 }
 //# End l1_ns_out_OnOneData Marker
 // Subscriber Callback - l2_ns_in
@@ -249,8 +281,11 @@ void controller_1::l1_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& receiv
 void controller_1::l2_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ns_in Subscriber
-  _num_vehicles_map["l2_ns_in"] = received_data->num_vehicles;
-  _vehicle_ids_map["l2_ns_in"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l2_ns_in"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l2_ns_in"] = received_data->num_vehicles;
+      _vehicle_ids_map["l2_ns_in"] = received_data->vehicle_ids;
+    }
 }
 //# End l2_ns_in_OnOneData Marker
 // Subscriber Callback - l2_ns_out
@@ -258,8 +293,11 @@ void controller_1::l2_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& receive
 void controller_1::l2_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ns_out Subscriber
-  _num_vehicles_map["l2_ns_out"] = received_data->num_vehicles;
-  _vehicle_ids_map["l2_ns_out"] = received_data->vehicle_ids;
+  if ( !_sensor_id_map["l2_ns_out"].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map["l2_ns_out"] = received_data->num_vehicles;
+      _vehicle_ids_map["l2_ns_out"] = received_data->vehicle_ids;
+    }
 }
 //# End l2_ns_out_OnOneData Marker
 
@@ -318,11 +356,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["ryg_state_sub"];
   ros::SubscribeOptions ryg_state_sub_options;
   ryg_state_sub_options = ros::SubscribeOptions::create<dsc::ryg_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::ryg_state_sub_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::ryg_state_sub_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->ryg_state_sub = nh.subscribe(ryg_state_sub_options);  
   // Component Subscriber - l1_ew_in
   advertiseName = "sensor_state";
@@ -330,11 +368,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l1_ew_in"];
   ros::SubscribeOptions l1_ew_in_options;
   l1_ew_in_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l1_ew_in_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l1_ew_in_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l1_ew_in = nh.subscribe(l1_ew_in_options);  
   // Component Subscriber - l1_ew_out
   advertiseName = "sensor_state";
@@ -342,11 +380,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l1_ew_out"];
   ros::SubscribeOptions l1_ew_out_options;
   l1_ew_out_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l1_ew_out_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l1_ew_out_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l1_ew_out = nh.subscribe(l1_ew_out_options);  
   // Component Subscriber - l2_ew_in
   advertiseName = "sensor_state";
@@ -354,11 +392,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l2_ew_in"];
   ros::SubscribeOptions l2_ew_in_options;
   l2_ew_in_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l2_ew_in_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l2_ew_in_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l2_ew_in = nh.subscribe(l2_ew_in_options);  
   // Component Subscriber - l2_ew_out
   advertiseName = "sensor_state";
@@ -366,11 +404,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l2_ew_out"];
   ros::SubscribeOptions l2_ew_out_options;
   l2_ew_out_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l2_ew_out_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l2_ew_out_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l2_ew_out = nh.subscribe(l2_ew_out_options);  
   // Component Subscriber - l1_ns_in
   advertiseName = "sensor_state";
@@ -378,11 +416,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l1_ns_in"];
   ros::SubscribeOptions l1_ns_in_options;
   l1_ns_in_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l1_ns_in_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l1_ns_in_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l1_ns_in = nh.subscribe(l1_ns_in_options);  
   // Component Subscriber - l1_ns_out
   advertiseName = "sensor_state";
@@ -390,11 +428,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l1_ns_out"];
   ros::SubscribeOptions l1_ns_out_options;
   l1_ns_out_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l1_ns_out_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l1_ns_out_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l1_ns_out = nh.subscribe(l1_ns_out_options);  
   // Component Subscriber - l2_ns_in
   advertiseName = "sensor_state";
@@ -402,11 +440,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l2_ns_in"];
   ros::SubscribeOptions l2_ns_in_options;
   l2_ns_in_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l2_ns_in_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l2_ns_in_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l2_ns_in = nh.subscribe(l2_ns_in_options);  
   // Component Subscriber - l2_ns_out
   advertiseName = "sensor_state";
@@ -414,11 +452,11 @@ void controller_1::startUp()
     advertiseName += "_" + portGroupMap["l2_ns_out"];
   ros::SubscribeOptions l2_ns_out_options;
   l2_ns_out_options = ros::SubscribeOptions::create<dsc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller_1::l2_ns_out_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
+    (advertiseName.c_str(),
+     1000,
+     boost::bind(&controller_1::l2_ns_out_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
   this->l2_ns_out = nh.subscribe(l2_ns_out_options);  
 
   // Component Publisher - ryg_control_pub

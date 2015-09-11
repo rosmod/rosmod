@@ -40,6 +40,7 @@ private:
   ros::ServiceClient tlc_set_ryg_state_client;
 
   //# Start User Private Variables Marker
+  std::string _id;
   //# End User Private Variables Marker
 };
 

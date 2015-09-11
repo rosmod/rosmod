@@ -103,6 +103,9 @@ private:
 
   //# Start User Private Variables Marker
   std::string _id;
+
+  std::map<std::string,std::string> _sensor_id_map; // need to init
+
   int _clock[2]; // need to init
   int _queue[2]; // need to init
   int _Light_Min;// need to init
