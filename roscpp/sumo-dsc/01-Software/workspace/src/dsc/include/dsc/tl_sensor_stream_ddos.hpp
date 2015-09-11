@@ -5,6 +5,7 @@
 #include "dsc/ryg_state.h"
 
 
+#include "network/sender.hpp"
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -29,8 +30,18 @@ public:
 
 private:
 
+  // do we abide by the profiles?
+  bool tg_misbehave;
+  // size of messages generated
+  uint64_t max_data_length;
   // Publisher 
   ros::Publisher tl_sensor_stream_ddos_pub;
+  // Timer for generating traffic
+  ros::Timer tl_sensor_stream_ddos_pub_timer;
+  // Timer callback for traffic generation
+  void tl_sensor_stream_ddos_pub_timerCallback(const ros::TimerEvent& event);
+  // publisher sender middleware
+  Network::sender tl_sensor_stream_ddos_pub_send_mw;
 
   //# Start User Private Variables Marker
   //# End User Private Variables Marker
