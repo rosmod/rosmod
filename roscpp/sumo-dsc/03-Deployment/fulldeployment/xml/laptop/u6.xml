@@ -3,7 +3,7 @@
   <component_instance name="il_sensor_i">
     <library name="libil_sensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="52"/>
+    <numCompsToSync setting="1"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>

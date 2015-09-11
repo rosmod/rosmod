@@ -134,8 +134,8 @@ void controller_1::Init(const ros::TimerEvent& event)
   // Initialize Here
   _id = "AC";
   _state = WEGREEN1;
-  _Light_Min = 30;
-  _Light_Max = 120;
+  _Light_Min = 300;  // step size is 0.1 seconds
+  _Light_Max = 1200; // step size is 0.1 seconds
   _s_NS = 4;
   _s_WE = 15;
   _clock[0] = 0; _clock[1] = 0;

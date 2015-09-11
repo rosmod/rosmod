@@ -3,7 +3,7 @@
   <component_instance name="ctrl_i">
     <library name="libcontroller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="52"/>
+    <numCompsToSync setting="1"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
@@ -216,30 +216,22 @@
       </sender>
       <sender uuid="84">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="85">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="86">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="87">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
     </port>
@@ -410,30 +402,22 @@
       </sender>
       <sender uuid="84">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="85">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="86">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="87">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
     </port>
@@ -604,30 +588,22 @@
       </sender>
       <sender uuid="84">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="85">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="86">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="87">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
     </port>
@@ -798,30 +774,22 @@
       </sender>
       <sender uuid="84">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="85">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="86">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="87">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
     </port>
@@ -992,30 +960,22 @@
       </sender>
       <sender uuid="84">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="85">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="86">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="87">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
     </port>
@@ -1186,30 +1146,22 @@
       </sender>
       <sender uuid="84">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="85">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="86">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
       <sender uuid="87">
 	<profile>
-# period = 30
-0,0,0,0
-10,100000000,0,0
+
 	</profile>
       </sender>
     </port>

@@ -3,7 +3,7 @@
   <component_instance name="tl_act_i">
     <library name="libtl_actuator.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="10"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>

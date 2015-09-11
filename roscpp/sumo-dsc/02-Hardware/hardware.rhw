@@ -9,7 +9,7 @@ hardware laptop
   username = "jeb";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb";
-  install_path = "/home/jeb/Repositories/ROS-Indigo/install_isolated";
+  install_path = "/opt/ros/jade";
   arch = x86;
 }
 
