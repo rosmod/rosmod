@@ -15,6 +15,7 @@ import os
 import jsonpickle
 from collections import OrderedDict, MutableSequence
 from string import Template
+import textwrap
 
 class Children(MutableSequence):
     """Children List
@@ -118,6 +119,20 @@ class Path(Attribute):
     display = "Path"
     def __init__(self, value):
         super(Path, self).__init__("string",value)
+
+class Author(Attribute):
+    """Author Attribute"""
+    tooltip = "Author refers to the project manager(s)"
+    display = "Author"
+    def __init__(self, value):
+        super(Author, self).__init__("string",value)
+
+class Detailed_Description(Attribute):
+    """Detailed_Description Attribute"""
+    tooltip = "A detailed description of a model"
+    display = "Detailed Description"
+    def __init__(self, value):
+        super(Detailed_Description, self).__init__("string",value)
 
 class Message_Definition(Attribute):
     """Definition Attribute"""
@@ -486,16 +501,20 @@ class Service(Model):
 
 class Component(Model):
     def __init__(self, name=Name(""), component_type=Component_Type("BASE"), 
+                 detailed_description=Detailed_Description(""),
                  parent=None):
         super(Component, self).__init__()
         self.kind = "Component"
 
         assert name != None, "Component name is None!"
         assert component_type != None, "Component type is None!"
+        assert detailed_description != None,\
+                                       "Component detailed description is None!"
 
         self.parent = parent
         self["name"] = name
         self["type"] = component_type
+        self["detailed_description"] = detailed_description
 
         self.children = Children(allowed=[Client(), 
                                           Server(), 
@@ -534,21 +553,24 @@ class Component(Model):
 
         # Template for a init
         init_template\
-            = Template("$return_type $component::init_timer_callback($args) {\n" +\
+            = Template("$comment" +\
+                       "$return_type $component::init_timer_callback($args) {\n" +\
                        "$bl_start_marker\n" +\
                        "$preserved_bl" +\
                        "$bl_end_marker\n}" +\
                        "\n\n")
 
-        # Resolving the template 
+        # Resolving the template
+        comment = "/// Component Initialization\n"
         return_type = "void"
         component_name = self['name'].value
         callback_args = "const rosmod::TimerEvent& event"
-        bl_start_marker = "//# Start init_timer business logic"
-        bl_end_marker = "//# End init_timer business logic"
+        bl_start_marker = "  //# Start init_timer business logic"
+        bl_end_marker = "  //# End init_timer business logic"
         preserved_bl = ""
         init_artifact.value\
-            = init_template.substitute(return_type=return_type,
+            = init_template.substitute(comment=comment,
+                                       return_type=return_type,
                                        component=component_name,
                                        args=callback_args,
                                        bl_start_marker=bl_start_marker,
@@ -560,7 +582,8 @@ class Component(Model):
         destructor_artifact = Artifact(kind="snippet",
                                        name="destructor")
         destructor_template\
-            = Template("$component::~$component() {\n" +\
+            = Template("$comment" +\
+                       "$component::~$component() {\n" +\
                        "$timer_stop" +\
                        "$pub_shutdown" +\
                        "$sub_shutdown" +\
@@ -572,9 +595,10 @@ class Component(Model):
                        "}\n\n")
 
         # Resolving the template
+        comment = "/// Component Shutdown\n"
         component_name = self['name'].value
-        bl_start_marker = "//# Start destructor business logic"
-        bl_end_marker = "//# End destructor business logic"
+        bl_start_marker = "  //# Start destructor business logic"
+        bl_end_marker = "  //# End destructor business logic"
         preserved_bl = ""
         timers = ""
         for timer in self.get_children("Timer"):
@@ -592,7 +616,8 @@ class Component(Model):
         for client in self.get_children("Client"):
             clients += "  {}.shutdown()\n".format(client['name'].value)
         destructor_artifact.value\
-            = destructor_template.substitute(component=component_name,
+            = destructor_template.substitute(comment=comment,
+                                             component=component_name,
                                              timer_stop=timers,
                                              pub_shutdown=publishers,
                                              sub_shutdown=subscribers,
@@ -605,9 +630,26 @@ class Component(Model):
         self.artifacts.append(destructor_artifact)     
 
     def create_headers_artifact(self):
+        leading_comment = "/** @file {}.cpp\n".format(self['name'].value)
+        leading_comment += " *  @brief {} class definition\n"\
+            .format(self['name'].value)
+        if self['detailed_description'].value == "":
+            leading_comment += " * \n"
+        else:
+            leading_comment += " *\n"
+            textwrapped\
+                = textwrap.fill(self['detailed_description'].value, 50).split('\n')  
+            for line in textwrapped:
+                leading_comment += " *  {}\n".format(line)   
+            leading_comment += " *\n"
+        author = self.parent.parent.parent['author'].value
+        leading_comment += " *  @author {}\n".format(author)
+        leading_comment += " */\n\n"
+
         package = self.parent['name'].value
         component = self['name'].value
-        include_header = "#include \"{}/{}.hpp\"\n\n".format(package, component)
+        include_header = leading_comment
+        include_header += "#include \"{}/{}.hpp\"\n\n".format(package, component)
         self.artifacts.append(Artifact(kind="snippet",
                                        name="headers",
                                        value=include_header)) 
@@ -629,8 +671,25 @@ class Component(Model):
         self.artifacts.append(cpp_artifact)
 
     def create_header_define_artifact(self):
+        leading_comment = "/** @file {}.hpp\n".format(self['name'].value)
+        leading_comment += " *  @brief {} class declaration\n"\
+            .format(self['name'].value)
+        if self['detailed_description'].value == "":
+            leading_comment += " * \n"
+        else:
+            leading_comment += " *\n"
+            textwrapped\
+                = textwrap.fill(self['detailed_description'].value, 50).split('\n')  
+            for line in textwrapped:
+                leading_comment += " *  {}\n".format(line)   
+            leading_comment += " *\n"
+        author = self.parent.parent.parent['author'].value
+        leading_comment += " *  @author {}\n".format(author)
+        leading_comment += " */\n\n"
         define_value = "{0}_HPP".format(self['name'].value.upper())
-        header_define_value = "#ifndef {0}\n#define {0}".format(define_value)
+
+        header_define_value = leading_comment
+        header_define_value += "#ifndef {0}\n#define {0}\n".format(define_value)
         header_define_artifact = Artifact(kind="snippet",
                                           name="header_define",
                                           value=header_define_value) 
@@ -684,11 +743,22 @@ class Component(Model):
         class_value\
             = "class {0} : public Component\n{1}\npublic:\n"\
                 .format(self['name'].value, "{")
-        class_value += "  /// Component Creation\n"
+
+        constructor_comment =  "  /**\n   * @brief Component Creation\n"
+        constructor_comment += "   * @param config The component configuration\n"
+        constructor_comment += "   * @param argc The ROS node argument count\n"
+        constructor_comment += "   * @param argv The ROS node array of arguments\n"
+        constructor_comment += "   */\n"
+        class_value += constructor_comment
         class_value += "  {}(ComponentConfig& config, int argc, char **argv)"\
             .format(self['name'].value) +\
-            " : Component(config, argc, argv) {}\n\n".format("{}")
-        class_value += "  /// Component Initialization\n"
+            "\n     : Component(config, argc, argv) {}\n\n".format("{}")
+        init_comment  = "  /**\n   * @brief Component Initialization\n"
+        init_comment\
+            += "   * @param event Time-triggered event during component startup\n"
+        init_comment += "   * @see startup()\n"
+        init_comment += "   */\n"
+        class_value += init_comment
         class_value += "  void init_timer_callback(const {});\n\n"\
                        .format("rosmod::TimerEvent& event")
 
@@ -698,7 +768,10 @@ class Component(Model):
         self.artifacts.append(class_artifact)
 
     def create_startup_decl_artifact(self):
-        startup_value = "  /// Component Startup Routine\n"
+        startup_comment =  "  /**\n   * @brief Component Startup Routine\n"
+        startup_comment += "   * Instantiates all component ports and timers\n"
+        startup_comment += "   */\n"
+        startup_value = startup_comment
         startup_value += "  void startup();\n\n"
         startup_artifact = Artifact(kind="snippet",
                                     name="startup_declaration",
@@ -706,8 +779,11 @@ class Component(Model):
         self.artifacts.append(startup_artifact)
 
     def create_destructor_decl_artifact(self):
-        dest_value = "  /// Component Shutdown\n"
-        dest_value += "  ~{};\n\n".format(self['name'].value)
+        dest_comment =  "  /**\n   * @brief Component Shutdown\n"
+        dest_comment += "   * Cleans up all component ports and timers\n"
+        dest_comment += "   */\n"
+        dest_value = dest_comment
+        dest_value += "  ~{}();\n\n".format(self['name'].value)
         dest_value += "private:\n"
         dest_artifact = Artifact(kind="snippet",
                                  name="destructor_declaration",
@@ -719,7 +795,7 @@ class Component(Model):
         privates_value = "  //# Start Private Variables\n"
         privates_value += preserved_privates
         privates_value += "  //# End Private Variables\n\n"
-        privates_value += "}"
+        privates_value += "};\n\n#endif"
         privates_artifact = Artifact(kind="snippet",
                                      name="privates",
                                      value=privates_value)
@@ -790,7 +866,9 @@ class Client(Model):
         self.children = Children(allowed=[], cardinality={})
 
     def create_client_decl_artifact(self):
-        client_decl = "  /// Component Client - {}\n".format(self['name'].value)
+        client_decl = "  /**\n   * @brief Component client port\n"\
+                      .format(self['name'].value)
+        client_decl += "   */\n"
         client_decl += "  rosmod::Client {};\n\n".format(self['name'].value)
         client_decl_artifact = Artifact(kind="snippet",
                                         name="client_declaration",
@@ -826,8 +904,13 @@ class Server(Model):
         self.children = Children(allowed=[], cardinality={})
 
     def create_server_callback_decl_artifact(self):
-        srv_callback_decl\
-            = "  /// Server Operation - {}\n".format(self['name'].value)
+        server_comment =  "  /**\n   * @brief Server Operation - {}\n"\
+            .format(self['name'].value)
+        server_comment += "   * @param req Received service request\n"
+        server_comment += "   * @param res Returned service response\n"
+        server_comment += "   * @return Success/Failure of server operation\n"
+        server_comment += "   */\n"
+        srv_callback_decl = server_comment
         signature = Template('  $return_type $component::$callback($args);\n\n')
         return_type = "bool"
         component_name = self.parent['name'].value
@@ -848,7 +931,9 @@ class Server(Model):
         self.artifacts.append(srv_callback_decl_artifact)
 
     def create_server_decl_artifact(self):
-        server_decl = "  /// Component Server - {}\n".format(self['name'].value)
+        server_decl = "  /**\n   * @brief Component server port - {}\n"\
+                      .format(self['name'].value)
+        server_decl += "   */\n"
         server_decl += "  rosmod::Server {};\n\n".format(self['name'].value)
         server_decl_artifact = Artifact(kind="snippet",
                                         name="server_declaration",
@@ -865,13 +950,15 @@ class Server(Model):
 
         # Template for a server operation
         server_template\
-            = Template('$return_type $component::$callback($args) {\n' +\
+            = Template('$comment' +\
+                       '$return_type $component::$callback($args) {\n' +\
                        '$bl_start_marker\n' +\
                        '$preserved_bl' +\
                        '$bl_end_marker\n}' +\
                        '\n\n')
 
-        # Resolving the template 
+        # Resolving the template
+        comment = "/// Server Operation - {}\n".format(self['name'].value)
         return_type = "bool"
         component_name = self.parent['name'].value
         callback_name = "{}_callback".format(self['name'].value)
@@ -879,11 +966,12 @@ class Server(Model):
         service_parent = self['service_reference'].value.parent['name'].value
         callback_args = "const {0}::{1}::Request& req,\n  {0}::{1}::Response &res"\
             .format(service_parent, service_name)
-        bl_start_marker = "//# Start {} business logic".format(self['name'].value)
-        bl_end_marker = "//# End {} business logic".format(self['name'].value)
+        bl_start_marker = "  //# Start {} business logic".format(self['name'].value)
+        bl_end_marker = "  //# End {} business logic".format(self['name'].value)
         preserved_bl = ""
         server_artifact.value = server_template.\
-                                substitute(return_type=return_type,
+                                substitute(comment=comment,
+                                           return_type=return_type,
                                            component=component_name,
                                            callback=callback_name, 
                                            args=callback_args,
@@ -916,7 +1004,9 @@ class Publisher(Model):
         self.children = Children(allowed=[], cardinality={})
 
     def create_pub_decl_artifact(self):
-        pub_decl = "  /// Component Publisher - {}\n".format(self['name'].value)
+        pub_decl = "  /**\n   * @brief Component Publisher port - {}\n"\
+                   .format(self['name'].value)
+        pub_decl += "   */\n"
         pub_decl += "  rosmod::Publisher {};\n\n".format(self['name'].value)
         pub_decl_artifact = Artifact(kind="snippet",
                                        name="publisher_declaration",
@@ -952,8 +1042,11 @@ class Subscriber(Model):
         self.children = Children(allowed=[], cardinality={})
 
     def create_subscriber_callback_decl_artifact(self):
-        sub_callback_decl\
-            = "  /// Susbcriber Operation - {}\n".format(self['name'].value)
+        sub_comment =  "  /**\n   * @brief Subscriber Operation - {}\n"\
+            .format(self['name'].value)
+        sub_comment += "   * @param received_data Received message\n"
+        sub_comment += "   */\n"
+        sub_callback_decl = sub_comment
         signature = Template('  $return_type $component::$callback($args);\n\n')
         return_type = "void"
         component_name = self.parent['name'].value
@@ -973,7 +1066,9 @@ class Subscriber(Model):
         self.artifacts.append(sub_callback_decl_artifact)
 
     def create_sub_decl_artifact(self):
-        sub_decl = "  /// Component Subscriber - {}\n".format(self['name'].value)
+        sub_decl = "  /**\n   @brief Component subscriber port - {}\n"\
+                   .format(self['name'].value)
+        sub_decl += "   */\n"
         sub_decl += "  rosmod::Subscriber {};\n\n".format(self['name'].value)
         sub_decl_artifact = Artifact(kind="snippet",
                                        name="subscriber_declaration",
@@ -986,12 +1081,14 @@ class Subscriber(Model):
 
         # Template for a subscriber operation
         subscriber_template\
-            = Template('$return_type $component::$callback($args) {\n' +\
+            = Template('$comment' +\
+                       '$return_type $component::$callback($args) {\n' +\
                        '$bl_start_marker\n' +\
                        '$preserved_bl' +\
                        '$bl_end_marker\n}\n\n')
 
         # Resolving the template 
+        comment = "/// Subscriber Operation - {}\n".format(self['name'].value)
         return_type = "void"
         component_name = self.parent['name'].value
         callback_name = "{}_callback".format(self['name'].value)
@@ -999,11 +1096,12 @@ class Subscriber(Model):
         message_parent = self['message_reference'].value.parent['name'].value
         callback_args = "const {}::{}::ConstPtr& received_data".format\
                         (message_parent, message_name)
-        bl_start_marker = "//# Start {} business logic".format(self['name'].value)
-        bl_end_marker = "//# End {} business logic".format(self['name'].value)
+        bl_start_marker = "  //# Start {} business logic".format(self['name'].value)
+        bl_end_marker = "  //# End {} business logic".format(self['name'].value)
         preserved_bl = ""
         subscriber_artifact.value = subscriber_template.\
-                                    substitute(return_type=return_type,
+                                    substitute(comment=comment,
+                                               return_type=return_type,
                                                component=component_name,
                                                callback=callback_name, 
                                                args=callback_args,
@@ -1041,8 +1139,11 @@ class Timer(Model):
         self.children = Children(allowed=[], cardinality={})
 
     def create_timer_callback_decl_artifact(self):
-        timer_callback_decl\
-            = "  /// Timer Operation - {}\n".format(self['name'].value)
+        timer_comment =  "  /**\n   * @brief Timer Operation - {}\n"\
+            .format(self['name'].value)
+        timer_comment += "   * @param event Time-triggered event\n"
+        timer_comment += "   */\n"
+        timer_callback_decl = timer_comment
         timer_callback_decl += "  void {0}_callback({1});\n\n"\
                                .format(self['name'].value,
                                        "const rosmod::TimerEvent& event")
@@ -1052,7 +1153,9 @@ class Timer(Model):
         self.artifacts.append(timer_callback_decl_artifact)
 
     def create_timer_decl_artifact(self):
-        timer_decl = "  /// Component Timer - {}\n".format(self['name'].value)
+        timer_decl = "  /**\n   * @brief Component timer - {}\n"\
+            .format(self['name'].value)
+        timer_decl += "   */\n"
         timer_decl += "  rosmod::Timer {};\n\n".format(self['name'].value)
         timer_decl_artifact = Artifact(kind="snippet",
                                        name="timer_declaration",
@@ -1065,21 +1168,24 @@ class Timer(Model):
 
         # Template for a timer operation
         timer_template\
-            = Template('$return_type $component::$callback($args) {\n' +\
+            = Template('$comment' +\
+                       '$return_type $component::$callback($args) {\n' +\
                        '$bl_start_marker\n' +\
                        '$preserved_bl'
                        '$bl_end_marker\n}\n\n')
 
         # Resolving the template 
+        comment = "/// Timer Operation - {}\n".format(self['name'].value)
         return_type = "void"
         component_name = self.parent['name'].value
         callback_name = "{}_callback".format(self['name'].value)
         callback_args = "const rosmod::TimerEvent& event"
-        bl_start_marker = "//# Start {} business logic".format(self['name'].value)
-        bl_end_marker = "//# End {} business logic".format(self['name'].value)
+        bl_start_marker = "  //# Start {} business logic".format(self['name'].value)
+        bl_end_marker = "  //# End {} business logic".format(self['name'].value)
         preserved_bl = ""
         timer_artifact.value\
-            = timer_template.substitute(return_type=return_type,
+            = timer_template.substitute(comment=comment,
+                                        return_type=return_type,
                                         component=component_name,
                                         callback=callback_name, 
                                         args=callback_args,
@@ -1208,16 +1314,19 @@ class Project(Model):
     Hardware -- Describes the hardware configuration
     Deployment -- Maps software instances and hardware computers
     """
-    def __init__(self, name=Name("NewProject"), path=Path(""), parent=None):
+    def __init__(self, name=Name("NewProject"), path=Path(""), 
+                 author=Author(""), parent=None):
         super(Project, self).__init__()
         self.kind = "Project"
 
         assert name != None, "Project name is None!"
         assert path != None, "Project path is None!"
+        assert author != None, "Project author is None!"
 
         self.parent = parent
         self['name'] = name
         self['path'] = path
+        self['author'] = author
 
         self.children = Children(allowed=[Software(), 
                                           Hardware(), 
@@ -1236,21 +1345,25 @@ class Project(Model):
     def new(self, 
             name=Name("NewProject"), 
             path=Path(""),
+            author=Author(""),
             software=Software(Name("NewSoftware")),
             hardware=Hardware(Name("NewHardware")),
             deployment=Deployment(Name("NewDeployment")) ):
 
         assert name != None, "Project name is None!"
         assert path != None, "Project path is None!"        
+        assert author != None, "Project author is None!"
         assert software != None, "Project Software Model is None!"
         assert hardware != None, "Project Hardware Model is None!"
         assert deployment != None, "Project Deployment Model is None!"
 
         assert name.value != "", "Project name is empty!"
         assert path.value != "", "Project path is empty!"
+        assert author.value != "", "Project author is empty!"
 
         self['name'] = name
         self['path'] = path
+        self['author'] = author
 
         self.add_child(software)
         self.add_child(hardware)
@@ -1297,11 +1410,14 @@ def test_project():
     service = Service(Name("srv1"),
                       Service_Definition("int8 test\n---\nbool retVal"))
     timer_component = Component(Name("Timer_Component"), 
-                                Component_Type("BASE"))
+                                Component_Type("BASE"),
+                                Detailed_Description("This is a periodic timer component that is used to test time-triggered operations"))
     sender_component = Component(Name("Sender_Component"),
-                                 Component_Type("BASE"))
+                                 Component_Type("BASE"),
+                                 Detailed_Description("This is a sendor component that sends stuff over the network"))
     receiver_component = Component(Name("Receiver_Component"),
-                                   Component_Type("BASE"))
+                                   Component_Type("BASE"),
+                                   Detailed_Description("This is a receiver component that receives data sent by the sender component"))
     client = Client(Name("client"),
                     Service_Reference(service))
     server = Server(Name("server"),
@@ -1363,6 +1479,7 @@ def test_project():
     project = Project()
     project.new(name=Name("timer_example"),
                 path=Path("/home/jeb/samples/"),
+                author=Author("Pranav Srinivas Kumar"),
                 software=my_software,
                 hardware=my_hardware,
                 deployment=my_deployment)
@@ -1371,9 +1488,9 @@ def test_project():
 if __name__ == '__main__':
 
     project = test_project()
+    project.generate_artifacts()
     project.save()
     project.open("/home/jeb/samples/timer_example/timer_example.rml")
-    project.generate_artifacts()
 
     comp = project.get_children("Component")
 #    for c in comp:
