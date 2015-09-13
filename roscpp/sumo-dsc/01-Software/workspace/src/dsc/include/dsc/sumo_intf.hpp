@@ -68,6 +68,9 @@ private:
   ros::ServiceServer sumo_tlc_set_ryg_state_server;
 
   //# Start User Private Variables Marker
+  std::map<std::string, int> _il_num_vehicles_map;
+  std::map<std::string, std::vector<std::string>> _il_vehicle_ids_map;
+  std::map<std::string, std::string> _tl_state_map;
   //# End User Private Variables Marker
 };
 

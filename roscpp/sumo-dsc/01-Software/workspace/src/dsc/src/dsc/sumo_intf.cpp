@@ -36,7 +36,13 @@ bool sumo_intf::sumo_il_get_vehicle_numberCallback(dsc::sumo_il_get_vehicle_numb
   dsc::sumo_il_get_vehicle_number::Response &res)
 {
   // Business Logic for sumo_il_get_vehicle_number_server Server
-  sumo_client.getLastStepInductionLoopVehicleNumber( req.sensor_name, res.num_vehicles );
+  if ( _il_num_vehicles_map.find( req.sensor_name ) == _il_num_vehicles_map.end() )
+    {
+      int numVehicles;
+      sumo_client.getLastStepInductionLoopVehicleNumber( req.sensor_name, numVehicles );
+      _il_num_vehicles_map[ req.sensor_name ] = numVehicles;
+    }
+  res.num_vehicles = _il_num_vehicles_map[ req.sensor_name ];
   return true;
 }
 //# End sumo_il_get_vehicle_numberCallback Marker
@@ -46,7 +52,13 @@ bool sumo_intf::sumo_il_get_vehicle_idsCallback(dsc::sumo_il_get_vehicle_ids::Re
   dsc::sumo_il_get_vehicle_ids::Response &res)
 {
   // Business Logic for sumo_il_get_vehicle_ids_server Server
-  sumo_client.getLastStepInductionLoopVehicleIDs( req.sensor_name, res.vehicle_ids );
+  if ( _il_vehicle_ids_map.find( req.sensor_name ) == _il_vehicle_ids_map.end() )
+    {
+      std::vector<std::string> ids;
+      sumo_client.getLastStepInductionLoopVehicleIDs( req.sensor_name, ids );
+      _il_vehicle_ids_map[ req.sensor_name ] = ids;
+    }
+  res.vehicle_ids = _il_vehicle_ids_map[ req.sensor_name ];
   return true;
 }
 //# End sumo_il_get_vehicle_idsCallback Marker
@@ -56,7 +68,13 @@ bool sumo_intf::sumo_tlc_get_ryg_stateCallback(dsc::sumo_tlc_get_ryg_state::Requ
   dsc::sumo_tlc_get_ryg_state::Response &res)
 {
   // Business Logic for sumo_tlc_get_ryg_state_server Server
-  sumo_client.getRedYellowGreenState( req.intersection_name, res.ryg_state );
+  if ( _tl_state_map.find( req.intersection_name ) == _tl_state_map.end() )
+    {
+      std::string state;
+      sumo_client.getRedYellowGreenState( req.intersection_name, state );
+      _tl_state_map[ req.intersection_name ] = state;
+    }
+  res.ryg_state = _tl_state_map[ req.intersection_name ];
   return true;
 }
 //# End sumo_tlc_get_ryg_stateCallback Marker
@@ -76,7 +94,33 @@ bool sumo_intf::sumo_tlc_set_ryg_stateCallback(dsc::sumo_tlc_set_ryg_state::Requ
 void sumo_intf::sumo_step_timerCallback(const ros::TimerEvent& event)
 {
   // Business Logic for sumo_step_timer Timer
+  // STEP THE SIMULATION
   sumo_client.commandSimulationStep(0);
+  // UPDATE ALL SENSOR DATA
+  for (auto it = _il_num_vehicles_map.begin(); it != _il_num_vehicles_map.end(); ++it)
+    {
+      int tmp;
+      sumo_client.getLastStepInductionLoopVehicleNumber( it->first, tmp );
+      it->second += tmp;
+    }
+  for (auto it = _il_vehicle_ids_map.begin(); it != _il_vehicle_ids_map.end(); ++it)
+    {
+      std::vector<std::string> tmp;
+      sumo_client.getLastStepInductionLoopVehicleIDs( it->first, tmp );
+      for (auto tmp_id=tmp.begin(); tmp_id!=tmp.end(); ++tmp_id)
+	{
+	  if ( std::find(it->second.begin(), it->second.end(), *tmp_id) == it->second.end())
+	    {
+	      it->second.push_back(*tmp_id);
+	    }
+	}
+    }
+  for (auto it = _tl_state_map.begin(); it != _tl_state_map.end(); ++it)
+    {
+      std::string tmp;
+      sumo_client.getRedYellowGreenState( it->first, tmp );
+      it->second = tmp;
+    }
 }
 //# End sumo_step_timerCallback Marker
 
