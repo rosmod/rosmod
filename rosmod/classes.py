@@ -120,12 +120,12 @@ class Path(Attribute):
     def __init__(self, value):
         super(Path, self).__init__("string",value)
 
-class Author(Attribute):
-    """Author Attribute"""
-    tooltip = "Author refers to the project manager(s)"
-    display = "Author"
+class Authors(Attribute):
+    """Authors Attribute"""
+    tooltip = "Authors refers to the project manager(s)"
+    display = "Authors"
     def __init__(self, value):
-        super(Author, self).__init__("string",value)
+        super(Authors, self).__init__("mutable_list_string",value)
 
 class Detailed_Description(Attribute):
     """Detailed_Description Attribute"""
@@ -307,6 +307,7 @@ class Model(object):
         self.children = None
         self.attributes = OrderedDict() 
         self.artifacts = []
+        self.kwargs = {}
 
     def __getitem__(self, key):
         return self.attributes[key]
@@ -335,7 +336,7 @@ class Model(object):
             if a.name == name:
                 return a
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         return
 
     def resolve_artifacts(self, artifact_list=None):
@@ -353,8 +354,8 @@ class Model(object):
                             if child_artifact != None:
                                 artifact.value += child_artifact.value
 
-    def generate(self):
-        self.update_artifacts()
+    def generate(self, **kwargs):
+        self.update_artifacts(**kwargs)
         self.resolve_artifacts(self.artifacts)
         if self.artifacts != None:
             for artifact in self.artifacts:
@@ -364,7 +365,7 @@ class Model(object):
                         os.makedirs(folder)
 
         for child in self.children:
-            child.generate()
+            child.generate(**kwargs)
 
         if self.artifacts != None:
             for artifact in self.artifacts:
@@ -372,6 +373,7 @@ class Model(object):
                     file_artifact = os.path.join(artifact.destination, artifact.name)
                     with open(file_artifact, 'w') as art_file:
                         art_file.write(artifact.value)
+        self.kwargs = kwargs
 
 class Software(Model):
     """Software Class
@@ -395,10 +397,12 @@ class Software(Model):
                                  cardinality = {str(type(Package()))\
                                                 : '1..*'})
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         src_dest = os.path.join(self.parent.get_artifact("workspace").destination, 
                                "workspace")
         src_dir = os.path.join(src_dest, "src")
+
+        kwargs["workspace_src_dir"] = src_dir
 
         # workspace/src directory artifact
         self.artifacts = [Artifact(kind="folder", name="src", 
@@ -408,6 +412,8 @@ class Software(Model):
             self.artifacts.append(Artifact(kind="folder", 
                                            name=child['name'].value,
                                            destination=src_dir))
+
+        self.kwargs = kwargs
 
 class Package(Model):
     def __init__(self, name=Name(""), parent=None):
@@ -429,9 +435,12 @@ class Package(Model):
                                               str(type(Component()))\
                                               : '1..*'})
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         package_dir = os.path.join(self.parent.get_artifact(self["name"].value).\
                                     destination, self["name"].value)
+
+        kwargs["{}_pkg_dir".format(self['name'].value)] = package_dir
+
         if self.get_children("Message") != []:
             # Message files directory
             self.artifacts.append(Artifact(kind="folder",
@@ -453,6 +462,8 @@ class Package(Model):
                                        name="include", 
                                        destination=package_dir))
 
+        self.kwargs = kwargs
+
 class Message(Model):
     def __init__(self, name=Name(""), definition=Message_Definition(""), 
                  parent=None):
@@ -468,13 +479,16 @@ class Message(Model):
 
         self.children = Children(allowed=[], cardinality={})
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         message_dir = os.path.join(self.parent.get_artifact("msg").destination,
                                    "msg")
         self.artifacts.append(Artifact(kind="file", 
                                        name=self['name'].value + ".msg",
                                        destination=message_dir, 
                                        value=self['definition'].value))
+
+        kwargs["{}_msg_dir".format(self['name'].value)] = message_dir
+        self.kwargs = kwargs
 
 class Service(Model):
     def __init__(self, name=Name(""), definition=Service_Definition(""), 
@@ -491,13 +505,16 @@ class Service(Model):
 
         self.children = Children(allowed=[], cardinality={})
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         service_dir = os.path.join(self.parent.get_artifact("srv").destination,
                                    "srv")
         self.artifacts.append(Artifact(kind="file", 
                                        name=self['name'].value + ".srv",
                                        destination=service_dir, 
-                                       value=self['definition'].value))        
+                                       value=self['definition'].value))
+
+        kwargs["{}_srv_dir".format(self['name'].value)] = service_dir        
+        self.kwargs = kwargs
 
 class Component(Model):
     def __init__(self, name=Name(""), component_type=Component_Type("BASE"), 
@@ -539,14 +556,15 @@ class Component(Model):
                                  destination=src_dir,
                                  name=self.parent['name'].value)        
         self.artifacts.append(src_artifact)
+
         include_dir = os.path.join(self.parent.get_artifact("include").destination, 
                                "include")
         include_artifact =  Artifact(kind="folder", 
                                      destination=include_dir,
                                      name=self.parent['name'].value)
         self.artifacts.append(include_artifact)
-
-
+        return src_dir, include_dir
+        
     def create_init_artifact(self):
         init_artifact = Artifact(kind="snippet",
                                  name="initialization")
@@ -561,13 +579,22 @@ class Component(Model):
                        "\n\n")
 
         # Resolving the template
-        comment = "/// Component Initialization\n"
+        init_comment  = "/**\n * @brief Component Initialization\n"
+        init_comment\
+            += " * @param event Time-triggered event during component startup\n"
+        init_comment += " * @see startup()\n"
+        init_comment += " */\n"
+
+        comment = init_comment
         return_type = "void"
         component_name = self['name'].value
         callback_args = "const rosmod::TimerEvent& event"
         bl_start_marker = "  //# Start init_timer business logic"
         bl_end_marker = "  //# End init_timer business logic"
-        preserved_bl = ""
+        if "init_timer_business_logic" in self.kwargs.keys():
+            preserved_bl = self.kwargs["init_timer_business_logic"]
+        else:
+            preserved_bl = ""
         init_artifact.value\
             = init_template.substitute(comment=comment,
                                        return_type=return_type,
@@ -595,11 +622,18 @@ class Component(Model):
                        "}\n\n")
 
         # Resolving the template
-        comment = "/// Component Shutdown\n"
+        dest_comment =  "/**\n * @brief Component Shutdown\n"
+        dest_comment += " * Cleans up all component ports and timers\n"
+        dest_comment += " */\n"
+
+        comment = dest_comment
         component_name = self['name'].value
         bl_start_marker = "  //# Start destructor business logic"
         bl_end_marker = "  //# End destructor business logic"
-        preserved_bl = ""
+        if "destructor_business_logic" in self.kwargs.keys():
+            preserved_bl = self.kwargs["destructor_business_logic"]
+        else:
+            preserved_bl = ""
         timers = ""
         for timer in self.get_children("Timer"):
             timers += "  {}.stop()\n".format(timer['name'].value)
@@ -642,8 +676,8 @@ class Component(Model):
             for line in textwrapped:
                 leading_comment += " *  {}\n".format(line)   
             leading_comment += " *\n"
-        author = self.parent.parent.parent['author'].value
-        leading_comment += " *  @author {}\n".format(author)
+        for author in self.parent.parent.parent['authors'].value:
+            leading_comment += " *  @author {}\n".format(author)
         leading_comment += " */\n\n"
 
         package = self.parent['name'].value
@@ -653,6 +687,17 @@ class Component(Model):
         self.artifacts.append(Artifact(kind="snippet",
                                        name="headers",
                                        value=include_header)) 
+
+    def create_startup_artifact(self):
+        startup_comment =  "/**\n * @brief Component Startup Routine\n"
+        startup_comment += " * Instantiates all component ports and timers\n"
+        startup_comment += " */\n"
+        startup_value = startup_comment
+        
+        startup_artifact = Artifact(kind="snippet", 
+                                    name="startup",
+                                    value=startup_value)
+        self.artifacts.append(startup_artifact)
 
     def create_cpp_artifact(self):
         src_dir = os.path.join(self.parent.get_artifact("src").destination, 
@@ -683,8 +728,8 @@ class Component(Model):
             for line in textwrapped:
                 leading_comment += " *  {}\n".format(line)   
             leading_comment += " *\n"
-        author = self.parent.parent.parent['author'].value
-        leading_comment += " *  @author {}\n".format(author)
+        for author in self.parent.parent.parent['authors'].value:
+            leading_comment += " *  @author {}\n".format(author)
         leading_comment += " */\n\n"
         define_value = "{0}_HPP".format(self['name'].value.upper())
 
@@ -719,7 +764,10 @@ class Component(Model):
             includes_value += "#include \"{0}/{1}.h\"\n".format(package, srv_name)
         includes_value += "\n"
 
-        preserved_includes = ""
+        if "header_includes" in self.kwargs.keys():
+            preserved_includes = self.kwargs["header_includes"]
+        else:
+            preserved_includes = ""
         includes_value += "//# Start header includes\n"
         includes_value += preserved_includes
         includes_value += "//# End header includes\n\n"
@@ -730,7 +778,10 @@ class Component(Model):
         self.artifacts.append(includes_artifact)
 
     def create_globals_artifact(self):
-        preserved_globals = ""
+        if "header_globals" in self.kwargs.keys():
+            preserved_globals = self.kwargs["header_globals"]
+        else:
+            preserved_globals = ""
         globals_value = "//# Start global variables\n"
         globals_value += preserved_globals
         globals_value += "//# End global variables\n\n"
@@ -791,7 +842,11 @@ class Component(Model):
         self.artifacts.append(dest_artifact)
 
     def create_privates_artifact(self):
-        preserved_privates = ""
+        if "header_privates" in self.kwargs.keys():
+            preserved_privates = self.kwargs["header_privates"]
+        else:
+            preserved_privates = ""
+
         privates_value = "  //# Start Private Variables\n"
         privates_value += preserved_privates
         privates_value += "  //# End Private Variables\n\n"
@@ -824,15 +879,87 @@ class Component(Model):
                               "client_declaration",
                               "privates"]
         self.artifacts.append(hpp_artifact)
-        
-    def update_artifacts(self):
+
+    def preserve_code(self, file_path, key, start_marker, end_marker):
+        with open(file_path, 'r') as component_src:
+            preserved_code = ""
+            found = False
+            for line in component_src:
+                if found:
+                    if end_marker in line.strip():
+                        break
+                    preserved_code += line
+                else:
+                    if start_marker in line.strip():
+                        found = True
+                self.kwargs[key] = preserved_code
+
+    def parse_component_source(self):
+        """Preserve all code between code-preservation markers"""
+        package_src\
+            = self.kwargs["{}_src_dir".format(self['name'].value)] +\
+            '/' + self.parent['name'].value 
+        package_include\
+            = self.kwargs["{}_include_dir".format(self['name'].value)] +\
+            '/' + self.parent['name'].value 
+        for file in os.listdir(package_src):
+            if file == "{}.cpp".format(self['name'].value):
+                file_path = os.path.join(package_src, file)
+                self.preserve_code(file_path,
+                                   "init_timer_business_logic",
+                                   "//# Start init_timer business logic",
+                                   "//# End init_timer business logic")
+                self.preserve_code(file_path,
+                                   "destructor_business_logic",
+                                   "//# Start destructor business logic",
+                                   "//# End destructor business logic")
+                for child in self.children:
+                    if child.kind in ["Timer", "Subscriber", "Server"]:
+                        child_name = child['name'].value
+                        self.preserve_code\
+                            (file_path,
+                             "{}_operation".format(child_name),
+                             "//# Start {} business logic".format(child_name),
+                             "//# End {} business logic".format(child_name))
+
+        for file in os.listdir(package_include):
+            if file == "{}.hpp".format(self['name'].value):
+                file_path = os.path.join(package_include, file)
+                self.preserve_code(file_path,
+                                   "header_includes",
+                                   "//# Start header includes",
+                                   "//# End header includes")
+                self.preserve_code(file_path,
+                                   "header_globals",
+                                   "//# Start global variables",
+                                   "//# End global variables")
+                self.preserve_code(file_path,
+                                   "header_privates",
+                                   "//# Start Private Variables",
+                                   "//# End Private Variables")
+
+        print self.kwargs
+
+    def update_artifacts(self, **kwargs):
         """Update all artifact objects required for artifact generation"""
-        self.create_directory_artifacts()
+
+        # Start Generation
+        src_dir, include_dir = self.create_directory_artifacts()
+        self.kwargs = kwargs
+        self.kwargs["{}_src_dir".format(self['name'].value)] = src_dir
+        self.kwargs["{}_include_dir".format(self['name'].value)] = include_dir
+        
+
+        # Parse existing workspace to preserve operation business logic
+        ###############################################################
+        self.parse_component_source()
+        ###############################################################
 
         # Create component CPP
         self.create_headers_artifact()
         self.create_init_artifact()
         self.create_destructor_artifact()
+        self.create_startup_artifact()
         self.create_cpp_artifact()
 
         # Create component HPP
@@ -845,8 +972,10 @@ class Component(Model):
         self.create_privates_artifact()
         self.create_hpp_artifact()
 
+        self.kwargs = kwargs
+
         for child in self.children:
-            child.update_artifacts()                      
+            child.update_artifacts(**kwargs)                      
 
 class Client(Model):
     def __init__(self, name=Name(""), service_reference=Service_Reference(None), 
@@ -875,7 +1004,7 @@ class Client(Model):
                                         value=client_decl)
         self.artifacts.append(client_decl_artifact)
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         self.create_client_decl_artifact()
 
 class Server(Model):
@@ -958,7 +1087,14 @@ class Server(Model):
                        '\n\n')
 
         # Resolving the template
-        comment = "/// Server Operation - {}\n".format(self['name'].value)
+        server_comment =  "/**\n * @brief Server Operation - {}\n"\
+            .format(self['name'].value)
+        server_comment += " * @param req Received service request\n"
+        server_comment += " * @param res Returned service response\n"
+        server_comment += " * @return Success/Failure of server operation\n"
+        server_comment += " */\n"
+
+        comment = server_comment
         return_type = "bool"
         component_name = self.parent['name'].value
         callback_name = "{}_callback".format(self['name'].value)
@@ -968,7 +1104,12 @@ class Server(Model):
             .format(service_parent, service_name)
         bl_start_marker = "  //# Start {} business logic".format(self['name'].value)
         bl_end_marker = "  //# End {} business logic".format(self['name'].value)
-        preserved_bl = ""
+
+        srv_key = "{}_operation".format(self['name'].value)
+        if srv_key in self.parent.kwargs.keys():
+            preserved_bl = self.parent.kwargs[srv_key]
+        else:
+            preserved_bl = ""
         server_artifact.value = server_template.\
                                 substitute(comment=comment,
                                            return_type=return_type,
@@ -981,7 +1122,7 @@ class Server(Model):
         
         self.artifacts.append(server_artifact)
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         self.create_server_artifact()
         self.create_server_callback_decl_artifact()
         self.create_server_decl_artifact()
@@ -1013,7 +1154,7 @@ class Publisher(Model):
                                        value=pub_decl)
         self.artifacts.append(pub_decl_artifact)
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         self.create_pub_decl_artifact()
 
 class Subscriber(Model):
@@ -1076,6 +1217,10 @@ class Subscriber(Model):
         self.artifacts.append(sub_decl_artifact)
 
     def create_subscriber_artifact(self):
+        sub_comment =  "/**\n * @brief Subscriber Operation - {}\n"\
+            .format(self['name'].value)
+        sub_comment += " * @param received_data Received message\n"
+        sub_comment += " */\n"
         subscriber_artifact = Artifact(kind="snippet", 
                                        name="subscriber_callback")
 
@@ -1088,7 +1233,7 @@ class Subscriber(Model):
                        '$bl_end_marker\n}\n\n')
 
         # Resolving the template 
-        comment = "/// Subscriber Operation - {}\n".format(self['name'].value)
+        comment = sub_comment
         return_type = "void"
         component_name = self.parent['name'].value
         callback_name = "{}_callback".format(self['name'].value)
@@ -1098,7 +1243,13 @@ class Subscriber(Model):
                         (message_parent, message_name)
         bl_start_marker = "  //# Start {} business logic".format(self['name'].value)
         bl_end_marker = "  //# End {} business logic".format(self['name'].value)
-        preserved_bl = ""
+
+        sub_key = "{}_operation".format(self['name'].value)
+        if sub_key in self.parent.kwargs.keys():
+            preserved_bl = self.parent.kwargs[sub_key]
+        else:
+            preserved_bl = ""
+
         subscriber_artifact.value = subscriber_template.\
                                     substitute(comment=comment,
                                                return_type=return_type,
@@ -1111,7 +1262,7 @@ class Subscriber(Model):
 
         self.artifacts.append(subscriber_artifact)
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         self.create_subscriber_artifact()
         self.create_subscriber_callback_decl_artifact()
         self.create_sub_decl_artifact()
@@ -1135,6 +1286,7 @@ class Timer(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
+        self["preserved_bl"] = ""
 
         self.children = Children(allowed=[], cardinality={})
 
@@ -1163,6 +1315,10 @@ class Timer(Model):
         self.artifacts.append(timer_decl_artifact)
 
     def create_timer_artifact(self):
+        timer_comment =  "/**\n * @brief Timer Operation - {}\n"\
+            .format(self['name'].value)
+        timer_comment += " * @param event Time-triggered event\n"
+        timer_comment += " */\n"
         timer_artifact = Artifact(kind="snippet", 
                                   name="timer_callback")
 
@@ -1175,14 +1331,20 @@ class Timer(Model):
                        '$bl_end_marker\n}\n\n')
 
         # Resolving the template 
-        comment = "/// Timer Operation - {}\n".format(self['name'].value)
+        comment = timer_comment
         return_type = "void"
         component_name = self.parent['name'].value
         callback_name = "{}_callback".format(self['name'].value)
         callback_args = "const rosmod::TimerEvent& event"
         bl_start_marker = "  //# Start {} business logic".format(self['name'].value)
         bl_end_marker = "  //# End {} business logic".format(self['name'].value)
-        preserved_bl = ""
+
+        timer_key = "{}_operation".format(self['name'].value)
+        if timer_key in self.parent.kwargs.keys():
+            preserved_bl = self.parent.kwargs[timer_key]
+        else:
+            preserved_bl = ""
+
         timer_artifact.value\
             = timer_template.substitute(comment=comment,
                                         return_type=return_type,
@@ -1194,7 +1356,7 @@ class Timer(Model):
                                         bl_end_marker=bl_end_marker)
         self.artifacts.append(timer_artifact)
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         self.create_timer_artifact()
         self.create_timer_callback_decl_artifact()
         self.create_timer_decl_artifact()
@@ -1315,18 +1477,18 @@ class Project(Model):
     Deployment -- Maps software instances and hardware computers
     """
     def __init__(self, name=Name("NewProject"), path=Path(""), 
-                 author=Author(""), parent=None):
+                 authors=Authors([]), parent=None):
         super(Project, self).__init__()
         self.kind = "Project"
 
         assert name != None, "Project name is None!"
         assert path != None, "Project path is None!"
-        assert author != None, "Project author is None!"
+        assert authors != None, "Project authors is None!"
 
         self.parent = parent
         self['name'] = name
         self['path'] = path
-        self['author'] = author
+        self['authors'] = authors
 
         self.children = Children(allowed=[Software(), 
                                           Hardware(), 
@@ -1337,7 +1499,7 @@ class Project(Model):
                                               str(type(Deployment()))\
                                               : '1..*'})
 
-    def update_artifacts(self):
+    def update_artifacts(self, **kwargs):
         self.artifacts = [Artifact(kind="folder", name="workspace", 
                                    destination=self['path'].value +\
                                    self['name'].value)]  
@@ -1345,25 +1507,26 @@ class Project(Model):
     def new(self, 
             name=Name("NewProject"), 
             path=Path(""),
-            author=Author(""),
+            authors=Authors([]),
             software=Software(Name("NewSoftware")),
             hardware=Hardware(Name("NewHardware")),
             deployment=Deployment(Name("NewDeployment")) ):
 
         assert name != None, "Project name is None!"
         assert path != None, "Project path is None!"        
-        assert author != None, "Project author is None!"
+        assert authors != None, "Project author is None!"
         assert software != None, "Project Software Model is None!"
         assert hardware != None, "Project Hardware Model is None!"
         assert deployment != None, "Project Deployment Model is None!"
 
         assert name.value != "", "Project name is empty!"
         assert path.value != "", "Project path is empty!"
-        assert author.value != "", "Project author is empty!"
+        for author in authors.value:
+            assert author != "", "Project author is empty!"
 
         self['name'] = name
         self['path'] = path
-        self['author'] = author
+        self['authors'] = authors
 
         self.add_child(software)
         self.add_child(hardware)
@@ -1382,7 +1545,8 @@ class Project(Model):
             model_file.write(encoder_output)
 
     def generate_artifacts(self):
-        self.generate()
+        self.generate(project_name=self['name'],
+                      project_path=self['path'])
 
     def save_as(self, name=None, path=None):
         assert name != None and name.value != "", "Project name is None!"
@@ -1479,7 +1643,8 @@ def test_project():
     project = Project()
     project.new(name=Name("timer_example"),
                 path=Path("/home/jeb/samples/"),
-                author=Author("Pranav Srinivas Kumar"),
+                authors=Authors(["Pranav Srinivas Kumar", 
+                                "William Emfinger"]),
                 software=my_software,
                 hardware=my_hardware,
                 deployment=my_deployment)
