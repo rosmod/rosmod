@@ -43,6 +43,7 @@ bool sumo_intf::sumo_il_get_vehicle_numberCallback(dsc::sumo_il_get_vehicle_numb
       _il_num_vehicles_map[ req.sensor_name ] = numVehicles;
     }
   res.num_vehicles = _il_num_vehicles_map[ req.sensor_name ];
+  _il_num_vehicles_map[ req.sensor_name ] = 0;
   return true;
 }
 //# End sumo_il_get_vehicle_numberCallback Marker
@@ -59,6 +60,7 @@ bool sumo_intf::sumo_il_get_vehicle_idsCallback(dsc::sumo_il_get_vehicle_ids::Re
       _il_vehicle_ids_map[ req.sensor_name ] = ids;
     }
   res.vehicle_ids = _il_vehicle_ids_map[ req.sensor_name ];
+  _il_vehicle_ids_map[ req.sensor_name ] = std::vector<std::string>();
   return true;
 }
 //# End sumo_il_get_vehicle_idsCallback Marker
