@@ -2,6 +2,72 @@
 
 
 //# Start User Globals Marker
+void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
+{
+  std::string tc_binary = "/sbin/tc";
+  unsigned long long bandwidth;
+  unsigned long long latency;
+  profile.getCurrentInterval( bandwidth, latency );
+
+  std::string tc_args = "qdisc replace dev " + intf_name + " parent 1:1 handle 11: tbf rate ";
+  tc_args += bandwidth;
+  tc_args += "bit peakrate ";
+  tc_args += (unsigned long long)((double)bandwidth * 1.001f);
+  tc_args += "bit mtu 8192 latency 100s burst 1540"; // latency here is maximum time in the tbf
+
+  // NEED TO FORK / EXEC TWICE:
+  // ONCE FOR TBF
+  // ONCE FOR NETEM : DO WE WANT TO DO THIS?
+
+  // FORK
+  pid_t parent = getpid();
+  pid_t pid = fork();
+  if ( pid == -1 )
+    {
+      LOGGER.DEBUG("ERROR: COULDNT FORK");
+    }
+  else if ( pid > 0 ) // parent
+    {
+      timespec start;
+      profile.getNextInterval( start, bandwidth, latency );
+      
+      double dStart = (double)start.tv_sec + (double)start.tv_nsec / (double)1000000000.0;
+      ros::Time tStart(dStart);
+      ros::Duration nextTime = tStart - ros::Time::now();
+      
+      ros::NodeHandle nh;
+      ros::TimerOptions timer_options;
+      timer_options = 
+	ros::TimerOptions
+	(nextTime,
+	 boost::bind(&router_profile_enforcer::profile_timerCallback, this, _1),
+	 &this->compQueue,
+	 true);
+      profile_timer = nh.createTimer(timer_options);
+    }
+  else  // child
+    {
+      std::vector<std::string> string_args;
+      string_args.push_back(tc_binary);
+      string s;
+      istringstream f(tc_args);
+      while ( getline(f, s, ' ') )
+	{
+	  string_args.push_back(s);
+	}
+      // build args
+      char *args[string_args.size() + 1]; // must be NULL terminated
+      args[string_args.size()] = NULL;
+      for (int i=0; i < string_args.size(); i++)
+	{
+	  args[i] = new char[string_args[i].length()];
+	  sprintf(args[i], "%s", string_args[i].c_str());
+	}
+      // EXECV
+      execvp(args[0], args);
+      LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
+    }
+}
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,14 +77,37 @@ void router_profile_enforcer::Init(const ros::TimerEvent& event)
   // Initialize Here
   srand (time(NULL));
   double tg_duration = -1;
-  std::string fName;
+  std::string fName = "link_profile.csv";
+  intf_name = "eth0";
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--tg_time"))
 	{
 	  tg_duration = atof(node_argv[i+1]);
 	}
+      if (!strcmp(node_argv[i], "--profile_name"))
+	{
+	  fName = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i], "--intf_name"))
+	{
+	  intf_name = node_argv[i+1];
+	}
     }
+
+  if ( !profile.initializeFromFile( fName.c_str() ) )
+    {
+      ros::NodeHandle nh;
+      ros::TimerOptions timer_options;
+      timer_options = 
+	ros::TimerOptions
+	(ros::Duration(-1),
+	 boost::bind(&router_profile_enforcer::profile_timerCallback, this, _1),
+	 &this->compQueue,
+	 true);
+      profile_timer = nh.createTimer(timer_options);
+    }
+  
   // Stop Init Timer
   initOneShotTimer.stop();
 }

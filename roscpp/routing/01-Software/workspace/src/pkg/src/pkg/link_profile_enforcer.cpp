@@ -11,9 +11,9 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 
   std::string tc_args = "qdisc replace dev " + intf_name + " root tbf rate ";
   tc_args += bandwidth;
-  tc_args += "bit latency ";
-  tc_args += latency;
-  tc_args += "ms burst 1540";
+  tc_args += "bit peakrate ";
+  tc_args += (unsigned long long)((double)bandwidth * 1.001f);
+  tc_args += "bit mtu 8192 latency 100s burst 1540"; // latency here is the maximum time in the tbf
 
   // FORK
   pid_t parent = getpid();

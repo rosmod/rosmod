@@ -3,9 +3,8 @@
 #include "ros/ros.h"
 #include "node/Component.hpp"
 
-
-
 //# Start User Includes Marker
+#include "network/NetworkProfile.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -29,6 +28,10 @@ public:
 private:
 
   //# Start User Private Variables Marker
+  ros::Timer profile_timer;
+  Network::NetworkProfile profile;
+  std::string intf_name;
+  void profile_timerCallback(const ros::TimerEvent& event);
   //# End User Private Variables Marker
 };
 
