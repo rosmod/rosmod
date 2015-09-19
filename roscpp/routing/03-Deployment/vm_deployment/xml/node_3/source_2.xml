@@ -3,7 +3,7 @@
   <component_instance name="sender_i">
     <library name="libsender.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="4"/>
+    <numCompsToSync setting="7"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <debug setting="True"/>
