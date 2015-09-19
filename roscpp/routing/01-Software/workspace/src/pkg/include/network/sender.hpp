@@ -94,7 +94,7 @@ namespace Network
     {
       uuid = u;
       profile.initializeFromString((char *)prof_str.c_str());
-      create_oob_mc_socket();
+      //create_oob_mc_socket();
       return 0;
     }
 
@@ -102,7 +102,7 @@ namespace Network
     {
       profile.initializeFromFile(profileName.c_str());
       uuid = profile.uuid;
-      create_oob_mc_socket();
+      //create_oob_mc_socket();
       return 0;
     }
 
@@ -113,7 +113,11 @@ namespace Network
     uint64_t get_uuid() const { return uuid; }
     ros::Time get_end_time() const { return ros::Time(endTime); }
 
-    void record() { Network::write_data(output_filename.c_str(), messages); }
+    void record()
+    {
+      printf("writing output.\n");
+      Network::write_data(output_filename.c_str(), messages);
+    }
 
     template <typename T>
     double send(ros::Publisher pub, const T& msg)

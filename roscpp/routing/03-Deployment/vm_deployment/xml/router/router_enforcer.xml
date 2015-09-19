@@ -3,8 +3,8 @@
   <component_instance name="router_enforcer_i">
     <library name="librouter_profile_enforcer.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="7"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="5.0"/>
     <logging>
       <debug setting="True"/>
       <info setting="True"/>

@@ -20,7 +20,7 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
   tc_args += "bit peakrate ";
   sprintf(bandwidth_str,"%llu",(unsigned long long)((double)bandwidth * 1.001f));
   tc_args += bandwidth_str;
-  tc_args += "bit mtu 8192 latency 100s burst 1540"; // latency here is the maximum time in the tbf
+  tc_args += "bit mtu 8192 latency 100s burst 154000000"; // latency here is the maximum time in the tbf
 
   // FORK
   pid_t parent = getpid();

@@ -17,37 +17,9 @@ namespace Network
   {
   public:
     receiver()
-      : enable_sendback(true),
+      : enable_sendback(false),
 	received_data(false)
     {
-      sd = socket(AF_INET, SOCK_DGRAM, 0);
-      if(sd < 0)
-	{
-	  perror("Opening datagram socket error");
-	  exit(1);
-	}
-      else
-	printf("Opening the datagram socket...OK.\n");
-
-      /* Initialize the group sockaddr structure with a */
-      /* group address of 225.1.1.1 and port 5555. */
-      memset((char *) &groupSock, 0, sizeof(groupSock));
-      groupSock.sin_family = AF_INET;
-      groupSock.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
-      groupSock.sin_port = htons(oob_mc_port);
-
-      /* Set local interface for outbound multicast datagrams. */
-      /* The IP address specified must be associated with a local, */
-      /* multicast capable interface. */
-      struct in_addr localInterface;
-      localInterface.s_addr = inet_addr("0.0.0.0");
-      if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface)) < 0)
-	{
-	  perror("Setting local interface error");
-	  exit(1);
-	}
-      else
-	printf("Setting the local interface...OK\n");
     }
 
     int init(int argc, char ** argv, std::string prof_str, uint64_t buff_capacity_bits)
@@ -137,11 +109,12 @@ namespace Network
 	  double timerDelay = -1;
 	  try
 	    {
-	      Network::Message msg = buffer.receive(1000);
+	      Network::Message msg = buffer.receive(10000);
 	      if (!received_data)
 		{
 		  ros::Time now = ros::Time::now();
 		  endTime = now + duration;
+		  printf("Running for %f seconds until %f\n", duration.toSec(), endTime.toSec());
 		  received_data = true;
 		}
 	      msg.TimeStamp();
@@ -151,8 +124,9 @@ namespace Network
 	    }
 	  catch ( Network::Buffer_Empty& ex )
 	    {
+	      printf("buffer empty...\n");
 	    }
-	  if ( ros::Time::now() >= endTime )
+	  if ( received_data && ros::Time::now() >= endTime )
 	    {
 	      if (this->callback_func)
 		this->callback_func();

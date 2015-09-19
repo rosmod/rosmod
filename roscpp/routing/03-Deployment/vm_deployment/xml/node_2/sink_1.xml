@@ -3,8 +3,8 @@
   <component_instance name="receiver_i">
     <library name="libreceiver.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="7"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="5.0"/>
     <logging>
       <debug setting="True"/>
       <info setting="True"/>
