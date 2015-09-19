@@ -1,0 +1,55 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - node_1
+hardware node_1
+{
+  ip_address = "192.168.122.3";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/jade";
+  arch = x86;
+}
+// Hardware - node_2
+hardware node_2
+{
+  ip_address = "192.168.122.143";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/jade";
+  arch = x86;
+}
+// Hardware - node_3
+hardware node_3
+{
+  ip_address = "192.168.122.209";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/jade";
+  arch = x86;
+}
+// Hardware - node_4
+hardware node_4
+{
+  ip_address = "192.168.122.182";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/jade";
+  arch = x86;
+}
+// Hardware - router
+hardware router
+{
+  ip_address = "192.168.122.4";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/jade";
+  arch = x86;
+}
+
