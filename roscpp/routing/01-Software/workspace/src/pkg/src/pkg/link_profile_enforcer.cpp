@@ -12,9 +12,14 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
   LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
 
   std::string tc_args = "qdisc replace dev " + intf_name + " root tbf rate ";
-  tc_args += bandwidth;
+  if (bandwidth == 0)
+    bandwidth = 1;
+  char bandwidth_str[100];
+  sprintf(bandwidth_str,"%llu",bandwidth);
+  tc_args += bandwidth_str;
   tc_args += "bit peakrate ";
-  tc_args += (unsigned long long)((double)bandwidth * 1.001f);
+  sprintf(bandwidth_str,"%llu",(unsigned long long)((double)bandwidth * 1.001f));
+  tc_args += bandwidth_str;
   tc_args += "bit mtu 8192 latency 100s burst 1540"; // latency here is the maximum time in the tbf
 
   // FORK
