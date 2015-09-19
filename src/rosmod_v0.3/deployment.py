@@ -82,15 +82,20 @@ def parallelDeploy(hostDict,updateQ=None):
     envVarStr = ""
     for key,value in host.envVars:
         envVarStr += "export {}={}; ".format(key,value)
+    installDir = host.installDir
+    if installDir == '':
+        installDir = '/opt/ros/indigo'
     for node in host.nodes:
         executableString = node.executable
         if host.ipAddress not in local_ips:
-            envVarStr = envVarStr.replace(';','')
-            with prefix(envVarStr):
-                env.key_filename = host.keyFile
-                env.host_string = "{}@{}".format(host.userName,host.ipAddress)
-                run('dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(executableString,node.cmdArgs))
-                pgrep = run('ps aux | grep {}'.format(executableString))
+            #envVarStr = envVarStr.replace(';','')
+            #print envVarStr
+            #with prefix(envVarStr):
+            env.key_filename = host.keyFile
+            env.host_string = "{}@{}".format(host.userName,host.ipAddress)
+            #run('tmux -c \'{} source /opt/ros/jade/setup.bash;{} {}\''.format(envVarStr,executableString, node.cmdArgs))
+            run('{}source {}/setup.bash; dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,installDir,executableString,node.cmdArgs))
+            pgrep = run('ps aux | grep {}'.format(executableString))
         else:
             local('{} dtach -n `mktemp -u /tmp/dtach.XXXX` {} {}'.format(envVarStr,executableString,node.cmdArgs),capture=True, shell="/bin/bash")
             pgrep = local('ps aux | grep {}'.format(executableString),capture=True, shell="/bin/bash")

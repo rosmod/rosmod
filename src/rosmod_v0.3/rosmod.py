@@ -493,7 +493,7 @@ class Example(wx.Frame):
                     ['ROS_IP',host.properties['ip_address']]
                 )
                 self.hostDict[host.properties['name']].envVars.append(
-                    ['LD_LIBRARY_PATH',host.properties['deployment_path']]
+                    ['LD_LIBRARY_PATH',"{}:$LD_LIBRARY_PATH".format(host.properties['deployment_path'])]
                 )
             env.hosts.append(host.properties['name'])
         return numNodes,numHosts
