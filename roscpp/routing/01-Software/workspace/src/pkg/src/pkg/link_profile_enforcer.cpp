@@ -9,6 +9,8 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
   unsigned long long latency;
   profile.getCurrentInterval( bandwidth, latency );
 
+  LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
+
   std::string tc_args = "qdisc replace dev " + intf_name + " root tbf rate ";
   tc_args += bandwidth;
   tc_args += "bit peakrate ";

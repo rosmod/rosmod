@@ -6,7 +6,7 @@
 hardware node_1
 {
   ip_address = "192.168.122.3";
-  username = "jeb";
+  username = "root";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb";
   install_path = "/opt/ros/jade";
@@ -26,7 +26,7 @@ hardware node_2
 hardware node_3
 {
   ip_address = "192.168.122.209";
-  username = "jeb";
+  username = "root";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb";
   install_path = "/opt/ros/jade";
@@ -46,7 +46,7 @@ hardware node_4
 hardware router
 {
   ip_address = "192.168.122.4";
-  username = "jeb";
+  username = "root";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb";
   install_path = "/opt/ros/jade";

@@ -52,7 +52,8 @@ bool Logger::DEBUG(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
+    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string + "\n";
+    CHECK_LOG_SIZE();
   }
   return true;
 }
