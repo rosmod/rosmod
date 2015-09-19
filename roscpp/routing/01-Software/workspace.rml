@@ -21,4 +21,8 @@ package pkg
       deadline = 0.1;
     }       
   }
+  // ROSMOD Component - link_profile_enforcer
+  component link_profile_enforcer : Base 
+  {
+  }
 }

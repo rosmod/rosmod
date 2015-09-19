@@ -212,3 +212,19 @@ add_dependencies(receiver
                  pkg_generate_messages_cpp
                 )
 
+add_library(link_profile_enforcer
+            src/pkg/link_profile_enforcer.cpp
+            ## Start link_profile_enforcer CPP Marker
+
+            ## End link_profile_enforcer CPP Marker
+           )
+target_link_libraries(link_profile_enforcer
+                      ## Start link_profile_enforcer Target Link Libraries Marker
+
+                      ## End link_profile_enforcer Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(link_profile_enforcer
+                 pkg_generate_messages_cpp
+                )
+

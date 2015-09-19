@@ -268,6 +268,24 @@ namespace Network {
       return retData;
     }
 
+    int getCurrentInterval( unsigned long long& bandwidth, unsigned long long& latency ) {
+      if (resources.size () == 0)
+	return -1;
+      timespec currentTime;
+      int returnCode = clock_gettime (CLOCK_REALTIME, &currentTime);
+      double offset = getOffset(currentTime);
+      bandwidth = resources[0].bandwidth;
+      latency = resources[0].latency;
+      for ( int i=0; i < resources.size() - 1; i++ ) {
+	if ( resources[i].time > offset ) {
+	  bandwidth = resources[i-1].bandwidth;
+	  latency = resources[i-1].latency;
+	  break;
+	}
+      }
+      return 0;
+    }
+
     int getNextInterval( timespec& start, unsigned long long& bandwidth, unsigned long long& latency ) {
       if (resources.size () == 0)
 	return -1;
