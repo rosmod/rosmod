@@ -4,29 +4,65 @@
 //# Start User Globals Marker
 void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 {
+  std::string tc_binary = "/sbin/tc";
   unsigned long long bandwidth;
   unsigned long long latency;
   profile.getCurrentInterval( bandwidth, latency );
 
+  std::string tc_args = "qdisc replace dev " + intf_name + " root tbf rate ";
+  tc_args += bandwidth;
+  tc_args += "bit latency ";
+  tc_args += latency;
+  tc_args += "ms burst 1540";
+
   // FORK
-  // EXECV
-
-  timespec start;
-  profile.getNextInterval( start, bandwidth, latency );
-
-  double dStart = (double)start.tv_sec + (double)start.tv_nsec / (double)1000000000.0;
-  ros::Time tStart(dStart);
-  ros::Duration nextTime = tStart - ros::Time::now();
-
-  ros::NodeHandle nh;
-  ros::TimerOptions timer_options;
-  timer_options = 
-    ros::TimerOptions
-    (nextTime,
-     boost::bind(&link_profile_enforcer::profile_timerCallback, this, _1),
-     &this->compQueue,
-     true);
-  profile_timer = nh.createTimer(timer_options);
+  pid_t parent = getpid();
+  pid_t pid = fork();
+  if ( pid == -1 )
+    {
+      LOGGER.DEBUG("ERROR: COULDNT FORK");
+    }
+  else if ( pid > 0 ) // parent
+    {
+      timespec start;
+      profile.getNextInterval( start, bandwidth, latency );
+      
+      double dStart = (double)start.tv_sec + (double)start.tv_nsec / (double)1000000000.0;
+      ros::Time tStart(dStart);
+      ros::Duration nextTime = tStart - ros::Time::now();
+      
+      ros::NodeHandle nh;
+      ros::TimerOptions timer_options;
+      timer_options = 
+	ros::TimerOptions
+	(nextTime,
+	 boost::bind(&link_profile_enforcer::profile_timerCallback, this, _1),
+	 &this->compQueue,
+	 true);
+      profile_timer = nh.createTimer(timer_options);
+    }
+  else  // child
+    {
+      std::vector<std::string> string_args;
+      string_args.push_back(tc_binary);
+      string s;
+      istringstream f(tc_args);
+      while ( getline(f, s, ' ') )
+	{
+	  string_args.push_back(s);
+	}
+      // build args
+      char *args[string_args.size() + 1]; // must be NULL terminated
+      args[string_args.size()] = NULL;
+      for (int i=0; i < string_args.size(); i++)
+	{
+	  args[i] = new char[string_args[i].length()];
+	  sprintf(args[i], "%s", string_args[i].c_str());
+	}
+      // EXECV
+      execvp(args[0], args);
+      LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
+    }
 }
 //# End User Globals Marker
 
