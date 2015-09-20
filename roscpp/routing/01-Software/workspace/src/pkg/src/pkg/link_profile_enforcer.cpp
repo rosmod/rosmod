@@ -11,7 +11,7 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 
   LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
 
-  std::string tc_args = "qdisc replace dev " + intf_name + " root tbf rate ";
+  std::string tc_args = "qdisc replace dev " + intf_name + " parent 111:1 handle 1111: tbf rate ";
   if (bandwidth == 0)
     bandwidth = 1;
   char bandwidth_str[100];
