@@ -228,19 +228,3 @@ add_dependencies(link_profile_enforcer
                  pkg_generate_messages_cpp
                 )
 
-add_library(router_profile_enforcer
-            src/pkg/router_profile_enforcer.cpp
-            ## Start router_profile_enforcer CPP Marker
-
-            ## End router_profile_enforcer CPP Marker
-           )
-target_link_libraries(router_profile_enforcer
-                      ## Start router_profile_enforcer Target Link Libraries Marker
-
-                      ## End router_profile_enforcer Target Link Libraries Marker
-                      ${catkin_LIBRARIES}
-                      )
-add_dependencies(router_profile_enforcer
-                 pkg_generate_messages_cpp
-                )
-

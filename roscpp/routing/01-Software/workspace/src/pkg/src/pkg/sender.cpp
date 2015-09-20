@@ -2,6 +2,7 @@
 
 
 //# Start User Globals Marker
+double tg_duration = -1;
 //# End User Globals Marker
 
 // Initialization Function
@@ -10,7 +11,6 @@ void sender::Init(const ros::TimerEvent& event)
 {
   // Initialize Here
   srand (time(NULL));
-  double tg_duration = -1;
   std::string fName;
   for (int i=0; i<node_argc; i++)
     {
@@ -66,20 +66,28 @@ void sender::Init(const ros::TimerEvent& event)
 
 void sender::routed_msg_pub_timerCallback(const ros::TimerEvent& event)
 {
-  pkg::routed_msg msg;
-  msg.uuid = routed_msg_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
   double timerDelay = 0;
-  try
+  if ( this->routed_msg_pub.getNumSubscribers() >= 1 )
     {
-      timerDelay =
-	routed_msg_pub_send_mw.send<pkg::routed_msg>(routed_msg_pub, msg);
+      pkg::routed_msg msg;
+      msg.uuid = routed_msg_pub_send_mw.get_uuid();
+      msg.bytes.resize(max_data_length,0);
+      try
+	{
+	  timerDelay =
+	    routed_msg_pub_send_mw.send<pkg::routed_msg>(routed_msg_pub, msg);
+	}
+      catch ( Network::Exceeded_Production_Profile& ex )
+	{
+	  LOGGER.DEBUG("Prevented from sending on the network!");
+	}
     }
-  catch ( Network::Exceeded_Production_Profile& ex )
+  else
     {
-      LOGGER.DEBUG("Prevented from sending on the network!");
+      routed_msg_pub_send_mw.set_duration(tg_duration);
     }
-
+  
+  
   if ( ros::Time::now() >= routed_msg_pub_send_mw.get_end_time() )
     {
       LOGGER.DEBUG("writing output\n");

@@ -395,10 +395,14 @@ namespace Network {
       return -1;
     file << "%index, %time, %length (bits)\n";
     for (long i=0;i<messages.size();i++) {
-      file << messages[i].Id() << "," << std::setprecision(precision)
-	   << messages[i].LastDoubleTime() << ","
-	   << messages[i].Bytes() * 8
-	   << "\n";
+      file << messages[i].Id() << ",";
+      std::vector<double> dtimes = messages[i].DoubleTimes();
+      for (auto it = dtimes.begin(); it != dtimes.end(); ++it)
+	{
+	  file << std::setprecision(precision)
+	       << *it << ",";
+	}
+      file << messages[i].Bytes() * 8 << "\n";
     }
     return 0;
   }
