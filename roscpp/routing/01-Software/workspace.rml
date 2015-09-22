@@ -25,4 +25,8 @@ package pkg
   component link_profile_enforcer : Base 
   {
   }
+  // ROSMOD Component - router_profile_enforcer
+  component router_profile_enforcer : Base 
+  {
+  }
 }

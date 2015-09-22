@@ -11,15 +11,18 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 
   LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
 
-  std::string tc_args = "qdisc replace dev " + intf_name + " parent 111:1 handle 1111: tbf rate ";
   if (bandwidth == 0)
     bandwidth = 1;
-  char bandwidth_str[100];
-  sprintf(bandwidth_str,"%llu",bandwidth);
-  tc_args += bandwidth_str;
+  unsigned long long max_bw = (unsigned long long)((double)bandwidth * 1.001f);
+  char bw_str[100];
+  sprintf(bw_str,"%llu",bandwidth);
+  char max_bw_str[100];
+  sprintf(max_bw_str,"%llu", max_bw);
+
+  std::string tc_args = "qdisc replace dev " + intf_name + " parent 11:1 handle 111: tbf rate ";
+  tc_args += bw_str;
   tc_args += "bit peakrate ";
-  sprintf(bandwidth_str,"%llu",(unsigned long long)((double)bandwidth * 1.001f));
-  tc_args += bandwidth_str;
+  tc_args += max_bw_str;
   tc_args += "bit mtu 8192 latency 100s burst 1540000000"; // latency here is the maximum time in the tbf
 
   // FORK
@@ -29,26 +32,7 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
     {
       LOGGER.DEBUG("ERROR: COULDNT FORK");
     }
-  else if ( pid > 0 ) // parent
-    {
-      timespec start;
-      profile.getNextInterval( start, bandwidth, latency );
-      
-      double dStart = (double)start.tv_sec + (double)start.tv_nsec / (double)1000000000.0;
-      ros::Time tStart(dStart);
-      ros::Duration nextTime = tStart - ros::Time::now();
-      
-      ros::NodeHandle nh;
-      ros::TimerOptions timer_options;
-      timer_options = 
-	ros::TimerOptions
-	(nextTime,
-	 boost::bind(&link_profile_enforcer::profile_timerCallback, this, _1),
-	 &this->compQueue,
-	 true);
-      profile_timer = nh.createTimer(timer_options);
-    }
-  else  // child
+  else if ( pid == 0 ) // child
     {
       std::vector<std::string> string_args;
       string_args.push_back(tc_binary);
@@ -70,6 +54,25 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
       execvp(args[0], args);
       LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
     }
+
+  // ONLY PARENT WILL GET HERE
+  // restart the timer
+  timespec start;
+  profile.getNextInterval( start, bandwidth, latency );
+      
+  double dStart = (double)start.tv_sec + (double)start.tv_nsec / (double)1000000000.0;
+  ros::Time tStart(dStart);
+  ros::Duration nextTime = tStart - ros::Time::now();
+  
+  ros::NodeHandle nh;
+  ros::TimerOptions timer_options;
+  timer_options = 
+    ros::TimerOptions
+    (nextTime,
+     boost::bind(&link_profile_enforcer::profile_timerCallback, this, _1),
+     &this->compQueue,
+     true);
+  profile_timer = nh.createTimer(timer_options);
 }
 //# End User Globals Marker
 
