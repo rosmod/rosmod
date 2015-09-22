@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <node name="router_enforcer">
-  <component_instance name="link_enforcer_i">
-    <library name="liblink_profile_enforcer.so"/>
+  <component_instance name="router_enforcer_i">
+    <library name="librouter_profile_enforcer.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="7"/>
     <syncTimeout setting="10.0"/>
