@@ -95,9 +95,7 @@ void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event
   // ONLY PARENT WILL GET HERE
 
   // SET LOW PRIORITY CLASS
-  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:20 htb rate ";
-  tc_args += bw_str;
-  tc_args += "bit ceil ";
+  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:20 htb rate 10bit ceil ";
   tc_args += max_bw_str;
   tc_args += "bit prio 1";
 
