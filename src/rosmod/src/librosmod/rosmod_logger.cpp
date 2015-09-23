@@ -10,10 +10,10 @@ Logger::Logger(bool is_periodic,
 }
 
 /*
- * Toggle Periodic Logging
+ * Set Logging Periodicity
  */
-void Logger::TOGGLE_PERIODICITY() {
-  periodic_logging = !periodic_logging;
+void Logger::SET_PERIODICITY(bool is_periodic) {
+  periodic_logging = is_periodic;
 }
 
 /*

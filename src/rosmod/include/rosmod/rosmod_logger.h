@@ -44,8 +44,8 @@ public:
   Logger(bool is_periodic = true, 
 	 int max_log_size = 1000);
 
-  // Toggle Periodic Logging
-  void TOGGLE_PERIODICITY();
+  // Set Logging Periodicity
+  void SET_PERIODICITY(bool is_periodic);
 
   // Change Max Log Size
   void CHANGE_LOG_SIZE(int new_size);
