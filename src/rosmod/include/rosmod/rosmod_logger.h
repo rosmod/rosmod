@@ -20,9 +20,10 @@ struct Log_Levels {
   bool WARNING;
   bool ERROR;
   bool CRITICAL;
+
   Log_Levels()
   {
-    DEBUG = true;
+    DEBUG = false;
     INFO = true;
     WARNING = false;
     ERROR = true;
@@ -38,6 +39,15 @@ class Logger
 {
 
 public:
+
+  // Constructor
+  Logger(bool is_periodic, int max_log_size);
+
+  // Toggle Periodic Logging
+  void TOGGLE_PERIODICITY();
+
+  // Change Max Log Size
+  void CHANGE_LOG_SIZE(int new_size);
 
   // Writes log_content to log file & empties log_content
   ~Logger();
@@ -79,8 +89,11 @@ private:
   // String representing the contents of log
   string log_content;
 
+  // Boolean to toggle periodic logging
+  bool periodic_logging;
+
   // Max size of log_content before contents are written to file
-  const int max_log_unit = 1000;
+  int max_log_unit;
 
   // Log file stream
   ofstream log_stream;
