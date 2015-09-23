@@ -40,10 +40,6 @@ class Logger
 
 public:
 
-  // Constructor
-  Logger(bool is_periodic = true, 
-	 int max_log_size = 1000);
-
   // Set Logging Periodicity
   void SET_PERIODICITY(bool is_periodic);
 

@@ -1,15 +1,6 @@
 #include "rosmod/rosmod_logger.hpp"
 
 /*
- * Initialize Logger Object
- */
-Logger::Logger(bool is_periodic, 
-	       int max_log_size) {
-  periodic_logging = is_periodic;
-  max_log_unit = max_log_size;
-}
-
-/*
  * Set Logging Periodicity
  */
 void Logger::SET_PERIODICITY(bool is_periodic) {
