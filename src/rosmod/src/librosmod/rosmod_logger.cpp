@@ -5,8 +5,8 @@
  */
 Logger::Logger(bool is_periodic, 
 	       int max_log_size) {
+  periodic_logging = is_periodic;
   max_log_unit = max_log_size;
-  peridic_logging = is_periodic;
 }
 
 /*
