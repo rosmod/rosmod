@@ -3,7 +3,8 @@
 /*
  * Initialize Logger Object
  */
-Logger::Logger(bool is_periodic = true, int max_log_size = 1000) {
+Logger::Logger(bool is_periodic, 
+	       int max_log_size) {
   max_log_unit = max_log_size;
   peridic_logging = is_periodic;
 }
