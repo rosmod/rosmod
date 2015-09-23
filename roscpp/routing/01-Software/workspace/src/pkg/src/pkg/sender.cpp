@@ -84,6 +84,7 @@ void sender::routed_msg_pub_timerCallback(const ros::TimerEvent& event)
     }
   else
     {
+      timerDelay = 0.1;
       routed_msg_pub_send_mw.set_duration(tg_duration);
     }
   

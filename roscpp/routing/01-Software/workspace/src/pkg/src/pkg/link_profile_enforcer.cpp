@@ -6,24 +6,18 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 {
   std::string tc_binary = "/sbin/tc";
   unsigned long long bandwidth;
-  unsigned long long latency;
+  double latency;
   profile.getCurrentInterval( bandwidth, latency );
 
   LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
 
   if (bandwidth == 0)
-    bandwidth = 1;
-  unsigned long long max_bw = (unsigned long long)((double)bandwidth * 1.001f);
+    bandwidth = 10;
   char bw_str[100];
   sprintf(bw_str,"%llu",bandwidth);
-  char max_bw_str[100];
-  sprintf(max_bw_str,"%llu", max_bw);
 
-  std::string tc_args = "qdisc replace dev " + intf_name + " parent 11:1 handle 111: tbf rate ";
-  tc_args += bw_str;
-  tc_args += "bit peakrate ";
-  tc_args += max_bw_str;
-  tc_args += "bit mtu 8192 latency 100s burst 1540000000"; // latency here is the maximum time in the tbf
+  std::string tc_args = "class replace dev " + intf_name + " parent 111: classid 111:1 htb rate "
+    + bw_str + "bit ceil " + bw_str + "bit";
 
   // FORK
   pid_t parent = getpid();

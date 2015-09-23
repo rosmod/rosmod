@@ -15,7 +15,7 @@
     <port name="routed_msg_sub">
       <uuid>3</uuid>
       <profile>
-# period = 10
+# period = 8
 # start = 0
 0,240000,0,0
 1,248000,0,0
@@ -25,10 +25,11 @@
 5,332000,0,0
 6,360000,0,0
 7,0,0,0
+
       </profile>
       <sender uuid="0">
 	<profile>
-# period = 20
+# period = 16
 # priority = 1
 # start = 0
 0,80000,0,0
@@ -39,11 +40,12 @@
 5,105000,0,0
 6,110000,0,0
 7,0,0,0
+
 	</profile>
       </sender>
       <sender uuid="1">
 	<profile>
-# period = 20
+# period = 16
 # priority = 1
 # start = 0
 0,80000,0,0
@@ -54,6 +56,7 @@
 5,105000,0,0
 6,110000,0,0
 7,0,0,0
+
 	</profile>
       </sender>
     </port>

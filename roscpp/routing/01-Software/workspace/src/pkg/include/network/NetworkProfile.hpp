@@ -37,11 +37,11 @@ namespace Network {
     unsigned long long bandwidth;     // bits / sec
     unsigned long long max_bandwidth; // bits / sec
     unsigned long long data;          // bits
-    unsigned long long latency;       // msec
+    double latency;                   // sec
 
     std::string toString() {
       char charBuf[100];
-      sprintf(charBuf,"%f, %llu, %llu, %llu, %llu",
+      sprintf(charBuf,"%f, %llu, %llu, %llu, %f",
 	      time, bandwidth, max_bandwidth, data, latency);
       std::string retStr = charBuf;
       return retStr;
@@ -200,13 +200,13 @@ namespace Network {
 	entry.bandwidth = (unsigned long long) (csv[i][1]);  // bps
 	if (csv[i].size() == 3)
 	  {
-	    entry.latency = (unsigned long long) (csv[i][2]);    // ms
+	    entry.latency = csv[i][2];    // s
 	    entry.max_bandwidth = entry.bandwidth;
 	  }
 	else if (csv[i].size() == 4)
 	  {
 	    entry.max_bandwidth = (unsigned long long) (csv[i][2]); // bps
-	    entry.latency = (unsigned long long) (csv[i][3]);       // ms
+	    entry.latency = csv[i][3];    // s
 	  }
 
 	if ( resources.size() > 0 ) {
@@ -217,13 +217,14 @@ namespace Network {
 	else {
 	  entry.data = 0;
 	}
+	//printf("Interval %d: %s\n", i, entry.toString().c_str());
 	resources.push_back(entry);
       }
       if (resources.size () && (resources.back().time < period)) {
 	ResourceEntry entry;
 	entry.time = period;
 	entry.bandwidth = 0;
-	entry.latency = 0;
+	entry.latency = resources[0].latency;
 	entry.data = resources.back().data +
 	  resources.back().bandwidth *
 	  (entry.time - resources.back().time);
@@ -254,7 +255,7 @@ namespace Network {
       unsigned long long retData = 0;
       double offset = getOffset(t);
       int i = 0;
-      for (int i = 0; i < resources.size(); i++)
+      for ( i = 0; i < resources.size(); i++)
 	{
 	  if ( resources[i].time > offset )
 	    break;
@@ -268,7 +269,7 @@ namespace Network {
       return retData;
     }
 
-    int getCurrentInterval( unsigned long long& bandwidth, unsigned long long& latency ) {
+    int getCurrentInterval( unsigned long long& bandwidth, double& latency ) {
       if (resources.size () == 0)
 	return -1;
       timespec currentTime;
@@ -276,17 +277,18 @@ namespace Network {
       double offset = getOffset(currentTime);
       bandwidth = resources[0].bandwidth;
       latency = resources[0].latency;
-      for ( int i=0; i < resources.size() - 1; i++ ) {
+      for ( int i=0; i < resources.size(); i++ ) {
 	if ( resources[i].time > offset ) {
 	  bandwidth = resources[i-1].bandwidth;
 	  latency = resources[i-1].latency;
 	  break;
 	}
       }
+      //printf("current: %f, %llu, %f\n", offset, bandwidth, latency);
       return 0;
     }
 
-    int getNextInterval( timespec& start, unsigned long long& bandwidth, unsigned long long& latency ) {
+    int getNextInterval( timespec& start, unsigned long long& bandwidth, double& latency ) {
       if (resources.size () == 0)
 	return -1;
       timespec currentTime;

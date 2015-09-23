@@ -6,24 +6,18 @@ void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event
 {
   std::string tc_binary = "/sbin/tc";
   unsigned long long bandwidth;
-  unsigned long long latency;
+  double latency;
   profile.getCurrentInterval( bandwidth, latency );
 
   LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
 
   if (bandwidth == 0)
-    bandwidth = 1;
-  unsigned long long max_bw = (unsigned long long)((double)bandwidth * 1.001f);
+    bandwidth = 10;
   char bw_str[100];
   sprintf(bw_str,"%llu",bandwidth);
-  char max_bw_str[100];
-  sprintf(max_bw_str,"%llu", max_bw);
 
-  std::string tc_args = "class replace dev " + intf_name + " parent 2: classid 2:1 htb rate ";
-  tc_args += bw_str;
-  tc_args += "bit ceil ";
-  tc_args += max_bw_str;
-  tc_args += "bit";
+  std::string tc_args = "class replace dev " + intf_name + " parent 2: classid 2:1 htb rate "
+    + bw_str + "bit ceil " + bw_str + "bit";
 
   // FORK
   pid_t parent = getpid();
@@ -57,11 +51,9 @@ void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event
   // ONLY PARENT WILL GET HERE
 
   // SET HIGH PRIORITY CLASS
-  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:10 htb rate ";
-  tc_args += bw_str;
-  tc_args += "bit ceil ";
-  tc_args += max_bw_str;
-  tc_args += "bit prio 0";
+  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:10 htb rate "
+    + bw_str + "bit ceil " + bw_str + "bit";
+  //+ "10bit ceil " + bw_str + "bit prio 0";
 
   // FORK
   parent = getpid();
@@ -95,9 +87,8 @@ void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event
   // ONLY PARENT WILL GET HERE
 
   // SET LOW PRIORITY CLASS
-  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:20 htb rate 10bit ceil ";
-  tc_args += max_bw_str;
-  tc_args += "bit prio 1";
+  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:20 htb rate 10bit ceil "
+    + bw_str + "bit prio 1";
 
   // FORK
   parent = getpid();
