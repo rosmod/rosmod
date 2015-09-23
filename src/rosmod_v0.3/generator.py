@@ -129,21 +129,21 @@ class ROSMOD_Generator:
 
         if not os.path.exists(self.cpp):
             os.makedirs(self.cpp)
-            # Populate Base Component cpp template
-            t = base_component_cpp(searchList=[base_cpp_namespace])
-            self.base_cpp = str(t)
-            # Write Component.cpp
-            with open(os.path.join(self.cpp, "Component.cpp"), 'w') as temp_file:
-                temp_file.write(self.base_cpp)
+        # Populate Base Component cpp template
+        t = base_component_cpp(searchList=[base_cpp_namespace])
+        self.base_cpp = str(t)
+        # Write Component.cpp
+        with open(os.path.join(self.cpp, "Component.cpp"), 'w') as temp_file:
+            temp_file.write(self.base_cpp)
 
         if not os.path.exists(self.hpp):
             os.makedirs(self.hpp)
-            # Populate Base Component hpp template
-            t = base_component_hpp(searchList=[base_hpp_namespace])
-            self.base_hpp = str(t)
-            # Write Component.hpp
-            with open(os.path.join(self.hpp, "Component.hpp"), 'w') as temp_file:
-                temp_file.write(self.base_hpp)
+        # Populate Base Component hpp template
+        t = base_component_hpp(searchList=[base_hpp_namespace])
+        self.base_hpp = str(t)
+        # Write Component.hpp
+        with open(os.path.join(self.hpp, "Component.hpp"), 'w') as temp_file:
+            temp_file.write(self.base_hpp)
 
         # Populate Logger cpp template
         t = Logger_cpp(searchList=[base_cpp_namespace])
