@@ -2,36 +2,33 @@
 
 
 //# Start User Globals Marker
-void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
+
+void setTC( unsigned long long bandwidth, unsigned long long ceil, double latency,
+	    std::string interface, std::string handle, std::string parent )
 {
   std::string tc_binary = "/sbin/tc";
-  unsigned long long bandwidth;
-  double latency;
-  profile.getCurrentInterval( bandwidth, latency );
-
-  LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
-
-  if (bandwidth == 0)
-    bandwidth = 10;
   char bw_str[100];
   sprintf(bw_str,"%llu",bandwidth);
+  char ceil_str[100];
+  sprintf(ceil_str,"%llu",ceil);
 
-  std::string tc_args = "class replace dev " + intf_name + " parent 111: classid 111:1 htb rate "
-    + bw_str + "bit ceil " + bw_str + "bit";
+  std::string tc_args = "class replace dev " + interface
+    + " parent " + parent + " classid " + handle + " htb rate "
+    + bw_str + "bit ceil " + ceil_str + "bit";
 
   // FORK
-  pid_t parent = getpid();
-  pid_t pid = fork();
-  if ( pid == -1 )
+  pid_t parent_pid = getpid();
+  pid_t my_pid = fork();
+  if ( my_pid == -1 )
     {
-      LOGGER.DEBUG("ERROR: COULDNT FORK");
+      printf("ERROR: COULDNT FORK\n");
     }
-  else if ( pid == 0 ) // child
+  else if ( my_pid == 0 ) // child
     {
       std::vector<std::string> string_args;
       string_args.push_back(tc_binary);
-      string s;
-      istringstream f(tc_args);
+      std::string s;
+      std::istringstream f(tc_args);
       while ( getline(f, s, ' ') )
 	{
 	  string_args.push_back(s);
@@ -46,10 +43,24 @@ void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 	}
       // EXECV
       execvp(args[0], args);
-      LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
+      printf("ERROR: EXEC COULDN'T COMPLETE\n");
     }
+}
 
-  // ONLY PARENT WILL GET HERE
+void link_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
+{
+  std::string tc_binary = "/sbin/tc";
+  unsigned long long bandwidth;
+  double latency;
+  profile.getCurrentInterval( bandwidth, latency );
+
+  LOGGER.DEBUG("Setting link bw to %llu",bandwidth);
+
+  if (bandwidth == 0)
+    bandwidth = 10;
+
+  setTC(bandwidth, bandwidth, latency, intf_name, "111:", "111:1");
+
   // restart the timer
   timespec start;
   profile.getNextInterval( start, bandwidth, latency );

@@ -2,6 +2,50 @@
 
 
 //# Start User Globals Marker
+void setTC( unsigned long long bandwidth, unsigned long long ceil, double latency,
+	    std::string interface, std::string handle, std::string parent )
+{
+  std::string tc_binary = "/sbin/tc";
+  char bw_str[100];
+  sprintf(bw_str,"%llu",bandwidth);
+  char ceil_str[100];
+  sprintf(ceil_str,"%llu",ceil);
+
+  std::string tc_args = "class replace dev " + interface
+    + " parent " + parent + " classid " + handle + " htb rate "
+    + bw_str + "bit ceil " + ceil_str + "bit";
+
+  // FORK
+  pid_t parent_pid = getpid();
+  pid_t my_pid = fork();
+  if ( my_pid == -1 )
+    {
+      printf("ERROR: COULDNT FORK\n");
+    }
+  else if ( my_pid == 0 ) // child
+    {
+      std::vector<std::string> string_args;
+      string_args.push_back(tc_binary);
+      std::string s;
+      std::istringstream f(tc_args);
+      while ( getline(f, s, ' ') )
+	{
+	  string_args.push_back(s);
+	}
+      // build args
+      char *args[string_args.size() + 1]; // must be NULL terminated
+      args[string_args.size()] = NULL;
+      for (int i=0; i < string_args.size(); i++)
+	{
+	  args[i] = new char[string_args[i].length()];
+	  sprintf(args[i], "%s", string_args[i].c_str());
+	}
+      // EXECV
+      execvp(args[0], args);
+      printf("ERROR: EXEC COULDN'T COMPLETE\n");
+    }
+}
+
 void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event)
 {
   std::string tc_binary = "/sbin/tc";
@@ -13,113 +57,15 @@ void router_profile_enforcer::profile_timerCallback(const ros::TimerEvent& event
 
   if (bandwidth == 0)
     bandwidth = 10;
-  char bw_str[100];
-  sprintf(bw_str,"%llu",bandwidth);
 
-  std::string tc_args = "class replace dev " + intf_name + " parent 2: classid 2:1 htb rate "
-    + bw_str + "bit ceil " + bw_str + "bit";
-
-  // FORK
-  pid_t parent = getpid();
-  pid_t pid = fork();
-  if ( pid == -1 )
-    {
-      LOGGER.DEBUG("ERROR: COULDNT FORK");
-    }
-  else if ( pid == 0 )  // child
-    {
-      std::vector<std::string> string_args;
-      string_args.push_back(tc_binary);
-      string s;
-      istringstream f(tc_args);
-      while ( getline(f, s, ' ') )
-	{
-	  string_args.push_back(s);
-	}
-      // build args
-      char *args[string_args.size() + 1]; // must be NULL terminated
-      args[string_args.size()] = NULL;
-      for (int i=0; i < string_args.size(); i++)
-	{
-	  args[i] = new char[string_args[i].length()];
-	  sprintf(args[i], "%s", string_args[i].c_str());
-	}
-      // EXECV
-      execvp(args[0], args);
-      LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
-    }
-  // ONLY PARENT WILL GET HERE
+  // SET LINK CAPACITY
+  setTC(bandwidth, bandwidth, latency, intf_name, "2:", "2:1");
 
   // SET HIGH PRIORITY CLASS
-  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:10 htb rate "
-    + bw_str + "bit ceil " + bw_str + "bit";
-  //+ "10bit ceil " + bw_str + "bit prio 0";
-
-  // FORK
-  parent = getpid();
-  pid = fork();
-  if ( pid == -1 )
-    {
-      LOGGER.DEBUG("ERROR: COULDNT FORK");
-    }
-  else if ( pid == 0 )  // child
-    {
-      std::vector<std::string> string_args;
-      string_args.push_back(tc_binary);
-      string s;
-      istringstream f(tc_args);
-      while ( getline(f, s, ' ') )
-	{
-	  string_args.push_back(s);
-	}
-      // build args
-      char *args[string_args.size() + 1]; // must be NULL terminated
-      args[string_args.size()] = NULL;
-      for (int i=0; i < string_args.size(); i++)
-	{
-	  args[i] = new char[string_args[i].length()];
-	  sprintf(args[i], "%s", string_args[i].c_str());
-	}
-      // EXECV
-      execvp(args[0], args);
-      LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
-    }
-  // ONLY PARENT WILL GET HERE
+  setTC(bandwidth, bandwidth, latency, intf_name, "2:1", "2:10");
 
   // SET LOW PRIORITY CLASS
-  tc_args = "class replace dev " + intf_name + " parent 2:1 classid 2:20 htb rate 10bit ceil "
-    + bw_str + "bit prio 1";
-
-  // FORK
-  parent = getpid();
-  pid = fork();
-  if ( pid == -1 )
-    {
-      LOGGER.DEBUG("ERROR: COULDNT FORK");
-    }
-  else if ( pid == 0 )  // child
-    {
-      std::vector<std::string> string_args;
-      string_args.push_back(tc_binary);
-      string s;
-      istringstream f(tc_args);
-      while ( getline(f, s, ' ') )
-	{
-	  string_args.push_back(s);
-	}
-      // build args
-      char *args[string_args.size() + 1]; // must be NULL terminated
-      args[string_args.size()] = NULL;
-      for (int i=0; i < string_args.size(); i++)
-	{
-	  args[i] = new char[string_args[i].length()];
-	  sprintf(args[i], "%s", string_args[i].c_str());
-	}
-      // EXECV
-      execvp(args[0], args);
-      LOGGER.DEBUG("ERROR: EXEC COULDN'T COMPLETE");
-    }
-  // ONLY PARENT WILL GET HERE
+  setTC( 10, bandwidth, latency, intf_name, "2:1", "2:20");
 
   // NOW RESTART THE TIMER
   timespec start;
