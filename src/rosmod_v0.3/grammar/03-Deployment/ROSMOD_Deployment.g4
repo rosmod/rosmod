@@ -97,6 +97,17 @@ scheduling_scheme
         ( 'FIFO' | 'PFIFO' | 'EDF' )
     ;
 
+// Component logging parameters
+is_periodic_logging
+    :
+        BOOL
+    ;
+
+periodic_log_unit
+    :
+        INT
+    ;
+
 // Component Log levels
 logging_debug
     :
@@ -139,11 +150,13 @@ component_instance
                 (
                   'logging'
                   (' ')* '{' (' ')*
+                      'Is Periodic?' (' ')* '=' (' ')* is_periodic_logging (' ')* ';'
+                      'Periodic Log Unit' (' ')* '=' (' ')* periodic_log_unit (' ')* ';'
                       'DEBUG' (' ')* '=' (' ')* logging_debug (' ')* ';'
                       'INFO' (' ')* '=' (' ')* logging_info (' ')* ';'
                       'WARNING' (' ')* '=' (' ')* logging_warning (' ')* ';'
                       'ERROR' (' ')* '=' (' ')* logging_error (' ')* ';'
-                      'CRITICAL' (' ')* '=' (' ')* logging_critical (' ')* ';'                
+                      'CRITICAL' (' ')* '=' (' ')* logging_critical (' ')* ';' 
                    '}'
 		 )
              '}'

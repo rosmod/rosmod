@@ -374,6 +374,10 @@ void $component_name::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  // Prepare logging periodicity
+  LOGGER.SET_PERIODICITY(is_periodic_logging);
+  LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
+
   // Scheduling Scheme is FIFO
 #if $mod != ""  
   this->compQueue.scheduling_scheme = scheduling_scheme;
@@ -550,9 +554,9 @@ void $component_name::startUp()
   
   ros${mod}::SubscribeOptions comp_sync_sub_options;
 #if $mod != ""
-  rosmod::rosmod_callback_options sync_callback_options;
-  Comp_sync_sub_options = ros${mod}::SubscribeOptions::Create<std_msgs::Bool>
-    ("Component_Synchronization",
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
+  comp_sync_sub_options = ros${mod}::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
      1000,
      boost::bind(&$component_name::component_synchronization_OnOneData, this, _1),
      ros${mod}::VoidPtr(),
@@ -585,6 +589,8 @@ void $component_name::startUp()
   
 #if $mod != ""
   compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_DEBUG." + nodeName + "." + compName + ".log");
+  compQueue.ROSMOD_LOGGER.SET_PERIODICITY(is_periodic_logging);
+  compQueue.ROSMOD_LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
 #end if
 }
 

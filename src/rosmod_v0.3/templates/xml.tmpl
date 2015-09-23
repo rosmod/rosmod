@@ -17,6 +17,8 @@
     <numCompsToSync setting="$num_comps_to_sync"/>
     <syncTimeout setting="$sync_timeout"/>
     <logging>
+      <is_periodic setting="$comp_instance.properties["is_periodic_logging"]"/>
+      <periodic_log_unit setting="$comp_instance.properties["periodic_log_unit"]"/> 
       <debug setting="$comp_instance.properties["logging_debug"]"/>
       <info setting="$comp_instance.properties["logging_info"]"/>
       <warning setting="$comp_instance.properties["logging_warning"]"/>

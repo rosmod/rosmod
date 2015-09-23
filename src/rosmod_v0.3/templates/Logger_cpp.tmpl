@@ -1,6 +1,20 @@
 $hash_include "$package_name/Logger.hpp"
 
 /*
+ * Set Logging Periodicity
+ */
+void Logger::SET_PERIODICITY(bool is_periodic) {
+  periodic_logging = is_periodic;
+}
+
+/*
+ * Change max log size
+ */
+void Logger::CHANGE_LOG_SIZE(int new_size) {
+  max_log_unit = new_size;
+}
+
+/*
  * Write remaining log contents to file
  */
 Logger::~Logger() {
@@ -52,7 +66,9 @@ bool Logger::DEBUG(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
+    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string + "\n";
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -70,7 +86,8 @@ bool Logger::INFO(const char * format, ...) {
     va_end (args);
 
     log_content += "ROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
-    CHECK_LOG_SIZE();
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -88,7 +105,8 @@ bool Logger::WARNING(const char * format, ...) {
     va_end (args);
 
     log_content += "ROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
-    CHECK_LOG_SIZE();
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -105,8 +123,9 @@ bool Logger::ERROR(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    log_content += "ROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
-    CHECK_LOG_SIZE();
+    log_content += "ROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string + "\n";
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -124,7 +143,8 @@ bool Logger::CRITICAL(const char * format, ...) {
     va_end (args);
 
     log_content += "ROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
-    CHECK_LOG_SIZE();
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }

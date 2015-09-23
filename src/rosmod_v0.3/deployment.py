@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import os,sys
-
+import time
 from fabric.api import *
 from fabric.api import task, run
 
@@ -158,7 +158,9 @@ def parallelStop(hostDict,updateQ=None):
             if node.pids != [] and len(node.pids) > 0:
                 for pid in node.pids:
                     try:
-                        run('kill -SIGTERM {0} && kill -SIGINT {0}'.format(pid))
+                        run('kill -SIGTERM {0}'.format(pid))
+                        time.sleep(2)
+                        run('kill -SIGINT {0}'.format(pid))
                     except SystemExit:
                         pass
             updateQ.put(["Killed {}".format(node.name),1])

@@ -28,6 +28,16 @@ node $node.properties["name"]
 	scheduling_scheme = $comp_instance.properties["scheduling_scheme"];
 	logging
 	{
+#if $comp_instance.properties["is_periodic_logging"] != False
+	  Is Periodic? = true;
+#else
+	  Is Periodic? = false;
+#end if
+#if $comp_instance.properties["periodic_log_unit"] != None
+	  Periodic Log Unit = $comp_instance.properties["periodic_log_unit"];
+#else
+	  Periodic Log Unit = $comp_instance.properties["periodic_log_unit"];
+#end if
 #if $comp_instance.properties["logging_debug"] != False
 	  DEBUG = true;
 #else

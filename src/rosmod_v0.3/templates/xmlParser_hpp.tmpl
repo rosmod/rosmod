@@ -26,6 +26,8 @@ public:
   std::map<std::string,uint64_t> uuidMap;
   std::map<std::string,std::string> profileMap;
   std::map<std::string,std::map<uint64_t,std::string>> portSenderMap;
+  bool is_periodic_logging;
+  bool periodic_log_unit;
 };
 
 using namespace rapidxml;
@@ -120,6 +122,10 @@ public:
 	config.schedulingScheme = sched_scheme->first_attribute()->value();
 	
 	xml_node<> *logger = comp_inst->first_node("logging");
+	config.is_periodic_logging = 
+	  Return_Boolean(logger->first_node("is_periodic_logging")->first_attribute()->value());
+	config.periodic_log_unit = 
+	  std::stoi(logger->first_node("periodic_log_unit")->first_attribute()->value());
 	config.logLevels.DEBUG = 
 	  Return_Boolean(logger->first_node("debug")->first_attribute()->value());
 	config.logLevels.INFO = 

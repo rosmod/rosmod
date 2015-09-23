@@ -41,6 +41,12 @@ class Logger
 
 public:
 
+  // Set Logging Periodicity
+  void SET_PERIODICITY(bool is_periodic);
+
+  // Change Max Log Size
+  void CHANGE_LOG_SIZE(int new_size);
+
   // Writes log_content to log file & empties log_content
   ~Logger();
 
@@ -81,8 +87,11 @@ private:
   // String representing the contents of log
   string log_content;
 
+  // Boolean to toggle periodic logging
+  bool periodic_logging;
+
   // Max size of log_content before contents are written to file
-  const int max_log_unit = 1000;
+  int max_log_unit;
 
   // Log file stream
   ofstream log_stream;

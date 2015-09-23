@@ -12,7 +12,7 @@ generator_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(generator_dir + "/templates")
 
 # Recursively compile on template files in templates directory
-os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl > /dev/null 2>&1")
+os.system("/usr/local/bin/cheetah compile " + template_dir + "/*.tmpl")# > /dev/null 2>&1")
 ros_templates = os.path.realpath(os.path.abspath
                                  (os.path.join
                                   (os.path.split

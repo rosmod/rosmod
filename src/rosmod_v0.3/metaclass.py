@@ -113,6 +113,11 @@ meta_class_dict["value"] = Grammar_Field(
 meta_class_dict["group"] = Grammar_Field(
     "string", "Group", create_enterAtom, create_exitAtom, None, "Group")
 
+meta_class_dict["is_periodic_logging"] = Grammar_Field(
+    "boolean", "Is_periodic_logging", create_enterAtom, create_exitAtom, None, "Is Logging Periodic?")
+meta_class_dict["periodic_log_unit"] = Grammar_Field(
+    "integer", "Periodic_log_unit", create_enterAtom, create_exitAtom, None, "Periodic Log Unit")
+
 meta_class_dict["logging_debug"] = Grammar_Field(
     "boolean", "Logging_debug", create_enterAtom, create_exitAtom, None, "Log Level - DEBUG")
 meta_class_dict["logging_info"] = Grammar_Field(

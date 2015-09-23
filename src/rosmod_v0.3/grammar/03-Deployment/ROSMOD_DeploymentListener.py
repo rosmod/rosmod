@@ -31,6 +31,15 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#periodic_log_unit.
+    def enterPeriodic_log_unit(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#periodic_log_unit.
+    def exitPeriodic_log_unit(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by ROSMOD_DeploymentParser#init.
     def enterInit(self, ctx):
         pass
@@ -190,6 +199,15 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
 
     # Exit a parse tree produced by ROSMOD_DeploymentParser#cmd_args.
     def exitCmd_args(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by ROSMOD_DeploymentParser#is_periodic_logging.
+    def enterIs_periodic_logging(self, ctx):
+        pass
+
+    # Exit a parse tree produced by ROSMOD_DeploymentParser#is_periodic_logging.
+    def exitIs_periodic_logging(self, ctx):
         pass
 
 
