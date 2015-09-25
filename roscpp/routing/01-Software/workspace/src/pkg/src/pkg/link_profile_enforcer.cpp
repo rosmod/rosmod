@@ -4,7 +4,7 @@
 //# Start User Globals Marker
 
 void setTC( unsigned long long bandwidth, unsigned long long ceil, double latency,
-	    std::string interface, std::string handle, std::string parent )
+	    std::string interface, std::string parent, std::string handle )
 {
   std::string tc_binary = "/sbin/tc";
   char bw_str[100];
