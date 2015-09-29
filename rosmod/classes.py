@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""This file defines the ROSMOD metamodel."""
+"""This file defines a test ROSMOD project"""
 
 __author__ = "Pranav Srinivas Kumar"
 __copyright__ = "Copyright 2015, ROSMOD"
@@ -10,13 +10,6 @@ __version__ = "0.4"
 __maintainer__ = "Pranav Srinivas Kumar"
 __email__ = "pkumar@isis.vanderbilt.edu"
 __status__ = "Production"
-
-#from metamodel.base import Model, Children, Artifact
-
-#import os
-#import jsonpickle
-#from string import Template
-#import textwrap
 
 from metamodel.importer import *
 
