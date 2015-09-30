@@ -60,6 +60,30 @@ class Model(object):
     def __setitem__(self, key, value):
         self.attributes[key] = value
 
+    def child_count(self):
+        return len(self.children)
+
+    def child(self, position):
+        return self.children[position]
+
+    def row(self):
+        if self.parent:
+            return self.parent.children.index(self)
+
+    def remove_child(self, position):
+        if position < 0 or position > len(self.children):
+            return False
+        child = self.children.pop(position)
+        child.parent = None
+        return True
+
+    def insert_child(self, position, child_model):
+        if position < 0 or position > len(self.children):
+            return False
+        child_model.parent = self
+        self.children.insert(position, child_model)
+        return True
+
     def add_child(self, child_model):
         child_model.parent = self
         self.children.append(child_model)
