@@ -36,6 +36,15 @@ class Attribute(object):
     def __getitem__(self, key):
         return self.value[key]
 
+    def fromQVariant(self, variant):
+        if self.kind in ['string','code','list_entry']:
+            variant.toString()
+        elif self.kind in ['int','integer']:
+            variant.toInt()
+        elif self.kind in ['float','double']:
+            variant.toDouble()
+        self.value = variant
+
 class Model(object):
     """Generic Model/Container class
 
@@ -64,7 +73,10 @@ class Model(object):
         return len(self.children)
 
     def child(self, position):
-        return self.children[position]
+        if position < self.child_count():
+            return self.children[position]
+        else:
+            return None
 
     def row(self):
         if self.parent:
