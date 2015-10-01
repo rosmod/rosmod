@@ -35,7 +35,6 @@ class Timer(Model):
         self["priority"] = priority
         self["deadline"] = deadline
         self["business_logic"] = business_logic
-        self["preserved_bl"] = ""
 
         self.children = Children(allowed=[], cardinality={})
 
