@@ -4,46 +4,124 @@
   <component_instance name="Sensor_i">
     <library name="libSensor_Component.so"/>
     <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
     <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>
       <error setting="True"/>
       <critical setting="True"/>
     </logging>
+    <port name="sensor_publisher">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
   </component_instance>
   <component_instance name="Actuator_i">
     <library name="libActuator_Component.so"/>
     <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
     <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>
       <error setting="True"/>
       <critical setting="True"/>
     </logging>
+    <port name="actuator_control_subscriber">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
   </component_instance>
   <component_instance name="PID_i">
     <library name="libPID.so"/>
     <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
     <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>
       <error setting="True"/>
       <critical setting="True"/>
     </logging>
+    <port name="actuator_control_publisher">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_subscriber">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="pid_control_subscriber">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
   </component_instance>
   <component_instance name="Controller_i">
     <library name="libHigh_level_Controller.so"/>
     <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
     <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>
       <error setting="True"/>
       <critical setting="True"/>
     </logging>
+    <port name="pid_control_publisher">
+      <uuid>6</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_subscriber">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
   </component_instance>
 </node>
 
