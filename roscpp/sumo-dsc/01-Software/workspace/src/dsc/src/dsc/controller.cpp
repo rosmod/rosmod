@@ -48,7 +48,7 @@ void controller::vehicle_number(std::string sensor1,
 	    }
 	}
     }
-  queue_length = _sum_map[sensor1]-_sum_map[sensor2] + 1 ;
+  queue_length = max(0, _sum_map[sensor1]-_sum_map[sensor2] + 1);
 }
 
 void controller::clock_value(const std::string& ns_state,
@@ -123,6 +123,23 @@ void controller::controller_main(std::string& tl_state,
       new_control.intersection_name = _id;
       new_control.state = tl_state;
       ryg_control_pub.publish(new_control);
+    }
+}
+
+void controller::update_sensor_data(std::string sensor_name, const dsc::sensor_state::ConstPtr& received_data)
+{
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      std::vector<std::string> tmp = received_data->vehicle_ids;
+      for (auto tmp_id=tmp.begin(); tmp_id!=tmp.end(); ++tmp_id)
+	{
+	  if ( std::find(_vehicle_ids_map[sensor_name].begin(),
+			 _vehicle_ids_map[sensor_name].end(), *tmp_id) == _vehicle_ids_map[sensor_name].end())
+	    {
+	      _vehicle_ids_map[sensor_name].push_back(*tmp_id);
+	    }
+	}
     }
 }
 //# End User Globals Marker
@@ -208,10 +225,20 @@ void controller::ryg_state_sub_OnOneData(const dsc::ryg_state::ConstPtr& receive
 void controller::l1_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ew_in Subscriber
-  if ( !_sensor_id_map["l1_ew_in"].compare(received_data->sensor_name ) )
+  std::string sensor_name = "l1_ew_in";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
     {
-      _num_vehicles_map["l1_ew_in"] = received_data->num_vehicles;
-      _vehicle_ids_map["l1_ew_in"] = received_data->vehicle_ids;
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      std::vector<std::string> tmp = received_data->vehicle_ids;
+      for (auto tmp_id=tmp.begin(); tmp_id!=tmp.end(); ++tmp_id)
+	{
+	  if ( std::find(_vehicle_ids_map[sensor_name].begin(),
+			 _vehicle_ids_map[sensor_name].end(), *tmp_id) == _vehicle_ids_map[sensor_name].end())
+	    {
+	      it->second.push_back(*tmp_id);
+	    }
+	}
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
     }
 }
 //# End l1_ew_in_OnOneData Marker
@@ -220,10 +247,11 @@ void controller::l1_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_
 void controller::l1_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ew_out Subscriber
-  if ( !_sensor_id_map["l1_ew_out"].compare(received_data->sensor_name ) )
+  std::string sensor_name = "l1_ew_out";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
     {
-      _num_vehicles_map["l1_ew_out"] = received_data->num_vehicles;
-      _vehicle_ids_map["l1_ew_out"] = received_data->vehicle_ids;
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
     }
 }
 //# End l1_ew_out_OnOneData Marker
@@ -232,10 +260,11 @@ void controller::l1_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received
 void controller::l2_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ew_in Subscriber
-  if ( !_sensor_id_map["l2_ew_in"].compare(received_data->sensor_name ) )
+  std::string sensor_name = "l2_ew_in";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
     {
-      _num_vehicles_map["l2_ew_in"] = received_data->num_vehicles;
-      _vehicle_ids_map["l2_ew_in"] = received_data->vehicle_ids;
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
     }
 }
 //# End l2_ew_in_OnOneData Marker
@@ -244,10 +273,11 @@ void controller::l2_ew_in_OnOneData(const dsc::sensor_state::ConstPtr& received_
 void controller::l2_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l2_ew_out Subscriber
-  if ( !_sensor_id_map["l2_ew_out"].compare(received_data->sensor_name ) )
+  std::string sensor_name = "l2_ew_out";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
     {
-      _num_vehicles_map["l2_ew_out"] = received_data->num_vehicles;
-      _vehicle_ids_map["l2_ew_out"] = received_data->vehicle_ids;
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
     }
 }
 //# End l2_ew_out_OnOneData Marker
@@ -256,10 +286,11 @@ void controller::l2_ew_out_OnOneData(const dsc::sensor_state::ConstPtr& received
 void controller::l1_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ns_in Subscriber
-  if ( !_sensor_id_map["l1_ns_in"].compare(received_data->sensor_name ) )
+  std::string sensor_name = "l1_ns_in";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
     {
-      _num_vehicles_map["l1_ns_in"] = received_data->num_vehicles;
-      _vehicle_ids_map["l1_ns_in"] = received_data->vehicle_ids;
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
     }
 }
 //# End l1_ns_in_OnOneData Marker
@@ -268,10 +299,11 @@ void controller::l1_ns_in_OnOneData(const dsc::sensor_state::ConstPtr& received_
 void controller::l1_ns_out_OnOneData(const dsc::sensor_state::ConstPtr& received_data)
 {
   // Business Logic for l1_ns_out Subscriber
-  if ( !_sensor_id_map["l1_ns_out"].compare(received_data->sensor_name ) )
+  std::string sensor_name = "l1_ns_out";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
     {
-      _num_vehicles_map["l1_ns_out"] = received_data->num_vehicles;
-      _vehicle_ids_map["l1_ns_out"] = received_data->vehicle_ids;
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
     }
 }
 //# End l1_ns_out_OnOneData Marker
