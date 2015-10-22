@@ -1,4 +1,4 @@
-FILE(REMOVE_RECURSE
+file(REMOVE_RECURSE
   "CMakeFiles/node_main.dir/src/node/node_main.cpp.o"
   "CMakeFiles/node_main.dir/src/node/Component.cpp.o"
   "CMakeFiles/node_main.dir/src/node/StdCapture.cpp.o"
@@ -7,6 +7,6 @@ FILE(REMOVE_RECURSE
 )
 
 # Per-language clean rules from dependency scanning.
-FOREACH(lang CXX)
-  INCLUDE(CMakeFiles/node_main.dir/cmake_clean_${lang}.cmake OPTIONAL)
-ENDFOREACH(lang)
+foreach(lang CXX)
+  include(CMakeFiles/node_main.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
