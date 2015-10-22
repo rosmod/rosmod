@@ -11,6 +11,7 @@ __maintainer__ = "Pranav Srinivas Kumar"
 __email__ = "pkumar@isis.vanderbilt.edu"
 __status__ = "Production"
 
+import os
 import metamodel.project as ROSMOD
 
 class ROSMOD_Interface():

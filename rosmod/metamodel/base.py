@@ -38,12 +38,13 @@ class Attribute(object):
 
     def fromQVariant(self, variant):
         if self.kind in ['string','code','list_entry']:
-            variant.toString()
+            self.value = variant.toString()
         elif self.kind in ['int','integer']:
-            variant.toInt()
-        elif self.kind in ['float','double']:
-            variant.toDouble()
-        self.value = variant
+            self.value,tmp = variant.toInt()
+        elif self.kind in ['float']:
+            self.value,tmp = variant.toFloat()
+        elif self.kind in ['double']:
+            self.value,tmp = variant.toDouble()
 
 class Model(object):
     """Generic Model/Container class
