@@ -73,17 +73,10 @@ public:
     Empty,
   };
 
-  enum SchedulingScheme {
-    FIFO,
-    PFIFO,
-    EDF
-  };
-
-  SchedulingScheme scheduling_scheme;
+  std::string scheduling_scheme;
 
   // Logs callback enqueue, dequeue and deadline violations
-  Logger ROSMOD_LOGGER;
-
+  std::unique_ptr<ROSMOD_Logger> ROSMOD_LOGGER;
 
   /**
    * \brief Pop a single callback off the front of the queue and invoke it.  If the callback was not ready to be called,
