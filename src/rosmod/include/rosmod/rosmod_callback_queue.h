@@ -77,7 +77,8 @@ public:
 
   // Logs callback enqueue, dequeue and deadline violations
   std::unique_ptr<ROSMOD_Logger> ROSMOD_LOGGER;
-
+  //ROSMOD_Logger * ROSMOD_LOGGER;
+  
   /**
    * \brief Pop a single callback off the front of the queue and invoke it.  If the callback was not ready to be called,
    * pushes it back onto the queue.

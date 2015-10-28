@@ -44,13 +44,13 @@ CallbackQueue::CallbackQueue(bool enabled)
 , enabled_(enabled)
 , scheduling_scheme("FIFO")
 {
-  std::unique_ptr<ROSMOD_Logger> logger(new ROSMOD_Logger());
-  ROSMOD_LOGGER = std::move(logger);
+  ROSMOD_LOGGER.reset(new ROSMOD_Logger());
 }
 
 CallbackQueue::~CallbackQueue()
 {
   disable();
+  ROSMOD_LOGGER.reset();
 }
 
 void CallbackQueue::enable()
