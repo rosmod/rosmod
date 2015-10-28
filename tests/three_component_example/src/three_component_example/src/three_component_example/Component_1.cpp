@@ -40,6 +40,7 @@ Component_1::~Component_1()
   Name_Publisher.shutdown();
   Name_Subscriber.shutdown();
   //# Start Destructor Marker
+  //  delete compQueue.ROSMOD_LOGGER.release();
   //# End Destructor Marker
 }
 
@@ -48,9 +49,6 @@ void Component_1::startUp()
 {
   NAMESPACE::NodeHandle nh;
   std::string advertiseName;
-
-  std::unique_ptr<Logger> temp_logger(new Logger());
-  logger = std::move(temp_logger);
 
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
@@ -65,13 +63,6 @@ void Component_1::startUp()
   exec = s.substr(0, pos);
   pwd = exec_path.erase(exec_path.find(exec), exec.length());
   std::string log_file_path = pwd + config.nodeName + "." + config.compName + ".log"; 
-  
-  // Create the log file & open file stream
-  logger->create_file(log_file_path);
-  
-  // Prepare logging periodicity
-  logger->set_is_periodic(config.is_periodic_logging);
-  logger->set_max_log_unit(config.periodic_log_unit);
 
 #ifdef USE_ROSMOD
   compQueue.ROSMOD_LOGGER->create_file(pwd + "ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");

@@ -2,17 +2,9 @@
 
 // Constructor
 Component::Component(ComponentConfig &_config, int argc, char **argv) {
-  this->config = _config;
+  config = _config;
   node_argc = argc;
   node_argv = argv;
-  /* MOVE TO COMPONENT INSTANCE STARTUP
-  if (config.schedulingScheme == "FIFO")
-    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::FIFO;
-  else if (config.schedulingScheme == "PFIFO")
-    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::PFIFO;
-  else if (config.schedulingScheme == "EDF")
-    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::EDF;
-  */
 }
 
 // Destructor

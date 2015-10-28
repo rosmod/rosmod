@@ -43,7 +43,7 @@ protected:
   char **node_argv;
   NAMESPACE::Publisher comp_sync_pub;
   NAMESPACE::Subscriber comp_sync_sub;
-  NAMESPACE::Timer initOneShotTimer; 
+  NAMESPACE::Timer initOneShotTimer;
   NAMESPACE::CallbackQueue compQueue;
   std::unique_ptr<Logger> logger;
 };

@@ -7,7 +7,7 @@
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
-      <periodic_log_unit setting="1"/> 
+      <periodic_log_unit setting="10000"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>
@@ -56,7 +56,7 @@
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
-      <periodic_log_unit setting="1"/> 
+      <periodic_log_unit setting="10000"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>
@@ -81,7 +81,7 @@
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
-      <periodic_log_unit setting="1"/> 
+      <periodic_log_unit setting="10000"/> 
       <debug setting="True"/>
       <info setting="True"/>
       <warning setting="True"/>

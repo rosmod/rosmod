@@ -6,9 +6,11 @@
 #include <signal.h>
 #include <boost/thread.hpp>
 #include "node/Component.hpp"
+#include "node/Logger.hpp"
 
 #ifdef USE_ROSMOD
   #include "rosmod/rosmod_ros.h"
+  #include "rosmod/rosmod_logger.h"
 #else
   #ifdef USE_ROSCPP
     #include "ros/ros.h"
@@ -21,8 +23,7 @@ void componentThreadFunc(Component* compPtr)
   compPtr->processQueue();
 }
 
-std::vector<Component*> compObjects;
-std::vector<boost::thread*> compThreads;	
+std::vector<boost::thread*> compThreads;
 
 int main(int argc, char **argv)
 {
@@ -78,13 +79,11 @@ int main(int argc, char **argv)
       }
       void *mkr = dlsym(hndl, "maker");
       Component *comp_inst = ((Component *(*)(ComponentConfig &, int , char **))(mkr))
-	(nodeParser.compConfigList[i], argc, argv);
-
-      // Push to object vector
-      compObjects.push_back(comp_inst);
+	(nodeParser.compConfigList[i], argc, argv); 
 
       // Create Component Threads
-      boost::thread *comp_thread = new boost::thread(componentThreadFunc, comp_inst);
+      boost::thread *comp_thread
+	= new boost::thread(componentThreadFunc, comp_inst);
       compThreads.push_back(comp_thread);
       ROS_INFO_STREAM(nodeName << " has started " << nodeParser.compConfigList[i].compName);
     }

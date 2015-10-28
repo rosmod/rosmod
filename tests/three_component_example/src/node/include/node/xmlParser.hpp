@@ -16,7 +16,7 @@ class ComponentConfig
 public:
   std::string libraryLocation;
   std::string schedulingScheme;
-  std::string hostName;
+  std::string hostName = "";
   std::string nodeName;
   std::string compName;
   std::map<std::string,std::string> portGroupMap;
