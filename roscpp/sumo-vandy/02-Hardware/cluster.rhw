@@ -1,0 +1,25 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - bbb_111
+hardware bbb_111
+{
+  ip_address = "10.1.1.1";
+  username = "ubuntu";
+  sshkey = "/home/jeb/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - simulator
+hardware simulator
+{
+  ip_address = "192.168.127.101";
+  username = "jeb";
+  sshkey = "/home/jeb/.ssh/id_rsa"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/indigo";
+  arch = x86;
+}
+
