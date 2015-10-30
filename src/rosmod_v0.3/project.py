@@ -542,10 +542,7 @@ class ROSMOD_Project(Drawable_Object):
                 node.properties["hardware_reference"] = reference_dict[node.properties["reference"]]
                 for comp_instance in node.children:
                     comp_instance.properties["component_reference"] = reference_dict[comp_instance.properties["reference"]]
-                    logging_list = ["logging_debug", "logging_info", "logging_warning", "logging_error", "logging_critical"]
                     comp_instance.properties["is_periodic_logging"] = comp_instance.properties["is_periodic_logging"] == "true"
-                    for log_level in logging_list:
-                        comp_instance.properties[log_level] = comp_instance.properties[log_level] == "true"
                     for port_instance in comp_instance.children:
                         port_instance.properties["port_reference"] = reference_dict[port_instance.properties["reference"]]
 
