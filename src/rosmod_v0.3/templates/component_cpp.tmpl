@@ -100,7 +100,7 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
       fName = config.nodeName + "." + config.compName + ".${sub.properties['name']}.network.csv";
       ${sub.properties['name']}_recv_mw.set_enable_sendback(enable_sendback);
       ${sub.properties['name']}_recv_mw.set_output_filename(fName);
-      ${sub.properties['name']}_recv_mw.set_recv_done_callback(boost::bind(&$component_name::mw_recv_done_callback, this, &${sub.properties['name']}_recv_mw));
+      ${sub.properties['name']}_recv_mw.set_recv_done_callback(boost::bind(&$component_name::mw_recv_done_operation, this, &${sub.properties['name']}_recv_mw));
       ${sub.properties['name']}_id = 0;
     }
   if (config.portSenderMap.find("$sub.properties['name']") != config.portSenderMap.end())
@@ -132,8 +132,8 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  tg_misbehave = true;
 	}
     }
-  ros::NodeHandle nh;
-  ros::TimerOptions timer_options;
+  NAMESPACE::NodeHandle nh;
+  NAMESPACE::TimerOptions timer_options;
 #for $pub in $publishers
   if (config.profileMap.find("$pub.properties['name']") != config.profileMap.end())
     {
@@ -148,11 +148,21 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
       fName = config.nodeName + "." + config.compName + ".${pub.properties['name']}.network.csv";
       ${pub.properties['name']}_send_mw.set_output_filename(fName);
 
+\#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+\#endif
       timer_options = 
-	ros::TimerOptions
+	NAMESPACE::TimerOptions
 	(ros::Duration(-1),
-	 boost::bind(&$component_name::${pub.properties['name']}_timerCallback, this, _1),
+	 boost::bind(&$component_name::${pub.properties['name']}_timer_operation, this, _1),
 	 &this->comp_queue,
+\#ifdef USE_ROSMOD     
+	 callback_options,
+\#endif 
 	 true);
       ${pub.properties['name']}_timer = nh.createTimer(timer_options);
     }
@@ -174,7 +184,7 @@ $init_business_logic//# End Init Marker
 #if $trafficGen
 #if $len($publishers) > 0
 #for $pub in $publishers
-void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEvent& event)
+void $component_name::${pub.properties['name']}_timer_operation(const NAMESPACE::TimerEvent& event)
 {
   $pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]} msg;
   msg.uuid = ${pub.properties['name']}_send_mw.get_uuid();
@@ -187,26 +197,36 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
-      LOGGER.DEBUG("Prevented from sending on the network!");
+      logger->log("DEBUG","Prevented from sending on the network!");
     }
 
   if ( ros::Time::now() >= ${pub.properties['name']}_send_mw.get_end_time() )
     {
-      LOGGER.DEBUG("writing output\n");
+      logger->log("DEBUG","writing output\n");
       ${pub.properties['name']}_send_mw.record();
     }
   else
     {
       if (tg_misbehave)
 	timerDelay -= 0.1;
-      ros::TimerOptions timer_options;
+\#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+\#endif
+      NAMESPACE::TimerOptions timer_options;
       timer_options = 
-	ros::TimerOptions
+	NAMESPACE::TimerOptions
 	(ros::Duration(timerDelay),
-	 boost::bind(&$component_name::${pub.properties['name']}_timerCallback, this, _1),
+	 boost::bind(&$component_name::${pub.properties['name']}_timer_operation, this, _1),
 	 &this->comp_queue,
+\#ifdef USE_ROSMOD     
+	 callback_options,
+\#endif 
 	 true);
-      ros::NodeHandle nh;
+      NAMESPACE::NodeHandle nh;
       ${pub.properties['name']}_timer = nh.createTimer(timer_options);
     }
 }
@@ -216,10 +236,10 @@ void $component_name::${pub.properties['name']}_timerCallback(const ros::TimerEv
 
 #if $len($subscribers) > 0
 #if $trafficGen
-void $component_name::mw_recv_done_callback(Network::receiver* receiver_mw)
+void $component_name::mw_recv_done_operation(Network::receiver* receiver_mw)
 {
-  LOGGER.DEBUG("Writing middleware log.");
-  LOGGER.DEBUG("Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
+  logger->log("DEBUG","Writing middleware log.");
+  logger->log("DEBUG","Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
   receiver_mw->record();
 }
 #end if
@@ -366,6 +386,10 @@ void $component_name::startUp()
   exec = s.substr(0, pos);
   pwd = exec_path.erase(exec_path.find(exec), exec.length());
   std::string log_file_path = pwd + config.nodeName + "." + config.compName + ".log"; 
+
+  logger->create_file(pwd + config.nodeName + "." + config.compName + ".log");
+  logger->set_is_periodic(config.is_periodic_logging);
+  logger->set_max_log_unit(config.periodic_log_unit);
 
 \#ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->create_file(pwd + "ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");
