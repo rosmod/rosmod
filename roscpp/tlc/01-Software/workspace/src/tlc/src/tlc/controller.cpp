@@ -1,15 +1,8 @@
 #include "tlc/controller.hpp"
 
 //# Start User Globals Marker
-const std::string NSGREEN = "Grr";
-const std::string NSYELLOW = "yrr";
-const std::string WEGREEN = "rGG";
-const std::string WEYELLOW = "ryy";
-
-const std::string NSGREEN1 = "GGrr";
-const std::string NSYELLOW1 = "yyrr";
-const std::string WEGREEN1 = "rrGG";
-const std::string WEYELLOW1 = "rryy";
+std::string NSGREEN;
+std::string WEGREEN;
 
 int step = 0;
 
@@ -142,15 +135,14 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   _s_WE = 15;
   _clock[0] = 0; _clock[1] = 0;
   _queue[0] = 0; _queue[1] = 0;
-  std::vector<std::string> sensors = {"l1_ew_in","l1_ew_out",
-				      "l2_ew_in","l2_ew_out",
-				      "l1_ns_in","l1_ns_out"};
+  std::vector<std::string> sensors = {"north_in","north_out",
+				      "south_in","south_out",
+				      "west_in","west_out",
+				      "east_in","east_out"};
   for (auto it = sensors.begin(); it != sensors.end(); ++it)
     {
-      _sensor_id_map[*it] = std::string();
       _sum_map[*it] = 0;
       _num_vehicles_map[*it] = 0;
-      _id_map[*it] = std::string();
       _vehicle_ids_map[*it] = std::vector<std::string>();
     }
   for (int i=0;i<node_argc;i++)
@@ -175,16 +167,38 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  _s_WE = atoi(node_argv[i+1]);
 	}
+      int num_lanes_north = 1;
+      int num_lanes_south = 1;
+      int num_lanes_east = 1;
+      int num_lanes_west = 1;
+      if (!strcmp(node_argv[i],"--num_lanes_north"))
+	{
+	  num_lanes_north = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--num_lanes_south"))
+	{
+	  num_lanes_south = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--num_lanes_east"))
+	{
+	  num_lanes_east = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--num_lanes_west"))
+	{
+	  num_lanes_west = atoi(node_argv[i+1]);
+	}
+      // build up NSGREEN AND WEGREEN STRINGS HERE
       for (auto it = sensors.begin(); it != sensors.end(); ++it)
 	{
 	  std::string cmpstr = "--";
 	  cmpstr += *it;
 	  if (!cmpstr.compare(node_argv[i]))
 	    {
-	      _sensor_id_map[*it] = node_argv[i+1];
-	      logger->log("DEBUG","%s using sensor ID %s",
-			  it->c_str(),
-			  node_argv[i+1]);
+	      _sensor_id_map[node_argv[i+1]] = *it;
+	      //_sensor_id_map[*it] = node_argv[i+1];
+	      logger->log("DEBUG","using sensor ID %s as %s sensor",
+			  node_argv[i+1],
+			  it->c_str());
 	      break;
 	    }
 	}
@@ -223,11 +237,11 @@ void controller::sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& r
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::sensor_state_sub_operation");
 #endif
   // Business Logic for sensor_state_sub_operation
-  std::string sensor_name = "l1_ew_in";
-  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
+  if ( _sensor_id_map.find(received_data->sensor_name) != _sensor_id_map.end() )
     {
-      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
-      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
+      _num_vehicles_map[_sensor_id_map[received_data->sensor_name]] += received_data->num_vehicles;
+      // NEED TO UPDATE THIS TO PROPERLY APPEND VEHICLES TO THE LIST
+      _vehicle_ids_map[_sensor_id_map[received_data->sensor_name]] = received_data->vehicle_ids;
     }
   
 #ifdef USE_ROSMOD
@@ -247,12 +261,12 @@ void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
 
   //First we compute the queue length of West-East direction
   int queue_l1, queue_l2;
-  vehicle_number( "l1_ew_in", "l1_ew_out", queue_l1 );
-  vehicle_number( "l2_ew_in", "l2_ew_out", queue_l2 );
-  _queue[0] = queue_l1 + queue_l2;
+  vehicle_number( "east_in", "east_out", _queue[0] );
+  vehicle_number( "west_in", "west_out", _queue[0] );
   logger->log("DEBUG","EW Q :: %d",_queue[0]);
   //Then we compute the length in North-South direction
-  vehicle_number( "l1_ns_in", "l1_ns_out", _queue[1] );
+  vehicle_number( "north_in", "north_out", _queue[1] );
+  vehicle_number( "south_in", "south_out", _queue[1] );
   logger->log("DEBUG","NS Q :: %d",_queue[1]);
   //Now we compute the clock value of the traffic lights(value k in the paper)
   clock_value ( NSGREEN, _clock[0], _clock[1], _state );
