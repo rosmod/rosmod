@@ -177,6 +177,21 @@ protected:
   boost::mutex id_info_mutex_;
   M_IDInfo id_info_;
 
+  struct TLS
+  {
+    TLS()
+    : calling_in_this_thread(0xffffffffffffffffULL)
+    , cb_it(callbacks.end())
+    {}
+    uint64_t calling_in_this_thread;
+    D_CallbackInfo callbacks;
+    D_CallbackInfo::iterator cb_it;
+  };
+  boost::thread_specific_ptr<TLS> tls_;
+
+  bool enabled_;
+
+ public:
   /**
    * \brief Characteristics of a Deadline Violation
    */
@@ -216,19 +231,6 @@ protected:
    */
   DL_Map getAllDeadlineViolations();
 
-  struct TLS
-  {
-    TLS()
-    : calling_in_this_thread(0xffffffffffffffffULL)
-    , cb_it(callbacks.end())
-    {}
-    uint64_t calling_in_this_thread;
-    D_CallbackInfo callbacks;
-    D_CallbackInfo::iterator cb_it;
-  };
-  boost::thread_specific_ptr<TLS> tls_;
-
-  bool enabled_;
 };
 typedef boost::shared_ptr<CallbackQueue> CallbackQueuePtr;
 
