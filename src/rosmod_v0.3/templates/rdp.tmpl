@@ -38,31 +38,6 @@ node $node.properties["name"]
 #else
 	  Periodic Log Unit = $comp_instance.properties["periodic_log_unit"];
 #end if
-#if $comp_instance.properties["logging_debug"] != False
-	  DEBUG = true;
-#else
-	  DEBUG = false;
-#end if
-#if $comp_instance.properties["logging_info"] != False
-	  INFO = true;
-#else
-	  INFO = false;
-#end if
-#if $comp_instance.properties["logging_warning"] != False
-	  WARNING = true;
-#else
-	  WARNING = false;
-#end if
-#if $comp_instance.properties["logging_error"] != False
-	  ERROR = true;
-#else
-	  ERROR = false;
-#end if
-#if $comp_instance.properties["logging_critical"] != False
-	  CRITICAL = true;
-#else
-	  CRITICAL = false;
-#end if
 	}
       }
 #if $comp_instance.children != []

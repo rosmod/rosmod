@@ -585,12 +585,12 @@ class ROSMOD_Project(Drawable_Object):
             print "ROSMOD::Saving " + rhw.properties["name"] + ".rhw " + "at " + path
 
             if "system_network_profile" in rhw.properties.keys():
-                path = self.hardware_path + "/snp"
-                if not os.path.exists(path):
-                    os.makedirs(path)
+                snp_path = self.hardware_path + "/snp"
+                if not os.path.exists(snp_path):
+                    os.makedirs(snp_path)
                 filename = rhw.properties["name"] + ".snp"
                 if rhw.properties["system_network_profile"] != "":
-                    with open(os.path.join(path, filename), 'w') as temp_file:
+                    with open(os.path.join(snp_path, filename), 'w') as temp_file:
                         temp_file.write(rhw.properties["system_network_profile"])
             
             for hardware in rhw.children:
