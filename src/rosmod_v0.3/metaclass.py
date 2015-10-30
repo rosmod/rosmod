@@ -118,17 +118,6 @@ meta_class_dict["is_periodic_logging"] = Grammar_Field(
 meta_class_dict["periodic_log_unit"] = Grammar_Field(
     "integer", "Periodic_log_unit", create_enterAtom, create_exitAtom, None, "Periodic Log Unit")
 
-meta_class_dict["logging_debug"] = Grammar_Field(
-    "boolean", "Logging_debug", create_enterAtom, create_exitAtom, None, "Log Level - DEBUG")
-meta_class_dict["logging_info"] = Grammar_Field(
-    "boolean", "Logging_info", create_enterAtom, create_exitAtom, None, "Log Level - INFO")
-meta_class_dict["logging_warning"] = Grammar_Field(
-    "boolean", "Logging_warning", create_enterAtom, create_exitAtom, None, "Log Level - WARNING")
-meta_class_dict["logging_error"] = Grammar_Field(
-    "boolean", "Logging_error", create_enterAtom, create_exitAtom, None, "Log Level - ERROR")
-meta_class_dict["logging_critical"] = Grammar_Field(
-    "boolean", "Logging_critical", create_enterAtom, create_exitAtom, None, "Log Level - CRITICAL")
-
 valid_datatypes = ["Base", "KSP", "SUMO"]
 valid_scheduling_schemes = ["FIFO", "PFIFO", "EDF"]
 meta_class_dict["datatype"] = Grammar_Field(

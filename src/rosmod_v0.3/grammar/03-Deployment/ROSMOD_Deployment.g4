@@ -108,32 +108,6 @@ periodic_log_unit
         INT
     ;
 
-// Component Log levels
-logging_debug
-    :
-        BOOL
-    ;
-
-logging_info
-    :
-        BOOL
-    ;
-
-logging_warning
-    :
-        BOOL
-    ;
-
-logging_error
-    :
-        BOOL
-    ;
-
-logging_critical
-    :
-        BOOL
-    ;
-
 priority
     :   
         INT
@@ -152,11 +126,6 @@ component_instance
                   (' ')* '{' (' ')*
                       'Is Periodic?' (' ')* '=' (' ')* is_periodic_logging (' ')* ';'
                       'Periodic Log Unit' (' ')* '=' (' ')* periodic_log_unit (' ')* ';'
-                      'DEBUG' (' ')* '=' (' ')* logging_debug (' ')* ';'
-                      'INFO' (' ')* '=' (' ')* logging_info (' ')* ';'
-                      'WARNING' (' ')* '=' (' ')* logging_warning (' ')* ';'
-                      'ERROR' (' ')* '=' (' ')* logging_error (' ')* ';'
-                      'CRITICAL' (' ')* '=' (' ')* logging_critical (' ')* ';' 
                    '}'
 		 )
              '}'

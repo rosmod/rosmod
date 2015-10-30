@@ -19,11 +19,6 @@
     <logging>
       <is_periodic_logging setting="$comp_instance.properties["is_periodic_logging"]"/>
       <periodic_log_unit setting="$comp_instance.properties["periodic_log_unit"]"/> 
-      <debug setting="$comp_instance.properties["logging_debug"]"/>
-      <info setting="$comp_instance.properties["logging_info"]"/>
-      <warning setting="$comp_instance.properties["logging_warning"]"/>
-      <error setting="$comp_instance.properties["logging_error"]"/>
-      <critical setting="$comp_instance.properties["logging_critical"]"/>
     </logging>
 #for $port in $comp_instance.properties['component_reference'].children
 #if $port.kind == 'Subscriber' or $port.kind == 'Publisher'
