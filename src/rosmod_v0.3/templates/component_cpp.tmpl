@@ -453,7 +453,6 @@ void $component_name::startUp()
   if (config.portGroupMap.find("$server.properties["name"]") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["$server.properties["name"]"];
   NAMESPACE::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
-\#ifdef USE_ROSMOD 
   ${server.properties["name"]}_server_options = NAMESPACE::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
       (advertiseName.c_str(),
        boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}_operation, this, _1, _2),
