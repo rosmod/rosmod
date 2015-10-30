@@ -4,15 +4,6 @@ from antlr4 import *
 # This class defines a complete listener for a parse tree produced by ROSMOD_DeploymentParser.
 class ROSMOD_DeploymentListener(ParseTreeListener):
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#logging_warning.
-    def enterLogging_warning(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#logging_warning.
-    def exitLogging_warning(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_DeploymentParser#deployment_path.
     def enterDeployment_path(self, ctx):
         pass
@@ -85,24 +76,6 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#logging_info.
-    def enterLogging_info(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#logging_info.
-    def exitLogging_info(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#logging_critical.
-    def enterLogging_critical(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#logging_critical.
-    def exitLogging_critical(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_DeploymentParser#node.
     def enterNode(self, ctx):
         pass
@@ -139,30 +112,12 @@ class ROSMOD_DeploymentListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#logging_error.
-    def enterLogging_error(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#logging_error.
-    def exitLogging_error(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by ROSMOD_DeploymentParser#name.
     def enterName(self, ctx):
         pass
 
     # Exit a parse tree produced by ROSMOD_DeploymentParser#name.
     def exitName(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by ROSMOD_DeploymentParser#logging_debug.
-    def enterLogging_debug(self, ctx):
-        pass
-
-    # Exit a parse tree produced by ROSMOD_DeploymentParser#logging_debug.
-    def exitLogging_debug(self, ctx):
         pass
 
 
