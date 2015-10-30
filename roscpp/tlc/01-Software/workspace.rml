@@ -2,32 +2,32 @@
  * ROSMOD Software Model
  */
 
-// ROSMOD Package - vandy
-package vandy
+// ROSMOD Package - tlc
+package tlc
 {
   // ROSMOD Component - sumo_intf
   component sumo_intf : SUMO 
   {
-    // ROSMOD Server - sumo_e3_get_vehicle_number_server
-    server <vandy/sumo_e3_get_vehicle_number> sumo_e3_get_vehicle_number_server 
+    // ROSMOD Server - e3_get_vehicle_number_server
+    server <tlc/e3_get_vehicle_number> e3_get_vehicle_number_server 
     {
       priority = 50;
       deadline = 0.1;
     }       
-    // ROSMOD Server - sumo_e3_get_vehicle_ids_server
-    server <vandy/sumo_e3_get_vehicle_ids> sumo_e3_get_vehicle_ids_server 
+    // ROSMOD Server - e3_get_vehicle_ids_server
+    server <tlc/e3_get_vehicle_ids> e3_get_vehicle_ids_server 
     {
       priority = 50;
       deadline = 0.1;
     }       
-    // ROSMOD Server - sumo_tlc_get_ryg_state_server
-    server <vandy/sumo_tlc_get_ryg_state> sumo_tlc_get_ryg_state_server 
+    // ROSMOD Server - tlc_get_ryg_state_server
+    server <tlc/tlc_get_ryg_state> tlc_get_ryg_state_server 
     {
       priority = 50;
       deadline = 0.1;
     }       
-    // ROSMOD Server - sumo_tlc_set_ryg_state_server
-    server <vandy/sumo_tlc_set_ryg_state> sumo_tlc_set_ryg_state_server 
+    // ROSMOD Server - tlc_set_ryg_state_server
+    server <tlc/tlc_set_ryg_state> tlc_set_ryg_state_server 
     {
       priority = 50;
       deadline = 0.1;
@@ -44,21 +44,21 @@ package vandy
   component controller : Base 
   {
     // ROSMOD Publisher - ryg_control_pub
-    publisher <vandy/ryg_control> ryg_control_pub;
+    publisher <tlc/ryg_control> ryg_control_pub;
     // ROSMOD Subscriber - ryg_state_sub
-    subscriber <vandy/ryg_state> ryg_state_sub 
+    subscriber <tlc/ryg_state> ryg_state_sub 
     {
       priority = 50;
       deadline = 0.1;
     }       
     // ROSMOD Subscriber - e3_ingress
-    subscriber <vandy/sensor_state> e3_ingress 
+    subscriber <tlc/sensor_state> e3_ingress 
     {
       priority = 50;
       deadline = 0.1;
     }       
     // ROSMOD Subscriber - e3_egress
-    subscriber <vandy/sensor_state> e3_egress 
+    subscriber <tlc/sensor_state> e3_egress 
     {
       priority = 50;
       deadline = 0.1;
@@ -75,11 +75,11 @@ package vandy
   component e3_sensor : Base 
   {
     // ROSMOD Client - e3_get_vehicle_ids_client
-    client <vandy/sumo_e3_get_vehicle_ids> e3_get_vehicle_ids_client;
+    client <tlc/e3_get_vehicle_ids> e3_get_vehicle_ids_client;
     // ROSMOD Client - e3_get_vehicle_number_client
-    client <vandy/sumo_e3_get_vehicle_number> e3_get_vehicle_number_client;
+    client <tlc/e3_get_vehicle_number> e3_get_vehicle_number_client;
     // ROSMOD Publisher - sensor_state_pub
-    publisher <vandy/sensor_state> sensor_state_pub;
+    publisher <tlc/sensor_state> sensor_state_pub;
     // ROSMOD Timer - e3_update_timer
     timer e3_update_timer 
     {
@@ -92,9 +92,9 @@ package vandy
   component tl_actuator : Base 
   {
     // ROSMOD Client - tlc_set_ryg_state_client
-    client <vandy/sumo_tlc_set_ryg_state> tlc_set_ryg_state_client;
+    client <tlc/tlc_set_ryg_state> tlc_set_ryg_state_client;
     // ROSMOD Subscriber - ryg_control_sub
-    subscriber <vandy/ryg_control> ryg_control_sub 
+    subscriber <tlc/ryg_control> ryg_control_sub 
     {
       priority = 50;
       deadline = 0.1;
@@ -104,9 +104,9 @@ package vandy
   component tl_sensor : Base 
   {
     // ROSMOD Client - tlc_get_ryg_state_client
-    client <vandy/sumo_tlc_get_ryg_state> tlc_get_ryg_state_client;
+    client <tlc/tlc_get_ryg_state> tlc_get_ryg_state_client;
     // ROSMOD Publisher - ryg_state_pub
-    publisher <vandy/ryg_state> ryg_state_pub;
+    publisher <tlc/ryg_state> ryg_state_pub;
     // ROSMOD Timer - tl_update_timer
     timer tl_update_timer 
     {
@@ -119,18 +119,18 @@ package vandy
   component e3_sensor_stream_ddos : Base 
   {
     // ROSMOD Publisher - e3_sensor_stream_ddos_pub
-    publisher <vandy/sensor_state> e3_sensor_stream_ddos_pub;
+    publisher <tlc/sensor_state> e3_sensor_stream_ddos_pub;
   }
   // ROSMOD Component - control_stream_ddos
   component control_stream_ddos : Base 
   {
     // ROSMOD Publisher - control_stream_ddos_pub
-    publisher <vandy/ryg_control> control_stream_ddos_pub;
+    publisher <tlc/ryg_control> control_stream_ddos_pub;
   }
   // ROSMOD Component - tl_sensor_stream_ddos
   component tl_sensor_stream_ddos : Base 
   {
     // ROSMOD Publisher - tl_sensor_stream_ddos_pub
-    publisher <vandy/ryg_state> tl_sensor_stream_ddos_pub;
+    publisher <tlc/ryg_state> tl_sensor_stream_ddos_pub;
   }
 }
