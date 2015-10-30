@@ -429,6 +429,7 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
       else
       {
         tls->cb_it = tls->callbacks.erase(tls->cb_it);
+	info.callback_options.dequeue_time = ros::Time::now();
         result = cb->call();
       }
     }
@@ -470,6 +471,14 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
 			  execution_time.nsec,
 			  info.callback_options.deadline.sec,
 			  info.callback_options.deadline.nsec);
+      ROSMOD_Deadline_Violation new_violation;
+      new_violation.alias = info.callback_options.alias.c_str();
+      new_violation.deadline = info.callback_options.deadline;
+      new_violation.enqueue_time = info.callback_options.enqueue_time;
+      new_violation.dequeue_time = info.callback_options.dequeue_time;
+      new_violation.completion_time = info.callback_options.completion_time;
+      new_violation.exec_time = execution_time;
+      saveDeadlineViolation(new_violation);
     }
 
     return Called;
@@ -499,9 +508,25 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
 			execution_time.nsec,
 			info.callback_options.deadline.sec,
 			info.callback_options.deadline.nsec);
+      ROSMOD_Deadline_Violation new_violation;
+      new_violation.alias = info.callback_options.alias.c_str();
+      new_violation.deadline = info.callback_options.deadline;
+      new_violation.enqueue_time = info.callback_options.enqueue_time;
+      new_violation.dequeue_time = info.callback_options.dequeue_time;
+      new_violation.completion_time = info.callback_options.completion_time;
+      new_violation.exec_time = execution_time;
+      saveDeadlineViolation(new_violation);
   }
 
   return Called;
 }
+
+  void CallbackQueue::saveDeadlineViolation(ROSMOD_Deadline_Violation new_violation) {
+    deadline_violation_map[new_violation.alias].push_back(new_violation);
+  }
+
+  CallbackQueue::DL_Map CallbackQueue::getAllDeadlineViolations() {
+    return deadline_violation_map;
+  }
 
 }

@@ -162,6 +162,7 @@ struct ROSMOD_Callback_Options
   int priority;
   Duration deadline;
   Time enqueue_time;
+  Time dequeue_time;
   Time completion_time;
   
   ROSMOD_Callback_Options() {
@@ -171,6 +172,8 @@ struct ROSMOD_Callback_Options
     deadline.nsec = -1;
     enqueue_time.sec = -1;
     enqueue_time.nsec = -1;
+    dequeue_time.sec = -1;
+    dequeue_time.nsec = -1;
     completion_time.sec = -1;
     completion_time.nsec = -1;
   }

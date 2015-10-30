@@ -177,6 +177,45 @@ protected:
   boost::mutex id_info_mutex_;
   M_IDInfo id_info_;
 
+  /**
+   * \brief Characteristics of a Deadline Violation
+   */
+  struct ROSMOD_Deadline_Violation
+  {
+    std::string alias;
+    Duration deadline;
+    Time enqueue_time;
+    Time dequeue_time;
+    Time completion_time;
+    Duration exec_time;
+  
+    ROSMOD_Deadline_Violation() {
+      alias = "";
+      deadline.sec = -1;
+      deadline.nsec = -1;
+      enqueue_time.sec = -1;
+      enqueue_time.nsec = -1;
+      dequeue_time.sec = -1;
+      dequeue_time.nsec = -1;
+      completion_time.sec = -1;
+      completion_time.nsec = -1;
+      exec_time.sec = -1;
+      exec_time.nsec = -1;
+    }
+  };
+  typedef std::map<std::string, std::vector<ROSMOD_Deadline_Violation>> DL_Map;
+  DL_Map deadline_violation_map;
+
+  /**
+   * \brief Save Deadline Violations in Completed Operations
+   */
+  void saveDeadlineViolation(ROSMOD_Deadline_Violation new_violation);
+
+  /**
+   * \brief Get a map of all Deadline Violations in Component
+   */
+  DL_Map getAllDeadlineViolations();
+
   struct TLS
   {
     TLS()
