@@ -1,10 +1,5 @@
 #ifndef ${define_guard}_HPP
 #define ${define_guard}_HPP
-#if $mod != ""
-$hash_include "rosmod/rosmod_ros.h"
-#else
-$hash_include "ros/ros.h"
-#end if
 $hash_include "node/Component.hpp"
 #for $topic in $topics
 $hash_include "$topic[0]/${topic[1]}.h"
@@ -12,6 +7,14 @@ $hash_include "$topic[0]/${topic[1]}.h"
 #for $service in $services
 $hash_include "$service[0]/${service[1]}.h"
 #end for
+
+\#ifdef USE_ROSMOD
+  \#include "rosmod/rosmod_ros.h"
+\#else
+  \#ifdef USE_ROSCPP
+    \#include "ros/ros.h"
+  \#endif
+\#endif
 
 #if $component_type == 'KSP'
 $hash_include "krpci/krpci.hpp"
@@ -49,30 +52,31 @@ class $component_name : public Component
 {
 public:
   // Constructor
-  ${component_name}(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
+  ${component_name}(ComponentConfig& _config, int argc, char **argv)
+  : Component(_config, argc, argv) {}
 
   // Initialization
-  void Init(const ros${mod}::TimerEvent& event);
+  void init_timer_operation(const NAMESPACE::TimerEvent& event);
 
 #if $len($subscribers) > 0
 #for $sub in $subscribers
-  // Subscriber Callback - $sub.properties["name"]
-  void ${sub.properties["name"]}_OnOneData(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
+  // Subscriber Operation - $sub.properties["name"]
+  void ${sub.properties["name"]}_operation(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data); 
  
 #end for
 #end if
 #if $len($provided_services) > 0
 #for $server in $servers
-  // Server Callback - $server.properties["name"]
-  bool ${server.properties["service_reference"].properties["name"]}Callback($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request &req, 
+  // Server Operation - $server.properties["name"]
+  bool ${server.properties["service_reference"].properties["name"]}_operation($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request &req, 
     $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res);
 
 #end for
 #end if	
 #if $len($timers) > 0
 #for $timer in $timers
-  // Timer Callback - $timer.properties["name"]
-  void ${timer.properties["name"]}Callback(const ros${mod}::TimerEvent& event);
+  // Timer Operation - $timer.properties["name"]
+  void ${timer.properties["name"]}_operation(const NAMESPACE::TimerEvent& event);
 
 #end for
 #end if
@@ -87,7 +91,7 @@ private:
 #if $len($timers) > 0
 #for $timer in $timers
   // Timer
-  ros${mod}::Timer $timer.properties["name"];
+  NAMESPACE::Timer $timer.properties["name"];
 
 #end for
 #end if
@@ -98,7 +102,7 @@ private:
 #end if
 #for $sub in $subscribers
   // Subscriber
-  ros${mod}::Subscriber $sub.properties["name"];
+  NAMESPACE::Subscriber $sub.properties["name"];
 #if $trafficGen
   // message id for this data stream
   uint64_t ${sub.properties['name']}_id;
@@ -117,7 +121,7 @@ private:
 #end if
 #for $pub in $publishers
   // Publisher 
-  ros${mod}::Publisher $pub.properties["name"];
+  NAMESPACE::Publisher $pub.properties["name"];
 #if $trafficGen
   // Timer for generating traffic
   ros::Timer ${pub.properties['name']}_timer;
@@ -132,14 +136,14 @@ private:
 #if $len($provided_services) > 0
 #for $server in $servers
   // Server 
-  ros${mod}::ServiceServer ${server.properties["name"]};
+  NAMESPACE::ServiceServer ${server.properties["name"]};
 
 #end for
 #end if
 #if $len($required_services) > 0
 #for $client in $clients
   // Client 
-  ros${mod}::ServiceClient $client.properties["name"];
+  NAMESPACE::ServiceClient $client.properties["name"];
 
 #end for
 #end if

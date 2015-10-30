@@ -2,44 +2,27 @@ $hash_include "$package_name/Component.hpp"
 
 // Constructor
 Component::Component(ComponentConfig &_config, int argc, char **argv) {
-  this->config = _config;
-  portGroupMap = config.portGroupMap;
-  logLevels = config.logLevels;
-  hostName = config.hostName;
-  nodeName = config.nodeName;
-  compName = config.compName;
-  is_periodic_logging = config.is_periodic_logging;
-  periodic_log_unit = config.periodic_log_unit;
+  config = _config;
   node_argc = argc;
   node_argv = argv;
-  num_comps_to_sync = config.num_comps_to_sync;
-  comp_sync_timeout = config.comp_sync_timeout;
-#if $mod != ""
-  if (config.schedulingScheme == "FIFO")
-    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::FIFO;
-  else if (config.schedulingScheme == "PFIFO")
-    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::PFIFO;
-  else if (config.schedulingScheme == "EDF")
-    scheduling_scheme = rosmod::CallbackQueue::SchedulingScheme::EDF;
-#end if
 }
 
 // Destructor
 Component::~Component() {
-  compQueue.disable();
-  initOneShotTimer.stop();
+  comp_queue.disable();
+  init_timer.stop();
 }
 
 // Initialization
-void Component::Init(const ros${mod}::TimerEvent& event) {}
+void Component::init_timer_operation(const NAMESPACE::TimerEvent& event) {}
 
 // Synchronization
-void Component::component_synchronization_OnOneData(const std_msgs::Bool::ConstPtr& received_data) {}
+void Component::component_sync_operation(const std_msgs::Bool::ConstPtr& 
+     received_data) {}
 
-// Callback Queue Handler
-void Component::processQueue() {  
-  ros${mod}::NodeHandle nh;
-  while (nh.ok()) {
-    this->compQueue.callAvailable(ros::WallDuration(0.01));
-  }
+// Component Operation Queue Handler
+void Component::process_queue() {  
+  NAMESPACE::NodeHandle nh;
+  while (nh.ok())
+    this->comp_queue.callAvailable(ros::WallDuration(0.01));
 }

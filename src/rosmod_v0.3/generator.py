@@ -111,7 +111,8 @@ class ROSMOD_Generator:
                                 'CATKIN_PACKAGE_SHARE_DESTINATION':
                                 "${CATKIN_PACKAGE_SHARE_DESTINATION}",
                                 'CMAKE_CXX_COMPILER': "${CMAKE_CXX_COMPILER}",
-                                'mod': mod}
+                                'mod': mod,
+                                'NAMESPACE': "${NAMESPACE}"}
         t = node_CMakeLists(searchList=[cmakelists_namespace])
         self.cmakelists = str(t)
         with open(os.path.join(self.node_path, "CMakeLists.txt"), 'w') as temp_file:
@@ -144,13 +145,6 @@ class ROSMOD_Generator:
         # Write Component.hpp
         with open(os.path.join(self.hpp, "Component.hpp"), 'w') as temp_file:
             temp_file.write(self.base_hpp)
-
-        # Populate Logger cpp template
-        t = Logger_cpp(searchList=[base_cpp_namespace])
-        self.logger_cpp = str(t)
-        # Write Logger.cpp
-        with open(os.path.join(self.cpp, "Logger.cpp"), 'w') as temp_file:
-            temp_file.write(self.logger_cpp)
 
         # Populate Logger hpp template
         t = Logger_hpp(searchList=[base_hpp_namespace])
@@ -472,7 +466,8 @@ class ROSMOD_Generator:
                                      'components': components,
                                      'needs_io' : needs_io,
                                      'io_types' : io_types,
-                                     'mod': mod}
+                                     'mod': mod,
+                                     'NAMESPACE': "${NAMESPACE}"}
             t = CMakeLists(searchList=[cmake_lists_namespace])
             self.cmake_lists = str(t)
             # Write CMakeLists file

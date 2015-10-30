@@ -215,7 +215,7 @@ class ROSMOD_Loader:
                                     
                                     sub_marker = False
                                     sub_text = ""
-                                    callback_name = sub.properties["name"] + "_OnOneData"
+                                    callback_name = sub.properties["name"] + "_operation"
                                     start_callback = "//# Start " + callback_name
                                     end_callback = "//# End " + callback_name
                                     for num, line in enumerate(cpp_file, 1):
@@ -235,7 +235,7 @@ class ROSMOD_Loader:
                                     
                                     timer_marker = False
                                     timer_text = ""
-                                    callback_name = timer.properties["name"] + "Callback"
+                                    callback_name = timer.properties["name"] + "_operation"
                                     start_callback = "//# Start " + callback_name
                                     end_callback = "//# End " + callback_name
                                     for num, line in enumerate(cpp_file, 1):
@@ -255,7 +255,7 @@ class ROSMOD_Loader:
                                     
                                     service_marker = False
                                     service_text = ""
-                                    callback_name = server.properties["service_reference"].properties["name"] + "Callback"
+                                    callback_name = server.properties["service_reference"].properties["name"] + "_operation"
                                     start_callback = "//# Start " + callback_name
                                     end_callback = "//# End " + callback_name
                                     for num, line in enumerate(cpp_file, 1):

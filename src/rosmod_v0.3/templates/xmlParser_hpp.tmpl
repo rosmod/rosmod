@@ -20,14 +20,13 @@ public:
   std::string nodeName;
   std::string compName;
   std::map<std::string,std::string> portGroupMap;
-  Log_Levels logLevels;
   uint64_t num_comps_to_sync;
   double comp_sync_timeout;
   std::map<std::string,uint64_t> uuidMap;
   std::map<std::string,std::string> profileMap;
   std::map<std::string,std::map<uint64_t,std::string>> portSenderMap;
   bool is_periodic_logging;
-  bool periodic_log_unit;
+  int periodic_log_unit;
 };
 
 using namespace rapidxml;
@@ -112,7 +111,9 @@ public:
 		std::string p = sender->first_node("profile")->value();
 		upM.insert(std::pair<uint64_t,std::string>(u,p));
 	      }
-	    config.portSenderMap.insert(std::pair<std::string,std::map<uint64_t,std::string>>(portName,upM));
+	    config.portSenderMap.insert(std::pair<std::string,
+					std::map<uint64_t,
+					std::string>>(portName,upM));
 	  }
 	
 	xml_node<> *lib_location = comp_inst->first_node("library");
@@ -124,18 +125,10 @@ public:
 	xml_node<> *logger = comp_inst->first_node("logging");
 	config.is_periodic_logging = 
 	  Return_Boolean(logger->first_node("is_periodic_logging")->first_attribute()->value());
-	config.periodic_log_unit = 
-	  std::stoi(logger->first_node("periodic_log_unit")->first_attribute()->value());
-	config.logLevels.DEBUG = 
-	  Return_Boolean(logger->first_node("debug")->first_attribute()->value());
-	config.logLevels.INFO = 
-	  Return_Boolean(logger->first_node("info")->first_attribute()->value());
-	config.logLevels.WARNING = 
-	  Return_Boolean(logger->first_node("warning")->first_attribute()->value());
-	config.logLevels.ERROR = 
-	  Return_Boolean(logger->first_node("error")->first_attribute()->value());
-	config.logLevels.CRITICAL = 
-	  Return_Boolean(logger->first_node("critical")->first_attribute()->value());
+	xml_node<> *plu = logger->first_node("periodic_log_unit");
+	if (plu != NULL)
+	  config.periodic_log_unit = 
+	    atoi(plu->first_attribute()->value());
 	
 	for (xml_node<> *port_inst = comp_inst->first_node("port_instance"); 
 	     port_inst; port_inst = port_inst->next_sibling("port_instance"))
@@ -152,6 +145,3 @@ public:
     return true;
   }
 };
-
-
-

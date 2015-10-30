@@ -13,17 +13,16 @@ else()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-\## Find catkin macros and libraries
-\## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-\## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-#if $mod != ""
-rosmod
-#else
-roscpp
-#end if
-std_msgs
-)
+
+ADD_DEFINITIONS(-DNAMESPACE=${NAMESPACE})
+MESSAGE(STATUS ${NAMESPACE})
+if (${NAMESPACE} STREQUAL "rosmod")
+  find_package(catkin REQUIRED COMPONENTS rosmod std_msgs)
+  ADD_DEFINITIONS(-DUSE_ROSMOD)
+ELSEIF(${NAMESPACE} STREQUAL "ros")
+  find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
+  ADD_DEFINITIONS(-DUSE_ROSCPP)
+ENDIF()
 
 \## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -176,8 +175,7 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(node_main
 	       src/node/node_main.cpp
-               src/node/Component.cpp
-               src/node/Logger.cpp)
+               src/node/Component.cpp)
 target_link_libraries(node_main dl ${catkin_LIBRARIES})
 
 

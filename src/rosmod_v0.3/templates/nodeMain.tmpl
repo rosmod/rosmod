@@ -1,8 +1,3 @@
-#if $mod != ""
-$hash_include "rosmod/rosmod_ros.h"
-#else
-$hash_include "ros/ros.h"
-#end if
 $hash_include <cstdlib>
 $hash_include <string.h>
 $hash_include <dlfcn.h>
@@ -12,22 +7,21 @@ $hash_include <signal.h>
 $hash_include <boost/thread.hpp>
 $hash_include "node/Component.hpp"
 
+\#ifdef USE_ROSMOD
+  \#include "rosmod/rosmod_ros.h"
+\#else
+  \#ifdef USE_ROSCPP
+    \#include "ros/ros.h"
+  \#endif
+\#endif
+
 void componentThreadFunc(Component* compPtr)
 {
   compPtr->startUp();
-  compPtr->processQueue();
+  compPtr->process_queue();
 }
 
-std::vector<Component*> compObjects;
 std::vector<boost::thread*> compThreads;	
-
-void signal_handler(int sig) {
-  for (int i=0;i<compThreads.size();i++)
-    compThreads[i]->join();
-  for (auto it = compObjects.begin(); it != compObjects.end(); ++it)
-    delete *it;
-  abort(); 
-}
 
 int main(int argc, char **argv)
 {
@@ -35,10 +29,6 @@ int main(int argc, char **argv)
   std::string hostName = "localhost";
   std::string configFile = "";
 
-  signal (SIGINT, &signal_handler);
-  signal (SIGTERM, &signal_handler);
-  signal (SIGKILL, &signal_handler);
-  
   for(int i = 0; i < argc; i++)
   {
     if(!strcmp(argv[i], "-nodename"))
@@ -61,7 +51,7 @@ int main(int argc, char **argv)
       void *hndl = dlopen(nodeParser.libList[i].c_str(), RTLD_LAZY | RTLD_GLOBAL);
       if (hndl == NULL)
       {
-	cerr << dlerror() << endl;
+	std::cerr << dlerror() << std::endl;
 	exit(-1);
       }
       else
@@ -69,10 +59,10 @@ int main(int argc, char **argv)
     }
 
     nodeName = nodeParser.nodeName;
-    ros$mod::init(argc, argv, nodeName.c_str());
+    NAMESPACE::init(argc, argv, nodeName.c_str());
 
     // Create Node Handle
-    ros$mod::NodeHandle n;
+    NAMESPACE::NodeHandle n;
 
     ROS_INFO_STREAM(nodeName << " thread id = " << boost::this_thread::get_id());
     
@@ -82,15 +72,12 @@ int main(int argc, char **argv)
       void *hndl = dlopen(libraryLocation.c_str(), RTLD_NOW);
       if(hndl == NULL)
       {
-	cerr << dlerror() << endl;
+	std::cerr << dlerror() << std::endl;
 	exit(-1);
       }
       void *mkr = dlsym(hndl, "maker");
       Component *comp_inst = ((Component *(*)(ComponentConfig &, int , char **))(mkr))
 	(nodeParser.compConfigList[i], argc, argv);
-
-      // Push to object vector
-      compObjects.push_back(comp_inst);
 
       // Create Component Threads
       boost::thread *comp_thread = new boost::thread(componentThreadFunc, comp_inst);
