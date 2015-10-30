@@ -1,6 +1,129 @@
 #include "tlc/controller.hpp"
 
 //# Start User Globals Marker
+const std::string NSGREEN = "Grr";
+const std::string NSYELLOW = "yrr";
+const std::string WEGREEN = "rGG";
+const std::string WEYELLOW = "ryy";
+
+const std::string NSGREEN1 = "GGrr";
+const std::string NSYELLOW1 = "yyrr";
+const std::string WEGREEN1 = "rrGG";
+const std::string WEYELLOW1 = "rryy";
+
+int step = 0;
+
+void controller::vehicle_number(std::string sensor1,
+				std::string sensor2,
+				int& queue_length)
+{
+  int numVehicles = _num_vehicles_map[sensor1];
+  if (numVehicles == 0)
+    _id_map[sensor1] = "";
+  else
+    {
+      std::vector<std::string> list_T1 = _vehicle_ids_map[sensor1];
+      for ( std::vector<std::string>::iterator it = list_T1.begin(); it != list_T1.end(); ++it)
+	{
+	  if ( *it != _id_map[sensor1] )
+	    {
+	      _id_map[sensor1] = *it;
+	      _sum_map[sensor1] += 1;
+	    }
+	}
+    }
+  numVehicles = _num_vehicles_map[sensor2];
+  if (numVehicles == 0)
+    _id_map[sensor2] = "";
+  else
+    {
+      std::vector<std::string> list_S1 = _vehicle_ids_map[sensor2];
+      for ( std::vector<std::string>::iterator it = list_S1.begin(); it != list_S1.end(); ++it)
+	{
+	  if ( *it != _id_map[sensor2] )
+	    {
+	      _id_map[sensor2] = *it;
+	      _sum_map[sensor2] += 1;
+	    }
+	}
+    }
+  queue_length = std::max(0, _sum_map[sensor1]-_sum_map[sensor2] + 1);
+}
+
+void controller::clock_value(const std::string& ns_state,
+			     int& clock_WE,
+			     int& clock_NS,
+			     std::string& tl_state)
+{
+  if (!tl_state.compare(ns_state))
+    {
+      clock_NS = clock_NS + 1;
+      clock_WE = 0;
+    }
+  else
+    {
+      clock_WE = clock_WE + 1;
+      clock_NS = 0;
+    }
+}
+
+
+void controller::controller_main(std::string& tl_state,
+				 const std::string& we_state,
+				 const std::string& ns_state,
+				 int queue_WE,
+				 int queue_NS,
+				 int& clock_WE,
+				 int& clock_NS)
+{
+  if ((queue_WE < _s_WE && queue_NS < _s_NS) || (queue_WE >= _s_WE && queue_NS >= _s_NS))
+    {
+      if ( !tl_state.compare(we_state) && clock_WE > _Light_Max )
+	{
+	  tl_state = ns_state;
+	  clock_WE = 0;
+	}
+      if ( !tl_state.compare(ns_state) && clock_NS > _Light_Max )
+	{
+	  tl_state = we_state;
+	  clock_NS = 0;
+	}
+    }
+  else if (queue_WE >= _s_WE && queue_NS < _s_NS)
+    {
+      if ( !tl_state.compare(ns_state) && clock_NS > _Light_Min )
+	{
+	  tl_state = we_state;
+	  clock_NS = 0;
+	}
+      if ( !tl_state.compare(we_state) && clock_WE > _Light_Max )
+	{
+	  tl_state = ns_state;
+	  clock_WE = 0;
+	}
+    }
+  else
+    {
+      if ( !tl_state.compare(we_state) && clock_WE > _Light_Min )
+	{
+	  tl_state = ns_state;
+	  clock_WE = 0;
+	}
+      if ( !tl_state.compare(ns_state) && clock_NS > _Light_Max )
+	{
+	  tl_state = we_state;
+	  clock_NS = 0;
+	}
+    }
+  tlc::ryg_control new_control;
+  if (_id.length() > 0)
+    {
+      logger->log("DEBUG","Publishing new TL state:: %s = %s", _id.c_str(), tl_state.c_str());
+      new_control.intersection_name = _id;
+      new_control.state = tl_state;
+      ryg_control_pub.publish(new_control);
+    }
+}
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +134,61 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::init_timer_operation");
 #endif
   // Initialize Here
+  _id = "IK";
+  _state = WEGREEN;
+  _Light_Min = 300;   // step size is 0.1 seconds
+  _Light_Max = 1200;  // step size is 0.1 seconds
+  _s_NS = 4;
+  _s_WE = 15;
+  _clock[0] = 0; _clock[1] = 0;
+  _queue[0] = 0; _queue[1] = 0;
+  std::vector<std::string> sensors = {"l1_ew_in","l1_ew_out",
+				      "l2_ew_in","l2_ew_out",
+				      "l1_ns_in","l1_ns_out"};
+  for (auto it = sensors.begin(); it != sensors.end(); ++it)
+    {
+      _sensor_id_map[*it] = std::string();
+      _sum_map[*it] = 0;
+      _num_vehicles_map[*it] = 0;
+      _id_map[*it] = std::string();
+      _vehicle_ids_map[*it] = std::vector<std::string>();
+    }
+  for (int i=0;i<node_argc;i++)
+    {
+      if (!strcmp(node_argv[i],"--id"))
+	{
+	  _id = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i],"--light_min"))
+	{
+	  _Light_Min = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--light_max"))
+	{
+	  _Light_Max = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_NS"))
+	{
+	  _s_NS = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i],"--s_WE"))
+	{
+	  _s_WE = atoi(node_argv[i+1]);
+	}
+      for (auto it = sensors.begin(); it != sensors.end(); ++it)
+	{
+	  std::string cmpstr = "--";
+	  cmpstr += *it;
+	  if (!cmpstr.compare(node_argv[i]))
+	    {
+	      _sensor_id_map[*it] = node_argv[i+1];
+	      logger->log("DEBUG","%s using sensor ID %s",
+			  it->c_str(),
+			  node_argv[i+1]);
+	      break;
+	    }
+	}
+    }
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,43 +207,34 @@ void controller::ryg_state_sub_operation(const tlc::ryg_state::ConstPtr& receive
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::ryg_state_sub_operation");
 #endif
   // Business Logic for ryg_state_sub_operation
-
+  if (received_data->state.length() && !_id.compare(received_data->intersection_name))
+    _current_state = received_data->state;
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting controller::ryg_state_sub_operation");
 #endif
 }
 //# End ryg_state_sub_operation Marker
-// Subscriber Operation - e3_ingress
-//# Start e3_ingress_operation Marker
-void controller::e3_ingress_operation(const tlc::sensor_state::ConstPtr& received_data)
+// Subscriber Operation - sensor_state_sub
+//# Start sensor_state_sub_operation Marker
+void controller::sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::e3_ingress_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::sensor_state_sub_operation");
 #endif
-  // Business Logic for e3_ingress_operation
-
+  // Business Logic for sensor_state_sub_operation
+  std::string sensor_name = "l1_ew_in";
+  if ( !_sensor_id_map[sensor_name].compare(received_data->sensor_name ) )
+    {
+      _num_vehicles_map[sensor_name] += received_data->num_vehicles;
+      _vehicle_ids_map[sensor_name] = received_data->vehicle_ids;
+    }
   
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting controller::e3_ingress_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting controller::sensor_state_sub_operation");
 #endif
 }
-//# End e3_ingress_operation Marker
-// Subscriber Operation - e3_egress
-//# Start e3_egress_operation Marker
-void controller::e3_egress_operation(const tlc::sensor_state::ConstPtr& received_data)
-{
-#ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::e3_egress_operation");
-#endif
-  // Business Logic for e3_egress_operation
-
-  
-#ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting controller::e3_egress_operation");
-#endif
-}
-//# End e3_egress_operation Marker
+//# End sensor_state_sub_operation Marker
 
 // Timer Callback - controller_timer
 //# Start controller_timer_operation Marker
@@ -75,6 +244,20 @@ void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
 	  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::controller_timer_operation");
 #endif
   // Business Logic for controller_timer_operation
+
+  //First we compute the queue length of West-East direction
+  int queue_l1, queue_l2;
+  vehicle_number( "l1_ew_in", "l1_ew_out", queue_l1 );
+  vehicle_number( "l2_ew_in", "l2_ew_out", queue_l2 );
+  _queue[0] = queue_l1 + queue_l2;
+  logger->log("DEBUG","EW Q :: %d",_queue[0]);
+  //Then we compute the length in North-South direction
+  vehicle_number( "l1_ns_in", "l1_ns_out", _queue[1] );
+  logger->log("DEBUG","NS Q :: %d",_queue[1]);
+  //Now we compute the clock value of the traffic lights(value k in the paper)
+  clock_value ( NSGREEN, _clock[0], _clock[1], _state );
+  //Now we need to design the traffic light control logic
+  controller_main( _state, WEGREEN, NSGREEN, _queue[0], _queue[1], _clock[0], _clock[1] );
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting controller::controller_timer_operation");
@@ -89,8 +272,7 @@ controller::~controller()
   controller_timer.stop();
   ryg_control_pub.shutdown();
   ryg_state_sub.shutdown();
-  e3_ingress.shutdown();
-  e3_egress.shutdown();
+  sensor_state_sub.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
@@ -154,20 +336,20 @@ void controller::startUp()
 #endif 
   this->ryg_state_sub = nh.subscribe(ryg_state_sub_options);
 #ifdef USE_ROSMOD 
-  callback_options.alias = "e3_ingress_operation";
+  callback_options.alias = "sensor_state_sub_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
   callback_options.deadline.nsec = 100000000;
 #endif  
-  // Component Subscriber - e3_ingress
+  // Component Subscriber - sensor_state_sub
   advertiseName = "sensor_state";
-  if (config.portGroupMap.find("e3_ingress") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["e3_ingress"];
-  NAMESPACE::SubscribeOptions e3_ingress_options;
-  e3_ingress_options = NAMESPACE::SubscribeOptions::create<tlc::sensor_state>
+  if (config.portGroupMap.find("sensor_state_sub") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["sensor_state_sub"];
+  NAMESPACE::SubscribeOptions sensor_state_sub_options;
+  sensor_state_sub_options = NAMESPACE::SubscribeOptions::create<tlc::sensor_state>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&controller::e3_ingress_operation, this, _1),
+       boost::bind(&controller::sensor_state_sub_operation, this, _1),
        NAMESPACE::VoidPtr(),
 #ifdef USE_ROSMOD
        &this->comp_queue,
@@ -175,30 +357,7 @@ void controller::startUp()
 #else
        &this->comp_queue);
 #endif 
-  this->e3_ingress = nh.subscribe(e3_ingress_options);
-#ifdef USE_ROSMOD 
-  callback_options.alias = "e3_egress_operation";
-  callback_options.priority = 50;
-  callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 100000000;
-#endif  
-  // Component Subscriber - e3_egress
-  advertiseName = "sensor_state";
-  if (config.portGroupMap.find("e3_egress") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["e3_egress"];
-  NAMESPACE::SubscribeOptions e3_egress_options;
-  e3_egress_options = NAMESPACE::SubscribeOptions::create<tlc::sensor_state>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&controller::e3_egress_operation, this, _1),
-       NAMESPACE::VoidPtr(),
-#ifdef USE_ROSMOD
-       &this->comp_queue,
-       callback_options);
-#else
-       &this->comp_queue);
-#endif 
-  this->e3_egress = nh.subscribe(e3_egress_options);
+  this->sensor_state_sub = nh.subscribe(sensor_state_sub_options);
 
   // Component Publisher - ryg_control_pub
   advertiseName = "ryg_control";

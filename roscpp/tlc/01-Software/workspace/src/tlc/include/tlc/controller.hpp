@@ -4,7 +4,6 @@
 #include "tlc/ryg_control.h"
 #include "tlc/ryg_state.h"
 #include "tlc/sensor_state.h"
-#include "tlc/sensor_state.h"
 
 #ifdef USE_ROSMOD
   #include "rosmod/rosmod_ros.h"
@@ -35,11 +34,8 @@ public:
   // Subscriber Operation - ryg_state_sub
   void ryg_state_sub_operation(const tlc::ryg_state::ConstPtr& received_data); 
  
-  // Subscriber Operation - e3_ingress
-  void e3_ingress_operation(const tlc::sensor_state::ConstPtr& received_data); 
- 
-  // Subscriber Operation - e3_egress
-  void e3_egress_operation(const tlc::sensor_state::ConstPtr& received_data); 
+  // Subscriber Operation - sensor_state_sub
+  void sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& received_data); 
  
   // Timer Operation - controller_timer
   void controller_timer_operation(const NAMESPACE::TimerEvent& event);
@@ -59,15 +55,48 @@ private:
   NAMESPACE::Subscriber ryg_state_sub;
 
   // Subscriber
-  NAMESPACE::Subscriber e3_ingress;
-
-  // Subscriber
-  NAMESPACE::Subscriber e3_egress;
+  NAMESPACE::Subscriber sensor_state_sub;
 
   // Publisher 
   NAMESPACE::Publisher ryg_control_pub;
 
   //# Start User Private Variables Marker
+  std::string _id;
+
+  std::map<std::string,std::string> _sensor_id_map; // need to init
+  
+  int _clock[2]; // need to init
+  int _queue[2]; // need to init
+  int _Light_Min;// need to init
+  int _Light_Max;// need to init
+  int _s_NS;     // need to init
+  int _s_WE;     // need to init
+  std::string _state;
+  std::string _current_state;
+  int _total_latency;
+  int _car_number;
+  int _car_latency;
+  int _truck_number;
+  int _truck_latency;
+  std::map<std::string,int> _sum_map;          // need to init
+  std::map<std::string,int> _num_vehicles_map; // need to init
+  std::map<std::string,std::string> _id_map;   // need to init
+  std::map<std::string,std::vector<std::string>> _vehicle_ids_map; // need to init
+
+  void vehicle_number( std::string sensor1,
+		       std::string sensor2,
+		       int& queue_length);
+  void clock_value(const std::string& ns_state,
+		   int& clock_WE,
+		   int& clock_NS,
+		   std::string& tl_state);
+  void controller_main(std::string& tl_state,
+		       const std::string& we_state,
+		       const std::string& ns_state,
+		       int queue_WE,
+		       int queue_NS,
+		       int& clock_WE,
+		       int& clock_NS);
   //# End User Private Variables Marker
 };
 

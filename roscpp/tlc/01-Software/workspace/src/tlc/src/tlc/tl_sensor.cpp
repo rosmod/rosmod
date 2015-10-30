@@ -46,7 +46,7 @@ void tl_sensor::tl_update_timer_operation(const NAMESPACE::TimerEvent& event)
     }
   else
     {
-      logger->Log("ERROR","client not found for TLC_GET_RYG_STATE");
+      logger->log("ERROR","client not found for TLC_GET_RYG_STATE");
     }
   tlc::ryg_state local_ryg_state;
   local_ryg_state.intersection_name = _id;

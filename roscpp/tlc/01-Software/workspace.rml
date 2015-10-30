@@ -51,14 +51,8 @@ package tlc
       priority = 50;
       deadline = 0.1;
     }       
-    // ROSMOD Subscriber - e3_ingress
-    subscriber <tlc/sensor_state> e3_ingress 
-    {
-      priority = 50;
-      deadline = 0.1;
-    }       
-    // ROSMOD Subscriber - e3_egress
-    subscriber <tlc/sensor_state> e3_egress 
+    // ROSMOD Subscriber - sensor_state_sub
+    subscriber <tlc/sensor_state> sensor_state_sub 
     {
       priority = 50;
       deadline = 0.1;

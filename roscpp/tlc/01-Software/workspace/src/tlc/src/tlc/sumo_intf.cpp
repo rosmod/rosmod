@@ -220,7 +220,6 @@ void sumo_intf::startUp()
   if (config.portGroupMap.find("e3_get_vehicle_number_server") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["e3_get_vehicle_number_server"];
   NAMESPACE::AdvertiseServiceOptions e3_get_vehicle_number_server_server_options;
-#ifdef USE_ROSMOD 
   e3_get_vehicle_number_server_server_options = NAMESPACE::AdvertiseServiceOptions::create<tlc::e3_get_vehicle_number>
       (advertiseName.c_str(),
        boost::bind(&sumo_intf::e3_get_vehicle_number_operation, this, _1, _2),
@@ -243,7 +242,6 @@ void sumo_intf::startUp()
   if (config.portGroupMap.find("e3_get_vehicle_ids_server") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["e3_get_vehicle_ids_server"];
   NAMESPACE::AdvertiseServiceOptions e3_get_vehicle_ids_server_server_options;
-#ifdef USE_ROSMOD 
   e3_get_vehicle_ids_server_server_options = NAMESPACE::AdvertiseServiceOptions::create<tlc::e3_get_vehicle_ids>
       (advertiseName.c_str(),
        boost::bind(&sumo_intf::e3_get_vehicle_ids_operation, this, _1, _2),
@@ -266,7 +264,6 @@ void sumo_intf::startUp()
   if (config.portGroupMap.find("tlc_get_ryg_state_server") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["tlc_get_ryg_state_server"];
   NAMESPACE::AdvertiseServiceOptions tlc_get_ryg_state_server_server_options;
-#ifdef USE_ROSMOD 
   tlc_get_ryg_state_server_server_options = NAMESPACE::AdvertiseServiceOptions::create<tlc::tlc_get_ryg_state>
       (advertiseName.c_str(),
        boost::bind(&sumo_intf::tlc_get_ryg_state_operation, this, _1, _2),
@@ -289,7 +286,6 @@ void sumo_intf::startUp()
   if (config.portGroupMap.find("tlc_set_ryg_state_server") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["tlc_set_ryg_state_server"];
   NAMESPACE::AdvertiseServiceOptions tlc_set_ryg_state_server_server_options;
-#ifdef USE_ROSMOD 
   tlc_set_ryg_state_server_server_options = NAMESPACE::AdvertiseServiceOptions::create<tlc::tlc_set_ryg_state>
       (advertiseName.c_str(),
        boost::bind(&sumo_intf::tlc_set_ryg_state_operation, this, _1, _2),
