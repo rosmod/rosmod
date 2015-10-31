@@ -239,7 +239,7 @@ void controller::sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& r
   // Business Logic for sensor_state_sub_operation
   if ( _sensor_id_map.find(received_data->sensor_name) != _sensor_id_map.end() )
     {
-      _num_vehicles_map[_sensor_id_map[received_data->sensor_name]] += received_data->num_vehicles;
+      _num_vehicles_map[_sensor_id_map[received_data->sensor_name]] = received_data->num_vehicles;
     }
   
 #ifdef USE_ROSMOD

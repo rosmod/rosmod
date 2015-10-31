@@ -4,7 +4,7 @@
     <library name="libe3_sensor_stream_ddos.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="51"/>
-    <syncTimeout setting="10.0"/>
+    <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
