@@ -322,6 +322,45 @@ void controller::startUp()
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
 
+  // Component Publisher - ryg_control_pub
+  advertiseName = "ryg_control";
+  if (config.portGroupMap.find("ryg_control_pub") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["ryg_control_pub"];
+  this->ryg_control_pub = nh.advertise<tlc::ryg_control>(advertiseName.c_str(), 1000);
+
+
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+#ifdef USE_ROSMOD  
+  rosmod::SubscribeOptions comp_sync_sub_options;
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
+#else
+  ros::SubscribeOptions comp_sync_sub_options;
+#endif
+  
+  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&controller::component_sync_operation, this, _1),
+     NAMESPACE::VoidPtr(),
+#ifdef USE_ROSMOD     
+     &this->comp_queue,
+     sync_callback_options);
+#else
+     &this->comp_queue);
+#endif
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+  ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();  
+  this->comp_sync_pub.shutdown();
+
+
+
 #ifdef USE_ROSMOD 
   callback_options.alias = "ryg_state_sub_operation";
   callback_options.priority = 50;
@@ -369,12 +408,6 @@ void controller::startUp()
 #endif 
   this->sensor_state_sub = nh.subscribe(sensor_state_sub_options);
 
-  // Component Publisher - ryg_control_pub
-  advertiseName = "ryg_control";
-  if (config.portGroupMap.find("ryg_control_pub") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["ryg_control_pub"];
-  this->ryg_control_pub = nh.advertise<tlc::ryg_control>(advertiseName.c_str(), 1000);
-
   // Init Timer
 #ifdef USE_ROSMOD    
   callback_options.alias = "init_timer_operation";
@@ -413,38 +446,6 @@ void controller::startUp()
      false,
      false);
   this->controller_timer = nh.createTimer(timer_options);
-
-
-
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
-  
-#ifdef USE_ROSMOD  
-  rosmod::SubscribeOptions comp_sync_sub_options;
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
-#else
-  ros::SubscribeOptions comp_sync_sub_options;
-#endif
-  
-  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
-     1000,
-     boost::bind(&controller::component_sync_operation, this, _1),
-     NAMESPACE::VoidPtr(),
-#ifdef USE_ROSMOD     
-     &this->comp_queue,
-     sync_callback_options);
-#else
-     &this->comp_queue);
-#endif
-  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
-
-  ros::Time now = ros::Time::now();
-  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
-  ros::Duration(0.1).sleep();
-  ros::Duration(0.5).sleep();
-  this->comp_sync_sub.shutdown();  
-  this->comp_sync_pub.shutdown();
 
   this->init_timer.start();
   this->controller_timer.start();

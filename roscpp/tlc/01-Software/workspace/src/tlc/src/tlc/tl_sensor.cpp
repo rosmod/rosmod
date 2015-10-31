@@ -112,6 +112,39 @@ void tl_sensor::startUp()
     advertiseName += "_" + config.portGroupMap["ryg_state_pub"];
   this->ryg_state_pub = nh.advertise<tlc::ryg_state>(advertiseName.c_str(), 1000);
 
+
+
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+#ifdef USE_ROSMOD  
+  rosmod::SubscribeOptions comp_sync_sub_options;
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
+#else
+  ros::SubscribeOptions comp_sync_sub_options;
+#endif
+  
+  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&tl_sensor::component_sync_operation, this, _1),
+     NAMESPACE::VoidPtr(),
+#ifdef USE_ROSMOD     
+     &this->comp_queue,
+     sync_callback_options);
+#else
+     &this->comp_queue);
+#endif
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+  ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();  
+  this->comp_sync_pub.shutdown();
+
+
   // Configure all required services associated with this component
   // Component Client - tlc_get_ryg_state_client
   advertiseName = "tlc_get_ryg_state";
@@ -157,38 +190,6 @@ void tl_sensor::startUp()
      false,
      false);
   this->tl_update_timer = nh.createTimer(timer_options);
-
-
-
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
-  
-#ifdef USE_ROSMOD  
-  rosmod::SubscribeOptions comp_sync_sub_options;
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
-#else
-  ros::SubscribeOptions comp_sync_sub_options;
-#endif
-  
-  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
-     1000,
-     boost::bind(&tl_sensor::component_sync_operation, this, _1),
-     NAMESPACE::VoidPtr(),
-#ifdef USE_ROSMOD     
-     &this->comp_queue,
-     sync_callback_options);
-#else
-     &this->comp_queue);
-#endif
-  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
-
-  ros::Time now = ros::Time::now();
-  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
-  ros::Duration(0.1).sleep();
-  ros::Duration(0.5).sleep();
-  this->comp_sync_sub.shutdown();  
-  this->comp_sync_pub.shutdown();
 
   this->init_timer.start();
   this->tl_update_timer.start();
