@@ -187,7 +187,27 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  num_lanes_west = atoi(node_argv[i+1]);
 	}
-      // build up NSGREEN AND WEGREEN STRINGS HERE
+      // build up NSGREEN and WEGREEN strings here
+      for (int i = 0; i < num_lanes_north; i++)
+	{
+	  NSGREEN += 'G';
+	  WEGREEN += 'r';
+	}
+      for (int i = 0; i < num_lanes_south; i++)
+	{
+	  NSGREEN += 'G';
+	  WEGREEN += 'r';
+	}
+      for (int i = 0; i < num_lanes_west; i++)
+	{
+	  NSGREEN += 'r';
+	  WEGREEN += 'G';
+	}
+      for (int i = 0; i < num_lanes_east; i++)
+	{
+	  NSGREEN += 'r';
+	  WEGREEN += 'G';
+	}
       for (auto it = sensors.begin(); it != sensors.end(); ++it)
 	{
 	  std::string cmpstr = "--";

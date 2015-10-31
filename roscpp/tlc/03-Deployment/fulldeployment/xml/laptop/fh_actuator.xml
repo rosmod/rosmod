@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<node name="fh_actuator">
+  <component_instance name="tl_act_i">
+    <library name="libtl_actuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="ryg_control_sub">
+      <uuid>36</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="2">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="24">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="35">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port_instance name="ryg_control_fh">
+      <port name="ryg_control_sub"/>
+      <group setting="fh"/>
+    </port_instance>
+  </component_instance>
+</node>
+

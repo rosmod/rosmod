@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<node name="v1">
+  <component_instance name="il_sensor_i">
+    <library name="libe3_sensor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="sensor_state_pub">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port_instance name="v1">
+      <port name="sensor_state_pub"/>
+      <group setting="v1"/>
+    </port_instance>
+  </component_instance>
+</node>
+

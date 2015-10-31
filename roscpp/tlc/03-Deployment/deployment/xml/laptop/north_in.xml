@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node name="north_in">
+  <component_instance name="e3_sensor_i">
+    <library name="libe3_sensor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="sensor_state_pub">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

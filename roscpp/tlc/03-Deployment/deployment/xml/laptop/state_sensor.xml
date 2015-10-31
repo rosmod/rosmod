@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node name="state_sensor">
+  <component_instance name="tl_sensor_i">
+    <library name="libtl_sensor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="ryg_state_pub">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

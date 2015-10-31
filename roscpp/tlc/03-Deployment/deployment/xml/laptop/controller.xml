@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<node name="controller">
+  <component_instance name="ctrl_i">
+    <library name="libcontroller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="ryg_control_pub">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="ryg_state_sub">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="sensor_state_sub">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="8">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

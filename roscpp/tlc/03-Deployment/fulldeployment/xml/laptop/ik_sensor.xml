@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<node name="ik_sensor">
+  <component_instance name="tl_sensor_i">
+    <library name="libtl_sensor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="ryg_state_pub">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port_instance name="ryg_state_ik">
+      <port name="ryg_state_pub"/>
+      <group setting="ik"/>
+    </port_instance>
+  </component_instance>
+</node>
+
