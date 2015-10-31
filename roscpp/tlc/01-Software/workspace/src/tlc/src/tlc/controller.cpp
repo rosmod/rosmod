@@ -127,14 +127,6 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::init_timer_operation");
 #endif
   // Initialize Here
-  _id = "IK";
-  _state = WEGREEN;
-  _Light_Min = 300;   // step size is 0.1 seconds
-  _Light_Max = 1200;  // step size is 0.1 seconds
-  _s_NS = 4;
-  _s_WE = 15;
-  _clock[0] = 0; _clock[1] = 0;
-  _queue[0] = 0; _queue[1] = 0;
   std::vector<std::string> sensors = {"north_in","north_out",
 				      "south_in","south_out",
 				      "west_in","west_out",
@@ -223,6 +215,14 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	    }
 	}
     }
+  _id = "IK";
+  _state = WEGREEN;
+  _Light_Min = 300;   // step size is 0.1 seconds
+  _Light_Max = 1200;  // step size is 0.1 seconds
+  _s_NS = 4;
+  _s_WE = 15;
+  _clock[0] = 0; _clock[1] = 0;
+  _queue[0] = 0; _queue[1] = 0;
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
