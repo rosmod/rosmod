@@ -99,6 +99,7 @@ void tl_actuator::startUp()
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
 
+  // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
 #ifdef USE_ROSMOD  
@@ -129,7 +130,7 @@ void tl_actuator::startUp()
   this->comp_sync_sub.shutdown();  
   this->comp_sync_pub.shutdown();
 
-
+  // Configure all subscribers associated with this component
 #ifdef USE_ROSMOD 
   callback_options.alias = "ryg_control_sub_operation";
   callback_options.priority = 50;

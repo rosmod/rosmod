@@ -201,7 +201,7 @@ void sumo_intf::startUp()
   this->comp_queue.scheduling_scheme = config.schedulingScheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
-
+  // Configure all provided services associated with this component
 #ifdef USE_ROSMOD  
   callback_options.alias = "e3_get_vehicle_number_operation";
   callback_options.priority = 50;
@@ -290,7 +290,39 @@ void sumo_intf::startUp()
        &this->comp_queue);
 #endif
   this->tlc_set_ryg_state_server = nh.advertiseService(tlc_set_ryg_state_server_server_options);
- 
+
+  // Synchronize components now that all publishers and servers have been initialized
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+#ifdef USE_ROSMOD  
+  rosmod::SubscribeOptions comp_sync_sub_options;
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
+#else
+  ros::SubscribeOptions comp_sync_sub_options;
+#endif
+  
+  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&sumo_intf::component_sync_operation, this, _1),
+     NAMESPACE::VoidPtr(),
+#ifdef USE_ROSMOD     
+     &this->comp_queue,
+     sync_callback_options);
+#else
+     &this->comp_queue);
+#endif
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+  ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();  
+  this->comp_sync_pub.shutdown();
+
+
   // Init Timer
 #ifdef USE_ROSMOD    
   callback_options.alias = "init_timer_operation";
@@ -330,37 +362,6 @@ void sumo_intf::startUp()
      false);
   this->sumo_step_timer = nh.createTimer(timer_options);
 
-
-
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
-  
-#ifdef USE_ROSMOD  
-  rosmod::SubscribeOptions comp_sync_sub_options;
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
-#else
-  ros::SubscribeOptions comp_sync_sub_options;
-#endif
-  
-  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
-     1000,
-     boost::bind(&sumo_intf::component_sync_operation, this, _1),
-     NAMESPACE::VoidPtr(),
-#ifdef USE_ROSMOD     
-     &this->comp_queue,
-     sync_callback_options);
-#else
-     &this->comp_queue);
-#endif
-  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
-
-  ros::Time now = ros::Time::now();
-  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
-  ros::Duration(0.1).sleep();
-  ros::Duration(0.5).sleep();
-  this->comp_sync_sub.shutdown();  
-  this->comp_sync_pub.shutdown();
 
   this->init_timer.start();
   this->sumo_step_timer.start();

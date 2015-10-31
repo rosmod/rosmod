@@ -89,11 +89,7 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::init_timer_operation");
 #endif
   // Initialize Here
-  int num_lanes_north = 1;
-  int num_lanes_south = 1;
-  int num_lanes_east = 1;
-  int num_lanes_west = 1;
-  _id = "IK";
+  _id = "";
   _Light_Min = 300;   // step size is 0.1 seconds
   _Light_Max = 1200;  // step size is 0.1 seconds
   _s_NS = 4;
@@ -130,21 +126,13 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  _s_WE = atoi(node_argv[i+1]);
 	}
-      if (!strcmp(node_argv[i],"--num_lanes_north"))
+      if (!strcmp(node_argv[i],"--nsgreen"))
 	{
-	  num_lanes_north = atoi(node_argv[i+1]);
+	  NSGREEN = node_argv[i+1];
 	}
-      if (!strcmp(node_argv[i],"--num_lanes_south"))
+      if (!strcmp(node_argv[i],"--wegreen"))
 	{
-	  num_lanes_south = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i],"--num_lanes_east"))
-	{
-	  num_lanes_east = atoi(node_argv[i+1]);
-	}
-      if (!strcmp(node_argv[i],"--num_lanes_west"))
-	{
-	  num_lanes_west = atoi(node_argv[i+1]);
+	  WEGREEN = node_argv[i+1];
 	}
       for (auto it = sensors.begin(); it != sensors.end(); ++it)
 	{
@@ -159,46 +147,6 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	      break;
 	    }
 	}
-    }
-  for (int i = 0; i < num_lanes_east; i++)
-    {
-      NSGREEN += 'r';
-      WEGREEN += 'G';
-    }
-  for (int i = 0; i < num_lanes_west; i++)
-    {
-      NSGREEN += 'r';
-      WEGREEN += 'g';
-    }
-  for (int i = 0; i < num_lanes_north; i++)
-    {
-      NSGREEN += 'G';
-      WEGREEN += 'r';
-    }
-  for (int i = 0; i < num_lanes_south; i++)
-    {
-      NSGREEN += 'g';
-      WEGREEN += 'r';
-    }
-  for (int i = 0; i < num_lanes_east; i++)
-    {
-      NSGREEN += 'r';
-      WEGREEN += 'G';
-    }
-  for (int i = 0; i < num_lanes_west; i++)
-    {
-      NSGREEN += 'r';
-      WEGREEN += 'g';
-    }
-  for (int i = 0; i < num_lanes_north; i++)
-    {
-      NSGREEN += 'G';
-      WEGREEN += 'r';
-    }
-  for (int i = 0; i < num_lanes_south; i++)
-    {
-      NSGREEN += 'g';
-      WEGREEN += 'r';
     }
   logger->log("DEBUG","using NSGREEN: %s", NSGREEN.c_str());
   logger->log("DEBUG","using WEGREEN: %s", WEGREEN.c_str());
@@ -321,14 +269,15 @@ void controller::startUp()
   this->comp_queue.scheduling_scheme = config.schedulingScheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
-
+  // Configure all publishers associated with this component
   // Component Publisher - ryg_control_pub
   advertiseName = "ryg_control";
   if (config.portGroupMap.find("ryg_control_pub") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["ryg_control_pub"];
   this->ryg_control_pub = nh.advertise<tlc::ryg_control>(advertiseName.c_str(), 1000);
 
-
+ 
+  // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
 #ifdef USE_ROSMOD  
@@ -359,8 +308,7 @@ void controller::startUp()
   this->comp_sync_sub.shutdown();  
   this->comp_sync_pub.shutdown();
 
-
-
+  // Configure all subscribers associated with this component
 #ifdef USE_ROSMOD 
   callback_options.alias = "ryg_state_sub_operation";
   callback_options.priority = 50;
@@ -446,6 +394,7 @@ void controller::startUp()
      false,
      false);
   this->controller_timer = nh.createTimer(timer_options);
+
 
   this->init_timer.start();
   this->controller_timer.start();

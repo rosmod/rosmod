@@ -107,13 +107,15 @@ void e3_sensor::startUp()
   this->comp_queue.scheduling_scheme = config.schedulingScheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
-
+  // Configure all publishers associated with this component
   // Component Publisher - sensor_state_pub
   advertiseName = "sensor_state";
   if (config.portGroupMap.find("sensor_state_pub") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["sensor_state_pub"];
   this->sensor_state_pub = nh.advertise<tlc::sensor_state>(advertiseName.c_str(), 1000);
 
+
+  // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
 #ifdef USE_ROSMOD  
@@ -195,7 +197,6 @@ void e3_sensor::startUp()
      false,
      false);
   this->e3_update_timer = nh.createTimer(timer_options);
-
 
 
   this->init_timer.start();

@@ -63,35 +63,15 @@ void e3_sensor_stream_ddos::startUp()
   this->comp_queue.scheduling_scheme = config.schedulingScheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
-
+  // Configure all publishers associated with this component
   // Component Publisher - e3_sensor_stream_ddos_pub
   advertiseName = "sensor_state";
   if (config.portGroupMap.find("e3_sensor_stream_ddos_pub") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["e3_sensor_stream_ddos_pub"];
   this->e3_sensor_stream_ddos_pub = nh.advertise<tlc::sensor_state>(advertiseName.c_str(), 1000);
 
-  // Init Timer
-#ifdef USE_ROSMOD    
-  callback_options.alias = "init_timer_operation";
-  callback_options.priority = 99;
-  callback_options.deadline.sec = 1;
-  callback_options.deadline.nsec = 0;
-#endif
-  NAMESPACE::TimerOptions timer_options;
-  timer_options = 
-    NAMESPACE::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&e3_sensor_stream_ddos::init_timer_operation, this, _1),
-     &this->comp_queue,
-#ifdef USE_ROSMOD     
-     callback_options,
-#endif     
-     true,
-     false); 
-  this->init_timer = nh.createTimer(timer_options);
-  this->init_timer.stop();
 
-
+  // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
 #ifdef USE_ROSMOD  
@@ -121,6 +101,29 @@ void e3_sensor_stream_ddos::startUp()
   ros::Duration(0.5).sleep();
   this->comp_sync_sub.shutdown();  
   this->comp_sync_pub.shutdown();
+
+
+  // Init Timer
+#ifdef USE_ROSMOD    
+  callback_options.alias = "init_timer_operation";
+  callback_options.priority = 99;
+  callback_options.deadline.sec = 1;
+  callback_options.deadline.nsec = 0;
+#endif
+  NAMESPACE::TimerOptions timer_options;
+  timer_options = 
+    NAMESPACE::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&e3_sensor_stream_ddos::init_timer_operation, this, _1),
+     &this->comp_queue,
+#ifdef USE_ROSMOD     
+     callback_options,
+#endif     
+     true,
+     false); 
+  this->init_timer = nh.createTimer(timer_options);
+  this->init_timer.stop();
+
 
   this->init_timer.start();
 }

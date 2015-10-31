@@ -64,11 +64,11 @@ ENDIF()
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  sensor_state.msg
-
   ryg_state.msg
 
   ryg_control.msg
+
+  sensor_state.msg
 
 )
 
@@ -79,11 +79,11 @@ add_service_files(
 
   e3_get_vehicle_ids.srv
 
-  e3_get_vehicle_number.srv
-
   tlc_set_ryg_state.srv
 
   il_get_vehicle_number.srv
+
+  e3_get_vehicle_number.srv
 
   tlc_get_ryg_state.srv
 

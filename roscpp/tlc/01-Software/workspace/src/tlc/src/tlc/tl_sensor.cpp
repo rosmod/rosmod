@@ -105,7 +105,7 @@ void tl_sensor::startUp()
   this->comp_queue.scheduling_scheme = config.schedulingScheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
-
+  // Configure all publishers associated with this component
   // Component Publisher - ryg_state_pub
   advertiseName = "ryg_state";
   if (config.portGroupMap.find("ryg_state_pub") != config.portGroupMap.end())
@@ -113,7 +113,7 @@ void tl_sensor::startUp()
   this->ryg_state_pub = nh.advertise<tlc::ryg_state>(advertiseName.c_str(), 1000);
 
 
-
+  // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
 #ifdef USE_ROSMOD  
@@ -190,6 +190,7 @@ void tl_sensor::startUp()
      false,
      false);
   this->tl_update_timer = nh.createTimer(timer_options);
+
 
   this->init_timer.start();
   this->tl_update_timer.start();
