@@ -401,8 +401,78 @@ void $component_name::startUp()
   this->comp_queue.scheduling_scheme = config.schedulingScheme;
   rosmod::ROSMOD_Callback_Options callback_options;
 \#endif  
+#if $len($publishers) > 0
+  // Configure all publishers associated with this component
+#for $pub in $publishers
+  // Component Publisher - $pub.properties["name"]
+  advertiseName = "${pub.properties["message_reference"].properties["name"]}";
+  if (config.portGroupMap.find("$pub.properties["name"]") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["$pub.properties["name"]"];
+  this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>(advertiseName.c_str(), 1000);
+#end for
 
-#if $len($subscribers) > 0 
+#end if
+#if $len($provided_services)
+  // Configure all provided services associated with this component
+#for $server in $servers
+\#ifdef USE_ROSMOD  
+  callback_options.alias = "${server.properties["service_reference"].properties["name"]}_operation";
+  callback_options.priority = $server.properties["priority"];
+  callback_options.deadline.sec =${int(server.properties["deadline"].split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (server.properties["deadline"].split('.')[1]))*1000000000)};
+\#endif    
+  // Component Server - $server.properties["name"]
+  advertiseName = "$server.properties["service_reference"].properties["name"]";
+  if (config.portGroupMap.find("$server.properties["name"]") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["$server.properties["name"]"];
+  NAMESPACE::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
+  ${server.properties["name"]}_server_options = NAMESPACE::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
+      (advertiseName.c_str(),
+       boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}_operation, this, _1, _2),
+       NAMESPACE::VoidPtr(),
+\#ifdef USE_ROSMOD       
+       &this->comp_queue,
+       callback_options);
+\#else
+       &this->comp_queue);
+\#endif
+  this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
+#end for
+#end if
+
+  // Synchronize components now that all publishers and servers have been initialized
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+\#ifdef USE_ROSMOD  
+  rosmod::SubscribeOptions comp_sync_sub_options;
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
+\#else
+  ros::SubscribeOptions comp_sync_sub_options;
+\#endif
+  
+  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&$component_name::component_sync_operation, this, _1),
+     NAMESPACE::VoidPtr(),
+\#ifdef USE_ROSMOD     
+     &this->comp_queue,
+     sync_callback_options);
+\#else
+     &this->comp_queue);
+\#endif
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+  ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();  
+  this->comp_sync_pub.shutdown();
+
+#if $len($subscribers) > 0
+  // Configure all subscribers associated with this component
 #for $sub in $subscribers
 \#ifdef USE_ROSMOD 
   callback_options.alias = "${sub.properties["name"]}_operation";
@@ -428,45 +498,8 @@ void $component_name::startUp()
 \#endif 
   this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
 #end for
-
 #end if		
-#if $len($publishers) > 0
-#for $pub in $publishers
-  // Component Publisher - $pub.properties["name"]
-  advertiseName = "${pub.properties["message_reference"].properties["name"]}";
-  if (config.portGroupMap.find("$pub.properties["name"]") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["$pub.properties["name"]"];
-  this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>(advertiseName.c_str(), 1000);
-#end for
 
-#end if
-#if $len($provided_services)
-#for $server in $servers
-\#ifdef USE_ROSMOD  
-  callback_options.alias = "${server.properties["service_reference"].properties["name"]}_operation";
-  callback_options.priority = $server.properties["priority"];
-  callback_options.deadline.sec =${int(server.properties["deadline"].split('.')[0])};
-  callback_options.deadline.nsec = ${int(float('0.' + (server.properties["deadline"].split('.')[1]))*1000000000)};
-\#endif    
-  // Component Server - $server.properties["name"]
-  advertiseName = "$server.properties["service_reference"].properties["name"]";
-  if (config.portGroupMap.find("$server.properties["name"]") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["$server.properties["name"]"];
-  NAMESPACE::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
-  ${server.properties["name"]}_server_options = NAMESPACE::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
-      (advertiseName.c_str(),
-       boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}_operation, this, _1, _2),
-       NAMESPACE::VoidPtr(),
-\#ifdef USE_ROSMOD       
-       &this->comp_queue,
-       callback_options);
-\#else
-       &this->comp_queue);
-\#endif
-  this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
-#end for
- 
-#end if
 #if $len($required_services) > 0
   // Configure all required services associated with this component
 #for $client in $clients
@@ -532,42 +565,11 @@ void $component_name::startUp()
 #end if 
   this->$(timer.properties["name"]) = nh.createTimer(timer_options);
 #end for
-
 #end if
 
 #if $component_type == "KSP"
   krpci_client.SetName(config.nodeName + "_" + config.compName);
 #end if
-
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
-  
-\#ifdef USE_ROSMOD  
-  rosmod::SubscribeOptions comp_sync_sub_options;
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
-\#else
-  ros::SubscribeOptions comp_sync_sub_options;
-\#endif
-  
-  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
-     1000,
-     boost::bind(&$component_name::component_sync_operation, this, _1),
-     NAMESPACE::VoidPtr(),
-\#ifdef USE_ROSMOD     
-     &this->comp_queue,
-     sync_callback_options);
-\#else
-     &this->comp_queue);
-\#endif
-  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
-
-  ros::Time now = ros::Time::now();
-  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
-  ros::Duration(0.1).sleep();
-  ros::Duration(0.5).sleep();
-  this->comp_sync_sub.shutdown();  
-  this->comp_sync_pub.shutdown();
 
   this->init_timer.start();
 #if $len($timers)
