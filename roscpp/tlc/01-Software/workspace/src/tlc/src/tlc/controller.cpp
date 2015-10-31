@@ -200,6 +200,8 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  NSGREEN += 'r';
 	  WEGREEN += 'G';
 	}
+      logger->log("DEBUG","using NSGREEN: %s", NSGREEN.c_str());
+      logger->log("DEBUG","using WEGREEN: %s", WEGREEN.c_str());
       for (auto it = sensors.begin(); it != sensors.end(); ++it)
 	{
 	  std::string cmpstr = "--";
