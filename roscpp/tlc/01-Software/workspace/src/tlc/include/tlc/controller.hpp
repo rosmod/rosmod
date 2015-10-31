@@ -61,10 +61,15 @@ private:
   NAMESPACE::Publisher ryg_control_pub;
 
   //# Start User Private Variables Marker
+  // which traffic light are we controlling
   std::string _id;
 
+  // map from sensor ID to sensor placement (e.g. "north")
   std::map<std::string,std::string> _sensor_id_map; // need to init
   
+  // map from sensor placement to number of vehicles
+  std::map<std::string,int> _num_vehicles_map; // need to init
+
   int _clock[2]; // need to init
   int _queue[2]; // need to init
   int _Light_Min;// need to init
@@ -78,14 +83,7 @@ private:
   int _car_latency;
   int _truck_number;
   int _truck_latency;
-  std::map<std::string,int> _sum_map;          // need to init
-  std::map<std::string,int> _num_vehicles_map; // need to init
-  std::map<std::string,std::string> _id_map;   // need to init
-  std::map<std::string,std::vector<std::string>> _vehicle_ids_map; // need to init
 
-  void vehicle_number( std::string sensor1,
-		       std::string sensor2,
-		       int& queue_length);
   void clock_value(const std::string& ns_state,
 		   int& clock_WE,
 		   int& clock_NS,

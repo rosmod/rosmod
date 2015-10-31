@@ -134,20 +134,13 @@ void sumo_intf::sumo_step_timer_operation(const NAMESPACE::TimerEvent& event)
   // UPDATE ALL SENSOR DATA
   for (auto it = _e3_num_vehicles_map.begin(); it != _e3_num_vehicles_map.end(); ++it)
     {
-      it->second +=
+      it->second =
 	sumo_client.multientryexit.getLastStepVehicleNumber( it->first );
     }
   for (auto it = _e3_vehicle_ids_map.begin(); it != _e3_vehicle_ids_map.end(); ++it)
     {
-      std::vector<std::string> tmp =
+      it->second =
 	sumo_client.multientryexit.getLastStepVehicleIDs( it->first );
-      for (auto tmp_id=tmp.begin(); tmp_id!=tmp.end(); ++tmp_id)
-	{
-	  if ( std::find(it->second.begin(), it->second.end(), *tmp_id) == it->second.end())
-	    {
-	      it->second.push_back(*tmp_id);
-	    }
-	}
     }
   for (auto it = _tl_state_map.begin(); it != _tl_state_map.end(); ++it)
     {

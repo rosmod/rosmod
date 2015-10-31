@@ -49,20 +49,9 @@ void e3_sensor::e3_update_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       logger->log("ERROR","client not found for E3_GET_VEHICLE_NUMBER");
     }
-  tlc::e3_get_vehicle_ids vehicle_ids;
-  vehicle_ids.request.sensor_name = _id;
-  if ( e3_get_vehicle_ids_client.call(vehicle_ids))
-    {
-      _last_vehicle_ids = vehicle_ids.response.vehicle_ids;
-    }
-  else
-    {
-      logger->log("ERROR","client not found for E3_GET_VEHICLE_IDS");
-    }
   tlc::sensor_state local_sensor_state;
   local_sensor_state.sensor_name = _id;
   local_sensor_state.num_vehicles = _last_num_vehicles;
-  local_sensor_state.vehicle_ids = _last_vehicle_ids;
   logger->log("DEBUG","Publishing IL sensor state for :: %s : %d", _id.c_str(), _last_num_vehicles);
   sensor_state_pub.publish(local_sensor_state);
 

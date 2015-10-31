@@ -6,43 +6,6 @@ std::string WEGREEN;
 
 int step = 0;
 
-void controller::vehicle_number(std::string sensor1,
-				std::string sensor2,
-				int& queue_length)
-{
-  int numVehicles = _num_vehicles_map[sensor1];
-  if (numVehicles == 0)
-    _id_map[sensor1] = "";
-  else
-    {
-      std::vector<std::string> list_T1 = _vehicle_ids_map[sensor1];
-      for ( std::vector<std::string>::iterator it = list_T1.begin(); it != list_T1.end(); ++it)
-	{
-	  if ( *it != _id_map[sensor1] )
-	    {
-	      _id_map[sensor1] = *it;
-	      _sum_map[sensor1] += 1;
-	    }
-	}
-    }
-  numVehicles = _num_vehicles_map[sensor2];
-  if (numVehicles == 0)
-    _id_map[sensor2] = "";
-  else
-    {
-      std::vector<std::string> list_S1 = _vehicle_ids_map[sensor2];
-      for ( std::vector<std::string>::iterator it = list_S1.begin(); it != list_S1.end(); ++it)
-	{
-	  if ( *it != _id_map[sensor2] )
-	    {
-	      _id_map[sensor2] = *it;
-	      _sum_map[sensor2] += 1;
-	    }
-	}
-    }
-  queue_length = std::max(0, _sum_map[sensor1]-_sum_map[sensor2] + 1);
-}
-
 void controller::clock_value(const std::string& ns_state,
 			     int& clock_WE,
 			     int& clock_NS,
@@ -59,7 +22,6 @@ void controller::clock_value(const std::string& ns_state,
       clock_NS = 0;
     }
 }
-
 
 void controller::controller_main(std::string& tl_state,
 				 const std::string& we_state,
@@ -131,15 +93,20 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   int num_lanes_south = 1;
   int num_lanes_east = 1;
   int num_lanes_west = 1;
+  _id = "IK";
+  _Light_Min = 300;   // step size is 0.1 seconds
+  _Light_Max = 1200;  // step size is 0.1 seconds
+  _s_NS = 4;
+  _s_WE = 15;
+  _clock[0] = 0; _clock[1] = 0;
+  _queue[0] = 0; _queue[1] = 0;
   std::vector<std::string> sensors = {"north",
 				      "south",
 				      "west",
 				      "east"};
   for (auto it = sensors.begin(); it != sensors.end(); ++it)
     {
-      _sum_map[*it] = 0;
       _num_vehicles_map[*it] = 0;
-      _vehicle_ids_map[*it] = std::vector<std::string>();
     }
   for (int i=0;i<node_argc;i++)
     {
@@ -186,13 +153,22 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  if (!cmpstr.compare(node_argv[i]))
 	    {
 	      _sensor_id_map[node_argv[i+1]] = *it;
-	      //_sensor_id_map[*it] = node_argv[i+1];
 	      logger->log("DEBUG","using sensor ID %s as %s sensor",
 			  node_argv[i+1],
 			  it->c_str());
 	      break;
 	    }
 	}
+    }
+  for (int i = 0; i < num_lanes_east; i++)
+    {
+      NSGREEN += 'r';
+      WEGREEN += 'G';
+    }
+  for (int i = 0; i < num_lanes_west; i++)
+    {
+      NSGREEN += 'r';
+      WEGREEN += 'g';
     }
   for (int i = 0; i < num_lanes_north; i++)
     {
@@ -201,29 +177,32 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
     }
   for (int i = 0; i < num_lanes_south; i++)
     {
-      NSGREEN += 'G';
+      NSGREEN += 'g';
       WEGREEN += 'r';
-    }
-  for (int i = 0; i < num_lanes_west; i++)
-    {
-      NSGREEN += 'r';
-      WEGREEN += 'G';
     }
   for (int i = 0; i < num_lanes_east; i++)
     {
       NSGREEN += 'r';
       WEGREEN += 'G';
     }
+  for (int i = 0; i < num_lanes_west; i++)
+    {
+      NSGREEN += 'r';
+      WEGREEN += 'g';
+    }
+  for (int i = 0; i < num_lanes_north; i++)
+    {
+      NSGREEN += 'G';
+      WEGREEN += 'r';
+    }
+  for (int i = 0; i < num_lanes_south; i++)
+    {
+      NSGREEN += 'g';
+      WEGREEN += 'r';
+    }
   logger->log("DEBUG","using NSGREEN: %s", NSGREEN.c_str());
   logger->log("DEBUG","using WEGREEN: %s", WEGREEN.c_str());
-  _id = "IK";
   _state = WEGREEN;
-  _Light_Min = 300;   // step size is 0.1 seconds
-  _Light_Max = 1200;  // step size is 0.1 seconds
-  _s_NS = 4;
-  _s_WE = 15;
-  _clock[0] = 0; _clock[1] = 0;
-  _queue[0] = 0; _queue[1] = 0;
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -261,8 +240,6 @@ void controller::sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& r
   if ( _sensor_id_map.find(received_data->sensor_name) != _sensor_id_map.end() )
     {
       _num_vehicles_map[_sensor_id_map[received_data->sensor_name]] += received_data->num_vehicles;
-      // NEED TO UPDATE THIS TO PROPERLY APPEND VEHICLES TO THE LIST
-      _vehicle_ids_map[_sensor_id_map[received_data->sensor_name]] = received_data->vehicle_ids;
     }
   
 #ifdef USE_ROSMOD
