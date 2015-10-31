@@ -127,10 +127,14 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::init_timer_operation");
 #endif
   // Initialize Here
-  std::vector<std::string> sensors = {"north_in","north_out",
-				      "south_in","south_out",
-				      "west_in","west_out",
-				      "east_in","east_out"};
+  int num_lanes_north = 1;
+  int num_lanes_south = 1;
+  int num_lanes_east = 1;
+  int num_lanes_west = 1;
+  std::vector<std::string> sensors = {"north",
+				      "south",
+				      "west",
+				      "east"};
   for (auto it = sensors.begin(); it != sensors.end(); ++it)
     {
       _sum_map[*it] = 0;
@@ -159,10 +163,6 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  _s_WE = atoi(node_argv[i+1]);
 	}
-      int num_lanes_north = 1;
-      int num_lanes_south = 1;
-      int num_lanes_east = 1;
-      int num_lanes_west = 1;
       if (!strcmp(node_argv[i],"--num_lanes_north"))
 	{
 	  num_lanes_north = atoi(node_argv[i+1]);
@@ -179,29 +179,6 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  num_lanes_west = atoi(node_argv[i+1]);
 	}
-      // build up NSGREEN and WEGREEN strings here
-      for (int i = 0; i < num_lanes_north; i++)
-	{
-	  NSGREEN += 'G';
-	  WEGREEN += 'r';
-	}
-      for (int i = 0; i < num_lanes_south; i++)
-	{
-	  NSGREEN += 'G';
-	  WEGREEN += 'r';
-	}
-      for (int i = 0; i < num_lanes_west; i++)
-	{
-	  NSGREEN += 'r';
-	  WEGREEN += 'G';
-	}
-      for (int i = 0; i < num_lanes_east; i++)
-	{
-	  NSGREEN += 'r';
-	  WEGREEN += 'G';
-	}
-      logger->log("DEBUG","using NSGREEN: %s", NSGREEN.c_str());
-      logger->log("DEBUG","using WEGREEN: %s", WEGREEN.c_str());
       for (auto it = sensors.begin(); it != sensors.end(); ++it)
 	{
 	  std::string cmpstr = "--";
@@ -217,6 +194,28 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	    }
 	}
     }
+  for (int i = 0; i < num_lanes_north; i++)
+    {
+      NSGREEN += 'G';
+      WEGREEN += 'r';
+    }
+  for (int i = 0; i < num_lanes_south; i++)
+    {
+      NSGREEN += 'G';
+      WEGREEN += 'r';
+    }
+  for (int i = 0; i < num_lanes_west; i++)
+    {
+      NSGREEN += 'r';
+      WEGREEN += 'G';
+    }
+  for (int i = 0; i < num_lanes_east; i++)
+    {
+      NSGREEN += 'r';
+      WEGREEN += 'G';
+    }
+  logger->log("DEBUG","using NSGREEN: %s", NSGREEN.c_str());
+  logger->log("DEBUG","using WEGREEN: %s", WEGREEN.c_str());
   _id = "IK";
   _state = WEGREEN;
   _Light_Min = 300;   // step size is 0.1 seconds
@@ -283,12 +282,10 @@ void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
 
   //First we compute the queue length of West-East direction
   int queue_l1, queue_l2;
-  vehicle_number( "east_in", "east_out", _queue[0] );
-  vehicle_number( "west_in", "west_out", _queue[0] );
+  _queue[0] = _num_vehicles_map["east"] + _num_vehicles_map["west"];
   logger->log("DEBUG","EW Q :: %d",_queue[0]);
   //Then we compute the length in North-South direction
-  vehicle_number( "north_in", "north_out", _queue[1] );
-  vehicle_number( "south_in", "south_out", _queue[1] );
+  _queue[1] = _num_vehicles_map["north"] + _num_vehicles_map["south"];
   logger->log("DEBUG","NS Q :: %d",_queue[1]);
   //Now we compute the clock value of the traffic lights(value k in the paper)
   clock_value ( NSGREEN, _clock[0], _clock[1], _state );

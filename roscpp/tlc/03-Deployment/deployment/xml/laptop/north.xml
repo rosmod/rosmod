@@ -1,24 +1,20 @@
 <?xml version="1.0"?>
-<node name="s1">
-  <component_instance name="il_sensor_i">
+<node name="north">
+  <component_instance name="e3_sensor_i">
     <library name="libe3_sensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="51"/>
+    <numCompsToSync setting="1"/>
     <syncTimeout setting="10.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
     </logging>
     <port name="sensor_state_pub">
-      <uuid>10</uuid>
+      <uuid>5</uuid>
       <profile>
 
       </profile>
     </port>
-    <port_instance name="s1">
-      <port name="sensor_state_pub"/>
-      <group setting="s1"/>
-    </port_instance>
   </component_instance>
 </node>
 

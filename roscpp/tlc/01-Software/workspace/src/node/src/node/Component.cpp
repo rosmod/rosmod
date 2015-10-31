@@ -2,6 +2,7 @@
 
 // Constructor
 Component::Component(ComponentConfig &_config, int argc, char **argv) {
+  logger.reset(new Logger());
   config = _config;
   node_argc = argc;
   node_argv = argv;
