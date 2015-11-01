@@ -13,6 +13,7 @@
 #endif
 
 
+#include "network/receiver.hpp"
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -41,8 +42,14 @@ public:
 
 private:
 
+  // callback func for when servers are done receiving data
+  void mw_recv_done_operation(Network::receiver* receiver_mw);
   // Subscriber
   NAMESPACE::Subscriber ryg_control_sub;
+  // message id for this data stream
+  uint64_t ryg_control_sub_id;
+  // subscriber receiver middleware
+  Network::receiver ryg_control_sub_recv_mw;
 
   // Client 
   NAMESPACE::ServiceClient tlc_set_ryg_state_client;

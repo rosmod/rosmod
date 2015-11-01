@@ -58,29 +58,6 @@ bool sumo_intf::e3_get_vehicle_number_operation(tlc::e3_get_vehicle_number::Requ
   return true;
 }
 //# End e3_get_vehicle_number_operation Marker
-// Server Operation - e3_get_vehicle_ids_server
-//# Start e3_get_vehicle_ids_operation Marker
-bool sumo_intf::e3_get_vehicle_ids_operation(tlc::e3_get_vehicle_ids::Request  &req,
-  tlc::e3_get_vehicle_ids::Response &res)
-{
-#ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sumo_intf::e3_get_vehicle_ids_operation");
-#endif
-  // Business Logic for e3_get_vehicle_ids_server_operation
-  if ( _e3_vehicle_ids_map.find( req.sensor_name ) == _e3_vehicle_ids_map.end() )
-    {
-      _e3_vehicle_ids_map[ req.sensor_name ] =
-	sumo_client.multientryexit.getLastStepVehicleIDs( req.sensor_name );
-    }
-  res.vehicle_ids = _e3_vehicle_ids_map[ req.sensor_name ];
-  _e3_vehicle_ids_map[ req.sensor_name ] = std::vector<std::string>();
-
-#ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting sumo_intf::e3_get_vehicle_ids_operation");
-#endif
-  return true;
-}
-//# End e3_get_vehicle_ids_operation Marker
 // Server Operation - tlc_get_ryg_state_server
 //# Start tlc_get_ryg_state_operation Marker
 bool sumo_intf::tlc_get_ryg_state_operation(tlc::tlc_get_ryg_state::Request  &req,
@@ -160,7 +137,6 @@ sumo_intf::~sumo_intf()
 {
   sumo_step_timer.stop();
   e3_get_vehicle_number_server.shutdown();
-  e3_get_vehicle_ids_server.shutdown();
   tlc_get_ryg_state_server.shutdown();
   tlc_set_ryg_state_server.shutdown();
   //# Start Destructor Marker
@@ -224,28 +200,6 @@ void sumo_intf::startUp()
        &this->comp_queue);
 #endif
   this->e3_get_vehicle_number_server = nh.advertiseService(e3_get_vehicle_number_server_server_options);
-#ifdef USE_ROSMOD  
-  callback_options.alias = "e3_get_vehicle_ids_operation";
-  callback_options.priority = 50;
-  callback_options.deadline.sec =0;
-  callback_options.deadline.nsec = 100000000;
-#endif    
-  // Component Server - e3_get_vehicle_ids_server
-  advertiseName = "e3_get_vehicle_ids";
-  if (config.portGroupMap.find("e3_get_vehicle_ids_server") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["e3_get_vehicle_ids_server"];
-  NAMESPACE::AdvertiseServiceOptions e3_get_vehicle_ids_server_server_options;
-  e3_get_vehicle_ids_server_server_options = NAMESPACE::AdvertiseServiceOptions::create<tlc::e3_get_vehicle_ids>
-      (advertiseName.c_str(),
-       boost::bind(&sumo_intf::e3_get_vehicle_ids_operation, this, _1, _2),
-       NAMESPACE::VoidPtr(),
-#ifdef USE_ROSMOD       
-       &this->comp_queue,
-       callback_options);
-#else
-       &this->comp_queue);
-#endif
-  this->e3_get_vehicle_ids_server = nh.advertiseService(e3_get_vehicle_ids_server_server_options);
 #ifdef USE_ROSMOD  
   callback_options.alias = "tlc_get_ryg_state_operation";
   callback_options.priority = 50;

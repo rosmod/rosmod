@@ -2,7 +2,6 @@
 #define SUMO_INTF_HPP
 #include "node/Component.hpp"
 #include "tlc/e3_get_vehicle_number.h"
-#include "tlc/e3_get_vehicle_ids.h"
 #include "tlc/tlc_get_ryg_state.h"
 #include "tlc/tlc_set_ryg_state.h"
 
@@ -37,10 +36,6 @@ public:
   bool e3_get_vehicle_number_operation(tlc::e3_get_vehicle_number::Request &req, 
     tlc::e3_get_vehicle_number::Response &res);
 
-  // Server Operation - e3_get_vehicle_ids_server
-  bool e3_get_vehicle_ids_operation(tlc::e3_get_vehicle_ids::Request &req, 
-    tlc::e3_get_vehicle_ids::Response &res);
-
   // Server Operation - tlc_get_ryg_state_server
   bool tlc_get_ryg_state_operation(tlc::tlc_get_ryg_state::Request &req, 
     tlc::tlc_get_ryg_state::Response &res);
@@ -65,9 +60,6 @@ private:
 
   // Server 
   NAMESPACE::ServiceServer e3_get_vehicle_number_server;
-
-  // Server 
-  NAMESPACE::ServiceServer e3_get_vehicle_ids_server;
 
   // Server 
   NAMESPACE::ServiceServer tlc_get_ryg_state_server;

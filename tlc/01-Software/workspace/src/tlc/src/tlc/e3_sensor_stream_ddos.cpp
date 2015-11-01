@@ -11,6 +11,66 @@ void e3_sensor_stream_ddos::init_timer_operation(const NAMESPACE::TimerEvent& ev
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering e3_sensor_stream_ddos::init_timer_operation");
 #endif
   // Initialize Here
+  srand (time(NULL));
+  double tg_duration = -1;
+  std::string fName;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--tg_time"))
+	{
+	  tg_duration = atof(node_argv[i+1]);
+	}
+    }
+  max_data_length = 8192;
+  tg_misbehave = false;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--max_data_length_bytes"))
+	{
+	  max_data_length = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "--max_data_length_bits"))
+	{
+	  max_data_length = atoi(node_argv[i+1]) / 8;
+	}
+      if (!strcmp(node_argv[i], "--tg_misbehave"))
+	{
+	  tg_misbehave = true;
+	}
+    }
+  NAMESPACE::NodeHandle nh;
+  NAMESPACE::TimerOptions timer_options;
+  if (config.profileMap.find("e3_sensor_stream_ddos_pub") != config.profileMap.end())
+    {
+      e3_sensor_stream_ddos_pub_send_mw.init(node_argc,
+					     node_argv,
+					     config.uuidMap["e3_sensor_stream_ddos_pub"],
+					     config.profileMap["e3_sensor_stream_ddos_pub"]);
+      if ( tg_duration < 0 )
+	e3_sensor_stream_ddos_pub_send_mw.set_duration(e3_sensor_stream_ddos_pub_send_mw.profile.period);
+      else
+	e3_sensor_stream_ddos_pub_send_mw.set_duration(tg_duration);
+      fName = config.nodeName + "." + config.compName + ".e3_sensor_stream_ddos_pub.network.csv";
+      e3_sensor_stream_ddos_pub_send_mw.set_output_filename(fName);
+
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(-1),
+	 boost::bind(&e3_sensor_stream_ddos::e3_sensor_stream_ddos_pub_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      e3_sensor_stream_ddos_pub_timer = nh.createTimer(timer_options);
+    }
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -19,6 +79,52 @@ void e3_sensor_stream_ddos::init_timer_operation(const NAMESPACE::TimerEvent& ev
 }
 //# End Init Marker
 
+void e3_sensor_stream_ddos::e3_sensor_stream_ddos_pub_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  tlc::sensor_state msg;
+  msg.uuid = e3_sensor_stream_ddos_pub_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	e3_sensor_stream_ddos_pub_send_mw.send<tlc::sensor_state>(e3_sensor_stream_ddos_pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= e3_sensor_stream_ddos_pub_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      e3_sensor_stream_ddos_pub_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&e3_sensor_stream_ddos::e3_sensor_stream_ddos_pub_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      e3_sensor_stream_ddos_pub_timer = nh.createTimer(timer_options);
+    }
+}
 
 
 // Destructor - Cleanup Ports & Timers

@@ -14,12 +14,6 @@ package tlc
       priority = 50;
       deadline = 0.1;
     }       
-    // ROSMOD Server - e3_get_vehicle_ids_server
-    server <tlc/e3_get_vehicle_ids> e3_get_vehicle_ids_server 
-    {
-      priority = 50;
-      deadline = 0.1;
-    }       
     // ROSMOD Server - tlc_get_ryg_state_server
     server <tlc/tlc_get_ryg_state> tlc_get_ryg_state_server 
     {
@@ -68,8 +62,6 @@ package tlc
   // ROSMOD Component - e3_sensor
   component e3_sensor : Base 
   {
-    // ROSMOD Client - e3_get_vehicle_ids_client
-    client <tlc/e3_get_vehicle_ids> e3_get_vehicle_ids_client;
     // ROSMOD Client - e3_get_vehicle_number_client
     client <tlc/e3_get_vehicle_number> e3_get_vehicle_number_client;
     // ROSMOD Publisher - sensor_state_pub

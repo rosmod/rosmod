@@ -13,6 +13,7 @@
 #endif
 
 
+#include "network/sender.hpp"
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -44,8 +45,18 @@ private:
   // Timer
   NAMESPACE::Timer tl_update_timer;
 
+  // do we abide by the profiles?
+  bool tg_misbehave;
+  // size of messages generated
+  uint64_t max_data_length;
   // Publisher 
   NAMESPACE::Publisher ryg_state_pub;
+  // Timer for generating traffic
+  NAMESPACE::Timer ryg_state_pub_timer;
+  // Timer callback for traffic generation
+  void ryg_state_pub_timerCallback(const NAMESPACE::TimerEvent& event);
+  // publisher sender middleware
+  Network::sender ryg_state_pub_send_mw;
 
   // Client 
   NAMESPACE::ServiceClient tlc_get_ryg_state_client;

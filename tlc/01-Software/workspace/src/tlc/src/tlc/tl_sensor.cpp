@@ -28,6 +28,52 @@ void tl_sensor::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+void tl_sensor::ryg_state_pub_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  tlc::ryg_state msg;
+  msg.uuid = ryg_state_pub_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	ryg_state_pub_send_mw.send<tlc::ryg_state>(ryg_state_pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= ryg_state_pub_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      ryg_state_pub_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&tl_sensor::ryg_state_pub_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      ryg_state_pub_timer = nh.createTimer(timer_options);
+    }
+}
 
 // Timer Callback - tl_update_timer
 //# Start tl_update_timer_operation Marker

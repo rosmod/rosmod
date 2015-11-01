@@ -28,6 +28,12 @@ void tl_actuator::init_timer_operation(const NAMESPACE::TimerEvent& event)
 //# End Init Marker
 
 
+void tl_actuator::mw_recv_done_operation(Network::receiver* receiver_mw)
+{
+  logger->log("DEBUG","Writing middleware log.");
+  logger->log("DEBUG","Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
+  receiver_mw->record();
+}
 
 // Subscriber Operation - ryg_control_sub
 //# Start ryg_control_sub_operation Marker
