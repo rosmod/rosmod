@@ -97,8 +97,8 @@ private:
 #end if
 #if $len($subscribers) > 0
 #if $trafficGen
-  // callback func for when servers are done receiving data
-  void mw_recv_done_callback(Network::receiver* receiver_mw);
+  // function for when servers are done receiving data
+  void mw_recv_done_operation(Network::receiver* receiver_mw);
 #end if
 #for $sub in $subscribers
   // Subscriber
@@ -124,9 +124,9 @@ private:
   NAMESPACE::Publisher $pub.properties["name"];
 #if $trafficGen
   // Timer for generating traffic
-  ros::Timer ${pub.properties['name']}_timer;
-  // Timer callback for traffic generation
-  void ${pub.properties['name']}_timerCallback(const ros::TimerEvent& event);
+  NAMESPACE::Timer ${pub.properties['name']}_timer;
+  // Timer operation for traffic generation
+  void ${pub.properties['name']}_timer_operation(const NAMESPACE::TimerEvent& event);
   // publisher sender middleware
   Network::sender ${pub.properties['name']}_send_mw;
 #end if
