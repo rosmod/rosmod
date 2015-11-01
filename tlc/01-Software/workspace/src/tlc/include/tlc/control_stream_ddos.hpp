@@ -46,8 +46,8 @@ private:
   NAMESPACE::Publisher control_stream_ddos_pub;
   // Timer for generating traffic
   NAMESPACE::Timer control_stream_ddos_pub_timer;
-  // Timer callback for traffic generation
-  void control_stream_ddos_pub_timerCallback(const NAMESPACE::TimerEvent& event);
+  // Timer operation for traffic generation
+  void control_stream_ddos_pub_timer_operation(const NAMESPACE::TimerEvent& event);
   // publisher sender middleware
   Network::sender control_stream_ddos_pub_send_mw;
 

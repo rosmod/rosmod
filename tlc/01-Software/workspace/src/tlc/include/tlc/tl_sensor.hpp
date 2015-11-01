@@ -53,8 +53,8 @@ private:
   NAMESPACE::Publisher ryg_state_pub;
   // Timer for generating traffic
   NAMESPACE::Timer ryg_state_pub_timer;
-  // Timer callback for traffic generation
-  void ryg_state_pub_timerCallback(const NAMESPACE::TimerEvent& event);
+  // Timer operation for traffic generation
+  void ryg_state_pub_timer_operation(const NAMESPACE::TimerEvent& event);
   // publisher sender middleware
   Network::sender ryg_state_pub_send_mw;
 

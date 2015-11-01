@@ -159,53 +159,6 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
-void controller::ryg_control_pub_timer_operation(const NAMESPACE::TimerEvent& event)
-{
-  tlc::ryg_control msg;
-  msg.uuid = ryg_control_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
-  double timerDelay = 0;
-  try
-    {
-      timerDelay =
-	ryg_control_pub_send_mw.send<tlc::ryg_control>(ryg_control_pub, msg);
-    }
-  catch ( Network::Exceeded_Production_Profile& ex )
-    {
-      logger->log("DEBUG","Prevented from sending on the network!");
-    }
-
-  if ( ros::Time::now() >= ryg_control_pub_send_mw.get_end_time() )
-    {
-      logger->log("DEBUG","writing output\n");
-      ryg_control_pub_send_mw.record();
-    }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      NAMESPACE::TimerOptions timer_options;
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&controller::ryg_control_pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      NAMESPACE::NodeHandle nh;
-      ryg_control_pub_timer = nh.createTimer(timer_options);
-    }
-}
-
 void controller::mw_recv_done_operation(Network::receiver* receiver_mw)
 {
   logger->log("DEBUG","Writing middleware log.");

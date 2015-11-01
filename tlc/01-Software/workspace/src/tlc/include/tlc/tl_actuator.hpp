@@ -42,7 +42,7 @@ public:
 
 private:
 
-  // callback func for when servers are done receiving data
+  // function for when servers are done receiving data
   void mw_recv_done_operation(Network::receiver* receiver_mw);
   // Subscriber
   NAMESPACE::Subscriber ryg_control_sub;

@@ -53,7 +53,7 @@ private:
   // Timer
   NAMESPACE::Timer controller_timer;
 
-  // callback func for when servers are done receiving data
+  // function for when servers are done receiving data
   void mw_recv_done_operation(Network::receiver* receiver_mw);
   // Subscriber
   NAMESPACE::Subscriber ryg_state_sub;
@@ -77,8 +77,8 @@ private:
   NAMESPACE::Publisher ryg_control_pub;
   // Timer for generating traffic
   NAMESPACE::Timer ryg_control_pub_timer;
-  // Timer callback for traffic generation
-  void ryg_control_pub_timerCallback(const NAMESPACE::TimerEvent& event);
+  // Timer operation for traffic generation
+  void ryg_control_pub_timer_operation(const NAMESPACE::TimerEvent& event);
   // publisher sender middleware
   Network::sender ryg_control_pub_send_mw;
 
