@@ -82,8 +82,8 @@ void control_stream_ddos::init_timer_operation(const NAMESPACE::TimerEvent& even
 void control_stream_ddos::control_stream_ddos_pub_timer_operation(const NAMESPACE::TimerEvent& event)
 {
   tlc::ryg_control msg;
-  msg.uuid = control_stream_ddos_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
+  msg.intersection_name = "random_name_here";
+  msg.state = "bad state";
   double timerDelay = 0;
   try
     {

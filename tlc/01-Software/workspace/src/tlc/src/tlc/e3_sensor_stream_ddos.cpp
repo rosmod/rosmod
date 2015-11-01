@@ -82,8 +82,8 @@ void e3_sensor_stream_ddos::init_timer_operation(const NAMESPACE::TimerEvent& ev
 void e3_sensor_stream_ddos::e3_sensor_stream_ddos_pub_timer_operation(const NAMESPACE::TimerEvent& event)
 {
   tlc::sensor_state msg;
-  msg.uuid = e3_sensor_stream_ddos_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
+  msg.sensor_name = "random_name_here";
+  msg.num_vehicles = 23;
   double timerDelay = 0;
   try
     {
