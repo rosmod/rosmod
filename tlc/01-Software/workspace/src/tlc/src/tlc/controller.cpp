@@ -206,9 +206,22 @@ void controller::sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& r
 void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
-	  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::controller_timer_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::controller_timer_operation");
 #endif
   // Business Logic for controller_timer_operation
+
+#ifdef USE_ROSMOD
+  DL_Map deadline_violation_map = comp_queue.getAllDeadlineViolations();
+  std::vector<ROSMOD_Deadline_Violation> ctrl_timer_violations = deadline_violation_map["controller_timer_operation"];
+  logger->log("DEBUG", "Controller has had %d deadline violations.", ctrl_timer_violations.size());
+  ROSMOD_Deadline_Violation dlv = ctrl_timer_violations.back();
+  ros::Duration queue_time = dlv.dequeue_time - dlv.enqueue_time;
+  logger->log("DEBUG", "Last operation:\n\tdeadline: (%d.%d)\n\tqueuing time: (%d.%d)",
+	      dlv.deadline.sec,
+	      dlv.deadline.nsec,
+	      queue_time.sec,
+	      queue_time.nsec);
+#endif
 
   //First we compute the queue length of West-East direction
   int queue_l1, queue_l2;
