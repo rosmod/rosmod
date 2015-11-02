@@ -116,7 +116,7 @@ namespace Network
     void record() { Network::write_data(output_filename.c_str(), messages); }
 
     template <typename T>
-    double send(ros::Publisher pub, const T& msg)
+    double send(NAMESPACE::Publisher pub, const T& msg)
     {
       double timeDiff = 0;
       // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
