@@ -14,8 +14,6 @@
 #endif
 
 
-#include "network/sender.hpp"
-#include "network/receiver.hpp"
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -53,34 +51,14 @@ private:
   // Timer
   NAMESPACE::Timer controller_timer;
 
-  // function for when servers are done receiving data
-  void mw_recv_done_operation(Network::receiver* receiver_mw);
   // Subscriber
   NAMESPACE::Subscriber ryg_state_sub;
-  // message id for this data stream
-  uint64_t ryg_state_sub_id;
-  // subscriber receiver middleware
-  Network::receiver ryg_state_sub_recv_mw;
 
   // Subscriber
   NAMESPACE::Subscriber sensor_state_sub;
-  // message id for this data stream
-  uint64_t sensor_state_sub_id;
-  // subscriber receiver middleware
-  Network::receiver sensor_state_sub_recv_mw;
 
-  // do we abide by the profiles?
-  bool tg_misbehave;
-  // size of messages generated
-  uint64_t max_data_length;
   // Publisher 
   NAMESPACE::Publisher ryg_control_pub;
-  // Timer for generating traffic
-  NAMESPACE::Timer ryg_control_pub_timer;
-  // Timer operation for traffic generation
-  void ryg_control_pub_timer_operation(const NAMESPACE::TimerEvent& event);
-  // publisher sender middleware
-  Network::sender ryg_control_pub_send_mw;
 
   //# Start User Private Variables Marker
   // which traffic light are we controlling

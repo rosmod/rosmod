@@ -27,6 +27,8 @@ void tl_actuator::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+
+
 // Subscriber Operation - ryg_control_sub
 //# Start ryg_control_sub_operation Marker
 void tl_actuator::ryg_control_sub_operation(const tlc::ryg_control::ConstPtr& received_data)

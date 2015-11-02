@@ -163,12 +163,7 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
-void controller::mw_recv_done_operation(Network::receiver* receiver_mw)
-{
-  logger->log("DEBUG","Writing middleware log.");
-  logger->log("DEBUG","Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
-  receiver_mw->record();
-}
+
 
 // Subscriber Operation - ryg_state_sub
 //# Start ryg_state_sub_operation Marker
@@ -215,22 +210,33 @@ void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
   // Business Logic for controller_timer_operation
 
 #ifdef USE_ROSMOD
-  NAMESPACE::CallbackQueue::DL_Map deadline_violation_map =
-    comp_queue.getAllDeadlineViolations();
-  std::vector<NAMESPACE::CallbackQueue::ROSMOD_Deadline_Violation> ctrl_timer_violations =
-    deadline_violation_map["controller_timer_operation"];
-  logger->log("DEBUG",
-	      "Controller has had %d deadline violations.",
-	      ctrl_timer_violations.size());
-  NAMESPACE::CallbackQueue::ROSMOD_Deadline_Violation dlv =
-    ctrl_timer_violations.back();
-  ros::Duration queue_time = dlv.dequeue_time - dlv.enqueue_time;
-  logger->log("DEBUG",
-	      "Last operation:\n\tdeadline: (%d.%d)\n\tqueuing time: (%d.%d)",
-	      dlv.deadline.sec,
-	      dlv.deadline.nsec,
-	      queue_time.sec,
-	      queue_time.nsec);
+  try
+    {
+      NAMESPACE::CallbackQueue::DL_Map deadline_violation_map =
+	comp_queue.getAllDeadlineViolations();
+      std::vector<NAMESPACE::CallbackQueue::ROSMOD_Deadline_Violation> ctrl_timer_violations =
+	deadline_violation_map["controller_timer_operation"];
+      logger->log("DEBUG",
+		  "Controller has had %d deadline violations.",
+		  ctrl_timer_violations.size());
+      if ( ctrl_timer_violations.size() )
+	{
+	  NAMESPACE::CallbackQueue::ROSMOD_Deadline_Violation dlv =
+	    ctrl_timer_violations.back();
+	  ros::Duration queue_time = dlv.dequeue_time - dlv.enqueue_time;
+	  logger->log("DEBUG",
+		      "Last operation:\n\tdeadline: (%d.%d)\n\tqueuing time: (%d.%d)",
+		      dlv.deadline.sec,
+		      dlv.deadline.nsec,
+		      queue_time.sec,
+		      queue_time.nsec);
+	}
+    }
+  catch ( ... )
+    {
+      logger->log("ERROR",
+		  "CAUGHT EXCEPTION WHEN LOOKING AT NEWEST DLV");
+    }
 #endif
 
   //First we compute the queue length of West-East direction
@@ -408,7 +414,7 @@ void controller::startUp()
   callback_options.alias = "controller_timer_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 100000000;
+  callback_options.deadline.nsec = 1000000;
 #endif
   // Component Timer - controller_timer
   timer_options = 

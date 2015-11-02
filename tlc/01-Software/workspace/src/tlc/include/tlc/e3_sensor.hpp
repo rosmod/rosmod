@@ -13,7 +13,6 @@
 #endif
 
 
-#include "network/sender.hpp"
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -45,18 +44,8 @@ private:
   // Timer
   NAMESPACE::Timer e3_update_timer;
 
-  // do we abide by the profiles?
-  bool tg_misbehave;
-  // size of messages generated
-  uint64_t max_data_length;
   // Publisher 
   NAMESPACE::Publisher sensor_state_pub;
-  // Timer for generating traffic
-  NAMESPACE::Timer sensor_state_pub_timer;
-  // Timer operation for traffic generation
-  void sensor_state_pub_timer_operation(const NAMESPACE::TimerEvent& event);
-  // publisher sender middleware
-  Network::sender sensor_state_pub_send_mw;
 
   // Client 
   NAMESPACE::ServiceClient e3_get_vehicle_number_client;
