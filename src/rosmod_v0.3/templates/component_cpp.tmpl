@@ -313,7 +313,7 @@ $server.properties["business_logic"]//# End ${server.properties["service_referen
 void $component_name::${timer.properties["name"]}_operation(const NAMESPACE::TimerEvent& event)
 {
 \#ifdef USE_ROSMOD
-	  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering $component_name::${timer.properties["name"]}_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering $component_name::${timer.properties["name"]}_operation");
 \#endif
   // Business Logic for ${timer.properties["name"]}_operation
 
