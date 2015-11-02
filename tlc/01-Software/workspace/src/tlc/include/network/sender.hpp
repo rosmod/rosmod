@@ -1,7 +1,13 @@
 #ifndef NETWORK_SENDER_HPP
 #define NETWORK_SENDER_HPP
 
-#include "ros/ros.h"
+#ifdef USE_ROSMOD
+  #include "rosmod/rosmod_ros.h"
+#else
+  #ifdef USE_ROSCPP
+    #include "ros/ros.h"
+  #endif
+#endif
 
 #include <boost/thread/thread.hpp>
 #include <boost/asio.hpp>
@@ -116,7 +122,7 @@ namespace Network
     void record() { Network::write_data(output_filename.c_str(), messages); }
 
     template <typename T>
-    double send(ros::Publisher pub, const T& msg)
+    double send(NAMESPACE::Publisher pub, const T& msg)
     {
       double timeDiff = 0;
       // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED

@@ -1,6 +1,10 @@
 #include "tlc/controller.hpp"
 
 //# Start User Globals Marker
+#ifdef USE_ROSMOD
+  #include "rosmod/rosmod_callback_queue.h"
+#endif
+
 std::string NSGREEN;
 std::string WEGREEN;
 
@@ -211,12 +215,18 @@ void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
   // Business Logic for controller_timer_operation
 
 #ifdef USE_ROSMOD
-  DL_Map deadline_violation_map = comp_queue.getAllDeadlineViolations();
-  std::vector<ROSMOD_Deadline_Violation> ctrl_timer_violations = deadline_violation_map["controller_timer_operation"];
-  logger->log("DEBUG", "Controller has had %d deadline violations.", ctrl_timer_violations.size());
-  ROSMOD_Deadline_Violation dlv = ctrl_timer_violations.back();
+  NAMESPACE::CallbackQueue::DL_Map deadline_violation_map =
+    comp_queue.getAllDeadlineViolations();
+  std::vector<NAMESPACE::CallbackQueue::ROSMOD_Deadline_Violation> ctrl_timer_violations =
+    deadline_violation_map["controller_timer_operation"];
+  logger->log("DEBUG",
+	      "Controller has had %d deadline violations.",
+	      ctrl_timer_violations.size());
+  NAMESPACE::CallbackQueue::ROSMOD_Deadline_Violation dlv =
+    ctrl_timer_violations.back();
   ros::Duration queue_time = dlv.dequeue_time - dlv.enqueue_time;
-  logger->log("DEBUG", "Last operation:\n\tdeadline: (%d.%d)\n\tqueuing time: (%d.%d)",
+  logger->log("DEBUG",
+	      "Last operation:\n\tdeadline: (%d.%d)\n\tqueuing time: (%d.%d)",
 	      dlv.deadline.sec,
 	      dlv.deadline.nsec,
 	      queue_time.sec,
