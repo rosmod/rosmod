@@ -225,7 +225,7 @@ void controller::controller_timer_operation(const NAMESPACE::TimerEvent& event)
 	    ctrl_timer_violations.back();
 	  ros::Duration queue_time = dlv.dequeue_time - dlv.enqueue_time;
 	  logger->log("DEBUG",
-		      "Last operation:\n\tdeadline: (%d.%d)\n\tqueuing time: (%d.%d)",
+		      "Last operation:\n\tdeadline: (%d.%09d)\n\tqueuing time: (%d.%09d)",
 		      dlv.deadline.sec,
 		      dlv.deadline.nsec,
 		      queue_time.sec,
@@ -414,7 +414,7 @@ void controller::startUp()
   callback_options.alias = "controller_timer_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 1000000;
+  callback_options.deadline.nsec = 1000;
 #endif
   // Component Timer - controller_timer
   timer_options = 

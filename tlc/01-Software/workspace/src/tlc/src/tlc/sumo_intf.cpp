@@ -2,6 +2,9 @@
 
 SUMO_CLIENT sumo_client;
 //# Start User Globals Marker
+bool sumo_client_operational = false;
+std::string sumo_host;
+int sumo_port;
 //# End User Globals Marker
 
 // Initialization Function
@@ -12,8 +15,6 @@ void sumo_intf::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sumo_intf::init_timer_operation");
 #endif
   // Initialize Here
-  std::string sumo_host;
-  int sumo_port;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--sumo_host"))
@@ -25,7 +26,10 @@ void sumo_intf::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  sumo_port = atoi(node_argv[i+1]);
 	}
     }
-  sumo_client.create_connection(sumo_port, sumo_host);
+  if ( sumo_client.create_connection(sumo_port, sumo_host) )
+      sumo_client_operational = true;
+  else
+    logger->log("ERROR", "SUMO interface not operational.");
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -46,11 +50,13 @@ bool sumo_intf::e3_get_vehicle_number_operation(tlc::e3_get_vehicle_number::Requ
   // Business Logic for e3_get_vehicle_number_server_operation
   if ( _e3_num_vehicles_map.find( req.sensor_name ) == _e3_num_vehicles_map.end() )
     {
-      _e3_num_vehicles_map[ req.sensor_name ] =
-	sumo_client.multientryexit.getLastStepVehicleNumber( req.sensor_name );
+      if (sumo_client_operational)
+	_e3_num_vehicles_map[ req.sensor_name ] = 
+	  sumo_client.multientryexit.getLastStepVehicleNumber( req.sensor_name );
+      else
+	_e3_num_vehicles_map[ req.sensor_name ] = 0;
     }
   res.num_vehicles = _e3_num_vehicles_map[ req.sensor_name ];
-  _e3_num_vehicles_map[ req.sensor_name ] = 0;
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting sumo_intf::e3_get_vehicle_number_operation");
@@ -69,8 +75,11 @@ bool sumo_intf::tlc_get_ryg_state_operation(tlc::tlc_get_ryg_state::Request  &re
   // Business Logic for tlc_get_ryg_state_server_operation
   if ( _tl_state_map.find( req.intersection_name ) == _tl_state_map.end() )
     {
-      _tl_state_map[ req.intersection_name ] =
-	sumo_client.trafficlights.getRedYellowGreenState( req.intersection_name );
+      if (sumo_client_operational)
+	_tl_state_map[ req.intersection_name ] =
+	  sumo_client.trafficlights.getRedYellowGreenState( req.intersection_name );
+      else
+	_tl_state_map[ req.intersection_name ] = "bad state";
     }
   res.ryg_state = _tl_state_map[ req.intersection_name ];
 
@@ -89,8 +98,18 @@ bool sumo_intf::tlc_set_ryg_state_operation(tlc::tlc_set_ryg_state::Request  &re
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sumo_intf::tlc_set_ryg_state_operation");
 #endif
   // Business Logic for tlc_set_ryg_state_server_operation
-  sumo_client.trafficlights.setRedYellowGreenState( req.intersection_name, req.ryg_state );
-
+  try
+    {
+      if (sumo_client_operational)
+	sumo_client.trafficlights.setRedYellowGreenState(
+							 req.intersection_name,
+							 req.ryg_state );
+    }
+  catch ( ... )
+    {
+      logger->log("ERROR", "SUMO interface error!");
+    }
+  
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting sumo_intf::tlc_set_ryg_state_operation");
 #endif
@@ -103,26 +122,43 @@ bool sumo_intf::tlc_set_ryg_state_operation(tlc::tlc_set_ryg_state::Request  &re
 void sumo_intf::sumo_step_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
-	  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sumo_intf::sumo_step_timer_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sumo_intf::sumo_step_timer_operation");
 #endif
   // Business Logic for sumo_step_timer_operation
-  // STEP THE SIMULATION
-  sumo_client.commandSimulationStep(0);
-  // UPDATE ALL SENSOR DATA
-  for (auto it = _e3_num_vehicles_map.begin(); it != _e3_num_vehicles_map.end(); ++it)
+  try
     {
-      it->second =
-	sumo_client.multientryexit.getLastStepVehicleNumber( it->first );
+      if (sumo_client_operational)
+	{
+	  // STEP THE SIMULATION
+	  sumo_client.commandSimulationStep(0);
+	  // UPDATE ALL SENSOR DATA
+	  for (auto it = _e3_num_vehicles_map.begin(); it != _e3_num_vehicles_map.end(); ++it)
+	    {
+	      it->second =
+		sumo_client.multientryexit.getLastStepVehicleNumber( it->first );
+	    }
+	  for (auto it = _e3_vehicle_ids_map.begin(); it != _e3_vehicle_ids_map.end(); ++it)
+	    {
+	      it->second =
+		sumo_client.multientryexit.getLastStepVehicleIDs( it->first );
+	    }
+	  for (auto it = _tl_state_map.begin(); it != _tl_state_map.end(); ++it)
+	    {
+	      it->second = 
+		sumo_client.trafficlights.getRedYellowGreenState( it->first );
+	    }
+	}
+      else
+	{
+	  if ( sumo_client.create_connection(sumo_port, sumo_host) )
+	    sumo_client_operational = true;
+	  else
+	    logger->log("ERROR", "SUMO interface not operational!");
+	}
     }
-  for (auto it = _e3_vehicle_ids_map.begin(); it != _e3_vehicle_ids_map.end(); ++it)
+  catch ( ... )
     {
-      it->second =
-	sumo_client.multientryexit.getLastStepVehicleIDs( it->first );
-    }
-  for (auto it = _tl_state_map.begin(); it != _tl_state_map.end(); ++it)
-    {
-      it->second = 
-	sumo_client.trafficlights.getRedYellowGreenState( it->first );
+      logger->log("ERROR", "SOME UNKNOWN ISSUE!");
     }
 
 #ifdef USE_ROSMOD

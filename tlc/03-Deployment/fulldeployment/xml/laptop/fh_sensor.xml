@@ -3,8 +3,8 @@
   <component_instance name="tl_sensor_i">
     <library name="libtl_sensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="51"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="10.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 

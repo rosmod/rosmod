@@ -3,8 +3,8 @@
   <component_instance name="ctrl_i">
     <library name="libcontroller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="8"/>
+    <syncTimeout setting="10.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
