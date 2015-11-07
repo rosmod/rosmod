@@ -3,7 +3,7 @@
   <component_instance name="ctrl_i">
     <library name="libcontroller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="13"/>
     <syncTimeout setting="10.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
@@ -48,6 +48,61 @@
       </sender>
       <sender uuid="8">
 	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,0,0,0
+30,10000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="10">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,0,0,0
+30,10000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,0,0,0
+30,10000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,0,0,0
+30,10000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,0,0,0
+30,10000000,0,0
 
 	</profile>
       </sender>
