@@ -100,7 +100,16 @@ namespace Network
     {
       uuid = u;
       profile.initializeFromString((char *)prof_str.c_str());
-      create_oob_mc_socket();
+      bool create_oob = true;
+      for (int i=0;i<argc;i++)
+	{
+	  if (!strcmp(argv[i],"--no_oob"))
+	    {
+	      create_oob = false;
+	    }
+	}
+      if (create_oob)
+	create_oob_mc_socket();
       return 0;
     }
 
@@ -108,7 +117,16 @@ namespace Network
     {
       profile.initializeFromFile(profileName.c_str());
       uuid = profile.uuid;
-      create_oob_mc_socket();
+      bool create_oob = true;
+      for (int i=0;i<argc;i++)
+	{
+	  if (!strcmp(argv[i],"--no_oob"))
+	    {
+	      create_oob = false;
+	    }
+	}
+      if (create_oob)
+	create_oob_mc_socket();
       return 0;
     }
 

@@ -181,7 +181,7 @@ void tl_sensor::startUp()
   // Component Timer - tl_update_timer
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.1),
+    (ros::Duration(0.5),
      boost::bind(&tl_sensor::tl_update_timer_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     

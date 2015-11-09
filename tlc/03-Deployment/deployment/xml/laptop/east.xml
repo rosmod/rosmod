@@ -3,7 +3,7 @@
   <component_instance name="e3_sensor_i">
     <library name="libe3_sensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="8"/>
     <syncTimeout setting="10.0"/>
     <logging>
       <is_periodic_logging setting="True"/>

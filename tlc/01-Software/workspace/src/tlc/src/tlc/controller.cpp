@@ -94,10 +94,11 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 #endif
   // Initialize Here
   _id = "";
-  _Light_Min = 300;   // step size is 0.1 seconds
-  _Light_Max = 1200;  // step size is 0.1 seconds
-  _s_NS = 4;
-  _s_WE = 15;
+  int step_hz = 1;
+  _Light_Min = 30;   // in seconds
+  _Light_Max = 120;  // in seconds
+  _s_NS = 10;
+  _s_WE = 10;
   _clock[0] = 0; _clock[1] = 0;
   _queue[0] = 0; _queue[1] = 0;
   std::vector<std::string> sensors = {"north",
@@ -113,6 +114,10 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
       if (!strcmp(node_argv[i],"--id"))
 	{
 	  _id = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i],"--step_hz"))
+	{
+	  step_hz = atoi(node_argv[i+1]);
 	}
       if (!strcmp(node_argv[i],"--light_min"))
 	{
@@ -152,6 +157,8 @@ void controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	    }
 	}
     }
+  _Light_Min = _Light_Min * step_hz;
+  _Light_Max = _Light_Max * step_hz;
   logger->log("DEBUG","using NSGREEN: %s", NSGREEN.c_str());
   logger->log("DEBUG","using WEGREEN: %s", WEGREEN.c_str());
   _state = WEGREEN;
@@ -414,12 +421,12 @@ void controller::startUp()
   callback_options.alias = "controller_timer_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 1000;
+  callback_options.deadline.nsec = 10000000;
 #endif
   // Component Timer - controller_timer
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.1),
+    (ros::Duration(0.5),
      boost::bind(&controller::controller_timer_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     

@@ -55,7 +55,7 @@ void e3_sensor_stream_ddos::init_timer_operation(const NAMESPACE::TimerEvent& ev
 
 #ifdef USE_ROSMOD    
       rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
+      callback_options.alias = "e3_sensor_stream_ddos_pub_timer_operation";
       callback_options.priority = 99;
       callback_options.deadline.sec = 1;
       callback_options.deadline.nsec = 0;
@@ -106,7 +106,7 @@ void e3_sensor_stream_ddos::e3_sensor_stream_ddos_pub_timer_operation(const NAME
 	timerDelay -= 0.1;
 #ifdef USE_ROSMOD    
       rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
+      callback_options.alias = "e3_sensor_stream_ddos_pub_timer_operation";
       callback_options.priority = 99;
       callback_options.deadline.sec = 1;
       callback_options.deadline.nsec = 0;

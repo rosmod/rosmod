@@ -29,7 +29,7 @@ package tlc
     // ROSMOD Timer - sumo_step_timer
     timer sumo_step_timer 
     {
-	period = 0.1;
+	period = 0.5;
 	priority = 50;
 	deadline = 0.1;
     }       
@@ -54,9 +54,9 @@ package tlc
     // ROSMOD Timer - controller_timer
     timer controller_timer 
     {
-	period = 0.1;
+	period = 0.5;
 	priority = 50;
-	deadline = 0.001;
+	deadline = 0.01;
     }       
   }
   // ROSMOD Component - e3_sensor
@@ -69,7 +69,7 @@ package tlc
     // ROSMOD Timer - e3_update_timer
     timer e3_update_timer 
     {
-	period = 0.1;
+	period = 0.5;
 	priority = 50;
 	deadline = 0.1;
     }       
@@ -96,7 +96,7 @@ package tlc
     // ROSMOD Timer - tl_update_timer
     timer tl_update_timer 
     {
-	period = 0.1;
+	period = 0.5;
 	priority = 50;
 	deadline = 0.1;
     }       
