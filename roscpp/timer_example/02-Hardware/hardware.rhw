@@ -9,6 +9,7 @@ hardware Laptop
   username = "kelsier";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/kelsier/test";
+  install_path = "/opt/ros/indigo";
   arch = x86;
 }
 

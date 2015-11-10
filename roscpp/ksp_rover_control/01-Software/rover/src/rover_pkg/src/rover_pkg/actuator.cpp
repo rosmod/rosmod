@@ -35,6 +35,8 @@ void actuator::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
+
+
 // Subscriber Callback - control_command_sub
 //# Start control_command_sub_OnOneData Marker
 void actuator::control_command_sub_OnOneData(const rover_pkg::control_command::ConstPtr& received_data)
@@ -69,33 +71,9 @@ actuator::~actuator()
 // Startup - Setup Component Ports & Timers
 void actuator::startUp()
 {
-  LOGGER.DEBUG("Entering actuator::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
 
-  // Component Subscriber - control_command_sub
-  advertiseName = "control_command";
-  if (portGroupMap.find("control_command_sub") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["control_command_sub"];
-  ros::SubscribeOptions control_command_sub_options;
-  control_command_sub_options = ros::SubscribeOptions::create<rover_pkg::control_command>
-      (advertiseName.c_str(),
-       1000,
-       boost::bind(&actuator::control_command_sub_OnOneData, this, _1),
-       ros::VoidPtr(),
-       &this->compQueue);
-  this->control_command_sub = nh.subscribe(control_command_sub_options);
-
-  // Init Timer
-  ros::TimerOptions timer_options;
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&actuator::Init, this, _1),
-     &this->compQueue,
-     true);
-  this->initOneShotTimer = nh.createTimer(timer_options);  
-  
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -116,8 +94,60 @@ void actuator::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  // Prepare logging periodicity
+  LOGGER.SET_PERIODICITY(is_periodic_logging);
+  LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
+
+  // Scheduling Scheme is FIFO
+
+  // Component Subscriber - control_command_sub
+  advertiseName = "control_command";
+  if (portGroupMap.find("control_command_sub") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["control_command_sub"];
+  ros::SubscribeOptions control_command_sub_options;
+  control_command_sub_options = ros::SubscribeOptions::create<rover_pkg::control_command>
+      (advertiseName.c_str(),
+       1000,
+       boost::bind(&actuator::control_command_sub_OnOneData, this, _1),
+       ros::VoidPtr(),
+       &this->compQueue);
+  this->control_command_sub = nh.subscribe(control_command_sub_options);  
+
+  // Init Timer
+  ros::TimerOptions timer_options;
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&actuator::Init, this, _1),
+     &this->compQueue,
+     true,
+     false);
+  this->initOneShotTimer = nh.createTimer(timer_options);
+  this->initOneShotTimer.stop();
+
   krpci_client.SetName(nodeName + "_" + compName);
-  LOGGER.DEBUG("Exiting actuator::startUp");
+
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+  ros::SubscribeOptions comp_sync_sub_options;
+  comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&actuator::component_synchronization_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) )
+    ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();
+  this->comp_sync_pub.shutdown();
+
+  this->initOneShotTimer.start();
+  
 }
 
 extern "C" {

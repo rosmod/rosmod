@@ -1,11 +1,11 @@
 #ifndef ACTUATOR_HPP
 #define ACTUATOR_HPP
-
 #include "ros/ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "rover_pkg/control_command.h"
 
 #include "krpci/krpci.hpp"
+
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -17,7 +17,7 @@ class actuator : public Component
 {
 public:
   // Constructor
-  actuator(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  actuator(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);
@@ -34,7 +34,7 @@ public:
 private:
 
   // Subscriber
-  ros::Subscriber control_command_sub; 
+  ros::Subscriber control_command_sub;
 
   //# Start User Private Variables Marker
   //# End User Private Variables Marker

@@ -1,13 +1,24 @@
 #include "node/Logger.hpp"
 
 /*
+ * Set Logging Periodicity
+ */
+void Logger::SET_PERIODICITY(bool is_periodic) {
+  periodic_logging = is_periodic;
+}
+
+/*
+ * Change max log size
+ */
+void Logger::CHANGE_LOG_SIZE(int new_size) {
+  max_log_unit = new_size;
+}
+
+/*
  * Write remaining log contents to file
  */
 Logger::~Logger() {
-  if (SIZE_OF_LOG() > 0) {
-    WRITE_TO_FILE();
-    log_content = "";
-  }
+  WRITE_TO_FILE();
   log_stream.close();
 }
 
@@ -17,7 +28,7 @@ Logger::~Logger() {
 bool Logger::CREATE_FILE(string target_log_path) {
   log_path = target_log_path;
   log_stream.open(log_path, ios::out | ios::app );  
-  log_content = "--------------------------------------------------------------------------------";
+  log_content = "--------------------------------------------------------------------------------\n";
   return true;
 }
 
@@ -25,7 +36,8 @@ bool Logger::CREATE_FILE(string target_log_path) {
  * Write Log contents to file & close stream
  */ 
 bool Logger::WRITE_TO_FILE() {
-  log_stream << log_content << endl;
+  log_stream << log_content;
+  log_stream.flush();
   return true;
 }
 
@@ -54,11 +66,9 @@ bool Logger::DEBUG(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "ROSMOD::DEBUG::" + CLOCK_VALUE() + "::" + log_entry_string + "\n";
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -75,11 +85,9 @@ bool Logger::INFO(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "ROSMOD::INFO::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -96,11 +104,9 @@ bool Logger::WARNING(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "ROSMOD::WARNING::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -117,11 +123,9 @@ bool Logger::ERROR(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "ROSMOD::ERROR::" + CLOCK_VALUE() + "::" + log_entry_string + "\n";
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }
@@ -138,11 +142,9 @@ bool Logger::CRITICAL(const char * format, ...) {
     std::string log_entry_string(log_entry);
     va_end (args);
 
-    bool exceeded_limit = CHECK_LOG_SIZE();
-    if (exceeded_limit == true)
-      log_content += "ROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string;
-    else
-      log_content += "\nROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string; 
+    log_content += "ROSMOD::CRITICAL::" + CLOCK_VALUE() + "::" + log_entry_string + "\n"; 
+    if (periodic_logging)
+      CHECK_LOG_SIZE();
   }
   return true;
 }

@@ -1,9 +1,10 @@
 #ifndef COMPONENT_1_HPP
 #define COMPONENT_1_HPP
 #include "rosmod/rosmod_ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "three_component_example/ComponentName.h"
 #include "three_component_example/ComponentName.h"
+
 
 
 //# Start User Includes Marker
@@ -16,7 +17,7 @@ class Component_1 : public Component
 {
 public:
   // Constructor
-  Component_1(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  Component_1(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const rosmod::TimerEvent& event);
@@ -39,7 +40,7 @@ private:
   rosmod::Timer Timer_1;
 
   // Subscriber
-  rosmod::Subscriber Name_Subscriber; 
+  rosmod::Subscriber Name_Subscriber;
 
   // Publisher 
   rosmod::Publisher Name_Publisher;

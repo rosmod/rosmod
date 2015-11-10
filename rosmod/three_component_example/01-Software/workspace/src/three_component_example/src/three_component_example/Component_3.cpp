@@ -10,12 +10,12 @@ void Component_3::Init(const rosmod::TimerEvent& event)
 {
   compQueue.ROSMOD_LOGGER.DEBUG("Entering Component_3::Init");
   // Initialize Here
-
   // Stop Init Timer
   initOneShotTimer.stop();
   compQueue.ROSMOD_LOGGER.DEBUG("Exiting Component_3::Init");
 }
 //# End Init Marker
+
 
 // Timer Callback - Timer_3
 //# Start Timer_3Callback Marker
@@ -44,48 +44,6 @@ void Component_3::startUp()
   rosmod::NodeHandle nh;
   std::string advertiseName;
 
-  // Scheduling Scheme is FIFO
-  this->compQueue.scheduling_scheme = scheduling_scheme;
-  rosmod::ROSMOD_Callback_Options callback_options;
-
-  // Configure all required services associated with this component
-  // Component Client - Service_Client
-  advertiseName = "ComponentService";
-  if (portGroupMap.find("Service_Client") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["Service_Client"];
-      this->Service_Client = nh.serviceClient<three_component_example::ComponentService>(advertiseName.c_str()); 
-
-  // Init Timer
-  callback_options.alias = "Init_Timer";
-  callback_options.priority = 99;
-  callback_options.deadline.sec = 1;
-  callback_options.deadline.nsec = 0;
-  rosmod::TimerOptions timer_options;
-  timer_options = 
-    rosmod::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&Component_3::Init, this, _1),
-     &this->compQueue,
-     callback_options,
-     true,
-     true);
-  this->initOneShotTimer = nh.createTimer(timer_options);
-  this->initOneShotTimer.stop();
-  callback_options.alias = "Timer_3Callback";
-  callback_options.priority = 50;
-  callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 100000000;
-  // Component Timer - Timer_3
-  timer_options = 
-    rosmod::TimerOptions
-    (ros::Duration(2.0),
-     boost::bind(&Component_3::Timer_3Callback, this, _1),
-     &this->compQueue,
-     callback_options,
-     false,
-     false);
-  this->Timer_3 = nh.createTimer(timer_options);
-
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
   std::string exec_path = s;
@@ -106,6 +64,53 @@ void Component_3::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  // Prepare logging periodicity
+  LOGGER.SET_PERIODICITY(is_periodic_logging);
+  LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
+
+  // Scheduling Scheme is FIFO
+  this->compQueue.scheduling_scheme = scheduling_scheme;
+  rosmod::ROSMOD_Callback_Options callback_options;
+
+  // Configure all required services associated with this component
+  // Component Client - Service_Client
+  advertiseName = "ComponentService";
+  if (portGroupMap.find("Service_Client") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["Service_Client"];
+  this->Service_Client = nh.serviceClient<three_component_example::ComponentService>(advertiseName.c_str(), true); 
+
+  // Init Timer
+  callback_options.alias = "Init_Timer";
+  callback_options.priority = 99;
+  callback_options.deadline.sec = 1;
+  callback_options.deadline.nsec = 0;
+  rosmod::TimerOptions timer_options;
+  timer_options = 
+    rosmod::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&Component_3::Init, this, _1),
+     &this->compQueue,
+     callback_options,
+     true,
+     false);
+  this->initOneShotTimer = nh.createTimer(timer_options);
+  this->initOneShotTimer.stop();
+  callback_options.alias = "Timer_3Callback";
+  callback_options.priority = 50;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 100000000;
+  // Component Timer - Timer_3
+  timer_options = 
+    rosmod::TimerOptions
+    (ros::Duration(2.0),
+     boost::bind(&Component_3::Timer_3Callback, this, _1),
+     &this->compQueue,
+     callback_options,
+     false,
+     false);
+  this->Timer_3 = nh.createTimer(timer_options);
+
+
 
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
@@ -122,7 +127,9 @@ void Component_3::startUp()
 
   rosmod::Time now = rosmod::Time::now();
   while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
-	  (rosmod::Time::now() - now) < rosmod::Duration(comp_sync_timeout) );
+	  (rosmod::Time::now() - now) < rosmod::Duration(comp_sync_timeout) )
+    ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
   this->comp_sync_sub.shutdown();
   this->comp_sync_pub.shutdown();
 
@@ -130,6 +137,8 @@ void Component_3::startUp()
   this->Timer_3.start();
   
   compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_DEBUG." + nodeName + "." + compName + ".log");
+  compQueue.ROSMOD_LOGGER.SET_PERIODICITY(is_periodic_logging);
+  compQueue.ROSMOD_LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
 }
 
 extern "C" {

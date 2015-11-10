@@ -4,10 +4,10 @@
   <component_instance name="low_level_controller_i">
     <library name="liblow_level_controller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
@@ -47,10 +47,10 @@
   <component_instance name="high_level_controller_i">
     <library name="libhigh_level_controller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>

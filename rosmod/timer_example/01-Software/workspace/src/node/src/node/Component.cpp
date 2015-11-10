@@ -1,12 +1,15 @@
 #include "node/Component.hpp"
 
 // Constructor
-Component::Component(ComponentConfig &config, int argc, char **argv) {
+Component::Component(ComponentConfig &_config, int argc, char **argv) {
+  this->config = _config;
   portGroupMap = config.portGroupMap;
   logLevels = config.logLevels;
   hostName = config.hostName;
   nodeName = config.nodeName;
   compName = config.compName;
+  is_periodic_logging = config.is_periodic_logging;
+  periodic_log_unit = config.periodic_log_unit;
   node_argc = argc;
   node_argv = argv;
   num_comps_to_sync = config.num_comps_to_sync;

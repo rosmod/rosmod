@@ -5,9 +5,9 @@
     <library name="libsensor.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
@@ -26,9 +26,9 @@
     <library name="libactuator.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
@@ -52,9 +52,9 @@
     <library name="liblow_level_controller.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>
@@ -95,9 +95,9 @@
     <library name="libhigh_level_controller.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>

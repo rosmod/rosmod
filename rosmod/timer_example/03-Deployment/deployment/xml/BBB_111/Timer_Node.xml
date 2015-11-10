@@ -3,12 +3,16 @@
   <component_instance name="Timer_i">
     <library name="libTimer.so"/>
     <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
     <logging>
-      <debug setting="True"/>
-      <info setting="True"/>
-      <warning setting="True"/>
-      <error setting="True"/>
-      <critical setting="True"/>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+      <debug setting="False"/>
+      <info setting="False"/>
+      <warning setting="False"/>
+      <error setting="False"/>
+      <critical setting="False"/>
     </logging>
   </component_instance>
 </node>

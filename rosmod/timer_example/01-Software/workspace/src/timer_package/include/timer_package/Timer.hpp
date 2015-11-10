@@ -1,7 +1,8 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 #include "rosmod/rosmod_ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
+
 
 
 //# Start User Includes Marker
@@ -14,7 +15,7 @@ class Timer : public Component
 {
 public:
   // Constructor
-  Timer(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  Timer(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const rosmod::TimerEvent& event);

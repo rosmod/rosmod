@@ -12,7 +12,7 @@
 class Component {
 public:
   // Constructor
-  Component(ComponentConfig &config, int argc, char **argv);
+  Component(ComponentConfig &_config, int argc, char **argv);
 
   // Start up
   virtual void startUp() = 0;
@@ -30,8 +30,11 @@ public:
   ~Component();
 
 protected:
+  ComponentConfig config;
   std::map<std::string,std::string> portGroupMap;
   Log_Levels logLevels;
+  bool is_periodic_logging;
+  int periodic_log_unit;
   std::string hostName;
   std::string nodeName;
   std::string compName;

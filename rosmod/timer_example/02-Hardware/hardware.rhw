@@ -6,9 +6,10 @@
 hardware Laptop
 {
   ip_address = "localhost";
-  username = "kelsier";
-  sshkey = "~/.ssh/id_rsa"; 
-  deployment_path = "/home/kelsier/test";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
   arch = x86;
 }
 

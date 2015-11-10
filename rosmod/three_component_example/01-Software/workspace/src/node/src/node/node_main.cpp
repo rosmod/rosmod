@@ -2,6 +2,9 @@
 #include <cstdlib>
 #include <string.h>
 #include <dlfcn.h>
+#include <exception>      
+#include <cstdlib>        
+#include <signal.h>
 #include <boost/thread.hpp>
 #include "node/Component.hpp"
 
@@ -11,11 +14,26 @@ void componentThreadFunc(Component* compPtr)
   compPtr->processQueue();
 }
 
+std::vector<Component*> compObjects;
+std::vector<boost::thread*> compThreads;	
+
+void signal_handler(int sig) {
+  for (int i=0;i<compThreads.size();i++)
+    compThreads[i]->join();
+  for (auto it = compObjects.begin(); it != compObjects.end(); ++it)
+    delete *it;
+  abort(); 
+}
+
 int main(int argc, char **argv)
 {
   std::string nodeName = "node";
   std::string hostName = "localhost";
   std::string configFile = "";
+
+  signal (SIGINT, &signal_handler);
+  signal (SIGTERM, &signal_handler);
+  signal (SIGKILL, &signal_handler);
   
   for(int i = 0; i < argc; i++)
   {
@@ -27,7 +45,6 @@ int main(int argc, char **argv)
       configFile = argv[i+1];
   }
 
-  std::vector<boost::thread*> compThreads;
   XMLParser nodeParser;
   std::string configFileName = nodeName + ".xml";
   if (configFile.length() > 0)
@@ -67,6 +84,9 @@ int main(int argc, char **argv)
       void *mkr = dlsym(hndl, "maker");
       Component *comp_inst = ((Component *(*)(ComponentConfig &, int , char **))(mkr))
 	(nodeParser.compConfigList[i], argc, argv);
+
+      // Push to object vector
+      compObjects.push_back(comp_inst);
 
       // Create Component Threads
       boost::thread *comp_thread = new boost::thread(componentThreadFunc, comp_inst);

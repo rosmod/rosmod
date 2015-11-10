@@ -1,8 +1,9 @@
 #ifndef COMPONENT_3_HPP
 #define COMPONENT_3_HPP
 #include "rosmod/rosmod_ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "three_component_example/ComponentService.h"
+
 
 
 //# Start User Includes Marker
@@ -15,7 +16,7 @@ class Component_3 : public Component
 {
 public:
   // Constructor
-  Component_3(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  Component_3(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const rosmod::TimerEvent& event);

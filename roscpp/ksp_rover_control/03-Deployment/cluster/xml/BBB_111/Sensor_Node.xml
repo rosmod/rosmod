@@ -4,10 +4,10 @@
   <component_instance name="sensor_i">
     <library name="libsensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="5.0"/>
     <logging>
-      <is_periodic setting="True"/>
+      <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 
       <debug setting="True"/>
       <info setting="True"/>

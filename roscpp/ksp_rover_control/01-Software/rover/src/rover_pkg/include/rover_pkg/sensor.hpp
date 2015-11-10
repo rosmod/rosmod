@@ -1,11 +1,11 @@
 #ifndef SENSOR_HPP
 #define SENSOR_HPP
-
 #include "ros/ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "rover_pkg/vessel_state.h"
 
 #include "krpci/krpci.hpp"
+
 
 //# Start User Includes Marker
 //# End User Includes Marker
@@ -17,7 +17,7 @@ class sensor : public Component
 {
 public:
   // Constructor
-  sensor(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  sensor(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);

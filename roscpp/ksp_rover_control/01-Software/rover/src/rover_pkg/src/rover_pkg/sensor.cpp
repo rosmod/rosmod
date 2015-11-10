@@ -54,6 +54,7 @@ void sensor::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
+
 // Timer Callback - sensor_timer
 //# Start sensor_timerCallback Marker
 void sensor::sensor_timerCallback(const ros::TimerEvent& event)
@@ -97,33 +98,8 @@ sensor::~sensor()
 // Startup - Setup Component Ports & Timers
 void sensor::startUp()
 {
-  LOGGER.DEBUG("Entering sensor::startUp");
   ros::NodeHandle nh;
   std::string advertiseName;
-
-  // Component Publisher - vessel_state_pub
-  advertiseName = "vessel_state";
-  if (portGroupMap.find("vessel_state_pub") != portGroupMap.end())
-    advertiseName += "_" + portGroupMap["vessel_state_pub"];
-  this->vessel_state_pub = nh.advertise<rover_pkg::vessel_state>(advertiseName.c_str(), 1000);
-
-  // Init Timer
-  ros::TimerOptions timer_options;
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(-1),
-     boost::bind(&sensor::Init, this, _1),
-     &this->compQueue,
-     true);
-  this->initOneShotTimer = nh.createTimer(timer_options);  
-  
-  // Component Timer - sensor_timer
-  timer_options = 
-    ros::TimerOptions
-    (ros::Duration(0.1),
-     boost::bind(&sensor::sensor_timerCallback, this, _1),
-     &this->compQueue);
-  this->sensor_timer = nh.createTimer(timer_options);
 
   // Identify the pwd of Node Executable
   std::string s = node_argv[0];
@@ -145,8 +121,62 @@ void sensor::startUp()
   // Establish log levels of LOGGER
   LOGGER.SET_LOG_LEVELS(logLevels);
 
+  // Prepare logging periodicity
+  LOGGER.SET_PERIODICITY(is_periodic_logging);
+  LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
+
+  // Scheduling Scheme is FIFO
+
+  // Component Publisher - vessel_state_pub
+  advertiseName = "vessel_state";
+  if (portGroupMap.find("vessel_state_pub") != portGroupMap.end())
+    advertiseName += "_" + portGroupMap["vessel_state_pub"];
+  this->vessel_state_pub = nh.advertise<rover_pkg::vessel_state>(advertiseName.c_str(), 1000);
+
+  // Init Timer
+  ros::TimerOptions timer_options;
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&sensor::Init, this, _1),
+     &this->compQueue,
+     true,
+     false);
+  this->initOneShotTimer = nh.createTimer(timer_options);
+  this->initOneShotTimer.stop();
+  // Component Timer - sensor_timer
+  timer_options = 
+    ros::TimerOptions
+    (ros::Duration(0.1),
+     boost::bind(&sensor::sensor_timerCallback, this, _1),
+     &this->compQueue, false, false);
+  this->sensor_timer = nh.createTimer(timer_options);
+
+
   krpci_client.SetName(nodeName + "_" + compName);
-  LOGGER.DEBUG("Exiting sensor::startUp");
+
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+  ros::SubscribeOptions comp_sync_sub_options;
+  comp_sync_sub_options = ros::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&sensor::component_synchronization_OnOneData, this, _1),
+     ros::VoidPtr(),
+     &this->compQueue);
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(comp_sync_timeout) )
+    ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();
+  this->comp_sync_pub.shutdown();
+
+  this->initOneShotTimer.start();
+  this->sensor_timer.start();
+  
 }
 
 extern "C" {

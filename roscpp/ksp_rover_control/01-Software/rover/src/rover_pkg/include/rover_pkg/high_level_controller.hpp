@@ -1,12 +1,12 @@
 #ifndef HIGH_LEVEL_CONTROLLER_HPP
 #define HIGH_LEVEL_CONTROLLER_HPP
-
 #include "ros/ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "rover_pkg/goal_state.h"
 #include "rover_pkg/vessel_state.h"
 
 #include "krpci/krpci.hpp"
+
 
 //# Start User Includes Marker
 #include <boost/circular_buffer.hpp>
@@ -48,7 +48,7 @@ class high_level_controller : public Component
 {
 public:
   // Constructor
-  high_level_controller(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  high_level_controller(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);
@@ -71,7 +71,7 @@ private:
   ros::Timer state_timer;
 
   // Subscriber
-  ros::Subscriber vessel_state_sub; 
+  ros::Subscriber vessel_state_sub;
 
   // Publisher 
   ros::Publisher goal_state_pub;

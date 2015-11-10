@@ -64,11 +64,11 @@ message_generation
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  vessel_state.msg
-
   control_command.msg
 
   goal_state.msg
+
+  vessel_state.msg
 
 )
 
@@ -112,6 +112,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  ../node/include
   ${catkin_INCLUDE_DIRS}
 ## Start Include Directories Marker
 ## End Include Directories Marker

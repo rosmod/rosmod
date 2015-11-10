@@ -19569,6 +19569,147 @@ bool KRPCI::GetSensor_parseResponse(krpc::Response response, uint64_t& return_va
   return true;
 }
 
+bool KRPCI::LatLonAltToX_createRequest(double lat, double lon, double alt, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("LatLonAltToX");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->set_value((const char*)(&lat), sizeof(lat));  
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&lon), sizeof(lon));  
+
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&alt), sizeof(alt));  
+
+  return true;
+}
+
+bool KRPCI::LatLonAltToX(double lat, double lon, double alt, double& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::LatLonAltToX_createRequest(lat, lon, alt, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      LatLonAltToX_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::LatLonAltToX_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
+bool KRPCI::LatLonAltToY_createRequest(double lat, double lon, double alt, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("LatLonAltToY");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->set_value((const char*)(&lat), sizeof(lat));  
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&lon), sizeof(lon));  
+
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&alt), sizeof(alt));  
+
+  return true;
+}
+
+bool KRPCI::LatLonAltToY(double lat, double lon, double alt, double& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::LatLonAltToY_createRequest(lat, lon, alt, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      LatLonAltToY_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::LatLonAltToY_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
+bool KRPCI::LatLonAltToZ_createRequest(double lat, double lon, double alt, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("LatLonAltToZ");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->set_value((const char*)(&lat), sizeof(lat));  
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&lon), sizeof(lon));  
+
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&alt), sizeof(alt));  
+
+  return true;
+}
+
+bool KRPCI::LatLonAltToZ(double lat, double lon, double alt, double& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::LatLonAltToZ_createRequest(lat, lon, alt, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      LatLonAltToZ_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::LatLonAltToZ_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
+  return true;
+}
+
 bool KRPCI::KSPSensor_Fail_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
 {
   request.set_service("Sensors");

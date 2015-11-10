@@ -9,6 +9,7 @@ hardware Laptop
   username = "jeb";
   sshkey = "/home/jeb/.ssh/id_rsa_rosmod"; 
   deployment_path = "/home/jeb";
+  install_path = "/opt/ros/indigo";
   arch = x64;
 }
 

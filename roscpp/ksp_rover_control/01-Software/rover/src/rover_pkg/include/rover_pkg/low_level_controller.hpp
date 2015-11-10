@@ -1,11 +1,11 @@
 #ifndef LOW_LEVEL_CONTROLLER_HPP
 #define LOW_LEVEL_CONTROLLER_HPP
-
 #include "ros/ros.h"
-#include "Component.hpp"
+#include "node/Component.hpp"
 #include "rover_pkg/control_command.h"
 #include "rover_pkg/vessel_state.h"
 #include "rover_pkg/goal_state.h"
+
 
 
 //# Start User Includes Marker
@@ -19,7 +19,7 @@ class low_level_controller : public Component
 {
 public:
   // Constructor
-  low_level_controller(ComponentConfig& config, int argc, char **argv) : Component(config, argc, argv) {}
+  low_level_controller(ComponentConfig& _config, int argc, char **argv) : Component(_config, argc, argv) {}
 
   // Initialization
   void Init(const ros::TimerEvent& event);
@@ -45,10 +45,10 @@ private:
   ros::Timer control_timer;
 
   // Subscriber
-  ros::Subscriber vessel_state_sub; 
+  ros::Subscriber vessel_state_sub;
 
   // Subscriber
-  ros::Subscriber goal_state_sub; 
+  ros::Subscriber goal_state_sub;
 
   // Publisher 
   ros::Publisher control_command_pub;

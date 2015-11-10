@@ -17,6 +17,7 @@ void Timer::Init(const rosmod::TimerEvent& event)
 }
 //# End Init Marker
 
+
 // Timer Callback - periodic_timer
 //# Start periodic_timerCallback Marker
 void Timer::periodic_timerCallback(const rosmod::TimerEvent& event)
@@ -54,6 +55,30 @@ void Timer::startUp()
   rosmod::NodeHandle nh;
   std::string advertiseName;
 
+  // Identify the pwd of Node Executable
+  std::string s = node_argv[0];
+  std::string exec_path = s;
+  std::string delimiter = "/";
+  std::string exec, pwd;
+  size_t pos = 0;
+  while ((pos = s.find(delimiter)) != std::string::npos) {
+    exec = s.substr(0, pos);
+    s.erase(0, pos + delimiter.length());
+  }
+  exec = s.substr(0, pos);
+  pwd = exec_path.erase(exec_path.find(exec), exec.length());
+  std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
+  
+  // Create the log file & open file stream
+  LOGGER.CREATE_FILE(log_file_path);
+  
+  // Establish log levels of LOGGER
+  LOGGER.SET_LOG_LEVELS(logLevels);
+
+  // Prepare logging periodicity
+  LOGGER.SET_PERIODICITY(is_periodic_logging);
+  LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
+
   // Scheduling Scheme is FIFO
   this->compQueue.scheduling_scheme = scheduling_scheme;
   rosmod::ROSMOD_Callback_Options callback_options;
@@ -71,7 +96,7 @@ void Timer::startUp()
      &this->compQueue,
      callback_options,
      true,
-     true);
+     false);
   this->initOneShotTimer = nh.createTimer(timer_options);
   this->initOneShotTimer.stop();
   callback_options.alias = "periodic_timerCallback";
@@ -103,25 +128,6 @@ void Timer::startUp()
      false);
   this->sporadic_timer = nh.createTimer(timer_options);
 
-  // Identify the pwd of Node Executable
-  std::string s = node_argv[0];
-  std::string exec_path = s;
-  std::string delimiter = "/";
-  std::string exec, pwd;
-  size_t pos = 0;
-  while ((pos = s.find(delimiter)) != std::string::npos) {
-    exec = s.substr(0, pos);
-    s.erase(0, pos + delimiter.length());
-  }
-  exec = s.substr(0, pos);
-  pwd = exec_path.erase(exec_path.find(exec), exec.length());
-  std::string log_file_path = pwd + nodeName + "." + compName + ".log"; 
-  
-  // Create the log file & open file stream
-  LOGGER.CREATE_FILE(log_file_path);
-  
-  // Establish log levels of LOGGER
-  LOGGER.SET_LOG_LEVELS(logLevels);
 
 
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
@@ -139,7 +145,9 @@ void Timer::startUp()
 
   rosmod::Time now = rosmod::Time::now();
   while ( this->comp_sync_sub.getNumPublishers() < this->num_comps_to_sync &&
-	  (rosmod::Time::now() - now) < rosmod::Duration(comp_sync_timeout) );
+	  (rosmod::Time::now() - now) < rosmod::Duration(comp_sync_timeout) )
+    ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
   this->comp_sync_sub.shutdown();
   this->comp_sync_pub.shutdown();
 
@@ -148,6 +156,8 @@ void Timer::startUp()
   this->sporadic_timer.start();
   
   compQueue.ROSMOD_LOGGER.CREATE_FILE(pwd + "ROSMOD_DEBUG." + nodeName + "." + compName + ".log");
+  compQueue.ROSMOD_LOGGER.SET_PERIODICITY(is_periodic_logging);
+  compQueue.ROSMOD_LOGGER.CHANGE_LOG_SIZE(periodic_log_unit);
 }
 
 extern "C" {
