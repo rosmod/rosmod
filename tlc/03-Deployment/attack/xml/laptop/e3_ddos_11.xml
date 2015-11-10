@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<node name="e3_ddos_11">
+  <component_instance name="e3_sensor_stream_ddos_i">
+    <library name="libe3_sensor_stream_ddos.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="20.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="e3_sensor_stream_ddos_pub">
+      <uuid>19</uuid>
+      <profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,0,0,0
+30,100000000,0,0
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+
