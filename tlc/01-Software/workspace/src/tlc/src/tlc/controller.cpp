@@ -179,6 +179,8 @@ void controller::ryg_state_sub_operation(const tlc::ryg_state::ConstPtr& receive
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::ryg_state_sub_operation");
 #endif
+  // Do some processing to mimic authentication / encryption / decryption
+  usleep(10000);
   // Business Logic for ryg_state_sub_operation
   if (received_data->state.length() && !_id.compare(received_data->intersection_name))
     _current_state = received_data->state;
@@ -195,6 +197,8 @@ void controller::sensor_state_sub_operation(const tlc::sensor_state::ConstPtr& r
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering controller::sensor_state_sub_operation");
 #endif
+  // Do some processing to mimic authentication / encryption / decryption
+  usleep(10000);
   // Business Logic for sensor_state_sub_operation
   if ( _sensor_id_map.find(received_data->sensor_name) != _sensor_id_map.end() )
     {
