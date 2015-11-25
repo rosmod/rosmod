@@ -1,0 +1,8 @@
+prefix=/home/kelsier/Repositories/rosmod-samples/trajectory-planner/01-Software/software/install
+
+Name: trajectory_planning_package
+Description: Description of trajectory_planning_package
+Version: 0.0.0
+Cflags: -I/home/kelsier/Repositories/rosmod-samples/trajectory-planner/01-Software/software/install/include
+Libs: -L/home/kelsier/Repositories/rosmod-samples/trajectory-planner/01-Software/software/install/lib 
+Requires: message_runtime
