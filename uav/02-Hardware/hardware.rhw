@@ -1,0 +1,15 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - Laptop
+hardware Laptop
+{
+  ip_address = "localhost";
+  username = "kelsier";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/kelsier";
+  install_path = "/opt/ros/indigo";
+  arch = x86;
+}
+

@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "uav_package")
+set(uav_package_MAINTAINER "William Emfinger <emfinger@isis.vanderbilt.edu>, Pranav Srinivas Kumar <pkumar@isis.vanderbilt.edu>")
+set(uav_package_DEPRECATED "")
+set(uav_package_VERSION "0.0.0")
+set(uav_package_BUILD_DEPENDS "message_generation" "rosmod" "std_msgs")
+set(uav_package_RUN_DEPENDS "message_runtime" "rosmod" "std_msgs")
+set(uav_package_BUILDTOOL_DEPENDS "catkin")

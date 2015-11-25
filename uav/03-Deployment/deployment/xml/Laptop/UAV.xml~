@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<node name="UAV">
+  <component_instance name="Data_Acquisition_Module_i">
+    <library name="libData_Acquisition_Module.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+      <debug setting="False"/>
+      <info setting="False"/>
+      <warning setting="False"/>
+      <error setting="False"/>
+      <critical setting="False"/>
+    </logging>
+    <port name="sensor_state_publisher">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Main_Controller_i">
+    <library name="libMain_Controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+      <debug setting="False"/>
+      <info setting="False"/>
+      <warning setting="False"/>
+      <error setting="False"/>
+      <critical setting="False"/>
+    </logging>
+    <port name="control_command_publisher">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_state_subscriber">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Servo_Actuator_i">
+    <library name="libServo_Actuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+      <debug setting="False"/>
+      <info setting="False"/>
+      <warning setting="False"/>
+      <error setting="False"/>
+      <critical setting="False"/>
+    </logging>
+    <port name="control_command_subscriber">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="2">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+
