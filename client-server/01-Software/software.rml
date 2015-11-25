@@ -1,0 +1,31 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - client_server_package
+package client_server_package
+{
+  // ROSMOD Component - Client
+  component Client : Base 
+  {
+    // ROSMOD Client - client_port
+    client <client_server_package/Power> client_port;
+    // ROSMOD Timer - client_timer
+    timer client_timer 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 3.0;
+    }       
+  }
+  // ROSMOD Component - Server
+  component Server : Base 
+  {
+    // ROSMOD Server - server_port
+    server <client_server_package/Power> server_port 
+    {
+      priority = 50;
+      deadline = 2.0;
+    }       
+  }
+}

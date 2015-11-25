@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "client_server_package")
+set(client_server_package_MAINTAINER "William Emfinger <emfinger@isis.vanderbilt.edu>, Pranav Srinivas Kumar <pkumar@isis.vanderbilt.edu>")
+set(client_server_package_DEPRECATED "")
+set(client_server_package_VERSION "0.0.0")
+set(client_server_package_BUILD_DEPENDS "message_generation" "rosmod" "std_msgs")
+set(client_server_package_RUN_DEPENDS "message_runtime" "rosmod" "std_msgs")
+set(client_server_package_BUILDTOOL_DEPENDS "catkin")
