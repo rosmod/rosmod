@@ -1,0 +1,53 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec422287692/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec422287692.dir/build.make CMakeFiles/cmTryCompileExec422287692.dir/build
+make[1]: Entering directory `/home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec422287692.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec422287692.dir/CheckSymbolExists.c.o   -c /home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec422287692
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec422287692.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTryCompileExec422287692.dir/CheckSymbolExists.c.o  -o cmTryCompileExec422287692 -rdynamic 
+CMakeFiles/cmTryCompileExec422287692.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make[1]: Leaving directory `/home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec422287692] Error 1
+make: *** [cmTryCompileExec422287692/fast] Error 2
+
+File /home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3451805909/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3451805909.dir/build.make CMakeFiles/cmTryCompileExec3451805909.dir/build
+make[1]: Entering directory `/home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3451805909.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec3451805909.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec3451805909
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3451805909.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec3451805909.dir/CheckFunctionExists.c.o  -o cmTryCompileExec3451805909 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[1]: Leaving directory `/home/kelsier/Repositories/rosmod-samples/timer/01-Software/software/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec3451805909] Error 1
+make: *** [cmTryCompileExec3451805909/fast] Error 2
+
+

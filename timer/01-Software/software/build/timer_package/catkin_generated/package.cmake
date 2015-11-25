@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "timer_package")
+set(timer_package_MAINTAINER "William Emfinger <emfinger@isis.vanderbilt.edu>, Pranav Srinivas Kumar <pkumar@isis.vanderbilt.edu>")
+set(timer_package_DEPRECATED "")
+set(timer_package_VERSION "0.0.0")
+set(timer_package_BUILD_DEPENDS "message_generation" "rosmod" "std_msgs")
+set(timer_package_RUN_DEPENDS "message_runtime" "rosmod" "std_msgs")
+set(timer_package_BUILDTOOL_DEPENDS "catkin")
