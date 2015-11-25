@@ -1,0 +1,2 @@
+node:three_component_example
+-DNAMESPACE=rosmod -DCATKIN_DEVEL_PREFIX=/home/kelsier/Repositories/rosmod-samples/three-components/01-Software/software/devel -DCMAKE_INSTALL_PREFIX=/home/kelsier/Repositories/rosmod-samples/three-components/01-Software/software/install -G Unix Makefiles

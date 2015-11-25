@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "three_component_example")
+set(three_component_example_MAINTAINER "William Emfinger <emfinger@isis.vanderbilt.edu>, Pranav Srinivas Kumar <pkumar@isis.vanderbilt.edu>")
+set(three_component_example_DEPRECATED "")
+set(three_component_example_VERSION "0.0.0")
+set(three_component_example_BUILD_DEPENDS "message_generation" "rosmod" "std_msgs")
+set(three_component_example_RUN_DEPENDS "message_runtime" "rosmod" "std_msgs")
+set(three_component_example_BUILDTOOL_DEPENDS "catkin")

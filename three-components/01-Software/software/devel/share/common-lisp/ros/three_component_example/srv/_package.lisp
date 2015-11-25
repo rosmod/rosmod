@@ -1,0 +1,10 @@
+(cl:defpackage three_component_example-srv
+  (:use )
+  (:export
+   "COMPONENTSERVICE"
+   "<COMPONENTSERVICE-REQUEST>"
+   "COMPONENTSERVICE-REQUEST"
+   "<COMPONENTSERVICE-RESPONSE>"
+   "COMPONENTSERVICE-RESPONSE"
+  ))
+
