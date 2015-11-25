@@ -1,0 +1,8 @@
+prefix=/home/kelsier/Repositories/rosmod-samples/publish-subscribe/01-Software/software/devel
+
+Name: publish_subscribe_package
+Description: Description of publish_subscribe_package
+Version: 0.0.0
+Cflags: -I/home/kelsier/Repositories/rosmod-samples/publish-subscribe/01-Software/software/devel/include
+Libs: -L/home/kelsier/Repositories/rosmod-samples/publish-subscribe/01-Software/software/devel/lib 
+Requires: message_runtime

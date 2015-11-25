@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "node")
+set(node_MAINTAINER "William Emfinger <emfinger@isis.vanderbilt.edu>, Pranav Srinivas Kumar <pkumar@isis.vanderbilt.edu>")
+set(node_DEPRECATED "")
+set(node_VERSION "0.0.0")
+set(node_BUILD_DEPENDS "message_generation" "rosmod" "std_msgs")
+set(node_RUN_DEPENDS "message_runtime" "rosmod" "std_msgs")
+set(node_BUILDTOOL_DEPENDS "catkin")

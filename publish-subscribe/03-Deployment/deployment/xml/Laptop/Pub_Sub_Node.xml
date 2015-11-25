@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<node name="Pub_Sub_Node">
+  <component_instance name="Publisher_instance">
+    <library name="libPublisher.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="publisher_port">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Subscriber_Instance">
+    <library name="libPublisher.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="publisher_port">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+
