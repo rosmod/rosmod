@@ -11,10 +11,11 @@ void led_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering led_controller::init_timer_operation");
 #endif
   // Initialize Here
-  numLEDs = 0;  // if using USR LEDs, use 0-3, else use real pin values
+  numLEDs = 4;  // if using USR LEDs, use 0-3, else use real pin values
   led_num = 0;
   useGPIO = true;
   invert = false;
+  float delayTime;
  
   bool start = false;
   
@@ -40,6 +41,10 @@ void led_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  useGPIO = false;
 	}
+      if (!strcmp(node_argv[i], "--delay"))
+	{
+	  delayTime = atof(node_argv[i+1]);
+	}
     }
 
   if (start)
@@ -48,7 +53,7 @@ void led_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	for (int i = 0; i < numLEDs; i++)
 	  led_set_value(i, HIGH);
 
-      ros::Duration(0.5).sleep();
+      ros::Duration(delayTime).sleep();
 
       if (useGPIO)
 	for (int i = 0; i < numLEDs; i++)
@@ -57,6 +62,7 @@ void led_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
       sequential_leds_app::led_state nextLEDState;
       nextLEDState.pin = numLEDs;
       nextLEDState.led_num = led_num + 1;
+      nextLEDState.delay = delayTime;
       led_state_pub.publish(nextLEDState);
     }
   if (useGPIO)
@@ -78,29 +84,29 @@ void led_controller::led_state_sub_operation(const sequential_leds_app::led_stat
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering led_controller::led_state_sub_operation");
+#endif
+  // Business Logic for led_state_sub_operation
   if ( received_data->led_num == led_num )
     {
       if (useGPIO)
-	for (int i = 0; i < numLEDs; i++)
+	for (int i = 0; i < received_data->pin; i++)
 	  led_set_value(i, HIGH);
       
-      ros::Duration(0.5).sleep();
+      ros::Duration(received_data->delay).sleep();
 
       if (useGPIO)
-	for (int i = 0; i < numLEDs; i++)
+	for (int i = 0; i < received_data->pin; i++)
 	  led_set_value(i, LOW);
       
       sequential_leds_app::led_state nextLEDState;
       nextLEDState.pin = numLEDs;
+      nextLEDState.delay = received_data->delay;
       if (!invert)
 	nextLEDState.led_num = led_num + 1;
       else
 	nextLEDState.led_num = 0;
       led_state_pub.publish(nextLEDState);
     }
-#endif
-  // Business Logic for led_state_sub_operation
-
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting led_controller::led_state_sub_operation");

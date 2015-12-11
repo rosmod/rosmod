@@ -9,6 +9,7 @@ hardware local_machine
   username = "jeb";
   sshkey = "~/.ssh/id_rsa"; 
   deployment_path = "/home/jeb/";
+  install_path = "";
   arch = x64;
 }
 

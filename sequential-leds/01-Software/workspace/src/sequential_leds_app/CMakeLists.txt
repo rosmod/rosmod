@@ -183,7 +183,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_library(led_controller
             src/sequential_leds_app/led_controller.cpp
             ## Start led_controller CPP Marker
-
+	    src/gpio/gpio.cpp
             ## End led_controller CPP Marker
            )
 target_link_libraries(led_controller
