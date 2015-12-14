@@ -1,6 +1,24 @@
 #include "sequential_leds_app/led_controller.hpp"
 
 //# Start User Globals Marker
+void led_mode(std::string mode, int leds, float delay)
+{
+  static PIN_VALUE ledState = LOW;
+  if ( mode == "toggle" )
+    {
+      ledState = (ledState == HIGH) ? LOW : HIGH;
+    }
+  for (int i = 0; i < leds; i++)
+    led_set_value(i, ledState);
+  if ( mode == "blink" )
+    {
+      ros::Duration(0.5).sleep();
+      ledState = (ledState == HIGH) ? LOW : HIGH;
+      for (int i = 0; i < leds; i++)
+	led_set_value(i, ledState);
+      ledState = (ledState == HIGH) ? LOW : HIGH; // set up for next execution
+    }
+}
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,10 +29,13 @@ void led_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering led_controller::init_timer_operation");
 #endif
   // Initialize Here
-  numLEDs = 4;  // if using USR LEDs, use 0-3, else use real pin values
   led_num = 0;
   useGPIO = true;
   invert = false;
+  publish = false;
+
+  unsigned int numLEDs = 4;  // if using USR LEDs, use 0-3, else use real pin values
+  std::string mode = "toggle";
   float delayTime;
  
   bool start = false;
@@ -45,24 +66,26 @@ void led_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  delayTime = atof(node_argv[i+1]);
 	}
+      if (!strcmp(node_argv[i], "--publish"))
+	{
+	  publish = true;
+	}
+      if (!strcmp(node_argv[i], "--mode"))
+	{
+	  mode = node_argv[i+1];
+	}
     }
 
   if (start)
     {
       if (useGPIO)
-	for (int i = 0; i < numLEDs; i++)
-	  led_set_value(i, HIGH);
-
-      ros::Duration(delayTime).sleep();
-
-      if (useGPIO)
-	for (int i = 0; i < numLEDs; i++)
-	  led_set_value(i, LOW);
+	led_mode(mode, numLEDs, delayTime);
 
       sequential_leds_app::led_state nextLEDState;
-      nextLEDState.pin = numLEDs;
+      nextLEDState.numLEDs = numLEDs;
       nextLEDState.led_num = led_num + 1;
       nextLEDState.delay = delayTime;
+      nextLEDState.mode = mode;
       led_state_pub.publish(nextLEDState);
     }
   if (useGPIO)
@@ -89,23 +112,22 @@ void led_controller::led_state_sub_operation(const sequential_leds_app::led_stat
   if ( received_data->led_num == led_num )
     {
       if (useGPIO)
-	for (int i = 0; i < received_data->pin; i++)
-	  led_set_value(i, HIGH);
+	led_mode(received_data->mode, 
+		 received_data->numLEDs, 
+		 received_data->delay);
       
-      ros::Duration(received_data->delay).sleep();
-
-      if (useGPIO)
-	for (int i = 0; i < received_data->pin; i++)
-	  led_set_value(i, LOW);
-      
-      sequential_leds_app::led_state nextLEDState;
-      nextLEDState.pin = numLEDs;
-      nextLEDState.delay = received_data->delay;
-      if (!invert)
-	nextLEDState.led_num = led_num + 1;
-      else
-	nextLEDState.led_num = 0;
-      led_state_pub.publish(nextLEDState);
+      if (publish)
+	{
+	  sequential_leds_app::led_state nextLEDState;
+	  nextLEDState.numLEDs = received_data->numLEDs;
+	  nextLEDState.delay = received_data->delay;
+	  nextLEDState.mode = received_data->mode;
+	  if (!invert)
+	    nextLEDState.led_num = led_num + 1;
+	  else
+	    nextLEDState.led_num = 0;
+	  led_state_pub.publish(nextLEDState);
+	}
     }
   
 #ifdef USE_ROSMOD

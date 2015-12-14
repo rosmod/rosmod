@@ -51,8 +51,8 @@ private:
   //# Start User Private Variables Marker
   unsigned int led_num;
   bool invert;
-  unsigned int numLEDs;
   bool useGPIO;
+  bool publish;
   //# End User Private Variables Marker
 };
 
