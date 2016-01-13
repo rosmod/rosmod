@@ -6,6 +6,8 @@ $hash_include <cstdlib>
 $hash_include <signal.h>
 $hash_include <boost/thread.hpp>
 $hash_include "node/Component.hpp"
+$hash_include "pthread.h"
+$hash_include "sched.h"
 
 \#ifdef USE_ROSMOD
   \#include "rosmod/rosmod_ros.h"
@@ -25,6 +27,36 @@ std::vector<boost::thread*> compThreads;
 
 int main(int argc, char **argv)
 {
+
+  int ret;
+  pthread_t this_thread = pthread_self(); 
+
+  // struct sched_param is used to store the scheduling priority
+  struct sched_param params;     
+  // We'll set the priority to the maximum.     
+  params.sched_priority = sched_get_priority_max(SCHED_RR);
+
+  std::cout << "Trying to set thread realtime prio = " << 
+  params.sched_priority << std::endl; 
+     
+  // Attempt to set thread real-time priority to the SCHED_FIFO policy     
+  ret = pthread_setschedparam(this_thread, SCHED_RR, &params);     
+  if (ret != 0)
+    std::cout << "Unsuccessful in setting thread realtime prio" << std::endl;
+
+  // Now verify the change in thread priority     
+  int policy = 0;     
+  ret = pthread_getschedparam(this_thread, &policy, &params);     
+  if (ret != 0)          
+    std::cout << "Couldn't retrieve real-time scheduling paramers" << std::endl;      
+  // Check the correct policy was applied     
+  if(policy != SCHED_RR)         
+    std::cout << "Scheduling is NOT SCHED_RR!" << std::endl;     
+  else
+    std::cout << "SCHED_RR OK" << std::endl;     
+  // Print thread scheduling priority     
+  std::cout << "Thread priority is " << params.sched_priority << std::endl;
+  
   std::string nodeName = "node";
   std::string hostName = "localhost";
   std::string configFile = "";
