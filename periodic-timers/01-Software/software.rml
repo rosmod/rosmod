@@ -1,0 +1,88 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - periodic_timers
+package periodic_timers
+{
+  // ROSMOD Component - Component_1
+  component Component_1 : Base 
+  {
+    // ROSMOD Timer - Timer_1
+    timer Timer_1 
+    {
+	period = 5.0;
+	priority = 50;
+	deadline = 2.0;
+    }       
+  }
+  // ROSMOD Component - Component_2
+  component Component_2 : Base 
+  {
+    // ROSMOD Timer - Timer_2
+    timer Timer_2 
+    {
+	period = 2.5;
+	priority = 60;
+	deadline = 1.0;
+    }       
+  }
+  // ROSMOD Component - Component_3
+  component Component_3 : Base 
+  {
+    // ROSMOD Timer - Timer_3
+    timer Timer_3 
+    {
+	period = 1.0;
+	priority = 70;
+	deadline = 0.5;
+    }       
+  }
+  // ROSMOD Component - Component_4
+  component Component_4 : Base 
+  {
+    // ROSMOD Timer - Timer_4
+    timer Timer_4 
+    {
+	period = 0.5;
+	priority = 75;
+	deadline = 0.25;
+    }       
+  }
+  // ROSMOD Component - Component_5
+  component Component_5 : Base 
+  {
+    // ROSMOD Timer - Timer_5
+    timer Timer_5 
+    {
+	period = 0.1;
+	priority = 80;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - All_Timers
+  component All_Timers : Base 
+  {
+    // ROSMOD Timer - Timer_1
+    timer Timer_1 
+    {
+	period = 5.0;
+	priority = 50;
+	deadline = 2.5;
+    }       
+    // ROSMOD Timer - Timer_2
+    timer Timer_2 
+    {
+	period = 2.5;
+	priority = 60;
+	deadline = 1.0;
+    }       
+    // ROSMOD Timer - Timer_3
+    timer Timer_3 
+    {
+	period = 1.0;
+	priority = 70;
+	deadline = 0.5;
+    }       
+  }
+}
