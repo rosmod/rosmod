@@ -1,8 +1,0 @@
-prefix=/home/kelsier/Repositories/rosmod-samples/three-components/01-Software/software/devel
-
-Name: three_component_example
-Description: Description of three_component_example
-Version: 0.0.0
-Cflags: -I/home/kelsier/Repositories/rosmod-samples/three-components/01-Software/software/devel/include
-Libs: -L/home/kelsier/Repositories/rosmod-samples/three-components/01-Software/software/devel/lib 
-Requires: message_runtime

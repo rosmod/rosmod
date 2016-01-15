@@ -22,12 +22,19 @@ void Component_3::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Timer Callback - Timer_3
 //# Start Timer_3_operation Marker
+#pragma optimize( "", off )
 void Component_3::Timer_3_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_3::Timer_3_operation");
 #endif
   // Business Logic for Timer_3_operation
+  for(int i=0; i < 500000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   three_component_example::ComponentService srv;
   srv.request.operation = "GetComponentName";
   logger->log("INFO", 
@@ -43,6 +50,7 @@ void Component_3::Timer_3_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Component_3::Timer_3_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End Timer_3_operation Marker
 
 

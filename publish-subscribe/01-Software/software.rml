@@ -13,9 +13,9 @@ package publish_subscribe_package
     // ROSMOD Timer - publish_timer
     timer publish_timer 
     {
-	period = 0.5;
+	period = 2.0;
 	priority = 50;
-	deadline = 2.00;
+	deadline = 1.0;
     }       
   }
   // ROSMOD Component - Subscriber

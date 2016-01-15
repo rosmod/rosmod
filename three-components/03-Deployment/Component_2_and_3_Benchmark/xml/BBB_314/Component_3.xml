@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<node name="Component_3">
+  <component_instance name="Component_3">
+    <library name="libComponent_3.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="25.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+</node>
+

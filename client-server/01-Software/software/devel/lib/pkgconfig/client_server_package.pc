@@ -1,8 +1,0 @@
-prefix=/home/kelsier/Repositories/rosmod-samples/client-server/01-Software/software/devel
-
-Name: client_server_package
-Description: Description of client_server_package
-Version: 0.0.0
-Cflags: -I/home/kelsier/Repositories/rosmod-samples/client-server/01-Software/software/devel/include
-Libs: -L/home/kelsier/Repositories/rosmod-samples/client-server/01-Software/software/devel/lib 
-Requires: message_runtime

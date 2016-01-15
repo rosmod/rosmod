@@ -1,8 +1,0 @@
-FILE(REMOVE_RECURSE
-  "CMakeFiles/_client_server_package_generate_messages_check_deps_Power"
-)
-
-# Per-language clean rules from dependency scanning.
-FOREACH(lang)
-  INCLUDE(CMakeFiles/_client_server_package_generate_messages_check_deps_Power.dir/cmake_clean_${lang}.cmake OPTIONAL)
-ENDFOREACH(lang)

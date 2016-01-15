@@ -24,14 +24,23 @@ void Component_1::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+
+
 // Subscriber Operation - Name_Subscriber
 //# Start Name_Subscriber_operation Marker
+#pragma optimize( "", off )
 void Component_1::Name_Subscriber_operation(const three_component_example::ComponentName::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_1::Name_Subscriber_operation");
 #endif
   // Business Logic for Name_Subscriber_operation
+  for(int i=0; i < 700000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
   three_component_example::ComponentName compName;
   compName.name = "Component_1";
   logger->log("INFO", 
@@ -41,21 +50,30 @@ void Component_1::Name_Subscriber_operation(const three_component_example::Compo
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Component_1::Name_Subscriber_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End Name_Subscriber_operation Marker
 
 // Timer Callback - Timer_1
 //# Start Timer_1_operation Marker
+#pragma optimize( "", off )
 void Component_1::Timer_1_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_1::Timer_1_operation");
 #endif
   // Business Logic for Timer_1_operation
+  for(int i=0; i < 500000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
   logger->log("INFO", "Component_1::Timer_1::Timer Callback has been triggered!");
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Component_1::Timer_1_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End Timer_1_operation Marker
 
 

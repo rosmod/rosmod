@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node name="Publisher_Node_313">
+  <component_instance name="Publisher">
+    <library name="libPublisher.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="2"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="publisher_port">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

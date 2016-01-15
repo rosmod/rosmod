@@ -19,14 +19,23 @@ void Subscriber::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+
+
 // Subscriber Operation - subscriber_port
 //# Start subscriber_port_operation Marker
+#pragma optimize( "", off )
 void Subscriber::subscriber_port_operation(const publish_subscribe_package::Message::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Subscriber::subscriber_port_operation");
 #endif
   // Business Logic for subscriber_port_operation
+  for(int i=0; i < 2800000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  } 
   logger->log("INFO", "Subscriber::Subscriber_Port::Received Message - %s", 
 	      received_data->name.c_str()); 
   
@@ -34,6 +43,7 @@ void Subscriber::subscriber_port_operation(const publish_subscribe_package::Mess
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Subscriber::subscriber_port_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End subscriber_port_operation Marker
 
 

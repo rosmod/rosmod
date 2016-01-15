@@ -39,8 +39,8 @@ package three_component_example
     timer Timer_2 
     {
 	period = 1.0;
-	priority = 50;
-	deadline = 0.200;
+	priority = 60;
+	deadline = 0.2;
     }       
   }
   // ROSMOD Component - Component_3

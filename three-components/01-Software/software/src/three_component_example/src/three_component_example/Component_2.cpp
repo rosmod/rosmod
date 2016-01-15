@@ -22,6 +22,7 @@ void Component_2::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Server Operation - Service_Server
 //# Start ComponentService_operation Marker
+#pragma optimize( "", off )
 bool Component_2::ComponentService_operation(three_component_example::ComponentService::Request  &req,
   three_component_example::ComponentService::Response &res)
 {
@@ -29,6 +30,12 @@ bool Component_2::ComponentService_operation(three_component_example::ComponentS
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_2::ComponentService_operation");
 #endif
   // Business Logic for Service_Server_operation
+  for(int i=0; i < 600000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   three_component_example::ComponentName compName;
   compName.name = "Component_2";
   res.name = compName.name;
@@ -40,16 +47,24 @@ bool Component_2::ComponentService_operation(three_component_example::ComponentS
 #endif
   return true;
 }
+#pragma optimize( "", on )
 //# End ComponentService_operation Marker
 
 // Timer Callback - Timer_2
 //# Start Timer_2_operation Marker
+#pragma optimize( "", off )
 void Component_2::Timer_2_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_2::Timer_2_operation");
 #endif
   // Business Logic for Timer_2_operation
+  for(int i=0; i < 800000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   three_component_example::ComponentName compName;
   compName.name = "Component_2";
   logger->log("INFO", 
@@ -59,6 +74,7 @@ void Component_2::Timer_2_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Component_2::Timer_2_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End Timer_2_operation Marker
 
 
@@ -191,7 +207,7 @@ void Component_2::startUp()
   this->init_timer.stop();
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_2_operation";
-  callback_options.priority = 50;
+  callback_options.priority = 60;
   callback_options.deadline.sec = 0;
   callback_options.deadline.nsec = 200000000;
 #endif

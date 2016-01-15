@@ -22,12 +22,19 @@ void Publisher::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Timer Callback - publish_timer
 //# Start publish_timer_operation Marker
+#pragma optimize( "", off )
 void Publisher::publish_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Publisher::publish_timer_operation");
 #endif
   // Business Logic for publish_timer_operation
+  for(int i=0; i < 2800000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
   publish_subscribe_package::Message message_;
   message_.name = "Publisher";
   publisher_port.publish(message_);
@@ -36,6 +43,7 @@ void Publisher::publish_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Publisher::publish_timer_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End publish_timer_operation Marker
 
 
@@ -145,13 +153,13 @@ void Publisher::startUp()
 #ifdef USE_ROSMOD   
   callback_options.alias = "publish_timer_operation";
   callback_options.priority = 50;
-  callback_options.deadline.sec = 2;
+  callback_options.deadline.sec = 1;
   callback_options.deadline.nsec = 0;
 #endif
   // Component Timer - publish_timer
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.5),
+    (ros::Duration(2.0),
      boost::bind(&Publisher::publish_timer_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
