@@ -24,6 +24,7 @@ void Servo_Actuator::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Subscriber Operation - control_command_subscriber
 //# Start control_command_subscriber_operation Marker
+#pragma optimize( "", off )
 void Servo_Actuator::control_command_subscriber_operation(const uav_package::control_command::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
@@ -32,11 +33,18 @@ void Servo_Actuator::control_command_subscriber_operation(const uav_package::con
   // Business Logic for control_command_subscriber_operation
   logger->log("DEBUG", "Received new command! [%f %f]", received_data->newHeading,
 	      received_data->newAltitude);
-  usleep(6000);
+  for(int i=0; i < 75000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
+  
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Servo_Actuator::control_command_subscriber_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End control_command_subscriber_operation Marker
 
 

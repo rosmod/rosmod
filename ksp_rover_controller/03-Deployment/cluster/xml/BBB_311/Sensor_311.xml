@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<node name="Sensor_311">
+  <library name="libKRPCI.so"/>
+  <component_instance name="Sensor">
+    <library name="libsensor.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="vessel_state_pub">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

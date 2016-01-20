@@ -2,7 +2,7 @@
 <node name="All_Timers_Node_312">
   <component_instance name="All_Timers">
     <library name="libAll_Timers.so"/>
-    <scheduling_scheme setting="PFIFO"/>
+    <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="1"/>
     <syncTimeout setting="100.0"/>
     <logging>

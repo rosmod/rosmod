@@ -3,7 +3,7 @@
   <component_instance name="Component_1">
     <library name="libComponent_1.so"/>
     <scheduling_scheme setting="PFIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="5"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
@@ -13,7 +13,7 @@
   <component_instance name="Component_2">
     <library name="libComponent_2.so"/>
     <scheduling_scheme setting="PFIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="5"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
@@ -23,7 +23,7 @@
   <component_instance name="Component_3">
     <library name="libComponent_3.so"/>
     <scheduling_scheme setting="PFIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="5"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
@@ -33,7 +33,7 @@
   <component_instance name="Component_4">
     <library name="libComponent_4.so"/>
     <scheduling_scheme setting="PFIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="5"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
@@ -43,7 +43,7 @@
   <component_instance name="Component_5">
     <library name="libComponent_5.so"/>
     <scheduling_scheme setting="PFIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="5"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>

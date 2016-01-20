@@ -84,5 +84,19 @@ package periodic_timers
 	priority = 70;
 	deadline = 0.5;
     }       
+    // ROSMOD Timer - Timer_4
+    timer Timer_4 
+    {
+	period = 0.5;
+	priority = 75;
+	deadline = 0.25;
+    }       
+    // ROSMOD Timer - Timer_5
+    timer Timer_5 
+    {
+	period = 0.1;
+	priority = 80;
+	deadline = 0.05;
+    }       
   }
 }

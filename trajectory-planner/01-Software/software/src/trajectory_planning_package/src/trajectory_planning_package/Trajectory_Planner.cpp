@@ -132,8 +132,8 @@ void Trajectory_Planner::startUp()
 #ifdef USE_ROSMOD 
   callback_options.alias = "state_subscriber_operation";
   callback_options.priority = 50;
-  callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 500000000;
+  callback_options.deadline.sec = 1;
+  callback_options.deadline.nsec = 0;
 #endif  
   // Component Subscriber - state_subscriber
   advertiseName = "sensor_reading";

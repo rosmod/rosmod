@@ -1,8 +1,0 @@
-prefix=/home/kelsier/Repositories/cpn-timing-analysis/tests/uav/UAV_ROSMOD/01-Software/workspace/install
-
-Name: uav_package
-Description: Description of uav_package
-Version: 0.0.0
-Cflags: -I/home/kelsier/Repositories/cpn-timing-analysis/tests/uav/UAV_ROSMOD/01-Software/workspace/install/include
-Libs: -L/home/kelsier/Repositories/cpn-timing-analysis/tests/uav/UAV_ROSMOD/01-Software/workspace/install/lib 
-Requires: message_runtime

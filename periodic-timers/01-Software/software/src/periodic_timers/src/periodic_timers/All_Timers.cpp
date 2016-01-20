@@ -84,6 +84,50 @@ void All_Timers::Timer_3_operation(const NAMESPACE::TimerEvent& event)
 }
 #pragma optimize( "", on )
 //# End Timer_3_operation Marker
+// Timer Callback - Timer_4
+//# Start Timer_4_operation Marker
+#pragma optimize( "", off )
+void All_Timers::Timer_4_operation(const NAMESPACE::TimerEvent& event)
+{
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_4_operation");
+#endif
+  // Business Logic for Timer_4_operation
+  for(int i=0; i < 2800000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
+  
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting All_Timers::Timer_4_operation");
+#endif
+}
+#pragma optimize( "", on )
+//# End Timer_4_operation Marker
+// Timer Callback - Timer_5
+//# Start Timer_5_operation Marker
+#pragma optimize( "", off )
+void All_Timers::Timer_5_operation(const NAMESPACE::TimerEvent& event)
+{
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_5_operation");
+#endif
+  // Business Logic for Timer_5_operation
+  for(int i=0; i < 500000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
+  
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting All_Timers::Timer_5_operation");
+#endif
+}
+#pragma optimize( "", on )
+//# End Timer_5_operation Marker
 
 
 // Destructor - Cleanup Ports & Timers
@@ -92,6 +136,8 @@ All_Timers::~All_Timers()
   Timer_1.stop();
   Timer_2.stop();
   Timer_3.stop();
+  Timer_4.stop();
+  Timer_5.stop();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
@@ -237,12 +283,50 @@ void All_Timers::startUp()
      false,
      false);
   this->Timer_3 = nh.createTimer(timer_options);
+#ifdef USE_ROSMOD   
+  callback_options.alias = "Timer_4_operation";
+  callback_options.priority = 75;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 250000000;
+#endif
+  // Component Timer - Timer_4
+  timer_options = 
+    NAMESPACE::TimerOptions
+    (ros::Duration(0.5),
+     boost::bind(&All_Timers::Timer_4_operation, this, _1),
+     &this->comp_queue,
+#ifdef USE_ROSMOD     
+     callback_options,
+#endif 
+     false,
+     false);
+  this->Timer_4 = nh.createTimer(timer_options);
+#ifdef USE_ROSMOD   
+  callback_options.alias = "Timer_5_operation";
+  callback_options.priority = 80;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 50000000;
+#endif
+  // Component Timer - Timer_5
+  timer_options = 
+    NAMESPACE::TimerOptions
+    (ros::Duration(0.1),
+     boost::bind(&All_Timers::Timer_5_operation, this, _1),
+     &this->comp_queue,
+#ifdef USE_ROSMOD     
+     callback_options,
+#endif 
+     false,
+     false);
+  this->Timer_5 = nh.createTimer(timer_options);
 
 
   this->init_timer.start();
   this->Timer_1.start();
   this->Timer_2.start();
   this->Timer_3.start();
+  this->Timer_4.start();
+  this->Timer_5.start();
 }
 
 extern "C" {

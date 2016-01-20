@@ -3,8 +3,8 @@
   <component_instance name="led_controller_Instance">
     <library name="libled_controller.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="31"/>
-    <syncTimeout setting="10.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="15.0"/>
     <logging>
       <is_periodic_logging setting="False"/>
       <periodic_log_unit setting="1000"/> 

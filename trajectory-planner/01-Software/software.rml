@@ -12,7 +12,7 @@ package trajectory_planning_package
     server <trajectory_planning_package/compute> trajectory_server 
     {
       priority = 50;
-      deadline = 0.600;
+      deadline = 0.6;
     }       
     // ROSMOD Publisher - state_publisher
     publisher <trajectory_planning_package/sensor_reading> state_publisher;
@@ -21,7 +21,7 @@ package trajectory_planning_package
     {
 	period = 1.0;
 	priority = 50;
-	deadline = 0.400;
+	deadline = 0.4;
     }       
   }
   // ROSMOD Component - Trajectory_Planner
@@ -33,7 +33,7 @@ package trajectory_planning_package
     subscriber <trajectory_planning_package/sensor_reading> state_subscriber 
     {
       priority = 50;
-      deadline = 0.500;
+      deadline = 1.0;
     }       
   }
 }

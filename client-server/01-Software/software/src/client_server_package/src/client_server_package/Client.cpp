@@ -23,12 +23,19 @@ void Client::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Timer Callback - client_timer
 //# Start client_timer_operation Marker
+#pragma optimize( "", off )
 void Client::client_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Client::client_timer_operation");
 #endif
   // Business Logic for client_timer_operation
+  for(int i=0; i < 4200000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   client_server_package::Power power_function;
   power_function.request.base = float(rand() % 10);
   power_function.request.exponent = float(rand() % 10);
@@ -46,6 +53,7 @@ void Client::client_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Client::client_timer_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End client_timer_operation Marker
 
 
@@ -161,7 +169,7 @@ void Client::startUp()
   // Component Timer - client_timer
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(1.0),
+    (ros::Duration(5.0),
      boost::bind(&Client::client_timer_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     

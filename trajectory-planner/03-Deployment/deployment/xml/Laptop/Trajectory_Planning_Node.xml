@@ -3,11 +3,11 @@
   <component_instance name="Sensor_Instance">
     <library name="libSensor.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="2"/>
     <syncTimeout setting="100.0"/>
     <logging>
-      <is_periodic_logging setting="False"/>
-      <periodic_log_unit setting=""/> 
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
     </logging>
     <port name="state_publisher">
       <uuid>0</uuid>
@@ -19,7 +19,7 @@
   <component_instance name="Trajectory_Planner_Instance">
     <library name="libTrajectory_Planner.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="2"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>

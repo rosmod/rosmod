@@ -24,6 +24,7 @@ void Main_Controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Subscriber Operation - sensor_state_subscriber
 //# Start sensor_state_subscriber_operation Marker
+#pragma optimize( "", off )
 void Main_Controller::sensor_state_subscriber_operation(const uav_package::sensor_state::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
@@ -36,7 +37,12 @@ void Main_Controller::sensor_state_subscriber_operation(const uav_package::senso
 	      received_data->speed, received_data->altitude); 
 
   unsigned int compute_time_us = 46000;
-  usleep(compute_time_us);
+  for(int i=0; i < 600000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   uav_package::control_command new_command;
   new_command.newHeading =  static_cast <float> (rand()) / 
     (static_cast <float> (RAND_MAX/(360.0)));
@@ -45,12 +51,18 @@ void Main_Controller::sensor_state_subscriber_operation(const uav_package::senso
   int new_state = rand() % 4;
   new_command.command = "State" + std::to_string(new_state);
   control_command_publisher.publish(new_command);
-  usleep(2000); 
+  for(int i=0; i < 25000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Main_Controller::sensor_state_subscriber_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End sensor_state_subscriber_operation Marker
 
 

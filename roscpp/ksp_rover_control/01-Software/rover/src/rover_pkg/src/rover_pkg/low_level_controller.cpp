@@ -74,8 +74,6 @@ void low_level_controller::Init(const ros::TimerEvent& event)
 }
 //# End Init Marker
 
-
-
 // Subscriber Callback - vessel_state_sub
 //# Start vessel_state_sub_OnOneData Marker
 void low_level_controller::vessel_state_sub_OnOneData(const rover_pkg::vessel_state::ConstPtr& received_data)

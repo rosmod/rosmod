@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<node name="Actuator_312">
+  <library name="libKRPCI.so"/>
+  <component_instance name="Actuator">
+    <library name="libactuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_sub">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

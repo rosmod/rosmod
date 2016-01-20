@@ -13,7 +13,7 @@ package client_server_package
     // ROSMOD Timer - client_timer
     timer client_timer 
     {
-	period = 1.0;
+	period = 5.0;
 	priority = 50;
 	deadline = 3.0;
     }       

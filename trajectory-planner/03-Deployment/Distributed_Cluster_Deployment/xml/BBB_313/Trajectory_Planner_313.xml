@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<node name="Trajectory_Planner_313">
+  <component_instance name="Trajectory_Planner">
+    <library name="libTrajectory_Planner.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="state_subscriber">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

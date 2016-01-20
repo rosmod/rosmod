@@ -23,6 +23,7 @@ void Server::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Server Operation - server_port
 //# Start Power_operation Marker
+#pragma optimize( "", off )
 bool Server::Power_operation(client_server_package::Power::Request  &req,
   client_server_package::Power::Response &res)
 {
@@ -31,11 +32,18 @@ bool Server::Power_operation(client_server_package::Power::Request  &req,
 #endif
   // Business Logic for server_port_operation
   res.result = pow(req.base, req.exponent);
+  for(int i=0; i < 12000000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Server::Power_operation");
 #endif
   return true;
 }
+#pragma optimize( "", on )
 //# End Power_operation Marker
 
 

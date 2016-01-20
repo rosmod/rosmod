@@ -37,6 +37,12 @@ public:
   // Timer Operation - Timer_3
   void Timer_3_operation(const NAMESPACE::TimerEvent& event);
 
+  // Timer Operation - Timer_4
+  void Timer_4_operation(const NAMESPACE::TimerEvent& event);
+
+  // Timer Operation - Timer_5
+  void Timer_5_operation(const NAMESPACE::TimerEvent& event);
+
   // Start up
   void startUp();
 
@@ -53,6 +59,12 @@ private:
 
   // Timer
   NAMESPACE::Timer Timer_3;
+
+  // Timer
+  NAMESPACE::Timer Timer_4;
+
+  // Timer
+  NAMESPACE::Timer Timer_5;
 
   //# Start User Private Variables Marker
   //# End User Private Variables Marker

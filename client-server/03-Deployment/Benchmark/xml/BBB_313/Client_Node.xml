@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<node name="Client_Node">
+  <component_instance name="Client">
+    <library name="libClient.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+</node>
+

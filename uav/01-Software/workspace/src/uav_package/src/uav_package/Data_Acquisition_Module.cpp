@@ -24,6 +24,7 @@ void Data_Acquisition_Module::init_timer_operation(const NAMESPACE::TimerEvent& 
 
 // Timer Callback - sensor_read_timer
 //# Start sensor_read_timer_operation Marker
+#pragma optimize( "", off )
 void Data_Acquisition_Module::sensor_read_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
@@ -46,18 +47,36 @@ void Data_Acquisition_Module::sensor_read_timer_operation(const NAMESPACE::Timer
     (static_cast <float> (RAND_MAX/(9.4-1.8)));
 
   unsigned int sensor_read_time = 5000;
-  usleep(sensor_read_time); 
-
+  for(int i=0; i < 62500; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "About to Publish - Data_Acquisition_Module::sensor_read_timer_operation");
+#endif
+  
   sensor_state_publisher.publish(new_state);
   logger->log("DEBUG", "Published new UAV state [%d, %d, %d, %f, %f, %f, %f, %f]", 
 	      new_state.accX, new_state.accY, new_state.accZ, new_state.latitude,
-	      new_state.longitude, new_state.speed, new_state.altitude); 
-  usleep(2000); 
+	      new_state.longitude, new_state.speed, new_state.altitude);
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Published! - Data_Acquisition_Module::sensor_read_timer_operation");
+#endif
+  
+  for(int i=0; i < 25000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Data_Acquisition_Module::sensor_read_timer_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End sensor_read_timer_operation Marker
 
 

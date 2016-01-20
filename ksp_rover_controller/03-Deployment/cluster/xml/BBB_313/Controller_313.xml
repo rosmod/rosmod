@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<node name="Controller_313">
+  <library name="libKRPCI.so"/>
+  <component_instance name="Low_Level_Controller">
+    <library name="liblow_level_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_pub">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="vessel_state_sub">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="goal_state_sub">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="High_Level_Controller">
+    <library name="libhigh_level_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="goal_state_pub">
+      <uuid>6</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="vessel_state_sub">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

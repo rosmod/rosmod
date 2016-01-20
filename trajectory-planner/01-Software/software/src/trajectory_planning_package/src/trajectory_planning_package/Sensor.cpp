@@ -23,6 +23,7 @@ void Sensor::init_timer_operation(const NAMESPACE::TimerEvent& event)
 
 // Server Operation - trajectory_server
 //# Start compute_operation Marker
+#pragma optimize( "", off )
 bool Sensor::compute_operation(trajectory_planning_package::compute::Request  &req,
   trajectory_planning_package::compute::Response &res)
 {
@@ -30,6 +31,12 @@ bool Sensor::compute_operation(trajectory_planning_package::compute::Request  &r
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Sensor::compute_operation");
 #endif
   // Business Logic for trajectory_server_operation
+  for(int i=0; i < 5600000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   logger->log("INFO", "Sensor::Server::Computing new result");
   float x_sq = pow(req.x, 2);
   float y_sq = pow(req.y, 2);
@@ -41,16 +48,24 @@ bool Sensor::compute_operation(trajectory_planning_package::compute::Request  &r
 #endif
   return true;
 }
+#pragma optimize( "", on )
 //# End compute_operation Marker
 
 // Timer Callback - sensor_timer
 //# Start sensor_timer_operation Marker
+#pragma optimize( "", off )
 void Sensor::sensor_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Sensor::sensor_timer_operation");
 #endif
   // Business Logic for sensor_timer_operation
+  for(int i=0; i < 2800000; i++) {
+    double result = 0.0;
+    double x = 41865185131.214415;
+    double y = 562056205.1515;
+    result = x*y;
+  }  
   trajectory_planning_package::sensor_reading reading;
   reading.x = 5.3452;
   reading.y = 7.5209;
@@ -62,6 +77,7 @@ void Sensor::sensor_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Sensor::sensor_timer_operation");
 #endif
 }
+#pragma optimize( "", on )
 //# End sensor_timer_operation Marker
 
 
