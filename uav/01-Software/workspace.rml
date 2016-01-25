@@ -15,7 +15,7 @@ package uav_package
     {
 	period = 0.5;
 	priority = 50;
-	deadline = 0.02;
+	deadline = 0.05;
     }       
   }
   // ROSMOD Component - Main_Controller
@@ -27,7 +27,7 @@ package uav_package
     subscriber <uav_package/sensor_state> sensor_state_subscriber 
     {
       priority = 50;
-      deadline = 0.05;
+      deadline = 0.15;
     }       
   }
   // ROSMOD Component - Servo_Actuator

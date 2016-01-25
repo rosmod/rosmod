@@ -3,6 +3,12 @@
 //# Start User Globals Marker
 #include "unistd.h"
 #include "stdlib.h"
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -32,22 +38,19 @@ void Data_Acquisition_Module::sensor_read_timer_operation(const NAMESPACE::Timer
 #endif
   // Business Logic for sensor_read_timer_operation
   uav_package::sensor_state new_state;
-  new_state.accX = rand() % 365;
-  new_state.accY = rand() % 365;
-  new_state.accZ = rand() % 365;
-  new_state.latitude = static_cast <float> (rand()) / 
-    (static_cast <float> (RAND_MAX/(0.45498765)));
-  new_state.longitude = static_cast <float> (rand()) / 
-    (static_cast <float> (RAND_MAX/(25.45498765)));
-  new_state.heading = static_cast <float> (rand()) / 
-    (static_cast <float> (RAND_MAX/(360.0)));
-  new_state.speed = 3.0 + static_cast <float> (rand()) / 
-    (static_cast <float> (RAND_MAX/(6.0-3.0)));
-  new_state.altitude = 1.8 + static_cast <float> (rand()) / 
-    (static_cast <float> (RAND_MAX/(9.4-1.8)));
-
+  new_state.accX = 123;
+  new_state.accY = 234;
+  new_state.accZ = 345;
+  new_state.latitude = 0.45498765;
+  new_state.longitude = 25.45498765;
+  new_state.heading = 360.0;
+  new_state.speed = 3.0;
+  new_state.altitude = 1.8;
   unsigned int sensor_read_time = 5000;
-  for(int i=0; i < 62500; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(62500 * 0.6, 62500);
+  int loop_max = loop_iteration_random(rng);  
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -64,8 +67,12 @@ void Data_Acquisition_Module::sensor_read_timer_operation(const NAMESPACE::Timer
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Published! - Data_Acquisition_Module::sensor_read_timer_operation");
 #endif
+
+  boost::random::mt19937 rng2;
+  boost::random::uniform_int_distribution<> loop_iteration_random2(25000 * 0.6, 25000);
+  int loop_max_2 = loop_iteration_random2(rng2);  
   
-  for(int i=0; i < 25000; i++) {
+  for(int i=0; i < loop_max_2; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -187,7 +194,7 @@ void Data_Acquisition_Module::startUp()
   callback_options.alias = "sensor_read_timer_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 20000000;
+  callback_options.deadline.nsec = 50000000;
 #endif
   // Component Timer - sensor_read_timer
   timer_options = 

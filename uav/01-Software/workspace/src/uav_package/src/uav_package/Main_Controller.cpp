@@ -2,6 +2,12 @@
 
 //# Start User Globals Marker
 #include "unistd.h"
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -37,7 +43,10 @@ void Main_Controller::sensor_state_subscriber_operation(const uav_package::senso
 	      received_data->speed, received_data->altitude); 
 
   unsigned int compute_time_us = 46000;
-  for(int i=0; i < 600000; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(600000 * 0.6, 600000);
+  int loop_max = loop_iteration_random(rng);  
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -153,7 +162,7 @@ void Main_Controller::startUp()
   callback_options.alias = "sensor_state_subscriber_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 50000000;
+  callback_options.deadline.nsec = 150000000;
 #endif  
   // Component Subscriber - sensor_state_subscriber
   advertiseName = "sensor_state";
