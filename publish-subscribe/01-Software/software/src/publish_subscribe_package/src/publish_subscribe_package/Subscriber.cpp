@@ -1,6 +1,12 @@
 #include "publish_subscribe_package/Subscriber.hpp"
 
 //# Start User Globals Marker
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -19,8 +25,6 @@ void Subscriber::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
-
-
 // Subscriber Operation - subscriber_port
 //# Start subscriber_port_operation Marker
 #pragma optimize( "", off )
@@ -29,8 +33,13 @@ void Subscriber::subscriber_port_operation(const publish_subscribe_package::Mess
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Subscriber::subscriber_port_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(2800000 * 0.6, 2800000);
+  int loop_max = loop_iteration_random(rng);  
+  
   // Business Logic for subscriber_port_operation
-  for(int i=0; i < 2800000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;

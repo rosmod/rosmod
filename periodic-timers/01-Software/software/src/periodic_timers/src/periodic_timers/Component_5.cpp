@@ -1,6 +1,12 @@
 #include "periodic_timers/Component_5.hpp"
 
 //# Start User Globals Marker
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -28,9 +34,13 @@ void Component_5::Timer_5_operation(const NAMESPACE::TimerEvent& event)
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_5::Timer_5_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(50000 * 0.6, 50000);
+  int loop_max = loop_iteration_random(rng);
+  
   // Business Logic for Timer_5_operation
-  // Business Logic for Timer_4_operation
-  for(int i=0; i < 500000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;

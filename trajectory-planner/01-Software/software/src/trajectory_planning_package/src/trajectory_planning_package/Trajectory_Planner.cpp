@@ -19,8 +19,6 @@ void Trajectory_Planner::init_timer_operation(const NAMESPACE::TimerEvent& event
 }
 //# End Init Marker
 
-
-
 // Subscriber Operation - state_subscriber
 //# Start state_subscriber_operation Marker
 void Trajectory_Planner::state_subscriber_operation(const trajectory_planning_package::sensor_reading::ConstPtr& received_data)

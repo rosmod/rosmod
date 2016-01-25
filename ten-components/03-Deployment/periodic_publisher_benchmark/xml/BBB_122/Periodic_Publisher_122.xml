@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node name="Periodic_Publisher_122">
+  <component_instance name="Periodic_Publisher">
+    <library name="libPeriodic_Publisher.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="secret_message_publisher">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

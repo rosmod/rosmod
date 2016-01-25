@@ -1,6 +1,12 @@
 #include "three_component_example/Component_1.hpp"
 
 //# Start User Globals Marker
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,11 +17,6 @@ void Component_1::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_1::init_timer_operation");
 #endif
   // Initialize Here
-  three_component_example::ComponentName compName;
-  compName.name = "Component_1";
-  logger->log("INFO", 
-	      "Component_1::Name_Publisher::Publishing Component Name::%s", compName.name.c_str());
-  Name_Publisher.publish(compName);
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -34,8 +35,13 @@ void Component_1::Name_Subscriber_operation(const three_component_example::Compo
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_1::Name_Subscriber_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(700000 * 0.6, 700000);
+  int loop_max = loop_iteration_random(rng);  
+  
   // Business Logic for Name_Subscriber_operation
-  for(int i=0; i < 700000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -61,13 +67,24 @@ void Component_1::Timer_1_operation(const NAMESPACE::TimerEvent& event)
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_1::Timer_1_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(500000 * 0.6, 500000);
+  int loop_max = loop_iteration_random(rng);    
+  
   // Business Logic for Timer_1_operation
-  for(int i=0; i < 500000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
     result = x*y;
   }
+  three_component_example::ComponentName compName;
+  compName.name = "Component_1";
+  logger->log("INFO", 
+	      "Component_1::Name_Publisher::Publishing Component Name::%s", compName.name.c_str());
+  Name_Publisher.publish(compName);
+  
   logger->log("INFO", "Component_1::Timer_1::Timer Callback has been triggered!");
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Component_1::Timer_1_operation");

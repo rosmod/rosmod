@@ -2,6 +2,12 @@
 
 //# Start User Globals Marker
 #include <math.h>
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -30,8 +36,13 @@ bool Sensor::compute_operation(trajectory_planning_package::compute::Request  &r
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Sensor::compute_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(5600000 * 0.6, 5600000);
+  int loop_max = loop_iteration_random(rng);  
+  
   // Business Logic for trajectory_server_operation
-  for(int i=0; i < 5600000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;

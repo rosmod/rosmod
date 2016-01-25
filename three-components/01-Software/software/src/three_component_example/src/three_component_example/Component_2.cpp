@@ -1,6 +1,12 @@
 #include "three_component_example/Component_2.hpp"
 
 //# Start User Globals Marker
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -29,8 +35,13 @@ bool Component_2::ComponentService_operation(three_component_example::ComponentS
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_2::ComponentService_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(600000 * 0.6, 600000);
+  int loop_max = loop_iteration_random(rng);  
+  
   // Business Logic for Service_Server_operation
-  for(int i=0; i < 600000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -58,8 +69,13 @@ void Component_2::Timer_2_operation(const NAMESPACE::TimerEvent& event)
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Component_2::Timer_2_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(800000 * 0.6, 800000);
+  int loop_max = loop_iteration_random(rng);    
+  
   // Business Logic for Timer_2_operation
-  for(int i=0; i < 800000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;

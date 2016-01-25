@@ -2,6 +2,12 @@
 
 //# Start User Globals Marker
 #include <stdlib.h>
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -29,8 +35,13 @@ void Client::client_timer_operation(const NAMESPACE::TimerEvent& event)
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Client::client_timer_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(2520000, 4200000);
+  int loop_max = loop_iteration_random(rng);
+  
   // Business Logic for client_timer_operation
-  for(int i=0; i < 4200000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -42,6 +53,9 @@ void Client::client_timer_operation(const NAMESPACE::TimerEvent& event)
   logger->log("INFO", "Client::Client Timer::Sending Request to calculate %f ^ %f", 
 	      power_function.request.base, 
 	      power_function.request.exponent);
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "BEFORE CLIENT CALL");
+#endif  
   if (client_port.call(power_function))
     logger->log("INFO", 
 		"Client::Client Timer::Server Response - %f", power_function.response.result);
@@ -49,6 +63,10 @@ void Client::client_timer_operation(const NAMESPACE::TimerEvent& event)
     logger->log("ERROR", "Client::Client Timer::Failed to invoke Server Operation");
     client_port.waitForExistence(ros::Duration(-1));
   }
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "CLIENT CALL COMPLETED");
+#endif  
+  
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Client::client_timer_operation");
 #endif

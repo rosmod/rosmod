@@ -1,6 +1,12 @@
 #include "publish_subscribe_package/Publisher.hpp"
 
 //# Start User Globals Marker
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -19,7 +25,6 @@ void Publisher::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
-
 // Timer Callback - publish_timer
 //# Start publish_timer_operation Marker
 #pragma optimize( "", off )
@@ -28,8 +33,13 @@ void Publisher::publish_timer_operation(const NAMESPACE::TimerEvent& event)
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering Publisher::publish_timer_operation");
 #endif
+
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(2800000*0.6, 2800000);
+  int loop_max = loop_iteration_random(rng);  
+  
   // Business Logic for publish_timer_operation
-  for(int i=0; i < 2800000; i++) {
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -37,7 +47,13 @@ void Publisher::publish_timer_operation(const NAMESPACE::TimerEvent& event)
   }
   publish_subscribe_package::Message message_;
   message_.name = "Publisher";
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "ABOUT TO PUBLISH");
+#endif
   publisher_port.publish(message_);
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "DONE PUBLISHING!");
+#endif  
   logger->log("INFO", "Publisher::Published on Message topic!");
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting Publisher::publish_timer_operation");
