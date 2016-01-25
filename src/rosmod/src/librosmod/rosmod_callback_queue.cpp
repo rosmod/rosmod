@@ -135,26 +135,30 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
     std::deque<CallbackInfo>::iterator it;
 
     // Check scheduling scheme and enqueue based on choice
-    if(scheduling_scheme == "FIFO") {
+    if(scheme_string == "FIFO") {
       callbacks_.push_back(info);     
     }
-    else if(scheduling_scheme == "PFIFO") {
+    else if(scheme_string == "PFIFO") {
       if (callbacks_.size() == 0)
 	callbacks_.push_back(info);
       else {
 	for (it=callbacks_.begin(); it!=callbacks_.end(); ++it) {
-	  if(it->callback_options.priority < info.callback_options.priority) 
+	  if(it->callback_options.priority < info.callback_options.priority) {
 	    callbacks_.insert(it, info);
+	    break;
+	  }
 	}
       }
     }
-    else if(scheduling_scheme == "EDF") {
+    else if(scheme_string == "EDF") {
       if (callbacks_.size() == 0)
 	callbacks_.push_back(info);
       else {
 	for (it=callbacks_.begin(); it!=callbacks_.end(); ++it) {
-	  if(it->callback_options.deadline > info.callback_options.deadline) 
+	  if(it->callback_options.deadline > info.callback_options.deadline) {
 	    callbacks_.insert(it, info);
+	    break;
+	  }
 	}
       }
     }
@@ -472,7 +476,7 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
 			  info.callback_options.deadline.sec,
 			  info.callback_options.deadline.nsec);
       ROSMOD_Deadline_Violation new_violation;
-      new_violation.alias = info.callback_options.alias.c_str();
+      new_violation.alias = info.callback_options.alias;
       new_violation.deadline = info.callback_options.deadline;
       new_violation.enqueue_time = info.callback_options.enqueue_time;
       new_violation.dequeue_time = info.callback_options.dequeue_time;
@@ -509,7 +513,7 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
 			info.callback_options.deadline.sec,
 			info.callback_options.deadline.nsec);
       ROSMOD_Deadline_Violation new_violation;
-      new_violation.alias = info.callback_options.alias.c_str();
+      new_violation.alias = info.callback_options.alias;
       new_violation.deadline = info.callback_options.deadline;
       new_violation.enqueue_time = info.callback_options.enqueue_time;
       new_violation.dequeue_time = info.callback_options.dequeue_time;

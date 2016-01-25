@@ -166,7 +166,6 @@ struct ROSMOD_Callback_Options
   Time completion_time;
   
   ROSMOD_Callback_Options() {
-    alias = "";
     priority = -1;
     deadline.sec = -1;
     deadline.nsec = -1;
