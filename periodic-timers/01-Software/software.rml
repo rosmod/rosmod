@@ -55,7 +55,7 @@ package periodic_timers
     // ROSMOD Timer - Timer_5
     timer Timer_5 
     {
-	period = 0.1;
+	period = 0.25;
 	priority = 80;
 	deadline = 0.01;
     }       
