@@ -271,3 +271,35 @@ add_dependencies(All_Timers
                  periodic_timers_generate_messages_cpp
                 )
 
+add_library(Two_Timers
+            src/periodic_timers/Two_Timers.cpp
+            ## Start Two_Timers CPP Marker
+
+            ## End Two_Timers CPP Marker
+           )
+target_link_libraries(Two_Timers
+                      ## Start Two_Timers Target Link Libraries Marker
+
+                      ## End Two_Timers Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Two_Timers
+                 periodic_timers_generate_messages_cpp
+                )
+
+add_library(Three_Timers
+            src/periodic_timers/Three_Timers.cpp
+            ## Start Three_Timers CPP Marker
+
+            ## End Three_Timers CPP Marker
+           )
+target_link_libraries(Three_Timers
+                      ## Start Three_Timers Target Link Libraries Marker
+
+                      ## End Three_Timers Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Three_Timers
+                 periodic_timers_generate_messages_cpp
+                )
+

@@ -154,7 +154,7 @@ void Component_4::startUp()
   callback_options.alias = "Timer_4_operation";
   callback_options.priority = 75;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 250000000;
+  callback_options.deadline.nsec = 37500000;
 #endif
   // Component Timer - Timer_4
   timer_options = 

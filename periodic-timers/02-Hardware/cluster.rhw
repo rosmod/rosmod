@@ -322,4 +322,14 @@ hardware BBB_424
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
+// Hardware - Server_Machine
+hardware Server_Machine
+{
+  ip_address = "localhost";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
 

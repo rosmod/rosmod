@@ -1,6 +1,12 @@
 #include "periodic_timers/All_Timers.hpp"
 
 //# Start User Globals Marker
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/random/mersenne_twister.hpp>
 //# End User Globals Marker
 
 // Initialization Function
@@ -29,7 +35,12 @@ void All_Timers::Timer_1_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_1_operation");
 #endif
   // Business Logic for Timer_1_operation
-  for(int i=0; i < 15000000; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(1500000 * 0.6, 1500000);
+  int loop_max = loop_iteration_random(rng);  
+  
+  // Business Logic for Timer_1_operation
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -50,7 +61,12 @@ void All_Timers::Timer_2_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_2_operation");
 #endif
   // Business Logic for Timer_2_operation
-  for(int i=0; i < 7500000; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(750000 * 0.6, 750000);
+  int loop_max = loop_iteration_random(rng);  
+  
+  // Business Logic for Timer_2_operation
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -71,7 +87,12 @@ void All_Timers::Timer_3_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_3_operation");
 #endif
   // Business Logic for Timer_3_operation
-  for(int i=0; i < 4200000; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(420000 * 0.6, 420000);
+  int loop_max = loop_iteration_random(rng);  
+  
+  // Business Logic for Timer_3_operation
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -93,7 +114,12 @@ void All_Timers::Timer_4_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_4_operation");
 #endif
   // Business Logic for Timer_4_operation
-  for(int i=0; i < 2800000; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(280000 * 0.6, 280000);
+  int loop_max = loop_iteration_random(rng);  
+  
+  // Business Logic for Timer_4_operation
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -115,7 +141,12 @@ void All_Timers::Timer_5_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_5_operation");
 #endif
   // Business Logic for Timer_5_operation
-  for(int i=0; i < 500000; i++) {
+  boost::random::mt19937 rng;
+  boost::random::uniform_int_distribution<> loop_iteration_random(50000 * 0.6, 50000);
+  int loop_max = loop_iteration_random(rng);
+  
+  // Business Logic for Timer_5_operation
+  for(int i=0; i < loop_max; i++) {
     double result = 0.0;
     double x = 41865185131.214415;
     double y = 562056205.1515;
@@ -232,8 +263,8 @@ void All_Timers::startUp()
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_1_operation";
   callback_options.priority = 50;
-  callback_options.deadline.sec = 2;
-  callback_options.deadline.nsec = 500000000;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 300000000;
 #endif
   // Component Timer - Timer_1
   timer_options = 
@@ -250,8 +281,8 @@ void All_Timers::startUp()
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_2_operation";
   callback_options.priority = 60;
-  callback_options.deadline.sec = 1;
-  callback_options.deadline.nsec = 0;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 150000000;
 #endif
   // Component Timer - Timer_2
   timer_options = 
@@ -269,7 +300,7 @@ void All_Timers::startUp()
   callback_options.alias = "Timer_3_operation";
   callback_options.priority = 70;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 500000000;
+  callback_options.deadline.nsec = 75000000;
 #endif
   // Component Timer - Timer_3
   timer_options = 
@@ -287,7 +318,7 @@ void All_Timers::startUp()
   callback_options.alias = "Timer_4_operation";
   callback_options.priority = 75;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 250000000;
+  callback_options.deadline.nsec = 37500000;
 #endif
   // Component Timer - Timer_4
   timer_options = 
@@ -305,12 +336,12 @@ void All_Timers::startUp()
   callback_options.alias = "Timer_5_operation";
   callback_options.priority = 80;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 50000000;
+  callback_options.deadline.nsec = 10000000;
 #endif
   // Component Timer - Timer_5
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.1),
+    (ros::Duration(0.25),
      boost::bind(&All_Timers::Timer_5_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     

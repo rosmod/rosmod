@@ -153,8 +153,8 @@ void Component_2::startUp()
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_2_operation";
   callback_options.priority = 60;
-  callback_options.deadline.sec = 1;
-  callback_options.deadline.nsec = 0;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 150000000;
 #endif
   // Component Timer - Timer_2
   timer_options = 

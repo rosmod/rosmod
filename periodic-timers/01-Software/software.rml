@@ -13,7 +13,7 @@ package periodic_timers
     {
 	period = 5.0;
 	priority = 50;
-	deadline = 2.0;
+	deadline = 0.3;
     }       
   }
   // ROSMOD Component - Component_2
@@ -24,7 +24,7 @@ package periodic_timers
     {
 	period = 2.5;
 	priority = 60;
-	deadline = 1.0;
+	deadline = 0.15;
     }       
   }
   // ROSMOD Component - Component_3
@@ -35,7 +35,7 @@ package periodic_timers
     {
 	period = 1.0;
 	priority = 70;
-	deadline = 0.5;
+	deadline = 0.075;
     }       
   }
   // ROSMOD Component - Component_4
@@ -46,7 +46,7 @@ package periodic_timers
     {
 	period = 0.5;
 	priority = 75;
-	deadline = 0.25;
+	deadline = 0.0375;
     }       
   }
   // ROSMOD Component - Component_5
@@ -57,7 +57,7 @@ package periodic_timers
     {
 	period = 0.1;
 	priority = 80;
-	deadline = 0.05;
+	deadline = 0.01;
     }       
   }
   // ROSMOD Component - All_Timers
@@ -68,35 +68,78 @@ package periodic_timers
     {
 	period = 5.0;
 	priority = 50;
-	deadline = 2.5;
+	deadline = 0.3;
     }       
     // ROSMOD Timer - Timer_2
     timer Timer_2 
     {
 	period = 2.5;
 	priority = 60;
-	deadline = 1.0;
+	deadline = 0.15;
     }       
     // ROSMOD Timer - Timer_3
     timer Timer_3 
     {
 	period = 1.0;
 	priority = 70;
-	deadline = 0.5;
+	deadline = 0.075;
     }       
     // ROSMOD Timer - Timer_4
     timer Timer_4 
     {
 	period = 0.5;
 	priority = 75;
-	deadline = 0.25;
+	deadline = 0.0375;
     }       
     // ROSMOD Timer - Timer_5
     timer Timer_5 
     {
-	period = 0.1;
+	period = 0.25;
 	priority = 80;
-	deadline = 0.05;
+	deadline = 0.01;
+    }       
+  }
+  // ROSMOD Component - Two_Timers
+  component Two_Timers : Base 
+  {
+    // ROSMOD Timer - Timer_1
+    timer Timer_1 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 0.5;
+    }       
+    // ROSMOD Timer - Timer_2
+    timer Timer_2 
+    {
+	period = 0.5;
+	priority = 60;
+	deadline = 0.25;
+    }       
+  }
+  // ROSMOD Component - Three_Timers
+  component Three_Timers : Base 
+  {
+    // ROSMOD Timer - Timer_1
+    timer Timer_1 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 0.5;
+    }       
+    // ROSMOD Timer - Timer_2
+    timer Timer_2 
+    {
+	period = 0.5;
+	priority = 60;
+	deadline = 0.25;
+    }       
+    // ROSMOD Timer - Timer_3
+    timer Timer_3 
+    {
+	period = 0.5;
+	priority = 75;
+	deadline = 0.25;
     }       
   }
 }
