@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<node name="Large_Node_311">
+  <component_instance name="Periodic_Timer">
+    <library name="libPeriodic_Timer.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+  <component_instance name="Periodic_Publisher">
+    <library name="libPeriodic_Publisher.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="secret_message_publisher">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Secret_Subscriber">
+    <library name="libSecret_Subscriber.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="secret_message_subscriber">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Secret_Client">
+    <library name="libSecret_Client.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+  <component_instance name="Component_1">
+    <library name="libComponent_1.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="Name_Subscriber">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="3">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Component_2">
+    <library name="libComponent_2.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Component_3">
+    <library name="libComponent_3.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+  <component_instance name="DAQ">
+    <library name="libData_Acquisition_Module.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="sensor_state_publisher">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Main_Controller">
+    <library name="libMain_Controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_publisher">
+      <uuid>7</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_state_subscriber">
+      <uuid>6</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Servo">
+    <library name="libServo_Actuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_subscriber">
+      <uuid>8</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

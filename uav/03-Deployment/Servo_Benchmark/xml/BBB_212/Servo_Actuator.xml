@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<node name="Servo_Actuator">
+  <component_instance name="Servo_212">
+    <library name="libServo_Actuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_subscriber">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="1">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

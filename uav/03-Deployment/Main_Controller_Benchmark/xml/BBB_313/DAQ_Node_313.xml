@@ -3,7 +3,7 @@
   <component_instance name="DAQ_313">
     <library name="libData_Acquisition_Module.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="1"/>
+    <numCompsToSync setting="2"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>

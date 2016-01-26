@@ -64,6 +64,12 @@ ENDIF()
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
+  ComponentName.msg
+
+  sensor_state.msg
+
+  control_command.msg
+
   secret_message.msg
 
 )
@@ -71,6 +77,8 @@ add_message_files(
 # Generate services in the 'srv' folder
 add_service_files(
   FILES
+  ComponentService.srv
+
   secret_service.srv
 
 )
@@ -246,6 +254,102 @@ target_link_libraries(Secret_Client
                       ${catkin_LIBRARIES}
                       )
 add_dependencies(Secret_Client
+                 ten_component_generate_messages_cpp
+                )
+
+add_library(Component_1
+            src/ten_component/Component_1.cpp
+            ## Start Component_1 CPP Marker
+
+            ## End Component_1 CPP Marker
+           )
+target_link_libraries(Component_1
+                      ## Start Component_1 Target Link Libraries Marker
+
+                      ## End Component_1 Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Component_1
+                 ten_component_generate_messages_cpp
+                )
+
+add_library(Component_2
+            src/ten_component/Component_2.cpp
+            ## Start Component_2 CPP Marker
+
+            ## End Component_2 CPP Marker
+           )
+target_link_libraries(Component_2
+                      ## Start Component_2 Target Link Libraries Marker
+
+                      ## End Component_2 Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Component_2
+                 ten_component_generate_messages_cpp
+                )
+
+add_library(Component_3
+            src/ten_component/Component_3.cpp
+            ## Start Component_3 CPP Marker
+
+            ## End Component_3 CPP Marker
+           )
+target_link_libraries(Component_3
+                      ## Start Component_3 Target Link Libraries Marker
+
+                      ## End Component_3 Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Component_3
+                 ten_component_generate_messages_cpp
+                )
+
+add_library(Data_Acquisition_Module
+            src/ten_component/Data_Acquisition_Module.cpp
+            ## Start Data_Acquisition_Module CPP Marker
+
+            ## End Data_Acquisition_Module CPP Marker
+           )
+target_link_libraries(Data_Acquisition_Module
+                      ## Start Data_Acquisition_Module Target Link Libraries Marker
+
+                      ## End Data_Acquisition_Module Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Data_Acquisition_Module
+                 ten_component_generate_messages_cpp
+                )
+
+add_library(Main_Controller
+            src/ten_component/Main_Controller.cpp
+            ## Start Main_Controller CPP Marker
+
+            ## End Main_Controller CPP Marker
+           )
+target_link_libraries(Main_Controller
+                      ## Start Main_Controller Target Link Libraries Marker
+
+                      ## End Main_Controller Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Main_Controller
+                 ten_component_generate_messages_cpp
+                )
+
+add_library(Servo_Actuator
+            src/ten_component/Servo_Actuator.cpp
+            ## Start Servo_Actuator CPP Marker
+
+            ## End Servo_Actuator CPP Marker
+           )
+target_link_libraries(Servo_Actuator
+                      ## Start Servo_Actuator Target Link Libraries Marker
+
+                      ## End Servo_Actuator Target Link Libraries Marker
+                      ${catkin_LIBRARIES}
+                      )
+add_dependencies(Servo_Actuator
                  ten_component_generate_messages_cpp
                 )
 
