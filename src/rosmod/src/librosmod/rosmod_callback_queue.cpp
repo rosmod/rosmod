@@ -98,6 +98,13 @@ void CallbackQueue::setupTLS()
   }
 }
 
+int CallbackQueue::getWaitingCallbackPriority() {
+  if (callbacks_.size() == 0)
+    return -1;
+  else
+    return callbacks_.front().callback_options.priority;
+}
+
 void CallbackQueue::addCallback(const CallbackInterfacePtr& callback, 
 				uint64_t removal_id,
 				ROSMOD_Callback_Options callback_options)

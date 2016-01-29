@@ -140,6 +140,8 @@ public:
    */
   bool isEnabled();
 
+  int getWaitingCallbackPriority();
+
 protected:
   void setupTLS();
 
