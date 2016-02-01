@@ -1,0 +1,59 @@
+/*
+ * ROSMOD Deployment Model
+ */
+
+// ROSMOD Hardware Model - $deployment.properties["rhw_reference"].properties["name"]
+using $deployment.properties["rhw_reference"].properties["name"];
+
+#if $deployment.children != []
+#for $node in $deployment.children
+// ROSMOD Node - $node.properties["name"] 
+node $node.properties["name"]
+{
+  properties
+  {
+    ref = "$node.properties["hardware_reference"].parent.properties["name"]/$node.properties["hardware_reference"].properties["name"]";
+    priority = $node.properties["priority"];
+#if $node.properties["cmd_args"] != ""
+    cmd_args = "$node.properties["cmd_args"]";		   
+#end if
+  }
+#if $node.children != []
+#for $comp_instance in $node.children
+  component_instance $comp_instance.properties["name"]
+  {
+      properties
+      {
+	ref = "$comp_instance.properties["component_reference"].parent.properties["name"]/$comp_instance.properties["component_reference"].properties["name"]";
+	scheduling_scheme = $comp_instance.properties["scheduling_scheme"];
+	logging
+	{
+#if $comp_instance.properties["is_periodic_logging"] != False
+	  Is Periodic? = true;
+#else
+	  Is Periodic? = false;
+#end if
+#if $comp_instance.properties["periodic_log_unit"] != None
+	  Periodic Log Unit = $comp_instance.properties["periodic_log_unit"];
+#else
+	  Periodic Log Unit = $comp_instance.properties["periodic_log_unit"];
+#end if
+	}
+      }
+#if $comp_instance.children != []
+#for $port_instance in $comp_instance.children
+      port_instance $port_instance.properties["name"] 
+      {
+	ref = "$port_instance.properties["port_reference"].parent.properties["name"]/$port_instance.properties["port_reference"].properties["name"]";
+	group = "$port_instance.properties["group"]";
+      }
+#end for
+#end if
+  }
+#end for
+#end if
+}
+#end for
+#end if
+
+

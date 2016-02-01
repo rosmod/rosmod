@@ -1,0 +1,77 @@
+/*
+ * ROSMOD Software Model
+ */
+
+#if $workspace.children != []
+#for $package in $workspace.children
+// ROSMOD Package - $package.properties["name"]
+package $package.properties["name"]
+{
+#if $package.getChildrenByKind("Component") != []
+#for $component in $package.getChildrenByKind("Component")
+  // ROSMOD Component - $component.properties["name"]
+  component $component.properties["name"] : $component.properties["datatype"] 
+  {
+#if $component.getChildrenByKind("Server") != []
+#for $server in $component.getChildrenByKind("Server")
+    // ROSMOD Server - $server.properties["name"]
+    server <$server.properties["service_reference"].parent.properties["name"]/$server.properties["service_reference"].properties["name"]> $server.properties["name"] 
+    {
+#if $server.properties["priority"] != ""
+      priority = $server.properties["priority"];
+#end if
+#if $server.properties["deadline"] != ""
+      deadline = $server.properties["deadline"];
+#end if
+    }       
+#end for
+#end if
+#if $component.getChildrenByKind("Client") != []
+#for $client in $component.getChildrenByKind("Client")
+    // ROSMOD Client - $client.properties["name"]
+    client <$client.properties["service_reference"].parent.properties["name"]/$client.properties["service_reference"].properties["name"]> $client.properties["name"];
+#end for
+#end if
+#if $component.getChildrenByKind("Publisher") != []
+#for $pub in $component.getChildrenByKind("Publisher")
+    // ROSMOD Publisher - $pub.properties["name"]
+    publisher <$pub.properties["message_reference"].parent.properties["name"]/$pub.properties["message_reference"].properties["name"]> $pub.properties["name"];
+#end for
+#end if
+#if $component.getChildrenByKind("Subscriber") != []
+#for $sub in $component.getChildrenByKind("Subscriber")
+    // ROSMOD Subscriber - $sub.properties["name"]
+    subscriber <$sub.properties["message_reference"].parent.properties["name"]/$sub.properties["message_reference"].properties["name"]> $sub.properties["name"] 
+    {
+#if $sub.properties["priority"] != ""
+      priority = $sub.properties["priority"];
+#end if
+#if $sub.properties["deadline"] != ""
+      deadline = $sub.properties["deadline"];
+#end if
+    }       
+#end for
+#end if
+#if $component.getChildrenByKind("Timer") != []
+#for $timer in $component.getChildrenByKind("Timer")
+    // ROSMOD Timer - $timer.properties["name"]
+    timer $timer.properties["name"] 
+    {
+#if $timer.properties["period"] != ""
+	period = $timer.properties["period"];
+#end if
+#if $timer.properties["priority"] != ""
+	priority = $timer.properties["priority"];
+#end if
+#if $timer.properties["deadline"] != ""
+	deadline = $timer.properties["deadline"];
+#end if
+    }       
+#end for
+#end if
+  }
+#end for
+#end if
+}
+#end for
+#end if

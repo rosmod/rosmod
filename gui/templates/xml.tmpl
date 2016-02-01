@@ -1,0 +1,58 @@
+#unicode utf8
+<?xml version="1.0"?>
+<node name="$node.properties["name"]">
+#if $node.children != []
+#if $needs_io
+#if 'KSP' in $io_type
+  <library name="libKRPCI.so"/>
+#end if
+#if 'SUMO' in $io_type
+  <library name="libsumo.so"/>
+#end if
+#end if
+#for $comp_instance in $node.children
+  <component_instance name="$comp_instance.properties["name"]">
+    <library name="lib${comp_instance.properties["component_reference"].properties["name"]}.so"/>
+    <scheduling_scheme setting="$comp_instance.properties["scheduling_scheme"]"/>
+    <numCompsToSync setting="$num_comps_to_sync"/>
+    <syncTimeout setting="$sync_timeout"/>
+    <logging>
+      <is_periodic_logging setting="$comp_instance.properties["is_periodic_logging"]"/>
+      <periodic_log_unit setting="$comp_instance.properties["periodic_log_unit"]"/> 
+    </logging>
+#for $port in $comp_instance.properties['component_reference'].children
+#if $port.kind == 'Subscriber' or $port.kind == 'Publisher'
+    <port name="$port.properties['name']">
+      <uuid>${port_uuids[comp_instance.parent.properties['name'] + '_' + comp_instance.properties['name'] + '_' + port.properties['name']]}</uuid>
+      <profile>
+$port.properties['port_network_profile']
+      </profile>
+#if $port.kind == 'Subscriber'
+#for $ci in $node.parent.getChildrenByKind('Component_Instance')
+#for $p in $ci.properties['component_reference'].getChildrenByKind('Publisher')
+#if $p.properties['message_reference'] == $port.properties['message_reference']
+      <sender uuid="${port_uuids[ci.parent.properties['name'] + '_' + ci.properties['name'] + '_' + p.properties['name']]}">
+	<profile>
+$p.properties['port_network_profile']
+	</profile>
+      </sender>
+#end if
+#end for
+#end for
+#end if
+    </port>
+#end if
+#end for
+#if $comp_instance.children != []
+#for $port_instance in $comp_instance.children
+    <port_instance name="$port_instance.properties["name"]">
+      <port name="$port_instance.properties["port_reference"].properties["name"]"/>
+      <group setting="$port_instance.properties["group"]"/>
+    </port_instance>
+#end for
+#end if
+  </component_instance>
+#end for
+#end if
+</node>
+

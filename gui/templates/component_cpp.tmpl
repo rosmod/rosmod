@@ -1,0 +1,586 @@
+#unicode utf8
+$hash_include "$package_name/${component_name}.hpp"
+
+#if $component_type == "KSP"
+KRPCI krpci_client;
+#end if
+#if $component_type == "SUMO"
+SUMO_CLIENT sumo_client;
+#end if
+#if $user_globals == ""
+//# Start User Globals Marker
+//# End User Globals Marker
+#else
+//# Start User Globals Marker
+$user_globals//# End User Globals Marker
+#end if
+
+// Initialization Function
+#if $init_business_logic == ""
+//# Start Init Marker
+void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering $component_name::init_timer_operation");
+\#endif
+  // Initialize Here
+#if $component_type == "SUMO"
+  std::string sumo_host;
+  int sumo_port;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--sumo_host"))
+	{
+	  sumo_host = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i], "--sumo_port"))
+	{
+	  sumo_port = atoi(node_argv[i+1]);
+	}
+    }
+  sumo_client.create_connection(sumo_port, sumo_host);
+#end if
+#if $component_type == "KSP"
+  std::string ksp_host;
+  int ksp_port;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--ksp_host"))
+	{
+	  ksp_host = node_argv[i+1];
+	}
+      if (!strcmp(node_argv[i], "--ksp_port"))
+	{
+	  ksp_port = atoi(node_argv[i+1]);
+	}
+    }
+  krpci_client.SetPort(ksp_port);
+  krpci_client.SetIP(ksp_host);
+#end if
+#if $trafficGen
+  srand (time(NULL));
+  double tg_duration = -1;
+  std::string fName;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--tg_time"))
+	{
+	  tg_duration = atof(node_argv[i+1]);
+	}
+    }
+#if $len($subscribers) > 0
+  uint64_t capacityBits = 400000;
+  bool enable_sendback = true;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
+	{
+	  capacityBits = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
+	{
+	  capacityBits = atoi(node_argv[i+1]) * 8;
+	}
+      if (!strcmp(node_argv[i], "--disable_sendback"))
+	{
+	  enable_sendback = false;
+	}
+    }
+#for $sub in $subscribers
+  if (config.profileMap.find("$sub.properties['name']") != config.profileMap.end())
+    {
+      ${sub.properties['name']}_recv_mw.init(node_argc,
+					     node_argv,
+					     config.profileMap["$sub.properties['name']"],
+					     capacityBits);
+      if ( tg_duration < 0 )
+	${sub.properties['name']}_recv_mw.set_duration(${sub.properties['name']}_recv_mw.profile.period);
+      else
+	${sub.properties['name']}_recv_mw.set_duration(tg_duration);
+      fName = config.nodeName + "." + config.compName + ".${sub.properties['name']}.network.csv";
+      ${sub.properties['name']}_recv_mw.set_enable_sendback(enable_sendback);
+      ${sub.properties['name']}_recv_mw.set_output_filename(fName);
+      ${sub.properties['name']}_recv_mw.set_recv_done_callback(boost::bind(&$component_name::mw_recv_done_operation, this, &${sub.properties['name']}_recv_mw));
+      ${sub.properties['name']}_id = 0;
+    }
+  if (config.portSenderMap.find("$sub.properties['name']") != config.portSenderMap.end())
+    {
+      for (auto it=config.portSenderMap["$sub.properties['name']"].begin();
+	   it != config.portSenderMap["$sub.properties['name']"].end(); ++it)
+	{
+	  ${sub.properties['name']}_recv_mw.add_sender( it->first, it->second );
+	}
+    }
+  
+#end for
+#end if
+#if $len($publishers) > 0
+  max_data_length = 8192;
+  tg_misbehave = false;
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--max_data_length_bytes"))
+	{
+	  max_data_length = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "--max_data_length_bits"))
+	{
+	  max_data_length = atoi(node_argv[i+1]) / 8;
+	}
+      if (!strcmp(node_argv[i], "--tg_misbehave"))
+	{
+	  tg_misbehave = true;
+	}
+    }
+  NAMESPACE::NodeHandle nh;
+  NAMESPACE::TimerOptions timer_options;
+#for $pub in $publishers
+  if (config.profileMap.find("$pub.properties['name']") != config.profileMap.end())
+    {
+      ${pub.properties['name']}_send_mw.init(node_argc,
+					     node_argv,
+					     config.uuidMap["$pub.properties['name']"],
+					     config.profileMap["$pub.properties['name']"]);
+      if ( tg_duration < 0 )
+	${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);
+      else
+	${pub.properties['name']}_send_mw.set_duration(tg_duration);
+      fName = config.nodeName + "." + config.compName + ".${pub.properties['name']}.network.csv";
+      ${pub.properties['name']}_send_mw.set_output_filename(fName);
+
+\#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+\#endif
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(-1),
+	 boost::bind(&$component_name::${pub.properties['name']}_timer_operation, this, _1),
+	 &this->comp_queue,
+\#ifdef USE_ROSMOD     
+	 callback_options,
+\#endif 
+	 true);
+      ${pub.properties['name']}_timer = nh.createTimer(timer_options);
+    }
+#end for
+#end if
+#end if
+  // Stop Init Timer
+  init_timer.stop();
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting $component_name::init_timer_operation");
+\#endif  
+}
+//# End Init Marker
+#else
+//# Start Init Marker
+$init_business_logic//# End Init Marker
+#end if
+
+#if $trafficGen
+#if $len($publishers) > 0
+#for $pub in $publishers
+void $component_name::${pub.properties['name']}_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  $pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]} msg;
+  msg.uuid = ${pub.properties['name']}_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	${pub.properties['name']}_send_mw.send<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>($pub.properties['name'], msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= ${pub.properties['name']}_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      ${pub.properties['name']}_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+\#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+\#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&$component_name::${pub.properties['name']}_timer_operation, this, _1),
+	 &this->comp_queue,
+\#ifdef USE_ROSMOD     
+	 callback_options,
+\#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      ${pub.properties['name']}_timer = nh.createTimer(timer_options);
+    }
+}
+#end for
+#end if
+#end if
+
+#if $len($subscribers) > 0
+#if $trafficGen
+void $component_name::mw_recv_done_operation(Network::receiver* receiver_mw)
+{
+  logger->log("DEBUG","Writing middleware log.");
+  logger->log("DEBUG","Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
+  receiver_mw->record();
+}
+#end if
+
+#for $sub in $subscribers
+// Subscriber Operation - ${sub.properties["name"]}
+#if $sub.properties["business_logic"] == ""
+//# Start ${sub.properties["name"]}_operation Marker
+void $component_name::${sub.properties["name"]}_operation(const $sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}::ConstPtr& received_data)
+{
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering $component_name::${sub.properties["name"]}_operation");
+\#endif
+  // Business Logic for ${sub.properties["name"]}_operation
+
+#if $trafficGen
+  uint64_t uuid = received_data->uuid;
+  uint64_t msgBytes = ros::serialization::Serializer<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>::serializedLength(*received_data);
+  ros::Time now = ros::Time::now();
+  ${sub.properties['name']}_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
+  Network::Message new_msg;
+  new_msg.Bytes(msgBytes);
+  new_msg.Id(${sub.properties['name']}_id++);
+  new_msg.TimeStamp();
+  ${sub.properties['name']}_recv_mw.buffer.send(new_msg, msgBytes * 8);
+#end if
+  
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting $component_name::${sub.properties["name"]}_operation");
+\#endif
+}
+//# End ${sub.properties["name"]}_operation Marker
+#else
+//# Start ${sub.properties["name"]}_operation Marker
+$sub.properties["business_logic"]//# End ${sub.properties["name"]}_operation Marker
+#end if
+#end for
+
+#end if
+#if $len($provided_services) > 0
+#for $server in $servers
+// Server Operation - $server.properties["name"]
+#if $server.properties["business_logic"] == ""
+//# Start ${server.properties["service_reference"].properties["name"]}_operation Marker
+bool $component_name::${server.properties["service_reference"].properties["name"]}_operation($server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Request  &req,
+  $server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]::Response &res)
+{
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering $component_name::${server.properties["service_reference"].properties["name"]}_operation");
+\#endif
+  // Business Logic for ${server.properties["name"]}_operation
+
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting $component_name::${server.properties["service_reference"].properties["name"]}_operation");
+\#endif
+  return true;
+}
+//# End ${server.properties["service_reference"].properties["name"]}_operation Marker
+#else
+//# Start ${server.properties["service_reference"].properties["name"]}_operation Marker
+$server.properties["business_logic"]//# End ${server.properties["service_reference"].properties["name"]}_operation Marker
+#end if
+#end for
+
+#end if
+#if $len($timers) > 0
+#for $timer in $timers
+// Timer Callback - $timer.properties["name"]
+#if $timer.properties["business_logic"] == ""
+//# Start ${timer.properties["name"]}_operation Marker
+void $component_name::${timer.properties["name"]}_operation(const NAMESPACE::TimerEvent& event)
+{
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering $component_name::${timer.properties["name"]}_operation");
+\#endif
+  // Business Logic for ${timer.properties["name"]}_operation
+
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting $component_name::${timer.properties["name"]}_operation");
+\#endif
+}
+//# End ${timer.properties["name"]}_operation Marker
+#else
+//# Start ${timer.properties["name"]}_operation Marker
+$timer.properties["business_logic"]//# End ${timer.properties["name"]}_operation Marker
+#end if
+#end for
+
+#end if
+
+// Destructor - Cleanup Ports & Timers
+$component_name::~${component_name}()
+{
+#if $len($timers) > 0
+#for $timer in $timers
+  ${timer.properties["name"]}.stop();
+#end for
+#end if
+#if $len($publishers) > 0
+#for $pub in $publishers
+  ${pub.properties["name"]}.shutdown();
+#end for
+#end if
+#if $len($subscribers) > 0
+#for $sub in $subscribers
+  ${sub.properties["name"]}.shutdown();
+#end for
+#end if
+#if $len($provided_services) > 0
+#for $server in $servers
+  ${server.properties["name"]}.shutdown();
+#end for
+#end if
+#if $len($required_services) > 0
+#for $client in $clients
+  ${client.properties["name"]}.shutdown();
+#end for
+#end if
+#if $destructor == ""
+  //# Start Destructor Marker
+  //# End Destructor Marker
+#else
+  //# Start Destructor Marker
+$destructor  //# End Destructor Marker
+#end if
+}
+
+// Startup - Setup Component Ports & Timers
+void $component_name::startUp()
+{
+  NAMESPACE::NodeHandle nh;
+  std::string advertiseName;
+
+  // Identify the pwd of Node Executable
+  std::string s = node_argv[0];
+  std::string exec_path = s;
+  std::string delimiter = "/";
+  std::string exec, pwd;
+  size_t pos = 0;
+  while ((pos = s.find(delimiter)) != std::string::npos) {
+    exec = s.substr(0, pos);
+    s.erase(0, pos + delimiter.length());
+  }
+  exec = s.substr(0, pos);
+  pwd = exec_path.erase(exec_path.find(exec), exec.length());
+  std::string log_file_path = pwd + config.nodeName + "." + config.compName + ".log"; 
+
+  logger->create_file(pwd + config.nodeName + "." + config.compName + ".log");
+  logger->set_is_periodic(config.is_periodic_logging);
+  logger->set_max_log_unit(config.periodic_log_unit);
+
+\#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->create_file(pwd + "ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");
+  comp_queue.ROSMOD_LOGGER->set_is_periodic(config.is_periodic_logging);
+  comp_queue.ROSMOD_LOGGER->set_max_log_unit(config.periodic_log_unit);
+\#endif    
+  
+\#ifdef USE_ROSMOD 
+  this->comp_queue.scheduling_scheme = config.schedulingScheme;
+  rosmod::ROSMOD_Callback_Options callback_options;
+\#endif  
+#if $len($publishers) > 0
+  // Configure all publishers associated with this component
+#for $pub in $publishers
+  // Component Publisher - $pub.properties["name"]
+  advertiseName = "${pub.properties["message_reference"].properties["name"]}";
+  if (config.portGroupMap.find("$pub.properties["name"]") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["$pub.properties["name"]"];
+  this->${pub.properties["name"]} = nh.advertise<$pub.properties["message_reference"].parent.properties["name"]::${pub.properties["message_reference"].properties["name"]}>(advertiseName.c_str(), 1000);
+#end for
+
+#end if
+#if $len($provided_services)
+  // Configure all provided services associated with this component
+#for $server in $servers
+\#ifdef USE_ROSMOD  
+  callback_options.alias = "${server.properties["service_reference"].properties["name"]}_operation";
+  callback_options.priority = $server.properties["priority"];
+  callback_options.deadline.sec =${int(str(server.properties["deadline"]).split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (str(server.properties["deadline"]).split('.')[1]))*1000000000)};
+\#endif    
+  // Component Server - $server.properties["name"]
+  advertiseName = "$server.properties["service_reference"].properties["name"]";
+  if (config.portGroupMap.find("$server.properties["name"]") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["$server.properties["name"]"];
+  NAMESPACE::AdvertiseServiceOptions ${server.properties["name"]}_server_options;
+  ${server.properties["name"]}_server_options = NAMESPACE::AdvertiseServiceOptions::create<$server.properties["service_reference"].parent.properties["name"]::$server.properties["service_reference"].properties["name"]>
+      (advertiseName.c_str(),
+       boost::bind(&$component_name::${server.properties["service_reference"].properties["name"]}_operation, this, _1, _2),
+       NAMESPACE::VoidPtr(),
+\#ifdef USE_ROSMOD       
+       &this->comp_queue,
+       callback_options);
+\#else
+       &this->comp_queue);
+\#endif
+  this->${server.properties["name"]} = nh.advertiseService(${server.properties["name"]}_server_options);
+#end for
+#end if
+
+  // Synchronize components now that all publishers and servers have been initialized
+  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+\#ifdef USE_ROSMOD  
+  rosmod::SubscribeOptions comp_sync_sub_options;
+  rosmod::ROSMOD_Callback_Options sync_callback_options;
+\#else
+  ros::SubscribeOptions comp_sync_sub_options;
+\#endif
+  
+  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+    ("component_synchronization",
+     1000,
+     boost::bind(&$component_name::component_sync_operation, this, _1),
+     NAMESPACE::VoidPtr(),
+\#ifdef USE_ROSMOD     
+     &this->comp_queue,
+     sync_callback_options);
+\#else
+     &this->comp_queue);
+\#endif
+  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+  ros::Time now = ros::Time::now();
+  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+  ros::Duration(0.1).sleep();
+  ros::Duration(0.5).sleep();
+  this->comp_sync_sub.shutdown();  
+  this->comp_sync_pub.shutdown();
+
+#if $len($subscribers) > 0
+  // Configure all subscribers associated with this component
+#for $sub in $subscribers
+\#ifdef USE_ROSMOD 
+  callback_options.alias = "${sub.properties["name"]}_operation";
+  callback_options.priority = $sub.properties["priority"];
+  callback_options.deadline.sec = ${int(str(sub.properties["deadline"]).split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (str(sub.properties["deadline"]).split('.')[1]))*1000000000)};
+\#endif  
+  // Component Subscriber - $sub.properties["name"]
+  advertiseName = "${sub.properties["message_reference"].properties["name"]}";
+  if (config.portGroupMap.find("$sub.properties["name"]") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["${sub.properties['name']}"];
+  NAMESPACE::SubscribeOptions ${sub.properties["name"]}_options;
+  ${sub.properties["name"]}_options = NAMESPACE::SubscribeOptions::create<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>
+      (advertiseName.c_str(),
+       1000,
+       boost::bind(&$component_name::${sub.properties["name"]}_operation, this, _1),
+       NAMESPACE::VoidPtr(),
+\#ifdef USE_ROSMOD
+       &this->comp_queue,
+       callback_options);
+\#else
+       &this->comp_queue);
+\#endif 
+  this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
+#end for
+#end if		
+
+#if $len($required_services) > 0
+  // Configure all required services associated with this component
+#for $client in $clients
+  // Component Client - $client.properties["name"]
+  advertiseName = "$client.properties["service_reference"].properties["name"]";
+  if (config.portGroupMap.find("$client.properties["name"]") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["$client.properties["name"]"];
+  this->${client.properties["name"]} = nh.serviceClient<$client.properties["service_reference"].parent.properties["name"]::$client.properties["service_reference"].properties["name"]>(advertiseName.c_str(), true); 
+#end for
+
+#end if
+  // Init Timer
+\#ifdef USE_ROSMOD    
+  callback_options.alias = "init_timer_operation";
+  callback_options.priority = 99;
+  callback_options.deadline.sec = 1;
+  callback_options.deadline.nsec = 0;
+\#endif
+  NAMESPACE::TimerOptions timer_options;
+  timer_options = 
+    NAMESPACE::TimerOptions
+    (ros::Duration(-1),
+     boost::bind(&$component_name::init_timer_operation, this, _1),
+     &this->comp_queue,
+\#ifdef USE_ROSMOD     
+     callback_options,
+\#endif     
+     true,
+     false); 
+  this->init_timer = nh.createTimer(timer_options);
+  this->init_timer.stop();
+#if $len($timers)
+#for $timer in $timers
+\#ifdef USE_ROSMOD   
+  callback_options.alias = "${timer.properties["name"]}_operation";
+  callback_options.priority = $timer.properties["priority"];
+  callback_options.deadline.sec = ${int(str(timer.properties["deadline"]).split('.')[0])};
+  callback_options.deadline.nsec = ${int(float('0.' + (str(timer.properties["deadline"]).split('.')[1]))*1000000000)};
+\#endif
+  // Component Timer - $timer.properties["name"]
+  timer_options = 
+    NAMESPACE::TimerOptions
+#if $timer.properties["period"] == "0.0"
+    (ros::Duration(-1),
+#else
+    (ros::Duration($timer.properties["period"]),
+#end if
+     boost::bind(&$component_name::${timer.properties["name"]}_operation, this, _1),
+#if $timer.properties["period"] == "0.0"
+     &this->comp_queue,
+\#ifdef USE_ROSMOD     
+     callback_options,
+\#endif 
+     true,
+     false);
+#else
+     &this->comp_queue,
+\#ifdef USE_ROSMOD     
+     callback_options,
+\#endif 
+     false,
+     false);
+#end if 
+  this->$(timer.properties["name"]) = nh.createTimer(timer_options);
+#end for
+#end if
+
+#if $component_type == "KSP"
+  krpci_client.SetName(config.nodeName + "_" + config.compName);
+#end if
+
+  this->init_timer.start();
+#if $len($timers)
+#for $timer in $timers
+  this->$(timer.properties["name"]).start();
+#end for
+#end if
+}
+
+extern "C" {
+  Component *maker(ComponentConfig &config, int argc, char **argv) {
+    return new ${component_name}(config,argc,argv);
+  }
+}
