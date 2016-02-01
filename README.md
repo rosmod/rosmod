@@ -21,21 +21,17 @@ $ git clone --recursive http://github.com/pranav-srinivas-kumar/rosmod-0.3
 * wxPython 2.8
 * dtach
 
-### How to Install Dependencies
-
 ```bash
 $ cd <REPOSITORY_HOME>/utils
 $ sudo ./dependencies.py
 ```
 
-## How to start ROSMOD GUI
+## ROSMOD GUI
 
 ```bash
 $ cd <REPOSITORY_HOME>/gui
 $ python __main__.py
 ```
-
-### Create an alias in .bashrc 
 
 * Add the following line to ~/.bashrc
 
