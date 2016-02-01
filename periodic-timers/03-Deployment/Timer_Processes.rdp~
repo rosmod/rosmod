@@ -1,0 +1,119 @@
+/*
+ * ROSMOD Deployment Model
+ */
+
+// ROSMOD Hardware Model - cluster
+using cluster;
+
+// ROSMOD Node - Timer_1_Node 
+node Timer_1_Node
+{
+  properties
+  {
+    ref = "cluster/BBB_312";
+    priority = 50;
+  }
+  component_instance Component_1
+  {
+      properties
+      {
+	ref = "periodic_timers/Component_1";
+	scheduling_scheme = FIFO;
+	logging
+	{
+	  Is Periodic? = true;
+	  Periodic Log Unit = 1000;
+	}
+      }
+  }
+}
+// ROSMOD Node - Timer_2_Node 
+node Timer_2_Node
+{
+  properties
+  {
+    ref = "cluster/BBB_312";
+    priority = 50;
+  }
+  component_instance Component_2
+  {
+      properties
+      {
+	ref = "periodic_timers/Component_2";
+	scheduling_scheme = FIFO;
+	logging
+	{
+	  Is Periodic? = true;
+	  Periodic Log Unit = 1000;
+	}
+      }
+  }
+}
+// ROSMOD Node - Timer_3_Node 
+node Timer_3_Node
+{
+  properties
+  {
+    ref = "cluster/BBB_312";
+    priority = 50;
+  }
+  component_instance Component_3
+  {
+      properties
+      {
+	ref = "periodic_timers/Component_3";
+	scheduling_scheme = FIFO;
+	logging
+	{
+	  Is Periodic? = true;
+	  Periodic Log Unit = 1000;
+	}
+      }
+  }
+}
+// ROSMOD Node - Timer_4_Node 
+node Timer_4_Node
+{
+  properties
+  {
+    ref = "cluster/BBB_312";
+    priority = 50;
+  }
+  component_instance Component_4
+  {
+      properties
+      {
+	ref = "periodic_timers/Component_4";
+	scheduling_scheme = FIFO;
+	logging
+	{
+	  Is Periodic? = true;
+	  Periodic Log Unit = 1000;
+	}
+      }
+  }
+}
+// ROSMOD Node - Timer_5_Node 
+node Timer_5_Node
+{
+  properties
+  {
+    ref = "cluster/BBB_312";
+    priority = 50;
+  }
+  component_instance Component_5
+  {
+      properties
+      {
+	ref = "periodic_timers/Component_5";
+	scheduling_scheme = FIFO;
+	logging
+	{
+	  Is Periodic? = true;
+	  Periodic Log Unit = 1000;
+	}
+      }
+  }
+}
+
+

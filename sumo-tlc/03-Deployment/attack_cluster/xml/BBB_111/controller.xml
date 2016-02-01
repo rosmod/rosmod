@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<node name="controller">
+  <component_instance name="ctrl_i">
+    <library name="libcontroller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="20.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="ryg_control_pub">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="ryg_state_sub">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="sensor_state_sub">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="8">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="10">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="14">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="16">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="17">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="18">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="19">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="20">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="21">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="22">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="23">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="24">
+	<profile>
+# period = 100
+# kind = required
+# priority = 1
+# start = 0
+0,100000000,0,0
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<node name="n4">
+  <component_instance name="sender_1_i">
+    <library name="libsender_1.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="pub1">
+      <uuid>5</uuid>
+      <profile>
+# period = 10
+# start = 0
+0,800000,0
+1,850000,0
+2,1024000,0
+3,1000000,0
+4,1005000,0
+5,1050000,0
+6,1100000,0
+7,0,0
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

@@ -1,0 +1,5 @@
+do sensor_read_timer_callback {
+  LOCAL 15;
+  PUBLISH sensor_state_publisher.sensor_state;
+  LOCAL 2;
+}

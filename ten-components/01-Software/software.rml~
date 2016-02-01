@@ -1,0 +1,147 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - ten_component
+package ten_component
+{
+  // ROSMOD Component - Periodic_Timer
+  component Periodic_Timer : Base 
+  {
+    // ROSMOD Timer - one_sec_timer
+    timer one_sec_timer 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 0.5;
+    }       
+  }
+  // ROSMOD Component - Periodic_Publisher
+  component Periodic_Publisher : Base 
+  {
+    // ROSMOD Publisher - secret_message_publisher
+    publisher <ten_component/secret_message> secret_message_publisher;
+    // ROSMOD Timer - half_sec_timer
+    timer half_sec_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.25;
+    }       
+  }
+  // ROSMOD Component - Secret_Subscriber
+  component Secret_Subscriber : Base 
+  {
+    // ROSMOD Server - secret_server
+    server <ten_component/secret_service> secret_server 
+    {
+      priority = 50;
+      deadline = 0.075;
+    }       
+    // ROSMOD Subscriber - secret_message_subscriber
+    subscriber <ten_component/secret_message> secret_message_subscriber 
+    {
+      priority = 50;
+      deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Secret_Client
+  component Secret_Client : Base 
+  {
+    // ROSMOD Client - secret_client
+    client <ten_component/secret_service> secret_client;
+    // ROSMOD Timer - secret_timer
+    timer secret_timer 
+    {
+	period = 0.25;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Component_1
+  component Component_1 : Base 
+  {
+    // ROSMOD Publisher - Name_Publisher
+    publisher <ten_component/ComponentName> Name_Publisher;
+    // ROSMOD Subscriber - Name_Subscriber
+    subscriber <ten_component/ComponentName> Name_Subscriber 
+    {
+      priority = 50;
+      deadline = 0.300;
+    }       
+    // ROSMOD Timer - Timer_1
+    timer Timer_1 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.200;
+    }       
+  }
+  // ROSMOD Component - Component_2
+  component Component_2 : Base 
+  {
+    // ROSMOD Server - Service_Server
+    server <ten_component/ComponentService> Service_Server 
+    {
+      priority = 50;
+      deadline = 0.500;
+    }       
+    // ROSMOD Publisher - Name_Publisher
+    publisher <ten_component/ComponentName> Name_Publisher;
+    // ROSMOD Timer - Timer_2
+    timer Timer_2 
+    {
+	period = 1.0;
+	priority = 60;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Component_3
+  component Component_3 : Base 
+  {
+    // ROSMOD Client - Service_Client
+    client <ten_component/ComponentService> Service_Client;
+    // ROSMOD Timer - Timer_3
+    timer Timer_3 
+    {
+	period = 2.0;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Data_Acquisition_Module
+  component Data_Acquisition_Module : Base 
+  {
+    // ROSMOD Publisher - sensor_state_publisher
+    publisher <ten_component/sensor_state> sensor_state_publisher;
+    // ROSMOD Timer - sensor_read_timer
+    timer sensor_read_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - Main_Controller
+  component Main_Controller : Base 
+  {
+    // ROSMOD Publisher - control_command_publisher
+    publisher <ten_component/control_command> control_command_publisher;
+    // ROSMOD Subscriber - sensor_state_subscriber
+    subscriber <ten_component/sensor_state> sensor_state_subscriber 
+    {
+      priority = 50;
+      deadline = 0.15;
+    }       
+  }
+  // ROSMOD Component - Servo_Actuator
+  component Servo_Actuator : Base 
+  {
+    // ROSMOD Subscriber - control_command_subscriber
+    subscriber <ten_component/control_command> control_command_subscriber 
+    {
+      priority = 50;
+      deadline = 0.015;
+    }       
+  }
+}

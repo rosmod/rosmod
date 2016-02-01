@@ -1,0 +1,122 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - tlc
+package tlc
+{
+  // ROSMOD Component - sumo_intf
+  component sumo_intf : SUMO 
+  {
+    // ROSMOD Server - e3_get_vehicle_number_server
+    server <tlc/e3_get_vehicle_number> e3_get_vehicle_number_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - tlc_get_ryg_state_server
+    server <tlc/tlc_get_ryg_state> tlc_get_ryg_state_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - tlc_set_ryg_state_server
+    server <tlc/tlc_set_ryg_state> tlc_set_ryg_state_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - sumo_step_timer
+    timer sumo_step_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - controller
+  component controller : Base 
+  {
+    // ROSMOD Publisher - ryg_control_pub
+    publisher <tlc/ryg_control> ryg_control_pub;
+    // ROSMOD Subscriber - ryg_state_sub
+    subscriber <tlc/ryg_state> ryg_state_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - sensor_state_sub
+    subscriber <tlc/sensor_state> sensor_state_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - controller_timer
+    timer controller_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.01;
+    }       
+  }
+  // ROSMOD Component - e3_sensor
+  component e3_sensor : Base 
+  {
+    // ROSMOD Client - e3_get_vehicle_number_client
+    client <tlc/e3_get_vehicle_number> e3_get_vehicle_number_client;
+    // ROSMOD Publisher - sensor_state_pub
+    publisher <tlc/sensor_state> sensor_state_pub;
+    // ROSMOD Timer - e3_update_timer
+    timer e3_update_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - tl_actuator
+  component tl_actuator : Base 
+  {
+    // ROSMOD Client - tlc_set_ryg_state_client
+    client <tlc/tlc_set_ryg_state> tlc_set_ryg_state_client;
+    // ROSMOD Subscriber - ryg_control_sub
+    subscriber <tlc/ryg_control> ryg_control_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - tl_sensor
+  component tl_sensor : Base 
+  {
+    // ROSMOD Client - tlc_get_ryg_state_client
+    client <tlc/tlc_get_ryg_state> tlc_get_ryg_state_client;
+    // ROSMOD Publisher - ryg_state_pub
+    publisher <tlc/ryg_state> ryg_state_pub;
+    // ROSMOD Timer - tl_update_timer
+    timer tl_update_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - e3_sensor_stream_ddos
+  component e3_sensor_stream_ddos : Base 
+  {
+    // ROSMOD Publisher - e3_sensor_stream_ddos_pub
+    publisher <tlc/sensor_state> e3_sensor_stream_ddos_pub;
+  }
+  // ROSMOD Component - control_stream_ddos
+  component control_stream_ddos : Base 
+  {
+    // ROSMOD Publisher - control_stream_ddos_pub
+    publisher <tlc/ryg_control> control_stream_ddos_pub;
+  }
+  // ROSMOD Component - tl_sensor_stream_ddos
+  component tl_sensor_stream_ddos : Base 
+  {
+    // ROSMOD Publisher - tl_sensor_stream_ddos_pub
+    publisher <tlc/ryg_state> tl_sensor_stream_ddos_pub;
+  }
+}

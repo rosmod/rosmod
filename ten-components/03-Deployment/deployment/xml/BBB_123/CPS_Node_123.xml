@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<node name="CPS_Node_123">
+  <component_instance name="DAQ">
+    <library name="libData_Acquisition_Module.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="sensor_state_publisher">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Main_Controller">
+    <library name="libMain_Controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_publisher">
+      <uuid>6</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="sensor_state_subscriber">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Servo">
+    <library name="libServo_Actuator.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="control_command_subscriber">
+      <uuid>7</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

@@ -1,0 +1,45 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - bbb_111
+hardware bbb_111
+{
+  ip_address = "10.1.1.1";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu/tests";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
+// Hardware - bbb_112
+hardware bbb_112
+{
+  ip_address = "10.1.1.2";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu/tests";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
+// Hardware - bbb_113
+hardware bbb_113
+{
+  ip_address = "10.1.1.3";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu/tests";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
+// Hardware - bbb_114
+hardware bbb_114
+{
+  ip_address = "10.1.1.4";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu/tests";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
+

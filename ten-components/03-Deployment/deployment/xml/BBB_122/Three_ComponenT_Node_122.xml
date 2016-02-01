@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<node name="Three_ComponenT_Node_122">
+  <component_instance name="Component_1">
+    <library name="libComponent_1.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="Name_Subscriber">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="2">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="3">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Component_2">
+    <library name="libComponent_2.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Component_3">
+    <library name="libComponent_3.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+</node>
+

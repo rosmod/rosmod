@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<node name="sink_2">
+  <component_instance name="receiver_i">
+    <library name="libreceiver.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="7"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="routed_msg_sub">
+      <uuid>3</uuid>
+      <profile>
+# period = 8
+# start = 0
+0,240000,0,0
+1,248000,0,0
+2,276000,0,0
+3,302400,0,0
+4,304000,0,0
+5,332000,0,0
+6,360000,0,0
+7,0,0,0
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+# period = 16
+# priority = 1
+# start = 0
+0,80000,0,0
+1,85000,0,0
+2,102400,0,0
+3,100000,0,0
+4,100500,0,0
+5,105000,0,0
+6,110000,0,0
+7,0,0,0
+
+	</profile>
+      </sender>
+      <sender uuid="1">
+	<profile>
+# period = 16
+# priority = 1
+# start = 0
+0,80000,0,0
+1,85000,0,0
+2,102400,0,0
+3,100000,0,0
+4,100500,0,0
+5,105000,0,0
+6,110000,0,0
+7,0,0,0
+
+	</profile>
+      </sender>
+    </port>
+    <port_instance name="flow2">
+      <port name="routed_msg_sub"/>
+      <group setting="flow2"/>
+    </port_instance>
+  </component_instance>
+</node>
+

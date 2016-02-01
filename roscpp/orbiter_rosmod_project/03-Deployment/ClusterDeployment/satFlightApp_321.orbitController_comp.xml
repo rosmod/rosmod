@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logging>
+  <debug setting="false"/>
+  <info setting="true"/>
+  <warning setting="false"/>
+  <error setting="true"/>
+  <critical setting="true"/>
+</logging>
+<group ID="Group_321">
+  <port ID="ThrusterComm_client"/>
+  <port ID="SatelliteState_client"/>
+</group>

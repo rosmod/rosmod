@@ -1,0 +1,26 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - timer_package
+package timer_package
+{
+  // ROSMOD Component - Timer
+  component Timer : Base 
+  {
+    // ROSMOD Timer - periodic_timer
+    timer periodic_timer 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 0.500;
+    }       
+    // ROSMOD Timer - sporadic_timer
+    timer sporadic_timer 
+    {
+	period = 0.0;
+	priority = 50;
+	deadline = 1.0;
+    }       
+  }
+}

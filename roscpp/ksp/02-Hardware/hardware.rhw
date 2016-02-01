@@ -1,0 +1,325 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - BBB_111
+hardware BBB_111
+{
+  ip_address = "191.168.127.1";
+  username = "ubuntu";
+  sshkey = "/home/jeb/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_112
+hardware BBB_112
+{
+  ip_address = "191.168.127.2";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_113
+hardware BBB_113
+{
+  ip_address = "191.168.127.3";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_114
+hardware BBB_114
+{
+  ip_address = "191.168.127.4";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_121
+hardware BBB_121
+{
+  ip_address = "191.168.127.5";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_122
+hardware BBB_122
+{
+  ip_address = "191.168.127.6";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_123
+hardware BBB_123
+{
+  ip_address = "191.168.127.7";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_124
+hardware BBB_124
+{
+  ip_address = "191.168.127.8";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_211
+hardware BBB_211
+{
+  ip_address = "191.168.127.9";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_212
+hardware BBB_212
+{
+  ip_address = "191.168.127.10";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_213
+hardware BBB_213
+{
+  ip_address = "191.168.127.11";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_214
+hardware BBB_214
+{
+  ip_address = "191.168.127.12";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_221
+hardware BBB_221
+{
+  ip_address = "191.168.127.13";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_222
+hardware BBB_222
+{
+  ip_address = "191.168.127.14";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_223
+hardware BBB_223
+{
+  ip_address = "191.168.127.15";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_224
+hardware BBB_224
+{
+  ip_address = "191.168.127.16";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_311
+hardware BBB_311
+{
+  ip_address = "191.168.127.17";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_312
+hardware BBB_312
+{
+  ip_address = "191.168.127.18";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_313
+hardware BBB_313
+{
+  ip_address = "191.168.127.19";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_314
+hardware BBB_314
+{
+  ip_address = "191.168.127.20";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_321
+hardware BBB_321
+{
+  ip_address = "191.168.127.21";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_322
+hardware BBB_322
+{
+  ip_address = "191.168.127.22";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_323
+hardware BBB_323
+{
+  ip_address = "191.168.127.23";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_324
+hardware BBB_324
+{
+  ip_address = "191.168.127.24";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_411
+hardware BBB_411
+{
+  ip_address = "191.168.127.25";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_412
+hardware BBB_412
+{
+  ip_address = "191.168.127.26";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_413
+hardware BBB_413
+{
+  ip_address = "191.168.127.27";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_414
+hardware BBB_414
+{
+  ip_address = "191.168.127.28";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_421
+hardware BBB_421
+{
+  ip_address = "191.168.127.29";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_422
+hardware BBB_422
+{
+  ip_address = "191.168.127.30";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_423
+hardware BBB_423
+{
+  ip_address = "191.168.127.31";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+// Hardware - BBB_424
+hardware BBB_424
+{
+  ip_address = "191.168.127.32";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu";
+  install_path = "/opt/ros/indigo";
+  arch = armv7l;
+}
+

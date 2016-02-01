@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<node name="DAQ_Node_313">
+  <component_instance name="DAQ_313">
+    <library name="libData_Acquisition_Module.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="2"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="sensor_state_publisher">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

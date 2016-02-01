@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<node name="node_1_enforcer">
+  <component_instance name="link_enforcer_i">
+    <library name="liblink_profile_enforcer.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="7"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+

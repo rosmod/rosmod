@@ -1,0 +1,31 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - publish_subscribe_package
+package publish_subscribe_package
+{
+  // ROSMOD Component - Publisher
+  component Publisher : Base 
+  {
+    // ROSMOD Publisher - publisher_port
+    publisher <publish_subscribe_package/Message> publisher_port;
+    // ROSMOD Timer - publish_timer
+    timer publish_timer 
+    {
+	period = 2.0;
+	priority = 50;
+	deadline = 1.0;
+    }       
+  }
+  // ROSMOD Component - Subscriber
+  component Subscriber : Base 
+  {
+    // ROSMOD Subscriber - subscriber_port
+    subscriber <publish_subscribe_package/Message> subscriber_port 
+    {
+      priority = 50;
+      deadline = 1.0;
+    }       
+  }
+}

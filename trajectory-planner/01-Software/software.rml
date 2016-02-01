@@ -1,0 +1,39 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - trajectory_planning_package
+package trajectory_planning_package
+{
+  // ROSMOD Component - Sensor
+  component Sensor : Base 
+  {
+    // ROSMOD Server - trajectory_server
+    server <trajectory_planning_package/compute> trajectory_server 
+    {
+      priority = 50;
+      deadline = 0.6;
+    }       
+    // ROSMOD Publisher - state_publisher
+    publisher <trajectory_planning_package/sensor_reading> state_publisher;
+    // ROSMOD Timer - sensor_timer
+    timer sensor_timer 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 0.4;
+    }       
+  }
+  // ROSMOD Component - Trajectory_Planner
+  component Trajectory_Planner : Base 
+  {
+    // ROSMOD Client - trajectory_client
+    client <trajectory_planning_package/compute> trajectory_client;
+    // ROSMOD Subscriber - state_subscriber
+    subscriber <trajectory_planning_package/sensor_reading> state_subscriber 
+    {
+      priority = 50;
+      deadline = 1.0;
+    }       
+  }
+}

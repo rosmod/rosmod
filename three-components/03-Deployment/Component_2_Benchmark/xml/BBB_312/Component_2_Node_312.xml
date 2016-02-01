@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<node name="Component_2_Node_312">
+  <component_instance name="Component_2">
+    <library name="libComponent_2.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>0</uuid>
+      <profile>
+0,1,0,eth0
+1,0,1,eth0
+2,2,0,eth0
+3,1,0,eth0
+4,0,0,eth0
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<node name="pub2">
+  <component_instance name="sender_i">
+    <library name="libsender.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port_instance name="oob_pub2">
+      <port name="oob_server"/>
+      <group setting="pub2"/>
+    </port_instance>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="100.0"/>
+    <oob_uuid setting="2"/>
+    <profileName name="/home/ubuntu/tests/required2.csv"/>
+    <tg_time setting="30.0"/>
+  </component_instance>
+</node>
+

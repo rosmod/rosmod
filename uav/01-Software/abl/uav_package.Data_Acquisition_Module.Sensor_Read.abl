@@ -1,0 +1,5 @@
+do Sensor_Read {
+  LOCAL 15;
+  PUBLISH sensor_state_publisher.sensor_state;
+  LOCAL 2;
+}

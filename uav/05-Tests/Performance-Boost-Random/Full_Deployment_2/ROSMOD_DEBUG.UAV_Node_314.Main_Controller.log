@@ -1,0 +1,673 @@
+=================================================================
+ROSMOD::DEBUG::1415743815530312267::CALLBACK FIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1415743815, nsec=530168225
+ROSMOD::DEBUG::1415743815530754517::Entering Main_Controller::init_timer_operation
+ROSMOD::DEBUG::1415743815530855100::Exiting Main_Controller::init_timer_operation
+ROSMOD::DEBUG::1415743815531029350::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1415743815, nsec=530936100; Execution Time sec=0, nsec=767875
+ROSMOD::DEBUG::1415743816202010434::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743816, nsec=201957184
+ROSMOD::DEBUG::1415743816202423976::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743816246245226::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743816246345142::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743816, nsec=246314642; Execution Time sec=0, nsec=44357458
+ROSMOD::DEBUG::1415743816701987684::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743816, nsec=701940017
+ROSMOD::DEBUG::1415743816702250601::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743816745954851::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743816746044351::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743816, nsec=746016017; Execution Time sec=0, nsec=44076000
+ROSMOD::DEBUG::1415743817201789517::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743817, nsec=201747767
+ROSMOD::DEBUG::1415743817202046684::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743817245874851::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743817245964559::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743817, nsec=245937767; Execution Time sec=0, nsec=44190000
+ROSMOD::DEBUG::1415743817701292559::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743817, nsec=701252559
+ROSMOD::DEBUG::1415743817701552351::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743817745162809::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743817745247684::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743817, nsec=745219851; Execution Time sec=0, nsec=43967292
+ROSMOD::DEBUG::1415743818201148851::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743818, nsec=201102017
+ROSMOD::DEBUG::1415743818201409392::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743818245196892::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743818245286309::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743818, nsec=245260059; Execution Time sec=0, nsec=44158042
+ROSMOD::DEBUG::1415743818700871393::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743818, nsec=700830559
+ROSMOD::DEBUG::1415743818701171101::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743818744773976::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743818744858601::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743818, nsec=744830393; Execution Time sec=0, nsec=43999834
+ROSMOD::DEBUG::1415743819201799684::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743819, nsec=201758934
+ROSMOD::DEBUG::1415743819202108101::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743819245802726::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743819245908518::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743819, nsec=245881143; Execution Time sec=0, nsec=44122209
+ROSMOD::DEBUG::1415743819701984309::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743819, nsec=701940643
+ROSMOD::DEBUG::1415743819702255101::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743819746053893::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743819746149976::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743819, nsec=746119518; Execution Time sec=0, nsec=44178875
+ROSMOD::DEBUG::1415743820200962809::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743820, nsec=200877018
+ROSMOD::DEBUG::1415743820201327934::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743820244959351::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743820245047309::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743820, nsec=245020351; Execution Time sec=0, nsec=44143333
+ROSMOD::DEBUG::1415743820701865393::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743820, nsec=701822768
+ROSMOD::DEBUG::1415743820702165893::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743820745776309::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743820745882184::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743820, nsec=745853851; Execution Time sec=0, nsec=44031083
+ROSMOD::DEBUG::1415743821201862559::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743821, nsec=201819768
+ROSMOD::DEBUG::1415743821202119893::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743821245778351::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743821245888934::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743821, nsec=245859018; Execution Time sec=0, nsec=44039250
+ROSMOD::DEBUG::1415743821701913893::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743821, nsec=701868476
+ROSMOD::DEBUG::1415743821702184143::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743821745954893::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743821746043560::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743821, nsec=746015268; Execution Time sec=0, nsec=44146792
+ROSMOD::DEBUG::1415743822201369643::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743822, nsec=201329393
+ROSMOD::DEBUG::1415743822201623560::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743822245269351::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743822245356518::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743822, nsec=245327893; Execution Time sec=0, nsec=43998500
+ROSMOD::DEBUG::1415743822701447143::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743822, nsec=701404310
+ROSMOD::DEBUG::1415743822701711310::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743822745510101::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743822745602310::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743822, nsec=745573268; Execution Time sec=0, nsec=44168958
+ROSMOD::DEBUG::1415743823201274893::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743823, nsec=201234726
+ROSMOD::DEBUG::1415743823201530976::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743823245144518::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743823245226018::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743823, nsec=245199268; Execution Time sec=0, nsec=43964542
+ROSMOD::DEBUG::1415743823701435851::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743823, nsec=701391268
+ROSMOD::DEBUG::1415743823701705351::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743823745565101::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743823745657768::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743823, nsec=745629768; Execution Time sec=0, nsec=44238500
+ROSMOD::DEBUG::1415743824201781393::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743824, nsec=201741268
+ROSMOD::DEBUG::1415743824202040602::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743824245649852::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743824245739518::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743824, nsec=245710435; Execution Time sec=0, nsec=43969167
+ROSMOD::DEBUG::1415743824701865102::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743824, nsec=701823227
+ROSMOD::DEBUG::1415743824702134310::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743824745920477::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743824746006685::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743824, nsec=745979727; Execution Time sec=0, nsec=44156500
+ROSMOD::DEBUG::1415743825201874102::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743825, nsec=201828560
+ROSMOD::DEBUG::1415743825202192477::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743825245833727::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743825245921560::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743825, nsec=245893310; Execution Time sec=0, nsec=44064750
+ROSMOD::DEBUG::1415743825701681852::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743825, nsec=701638018
+ROSMOD::DEBUG::1415743825701939685::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743825745538602::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743825745623060::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743825, nsec=745595268; Execution Time sec=0, nsec=43957250
+ROSMOD::DEBUG::1415743826201565352::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743826, nsec=201524602
+ROSMOD::DEBUG::1415743826201822768::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743826245426643::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743826245513352::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743826, nsec=245485602; Execution Time sec=0, nsec=43961000
+ROSMOD::DEBUG::1415743826701624977::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743826, nsec=701583102
+ROSMOD::DEBUG::1415743826701879018::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743826745545810::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743826745635477::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743826, nsec=745606768; Execution Time sec=0, nsec=44023666
+ROSMOD::DEBUG::1415743827201492644::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743827, nsec=201446477
+ROSMOD::DEBUG::1415743827201754310::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743827245507227::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743827245597935::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743827, nsec=245571227; Execution Time sec=0, nsec=44124750
+ROSMOD::DEBUG::1415743827701544310::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743827, nsec=701505810
+ROSMOD::DEBUG::1415743827701816644::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743827745561769::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743827745654602::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743827, nsec=745625227; Execution Time sec=0, nsec=44119417
+ROSMOD::DEBUG::1415743828201131102::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743828, nsec=201087769
+ROSMOD::DEBUG::1415743828201396394::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743828245565477::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743828245649019::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743828, nsec=245622394; Execution Time sec=0, nsec=44534625
+ROSMOD::DEBUG::1415743828701898144::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743828, nsec=701855685
+ROSMOD::DEBUG::1415743828702162310::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743828745772019::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743828745877602::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743828, nsec=745849894; Execution Time sec=0, nsec=43994209
+ROSMOD::DEBUG::1415743829201635019::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743829, nsec=201593435
+ROSMOD::DEBUG::1415743829201896019::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743829245655894::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743829245742644::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743829, nsec=245715019; Execution Time sec=0, nsec=44121584
+ROSMOD::DEBUG::1415743829702146477::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743829, nsec=702105727
+ROSMOD::DEBUG::1415743829702418269::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743829746043311::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743829746129352::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743829, nsec=746102394; Execution Time sec=0, nsec=43996667
+ROSMOD::DEBUG::1415743830202085894::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743830, nsec=202039977
+ROSMOD::DEBUG::1415743830202393519::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743830246105811::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743830246191769::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743830, nsec=246163477; Execution Time sec=0, nsec=44123500
+ROSMOD::DEBUG::1415743830702001977::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743830, nsec=701955686
+ROSMOD::DEBUG::1415743830702267436::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743830745906102::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743830745990102::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743830, nsec=745963686; Execution Time sec=0, nsec=44008000
+ROSMOD::DEBUG::1415743831201735186::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743831, nsec=201695144
+ROSMOD::DEBUG::1415743831201993019::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743831245600269::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743831245686269::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743831, nsec=245656686; Execution Time sec=0, nsec=43961542
+ROSMOD::DEBUG::1415743831701914644::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743831, nsec=701873811
+ROSMOD::DEBUG::1415743831702190227::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743831746102311::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743831746194311::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743831, nsec=746166311; Execution Time sec=0, nsec=44292500
+ROSMOD::DEBUG::1415743832201709977::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743832, nsec=201669144
+ROSMOD::DEBUG::1415743832201971311::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743832245639894::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743832245727936::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743832, nsec=245698644; Execution Time sec=0, nsec=44029500
+ROSMOD::DEBUG::1415743832701628228::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743832, nsec=701588561
+ROSMOD::DEBUG::1415743832701887853::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743832745616353::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743832745703519::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743832, nsec=745675644; Execution Time sec=0, nsec=44087083
+ROSMOD::DEBUG::1415743833201556394::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743833, nsec=201516144
+ROSMOD::DEBUG::1415743833201814978::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743833245484186::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743833245571769::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743833, nsec=245542353; Execution Time sec=0, nsec=44026209
+ROSMOD::DEBUG::1415743833701143353::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743833, nsec=701099019
+ROSMOD::DEBUG::1415743833701408728::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743833745617769::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743833745701269::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743833, nsec=745673519; Execution Time sec=0, nsec=44574500
+ROSMOD::DEBUG::1415743834201656644::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743834, nsec=201606978
+ROSMOD::DEBUG::1415743834201923394::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743834245565644::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743834245656394::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743834, nsec=245625603; Execution Time sec=0, nsec=44018625
+ROSMOD::DEBUG::1415743834701702436::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743834, nsec=701657811
+ROSMOD::DEBUG::1415743834701966811::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743834745735603::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743834745846644::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743834, nsec=745795936; Execution Time sec=0, nsec=44138125
+ROSMOD::DEBUG::1415743835201065811::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743835, nsec=201019936
+ROSMOD::DEBUG::1415743835201387978::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743835245001019::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743835245083228::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743835, nsec=245056978; Execution Time sec=0, nsec=44037042
+ROSMOD::DEBUG::1415743835702100311::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743835, nsec=702056811
+ROSMOD::DEBUG::1415743835702411436::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743835746223103::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743835746312936::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743835, nsec=746286353; Execution Time sec=0, nsec=44229542
+ROSMOD::DEBUG::1415743836201946186::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743836, nsec=201904395
+ROSMOD::DEBUG::1415743836202213978::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743836245886770::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743836245970728::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743836, nsec=245943270; Execution Time sec=0, nsec=44038875
+ROSMOD::DEBUG::1415743836702037436::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743836, nsec=701997228
+ROSMOD::DEBUG::1415743836702298020::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743836746052020::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743836746140645::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743836, nsec=746112811; Execution Time sec=0, nsec=44115583
+ROSMOD::DEBUG::1415743837201744478::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743837, nsec=201704020
+ROSMOD::DEBUG::1415743837202000561::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743837245670020::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743837245761020::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743837, nsec=245732478; Execution Time sec=0, nsec=44028458
+ROSMOD::DEBUG::1415743837701803020::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743837, nsec=701756145
+ROSMOD::DEBUG::1415743837702063353::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743837745735270::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743837745849186::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743837, nsec=745796853; Execution Time sec=0, nsec=44040708
+ROSMOD::DEBUG::1415743838201571020::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743838, nsec=201532437
+ROSMOD::DEBUG::1415743838201826937::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743838245558395::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743838245643978::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743838, nsec=245617478; Execution Time sec=0, nsec=44085041
+ROSMOD::DEBUG::1415743838701598353::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743838, nsec=701558187
+ROSMOD::DEBUG::1415743838701856603::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743838745524812::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743838745612145::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743838, nsec=745581853; Execution Time sec=0, nsec=44023666
+ROSMOD::DEBUG::1415743839202038395::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743839, nsec=201996478
+ROSMOD::DEBUG::1415743839202342187::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743839246073520::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743839246163187::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743839, nsec=246133937; Execution Time sec=0, nsec=44137459
+ROSMOD::DEBUG::1415743839701966353::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743839, nsec=701925603
+ROSMOD::DEBUG::1415743839702243437::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743839745965270::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743839746058145::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743839, nsec=746029395; Execution Time sec=0, nsec=44103792
+ROSMOD::DEBUG::1415743840202143478::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743840, nsec=202099728
+ROSMOD::DEBUG::1415743840202456687::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743840246174145::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743840246262562::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743840, nsec=246233645; Execution Time sec=0, nsec=44133917
+ROSMOD::DEBUG::1415743840701038478::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743840, nsec=700995520
+ROSMOD::DEBUG::1415743840701300645::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743840744906353::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743840744994437::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743840, nsec=744966062; Execution Time sec=0, nsec=43970542
+ROSMOD::DEBUG::1415743841201889645::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743841, nsec=201844604
+ROSMOD::DEBUG::1415743841202200312::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743841245936229::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743841246024645::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743841, nsec=245995562; Execution Time sec=0, nsec=44150958
+ROSMOD::DEBUG::1415743841701662937::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743841, nsec=701621312
+ROSMOD::DEBUG::1415743841701918854::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743841745528645::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743841745613062::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743841, nsec=745586520; Execution Time sec=0, nsec=43965208
+ROSMOD::DEBUG::1415743842201600020::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743842, nsec=201557937
+ROSMOD::DEBUG::1415743842201851895::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743842245611520::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743842245700562::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743842, nsec=245671979; Execution Time sec=0, nsec=44114042
+ROSMOD::DEBUG::1415743842701796645::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743842, nsec=701752312
+ROSMOD::DEBUG::1415743842702057812::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743842745737479::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743842745846395::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743842, nsec=745797937; Execution Time sec=0, nsec=44045625
+ROSMOD::DEBUG::1415743843201574145::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743843, nsec=201533979
+ROSMOD::DEBUG::1415743843201830895::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743843245482812::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743843245572729::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743843, nsec=245543145; Execution Time sec=0, nsec=44009166
+ROSMOD::DEBUG::1415743843701672437::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743843, nsec=701631271
+ROSMOD::DEBUG::1415743843701944896::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743843745780937::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743843745896187::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743843, nsec=745866896; Execution Time sec=0, nsec=44235625
+ROSMOD::DEBUG::1415743844201694437::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743844, nsec=201655021
+ROSMOD::DEBUG::1415743844201951104::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743844245564687::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743844245649229::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743844, nsec=245621104; Execution Time sec=0, nsec=43966083
+ROSMOD::DEBUG::1415743844701664646::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743844, nsec=701617354
+ROSMOD::DEBUG::1415743844701934562::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743844745632271::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743844745716229::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743844, nsec=745688271; Execution Time sec=0, nsec=44070917
+ROSMOD::DEBUG::1415743845201398396::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743845, nsec=201355562
+ROSMOD::DEBUG::1415743845201726396::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743845245334729::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743845245419646::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743845, nsec=245391812; Execution Time sec=0, nsec=44036250
+ROSMOD::DEBUG::1415743845701465146::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743845, nsec=701421479
+ROSMOD::DEBUG::1415743845701721687::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743845745488104::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743845745575146::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743845, nsec=745548312; Execution Time sec=0, nsec=44126833
+ROSMOD::DEBUG::1415743846201349229::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743846, nsec=201307354
+ROSMOD::DEBUG::1415743846201608229::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743846245227271::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743846245314021::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743846, nsec=245285687; Execution Time sec=0, nsec=43978333
+ROSMOD::DEBUG::1415743846701208771::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743846, nsec=701166646
+ROSMOD::DEBUG::1415743846701468271::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743846745222563::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743846745309854::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743846, nsec=745283229; Execution Time sec=0, nsec=44116583
+ROSMOD::DEBUG::1415743847202069354::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743847, nsec=202026479
+ROSMOD::DEBUG::1415743847202376729::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743847245999396::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743847246086646::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743847, nsec=246056979; Execution Time sec=0, nsec=44030500
+ROSMOD::DEBUG::1415743847702160938::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743847, nsec=702120021
+ROSMOD::DEBUG::1415743847702429396::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743847746402938::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743847746499146::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743847, nsec=746468979; Execution Time sec=0, nsec=44348958
+ROSMOD::DEBUG::1415743848201876813::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743848, nsec=201829854
+ROSMOD::DEBUG::1415743848202142188::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743848245847021::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743848245935396::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743848, nsec=245905813; Execution Time sec=0, nsec=44075959
+ROSMOD::DEBUG::1415743848701836438::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743848, nsec=701796271
+ROSMOD::DEBUG::1415743848702095188::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743848745754188::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743848745862854::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743848, nsec=745832729; Execution Time sec=0, nsec=44036458
+ROSMOD::DEBUG::1415743849201807313::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743849, nsec=201767271
+ROSMOD::DEBUG::1415743849202065479::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743849245716021::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743849245802896::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743849, nsec=245774771; Execution Time sec=0, nsec=44007500
+ROSMOD::DEBUG::1415743849702036438::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743849, nsec=701991813
+ROSMOD::DEBUG::1415743849702310938::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743849745957188::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743849746045063::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743849, nsec=746018063; Execution Time sec=0, nsec=44026250
+ROSMOD::DEBUG::1415743850203292730::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743850, nsec=203250021
+ROSMOD::DEBUG::1415743850203566480::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743850247267146::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743850247357563::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743850, nsec=247330646; Execution Time sec=0, nsec=44080625
+ROSMOD::DEBUG::1415743850701646646::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743850, nsec=701603605
+ROSMOD::DEBUG::1415743850701951105::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743850745558980::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743850745646146::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743850, nsec=745617563; Execution Time sec=0, nsec=44013958
+ROSMOD::DEBUG::1415743851201614813::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743851, nsec=201573063
+ROSMOD::DEBUG::1415743851201883646::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743851245669063::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743851245760563::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743851, nsec=245733396; Execution Time sec=0, nsec=44160333
+ROSMOD::DEBUG::1415743851701462688::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743851, nsec=701417230
+ROSMOD::DEBUG::1415743851701734355::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743851745444480::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743851745533813::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743851, nsec=745504396; Execution Time sec=0, nsec=44087166
+ROSMOD::DEBUG::1415743852201299938::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743852, nsec=201260272
+ROSMOD::DEBUG::1415743852201554730::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743852245308397::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743852245394980::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743852, nsec=245367688; Execution Time sec=0, nsec=44107416
+ROSMOD::DEBUG::1415743852701349522::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743852, nsec=701309772
+ROSMOD::DEBUG::1415743852701606355::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743852745211897::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743852745297563::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743852, nsec=745269938; Execution Time sec=0, nsec=43960166
+ROSMOD::DEBUG::1415743853201305563::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743853, nsec=201262022
+ROSMOD::DEBUG::1415743853201564855::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743853245391063::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743853245482855::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743853, nsec=245454397; Execution Time sec=0, nsec=44192375
+ROSMOD::DEBUG::1415743853701788855::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743853, nsec=701747563
+ROSMOD::DEBUG::1415743853702048563::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743853745709313::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743853745795230::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743853, nsec=745766772; Execution Time sec=0, nsec=44019209
+ROSMOD::DEBUG::1415743854201708480::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743854, nsec=201666938
+ROSMOD::DEBUG::1415743854201970355::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743854245778647::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743854245887897::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743854, nsec=245858938; Execution Time sec=0, nsec=44192000
+ROSMOD::DEBUG::1415743854702049897::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743854, nsec=702005022
+ROSMOD::DEBUG::1415743854702320355::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743854745995022::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743854746082063::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743854, nsec=746053397; Execution Time sec=0, nsec=44048375
+ROSMOD::DEBUG::1415743855202120105::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743855, nsec=202047022
+ROSMOD::DEBUG::1415743855202443189::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743855246386439::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743855246471814::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743855, nsec=246442814; Execution Time sec=0, nsec=44395792
+ROSMOD::DEBUG::1415743855701069105::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743855, nsec=701021855
+ROSMOD::DEBUG::1415743855701337022::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743855745035189::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743855745123564::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743855, nsec=745094689; Execution Time sec=0, nsec=44072834
+ROSMOD::DEBUG::1415743856201175480::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743856, nsec=201130189
+ROSMOD::DEBUG::1415743856202542147::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743856246169147::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743856246254897::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743856, nsec=246226439; Execution Time sec=0, nsec=45096250
+ROSMOD::DEBUG::1415743856701303814::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743856, nsec=701264105
+ROSMOD::DEBUG::1415743856701561355::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743856745319939::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743856745405647::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743856, nsec=745377605; Execution Time sec=0, nsec=44113500
+ROSMOD::DEBUG::1415743857201298522::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743857, nsec=201259189
+ROSMOD::DEBUG::1415743857201554564::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743857245149189::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743857245231147::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743857, nsec=245204480; Execution Time sec=0, nsec=43945291
+ROSMOD::DEBUG::1415743857701270731::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743857, nsec=701228856
+ROSMOD::DEBUG::1415743857701530189::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743857745301189::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743857745392272::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743857, nsec=745365564; Execution Time sec=0, nsec=44136708
+ROSMOD::DEBUG::1415743858201218397::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743858, nsec=201177064
+ROSMOD::DEBUG::1415743858201482481::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743858245098272::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743858245180189::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743858, nsec=245153814; Execution Time sec=0, nsec=43976750
+ROSMOD::DEBUG::1415743858701280439::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743858, nsec=701230106
+ROSMOD::DEBUG::1415743858701547981::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743858745379106::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743858745470897::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743858, nsec=745441981; Execution Time sec=0, nsec=44211875
+ROSMOD::DEBUG::1415743859201773439::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743859, nsec=201731939
+ROSMOD::DEBUG::1415743859202026356::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743859245685106::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743859245774481::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743859, nsec=245745606; Execution Time sec=0, nsec=44013667
+ROSMOD::DEBUG::1415743859702188356::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743859, nsec=702144397
+ROSMOD::DEBUG::1415743859702471106::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743859746249272::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743859746345481::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743859, nsec=746315731; Execution Time sec=0, nsec=44171334
+ROSMOD::DEBUG::1415743860201445731::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743860, nsec=201403231
+ROSMOD::DEBUG::1415743860201806522::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743860245436981::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743860245525272::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743860, nsec=245498814; Execution Time sec=0, nsec=44095583
+ROSMOD::DEBUG::1415743860701280648::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743860, nsec=701238981
+ROSMOD::DEBUG::1415743860701540939::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743860745146898::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743860745230439::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743860, nsec=745202606; Execution Time sec=0, nsec=43963625
+ROSMOD::DEBUG::1415743861201073773::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743861, nsec=201031648
+ROSMOD::DEBUG::1415743861201331606::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743861245005564::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743861245092773::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743861, nsec=245064648; Execution Time sec=0, nsec=44033000
+ROSMOD::DEBUG::1415743861701611981::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743861, nsec=701569731
+ROSMOD::DEBUG::1415743861701874273::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743861745490439::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743861745575648::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743861, nsec=745548689; Execution Time sec=0, nsec=43978958
+ROSMOD::DEBUG::1415743862201454731::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743862, nsec=201407814
+ROSMOD::DEBUG::1415743862201717856::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743862245479689::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743862245567689::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743862, nsec=245542273; Execution Time sec=0, nsec=44134459
+ROSMOD::DEBUG::1415743862701110648::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743862, nsec=701067023
+ROSMOD::DEBUG::1415743862701368439::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743862744980981::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743862745065273::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743862, nsec=745036814; Execution Time sec=0, nsec=43969791
+ROSMOD::DEBUG::1415743863202010356::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743863, nsec=201970773
+ROSMOD::DEBUG::1415743863202310023::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743863246023773::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743863246110398::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743863, nsec=246083481; Execution Time sec=0, nsec=44112708
+ROSMOD::DEBUG::1415743863702014773::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743863, nsec=701972856
+ROSMOD::DEBUG::1415743863702282981::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743863746128231::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743863746222231::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743863, nsec=746193981; Execution Time sec=0, nsec=44221125
+ROSMOD::DEBUG::1415743864200864648::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743864, nsec=200825356
+ROSMOD::DEBUG::1415743864201150940::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743864244927690::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743864245014898::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743864, nsec=244989106; Execution Time sec=0, nsec=44163750
+ROSMOD::DEBUG::1415743864702120565::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743864, nsec=702076898
+ROSMOD::DEBUG::1415743864702434315::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743864746122356::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743864746208731::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743864, nsec=746181190; Execution Time sec=0, nsec=44104292
+ROSMOD::DEBUG::1415743865201050690::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743865, nsec=201006731
+ROSMOD::DEBUG::1415743865201416981::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743865245089815::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743865245177190::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743865, nsec=245150398; Execution Time sec=0, nsec=44143667
+ROSMOD::DEBUG::1415743865702057481::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743865, nsec=702010856
+ROSMOD::DEBUG::1415743865702377940::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743865746021606::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743865746105481::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743865, nsec=746079815; Execution Time sec=0, nsec=44068959
+ROSMOD::DEBUG::1415743866201832648::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743866, nsec=201792398
+ROSMOD::DEBUG::1415743866202090232::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743866245692482::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743866245777398::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743866, nsec=245749523; Execution Time sec=0, nsec=43957125
+ROSMOD::DEBUG::1415743866701803065::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743866, nsec=701760065
+ROSMOD::DEBUG::1415743866702061398::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743866745842190::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743866745931815::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743866, nsec=745902857; Execution Time sec=0, nsec=44142792
+ROSMOD::DEBUG::1415743867201508732::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743867, nsec=201468232
+ROSMOD::DEBUG::1415743867201768065::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743867245384190::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743867245469815::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743867, nsec=245444023; Execution Time sec=0, nsec=43975791
+ROSMOD::DEBUG::1415743867701674690::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743867, nsec=701634440
+ROSMOD::DEBUG::1415743867701951107::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743867745837482::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743867745931273::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743867, nsec=745902732; Execution Time sec=0, nsec=44268292
+ROSMOD::DEBUG::1415743868201217440::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743868, nsec=201177898
+ROSMOD::DEBUG::1415743868201476732::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743868245074065::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743868245156898::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743868, nsec=245129273; Execution Time sec=0, nsec=43951375
+ROSMOD::DEBUG::1415743868701105398::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743868, nsec=701062107
+ROSMOD::DEBUG::1415743868701365815::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743868745124440::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743868745208107::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743868, nsec=745181857; Execution Time sec=0, nsec=44119750
+ROSMOD::DEBUG::1415743869201971524::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743869, nsec=201922899
+ROSMOD::DEBUG::1415743869202286524::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743869245972107::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743869246056399::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743869, nsec=246030565; Execution Time sec=0, nsec=44107666
+ROSMOD::DEBUG::1415743869701956399::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743869, nsec=701912565
+ROSMOD::DEBUG::1415743869702231565::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743869746058482::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743869746149774::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743869, nsec=746122440; Execution Time sec=0, nsec=44209875
+ROSMOD::DEBUG::1415743870201922190::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743870, nsec=201880024
+ROSMOD::DEBUG::1415743870202241482::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743870245930065::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743870246018315::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743870, nsec=245990232; Execution Time sec=0, nsec=44110208
+ROSMOD::DEBUG::1415743870701871940::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743870, nsec=701829899
+ROSMOD::DEBUG::1415743870702133357::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743870745799149::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743870745910357::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743870, nsec=745881982; Execution Time sec=0, nsec=44052083
+ROSMOD::DEBUG::1415743871201653482::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743871, nsec=201613399
+ROSMOD::DEBUG::1415743871201909065::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743871245586899::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743871245675607::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743871, nsec=245647982; Execution Time sec=0, nsec=44034583
+ROSMOD::DEBUG::1415743871701827899::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743871, nsec=701785149
+ROSMOD::DEBUG::1415743871702095191::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743871745793524::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743871745905982::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743871, nsec=745875524; Execution Time sec=0, nsec=44090375
+ROSMOD::DEBUG::1415743872201882816::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743872, nsec=201844774
+ROSMOD::DEBUG::1415743872202138732::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743872245842066::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743872245927191::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743872, nsec=245901107; Execution Time sec=0, nsec=44056333
+ROSMOD::DEBUG::1415743872701551732::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743872, nsec=701505274
+ROSMOD::DEBUG::1415743872701812149::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743872745417941::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743872745504107::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743872, nsec=745476191; Execution Time sec=0, nsec=43970917
+ROSMOD::DEBUG::1415743873201117232::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743873, nsec=201073941
+ROSMOD::DEBUG::1415743873201375857::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743873245224774::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743873245308816::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743873, nsec=245283857; Execution Time sec=0, nsec=44209916
+ROSMOD::DEBUG::1415743873701318732::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743873, nsec=701277191
+ROSMOD::DEBUG::1415743873701584774::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743873745191191::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743873745274149::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743873, nsec=745246899; Execution Time sec=0, nsec=43969708
+ROSMOD::DEBUG::1415743874201214066::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743874, nsec=201171399
+ROSMOD::DEBUG::1415743874201474816::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743874245238566::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743874245325024::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743874, nsec=245298316; Execution Time sec=0, nsec=44126917
+ROSMOD::DEBUG::1415743874701617983::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743874, nsec=701575066
+ROSMOD::DEBUG::1415743874701880066::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743874745533399::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743874745618858::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743874, nsec=745592233; Execution Time sec=0, nsec=44017167
+ROSMOD::DEBUG::1415743875201740191::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743875, nsec=201694816
+ROSMOD::DEBUG::1415743875202057233::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743875245852774::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743875245942941::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743875, nsec=245913733; Execution Time sec=0, nsec=44218917
+ROSMOD::DEBUG::1415743875701756233::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743875, nsec=701714191
+ROSMOD::DEBUG::1415743875702034691::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743875745784483::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743875745902024::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743875, nsec=745869608; Execution Time sec=0, nsec=44155417
+ROSMOD::DEBUG::1415743876201781358::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743876, nsec=201733358
+ROSMOD::DEBUG::1415743876202045733::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743876246039274::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743876246118649::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743876, nsec=246093691; Execution Time sec=0, nsec=44360333
+ROSMOD::DEBUG::1415743876701560816::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743876, nsec=701518274
+ROSMOD::DEBUG::1415743876701818233::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743876745423191::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743876745511358::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743876, nsec=745482316; Execution Time sec=0, nsec=43964042
+ROSMOD::DEBUG::1415743877201437733::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743877, nsec=201398566
+ROSMOD::DEBUG::1415743877201695900::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743877245295233::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743877245376066::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743877, nsec=245348816; Execution Time sec=0, nsec=43950250
+ROSMOD::DEBUG::1415743877701496733::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743877, nsec=701455775
+ROSMOD::DEBUG::1415743877701757691::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743877745459316::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743877745549233::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743877, nsec=745521483; Execution Time sec=0, nsec=44065708
+ROSMOD::DEBUG::1415743878201449525::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743878, nsec=201410233
+ROSMOD::DEBUG::1415743878201704358::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743878245298316::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743878245380233::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743878, nsec=245353150; Execution Time sec=0, nsec=43942917
+ROSMOD::DEBUG::1415743878701119483::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743878, nsec=701077816
+ROSMOD::DEBUG::1415743878701379400::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743878745435900::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743878745521191::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743878, nsec=745494650; Execution Time sec=0, nsec=44416834
+ROSMOD::DEBUG::1415743879201383525::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743879, nsec=201340983
+ROSMOD::DEBUG::1415743879201641400::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743879245249608::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743879245335733::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743879, nsec=245307108; Execution Time sec=0, nsec=43966125
+ROSMOD::DEBUG::1415743879701969025::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743879, nsec=701920025
+ROSMOD::DEBUG::1415743879702254733::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743879746278316::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743879746371441::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743879, nsec=746342358; Execution Time sec=0, nsec=44422333
+ROSMOD::DEBUG::1415743880201167525::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743880, nsec=201124400
+ROSMOD::DEBUG::1415743880201523692::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743880245203400::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743880245293650::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743880, nsec=245264942; Execution Time sec=0, nsec=44140542
+ROSMOD::DEBUG::1415743880701163567::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743880, nsec=701122400
+ROSMOD::DEBUG::1415743880701423442::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743880745233525::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743880745321650::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743880, nsec=745293608; Execution Time sec=0, nsec=44171208
+ROSMOD::DEBUG::1415743881201170483::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743881, nsec=201127192
+ROSMOD::DEBUG::1415743881201426650::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743881245084192::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743881245172483::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743881, nsec=245143400; Execution Time sec=0, nsec=44016208
+ROSMOD::DEBUG::1415743881701098692::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743881, nsec=701054650
+ROSMOD::DEBUG::1415743881701354192::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743881745109275::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743881745195108::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743881, nsec=745169567; Execution Time sec=0, nsec=44114917
+ROSMOD::DEBUG::1415743882201833358::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743882, nsec=201791067
+ROSMOD::DEBUG::1415743882202133233::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743882245740150::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743882245845692::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743882, nsec=245799358; Execution Time sec=0, nsec=44008291
+ROSMOD::DEBUG::1415743882701734358::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743882, nsec=701692275
+ROSMOD::DEBUG::1415743882702002067::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743882745614733::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743882745699817::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743882, nsec=745671358; Execution Time sec=0, nsec=43979083
+ROSMOD::DEBUG::1415743883201655067::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743883, nsec=201606025
+ROSMOD::DEBUG::1415743883201922275::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743883245621942::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743883245706942::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743883, nsec=245680984; Execution Time sec=0, nsec=44074959
+ROSMOD::DEBUG::1415743883701725942::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743883, nsec=701681525
+ROSMOD::DEBUG::1415743883702001734::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743883745712234::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743883745805442::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743883, nsec=745775859; Execution Time sec=0, nsec=44094334
+ROSMOD::DEBUG::1415743884201708525::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743884, nsec=201666817
+ROSMOD::DEBUG::1415743884201959150::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743884245711109::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743884245799525::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743884, nsec=245771942; Execution Time sec=0, nsec=44105125
+ROSMOD::DEBUG::1415743884701421275::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743884, nsec=701377942
+ROSMOD::DEBUG::1415743884701686192::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743884745746900::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743884745871609::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743884, nsec=745838192; Execution Time sec=0, nsec=44460250
+ROSMOD::DEBUG::1415743885201855275::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743885, nsec=201811734
+ROSMOD::DEBUG::1415743885202193734::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743885245975275::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743885246066317::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743885, nsec=246039442; Execution Time sec=0, nsec=44227708
+ROSMOD::DEBUG::1415743885701945567::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743885, nsec=701903109
+ROSMOD::DEBUG::1415743885702209151::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743885745878234::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743885745966859::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743885, nsec=745936901; Execution Time sec=0, nsec=44033792
+ROSMOD::DEBUG::1415743886201907442::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743886, nsec=201867359
+ROSMOD::DEBUG::1415743886202171359::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743886246009776::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743886246098234::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743886, nsec=246071359; Execution Time sec=0, nsec=44204000
+ROSMOD::DEBUG::1415743886701010151::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743886, nsec=700963442
+ROSMOD::DEBUG::1415743886701275692::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743886744917026::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743886745002401::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743886, nsec=744976192; Execution Time sec=0, nsec=44012750
+ROSMOD::DEBUG::1415743887201787442::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743887, nsec=201747276
+ROSMOD::DEBUG::1415743887202093734::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743887245794442::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743887245902942::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743887, nsec=245873609; Execution Time sec=0, nsec=44126333
+ROSMOD::DEBUG::1415743887701845442::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743887, nsec=701801817
+ROSMOD::DEBUG::1415743887702113817::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743887745836901::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743887745924526::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743887, nsec=745895776; Execution Time sec=0, nsec=44093959
+ROSMOD::DEBUG::1415743888201924651::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743888, nsec=201881484
+ROSMOD::DEBUG::1415743888202182317::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743888245962734::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743888246049442::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743888, nsec=246024151; Execution Time sec=0, nsec=44142667
+ROSMOD::DEBUG::1415743888701601901::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743888, nsec=701561693
+ROSMOD::DEBUG::1415743888701857776::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743888745458984::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743888745543026::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743888, nsec=745517109; Execution Time sec=0, nsec=43955416
+ROSMOD::DEBUG::1415743889201449443::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743889, nsec=201406068
+ROSMOD::DEBUG::1415743889201704401::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743889245296318::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743889245380651::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743889, nsec=245351568; Execution Time sec=0, nsec=43945500
+ROSMOD::DEBUG::1415743889701466651::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743889, nsec=701425776
+ROSMOD::DEBUG::1415743889701730609::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743889745872859::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743889745973443::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743889, nsec=745942859; Execution Time sec=0, nsec=44517083
+ROSMOD::DEBUG::1415743890201901109::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743890, nsec=201825401
+ROSMOD::DEBUG::1415743890202219693::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743890245850609::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743890245933151::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743890, nsec=245908276; Execution Time sec=0, nsec=44082875
+ROSMOD::DEBUG::1415743890702381068::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743890, nsec=702339234
+ROSMOD::DEBUG::1415743890702641818::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743890746441276::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743890746531859::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743890, nsec=746504318; Execution Time sec=0, nsec=44165084
+ROSMOD::DEBUG::1415743891201657110::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743891, nsec=201614485
+ROSMOD::DEBUG::1415743891201918276::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743891245582818::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743891245668151::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743891, nsec=245641776; Execution Time sec=0, nsec=44027291
+ROSMOD::DEBUG::1415743891701751360::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743891, nsec=701710526
+ROSMOD::DEBUG::1415743891702022568::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743891745944693::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743891746039068::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743891, nsec=746011318; Execution Time sec=0, nsec=44300792
+ROSMOD::DEBUG::1415743892201250110::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743892, nsec=201208818
+ROSMOD::DEBUG::1415743892201504735::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743892245102235::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743892245186193::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743892, nsec=245159068; Execution Time sec=0, nsec=43950250
+ROSMOD::DEBUG::1415743892701245693::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743892, nsec=701206776
+ROSMOD::DEBUG::1415743892701500818::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743892745252318::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743892745339693::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743892, nsec=745313235; Execution Time sec=0, nsec=44106459
+ROSMOD::DEBUG::1415743893201039401::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743893, nsec=200997735
+ROSMOD::DEBUG::1415743893201302485::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743893244912818::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743893244997485::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743893, nsec=244969318; Execution Time sec=0, nsec=43971583
+ROSMOD::DEBUG::1415743893702048735::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743893, nsec=701995818
+ROSMOD::DEBUG::1415743893702364568::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743893746087985::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743893746171818::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743893, nsec=746145735; Execution Time sec=0, nsec=44149917
+ROSMOD::DEBUG::1415743894201809318::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743894, nsec=201768235
+ROSMOD::DEBUG::1415743894202064235::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743894245681193::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743894245765027::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743894, nsec=245738152; Execution Time sec=0, nsec=43969917
+ROSMOD::DEBUG::1415743894701769277::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743894, nsec=701732152
+ROSMOD::DEBUG::1415743894702031818::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743894746236735::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743894746339860::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743894, nsec=746308818; Execution Time sec=0, nsec=44576666
+ROSMOD::DEBUG::1415743895201933318::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743895, nsec=201888402
+ROSMOD::DEBUG::1415743895202253318::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743895245886235::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743895245974193::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743895, nsec=245946693; Execution Time sec=0, nsec=44058291
+ROSMOD::DEBUG::1415743895701899402::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743895, nsec=701858360
+ROSMOD::DEBUG::1415743895702169652::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743895746020277::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743895746118402::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743895, nsec=746087277; Execution Time sec=0, nsec=44228917
+ROSMOD::DEBUG::1415743896201123860::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743896, nsec=201081277
+ROSMOD::DEBUG::1415743896201384527::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743896246146318::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743896246233068::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743896, nsec=246207277; Execution Time sec=0, nsec=45126000
+ROSMOD::DEBUG::1415743896701390193::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743896, nsec=701347360
+ROSMOD::DEBUG::1415743896701655943::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743896745324860::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743896745413277::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743896, nsec=745385110; Execution Time sec=0, nsec=44037750
+ROSMOD::DEBUG::1415743897201304152::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743897, nsec=201257652
+ROSMOD::DEBUG::1415743897201559360::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743897245298027::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743897245387235::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743897, nsec=245358277; Execution Time sec=0, nsec=44100625
+ROSMOD::DEBUG::1415743897701524360::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743897, nsec=701484860
+ROSMOD::DEBUG::1415743897701782694::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743897745379235::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743897745461569::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743897, nsec=745433985; Execution Time sec=0, nsec=43949125
+ROSMOD::DEBUG::1415743898201375194::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743898, nsec=201337319
+ROSMOD::DEBUG::1415743898201633569::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743898245396985::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743898245486235::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743898, nsec=245459152; Execution Time sec=0, nsec=44121833
+ROSMOD::DEBUG::1415743898701427819::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743898, nsec=701382194
+ROSMOD::DEBUG::1415743898701700069::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743898745473402::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743898745571694::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743898, nsec=745540485; Execution Time sec=0, nsec=44158291
+ROSMOD::DEBUG::1415743899201539360::CALLBACK FIFO ENQUEUE::Alias=sensor_state_subscriber_operation; Priority=50; Deadline sec=0, nsec=150000000; Enqueue Time sec=1415743899, nsec=201497735
+ROSMOD::DEBUG::1415743899201872902::Entering Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743899245684069::Exiting Main_Controller::sensor_state_subscriber_operation
+ROSMOD::DEBUG::1415743899245775402::CALLBACK COMPLETED::Alias=sensor_state_subscriber_operation; Completion Time sec=1415743899, nsec=245747777; Execution Time sec=0, nsec=44250042

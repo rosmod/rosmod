@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<node name="Component_1_Node_411">
+  <component_instance name="Component_1">
+    <library name="libComponent_1.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>1</uuid>
+      <profile>
+0,0,0,eth0
+1,1,1,eth0
+2,0,0,eth0
+3,2,0,eth0
+4,0,0,eth0
+      </profile>
+    </port>
+    <port name="Name_Subscriber">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="1">
+	<profile>
+0,0,0,eth0
+1,1,1,eth0
+2,0,0,eth0
+3,2,0,eth0
+4,0,0,eth0
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

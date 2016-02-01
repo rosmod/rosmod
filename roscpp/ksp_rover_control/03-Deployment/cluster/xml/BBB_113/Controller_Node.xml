@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<node name="Controller_Node">
+  <library name="libKRPCI.so"/>
+  <component_instance name="low_level_controller_i">
+    <library name="liblow_level_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="5.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="control_command_pub">
+      <uuid>4</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="vessel_state_sub">
+      <uuid>2</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+    <port name="goal_state_sub">
+      <uuid>3</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="6">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="high_level_controller_i">
+    <library name="libhigh_level_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="4"/>
+    <syncTimeout setting="5.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="goal_state_pub">
+      <uuid>6</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="vessel_state_sub">
+      <uuid>5</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

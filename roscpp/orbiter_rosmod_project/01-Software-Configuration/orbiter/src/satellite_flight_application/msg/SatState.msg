@@ -1,0 +1,11 @@
+string sat_id
+float64 alt
+float64 rpos_x
+float64 rpos_y
+float64 rpos_z
+float64 rvel_x
+float64 rvel_y
+float64 rvel_z
+float64 vrot_x
+float64 vrot_y
+float64 vrot_z

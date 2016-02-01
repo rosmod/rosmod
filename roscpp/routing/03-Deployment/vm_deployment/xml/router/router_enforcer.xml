@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<node name="router_enforcer">
+  <component_instance name="router_enforcer_i">
+    <library name="librouter_profile_enforcer.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="7"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+

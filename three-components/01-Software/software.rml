@@ -1,0 +1,59 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - three_component_example
+package three_component_example
+{
+  // ROSMOD Component - Component_1
+  component Component_1 : Base 
+  {
+    // ROSMOD Publisher - Name_Publisher
+    publisher <three_component_example/ComponentName> Name_Publisher;
+    // ROSMOD Subscriber - Name_Subscriber
+    subscriber <three_component_example/ComponentName> Name_Subscriber 
+    {
+      priority = 50;
+      deadline = 0.300;
+    }       
+    // ROSMOD Timer - Timer_1
+    timer Timer_1 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.200;
+    }       
+  }
+  // ROSMOD Component - Component_2
+  component Component_2 : Base 
+  {
+    // ROSMOD Server - Service_Server
+    server <three_component_example/ComponentService> Service_Server 
+    {
+      priority = 50;
+      deadline = 0.500;
+    }       
+    // ROSMOD Publisher - Name_Publisher
+    publisher <three_component_example/ComponentName> Name_Publisher;
+    // ROSMOD Timer - Timer_2
+    timer Timer_2 
+    {
+	period = 1.0;
+	priority = 60;
+	deadline = 0.2;
+    }       
+  }
+  // ROSMOD Component - Component_3
+  component Component_3 : Base 
+  {
+    // ROSMOD Client - Service_Client
+    client <three_component_example/ComponentService> Service_Client;
+    // ROSMOD Timer - Timer_3
+    timer Timer_3 
+    {
+	period = 2.0;
+	priority = 50;
+	deadline = 0.2;
+    }       
+  }
+}

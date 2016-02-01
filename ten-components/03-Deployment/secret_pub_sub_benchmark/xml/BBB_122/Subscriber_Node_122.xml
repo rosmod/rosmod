@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<node name="Subscriber_Node_122">
+  <component_instance name="Secret_Subscriber_122">
+    <library name="libSecret_Subscriber.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="2"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="secret_message_subscriber">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

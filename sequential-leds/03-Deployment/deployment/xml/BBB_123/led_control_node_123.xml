@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<node name="led_control_node_123">
+  <component_instance name="led_controller_Instance">
+    <library name="libled_controller.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="15.0"/>
+    <logging>
+      <is_periodic_logging setting="False"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="led_state_pub">
+      <uuid>11</uuid>
+      <profile>
+
+      </profile>
+    </port>
+    <port name="led_state_sub">
+      <uuid>10</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="1">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="3">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="17">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="19">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="21">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="23">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="25">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="27">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="29">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="31">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="33">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="35">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="37">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="39">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="41">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="43">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="45">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="47">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="49">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="51">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="53">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="55">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="57">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="59">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="61">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

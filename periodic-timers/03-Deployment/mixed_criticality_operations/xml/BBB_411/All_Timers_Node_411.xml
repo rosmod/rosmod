@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<node name="All_Timers_Node_411">
+  <component_instance name="All_Timers_411">
+    <library name="libAll_Timers.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+</node>
+

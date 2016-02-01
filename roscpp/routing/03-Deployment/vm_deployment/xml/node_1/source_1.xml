@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<node name="source_1">
+  <component_instance name="sender_i">
+    <library name="libsender.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="7"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="routed_msg_pub">
+      <uuid>0</uuid>
+      <profile>
+# period = 16
+# priority = 1
+# start = 0
+0,80000,0,0
+1,85000,0,0
+2,102400,0,0
+3,100000,0,0
+4,100500,0,0
+5,105000,0,0
+6,110000,0,0
+7,0,0,0
+
+      </profile>
+    </port>
+    <port_instance name="flow1">
+      <port name="routed_msg_pub"/>
+      <group setting="flow1"/>
+    </port_instance>
+  </component_instance>
+</node>
+

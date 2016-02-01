@@ -1,0 +1,7 @@
+# multicast = false
+# retransmit = false
+topology: node_1 : router
+topology: node_3 : router
+topology: router : node_1, node_2, node_3, node_4
+route: node_1, router, node_2
+route: node_3, router, node_4

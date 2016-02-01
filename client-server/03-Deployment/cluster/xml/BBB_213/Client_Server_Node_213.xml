@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<node name="Client_Server_Node_213">
+  <component_instance name="Client_Instance">
+    <library name="libClient.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="60"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+  <component_instance name="Server_Instance">
+    <library name="libServer.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="60"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+  </component_instance>
+</node>
+

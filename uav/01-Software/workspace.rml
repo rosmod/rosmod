@@ -1,0 +1,43 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - uav_package
+package uav_package
+{
+  // ROSMOD Component - Data_Acquisition_Module
+  component Data_Acquisition_Module : Base 
+  {
+    // ROSMOD Publisher - sensor_state_publisher
+    publisher <uav_package/sensor_state> sensor_state_publisher;
+    // ROSMOD Timer - sensor_read_timer
+    timer sensor_read_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - Main_Controller
+  component Main_Controller : Base 
+  {
+    // ROSMOD Publisher - control_command_publisher
+    publisher <uav_package/control_command> control_command_publisher;
+    // ROSMOD Subscriber - sensor_state_subscriber
+    subscriber <uav_package/sensor_state> sensor_state_subscriber 
+    {
+      priority = 50;
+      deadline = 0.15;
+    }       
+  }
+  // ROSMOD Component - Servo_Actuator
+  component Servo_Actuator : Base 
+  {
+    // ROSMOD Subscriber - control_command_subscriber
+    subscriber <uav_package/control_command> control_command_subscriber 
+    {
+      priority = 50;
+      deadline = 0.015;
+    }       
+  }
+}

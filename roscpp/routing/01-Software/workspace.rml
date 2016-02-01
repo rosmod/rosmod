@@ -1,0 +1,32 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - pkg
+package pkg
+{
+  // ROSMOD Component - sender
+  component sender : Base 
+  {
+    // ROSMOD Publisher - routed_msg_pub
+    publisher <pkg/routed_msg> routed_msg_pub;
+  }
+  // ROSMOD Component - receiver
+  component receiver : Base 
+  {
+    // ROSMOD Subscriber - routed_msg_sub
+    subscriber <pkg/routed_msg> routed_msg_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - link_profile_enforcer
+  component link_profile_enforcer : Base 
+  {
+  }
+  // ROSMOD Component - router_profile_enforcer
+  component router_profile_enforcer : Base 
+  {
+  }
+}
