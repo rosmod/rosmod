@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<node name="three_component_node">
+  <component_instance name="Component_1_i">
+    <library name="libComponent_1.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="10000"/> 
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>1</uuid>
+      <profile>
+0,0,0,eth0
+1,1,1,eth0
+2,0,0,eth0
+3,2,0,eth0
+4,0,0,eth0
+      </profile>
+    </port>
+    <port name="Name_Subscriber">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="1">
+	<profile>
+0,0,0,eth0
+1,1,1,eth0
+2,0,0,eth0
+3,2,0,eth0
+4,0,0,eth0
+	</profile>
+      </sender>
+      <sender uuid="2">
+	<profile>
+0,1,0,eth0
+1,0,1,eth0
+2,2,0,eth0
+3,1,0,eth0
+4,0,0,eth0
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Component_2_i">
+    <library name="libComponent_2.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="10000"/> 
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+    <port name="Name_Publisher">
+      <uuid>2</uuid>
+      <profile>
+0,1,0,eth0
+1,0,1,eth0
+2,2,0,eth0
+3,1,0,eth0
+4,0,0,eth0
+      </profile>
+    </port>
+  </component_instance>
+  <component_instance name="Component_3_i">
+    <library name="libComponent_3.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="10000"/> 
+      <debug setting="True"/>
+      <info setting="True"/>
+      <warning setting="True"/>
+      <error setting="True"/>
+      <critical setting="True"/>
+    </logging>
+  </component_instance>
+</node>
+

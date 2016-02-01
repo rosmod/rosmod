@@ -1,0 +1,2 @@
+node
+-DNAMESPACE=rosmod -DCATKIN_DEVEL_PREFIX=/home/jeb/Repositories/rosmod/tests/workspace/devel -DCMAKE_INSTALL_PREFIX=/home/jeb/Repositories/rosmod/tests/workspace/install -G Unix Makefiles
