@@ -48,4 +48,3 @@ alias rosmod='python ~/PATH_TO_REPOSITORY_HOME/gui/__main__.py'
 ```bash
 $ cd <REPOSITORY_HOME>/comm
 $ catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/<ROS_VERSION> install
-```
