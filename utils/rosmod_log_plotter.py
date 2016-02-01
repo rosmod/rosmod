@@ -152,7 +152,7 @@ class ROSMOD_Log_Plotter():
                                   len([instance.exec_time for instance in calls])) +\
                               ' ' + self.time_unit,
                               prop=dict(size=8), frameon=True,
-                              loc=2,
+                              loc=4,
                           )
             at.patch.set_boxstyle("round,pad=0.,rounding_size=0.5")
             ax.add_artist(at)
@@ -187,66 +187,7 @@ class ROSMOD_Log_Plotter():
             else:
                 fig.savefig('combined.png', dpi=100)
                 fig_path = 'combined.png'
-                os.system('gnome-open ' + fig_path)                                
-    
-        # Plot Histogram!
-        fig2 = plt.figure()
-        for call in self.unique_callbacks:
-            if subnum == 0:
-                ax = fig2.add_subplot(120)
-            if subnum > 0:
-                n = len(fig2.axes)
-                for i in range(n):
-                    fig2.axes[i].change_geometry(n+1, 1, i+1)
-                ax = fig2.add_subplot(n+1, 1, n+1)
-            clr = self.colors[index % len(self.colors)]
-            index = index + 1
-            calls = [c for c in self.callbacks if c.name == call]
-            x_axis = []
-            y_axis = []
-            for instance in calls:
-                if opn_max == 'all' or count <= int(opn_max):
-                    x_axis.extend([instance.exec_time])
-                else:
-                    break
-            plt.hist(x_axis, bins=100, color=clr, label=call, align='mid')
-            at = AnchoredText("Node: " + calls[0].node + "\nComponent Instance: " +\
-                              calls[0].component_instance +\
-                              "\nMaximum Execution Time: " +\
-                              str(max([instance.exec_time for instance in calls])) + ' ' +\
-                              self.time_unit +\
-                              "\nAverage Execution Time: " +\
-                              str(sum([instance.exec_time for instance in calls])/\
-                                  len([instance.exec_time for instance in calls])) +\
-                              ' ' + self.time_unit,
-                              prop=dict(size=8), frameon=True,
-                              loc=4,
-                          )
-            at.patch.set_boxstyle("round,pad=0.,rounding_size=0.5")
-            ax.add_artist(at)
-            subnum += 1
-
-            plt.title(call + " - Execution Times Histogram", fontsize=12)
-            plt.xlabel("Operation Execution Time (" + self.time_unit + ")", fontsize=12)
-            plt.ylabel("Number of Operation Instances", fontsize=12)
-            plt.grid(True)
-            plt.legend(loc=1,prop={'size':8})
-            plt.rcParams.update({'axes.labelsize': 'small'})
-        fig2 = plt.gcf()
-        fig2.set_size_inches(18.5, 10.5)
-        fig2.subplots_adjust(hspace=1.0)
-        if combined == False:
-            if directory != '.':
-                fig2.savefig(os.path.join(directory, call + '_histogram.png'), dpi=100)
-                print "Histogram Plot: " + call + '.png saved at: ' + directory
-            else:
-                fig2.savefig(call + '_histogram.png', dpi=100)
-        else:
-            if directory != '.':
-                fig2.savefig(os.path.join(directory, 'combined_histogram.png'), dpi=100)
-                print "Plot: " + 'combined_histogram.png saved at: ' + directory
-            else:
-                fig2.savefig('combined_histogram.png', dpi=100)
+                os.system('gnome-open ' + fig_path) 
 
 def main():
 
