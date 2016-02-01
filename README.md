@@ -2,7 +2,9 @@
 
 ## Clone Repository
 
+```bash
 $ git clone --recursive http://github.com/pranav-srinivas-kumar/rosmod-0.3
+```
 
 ## This Repository contains:
 
