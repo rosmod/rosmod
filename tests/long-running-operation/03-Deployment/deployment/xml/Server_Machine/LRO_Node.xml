@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<node name="LRO_Node">
+  <component_instance name="LRO_Component_Instance">
+    <library name="libLRO_Component.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <numCompsToSync setting="2"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="100"/> 
+    </logging>
+    <port name="critical_subscriber_port">
+      <uuid>0</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="1">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="Publisher">
+    <library name="libPublisher.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <numCompsToSync setting="2"/>
+    <syncTimeout setting="10.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="100"/> 
+    </logging>
+    <port name="publisher_port">
+      <uuid>1</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

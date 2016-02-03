@@ -1,0 +1,38 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - lro_package
+package lro_package
+{
+  // ROSMOD Component - Publisher
+  component Publisher : Base 
+  {
+    // ROSMOD Publisher - publisher_port
+    publisher <lro_package/Message> publisher_port;
+    // ROSMOD Timer - publish_timer
+    timer publish_timer 
+    {
+	period = 120.0;
+	priority = 50;
+	deadline = 30.0;
+    }       
+  }
+  // ROSMOD Component - LRO_Component
+  component LRO_Component : Base 
+  {
+    // ROSMOD Subscriber - critical_subscriber_port
+    subscriber <lro_package/Message> critical_subscriber_port 
+    {
+      priority = 75;
+      deadline = 1.0;
+    }       
+    // ROSMOD Timer - long_running_operation
+    timer long_running_operation 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 5.0;
+    }       
+  }
+}

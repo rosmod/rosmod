@@ -1,0 +1,26 @@
+ROSMOD::DEBUG::1416503686495591772::CALLBACK PFIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1416503686, nsec=495381397
+ROSMOD::DEBUG::1416503686497060522::Entering Publisher::init_timer_operation
+ROSMOD::DEBUG::1416503686497569106::Exiting Publisher::init_timer_operation
+ROSMOD::DEBUG::1416503686497773939::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1416503686, nsec=497728356; Execution Time sec=0, nsec=2346959
+ROSMOD::DEBUG::1416503806495807912::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416503806, nsec=495695662
+ROSMOD::DEBUG::1416503806496472453::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416503823553711747::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416503823553951080::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416503823, nsec=553897747; Execution Time sec=17, nsec=58202085
+ROSMOD::DEBUG::1416503926495034301::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416503926, nsec=494924134
+ROSMOD::DEBUG::1416503926495607759::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416503943551667470::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416503943551880261::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416503943, nsec=551828553; Execution Time sec=17, nsec=56904419
+ROSMOD::DEBUG::1416504046494828232::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416504046, nsec=494708940
+ROSMOD::DEBUG::1416504046495456482::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416504063551693234::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416504063551904984::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416504063, nsec=551852526; Execution Time sec=17, nsec=57143586
+ROSMOD::DEBUG::1416504166494751996::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416504166, nsec=494635955
+ROSMOD::DEBUG::1416504166495329621::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416504183552152790::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416504183552365832::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416504183, nsec=552312665; Execution Time sec=17, nsec=57676710
+ROSMOD::DEBUG::1416504286495324802::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416504286, nsec=495209386
+ROSMOD::DEBUG::1416504286495944302::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416504303552175138::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416504303552387971::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416504303, nsec=552338429; Execution Time sec=17, nsec=57129043
+ROSMOD::DEBUG::1416504406495424650::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416504406, nsec=495310858
+ROSMOD::DEBUG::1416504406496124525::Entering Publisher::publish_timer_operation

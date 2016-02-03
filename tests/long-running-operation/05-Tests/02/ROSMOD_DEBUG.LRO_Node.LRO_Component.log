@@ -1,0 +1,53 @@
+ROSMOD::DEBUG::1416503694100267815::CALLBACK PFIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1416503694, nsec=100051440
+ROSMOD::DEBUG::1416503694101515565::Entering LRO_Component::init_timer_operation
+ROSMOD::DEBUG::1416503694101920940::Exiting LRO_Component::init_timer_operation
+ROSMOD::DEBUG::1416503694102067523::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1416503694, nsec=102024482; Execution Time sec=0, nsec=1973042
+ROSMOD::DEBUG::1416503695100212732::CALLBACK PFIFO ENQUEUE::Alias=long_running_operation_operation; Priority=50; Deadline sec=5, nsec=0; Enqueue Time sec=1416503695, nsec=100097815
+ROSMOD::DEBUG::1416503695100647524::Entering LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416503829461777456::CALLBACK PFIFO ENQUEUE::Alias=critical_subscriber_port_operation; Priority=75; Deadline sec=1, nsec=0; Enqueue Time sec=1416503829, nsec=461668456
+ROSMOD::DEBUG::1416503831103993748::Exiting LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416503831104306623::CALLBACK COMPLETED::Alias=long_running_operation_operation; Completion Time sec=1416503831, nsec=104251081; Execution Time sec=136, nsec=4153266
+ROSMOD::ERROR::1416503831104379498::DEADLINE VIOLATION::Alias=long_running_operation_operation; Execution Time sec=136 nsec=4153266; Deadline sec=5, nsec=0
+ROSMOD::DEBUG::1416503831105530290::Entering LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416503831126820081::CALLBACK PFIFO ENQUEUE::Alias=long_running_operation_operation; Priority=50; Deadline sec=5, nsec=0; Enqueue Time sec=1416503831, nsec=126761581
+ROSMOD::DEBUG::1416503854508688126::Exiting LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416503854508901584::CALLBACK COMPLETED::Alias=critical_subscriber_port_operation; Completion Time sec=1416503854, nsec=508849668; Execution Time sec=25, nsec=47181212
+ROSMOD::ERROR::1416503854508970001::DEADLINE VIOLATION::Alias=critical_subscriber_port_operation; Execution Time sec=25 nsec=47181212; Deadline sec=1, nsec=0
+ROSMOD::DEBUG::1416503854509550376::Entering LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416503949459643429::CALLBACK PFIFO ENQUEUE::Alias=critical_subscriber_port_operation; Priority=75; Deadline sec=1, nsec=0; Enqueue Time sec=1416503949, nsec=459534512
+ROSMOD::DEBUG::1416503950512126179::Exiting LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416503950512305096::CALLBACK COMPLETED::Alias=long_running_operation_operation; Completion Time sec=1416503950, nsec=512257721; Execution Time sec=119, nsec=385496140
+ROSMOD::ERROR::1416503950512370929::DEADLINE VIOLATION::Alias=long_running_operation_operation; Execution Time sec=119 nsec=385496140; Deadline sec=5, nsec=0
+ROSMOD::DEBUG::1416503950512882054::Entering LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416503950538921846::CALLBACK PFIFO ENQUEUE::Alias=long_running_operation_operation; Priority=50; Deadline sec=5, nsec=0; Enqueue Time sec=1416503950, nsec=538860221
+ROSMOD::DEBUG::1416503973966027848::Exiting LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416503973966362223::CALLBACK COMPLETED::Alias=critical_subscriber_port_operation; Completion Time sec=1416503973, nsec=966300932; Execution Time sec=24, nsec=506766420
+ROSMOD::ERROR::1416503973966432765::DEADLINE VIOLATION::Alias=critical_subscriber_port_operation; Execution Time sec=24 nsec=506766420; Deadline sec=1, nsec=0
+ROSMOD::DEBUG::1416503973966758973::Entering LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416504069460015568::CALLBACK PFIFO ENQUEUE::Alias=critical_subscriber_port_operation; Priority=75; Deadline sec=1, nsec=0; Enqueue Time sec=1416504069, nsec=459907193
+ROSMOD::DEBUG::1416504069969088443::Exiting LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416504069969272818::CALLBACK COMPLETED::Alias=long_running_operation_operation; Completion Time sec=1416504069, nsec=969225402; Execution Time sec=119, nsec=430365181
+ROSMOD::ERROR::1416504069969338652::DEADLINE VIOLATION::Alias=long_running_operation_operation; Execution Time sec=119 nsec=430365181; Deadline sec=5, nsec=0
+ROSMOD::DEBUG::1416504069970013652::Entering LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416504070003770068::CALLBACK PFIFO ENQUEUE::Alias=long_running_operation_operation; Priority=50; Deadline sec=5, nsec=0; Enqueue Time sec=1416504070, nsec=3708193
+ROSMOD::DEBUG::1416504093371241988::Exiting LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416504093371419071::CALLBACK COMPLETED::Alias=critical_subscriber_port_operation; Completion Time sec=1416504093, nsec=371366488; Execution Time sec=23, nsec=911459295
+ROSMOD::ERROR::1416504093371483238::DEADLINE VIOLATION::Alias=critical_subscriber_port_operation; Execution Time sec=23 nsec=911459295; Deadline sec=1, nsec=0
+ROSMOD::DEBUG::1416504093371760071::Entering LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416504189460753499::CALLBACK PFIFO ENQUEUE::Alias=critical_subscriber_port_operation; Priority=75; Deadline sec=1, nsec=0; Enqueue Time sec=1416504189, nsec=460601082
+ROSMOD::DEBUG::1416504191374089249::Exiting LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416504191374447666::CALLBACK COMPLETED::Alias=long_running_operation_operation; Completion Time sec=1416504191, nsec=374388041; Execution Time sec=121, nsec=370679848
+ROSMOD::ERROR::1416504191374519166::DEADLINE VIOLATION::Alias=long_running_operation_operation; Execution Time sec=121 nsec=370679848; Deadline sec=5, nsec=0
+ROSMOD::DEBUG::1416504191375015749::Entering LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416504191417824499::CALLBACK PFIFO ENQUEUE::Alias=long_running_operation_operation; Priority=50; Deadline sec=5, nsec=0; Enqueue Time sec=1416504191, nsec=417766499
+ROSMOD::DEBUG::1416504214831403710::Exiting LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416504214831577544::CALLBACK COMPLETED::Alias=critical_subscriber_port_operation; Completion Time sec=1416504214, nsec=831526835; Execution Time sec=25, nsec=370925753
+ROSMOD::ERROR::1416504214831643419::DEADLINE VIOLATION::Alias=critical_subscriber_port_operation; Execution Time sec=25 nsec=370925753; Deadline sec=1, nsec=0
+ROSMOD::DEBUG::1416504214832085502::Entering LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416504309460974722::CALLBACK PFIFO ENQUEUE::Alias=critical_subscriber_port_operation; Priority=75; Deadline sec=1, nsec=0; Enqueue Time sec=1416504309, nsec=460866680
+ROSMOD::DEBUG::1416504310834759097::Exiting LRO_Component::long_running_operation_operation
+ROSMOD::DEBUG::1416504310834949139::CALLBACK COMPLETED::Alias=long_running_operation_operation; Completion Time sec=1416504310, nsec=834897180; Execution Time sec=119, nsec=417130681
+ROSMOD::ERROR::1416504310835015722::DEADLINE VIOLATION::Alias=long_running_operation_operation; Execution Time sec=119 nsec=417130681; Deadline sec=5, nsec=0
+ROSMOD::DEBUG::1416504310835471639::Entering LRO_Component::critical_subscriber_port_operation
+ROSMOD::DEBUG::1416504310880717055::CALLBACK PFIFO ENQUEUE::Alias=long_running_operation_operation; Priority=50; Deadline sec=5, nsec=0; Enqueue Time sec=1416504310, nsec=880656180
+ROSMOD::DEBUG::1416504334235212100::Exiting LRO_Component::critical_subscriber_port_operation
