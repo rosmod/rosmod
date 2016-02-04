@@ -142,6 +142,8 @@ public:
 
   int getWaitingCallbackPriority();
 
+  void yieldCallback(int current_priority);
+
 protected:
   void setupTLS();
 

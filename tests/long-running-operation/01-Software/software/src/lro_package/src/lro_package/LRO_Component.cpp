@@ -79,10 +79,10 @@ void LRO_Component::long_running_operation_operation(const NAMESPACE::TimerEvent
       double y = 562056205.1515;
       result = x*y;
     }    
-    int waitingCallbackPriority = comp_queue.getWaitingCallbackPriority();
     int lro_timer_priority = 50;
-    if (waitingCallbackPriority > lro_timer_priority)
-      break;
+    // We've reached a cancellation point. Time to make the middleware call to yield (if required)
+    // If a higher priority operation is waiting in the queue, it'll run to completion and return
+    comp_queue.yieldCallback(lro_timer_priority);
   }
 
 #ifdef USE_ROSMOD

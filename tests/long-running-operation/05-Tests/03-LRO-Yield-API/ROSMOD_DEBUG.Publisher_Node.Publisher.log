@@ -1,0 +1,34 @@
+=================================================================
+ROSMOD::DEBUG::1416590632231543554::CALLBACK PFIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1416590632, nsec=231329721
+ROSMOD::DEBUG::1416590632233075846::Entering Publisher::init_timer_operation
+ROSMOD::DEBUG::1416590632233595304::Exiting Publisher::init_timer_operation
+ROSMOD::DEBUG::1416590632233799512::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1416590632, nsec=233751304; Execution Time sec=0, nsec=2421583
+=================================================================
+ROSMOD::DEBUG::1416592432992770560::CALLBACK PFIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1416592432, nsec=992556560
+ROSMOD::DEBUG::1416592432994244102::Entering Publisher::init_timer_operation
+ROSMOD::DEBUG::1416592432994764435::Exiting Publisher::init_timer_operation
+ROSMOD::DEBUG::1416592432994978019::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1416592432, nsec=994930060; Execution Time sec=0, nsec=2373500
+ROSMOD::DEBUG::1416592552992907533::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416592552, nsec=992797075
+ROSMOD::DEBUG::1416592552993523241::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592570049780868::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592570050041952::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416592570, nsec=49985535; Execution Time sec=17, nsec=57188460
+ROSMOD::DEBUG::1416592672991868797::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416592672, nsec=991753047
+ROSMOD::DEBUG::1416592672992488172::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592690049198924::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592690052078216::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416592690, nsec=51980799; Execution Time sec=17, nsec=60227752
+ROSMOD::DEBUG::1416592792991902270::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416592792, nsec=991784311
+ROSMOD::DEBUG::1416592792992526145::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592810049423439::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592810049631730::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416592810, nsec=49581939; Execution Time sec=17, nsec=57797628
+ROSMOD::DEBUG::1416592912992685867::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416592912, nsec=992570492
+ROSMOD::DEBUG::1416592912993261826::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592930049397578::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416592930049615911::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416592930, nsec=49562244; Execution Time sec=17, nsec=56991752
+ROSMOD::DEBUG::1416593032992644882::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416593032, nsec=992530632
+ROSMOD::DEBUG::1416593032993213465::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416593050049426509::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416593050049640717::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416593050, nsec=49588509; Execution Time sec=17, nsec=57057877
+ROSMOD::DEBUG::1416593152992674021::CALLBACK PFIFO ENQUEUE::Alias=publish_timer_operation; Priority=50; Deadline sec=30, nsec=0; Enqueue Time sec=1416593152, nsec=992559063
+ROSMOD::DEBUG::1416593152993250646::Entering Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416593170049633106::Exiting Publisher::publish_timer_operation
+ROSMOD::DEBUG::1416593170049850898::CALLBACK COMPLETED::Alias=publish_timer_operation; Completion Time sec=1416593170, nsec=49799273; Execution Time sec=17, nsec=57240210

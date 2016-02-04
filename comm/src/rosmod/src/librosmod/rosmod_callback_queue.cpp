@@ -105,6 +105,15 @@ int CallbackQueue::getWaitingCallbackPriority() {
     return callbacks_.front().callback_options.priority;
 }
 
+void CallbackQueue::yieldCallback(int current_priority) {
+  while (callbacks_.size() != 0) {
+    if (callbacks_.front().callback_options.priority > current_priority)
+      callOne(ros::WallDuration(0.01));
+    else
+      break;
+  }
+}
+
 void CallbackQueue::addCallback(const CallbackInterfacePtr& callback, 
 				uint64_t removal_id,
 				ROSMOD_Callback_Options callback_options)
