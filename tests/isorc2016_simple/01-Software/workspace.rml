@@ -1,0 +1,31 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - New_Package
+package New_Package
+{
+  // ROSMOD Component - sender
+  component sender : Base 
+  {
+    // ROSMOD Publisher - simpleMsg_pub
+    publisher <New_Package/simpleMsg> simpleMsg_pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.001;
+	priority = 50;
+	deadline = 0.001;
+    }       
+  }
+  // ROSMOD Component - receiver
+  component receiver : Base 
+  {
+    // ROSMOD Subscriber - simpleMsg_sub
+    subscriber <New_Package/simpleMsg> simpleMsg_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+}
