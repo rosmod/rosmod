@@ -1,7 +1,7 @@
 #ifndef SENDER_HPP
 #define SENDER_HPP
 #include "node/Component.hpp"
-#include "New_Package/simpleMsg.h"
+#include "simple_pub_sub/simpleMsg.h"
 
 #ifdef USE_ROSMOD
   #include "rosmod/rosmod_ros.h"

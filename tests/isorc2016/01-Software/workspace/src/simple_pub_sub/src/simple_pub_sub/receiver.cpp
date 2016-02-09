@@ -1,4 +1,4 @@
-#include "New_Package/receiver.hpp"
+#include "simple_pub_sub/receiver.hpp"
 
 //# Start User Globals Marker
 //# End User Globals Marker
@@ -81,7 +81,7 @@ void receiver::mw_recv_done_operation(Network::receiver* receiver_mw)
 
 // Subscriber Operation - simpleMsg_sub
 //# Start simpleMsg_sub_operation Marker
-void receiver::simpleMsg_sub_operation(const New_Package::simpleMsg::ConstPtr& received_data)
+void receiver::simpleMsg_sub_operation(const simple_pub_sub::simpleMsg::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering receiver::simpleMsg_sub_operation");
@@ -89,7 +89,7 @@ void receiver::simpleMsg_sub_operation(const New_Package::simpleMsg::ConstPtr& r
   // Business Logic for simpleMsg_sub_operation
 
   uint64_t uuid = received_data->uuid;
-  uint64_t msgBytes = ros::serialization::Serializer<New_Package::simpleMsg>::serializedLength(*received_data);
+  uint64_t msgBytes = ros::serialization::Serializer<simple_pub_sub::simpleMsg>::serializedLength(*received_data);
   ros::Time now = ros::Time::now();
   simpleMsg_sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
   Network::Message new_msg;
@@ -191,7 +191,7 @@ void receiver::startUp()
   if (config.portGroupMap.find("simpleMsg_sub") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["simpleMsg_sub"];
   NAMESPACE::SubscribeOptions simpleMsg_sub_options;
-  simpleMsg_sub_options = NAMESPACE::SubscribeOptions::create<New_Package::simpleMsg>
+  simpleMsg_sub_options = NAMESPACE::SubscribeOptions::create<simple_pub_sub::simpleMsg>
       (advertiseName.c_str(),
        1000,
        boost::bind(&receiver::simpleMsg_sub_operation, this, _1),

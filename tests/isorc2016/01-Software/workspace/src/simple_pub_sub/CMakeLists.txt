@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(New_Package)
+project(simple_pub_sub)
 
 ## Start Global Marker
 
@@ -94,7 +94,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES New_Package
+#  LIBRARIES simple_pub_sub
 #  CATKIN_DEPENDS roscpp std_msgs
   CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
@@ -115,19 +115,19 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(New_Package
-#   src/${PROJECT_NAME}/New_Package.cpp
+# add_library(simple_pub_sub
+#   src/${PROJECT_NAME}/simple_pub_sub.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(New_Package_node src/New_Package_node.cpp)
+# add_executable(simple_pub_sub_node src/simple_pub_sub_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(New_Package_node New_Package_generate_messages_cpp)
+# add_dependencies(simple_pub_sub_node simple_pub_sub_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(New_Package_node
+# target_link_libraries(simple_pub_sub_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -146,7 +146,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS New_Package New_Package_node
+# install(TARGETS simple_pub_sub simple_pub_sub_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -171,7 +171,7 @@ include_directories(
 #
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_New_Package.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_simple_pub_sub.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
@@ -181,7 +181,7 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(sender
-            src/New_Package/sender.cpp
+            src/simple_pub_sub/sender.cpp
             ## Start sender CPP Marker
 
             ## End sender CPP Marker
@@ -193,11 +193,11 @@ target_link_libraries(sender
                       ${catkin_LIBRARIES}
                       )
 add_dependencies(sender
-                 New_Package_generate_messages_cpp
+                 simple_pub_sub_generate_messages_cpp
                 )
 
 add_library(receiver
-            src/New_Package/receiver.cpp
+            src/simple_pub_sub/receiver.cpp
             ## Start receiver CPP Marker
 
             ## End receiver CPP Marker
@@ -209,6 +209,6 @@ target_link_libraries(receiver
                       ${catkin_LIBRARIES}
                       )
 add_dependencies(receiver
-                 New_Package_generate_messages_cpp
+                 simple_pub_sub_generate_messages_cpp
                 )
 

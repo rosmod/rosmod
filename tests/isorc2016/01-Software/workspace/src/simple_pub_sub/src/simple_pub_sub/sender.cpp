@@ -1,4 +1,4 @@
-#include "New_Package/sender.hpp"
+#include "simple_pub_sub/sender.hpp"
 
 //# Start User Globals Marker
 //# End User Globals Marker
@@ -38,7 +38,6 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  tg_misbehave = true;
 	}
     }
-  NAMESPACE::NodeHandle nh;
   NAMESPACE::TimerOptions timer_options;
   if (config.profileMap.find("simpleMsg_pub") != config.profileMap.end())
     {
@@ -52,24 +51,6 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	simpleMsg_pub_send_mw.set_duration(tg_duration);
       fName = config.nodeName + "." + config.compName + ".simpleMsg_pub.network.csv";
       simpleMsg_pub_send_mw.set_output_filename(fName);
-
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(-1),
-	 boost::bind(&sender::simpleMsg_pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      simpleMsg_pub_timer = nh.createTimer(timer_options);
     }
   // Stop Init Timer
   init_timer.stop();
@@ -79,16 +60,30 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
-void sender::simpleMsg_pub_timer_operation(const NAMESPACE::TimerEvent& event)
+// Timer Callback - pub_timer
+//# Start pub_timer_operation Marker
+void sender::pub_timer_operation(const NAMESPACE::TimerEvent& event)
 {
-  New_Package::simpleMsg msg;
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sender::pub_timer_operation");
+#endif
+  // Business Logic for pub_timer_operation
+  timespec current_time;
+  ros::Time now = ros::Time::now();
+  current_time.tv_sec = now.sec;
+  current_time.tv_nsec = now.nsec;
+  double offset = simpleMsg_pub_send_mw.profile.getOffset(current_time);
+  
+  int msg_len = max_data_length + sin(offset) * max_data_length * 0.3;
+
+  simple_pub_sub::simpleMsg msg;
   msg.uuid = simpleMsg_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
+  msg.bytes.resize(msg_len,0);
   double timerDelay = 0;
   try
     {
       timerDelay =
-	simpleMsg_pub_send_mw.send<New_Package::simpleMsg>(simpleMsg_pub, msg);
+	simpleMsg_pub_send_mw.send<simple_pub_sub::simpleMsg>(simpleMsg_pub, msg);
     }
   catch ( Network::Exceeded_Production_Profile& ex )
     {
@@ -99,41 +94,8 @@ void sender::simpleMsg_pub_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       logger->log("DEBUG","writing output\n");
       simpleMsg_pub_send_mw.record();
+      exit(0);
     }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      NAMESPACE::TimerOptions timer_options;
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&sender::simpleMsg_pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      NAMESPACE::NodeHandle nh;
-      simpleMsg_pub_timer = nh.createTimer(timer_options);
-    }
-}
-
-// Timer Callback - pub_timer
-//# Start pub_timer_operation Marker
-void sender::pub_timer_operation(const NAMESPACE::TimerEvent& event)
-{
-#ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering sender::pub_timer_operation");
-#endif
-  // Business Logic for pub_timer_operation
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting sender::pub_timer_operation");
@@ -190,7 +152,7 @@ void sender::startUp()
   advertiseName = "simpleMsg";
   if (config.portGroupMap.find("simpleMsg_pub") != config.portGroupMap.end())
     advertiseName += "_" + config.portGroupMap["simpleMsg_pub"];
-  this->simpleMsg_pub = nh.advertise<New_Package::simpleMsg>(advertiseName.c_str(), 1000);
+  this->simpleMsg_pub = nh.advertise<simple_pub_sub::simpleMsg>(advertiseName.c_str(), 1000);
 
 
   // Synchronize components now that all publishers and servers have been initialized

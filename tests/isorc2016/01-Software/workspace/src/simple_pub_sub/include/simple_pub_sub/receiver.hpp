@@ -1,7 +1,7 @@
 #ifndef RECEIVER_HPP
 #define RECEIVER_HPP
 #include "node/Component.hpp"
-#include "New_Package/simpleMsg.h"
+#include "simple_pub_sub/simpleMsg.h"
 
 #ifdef USE_ROSMOD
   #include "rosmod/rosmod_ros.h"
@@ -31,7 +31,7 @@ public:
   void init_timer_operation(const NAMESPACE::TimerEvent& event);
 
   // Subscriber Operation - simpleMsg_sub
-  void simpleMsg_sub_operation(const New_Package::simpleMsg::ConstPtr& received_data); 
+  void simpleMsg_sub_operation(const simple_pub_sub::simpleMsg::ConstPtr& received_data); 
  
   // Start up
   void startUp();
