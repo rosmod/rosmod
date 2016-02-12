@@ -1,7 +1,7 @@
 echo "Cross-Compiling ROSMOD Package:" $1
 cd $1
 source /opt/ros/indigo/setup.bash
-catkin_make
+catkin_make -DNAMESPACE=rosmod
 WORKSPACE_PATH=$1
 DEVEL_PATH=$1/devel
 DEVEL_LIB_PATH=$1/devel/lib

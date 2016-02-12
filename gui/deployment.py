@@ -305,7 +305,7 @@ def Compile(img_name, img_path, rosmod_path, workspace_dir):
         build_space = workspace_dir + '/build'
         devel_prefix = '-DCATKIN_DEVEL_PREFIX=' + workspace_dir + '/devel'
         install_prefix = '-DCMAKE_INSTALL_PREFIX=' + workspace_dir + '/install' 
-        local('catkin_make --directory ' + workspace_dir\
+        local('catkin_make -DNAMESPACE=rosmod --directory ' + workspace_dir\
               + ' --source ' + source_space\
               + ' --build ' + build_space\
               + ' ' + devel_prefix + ' ' + install_prefix)
