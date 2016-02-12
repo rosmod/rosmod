@@ -61,16 +61,21 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
   srand (time(NULL));
   double tg_duration = -1;
   std::string fName;
+  bool enable_oob = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--tg_time"))
 	{
 	  tg_duration = atof(node_argv[i+1]);
 	}
+      if (!strcmp(node_argv[i], "--enable_oob"))
+	{
+	  enable_oob = true;
+	}
     }
 #if $len($subscribers) > 0
-  uint64_t capacityBits = 400000;
-  bool enable_sendback = true;
+  uint64_t capacityBits = 0;
+  bool enable_oob = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
@@ -81,10 +86,6 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  capacityBits = atoi(node_argv[i+1]) * 8;
 	}
-      if (!strcmp(node_argv[i], "--disable_sendback"))
-	{
-	  enable_sendback = false;
-	}
     }
 #for $sub in $subscribers
   if (config.profileMap.find("$sub.properties['name']") != config.profileMap.end())
@@ -92,13 +93,13 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
       ${sub.properties['name']}_recv_mw.init(node_argc,
 					     node_argv,
 					     config.profileMap["$sub.properties['name']"],
-					     capacityBits);
+					     capacityBits,
+					     enable_oob);
       if ( tg_duration < 0 )
 	${sub.properties['name']}_recv_mw.set_duration(${sub.properties['name']}_recv_mw.profile.period);
       else
 	${sub.properties['name']}_recv_mw.set_duration(tg_duration);
       fName = config.nodeName + "." + config.compName + ".${sub.properties['name']}.network.csv";
-      ${sub.properties['name']}_recv_mw.set_enable_sendback(enable_sendback);
       ${sub.properties['name']}_recv_mw.set_output_filename(fName);
       ${sub.properties['name']}_recv_mw.set_recv_done_callback(boost::bind(&$component_name::mw_recv_done_operation, this, &${sub.properties['name']}_recv_mw));
       ${sub.properties['name']}_id = 0;
@@ -140,7 +141,8 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
       ${pub.properties['name']}_send_mw.init(node_argc,
 					     node_argv,
 					     config.uuidMap["$pub.properties['name']"],
-					     config.profileMap["$pub.properties['name']"]);
+					     config.profileMap["$pub.properties['name']"],
+					     enable_oob);
       if ( tg_duration < 0 )
 	${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);
       else

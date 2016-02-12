@@ -17,45 +17,20 @@ namespace Network
   {
   public:
     receiver()
-      : enable_sendback(true),
+      : enable_sendback(false),
 	received_data(false)
     {
-      sd = socket(AF_INET, SOCK_DGRAM, 0);
-      if(sd < 0)
-	{
-	  perror("Opening datagram socket error");
-	  exit(1);
-	}
-      else
-	printf("Opening the datagram socket...OK.\n");
-
-      /* Initialize the group sockaddr structure with a */
-      /* group address of 225.1.1.1 and port 5555. */
-      memset((char *) &groupSock, 0, sizeof(groupSock));
-      groupSock.sin_family = AF_INET;
-      groupSock.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
-      groupSock.sin_port = htons(oob_mc_port);
-
-      /* Set local interface for outbound multicast datagrams. */
-      /* The IP address specified must be associated with a local, */
-      /* multicast capable interface. */
-      struct in_addr localInterface;
-      localInterface.s_addr = inet_addr("0.0.0.0");
-      if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface)) < 0)
-	{
-	  perror("Setting local interface error");
-	  exit(1);
-	}
-      else
-	printf("Setting the local interface...OK\n");
     }
 
-    int init(int argc, char ** argv, std::string prof_str, uint64_t buff_capacity_bits)
+    int init(int argc, char ** argv, std::string prof_str, uint64_t buff_capacity_bits = 0, bool enable_oob = false)
     {
       this->buffer_capacity_bits = buff_capacity_bits;
       profile.initializeFromString((char *)prof_str.c_str());
-      //buffer.set_capacityBits(this->buffer_capacity_bits);
-      buffer.set_capacityBits(0);
+      buffer.set_capacityBits(this->buffer_capacity_bits);
+
+      set_enable_sendback(enable_oob);
+      if (enable_sendback)
+	init_oob();
 
       boost::thread *tmr_thread =
 	new boost::thread( boost::bind(&receiver::buffer_recv_threadfunc, this) );
@@ -97,6 +72,38 @@ namespace Network
     }
 
     ros::Time get_end_time() const { return ros::Time(endTime); }
+
+    int init_oob()
+    {
+      sd = socket(AF_INET, SOCK_DGRAM, 0);
+      if(sd < 0)
+	{
+	  perror("Opening datagram socket error");
+	  exit(1);
+	}
+      else
+	printf("Opening the datagram socket...OK.\n");
+
+      /* Initialize the group sockaddr structure with a */
+      /* group address of 225.1.1.1 and port 5555. */
+      memset((char *) &groupSock, 0, sizeof(groupSock));
+      groupSock.sin_family = AF_INET;
+      groupSock.sin_addr.s_addr = inet_addr(oob_mc_group.c_str());
+      groupSock.sin_port = htons(oob_mc_port);
+
+      /* Set local interface for outbound multicast datagrams. */
+      /* The IP address specified must be associated with a local, */
+      /* multicast capable interface. */
+      struct in_addr localInterface;
+      localInterface.s_addr = inet_addr("0.0.0.0");
+      if(setsockopt(sd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface)) < 0)
+	{
+	  perror("Setting local interface error");
+	  exit(1);
+	}
+      else
+	printf("Setting the local interface...OK\n");
+    }
 
     int oob_send(std::vector<uint64_t>& send_uuids, bool val)
     {

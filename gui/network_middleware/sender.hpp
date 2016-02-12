@@ -24,7 +24,6 @@ namespace Network
     sender()
     {
       deactivated = false;
-      id = 0;
     }
 
     int create_oob_mc_socket()
@@ -90,19 +89,17 @@ namespace Network
       return 0;
     }
 
-    int init(int argc, char **argv, uint64_t u, std::string prof_str)
+    int init(int argc, char **argv, std::string prof_str, uint64_t u = -1, bool enable_oob = false)
     {
-      uuid = u;
       profile.initializeFromString((char *)prof_str.c_str());
-      create_oob_mc_socket();
-      return 0;
-    }
+      if (u > 0)
+	uuid = u;
+      else
+	uuid = profile.uuid;
 
-    int init(int argc, char **argv, std::string profileName)
-    {
-      profile.initializeFromFile(profileName.c_str());
-      uuid = profile.uuid;
-      create_oob_mc_socket();
+      if (enable_oob)
+	create_oob_mc_socket();
+
       return 0;
     }
 
@@ -118,21 +115,26 @@ namespace Network
     template <typename T>
     double send(NAMESPACE::Publisher pub, const T& msg)
     {
+      static uint64_t id = 0;
       double timeDiff = 0;
       // CHECK AGAINST PRIVATE VARIABLE : DEACTIVATED
       if (deactivated)
 	throw Network::Exceeded_Production_Profile();
+
+      uint64_t msgSizeBytes =
+	ros::serialization::Serializer<T>::serializedLength(msg);
+      // take a measurement
+      Network::Message new_msg;
+      new_msg.Bytes(msgSizeBytes);
+      new_msg.Id(id);
+      new_msg.TimeStamp();
+      // record the measurement
+      messages.push_back(new_msg);
+      id++;
+
       // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
       if (profile.Initialized()) // profile is not in error state
 	{
-	  uint64_t msgSizeBytes =
-	    ros::serialization::Serializer<T>::serializedLength(msg);
-	  // take a measurement
-	  Network::Message new_msg;
-	  new_msg.Bytes(msgSizeBytes);
-	  new_msg.Id(id);
-	  new_msg.TimeStamp();
-
 	  ros::Time now = ros::Time::now();
 	  timeDiff = (now - nextSendTime).toSec();
 	  if (timeDiff < 0)
@@ -140,10 +142,6 @@ namespace Network
 	      throw Network::Exceeded_Production_Profile();
 	    }
       
-	  // record the measurement
-	  messages.push_back(new_msg);
-	  id++;
-
 	  if (profile.resources.size() > 0) // has entries in profile
 	    {
 	      timespec current_time;
@@ -210,7 +208,6 @@ namespace Network
     ros::Time nextSendTime;
     uint64_t uuid;
     ros::Time endTime;
-    uint64_t id;
 
     static const int max_recv_buffer_size = 2000;
     int sd;
