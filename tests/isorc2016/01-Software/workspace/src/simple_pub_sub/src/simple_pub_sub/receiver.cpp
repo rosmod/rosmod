@@ -14,15 +14,20 @@ void receiver::init_timer_operation(const NAMESPACE::TimerEvent& event)
   srand (time(NULL));
   double tg_duration = -1;
   std::string fName;
+  bool enable_oob = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--tg_time"))
 	{
 	  tg_duration = atof(node_argv[i+1]);
 	}
+      if (!strcmp(node_argv[i], "--enable_oob"))
+	{
+	  enable_oob = true;
+	}
     }
-  uint64_t capacityBits = 400000;
-  bool enable_sendback = true;
+  uint64_t capacityBits = 0;
+  bool enable_sendback = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
@@ -33,23 +38,19 @@ void receiver::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  capacityBits = atoi(node_argv[i+1]) * 8;
 	}
-      if (!strcmp(node_argv[i], "--disable_sendback"))
-	{
-	  enable_sendback = false;
-	}
     }
   if (config.profileMap.find("simpleMsg_sub") != config.profileMap.end())
     {
       simpleMsg_sub_recv_mw.init(node_argc,
-					     node_argv,
-					     config.profileMap["simpleMsg_sub"],
-					     capacityBits);
+				 node_argv,
+				 config.profileMap["simpleMsg_sub"],
+				 capacityBits,
+				 enable_oob);
       if ( tg_duration < 0 )
 	simpleMsg_sub_recv_mw.set_duration(simpleMsg_sub_recv_mw.profile.period);
       else
 	simpleMsg_sub_recv_mw.set_duration(tg_duration);
       fName = config.nodeName + "." + config.compName + ".simpleMsg_sub.network.csv";
-      simpleMsg_sub_recv_mw.set_enable_sendback(enable_sendback);
       simpleMsg_sub_recv_mw.set_output_filename(fName);
       simpleMsg_sub_recv_mw.set_recv_done_callback(boost::bind(&receiver::mw_recv_done_operation, this, &simpleMsg_sub_recv_mw));
       simpleMsg_sub_id = 0;

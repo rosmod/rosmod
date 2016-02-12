@@ -398,43 +398,29 @@ namespace Network {
   
   static long precision = 30;// for file output
 
-  static int write_header(const char* fname) {
-    std::ofstream file(fname);
-    if ( !file.is_open() )
-      return -1;
+  static void write_header(std::ofstream& file) {
     file << "id, time (s), size (bits)\n";
   }
 
-  static int write_data(const char* fname, const std::vector<Message*>& messages) {
-    std::ofstream file(fname, std::ofstream::app);
-    if ( !file.is_open() )
-      return -1;
-    for (long i=0;i<messages.size();i++) {
-      file << messages[i]->Id() << ",";
-      std::vector<double> dtimes = messages[i]->DoubleTimes();
-      for (auto it = dtimes.begin(); it != dtimes.end(); ++it)
-	{
-	  file << std::setprecision(precision)
-	       << *it << ",";
-	}
-      file << messages[i]->Bytes() * 8 << "\n";
-    }
-    return 0;
-  }
-
-  static int append_data(std::string fname, const Network::Message *data) {
-    std::ofstream file(fname.c_str(), std::ofstream::app);
-    if ( !file.is_open() ) {
-      return -1;
-    }
-    file << data->Id() << ",";
-    std::vector<double> dtimes = data->DoubleTimes();
+  static void append_data(std::ofstream& file, const Network::Message data) {
+    file << data.Id() << ",";
+    std::vector<double> dtimes = data.DoubleTimes();
     for (auto it = dtimes.begin(); it != dtimes.end(); ++it)
       {
 	file << std::setprecision(precision)
 	     << *it << ",";
       }
-    file << data->Bits() << "\n";
+    file << data.Bits() << "\n";
+  }
+
+  static int write_data(const char* fname, const std::vector<Network::Message> messages) {
+    std::ofstream file(fname);
+    if ( !file.is_open() )
+      return -1;
+    Network::write_header(file);
+    for (auto it=messages.begin(); it != messages.end(); ++it) {
+      Network::append_data(file, *it);
+    }
     file.close();
     return 0;
   }

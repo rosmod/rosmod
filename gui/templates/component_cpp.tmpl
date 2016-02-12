@@ -140,8 +140,8 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       ${pub.properties['name']}_send_mw.init(node_argc,
 					     node_argv,
-					     config.uuidMap["$pub.properties['name']"],
 					     config.profileMap["$pub.properties['name']"],
+					     config.uuidMap["$pub.properties['name']"],
 					     enable_oob);
       if ( tg_duration < 0 )
 	${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);

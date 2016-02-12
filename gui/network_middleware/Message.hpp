@@ -84,7 +84,7 @@ namespace Network {
       return buffer;
     }
 
-    std::vector<double> DoubleTimes() {
+    std::vector<double> DoubleTimes() const {
       std::vector<double> retTimes;
       double time = 0;
       for (int i=0;i<times.size();i++) {

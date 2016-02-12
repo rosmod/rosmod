@@ -1,6 +1,7 @@
 #include "simple_pub_sub/sender.hpp"
 
 //# Start User Globals Marker
+double multiplier;
 //# End User Globals Marker
 
 // Initialization Function
@@ -14,11 +15,16 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
   srand (time(NULL));
   double tg_duration = -1;
   std::string fName;
+  bool enable_oob = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--tg_time"))
 	{
 	  tg_duration = atof(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "--enable_oob"))
+	{
+	  enable_oob = true;
 	}
     }
   max_data_length = 8192;
@@ -33,6 +39,10 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  max_data_length = atoi(node_argv[i+1]) / 8;
 	}
+      if (!strcmp(node_argv[i], "--multiplier"))
+	{
+	  multiplier = atoi(node_argv[i+1]);
+	}
       if (!strcmp(node_argv[i], "--tg_misbehave"))
 	{
 	  tg_misbehave = true;
@@ -42,9 +52,10 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
   if (config.profileMap.find("simpleMsg_pub") != config.profileMap.end())
     {
       simpleMsg_pub_send_mw.init(node_argc,
-					     node_argv,
-					     config.uuidMap["simpleMsg_pub"],
-					     config.profileMap["simpleMsg_pub"]);
+				 node_argv,
+				 config.profileMap["simpleMsg_pub"],
+				 config.uuidMap["simpleMsg_pub"],
+				 enable_oob);
       if ( tg_duration < 0 )
 	simpleMsg_pub_send_mw.set_duration(simpleMsg_pub_send_mw.profile.period);
       else
@@ -60,6 +71,53 @@ void sender::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+void sender::simpleMsg_pub_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  simple_pub_sub::simpleMsg msg;
+  msg.uuid = simpleMsg_pub_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	simpleMsg_pub_send_mw.send<simple_pub_sub::simpleMsg>(simpleMsg_pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= simpleMsg_pub_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      simpleMsg_pub_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&sender::simpleMsg_pub_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      simpleMsg_pub_timer = nh.createTimer(timer_options);
+    }
+}
+
 // Timer Callback - pub_timer
 //# Start pub_timer_operation Marker
 void sender::pub_timer_operation(const NAMESPACE::TimerEvent& event)
@@ -74,7 +132,7 @@ void sender::pub_timer_operation(const NAMESPACE::TimerEvent& event)
   current_time.tv_nsec = now.nsec;
   double offset = simpleMsg_pub_send_mw.profile.getOffset(current_time);
   
-  int msg_len = max_data_length + sin(offset) * max_data_length * 0.3;
+  int msg_len =  max_data_length + sin(offset) * max_data_length * multiplier;
 
   simple_pub_sub::simpleMsg msg;
   msg.uuid = simpleMsg_pub_send_mw.get_uuid();
@@ -94,7 +152,7 @@ void sender::pub_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       logger->log("DEBUG","writing output\n");
       simpleMsg_pub_send_mw.record();
-      exit(0);
+      pub_timer.stop();
     }
 
 #ifdef USE_ROSMOD
