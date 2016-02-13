@@ -75,7 +75,6 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
     }
 #if $len($subscribers) > 0
   uint64_t capacityBits = 0;
-  bool enable_oob = false;
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
