@@ -215,7 +215,7 @@ namespace Network {
 	    entry.latency = csv[i][3];    // s
 	  }
 
-	if ( resources.size() > 0 ) {
+	if ( HasEntries() ) {
 	  entry.data = resources.back().data +
 	    resources.back().bandwidth *
 	    (entry.time - resources.back().time);
@@ -226,7 +226,7 @@ namespace Network {
 	//printf("Interval %d: %s\n", i, entry.toString().c_str());
 	resources.push_back(entry);
       }
-      if (resources.size () && (resources.back().time < period)) {
+      if (HasEntries() && (resources.back().time < period)) {
 	ResourceEntry entry;
 	entry.time = period;
 	entry.bandwidth = 0;
@@ -256,7 +256,7 @@ namespace Network {
 
     unsigned long long getDataAtTime( timespec t )
     {
-      if (resources.size () == 0)
+      if (!HasEntries())
 	return 0;
       unsigned long long retData = 0;
       double offset = getOffset(t);
@@ -276,7 +276,7 @@ namespace Network {
     }
 
     int getCurrentInterval( unsigned long long& bandwidth, double& latency ) {
-      if (resources.size () == 0)
+      if (!HasEntries())
 	return -1;
       timespec currentTime;
       int returnCode = clock_gettime (CLOCK_REALTIME, &currentTime);
@@ -295,7 +295,7 @@ namespace Network {
     }
 
     int getNextInterval( timespec& start, unsigned long long& bandwidth, double& latency ) {
-      if (resources.size () == 0)
+      if (!HasEntries())
 	return -1;
       timespec currentTime;
       int returnCode = clock_gettime (CLOCK_REALTIME, &currentTime);
@@ -326,7 +326,7 @@ namespace Network {
     }
 
     double Delay(unsigned long dataLenBits, timespec sentTime) {
-      if (resources.size () == 0)
+      if (!HasEntries())
 	return -1;
 
       double offset = getOffset(sentTime);
@@ -394,6 +394,7 @@ namespace Network {
     }
   
     bool Initialized() const { return initialized; }
+    bool HasEntries() const { return resources.size() > 0; }
   };
   
   static long precision = 30;// for file output

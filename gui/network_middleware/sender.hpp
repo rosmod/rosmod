@@ -24,6 +24,7 @@ namespace Network
     sender()
     {
       deactivated = false;
+      nextSendTime = ros::Time::now();
     }
 
     int create_oob_mc_socket()
@@ -133,7 +134,7 @@ namespace Network
       id++;
 
       // CHECK AGAINST PROFILE (INCLUDING METERING FROM RECEIVER)
-      if (profile.Initialized()) // profile is not in error state
+      if (profile.Initialized() and profile.HasEntries()) // profile is not in error state
 	{
 	  ros::Time now = ros::Time::now();
 	  timeDiff = (now - nextSendTime).toSec();
@@ -142,14 +143,11 @@ namespace Network
 	      throw Network::Exceeded_Production_Profile();
 	    }
       
-	  if (profile.resources.size() > 0) // has entries in profile
-	    {
-	      timespec current_time;
-	      current_time.tv_sec = now.sec;
-	      current_time.tv_nsec = now.nsec;
-	      timeDiff = profile.Delay(msgSizeBytes * 8, current_time);
-	      nextSendTime = now + ros::Duration(timeDiff);
-	    }
+	  timespec current_time;
+	  current_time.tv_sec = now.sec;
+	  current_time.tv_nsec = now.nsec;
+	  timeDiff = profile.Delay(msgSizeBytes * 8, current_time);
+	  nextSendTime = now + ros::Duration(timeDiff);
 	}
       // IF EVERYTHING IS ALRIGHT, PASS IT THROUGH
       pub.publish(msg);
