@@ -1,14 +1,14 @@
-#include "simple_pub_sub/receiver.hpp"
+#include "multi_node_sample/receiverA.hpp"
 
 //# Start User Globals Marker
 //# End User Globals Marker
 
 // Initialization Function
 //# Start Init Marker
-void receiver::init_timer_operation(const NAMESPACE::TimerEvent& event)
+void receiverA::init_timer_operation(const NAMESPACE::TimerEvent& event)
 {
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering receiver::init_timer_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering receiverA::init_timer_operation");
 #endif
   // Initialize Here
   srand (time(NULL));
@@ -38,83 +38,83 @@ void receiver::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  capacityBits = atoi(node_argv[i+1]) * 8;
 	}
     }
-  if (config.profileMap.find("simpleMsg_sub") != config.profileMap.end())
+  if (config.profileMap.find("subscriberA") != config.profileMap.end())
     {
-      simpleMsg_sub_recv_mw.init(node_argc,
+      subscriberA_recv_mw.init(node_argc,
 					     node_argv,
-					     config.profileMap["simpleMsg_sub"],
+					     config.profileMap["subscriberA"],
 					     capacityBits,
 					     enable_oob);
       if ( tg_duration < 0 )
-	simpleMsg_sub_recv_mw.set_duration(simpleMsg_sub_recv_mw.profile.period);
+	subscriberA_recv_mw.set_duration(subscriberA_recv_mw.profile.period);
       else
-	simpleMsg_sub_recv_mw.set_duration(tg_duration);
-      fName = config.nodeName + "." + config.compName + ".simpleMsg_sub.network.csv";
-      simpleMsg_sub_recv_mw.set_output_filename(fName);
-      simpleMsg_sub_recv_mw.set_recv_done_callback(boost::bind(&receiver::mw_recv_done_operation, this, &simpleMsg_sub_recv_mw));
-      simpleMsg_sub_id = 0;
+	subscriberA_recv_mw.set_duration(tg_duration);
+      fName = config.nodeName + "." + config.compName + ".subscriberA.network.csv";
+      subscriberA_recv_mw.set_output_filename(fName);
+      subscriberA_recv_mw.set_recv_done_callback(boost::bind(&receiverA::mw_recv_done_operation, this, &subscriberA_recv_mw));
+      subscriberA_id = 0;
     }
-  if (config.portSenderMap.find("simpleMsg_sub") != config.portSenderMap.end())
+  if (config.portSenderMap.find("subscriberA") != config.portSenderMap.end())
     {
-      for (auto it=config.portSenderMap["simpleMsg_sub"].begin();
-	   it != config.portSenderMap["simpleMsg_sub"].end(); ++it)
+      for (auto it=config.portSenderMap["subscriberA"].begin();
+	   it != config.portSenderMap["subscriberA"].end(); ++it)
 	{
-	  simpleMsg_sub_recv_mw.add_sender( it->first, it->second );
+	  subscriberA_recv_mw.add_sender( it->first, it->second );
 	}
     }
   
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting receiver::init_timer_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting receiverA::init_timer_operation");
 #endif  
 }
 //# End Init Marker
 
 
-void receiver::mw_recv_done_operation(Network::receiver* receiver_mw)
+void receiverA::mw_recv_done_operation(Network::receiver* receiver_mw)
 {
   logger->log("DEBUG","Writing middleware log.");
   logger->log("DEBUG","Max middleware buffer: %lu bits", receiver_mw->buffer.maxBits());
   receiver_mw->record();
 }
 
-// Subscriber Operation - simpleMsg_sub
-//# Start simpleMsg_sub_operation Marker
-void receiver::simpleMsg_sub_operation(const simple_pub_sub::simpleMsg::ConstPtr& received_data)
+// Subscriber Operation - subscriberA
+//# Start subscriberA_operation Marker
+void receiverA::subscriberA_operation(const multi_node_sample::messageA::ConstPtr& received_data)
 {
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering receiver::simpleMsg_sub_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering receiverA::subscriberA_operation");
 #endif
-  // Business Logic for simpleMsg_sub_operation
+  // Business Logic for subscriberA_operation
 
   uint64_t uuid = received_data->uuid;
-  uint64_t msgBytes = ros::serialization::Serializer<simple_pub_sub::simpleMsg>::serializedLength(*received_data);
+  uint64_t msgBytes = ros::serialization::Serializer<multi_node_sample::messageA>::serializedLength(*received_data);
   ros::Time now = ros::Time::now();
-  simpleMsg_sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
+  subscriberA_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
   Network::Message new_msg;
   new_msg.Bytes(msgBytes);
-  new_msg.Id(simpleMsg_sub_id++);
+  new_msg.Id(subscriberA_id++);
   new_msg.TimeStamp();
-  simpleMsg_sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
+  subscriberA_recv_mw.buffer.send(new_msg, msgBytes * 8);
   
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting receiver::simpleMsg_sub_operation");
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting receiverA::subscriberA_operation");
 #endif
 }
-//# End simpleMsg_sub_operation Marker
+//# End subscriberA_operation Marker
 
 
 // Destructor - Cleanup Ports & Timers
-receiver::~receiver()
+receiverA::~receiverA()
 {
-  simpleMsg_sub.shutdown();
+  subscriberA.shutdown();
   //# Start Destructor Marker
   //# End Destructor Marker
 }
 
 // Startup - Setup Component Ports & Timers
-void receiver::startUp()
+void receiverA::startUp()
 {
   NAMESPACE::NodeHandle nh;
   std::string advertiseName;
@@ -161,7 +161,7 @@ void receiver::startUp()
   comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
     ("component_synchronization",
      1000,
-     boost::bind(&receiver::component_sync_operation, this, _1),
+     boost::bind(&receiverA::component_sync_operation, this, _1),
      NAMESPACE::VoidPtr(),
 #ifdef USE_ROSMOD     
      &this->comp_queue,
@@ -181,20 +181,20 @@ void receiver::startUp()
 
   // Configure all subscribers associated with this component
 #ifdef USE_ROSMOD 
-  callback_options.alias = "simpleMsg_sub_operation";
+  callback_options.alias = "subscriberA_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 100000000;
+  callback_options.deadline.nsec = 5000000;
 #endif  
-  // Component Subscriber - simpleMsg_sub
-  advertiseName = "simpleMsg";
-  if (config.portGroupMap.find("simpleMsg_sub") != config.portGroupMap.end())
-    advertiseName += "_" + config.portGroupMap["simpleMsg_sub"];
-  NAMESPACE::SubscribeOptions simpleMsg_sub_options;
-  simpleMsg_sub_options = NAMESPACE::SubscribeOptions::create<simple_pub_sub::simpleMsg>
+  // Component Subscriber - subscriberA
+  advertiseName = "messageA";
+  if (config.portGroupMap.find("subscriberA") != config.portGroupMap.end())
+    advertiseName += "_" + config.portGroupMap["subscriberA"];
+  NAMESPACE::SubscribeOptions subscriberA_options;
+  subscriberA_options = NAMESPACE::SubscribeOptions::create<multi_node_sample::messageA>
       (advertiseName.c_str(),
        1000,
-       boost::bind(&receiver::simpleMsg_sub_operation, this, _1),
+       boost::bind(&receiverA::subscriberA_operation, this, _1),
        NAMESPACE::VoidPtr(),
 #ifdef USE_ROSMOD
        &this->comp_queue,
@@ -202,7 +202,7 @@ void receiver::startUp()
 #else
        &this->comp_queue);
 #endif 
-  this->simpleMsg_sub = nh.subscribe(simpleMsg_sub_options);
+  this->subscriberA = nh.subscribe(subscriberA_options);
 
   // Init Timer
 #ifdef USE_ROSMOD    
@@ -215,7 +215,7 @@ void receiver::startUp()
   timer_options = 
     NAMESPACE::TimerOptions
     (ros::Duration(-1),
-     boost::bind(&receiver::init_timer_operation, this, _1),
+     boost::bind(&receiverA::init_timer_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
      callback_options,
@@ -231,6 +231,6 @@ void receiver::startUp()
 
 extern "C" {
   Component *maker(ComponentConfig &config, int argc, char **argv) {
-    return new receiver(config,argc,argv);
+    return new receiverA(config,argc,argv);
   }
 }
