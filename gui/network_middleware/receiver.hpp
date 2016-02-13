@@ -130,7 +130,7 @@ namespace Network
 	{
 	  // UPDATE SENDERS IF BUFFER IS CLEARING:
 	  uint64_t currentSize = buffer.bits();
-	  uint64_t currentCapacity = this->buffer_capacity_bits;//buffer.capacityBits();
+	  uint64_t currentCapacity = buffer.capacityBits();
 	  if ( currentCapacity > 0 and enable_sendback )
 	    {
 	      double utilization = (double)currentSize/(double)currentCapacity;
@@ -159,7 +159,7 @@ namespace Network
 	  catch ( Network::Buffer_Empty& ex )
 	    {
 	    }
-	  if ( ros::Time::now() >= endTime )
+	  if ( received_data and ros::Time::now() >= endTime )
 	    {
 	      if (this->callback_func)
 		this->callback_func();
