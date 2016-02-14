@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<node name="NodeD_pub">
+  <component_instance name="senderABCE">
+    <library name="libsenderABCE.so"/>
+    <scheduling_scheme setting="PFIFO"/>
+    <numCompsToSync setting="10"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="publisherA">
+      <uuid>15</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+    </port>
+    <port name="publisherB">
+      <uuid>16</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+    </port>
+    <port name="publisherC">
+      <uuid>17</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+    </port>
+    <port name="publisherE">
+      <uuid>18</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+    </port>
+  </component_instance>
+</node>
+

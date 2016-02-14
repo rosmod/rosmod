@@ -151,6 +151,8 @@ void receiverE::startUp()
   // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
+  ros::Duration(0.5).sleep();
+
 #ifdef USE_ROSMOD  
   rosmod::SubscribeOptions comp_sync_sub_options;
   rosmod::ROSMOD_Callback_Options sync_callback_options;

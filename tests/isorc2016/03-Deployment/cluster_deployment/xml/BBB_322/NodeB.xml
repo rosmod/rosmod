@@ -4,7 +4,7 @@
     <library name="libsenderACDE.so"/>
     <scheduling_scheme setting="PFIFO"/>
     <numCompsToSync setting="1"/>
-    <syncTimeout setting="30.0"/>
+    <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1000"/> 
@@ -50,7 +50,7 @@
     <library name="libreceiverB.so"/>
     <scheduling_scheme setting="PFIFO"/>
     <numCompsToSync setting="1"/>
-    <syncTimeout setting="30.0"/>
+    <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1000"/> 
