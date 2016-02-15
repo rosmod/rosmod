@@ -283,3 +283,72 @@ package multi_node_sample
     }       
   }
 }
+// ROSMOD Package - isorc
+package isorc
+{
+  // ROSMOD Component - pubA
+  component pubA : Base 
+  {
+    // ROSMOD Publisher - a_pub
+    publisher <multi_node_sample/messageA> a_pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.05;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - pubB
+  component pubB : Base 
+  {
+    // ROSMOD Publisher - b_pub
+    publisher <multi_node_sample/messageB> b_pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.05;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - pubC
+  component pubC : Base 
+  {
+    // ROSMOD Publisher - c_pub
+    publisher <multi_node_sample/messageC> c_pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.05;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - pubD
+  component pubD : Base 
+  {
+    // ROSMOD Publisher - d_pub
+    publisher <multi_node_sample/messageD> d_pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.05;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - pubE
+  component pubE : Base 
+  {
+    // ROSMOD Publisher - e_pub
+    publisher <multi_node_sample/messageE> e_pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.05;
+	priority = 50;
+	deadline = 0.05;
+    }       
+  }
+}
