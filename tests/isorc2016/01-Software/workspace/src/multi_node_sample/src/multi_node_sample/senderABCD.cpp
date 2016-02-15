@@ -361,7 +361,7 @@ void senderABCD::startUp()
   // Synchronize components now that all publishers and servers have been initialized
   this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::Duration(0.5).sleep();
+  ros::Duration(15.0).sleep();
 
 #ifdef USE_ROSMOD  
   rosmod::SubscribeOptions comp_sync_sub_options;
@@ -392,7 +392,7 @@ void senderABCD::startUp()
       std::cout << "Num publishers: " << num_publishers << std::endl;
       ros::Duration(0.1).sleep();
     }
-  ros::Duration(0.5).sleep();
+  ros::Duration(15.0).sleep();
   this->comp_sync_sub.shutdown();  
   this->comp_sync_pub.shutdown();
 
