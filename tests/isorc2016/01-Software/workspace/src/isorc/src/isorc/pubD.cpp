@@ -1,6 +1,7 @@
 #include "isorc/pubD.hpp"
 
 //# Start User Globals Marker
+double multiplier = 0.3;
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +12,14 @@ void pubD::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering pubD::init_timer_operation");
 #endif
   // Initialize Here
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--multiplier"))
+	{
+	  multiplier = atof(node_argv[i+1]);
+	}
+    }
+
   srand (time(NULL));
   double tg_duration = -1;
   std::string fName;
@@ -43,8 +52,6 @@ void pubD::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  tg_misbehave = true;
 	}
     }
-  NAMESPACE::NodeHandle nh;
-  NAMESPACE::TimerOptions timer_options;
   if (config.profileMap.find("d_pub") != config.profileMap.end())
     {
       d_pub_send_mw.init(node_argc,
@@ -58,24 +65,6 @@ void pubD::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	d_pub_send_mw.set_duration(tg_duration);
       fName = config.nodeName + "." + config.compName + ".d_pub.network.csv";
       d_pub_send_mw.set_output_filename(fName);
-
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(-1),
-	 boost::bind(&pubD::d_pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      d_pub_timer = nh.createTimer(timer_options);
     }
   // Stop Init Timer
   init_timer.stop();
@@ -85,11 +74,25 @@ void pubD::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
-void pubD::d_pub_timer_operation(const NAMESPACE::TimerEvent& event)
+// Timer Callback - pub_timer
+//# Start pub_timer_operation Marker
+void pubD::pub_timer_operation(const NAMESPACE::TimerEvent& event)
 {
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering pubD::pub_timer_operation");
+#endif
+  // Business Logic for pub_timer_operation
+  ros::Time now = ros::Time::now();
+  timespec current_time;
+  current_time.tv_sec = now.sec;
+  current_time.tv_nsec = now.nsec;
+  double offset = d_pub_send_mw.profile.getOffset(current_time);
+  double period = d_pub_send_mw.profile.period;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
+
   isorc::messageD msg;
   msg.uuid = d_pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
+  msg.bytes.resize(message_len,0);
   double timerDelay = 0;
   try
     {
@@ -105,41 +108,8 @@ void pubD::d_pub_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       logger->log("DEBUG","writing output\n");
       d_pub_send_mw.record();
+      pub_timer.stop();
     }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      NAMESPACE::TimerOptions timer_options;
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&pubD::d_pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      NAMESPACE::NodeHandle nh;
-      d_pub_timer = nh.createTimer(timer_options);
-    }
-}
-
-// Timer Callback - pub_timer
-//# Start pub_timer_operation Marker
-void pubD::pub_timer_operation(const NAMESPACE::TimerEvent& event)
-{
-#ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering pubD::pub_timer_operation");
-#endif
-  // Business Logic for pub_timer_operation
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting pubD::pub_timer_operation");
