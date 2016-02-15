@@ -20,8 +20,8 @@ namespace Network {
   class Message {
   public:  
     std::string buffer;
-    long bits;
-    long id;
+    uint64_t bits;
+    uint64_t id;
     uint64_t connection_id;
     std::vector<timespec> times;
     Message ()
@@ -31,13 +31,13 @@ namespace Network {
     {
     }
 
-    Message ( long len, long i, uint64_t conn_id )
+    Message ( uint64_t len, uint64_t i, uint64_t conn_id )
       : bits (len),
 	id(i),
 	connection_id(conn_id)
     {
       buffer = std::string(this->Bytes()+2,'A');
-      long templen = 256;
+      uint64_t templen = 256;
       char temp[templen];
       memset(temp,0,templen);
       sprintf(temp,"%lu",id);
@@ -125,14 +125,14 @@ namespace Network {
 
     void Clear() { buffer.clear(); }
 
-    long Id() const { return id; }
-    void Id(long i) { id = i; }
+    uint64_t Id() const { return id; }
+    void Id(uint64_t i) { id = i; }
 
-    long Bits() const { return bits; }
-    void Bits(long b) { bits = b; }
+    uint64_t Bits() const { return bits; }
+    void Bits(uint64_t b) { bits = b; }
 
-    long Bytes() const { return ceil((double)bits/8.0f); }
-    void Bytes(long B) { bits = B*8; }
+    uint64_t Bytes() const { return ceil((double)bits/8.0f); }
+    void Bytes(uint64_t B) { bits = B*8; }
   };
 };
 

@@ -40,14 +40,14 @@ namespace Network {
   class ResourceEntry {
   public:
     double time;                      // sec
-    unsigned long long bandwidth;     // bits / sec
-    unsigned long long max_bandwidth; // bits / sec
-    unsigned long long data;          // bits
+    uint64_t bandwidth;     // bits / sec
+    uint64_t max_bandwidth; // bits / sec
+    uint64_t data;          // bits
     double latency;                   // sec
 
     std::string toString() {
       char charBuf[100];
-      sprintf(charBuf,"%f, %llu, %llu, %llu, %f",
+      sprintf(charBuf,"%f, %lu, %lu, %lu, %f",
 	      time, bandwidth, max_bandwidth, data, latency);
       std::string retStr = charBuf;
       return retStr;
@@ -129,7 +129,7 @@ namespace Network {
     {
       double fractpart,intpart;
       fractpart = modf(t,&intpart);
-      start_time.tv_sec = (unsigned long long)(intpart);
+      start_time.tv_sec = (unsigned long)(intpart);
       start_time.tv_nsec = (unsigned long)(fractpart*1000000000.0);
       return 0;
     }
@@ -203,7 +203,7 @@ namespace Network {
       for (int i=0;i<csv.size();i++) {
 	ResourceEntry entry;
 	entry.time = csv[i][0];                              // s
-	entry.bandwidth = (unsigned long long) (csv[i][1]);  // bps
+	entry.bandwidth = (uint64_t) (csv[i][1]);  // bps
 	if (csv[i].size() == 3)
 	  {
 	    entry.latency = csv[i][2];    // s
@@ -211,7 +211,7 @@ namespace Network {
 	  }
 	else if (csv[i].size() == 4)
 	  {
-	    entry.max_bandwidth = (unsigned long long) (csv[i][2]); // bps
+	    entry.max_bandwidth = (uint64_t) (csv[i][2]); // bps
 	    entry.latency = csv[i][3];    // s
 	  }
 
@@ -254,11 +254,11 @@ namespace Network {
       return offset;
     }
 
-    unsigned long long getDataAtTime( timespec t )
+    uint64_t getDataAtTime( timespec t )
     {
       if (!HasEntries())
 	return 0;
-      unsigned long long retData = 0;
+      uint64_t retData = 0;
       double offset = getOffset(t);
       int i = 0;
       for ( i = 0; i < resources.size(); i++)
@@ -269,13 +269,13 @@ namespace Network {
       if ( i < resources.size() - 1 )
 	i = i - 1;
       double end = resources[i].time;
-      unsigned long long bw = resources[i].bandwidth;
-      unsigned long long endData = resources[i].data;
+      uint64_t bw = resources[i].bandwidth;
+      uint64_t endData = resources[i].data;
       retData = endData - bw * (end-offset);
       return retData;
     }
 
-    int getCurrentInterval( unsigned long long& bandwidth, double& latency ) {
+    int getCurrentInterval( uint64_t& bandwidth, double& latency ) {
       if (!HasEntries())
 	return -1;
       timespec currentTime;
@@ -290,11 +290,11 @@ namespace Network {
 	  break;
 	}
       }
-      //printf("current: %f, %llu, %f\n", offset, bandwidth, latency);
+      //printf("current: %f, %lu, %f\n", offset, bandwidth, latency);
       return 0;
     }
 
-    int getNextInterval( timespec& start, unsigned long long& bandwidth, double& latency ) {
+    int getNextInterval( timespec& start, uint64_t& bandwidth, double& latency ) {
       if (!HasEntries())
 	return -1;
       timespec currentTime;
@@ -314,8 +314,8 @@ namespace Network {
       double timeDiff = end - offset;
       double fractpart, intpart;
       fractpart = modf(timeDiff, &intpart);
-      start.tv_sec = (long) intpart;
-      start.tv_nsec = (long)( fractpart*1000000000.0f );
+      start.tv_sec = (unsigned long) intpart;
+      start.tv_nsec = (unsigned long)( fractpart*1000000000.0f );
       start.tv_sec += currentTime.tv_sec;
       start.tv_nsec += currentTime.tv_nsec;
       if ( start.tv_nsec > 999999999 ) {
@@ -325,15 +325,15 @@ namespace Network {
       return 0;
     }
 
-    double Delay(unsigned long dataLenBits, timespec sentTime) {
+    double Delay(uint64_t dataLenBits, timespec sentTime) {
       if (!HasEntries())
 	return -1;
 
       double offset = getOffset(sentTime);
 
       double start = resources.back().time;
-      unsigned long long offsetData = resources.back().data;
-      unsigned long long bandwidth = resources.back().bandwidth;
+      uint64_t offsetData = resources.back().data;
+      uint64_t bandwidth = resources.back().bandwidth;
       int res_id = resources.size() - 1;
       for (int i=0;i<resources.size();i++) {
 	if ( resources[i].time > offset ) {
@@ -345,13 +345,13 @@ namespace Network {
 	}
       }
 
-      offsetData += (unsigned long long)((double)(offset-start)*((double)bandwidth));
+      offsetData += (uint64_t)((double)(offset-start)*((double)bandwidth));
 
       double timeDiff = 0;
-      unsigned long long dataInPeriod = resources.back().data;
-      unsigned long long dataToEnd = dataInPeriod - offsetData;
-      unsigned long long numPeriods = dataLenBits / dataInPeriod;
-      unsigned long long modData = dataLenBits % dataInPeriod;
+      uint64_t dataInPeriod = resources.back().data;
+      uint64_t dataToEnd = dataInPeriod - offsetData;
+      uint64_t numPeriods = dataLenBits / dataInPeriod;
+      uint64_t modData = dataLenBits % dataInPeriod;
   
       if ( numPeriods > 0 ) { // will take more than numPeriods to send data
 	timeDiff += (double)numPeriods * period;
@@ -365,7 +365,7 @@ namespace Network {
 	modData = modData - dataToEnd;
       }
 
-      unsigned long long remainder = modData;
+      uint64_t remainder = modData;
       if ( (resources[res_id].data - offsetData) <= modData ) {
 	remainder = modData - (resources[res_id].data - offsetData);
 	timeDiff += resources[res_id++].time - offset;
