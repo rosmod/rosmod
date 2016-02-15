@@ -131,7 +131,7 @@ void senderACDE::timerA_operation(const NAMESPACE::TimerEvent& event)
   current_time.tv_nsec = now.nsec;
   double offset = publisherA_send_mw.profile.getOffset(current_time);
   double period = publisherA_send_mw.profile.period;
-  uint64_t message_len = max_data_length + sin(offset * period / 2 * M_PI) * max_data_length * multiplier;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
   multi_node_sample::messageA msg;
   msg.uuid = publisherA_send_mw.get_uuid();
@@ -173,7 +173,7 @@ void senderACDE::timerC_operation(const NAMESPACE::TimerEvent& event)
   current_time.tv_nsec = now.nsec;
   double offset = publisherC_send_mw.profile.getOffset(current_time);
   double period = publisherC_send_mw.profile.period;
-  uint64_t message_len = max_data_length + sin(offset * period / 2 * M_PI) * max_data_length * multiplier;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
   multi_node_sample::messageC msg;
   msg.uuid = publisherC_send_mw.get_uuid();
@@ -215,7 +215,7 @@ void senderACDE::timerD_operation(const NAMESPACE::TimerEvent& event)
   current_time.tv_nsec = now.nsec;
   double offset = publisherD_send_mw.profile.getOffset(current_time);
   double period = publisherD_send_mw.profile.period;
-  uint64_t message_len = max_data_length + sin(offset * period / 2 * M_PI) * max_data_length * multiplier;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
   multi_node_sample::messageD msg;
   msg.uuid = publisherD_send_mw.get_uuid();
@@ -257,7 +257,7 @@ void senderACDE::timerE_operation(const NAMESPACE::TimerEvent& event)
   current_time.tv_nsec = now.nsec;
   double offset = publisherE_send_mw.profile.getOffset(current_time);
   double period = publisherE_send_mw.profile.period;
-  uint64_t message_len = max_data_length + sin(offset * period / 2 * M_PI) * max_data_length * multiplier;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
   multi_node_sample::messageE msg;
   msg.uuid = publisherE_send_mw.get_uuid();
