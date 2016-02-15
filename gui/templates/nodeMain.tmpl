@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     // struct sched_param is used to store the scheduling priority
     struct sched_param params;     
     // We'll set the priority to the maximum.     
-    params.sched_priority = nodeParser.priority;  //sched_get_priority_max(SCHED_RR);
+    params.sched_priority = nodeParser.node_priority;  //sched_get_priority_max(SCHED_RR);
     if (params.sched_priority < 0)
       params.sched_priority = sched_get_priority_max(SCHED_RR);
 

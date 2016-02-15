@@ -290,7 +290,7 @@ package isorc
   component pubA : Base 
   {
     // ROSMOD Publisher - a_pub
-    publisher <multi_node_sample/messageA> a_pub;
+    publisher <isorc/messageA> a_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
@@ -303,7 +303,7 @@ package isorc
   component pubB : Base 
   {
     // ROSMOD Publisher - b_pub
-    publisher <multi_node_sample/messageB> b_pub;
+    publisher <isorc/messageB> b_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
@@ -316,7 +316,7 @@ package isorc
   component pubC : Base 
   {
     // ROSMOD Publisher - c_pub
-    publisher <multi_node_sample/messageC> c_pub;
+    publisher <isorc/messageC> c_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
@@ -329,7 +329,7 @@ package isorc
   component pubD : Base 
   {
     // ROSMOD Publisher - d_pub
-    publisher <multi_node_sample/messageD> d_pub;
+    publisher <isorc/messageD> d_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
@@ -342,13 +342,63 @@ package isorc
   component pubE : Base 
   {
     // ROSMOD Publisher - e_pub
-    publisher <multi_node_sample/messageE> e_pub;
+    publisher <isorc/messageE> e_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
 	period = 0.05;
 	priority = 50;
 	deadline = 0.05;
+    }       
+  }
+  // ROSMOD Component - subA
+  component subA : Base 
+  {
+    // ROSMOD Subscriber - a_sub
+    subscriber <isorc/messageA> a_sub 
+    {
+      priority = 50;
+      deadline = 0.001;
+    }       
+  }
+  // ROSMOD Component - subB
+  component subB : Base 
+  {
+    // ROSMOD Subscriber - b_sub
+    subscriber <isorc/messageB> b_sub 
+    {
+      priority = 50;
+      deadline = 0.001;
+    }       
+  }
+  // ROSMOD Component - subC
+  component subC : Base 
+  {
+    // ROSMOD Subscriber - c_sub
+    subscriber <isorc/messageC> c_sub 
+    {
+      priority = 50;
+      deadline = 0.001;
+    }       
+  }
+  // ROSMOD Component - subD
+  component subD : Base 
+  {
+    // ROSMOD Subscriber - d_sub
+    subscriber <isorc/messageD> d_sub 
+    {
+      priority = 50;
+      deadline = 0.001;
+    }       
+  }
+  // ROSMOD Component - subE
+  component subE : Base 
+  {
+    // ROSMOD Subscriber - e_sub
+    subscriber <isorc/messageE> e_sub 
+    {
+      priority = 50;
+      deadline = 0.001;
     }       
   }
 }
