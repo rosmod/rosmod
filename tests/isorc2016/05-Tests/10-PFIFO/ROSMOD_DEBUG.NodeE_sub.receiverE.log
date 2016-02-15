@@ -1,0 +1,9 @@
+=================================================================
+ROSMOD::DEBUG::1455552662562346893::CALLBACK PFIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1455552662, nsec=562139143
+ROSMOD::DEBUG::1455552662563541726::Entering receiverE::init_timer_operation
+ROSMOD::DEBUG::1455552662568704143::Exiting receiverE::init_timer_operation
+ROSMOD::DEBUG::1455552662568887476::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1455552662, nsec=568844435; Execution Time sec=0, nsec=6705292
+ROSMOD::DEBUG::1455552662775388935::CALLBACK PFIFO ENQUEUE::Alias=subscriberE_operation; Priority=50; Deadline sec=0, nsec=5000000; Enqueue Time sec=1455552662, nsec=775289143
+ROSMOD::DEBUG::1455552662776742435::Entering receiverE::subscriberE_operation
+ROSMOD::DEBUG::1455552662776992351::Exiting receiverE::subscriberE_operation
+ROSMOD::DEBUG::1455552662777150768::CALLBACK COMPLETED::Alias=subscriberE_operation; Completion Time sec=1455552662, nsec=777103851; Execution Time sec=0, nsec=1814708

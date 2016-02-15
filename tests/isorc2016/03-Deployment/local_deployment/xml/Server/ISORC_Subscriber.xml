@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<node name="ISORC_Subscriber">
+  <component_instance name="receiverB">
+    <library name="libreceiverB.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="subscriberB">
+      <uuid>4</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = receiver
+      </profile>
+      <sender uuid="0">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="receiverC">
+    <library name="libreceiverC.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="subscriberC">
+      <uuid>5</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = receiver
+      </profile>
+      <sender uuid="1">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="receiverD">
+    <library name="libreceiverD.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="subscriberD">
+      <uuid>6</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = receiver
+      </profile>
+      <sender uuid="2">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+  <component_instance name="receiverE">
+    <library name="libreceiverE.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="subscriberE">
+      <uuid>7</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = receiver
+      </profile>
+      <sender uuid="3">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

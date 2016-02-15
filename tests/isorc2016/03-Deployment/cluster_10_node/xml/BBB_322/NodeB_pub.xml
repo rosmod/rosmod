@@ -3,7 +3,7 @@
   <component_instance name="senderACDE">
     <library name="libsenderACDE.so"/>
     <scheduling_scheme setting="PFIFO"/>
-    <numCompsToSync setting="10"/>
+    <numCompsToSync setting="1"/>
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>

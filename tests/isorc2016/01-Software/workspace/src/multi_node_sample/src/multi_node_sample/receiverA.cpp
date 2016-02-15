@@ -152,38 +152,39 @@ void receiverA::startUp()
   rosmod::ROSMOD_Callback_Options callback_options;
 #endif  
 
-  // Synchronize components now that all publishers and servers have been initialized
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  if (config.num_comps_to_sync > 1 )
+    {
+      // Synchronize components now that all publishers and servers have been initialized
+      this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
   
-  ros::Duration(15.0).sleep();
-
 #ifdef USE_ROSMOD  
-  rosmod::SubscribeOptions comp_sync_sub_options;
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
+      rosmod::SubscribeOptions comp_sync_sub_options;
+      rosmod::ROSMOD_Callback_Options sync_callback_options;
 #else
-  ros::SubscribeOptions comp_sync_sub_options;
+      ros::SubscribeOptions comp_sync_sub_options;
 #endif
-  
-  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
-     1000,
-     boost::bind(&receiverA::component_sync_operation, this, _1),
-     NAMESPACE::VoidPtr(),
+      ros::Duration(config.comp_sync_timeout/2.0).sleep();
+      comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+	("component_synchronization",
+	 1000,
+	 boost::bind(&receiverA::component_sync_operation, this, _1),
+	 NAMESPACE::VoidPtr(),
 #ifdef USE_ROSMOD     
-     &this->comp_queue,
-     sync_callback_options);
+	 &this->comp_queue,
+	 sync_callback_options);
 #else
-     &this->comp_queue);
+         &this->comp_queue);
 #endif
-  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+      this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
 
-  ros::Time now = ros::Time::now();
-  while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
-  ros::Duration(0.1).sleep();
-  ros::Duration(15.0).sleep();
-  this->comp_sync_sub.shutdown();  
-  this->comp_sync_pub.shutdown();
+      ros::Time now = ros::Time::now();
+      while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	      (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+	ros::Duration(0.1).sleep();
+      ros::Duration(config.comp_sync_timeout/2.0).sleep();
+      this->comp_sync_sub.shutdown();  
+      this->comp_sync_pub.shutdown();
+    }
 
   // Configure all subscribers associated with this component
 #ifdef USE_ROSMOD 
