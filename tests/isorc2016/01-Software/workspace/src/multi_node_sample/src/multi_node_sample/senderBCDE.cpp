@@ -121,6 +121,191 @@ void senderBCDE::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+void senderBCDE::publisherB_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  multi_node_sample::messageB msg;
+  msg.uuid = publisherB_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	publisherB_send_mw.send<multi_node_sample::messageB>(publisherB, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= publisherB_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      publisherB_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&senderBCDE::publisherB_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      publisherB_timer = nh.createTimer(timer_options);
+    }
+}
+void senderBCDE::publisherC_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  multi_node_sample::messageC msg;
+  msg.uuid = publisherC_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	publisherC_send_mw.send<multi_node_sample::messageC>(publisherC, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= publisherC_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      publisherC_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&senderBCDE::publisherC_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      publisherC_timer = nh.createTimer(timer_options);
+    }
+}
+void senderBCDE::publisherD_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  multi_node_sample::messageD msg;
+  msg.uuid = publisherD_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	publisherD_send_mw.send<multi_node_sample::messageD>(publisherD, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= publisherD_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      publisherD_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&senderBCDE::publisherD_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      publisherD_timer = nh.createTimer(timer_options);
+    }
+}
+void senderBCDE::publisherE_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  multi_node_sample::messageE msg;
+  msg.uuid = publisherE_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	publisherE_send_mw.send<multi_node_sample::messageE>(publisherE, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= publisherE_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      publisherE_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&senderBCDE::publisherE_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      publisherE_timer = nh.createTimer(timer_options);
+    }
+}
+
 // Timer Callback - timerB
 //# Start timerB_operation Marker
 void senderBCDE::timerB_operation(const NAMESPACE::TimerEvent& event)
@@ -159,6 +344,10 @@ void senderBCDE::timerB_operation(const NAMESPACE::TimerEvent& event)
       timerB.stop();
     }
 #else
+
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Waiting Callback Priority: %d",
+				comp_queue.getWaitingCallbackPriority());
+  
   double now = ros::Time::now().toSec();
   double period = _profile_period;
   double offset = fmod(now, period);
@@ -407,43 +596,39 @@ void senderBCDE::startUp()
   this->publisherE = nh.advertise<multi_node_sample::messageE>(advertiseName.c_str(), 1000);
 
 
-  // Synchronize components now that all publishers and servers have been initialized
-  this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
-  
-  ros::Duration(15.0).sleep();
-
-#ifdef USE_ROSMOD  
-  rosmod::SubscribeOptions comp_sync_sub_options;
-  rosmod::ROSMOD_Callback_Options sync_callback_options;
-#else
-  ros::SubscribeOptions comp_sync_sub_options;
-#endif
-  
-  comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
-    ("component_synchronization",
-     1000,
-     boost::bind(&senderBCDE::component_sync_operation, this, _1),
-     NAMESPACE::VoidPtr(),
-#ifdef USE_ROSMOD     
-     &this->comp_queue,
-     sync_callback_options);
-#else
-     &this->comp_queue);
-#endif
-  this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
-
-  ros::Time now = ros::Time::now();
-  int num_publishers = this->comp_sync_sub.getNumPublishers();
-  while ( num_publishers < this->config.num_comps_to_sync &&
-	  (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+  if (config.num_comps_to_sync > 1 )
     {
-      num_publishers = this->comp_sync_sub.getNumPublishers();
-      std::cout << "Num publishers: " << num_publishers << std::endl;
-      ros::Duration(0.1).sleep();
+      // Synchronize components now that all publishers and servers have been initialized
+      this->comp_sync_pub = nh.advertise<std_msgs::Bool>("component_synchronization", 1000);
+  
+#ifdef USE_ROSMOD  
+      rosmod::SubscribeOptions comp_sync_sub_options;
+      rosmod::ROSMOD_Callback_Options sync_callback_options;
+#else
+      ros::SubscribeOptions comp_sync_sub_options;
+#endif
+      ros::Duration(config.comp_sync_timeout/2.0).sleep();
+      comp_sync_sub_options = NAMESPACE::SubscribeOptions::create<std_msgs::Bool>
+	("component_synchronization",
+	 1000,
+	 boost::bind(&senderBCDE::component_sync_operation, this, _1),
+	 NAMESPACE::VoidPtr(),
+#ifdef USE_ROSMOD     
+	 &this->comp_queue,
+	 sync_callback_options);
+#else
+         &this->comp_queue);
+#endif
+      this->comp_sync_sub = nh.subscribe(comp_sync_sub_options);
+
+      ros::Time now = ros::Time::now();
+      while ( this->comp_sync_sub.getNumPublishers() < this->config.num_comps_to_sync &&
+	      (ros::Time::now() - now) < ros::Duration(config.comp_sync_timeout))
+	ros::Duration(0.1).sleep();
+      ros::Duration(config.comp_sync_timeout/2.0).sleep();
+      this->comp_sync_sub.shutdown();  
+      this->comp_sync_pub.shutdown();
     }
-  ros::Duration(15.0).sleep();
-  this->comp_sync_sub.shutdown();  
-  this->comp_sync_pub.shutdown();
 
 
   // Init Timer
@@ -470,12 +655,12 @@ void senderBCDE::startUp()
   callback_options.alias = "timerB_operation";
   callback_options.priority = 90;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 50000000;
+  callback_options.deadline.nsec = 1000000;
 #endif
   // Component Timer - timerB
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.05),
+    (ros::Duration(5.0),
      boost::bind(&senderBCDE::timerB_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -488,12 +673,12 @@ void senderBCDE::startUp()
   callback_options.alias = "timerC_operation";
   callback_options.priority = 80;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 60000000;
+  callback_options.deadline.nsec = 1000000;
 #endif
   // Component Timer - timerC
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.06),
+    (ros::Duration(1.0),
      boost::bind(&senderBCDE::timerC_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -506,12 +691,12 @@ void senderBCDE::startUp()
   callback_options.alias = "timerD_operation";
   callback_options.priority = 70;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 70000000;
+  callback_options.deadline.nsec = 1000000;
 #endif
   // Component Timer - timerD
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.07),
+    (ros::Duration(1.5),
      boost::bind(&senderBCDE::timerD_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -524,12 +709,12 @@ void senderBCDE::startUp()
   callback_options.alias = "timerE_operation";
   callback_options.priority = 60;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 80000000;
+  callback_options.deadline.nsec = 1000000;
 #endif
   // Component Timer - timerE
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.08),
+    (ros::Duration(2.0),
      boost::bind(&senderBCDE::timerE_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     

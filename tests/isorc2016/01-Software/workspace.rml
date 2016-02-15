@@ -46,30 +46,30 @@ package multi_node_sample
     // ROSMOD Timer - timerB
     timer timerB 
     {
-	period = 0.05;
+	period = 5.0;
 	priority = 90;
-	deadline = 0.05;
+	deadline = 0.001;
     }       
     // ROSMOD Timer - timerC
     timer timerC 
     {
-	period = 0.06;
+	period = 1.0;
 	priority = 80;
-	deadline = 0.06;
+	deadline = 0.001;
     }       
     // ROSMOD Timer - timerD
     timer timerD 
     {
-	period = 0.07;
+	period = 1.5;
 	priority = 70;
-	deadline = 0.07;
+	deadline = 0.001;
     }       
     // ROSMOD Timer - timerE
     timer timerE 
     {
-	period = 0.08;
+	period = 2.0;
 	priority = 60;
-	deadline = 0.08;
+	deadline = 0.001;
     }       
   }
   // ROSMOD Component - senderACDE
