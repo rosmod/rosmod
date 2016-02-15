@@ -37,6 +37,7 @@ public:
   std::vector<ComponentConfig> compConfigList;
   std::vector<std::string> libList;
   std::string nodeName;
+  int node_priority = -1;
 
   bool Return_Boolean(std::string value) { return (value == "True"); }
 
@@ -71,6 +72,10 @@ public:
     xml_node<> *node = doc.first_node("node");
     nodeName = node->first_attribute()->value();
     
+    xml_node<> *node_prio = node->first_node("priority");
+    if (node_prio != NULL)
+      node_priority = atoi(node_prio->first_attribute()->value());
+
     for (xml_node<> *lib_location = node->first_node("library");
 	 lib_location; lib_location = lib_location->next_sibling("library"))
       {
