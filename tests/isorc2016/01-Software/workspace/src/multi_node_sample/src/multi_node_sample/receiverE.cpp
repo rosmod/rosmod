@@ -11,6 +11,7 @@ void receiverE::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering receiverE::init_timer_operation");
 #endif
   // Initialize Here
+#if 0
   srand (time(NULL));
   double tg_duration = -1;
   std::string fName;
@@ -62,7 +63,8 @@ void receiverE::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	  subscriberE_recv_mw.add_sender( it->first, it->second );
 	}
     }
-  
+#else
+#endif  
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -91,13 +93,15 @@ void receiverE::subscriberE_operation(const multi_node_sample::messageE::ConstPt
   uint64_t uuid = received_data->uuid;
   uint64_t msgBytes = ros::serialization::Serializer<multi_node_sample::messageE>::serializedLength(*received_data);
   ros::Time now = ros::Time::now();
+#if 0
   subscriberE_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
   Network::Message new_msg;
   new_msg.Bytes(msgBytes);
   new_msg.Id(subscriberE_id++);
   new_msg.TimeStamp();
   subscriberE_recv_mw.buffer.send(new_msg, msgBytes * 8);
-  
+#else
+#endif  
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting receiverE::subscriberE_operation");
 #endif

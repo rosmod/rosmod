@@ -2,6 +2,7 @@
 
 //# Start User Globals Marker
 double multiplier = 0.3;
+double _profile_period = 9.0;
 //# End User Globals Marker
 
 // Initialization Function
@@ -12,6 +13,7 @@ void senderABCD::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering senderABCD::init_timer_operation");
 #endif
   // Initialize Here
+#if 0
   for (int i=0; i<node_argc; i++)
     {
       if (!strcmp(node_argv[i], "--multiplier"))
@@ -108,6 +110,9 @@ void senderABCD::init_timer_operation(const NAMESPACE::TimerEvent& event)
       fName = config.nodeName + "." + config.compName + ".publisherD.network.csv";
       publisherD_send_mw.set_output_filename(fName);
     }
+#else
+  max_data_length = 160;
+#endif
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -124,6 +129,7 @@ void senderABCD::timerA_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering senderABCD::timerA_operation");
 #endif
   // Business Logic for timerA_operation
+#if 0
   ros::Time now = ros::Time::now();
   timespec current_time;
   current_time.tv_sec = now.sec;
@@ -152,7 +158,17 @@ void senderABCD::timerA_operation(const NAMESPACE::TimerEvent& event)
       publisherA_send_mw.record();
       timerA.stop();
     }
+#else
+  double now = ros::Time::now().toSec();
+  double period = _profile_period;
+  double offset = fmod(now, period);
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
+  multi_node_sample::messageA msg;
+  msg.uuid = 0;
+  msg.bytes.resize(message_len,0);
+  publisherA.publish(msg);
+#endif
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting senderABCD::timerA_operation");
 #endif
@@ -166,6 +182,7 @@ void senderABCD::timerB_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering senderABCD::timerB_operation");
 #endif
   // Business Logic for timerB_operation
+#if 0
   ros::Time now = ros::Time::now();
   timespec current_time;
   current_time.tv_sec = now.sec;
@@ -194,7 +211,17 @@ void senderABCD::timerB_operation(const NAMESPACE::TimerEvent& event)
       publisherB_send_mw.record();
       timerB.stop();
     }
+#else
+  double now = ros::Time::now().toSec();
+  double period = _profile_period;
+  double offset = fmod(now, period);
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
+  multi_node_sample::messageB msg;
+  msg.uuid = 0;
+  msg.bytes.resize(message_len,0);
+  publisherB.publish(msg);
+#endif
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting senderABCD::timerB_operation");
 #endif
@@ -208,6 +235,7 @@ void senderABCD::timerC_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering senderABCD::timerC_operation");
 #endif
   // Business Logic for timerC_operation
+#if 0
   ros::Time now = ros::Time::now();
   timespec current_time;
   current_time.tv_sec = now.sec;
@@ -236,7 +264,17 @@ void senderABCD::timerC_operation(const NAMESPACE::TimerEvent& event)
       publisherC_send_mw.record();
       timerC.stop();
     }
+#else
+  double now = ros::Time::now().toSec();
+  double period = _profile_period;
+  double offset = fmod(now, period);
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
+  multi_node_sample::messageC msg;
+  msg.uuid = 0;
+  msg.bytes.resize(message_len,0);
+  publisherC.publish(msg);
+#endif
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting senderABCD::timerC_operation");
 #endif
@@ -250,6 +288,7 @@ void senderABCD::timerD_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering senderABCD::timerD_operation");
 #endif
   // Business Logic for timerD_operation
+#if 0
   ros::Time now = ros::Time::now();
   timespec current_time;
   current_time.tv_sec = now.sec;
@@ -278,7 +317,17 @@ void senderABCD::timerD_operation(const NAMESPACE::TimerEvent& event)
       publisherD_send_mw.record();
       timerD.stop();
     }
+#else
+  double now = ros::Time::now().toSec();
+  double period = _profile_period;
+  double offset = fmod(now, period);
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
+  multi_node_sample::messageD msg;
+  msg.uuid = 0;
+  msg.bytes.resize(message_len,0);
+  publisherD.publish(msg);
+#endif
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting senderABCD::timerD_operation");
 #endif
