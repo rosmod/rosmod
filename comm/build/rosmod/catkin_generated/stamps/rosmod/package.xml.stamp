@@ -1,0 +1,37 @@
+<package>
+  <name>rosmod</name>
+  <version>1.11.10</version>
+  <description>
+    rosmod is a C++ implementation of the ROSMOD Component Model.
+  </description>
+  <maintainer email="pkumar@isis.vanderbilt.edu">Pranav Srinivas Kumar</maintainer>
+  <license>BSD</license>
+
+  <url>http://ros.org/wiki/roscpp</url>
+  <author>Pranav Srinivas Kumar</author>
+  <author>William Emfinger</author>
+
+  <buildtool_depend version_gte="0.5.78">catkin</buildtool_depend>
+
+  <build_depend version_gte="0.3.17">cpp_common</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>pkg-config</build_depend>
+  <build_depend>rosconsole</build_depend>
+  <build_depend>roscpp_serialization</build_depend>
+  <build_depend version_gte="0.3.17">roscpp_traits</build_depend>
+  <build_depend version_gte="1.10.3">rosgraph_msgs</build_depend>
+  <build_depend>roslang</build_depend>
+  <build_depend>rostime</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>xmlrpcpp</build_depend>
+
+  <run_depend version_gte="0.3.17">cpp_common</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>rosconsole</run_depend>
+  <run_depend>roscpp_serialization</run_depend>
+  <run_depend version_gte="0.3.17">roscpp_traits</run_depend>
+  <run_depend version_gte="1.10.3">rosgraph_msgs</run_depend>
+  <run_depend>rostime</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>xmlrpcpp</run_depend>
+</package>

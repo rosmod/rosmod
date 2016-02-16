@@ -64,13 +64,13 @@ ENDIF()
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  messageC.msg
-
   messageE.msg
 
-  messageA.msg
-
   messageB.msg
+
+  messageC.msg
+
+  messageA.msg
 
   messageD.msg
 

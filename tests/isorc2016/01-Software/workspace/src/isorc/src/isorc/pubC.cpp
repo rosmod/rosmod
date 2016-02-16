@@ -74,6 +74,53 @@ void pubC::init_timer_operation(const NAMESPACE::TimerEvent& event)
 }
 //# End Init Marker
 
+void pubC::c_pub_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+  isorc::messageC msg;
+  msg.uuid = c_pub_send_mw.get_uuid();
+  msg.bytes.resize(max_data_length,0);
+  double timerDelay = 0;
+  try
+    {
+      timerDelay =
+	c_pub_send_mw.send<isorc::messageC>(c_pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= c_pub_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      c_pub_send_mw.record();
+    }
+  else
+    {
+      if (tg_misbehave)
+	timerDelay -= 0.1;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "init_timer_operation";
+      callback_options.priority = 99;
+      callback_options.deadline.sec = 1;
+      callback_options.deadline.nsec = 0;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(timerDelay),
+	 boost::bind(&pubC::c_pub_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif 
+	 true);
+      NAMESPACE::NodeHandle nh;
+      c_pub_timer = nh.createTimer(timer_options);
+    }
+}
+
 // Timer Callback - pub_timer
 //# Start pub_timer_operation Marker
 void pubC::pub_timer_operation(const NAMESPACE::TimerEvent& event)
@@ -147,12 +194,12 @@ void pubC::startUp()
   pwd = exec_path.erase(exec_path.find(exec), exec.length());
   std::string log_file_path = pwd + config.nodeName + "." + config.compName + ".log"; 
 
-  logger->create_file(pwd + config.nodeName + "." + config.compName + ".log");
+  logger->create_file("/var/log/" + config.nodeName + "." + config.compName + ".log");
   logger->set_is_periodic(config.is_periodic_logging);
   logger->set_max_log_unit(config.periodic_log_unit);
 
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->create_file(pwd + "ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");
+  comp_queue.ROSMOD_LOGGER->create_file("/var/log/ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");
   comp_queue.ROSMOD_LOGGER->set_is_periodic(config.is_periodic_logging);
   comp_queue.ROSMOD_LOGGER->set_max_log_unit(config.periodic_log_unit);
 #endif    

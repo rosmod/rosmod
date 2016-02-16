@@ -1,0 +1,8 @@
+prefix=/home/jeb/Repositories/rosmod/comm/devel
+
+Name: rosmod
+Description: Description of rosmod
+Version: 1.11.10
+Cflags: -I/home/jeb/Repositories/rosmod/comm/devel/include -I/home/jeb/Repositories/rosmod/comm/src/rosmod/include -I/home/jeb/Repositories/rosmod/comm/devel/include/rosmod -I/usr/include
+Libs: -L/home/jeb/Repositories/rosmod/comm/devel/lib -lrosmod -lpthread -l:/usr/lib/x86_64-linux-gnu/libboost_signals.so -l:/usr/lib/x86_64-linux-gnu/libboost_filesystem.so -l:/usr/lib/x86_64-linux-gnu/libboost_system.so
+Requires: cpp_common message_runtime rosconsole rostime roscpp_serialization roscpp_traits rosgraph_msgs rostime std_msgs xmlrpcpp

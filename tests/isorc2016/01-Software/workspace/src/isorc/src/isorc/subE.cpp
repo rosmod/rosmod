@@ -133,12 +133,12 @@ void subE::startUp()
   pwd = exec_path.erase(exec_path.find(exec), exec.length());
   std::string log_file_path = pwd + config.nodeName + "." + config.compName + ".log"; 
 
-  logger->create_file(pwd + config.nodeName + "." + config.compName + ".log");
+  logger->create_file("/var/log/" + config.nodeName + "." + config.compName + ".log");
   logger->set_is_periodic(config.is_periodic_logging);
   logger->set_max_log_unit(config.periodic_log_unit);
 
 #ifdef USE_ROSMOD
-  comp_queue.ROSMOD_LOGGER->create_file(pwd + "ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");
+  comp_queue.ROSMOD_LOGGER->create_file("/var/log/ROSMOD_DEBUG." + config.nodeName + "." + config.compName + ".log");
   comp_queue.ROSMOD_LOGGER->set_is_periodic(config.is_periodic_logging);
   comp_queue.ROSMOD_LOGGER->set_max_log_unit(config.periodic_log_unit);
 #endif    

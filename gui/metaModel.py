@@ -54,6 +54,7 @@ model_dict["Component"] = Meta_Entity(
     properties = ["name","datatype"],
     in_refs = [["Component_Instance","component_reference"]], 
     out_refs = [])
+
 model_dict["Client"] = Meta_Entity(
     parent = "Component", 
     children = [], 

@@ -13,7 +13,10 @@
     <port name="b_pub">
       <uuid>15</uuid>
       <profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
       </profile>
     </port>
   </component_instance>

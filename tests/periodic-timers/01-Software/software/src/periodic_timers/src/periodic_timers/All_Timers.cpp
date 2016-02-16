@@ -11,7 +11,7 @@
 
 // Initialization Function
 //# Start Init Marker
-void All_Timers::init_timer_operation(const NAMESPACE::TimerEvent& event)
+void All_Timers::init_timer_operation(const NAMESPACE::WallTimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::init_timer_operation");
@@ -29,7 +29,7 @@ void All_Timers::init_timer_operation(const NAMESPACE::TimerEvent& event)
 // Timer Callback - Timer_1
 //# Start Timer_1_operation Marker
 #pragma optimize( "", off )
-void All_Timers::Timer_1_operation(const NAMESPACE::TimerEvent& event)
+void All_Timers::Timer_1_operation(const NAMESPACE::WallTimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_1_operation");
@@ -55,7 +55,7 @@ void All_Timers::Timer_1_operation(const NAMESPACE::TimerEvent& event)
 // Timer Callback - Timer_2
 //# Start Timer_2_operation Marker
 #pragma optimize( "", off )
-void All_Timers::Timer_2_operation(const NAMESPACE::TimerEvent& event)
+void All_Timers::Timer_2_operation(const NAMESPACE::WallTimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_2_operation");
@@ -81,7 +81,7 @@ void All_Timers::Timer_2_operation(const NAMESPACE::TimerEvent& event)
 // Timer Callback - Timer_3
 //# Start Timer_3_operation Marker
 #pragma optimize( "", off )
-void All_Timers::Timer_3_operation(const NAMESPACE::TimerEvent& event)
+void All_Timers::Timer_3_operation(const NAMESPACE::WallTimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_3_operation");
@@ -108,7 +108,7 @@ void All_Timers::Timer_3_operation(const NAMESPACE::TimerEvent& event)
 // Timer Callback - Timer_4
 //# Start Timer_4_operation Marker
 #pragma optimize( "", off )
-void All_Timers::Timer_4_operation(const NAMESPACE::TimerEvent& event)
+void All_Timers::Timer_4_operation(const NAMESPACE::WallTimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_4_operation");
@@ -135,7 +135,7 @@ void All_Timers::Timer_4_operation(const NAMESPACE::TimerEvent& event)
 // Timer Callback - Timer_5
 //# Start Timer_5_operation Marker
 #pragma optimize( "", off )
-void All_Timers::Timer_5_operation(const NAMESPACE::TimerEvent& event)
+void All_Timers::Timer_5_operation(const NAMESPACE::WallTimerEvent& event)
 {
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering All_Timers::Timer_5_operation");
@@ -250,7 +250,7 @@ void All_Timers::startUp()
   NAMESPACE::TimerOptions timer_options;
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(-1),
+    (ros::WallDuration(-1),
      boost::bind(&All_Timers::init_timer_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -258,7 +258,7 @@ void All_Timers::startUp()
 #endif     
      true,
      false); 
-  this->init_timer = nh.createTimer(timer_options);
+  this->init_timer = nh.createWallTimer(timer_options);
   this->init_timer.stop();
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_1_operation";
@@ -269,7 +269,7 @@ void All_Timers::startUp()
   // Component Timer - Timer_1
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(5.0),
+    (ros::WallDuration(5.0),
      boost::bind(&All_Timers::Timer_1_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -277,7 +277,7 @@ void All_Timers::startUp()
 #endif 
      false,
      false);
-  this->Timer_1 = nh.createTimer(timer_options);
+  this->Timer_1 = nh.createWallTimer(timer_options);
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_2_operation";
   callback_options.priority = 60;
@@ -287,7 +287,7 @@ void All_Timers::startUp()
   // Component Timer - Timer_2
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(2.5),
+    (ros::WallDuration(2.5),
      boost::bind(&All_Timers::Timer_2_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -295,7 +295,7 @@ void All_Timers::startUp()
 #endif 
      false,
      false);
-  this->Timer_2 = nh.createTimer(timer_options);
+  this->Timer_2 = nh.createWallTimer(timer_options);
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_3_operation";
   callback_options.priority = 70;
@@ -305,7 +305,7 @@ void All_Timers::startUp()
   // Component Timer - Timer_3
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(1.0),
+    (ros::WallDuration(1.0),
      boost::bind(&All_Timers::Timer_3_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -313,7 +313,7 @@ void All_Timers::startUp()
 #endif 
      false,
      false);
-  this->Timer_3 = nh.createTimer(timer_options);
+  this->Timer_3 = nh.createWallTimer(timer_options);
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_4_operation";
   callback_options.priority = 75;
@@ -323,7 +323,7 @@ void All_Timers::startUp()
   // Component Timer - Timer_4
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.5),
+    (ros::WallDuration(0.5),
      boost::bind(&All_Timers::Timer_4_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -331,7 +331,7 @@ void All_Timers::startUp()
 #endif 
      false,
      false);
-  this->Timer_4 = nh.createTimer(timer_options);
+  this->Timer_4 = nh.createWallTimer(timer_options);
 #ifdef USE_ROSMOD   
   callback_options.alias = "Timer_5_operation";
   callback_options.priority = 80;
@@ -341,7 +341,7 @@ void All_Timers::startUp()
   // Component Timer - Timer_5
   timer_options = 
     NAMESPACE::TimerOptions
-    (ros::Duration(0.25),
+    (ros::WallDuration(0.25),
      boost::bind(&All_Timers::Timer_5_operation, this, _1),
      &this->comp_queue,
 #ifdef USE_ROSMOD     
@@ -349,7 +349,7 @@ void All_Timers::startUp()
 #endif 
      false,
      false);
-  this->Timer_5 = nh.createTimer(timer_options);
+  this->Timer_5 = nh.createWallTimer(timer_options);
 
 
   this->init_timer.start();

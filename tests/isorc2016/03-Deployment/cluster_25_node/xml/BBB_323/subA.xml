@@ -13,26 +13,41 @@
     <port name="a_sub">
       <uuid>20</uuid>
       <profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
       </profile>
       <sender uuid="0">
 	<profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
 	</profile>
       </sender>
       <sender uuid="5">
 	<profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
 	</profile>
       </sender>
       <sender uuid="10">
 	<profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
 	</profile>
       </sender>
       <sender uuid="15">
 	<profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
 	</profile>
       </sender>
     </port>

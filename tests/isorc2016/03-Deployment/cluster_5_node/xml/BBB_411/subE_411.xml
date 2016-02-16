@@ -13,28 +13,11 @@
     <port name="e_sub">
       <uuid>24</uuid>
       <profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
       </profile>
-      <sender uuid="3">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="8">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="13">
-	<profile>
-
-	</profile>
-      </sender>
-      <sender uuid="18">
-	<profile>
-
-	</profile>
-      </sender>
     </port>
   </component_instance>
 </node>

@@ -5,7 +5,7 @@
     <library name="libpubC.so"/>
     <scheduling_scheme setting="FIFO"/>
     <numCompsToSync setting="25"/>
-    <syncTimeout setting="100.0"/>
+    <syncTimeout setting="50.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1000"/> 
