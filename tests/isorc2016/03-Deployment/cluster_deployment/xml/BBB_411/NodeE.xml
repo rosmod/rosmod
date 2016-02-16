@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="NodeE">
+  <priority setting="50"/>
   <component_instance name="senderABCD">
     <library name="libsenderABCD.so"/>
     <scheduling_scheme setting="PFIFO"/>

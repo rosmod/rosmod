@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<node name="subC">
+  <priority setting="80"/>
+  <component_instance name="sub_c">
+    <library name="libsubC.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="25"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="c_sub">
+      <uuid>22</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="2">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="12">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="17">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

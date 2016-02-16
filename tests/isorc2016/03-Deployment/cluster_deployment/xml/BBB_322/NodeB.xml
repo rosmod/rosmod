@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="NodeB">
+  <priority setting="50"/>
   <component_instance name="senderACDE">
     <library name="libsenderACDE.so"/>
     <scheduling_scheme setting="PFIFO"/>

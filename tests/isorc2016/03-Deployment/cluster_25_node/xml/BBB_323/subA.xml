@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<node name="subA">
+  <priority setting="80"/>
+  <component_instance name="sub_a">
+    <library name="libsubA.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="25"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="a_sub">
+      <uuid>20</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="0">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="5">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="10">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="15">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

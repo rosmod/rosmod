@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="NodeD_sub">
+  <priority setting="50"/>
   <component_instance name="receiverD">
     <library name="libreceiverD.so"/>
     <scheduling_scheme setting="PFIFO"/>

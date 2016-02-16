@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="ISORC_Publisher">
+  <priority setting="50"/>
   <component_instance name="senderBCDE">
     <library name="libsenderBCDE.so"/>
     <scheduling_scheme setting="PFIFO"/>

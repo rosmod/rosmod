@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="ISORC_Subscriber">
+  <priority setting="50"/>
   <component_instance name="receiverA">
     <library name="libreceiverA.so"/>
     <scheduling_scheme setting="FIFO"/>

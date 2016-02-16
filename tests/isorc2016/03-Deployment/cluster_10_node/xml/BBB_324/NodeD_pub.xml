@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <node name="NodeD_pub">
+  <priority setting="50"/>
   <component_instance name="senderABCE">
     <library name="libsenderABCE.so"/>
     <scheduling_scheme setting="PFIFO"/>

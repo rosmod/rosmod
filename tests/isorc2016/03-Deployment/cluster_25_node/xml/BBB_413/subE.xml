@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<node name="subE">
+  <priority setting="80"/>
+  <component_instance name="sub_e">
+    <library name="libsubE.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="25"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="e_sub">
+      <uuid>24</uuid>
+      <profile>
+
+      </profile>
+      <sender uuid="4">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="14">
+	<profile>
+
+	</profile>
+      </sender>
+      <sender uuid="19">
+	<profile>
+
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

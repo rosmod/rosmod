@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<node name="pubE4">
+  <priority setting="80"/>
+  <component_instance name="pub_e">
+    <library name="libpubE.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="25"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="e_pub">
+      <uuid>19</uuid>
+      <profile>
+
+      </profile>
+    </port>
+  </component_instance>
+</node>
+
