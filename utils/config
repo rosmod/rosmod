@@ -15,6 +15,392 @@
     [[[window0]]]
       type = Window
       parent = ""
+  [[cluster]]
+    [[[terminal56]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child54
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node16
+    [[[terminal47]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child46
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node29
+    [[[terminal7]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child5
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node2
+    [[[terminal6]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child5
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node1
+    [[[terminal9]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child8
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node9
+    [[[terminal41]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child39
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node14
+    [[[child12]]]
+      position = 230
+      type = HPaned
+      order = 0
+      parent = child11
+    [[[child61]]]
+      position = 228
+      type = HPaned
+      order = 1
+      parent = child57
+    [[[child11]]]
+      position = 264
+      type = VPaned
+      order = 1
+      parent = child3
+    [[[terminal59]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child58
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node23
+    [[[child15]]]
+      position = 230
+      type = HPaned
+      order = 1
+      parent = child11
+    [[[terminal55]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child54
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node15
+    [[[terminal32]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child30
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node28
+    [[[child18]]]
+      position = 465
+      type = HPaned
+      order = 1
+      parent = child2
+    [[[child19]]]
+      position = 261
+      type = VPaned
+      order = 0
+      parent = child18
+    [[[terminal37]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child36
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node5
+    [[[terminal53]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child51
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node8
+    [[[terminal52]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child51
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node7
+    [[[terminal10]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child8
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node10
+    [[[terminal13]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child12
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node3
+    [[[terminal14]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child12
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node4
+    [[[terminal17]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child15
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node12
+    [[[terminal16]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child15
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node11
+    [[[child30]]]
+      position = 230
+      type = HPaned
+      order = 1
+      parent = child26
+    [[[terminal31]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child30
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node27
+    [[[child54]]]
+      position = 228
+      type = HPaned
+      order = 1
+      parent = child50
+    [[[child33]]]
+      position = 463
+      type = HPaned
+      order = 1
+      parent = child1
+    [[[child34]]]
+      position = 528
+      type = VPaned
+      order = 0
+      parent = child33
+    [[[child35]]]
+      position = 264
+      type = VPaned
+      order = 0
+      parent = child34
+    [[[child36]]]
+      position = 231
+      type = HPaned
+      order = 0
+      parent = child35
+    [[[child51]]]
+      position = 228
+      type = HPaned
+      order = 0
+      parent = child50
+    [[[child0]]]
+      position = 57:24
+      type = Window
+      order = 0
+      parent = ""
+      size = 1863, 1056
+    [[[child1]]]
+      position = 931
+      type = HPaned
+      order = 0
+      parent = child0
+    [[[child2]]]
+      position = 528
+      type = VPaned
+      order = 0
+      parent = child1
+    [[[child3]]]
+      position = 465
+      type = HPaned
+      order = 0
+      parent = child2
+    [[[child4]]]
+      position = 264
+      type = VPaned
+      order = 0
+      parent = child3
+    [[[child5]]]
+      position = 232
+      type = HPaned
+      order = 0
+      parent = child4
+    [[[child50]]]
+      position = 264
+      type = VPaned
+      order = 0
+      parent = child49
+    [[[child8]]]
+      position = 232
+      type = HPaned
+      order = 1
+      parent = child4
+    [[[child58]]]
+      position = 228
+      type = HPaned
+      order = 0
+      parent = child57
+    [[[child49]]]
+      position = 528
+      type = VPaned
+      order = 1
+      parent = child33
+    [[[terminal38]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child36
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node6
+    [[[child57]]]
+      position = 261
+      type = VPaned
+      order = 1
+      parent = child49
+    [[[terminal60]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child58
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node24
+    [[[terminal62]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child61
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node31
+    [[[terminal63]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child61
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node32
+    [[[child39]]]
+      position = 231
+      type = HPaned
+      order = 1
+      parent = child35
+    [[[terminal48]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child46
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node30
+    [[[terminal28]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child27
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node19
+    [[[terminal44]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child43
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node21
+    [[[terminal45]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child43
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node22
+    [[[terminal40]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child39
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node13
+    [[[terminal29]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child27
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node20
+    [[[terminal24]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child23
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node25
+    [[[terminal25]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child23
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node26
+    [[[child43]]]
+      position = 231
+      type = HPaned
+      order = 0
+      parent = child42
+    [[[child42]]]
+      position = 261
+      type = VPaned
+      order = 1
+      parent = child34
+    [[[terminal21]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 0
+      parent = child20
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node17
+    [[[terminal22]]]
+      profile = default
+      group = All
+      type = Terminal
+      order = 1
+      parent = child20
+      command = ssh -i ~/.ssh/id_rsa_jetsontk1 ubuntu@node18
+    [[[child46]]]
+      position = 231
+      type = HPaned
+      order = 1
+      parent = child42
+    [[[child23]]]
+      position = 232
+      type = HPaned
+      order = 1
+      parent = child19
+    [[[child20]]]
+      position = 232
+      type = HPaned
+      order = 0
+      parent = child19
+    [[[child27]]]
+      position = 230
+      type = HPaned
+      order = 0
+      parent = child26
+    [[[child26]]]
+      position = 261
+      type = VPaned
+      order = 1
+      parent = child18
   [[isorc]]
     [[[child45]]]
       position = 224
