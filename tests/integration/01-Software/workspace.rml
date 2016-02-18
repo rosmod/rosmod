@@ -1,0 +1,20 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - pubsub
+package pubsub
+{
+  // ROSMOD Component - comm
+  component comm : Base 
+  {
+    // ROSMOD Publisher - pub
+    publisher <pubsub/pubsubTopic> pub;
+    // ROSMOD Subscriber - sub
+    subscriber <pubsub/pubsubTopic> sub 
+    {
+      priority = 50;
+      deadline = 50.0;
+    }       
+  }
+}
