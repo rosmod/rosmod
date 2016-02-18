@@ -1,6 +1,8 @@
 #include "pubsub/comm.hpp"
 
 //# Start User Globals Marker
+bool starter = false;
+double multiplier = 0.3;
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +13,18 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering comm::init_timer_operation");
 #endif
   // Initialize Here
+  for (int i=0; i<node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "--starter"))
+	{
+	  starter = true;
+	}
+      else if (!strcmp(node_argv[i], "--multiplier"))
+	{
+	  multiplier = atof(node_argv[++i]);
+	}
+    }
+
   srand (time(NULL));
   double tg_duration = -1;
   std::string fName;
@@ -19,9 +33,9 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       if (!strcmp(node_argv[i], "--tg_time"))
 	{
-	  tg_duration = atof(node_argv[i+1]);
+	  tg_duration = atof(node_argv[++i]);
 	}
-      if (!strcmp(node_argv[i], "--enable_oob"))
+      else if (!strcmp(node_argv[i], "--enable_oob"))
 	{
 	  enable_oob = true;
 	}
@@ -31,11 +45,11 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       if (!strcmp(node_argv[i], "--buffer_capacity_bits"))
 	{
-	  capacityBits = atoi(node_argv[i+1]);
+	  capacityBits = atoi(node_argv[++i]);
 	}
-      if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
+      else if (!strcmp(node_argv[i], "--buffer_capacity_bytes"))
 	{
-	  capacityBits = atoi(node_argv[i+1]) * 8;
+	  capacityBits = atoi(node_argv[++i]) * 8;
 	}
     }
   if (config.profileMap.find("sub") != config.profileMap.end())
@@ -70,19 +84,17 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
     {
       if (!strcmp(node_argv[i], "--max_data_length_bytes"))
 	{
-	  max_data_length = atoi(node_argv[i+1]);
+	  max_data_length = atoi(node_argv[++i]);
 	}
-      if (!strcmp(node_argv[i], "--max_data_length_bits"))
+      else if (!strcmp(node_argv[i], "--max_data_length_bits"))
 	{
-	  max_data_length = atoi(node_argv[i+1]) / 8;
+	  max_data_length = atoi(node_argv[++i]) / 8;
 	}
-      if (!strcmp(node_argv[i], "--tg_misbehave"))
+      else if (!strcmp(node_argv[i], "--tg_misbehave"))
 	{
 	  tg_misbehave = true;
 	}
     }
-  NAMESPACE::NodeHandle nh;
-  NAMESPACE::TimerOptions timer_options;
   if (config.profileMap.find("pub") != config.profileMap.end())
     {
       pub_send_mw.init(node_argc,
@@ -96,25 +108,32 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	pub_send_mw.set_duration(tg_duration);
       fName = config.nodeName + "." + config.compName + ".pub.network.csv";
       pub_send_mw.set_output_filename(fName);
-
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(-1),
-	 boost::bind(&comm::pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      pub_timer = nh.createTimer(timer_options);
     }
+
+  // If required, start the publishing cycle
+  if (starter)
+    {
+      ros::Time now = ros::Time::now();
+      timespec current_time;
+      current_time.tv_sec = now.sec;
+      current_time.tv_nsec = now.nsec;
+      double offset = pub_send_mw.profile.getOffset(current_time);
+      double period = pub_send_mw.profile.period;
+      uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
+
+      pubsub::pubsubTopic msg;
+      msg.uuid = pub_send_mw.get_uuid();
+      msg.bytes.resize(message_len,0);
+      try
+	{
+	  pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
+	}
+      catch ( Network::Exceeded_Production_Profile& ex )
+	{
+	  logger->log("DEBUG","Prevented from sending on the network!");
+	}
+    }
+
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -122,53 +141,6 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
 #endif  
 }
 //# End Init Marker
-
-void comm::pub_timer_operation(const NAMESPACE::TimerEvent& event)
-{
-  pubsub::pubsubTopic msg;
-  msg.uuid = pub_send_mw.get_uuid();
-  msg.bytes.resize(max_data_length,0);
-  double timerDelay = 0;
-  try
-    {
-      timerDelay =
-	pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
-    }
-  catch ( Network::Exceeded_Production_Profile& ex )
-    {
-      logger->log("DEBUG","Prevented from sending on the network!");
-    }
-
-  if ( ros::Time::now() >= pub_send_mw.get_end_time() )
-    {
-      logger->log("DEBUG","writing output\n");
-      pub_send_mw.record();
-    }
-  else
-    {
-      if (tg_misbehave)
-	timerDelay -= 0.1;
-#ifdef USE_ROSMOD    
-      rosmod::ROSMOD_Callback_Options callback_options;
-      callback_options.alias = "init_timer_operation";
-      callback_options.priority = 99;
-      callback_options.deadline.sec = 1;
-      callback_options.deadline.nsec = 0;
-#endif
-      NAMESPACE::TimerOptions timer_options;
-      timer_options = 
-	NAMESPACE::TimerOptions
-	(ros::Duration(timerDelay),
-	 boost::bind(&comm::pub_timer_operation, this, _1),
-	 &this->comp_queue,
-#ifdef USE_ROSMOD     
-	 callback_options,
-#endif 
-	 true);
-      NAMESPACE::NodeHandle nh;
-      pub_timer = nh.createTimer(timer_options);
-    }
-}
 
 void comm::mw_recv_done_operation(Network::receiver* receiver_mw)
 {
@@ -195,6 +167,34 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
   new_msg.Id(sub_id++);
   new_msg.TimeStamp();
   sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
+
+  timespec current_time;
+  current_time.tv_sec = now.sec;
+  current_time.tv_nsec = now.nsec;
+  double offset = pub_send_mw.profile.getOffset(current_time);
+  double period = pub_send_mw.profile.period;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
+
+  pubsub::pubsubTopic msg;
+  msg.uuid = pub_send_mw.get_uuid();
+  msg.bytes.resize(message_len,0);
+  try
+    {
+      pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+
+  if ( ros::Time::now() >= pub_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      pub_send_mw.record();
+    }
+  else
+    {
+    }
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting comm::sub_operation");
