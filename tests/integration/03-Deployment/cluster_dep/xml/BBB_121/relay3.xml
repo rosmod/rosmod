@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<node name="relay3">
+  <priority setting="80"/>
+  <component_instance name="comm">
+    <library name="libcomm.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="7"/>
+    <syncTimeout setting="50.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="pub">
+      <uuid>7</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+      </profile>
+    </port>
+    <port name="sub">
+      <uuid>6</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+      </profile>
+      <sender uuid="1">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+      <sender uuid="3">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+      <sender uuid="5">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+      <sender uuid="7">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+      <sender uuid="9">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+      <sender uuid="11">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+
+	</profile>
+      </sender>
+    </port>
+    <port_instance name="pub3to4">
+      <port name="pub"/>
+      <group setting="3to4"/>
+    </port_instance>
+    <port_instance name="sub2to3">
+      <port name="sub"/>
+      <group setting="2to3"/>
+    </port_instance>
+  </component_instance>
+</node>
+

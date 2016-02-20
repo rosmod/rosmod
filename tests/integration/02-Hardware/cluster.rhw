@@ -8,7 +8,7 @@ hardware BBB_111
   ip_address = "10.1.1.1";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -18,7 +18,7 @@ hardware BBB_112
   ip_address = "10.1.1.2";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -28,7 +28,7 @@ hardware BBB_113
   ip_address = "10.1.1.3";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -38,7 +38,7 @@ hardware BBB_114
   ip_address = "10.1.1.4";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -48,7 +48,7 @@ hardware BBB_121
   ip_address = "10.1.1.5";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -58,7 +58,7 @@ hardware BBB_122
   ip_address = "10.1.1.6";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -68,7 +68,7 @@ hardware BBB_123
   ip_address = "10.1.1.7";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -78,7 +78,7 @@ hardware BBB_124
   ip_address = "10.1.1.8";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -88,7 +88,7 @@ hardware BBB_211
   ip_address = "10.1.1.9";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -98,7 +98,7 @@ hardware BBB_212
   ip_address = "10.1.1.10";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -108,7 +108,7 @@ hardware BBB_213
   ip_address = "10.1.1.11";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -118,7 +118,7 @@ hardware BBB_214
   ip_address = "10.1.1.12";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -128,7 +128,7 @@ hardware BBB_221
   ip_address = "10.1.1.13";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -138,7 +138,7 @@ hardware BBB_222
   ip_address = "10.1.1.14";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -148,7 +148,7 @@ hardware BBB_223
   ip_address = "10.1.1.15";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -158,7 +158,7 @@ hardware BBB_224
   ip_address = "10.1.1.16";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -168,7 +168,7 @@ hardware BBB_311
   ip_address = "10.1.1.17";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -178,7 +178,7 @@ hardware BBB_312
   ip_address = "10.1.1.18";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -188,7 +188,7 @@ hardware BBB_313
   ip_address = "10.1.1.19";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -198,7 +198,7 @@ hardware BBB_314
   ip_address = "10.1.1.20";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -208,7 +208,7 @@ hardware BBB_321
   ip_address = "10.1.1.21";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -218,7 +218,7 @@ hardware BBB_322
   ip_address = "10.1.1.22";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -228,7 +228,7 @@ hardware BBB_323
   ip_address = "10.1.1.23";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -238,7 +238,7 @@ hardware BBB_324
   ip_address = "10.1.1.24";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -248,7 +248,7 @@ hardware BBB_411
   ip_address = "10.1.1.25";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -258,7 +258,7 @@ hardware BBB_412
   ip_address = "10.1.1.26";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -268,7 +268,7 @@ hardware BBB_413
   ip_address = "10.1.1.27";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -278,7 +278,7 @@ hardware BBB_414
   ip_address = "10.1.1.28";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -288,7 +288,7 @@ hardware BBB_421
   ip_address = "10.1.1.29";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -298,7 +298,7 @@ hardware BBB_422
   ip_address = "10.1.1.30";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -308,7 +308,7 @@ hardware BBB_423
   ip_address = "10.1.1.31";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
 }
@@ -318,8 +318,18 @@ hardware BBB_424
   ip_address = "10.1.1.32";
   username = "root";
   sshkey = "~/.ssh/id_rsa_jetsontk1"; 
-  deployment_path = "/home/ubuntu";
+  deployment_path = "/home/debian";
   install_path = "/opt/ros/indigo";
   arch = arm;
+}
+// Hardware - Server
+hardware Server
+{
+  ip_address = "localhost";
+  username = "jeb";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/jeb";
+  install_path = "/opt/ros/indigo/";
+  arch = x86;
 }
 

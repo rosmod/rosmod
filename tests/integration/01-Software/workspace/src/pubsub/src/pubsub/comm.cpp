@@ -1,6 +1,7 @@
 #include "pubsub/comm.hpp"
 
 //# Start User Globals Marker
+#include <unistd.h>
 bool starter = false;
 double multiplier = 0.3;
 //# End User Globals Marker
@@ -126,6 +127,8 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
       msg.bytes.resize(message_len,0);
       try
 	{
+	  // Sleep for 50 ms
+	  usleep(100000);
 	  pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
 	}
       catch ( Network::Exceeded_Production_Profile& ex )
@@ -168,25 +171,6 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
   new_msg.TimeStamp();
   sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
 
-  timespec current_time;
-  current_time.tv_sec = now.sec;
-  current_time.tv_nsec = now.nsec;
-  double offset = pub_send_mw.profile.getOffset(current_time);
-  double period = pub_send_mw.profile.period;
-  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
-
-  pubsub::pubsubTopic msg;
-  msg.uuid = pub_send_mw.get_uuid();
-  msg.bytes.resize(message_len,0);
-  try
-    {
-      pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
-    }
-  catch ( Network::Exceeded_Production_Profile& ex )
-    {
-      logger->log("DEBUG","Prevented from sending on the network!");
-    }
-
   if ( ros::Time::now() >= pub_send_mw.get_end_time() )
     {
       logger->log("DEBUG","writing output\n");
@@ -194,6 +178,27 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
     }
   else
     {
+      timespec current_time;
+      current_time.tv_sec = now.sec;
+      current_time.tv_nsec = now.nsec;
+      double offset = pub_send_mw.profile.getOffset(current_time);
+      double period = pub_send_mw.profile.period;
+      uint64_t message_len = max_data_length +
+	sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
+
+      pubsub::pubsubTopic msg;
+      msg.uuid = pub_send_mw.get_uuid();
+      msg.bytes.resize(message_len,0);
+      try
+	{
+	  // Sleep for 10 ms
+	  usleep(10000);	  
+	  pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
+	}
+      catch ( Network::Exceeded_Production_Profile& ex )
+	{
+	  logger->log("DEBUG","Prevented from sending on the network!");
+	}
     }
   
 #ifdef USE_ROSMOD
@@ -310,7 +315,9 @@ void comm::startUp()
        callback_options);
 #else
        &this->comp_queue);
-#endif 
+#endif
+//sub_options.transport_hints = NAMESPACE::TransportHints()
+//    .unreliable();
   this->sub = nh.subscribe(sub_options);
 
   // Init Timer
