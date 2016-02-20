@@ -29,6 +29,8 @@ then
     BW=$1
 fi
 
+let "BW2=${BW}+1"
+
 ###### uplink
 
 $TC qdisc add dev ${DEV} root handle 1: prio
@@ -36,7 +38,7 @@ $TC qdisc add dev ${DEV} root handle 1: prio
 if [[ "$USETBF" = "true" ]]
 then
     $TC qdisc add dev ${DEV} parent 1:1 handle 2: tbf \
-	rate ${BW}Kbit burst 10kb latency 100000ms peakrate 71Kbit mtu 1540
+	rate ${BW}Kbit burst 10kb latency 100000ms peakrate ${BW2}Kbit mtu 1540
 else
     $TC qdisc add dev ${DEV} parent 1:1 handle 2: htb # 11: netem delay 100ms
     $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit ceil ${BW}Kbit burst 100Kbit cburst 10Kbit
