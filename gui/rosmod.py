@@ -548,7 +548,7 @@ class Example(wx.Frame):
                 numNodes, numHosts = self.BuildHostDict(dep)
             runProgressQ = multiprocessing.Queue()
             dlg = dialogs.RMLProgressDialog( parent = self,
-                                             title="Copy Progress",
+                                             title="Command Progress",
                                              progress_q = runProgressQ,
                                              numItems=len(self.hostDict))
             workerThread = WorkerThread(func = lambda : deployment.runCommandTest(self,
