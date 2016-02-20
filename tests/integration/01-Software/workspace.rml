@@ -14,7 +14,7 @@ package pubsub
     subscriber <pubsub/pubsubTopic> sub 
     {
       priority = 50;
-      deadline = 50.0;
+      deadline = 0.02;
     }       
   }
 }

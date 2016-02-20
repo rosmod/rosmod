@@ -297,8 +297,8 @@ void comm::startUp()
 #ifdef USE_ROSMOD 
   callback_options.alias = "sub_operation";
   callback_options.priority = 50;
-  callback_options.deadline.sec = 50;
-  callback_options.deadline.nsec = 0;
+  callback_options.deadline.sec = 0;
+  callback_options.deadline.nsec = 20000000;
 #endif  
   // Component Subscriber - sub
   advertiseName = "pubsubTopic";
