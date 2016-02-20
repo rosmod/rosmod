@@ -1,0 +1,258 @@
+=================================================================
+ROSMOD::DEBUG::1456006666050250015::CALLBACK FIFO ENQUEUE::Alias=init_timer_operation; Priority=99; Deadline sec=1, nsec=0; Enqueue Time sec=1456006666, nsec=50072521
+ROSMOD::DEBUG::1456006666052050031::Entering comm::init_timer_operation
+ROSMOD::DEBUG::1456006671061762097::Exiting comm::init_timer_operation
+ROSMOD::DEBUG::1456006671062225955::CALLBACK COMPLETED::Alias=init_timer_operation; Completion Time sec=1456006671, nsec=62163249; Execution Time sec=5, nsec=12090728
+ROSMOD::ERROR::1456006671062378282::DEADLINE VIOLATION::Alias=init_timer_operation; Execution Time sec=5 nsec=12090728; Deadline sec=1, nsec=0
+ROSMOD::DEBUG::1456006671856782765::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006671, nsec=856667561
+ROSMOD::DEBUG::1456006671858589573::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006671870543171::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006671870896324::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006671, nsec=870835868; Execution Time sec=0, nsec=14168307
+ROSMOD::DEBUG::1456006672740242064::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006672, nsec=740123610
+ROSMOD::DEBUG::1456006672741562140::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006672753738813::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006672754055051::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006672, nsec=753997053; Execution Time sec=0, nsec=13873443
+ROSMOD::DEBUG::1456006673668815520::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006673, nsec=668696441
+ROSMOD::DEBUG::1456006673670130763::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006673682214231::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006673682522886::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006673, nsec=682466055; Execution Time sec=0, nsec=13769614
+ROSMOD::DEBUG::1456006674567996985::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006674, nsec=567878573
+ROSMOD::DEBUG::1456006674569302437::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006674581313240::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006674581634145::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006674, nsec=581574522; Execution Time sec=0, nsec=13695949
+ROSMOD::DEBUG::1456006675381608338::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006675, nsec=381493300
+ROSMOD::DEBUG::1456006675382895790::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006675394278284::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006675394621729::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006675, nsec=394559190; Execution Time sec=0, nsec=13065890
+ROSMOD::DEBUG::1456006676090278840::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006676, nsec=90160302
+ROSMOD::DEBUG::1456006676091527543::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006676102659421::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006676102959660::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006676, nsec=102901787; Execution Time sec=0, nsec=12741485
+ROSMOD::DEBUG::1456006676714543353::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006676, nsec=714422107
+ROSMOD::DEBUG::1456006676715799889::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006676726890019::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006676727190008::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006676, nsec=727129885; Execution Time sec=0, nsec=12707778
+ROSMOD::DEBUG::1456006677284718459::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006677, nsec=284599547
+ROSMOD::DEBUG::1456006677285984454::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006677297217703::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006677297520983::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006677, nsec=297463777; Execution Time sec=0, nsec=12864230
+ROSMOD::DEBUG::1456006677829220852::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006677, nsec=829103732
+ROSMOD::DEBUG::1456006677830464806::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006677841582476::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006677841928755::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006677, nsec=841864466; Execution Time sec=0, nsec=12760734
+ROSMOD::DEBUG::1456006678374865245::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006678, nsec=374745750
+ROSMOD::DEBUG::1456006678376160947::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006678387280117::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006678387599564::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006678, nsec=387536233; Execution Time sec=0, nsec=12790483
+ROSMOD::DEBUG::1456006678950713932::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006678, nsec=950594937
+ROSMOD::DEBUG::1456006678951932304::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006678963073223::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006678964851574::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006678, nsec=964750077; Execution Time sec=0, nsec=14155140
+ROSMOD::DEBUG::1456006679583116435::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006679, nsec=583001106
+ROSMOD::DEBUG::1456006679584525799::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006679595834504::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006679596142076::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006679, nsec=596081953; Execution Time sec=0, nsec=13080847
+ROSMOD::DEBUG::1456006680302264964::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006680, nsec=302148760
+ROSMOD::DEBUG::1456006680303676620::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006680315108695::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006680315416100::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006680, nsec=315356311; Execution Time sec=0, nsec=13207551
+ROSMOD::DEBUG::1456006681120770135::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006681, nsec=120653264
+ROSMOD::DEBUG::1456006681122088836::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006681133712696::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006681134021143::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006681, nsec=133963145; Execution Time sec=0, nsec=13309881
+ROSMOD::DEBUG::1456006682023182563::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006682, nsec=23064359
+ROSMOD::DEBUG::1456006682024614343::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006682036321075::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006682036644063::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006682, nsec=36583315; Execution Time sec=0, nsec=13518956
+ROSMOD::DEBUG::1456006682950250451::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006682, nsec=950136872
+ROSMOD::DEBUG::1456006682951661523::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006682963526124::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006682965940451::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006682, nsec=965839663; Execution Time sec=0, nsec=15702791
+ROSMOD::DEBUG::1456006683826316275::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006683, nsec=826198112
+ROSMOD::DEBUG::1456006683827631476::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006683839197088::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006683839523076::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006683, nsec=839460786; Execution Time sec=0, nsec=13262674
+ROSMOD::DEBUG::1456006684604809016::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006684, nsec=604690979
+ROSMOD::DEBUG::1456006684606166715::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006684617532335::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006684617872280::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006684, nsec=617811408; Execution Time sec=0, nsec=13120429
+ROSMOD::DEBUG::1456006685284202481::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006685, nsec=284084568
+ROSMOD::DEBUG::1456006685285488100::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006685296658685::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006685297007672::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006685, nsec=296944591; Execution Time sec=0, nsec=12860023
+ROSMOD::DEBUG::1456006685889143462::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006685, nsec=889033924
+ROSMOD::DEBUG::1456006685890393999::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006685901604124::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006685901952528::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006685, nsec=901888905; Execution Time sec=0, nsec=12854981
+ROSMOD::DEBUG::1456006686447186227::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006686, nsec=447067440
+ROSMOD::DEBUG::1456006686448411140::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006686459464688::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006686459774593::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006686, nsec=459713470; Execution Time sec=0, nsec=12646030
+ROSMOD::DEBUG::1456006686988497323::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006686, nsec=988380744
+ROSMOD::DEBUG::1456006686989691987::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006687000729577::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006687001035524::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006687, nsec=976443; Execution Time sec=0, nsec=12595699
+ROSMOD::DEBUG::1456006687539256067::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006687, nsec=539137239
+ROSMOD::DEBUG::1456006687540493480::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006687551649107::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006687551991219::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006687, nsec=551929638; Execution Time sec=0, nsec=12792399
+ROSMOD::DEBUG::1456006688129841457::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006688, nsec=129726420
+ROSMOD::DEBUG::1456006688131269696::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006688142367450::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006688142704229::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006688, nsec=142643690; Execution Time sec=0, nsec=12917270
+ROSMOD::DEBUG::1456006688786729008::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006688, nsec=786607263
+ROSMOD::DEBUG::1456006688788011252::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006688799363581::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006688799692485::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006688, nsec=799629362; Execution Time sec=0, nsec=13022099
+ROSMOD::DEBUG::1456006689534750965::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006689, nsec=534631678
+ROSMOD::DEBUG::1456006689536183579::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006689547725233::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006689548063887::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006689, nsec=548005181; Execution Time sec=0, nsec=13373503
+ROSMOD::DEBUG::1456006690382421969::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006690, nsec=382305390
+ROSMOD::DEBUG::1456006690383852166::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006690395442236::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006690395753766::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006690, nsec=395695934; Execution Time sec=0, nsec=13390544
+ROSMOD::DEBUG::1456006691300945341::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006691, nsec=300829262
+ROSMOD::DEBUG::1456006691302273042::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006691314448298::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006691314754703::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006691, nsec=314698163; Execution Time sec=0, nsec=13868901
+ROSMOD::DEBUG::1456006692220846703::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006692, nsec=220725833
+ROSMOD::DEBUG::1456006692222208194::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006692233924342::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006692234264663::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006692, nsec=234201749; Execution Time sec=0, nsec=13475916
+ROSMOD::DEBUG::1456006693068913484::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006693, nsec=68796822
+ROSMOD::DEBUG::1456006693070206686::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006693081575306::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006693081881378::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006693, nsec=81825630; Execution Time sec=0, nsec=13028808
+ROSMOD::DEBUG::1456006693821507188::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006693, nsec=821388901
+ROSMOD::DEBUG::1456006693822785724::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006693834035514::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006693834338961::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006693, nsec=834281880; Execution Time sec=0, nsec=12892979
+ROSMOD::DEBUG::1456006694474693502::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006694, nsec=474584589
+ROSMOD::DEBUG::1456006694476020786::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006694487398780::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006694487747017::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006694, nsec=487684686; Execution Time sec=0, nsec=13100097
+ROSMOD::DEBUG::1456006695064002898::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006695, nsec=63884944
+ROSMOD::DEBUG::1456006695065250976::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006695076286358::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006695076583055::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006695, nsec=76526016; Execution Time sec=0, nsec=12641072
+ROSMOD::DEBUG::1456006695613455899::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006695, nsec=613269323
+ROSMOD::DEBUG::1456006695614738476::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006695625908895::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006695626262757::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006695, nsec=626201509; Execution Time sec=0, nsec=12932186
+ROSMOD::DEBUG::1456006696155444303::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006696, nsec=155325182
+ROSMOD::DEBUG::1456006696156799961::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006696167927797::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006696168257910::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006696, nsec=168201371; Execution Time sec=0, nsec=12876189
+ROSMOD::DEBUG::1456006696715877646::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006696, nsec=715764484
+ROSMOD::DEBUG::1456006696717107892::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006696728157940::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006696728469137::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006696, nsec=728412264; Execution Time sec=0, nsec=12647780
+ROSMOD::DEBUG::1456006697324527948::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006697, nsec=324407995
+ROSMOD::DEBUG::1456006697325834192::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006697336908405::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006697337213644::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006697, nsec=337154479; Execution Time sec=0, nsec=12746484
+ROSMOD::DEBUG::1456006698009064348::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006698, nsec=8946144
+ROSMOD::DEBUG::1456006698010338009::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006698021610465::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006698021909162::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006698, nsec=21850706; Execution Time sec=0, nsec=12904562
+ROSMOD::DEBUG::1456006698791356073::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006698, nsec=791236619
+ROSMOD::DEBUG::1456006698792688690::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006698804696536::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006698805024857::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006698, nsec=804964942; Execution Time sec=0, nsec=13728323
+ROSMOD::DEBUG::1456006699669906972::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006699, nsec=669790976
+ROSMOD::DEBUG::1456006699671312086::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006699683427636::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006699683747291::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006699, nsec=683689085; Execution Time sec=0, nsec=13898109
+ROSMOD::DEBUG::1456006700597516923::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006700, nsec=597398760
+ROSMOD::DEBUG::1456006700598878455::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006700611022546::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006700611367116::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006700, nsec=611308035; Execution Time sec=0, nsec=13909275
+ROSMOD::DEBUG::1456006701501669745::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006701, nsec=501547416
+ROSMOD::DEBUG::1456006701503050777::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006701515154869::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006701515502398::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006701, nsec=515442400; Execution Time sec=0, nsec=13894984
+ROSMOD::DEBUG::1456006702321654695::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006702, nsec=321537325
+ROSMOD::DEBUG::1456006702322967896::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006702334698336::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006702335021282::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006702, nsec=334962034; Execution Time sec=0, nsec=13424709
+ROSMOD::DEBUG::1456006703041511907::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006703, nsec=41398911
+ROSMOD::DEBUG::1456006703042910480::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006703054218102::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006703054563839::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006703, nsec=54503174; Execution Time sec=0, nsec=13104263
+ROSMOD::DEBUG::1456006703672260513::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006703, nsec=672146642
+ROSMOD::DEBUG::1456006703673646420::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006703684854754::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006703685201991::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006703, nsec=685140785; Execution Time sec=0, nsec=12994143
+ROSMOD::DEBUG::1456006704243878025::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006704, nsec=243759362
+ROSMOD::DEBUG::1456006704245151144::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006704256300480::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006704256642717::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006704, nsec=256580803; Execution Time sec=0, nsec=12821441
+ROSMOD::DEBUG::1456006704786702189::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006704, nsec=786585985
+ROSMOD::DEBUG::1456006704787936977::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006704799015565::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006704799343428::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006704, nsec=799285930; Execution Time sec=0, nsec=12699945
+ROSMOD::DEBUG::1456006705330506692::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006705, nsec=330390655
+ROSMOD::DEBUG::1456006705331766729::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006705342956438::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006705343430254::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006705, nsec=343245177; Execution Time sec=0, nsec=12854522
+ROSMOD::DEBUG::1456006705902793679::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006705, nsec=902676392
+ROSMOD::DEBUG::1456006705904124338::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006705915207593::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006705915506248::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006705, nsec=915447417; Execution Time sec=0, nsec=12771025
+ROSMOD::DEBUG::1456006706532937099::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006706, nsec=532818395
+ROSMOD::DEBUG::1456006706534308632::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006706545513965::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006706545817829::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006706, nsec=545756790; Execution Time sec=0, nsec=12938395
+ROSMOD::DEBUG::1456006707248223773::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006707, nsec=248112068
+ROSMOD::DEBUG::1456006707249522391::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006707260992090::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006707261328161::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006707, nsec=261268580; Execution Time sec=0, nsec=13156512
+ROSMOD::DEBUG::1456006708063820886::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006708, nsec=63701057
+ROSMOD::DEBUG::1456006708065173044::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006708077152974::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006708077467170::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006708, nsec=77408381; Execution Time sec=0, nsec=13707324
+ROSMOD::DEBUG::1456006708964359218::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006708, nsec=964240347
+ROSMOD::DEBUG::1456006708965821497::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006708977924714::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006708978237244::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006708, nsec=978176288; Execution Time sec=0, nsec=13935941
+ROSMOD::DEBUG::1456006709894775690::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006709, nsec=894658111
+ROSMOD::DEBUG::1456006709896136806::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006709908285021::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006709908627842::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006709, nsec=908568844; Execution Time sec=0, nsec=13910733
+ROSMOD::DEBUG::1456006710776106027::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006710, nsec=775987448
+ROSMOD::DEBUG::1456006710777425062::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006710789331369::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006710789641191::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006710, nsec=789583402; Execution Time sec=0, nsec=13595954
+ROSMOD::DEBUG::1456006711563964880::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006711, nsec=563846926
+ROSMOD::DEBUG::1456006711565286330::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006711576547329::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006711576845026::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006711, nsec=576787986; Execution Time sec=0, nsec=12941060
+ROSMOD::DEBUG::1456006712252122144::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006712, nsec=252004399
+ROSMOD::DEBUG::1456006712253579340::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006712264763716::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006712265120078::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006712, nsec=265054747; Execution Time sec=0, nsec=13050348
+ROSMOD::DEBUG::1456006712861486420::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006712, nsec=861369425
+ROSMOD::DEBUG::1456006712862708500::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006712873835545::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006712874132950::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006712, nsec=874075202; Execution Time sec=0, nsec=12705777
+ROSMOD::DEBUG::1456006713420718934::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006713, nsec=420596022
+ROSMOD::DEBUG::1456006713422005886::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006713433132014::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006713435066067::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006713, nsec=434966863; Execution Time sec=0, nsec=14370841
+ROSMOD::DEBUG::1456006713961592129::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006713, nsec=961475759
+ROSMOD::DEBUG::1456006713962815459::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006713973930629::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006713974230493::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006713, nsec=974170954; Execution Time sec=0, nsec=12695195
+ROSMOD::DEBUG::1456006714513495248::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006714, nsec=513288756
+ROSMOD::DEBUG::1456006714514726828::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006714525745835::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006714526046615::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006714, nsec=525988326; Execution Time sec=0, nsec=12699570
+ROSMOD::DEBUG::1456006715102842601::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006715, nsec=102724064
+ROSMOD::DEBUG::1456006715104351628::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006715115495256::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006715115871950::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006715, nsec=115770704; Execution Time sec=0, nsec=13046640
+ROSMOD::DEBUG::1456006715759417040::CALLBACK FIFO ENQUEUE::Alias=sub_operation; Priority=50; Deadline sec=0, nsec=20000000; Enqueue Time sec=1456006715, nsec=759299336
+ROSMOD::DEBUG::1456006715760673076::Entering comm::sub_operation
+ROSMOD::DEBUG::1456006715771899909::Exiting comm::sub_operation
+ROSMOD::DEBUG::1456006715772200898::CALLBACK COMPLETED::Alias=sub_operation; Completion Time sec=1456006715, nsec=772139067; Execution Time sec=0, nsec=12839731
