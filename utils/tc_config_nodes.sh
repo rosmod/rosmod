@@ -4,7 +4,9 @@ TC=/sbin/tc
 
 DEV=eth0
 
-USETBF="false"
+USETBF="true"
+
+BW=60
 
 if [[ "$1" = "status" ]]
 then
@@ -22,25 +24,27 @@ then
     exit
 fi
 
+if [[ "$1" ]]
+then
+    BW=$1
+fi
+
 ###### uplink
 
 $TC qdisc add dev ${DEV} root handle 1: prio
 
-$TC qdisc add dev ${DEV} parent 1:1 handle 11: pfifo
-$TC qdisc add dev ${DEV} parent 1:2 handle 12: pfifo
-
 if [[ "$USETBF" = "true" ]]
 then
-    $TC qdisc add dev ${DEV} parent 11:1 handle 111: tbf \
-	rate 1Mbit burst 10kb latency 100000ms peakrate 1.01mbit mtu 1540
+    $TC qdisc add dev ${DEV} parent 1:1 handle 2: tbf \
+	rate ${BW}Kbit burst 10kb latency 100000ms peakrate 71Kbit mtu 1540
 else
-    $TC qdisc add dev ${DEV} parent 11:1 handle 2: htb
-
-    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate 70Kbit ceil 70Kbit
-    $TC class add dev ${DEV} parent 2:1 classid 2:10 htb rate 70Kbit ceil 70Kbit
-
-    $TC qdisc add dev ${DEV} parent 2:10 handle 21: pfifo
+    $TC qdisc add dev ${DEV} parent 1:1 handle 2: htb # 11: netem delay 100ms
+    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit ceil ${BW}Kbit burst 100Kbit cburst 10Kbit
+    $TC qdisc add dev ${DEV} parent 2:1 handle 21: pfifo
 fi
+
+$TC qdisc add dev ${DEV} parent 1:2 handle 12: pfifo
+
 echo "set qdiscs up"
 
 # FILTER APPLICATION TRAFFIC VERSUS NON APP TRAFIC
@@ -52,7 +56,7 @@ then
     echo ""
 else
     $TC filter add dev ${DEV} protocol ip parent 2: prio 1 u32 \
-	match ip dst 10.1.1.0/24 flowid 2:10
+	match ip dst 10.1.1.0/24 flowid 2:1
 fi
 
 echo "set priority filters up"
