@@ -2,287 +2,6 @@
  * ROSMOD Software Model
  */
 
-// ROSMOD Package - simple_pub_sub
-package simple_pub_sub
-{
-  // ROSMOD Component - sender
-  component sender : Base 
-  {
-    // ROSMOD Publisher - simpleMsg_pub
-    publisher <simple_pub_sub/simpleMsg> simpleMsg_pub;
-    // ROSMOD Timer - pub_timer
-    timer pub_timer 
-    {
-	period = 0.1;
-	priority = 50;
-	deadline = 0.01;
-    }       
-  }
-  // ROSMOD Component - receiver
-  component receiver : Base 
-  {
-    // ROSMOD Subscriber - simpleMsg_sub
-    subscriber <simple_pub_sub/simpleMsg> simpleMsg_sub 
-    {
-      priority = 50;
-      deadline = 0.1;
-    }       
-  }
-}
-// ROSMOD Package - multi_node_sample
-package multi_node_sample
-{
-  // ROSMOD Component - senderBCDE
-  component senderBCDE : Base 
-  {
-    // ROSMOD Publisher - publisherB
-    publisher <multi_node_sample/messageB> publisherB;
-    // ROSMOD Publisher - publisherC
-    publisher <multi_node_sample/messageC> publisherC;
-    // ROSMOD Publisher - publisherD
-    publisher <multi_node_sample/messageD> publisherD;
-    // ROSMOD Publisher - publisherE
-    publisher <multi_node_sample/messageE> publisherE;
-    // ROSMOD Timer - timerB
-    timer timerB 
-    {
-	period = 5.0;
-	priority = 90;
-	deadline = 0.001;
-    }       
-    // ROSMOD Timer - timerC
-    timer timerC 
-    {
-	period = 1.0;
-	priority = 80;
-	deadline = 0.001;
-    }       
-    // ROSMOD Timer - timerD
-    timer timerD 
-    {
-	period = 1.5;
-	priority = 70;
-	deadline = 0.001;
-    }       
-    // ROSMOD Timer - timerE
-    timer timerE 
-    {
-	period = 2.0;
-	priority = 60;
-	deadline = 0.001;
-    }       
-  }
-  // ROSMOD Component - senderACDE
-  component senderACDE : Base 
-  {
-    // ROSMOD Publisher - publisherA
-    publisher <multi_node_sample/messageA> publisherA;
-    // ROSMOD Publisher - publisherC
-    publisher <multi_node_sample/messageC> publisherC;
-    // ROSMOD Publisher - publisherD
-    publisher <multi_node_sample/messageD> publisherD;
-    // ROSMOD Publisher - publisherE
-    publisher <multi_node_sample/messageE> publisherE;
-    // ROSMOD Timer - timerA
-    timer timerA 
-    {
-	period = 0.05;
-	priority = 90;
-	deadline = 0.05;
-    }       
-    // ROSMOD Timer - timerC
-    timer timerC 
-    {
-	period = 0.06;
-	priority = 80;
-	deadline = 0.06;
-    }       
-    // ROSMOD Timer - timerD
-    timer timerD 
-    {
-	period = 0.07;
-	priority = 70;
-	deadline = 0.07;
-    }       
-    // ROSMOD Timer - timerE
-    timer timerE 
-    {
-	period = 0.08;
-	priority = 60;
-	deadline = 0.08;
-    }       
-  }
-  // ROSMOD Component - senderABDE
-  component senderABDE : Base 
-  {
-    // ROSMOD Publisher - publisherA
-    publisher <multi_node_sample/messageA> publisherA;
-    // ROSMOD Publisher - publisherB
-    publisher <multi_node_sample/messageB> publisherB;
-    // ROSMOD Publisher - publisherD
-    publisher <multi_node_sample/messageD> publisherD;
-    // ROSMOD Publisher - publisherE
-    publisher <multi_node_sample/messageE> publisherE;
-    // ROSMOD Timer - timerA
-    timer timerA 
-    {
-	period = 0.05;
-	priority = 90;
-	deadline = 0.05;
-    }       
-    // ROSMOD Timer - timerB
-    timer timerB 
-    {
-	period = 0.06;
-	priority = 80;
-	deadline = 0.06;
-    }       
-    // ROSMOD Timer - timerD
-    timer timerD 
-    {
-	period = 0.07;
-	priority = 70;
-	deadline = 0.07;
-    }       
-    // ROSMOD Timer - timerE
-    timer timerE 
-    {
-	period = 0.08;
-	priority = 60;
-	deadline = 0.08;
-    }       
-  }
-  // ROSMOD Component - senderABCE
-  component senderABCE : Base 
-  {
-    // ROSMOD Publisher - publisherA
-    publisher <multi_node_sample/messageA> publisherA;
-    // ROSMOD Publisher - publisherB
-    publisher <multi_node_sample/messageB> publisherB;
-    // ROSMOD Publisher - publisherC
-    publisher <multi_node_sample/messageC> publisherC;
-    // ROSMOD Publisher - publisherE
-    publisher <multi_node_sample/messageE> publisherE;
-    // ROSMOD Timer - timerA
-    timer timerA 
-    {
-	period = 0.05;
-	priority = 90;
-	deadline = 0.05;
-    }       
-    // ROSMOD Timer - timerB
-    timer timerB 
-    {
-	period = 0.06;
-	priority = 80;
-	deadline = 0.06;
-    }       
-    // ROSMOD Timer - timerC
-    timer timerC 
-    {
-	period = 0.07;
-	priority = 70;
-	deadline = 0.07;
-    }       
-    // ROSMOD Timer - timerE
-    timer timerE 
-    {
-	period = 0.08;
-	priority = 60;
-	deadline = 0.08;
-    }       
-  }
-  // ROSMOD Component - senderABCD
-  component senderABCD : Base 
-  {
-    // ROSMOD Publisher - publisherA
-    publisher <multi_node_sample/messageA> publisherA;
-    // ROSMOD Publisher - publisherB
-    publisher <multi_node_sample/messageB> publisherB;
-    // ROSMOD Publisher - publisherC
-    publisher <multi_node_sample/messageC> publisherC;
-    // ROSMOD Publisher - publisherD
-    publisher <multi_node_sample/messageD> publisherD;
-    // ROSMOD Timer - timerA
-    timer timerA 
-    {
-	period = 0.05;
-	priority = 90;
-	deadline = 0.05;
-    }       
-    // ROSMOD Timer - timerB
-    timer timerB 
-    {
-	period = 0.06;
-	priority = 80;
-	deadline = 0.06;
-    }       
-    // ROSMOD Timer - timerC
-    timer timerC 
-    {
-	period = 0.07;
-	priority = 70;
-	deadline = 0.07;
-    }       
-    // ROSMOD Timer - timerD
-    timer timerD 
-    {
-	period = 0.08;
-	priority = 60;
-	deadline = 0.08;
-    }       
-  }
-  // ROSMOD Component - receiverA
-  component receiverA : Base 
-  {
-    // ROSMOD Subscriber - subscriberA
-    subscriber <multi_node_sample/messageA> subscriberA 
-    {
-      priority = 50;
-      deadline = 0.005;
-    }       
-  }
-  // ROSMOD Component - receiverB
-  component receiverB : Base 
-  {
-    // ROSMOD Subscriber - subscriberB
-    subscriber <multi_node_sample/messageB> subscriberB 
-    {
-      priority = 50;
-      deadline = 0.005;
-    }       
-  }
-  // ROSMOD Component - receiverC
-  component receiverC : Base 
-  {
-    // ROSMOD Subscriber - subscriberC
-    subscriber <multi_node_sample/messageC> subscriberC 
-    {
-      priority = 50;
-      deadline = 0.005;
-    }       
-  }
-  // ROSMOD Component - receiverD
-  component receiverD : Base 
-  {
-    // ROSMOD Subscriber - subscriberD
-    subscriber <multi_node_sample/messageD> subscriberD 
-    {
-      priority = 50;
-      deadline = 0.005;
-    }       
-  }
-  // ROSMOD Component - receiverE
-  component receiverE : Base 
-  {
-    // ROSMOD Subscriber - subscriberE
-    subscriber <multi_node_sample/messageE> subscriberE 
-    {
-      priority = 50;
-      deadline = 0.005;
-    }       
-  }
-}
 // ROSMOD Package - isorc
 package isorc
 {
@@ -290,7 +9,7 @@ package isorc
   component pubA : Base 
   {
     // ROSMOD Publisher - a_pub
-    publisher <multi_node_sample/messageA> a_pub;
+    publisher <isorc/messageA> a_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
@@ -303,7 +22,7 @@ package isorc
   component pubB : Base 
   {
     // ROSMOD Publisher - b_pub
-    publisher <multi_node_sample/messageB> b_pub;
+    publisher <isorc/messageB> b_pub;
     // ROSMOD Timer - pub_timer
     timer pub_timer 
     {
@@ -355,50 +74,50 @@ package isorc
   component subA : Base 
   {
     // ROSMOD Subscriber - a_sub
-    subscriber <multi_node_sample/messageA> a_sub 
+    subscriber <isorc/messageA> a_sub 
     {
       priority = 50;
-      deadline = 0.001;
+      deadline = 0.05;
     }       
   }
   // ROSMOD Component - subB
   component subB : Base 
   {
     // ROSMOD Subscriber - b_sub
-    subscriber <multi_node_sample/messageB> b_sub 
+    subscriber <isorc/messageB> b_sub 
     {
       priority = 50;
-      deadline = 0.001;
+      deadline = 0.05;
     }       
   }
   // ROSMOD Component - subC
   component subC : Base 
   {
     // ROSMOD Subscriber - c_sub
-    subscriber <multi_node_sample/messageC> c_sub 
+    subscriber <isorc/messageC> c_sub 
     {
       priority = 50;
-      deadline = 0.001;
+      deadline = 0.05;
     }       
   }
   // ROSMOD Component - subD
   component subD : Base 
   {
     // ROSMOD Subscriber - d_sub
-    subscriber <multi_node_sample/messageD> d_sub 
+    subscriber <isorc/messageD> d_sub 
     {
       priority = 50;
-      deadline = 0.001;
+      deadline = 0.05;
     }       
   }
   // ROSMOD Component - subE
   component subE : Base 
   {
     // ROSMOD Subscriber - e_sub
-    subscriber <multi_node_sample/messageE> e_sub 
+    subscriber <isorc/messageE> e_sub 
     {
       priority = 50;
-      deadline = 0.001;
+      deadline = 0.05;
     }       
   }
 }
