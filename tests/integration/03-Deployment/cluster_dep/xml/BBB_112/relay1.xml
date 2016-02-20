@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<node name="relay5">
+<node name="relay1">
   <priority setting="80"/>
   <component_instance name="comm">
     <library name="libcomm.so"/>
@@ -8,10 +8,10 @@
     <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
-      <periodic_log_unit setting="1000"/> 
+      <periodic_log_unit setting="1"/> 
     </logging>
     <port name="pub">
-      <uuid>11</uuid>
+      <uuid>3</uuid>
       <profile>
 # period = 9
 # priority = 1
@@ -21,7 +21,7 @@
       </profile>
     </port>
     <port name="sub">
-      <uuid>10</uuid>
+      <uuid>2</uuid>
       <profile>
 # period = 9
 # priority = 1
@@ -93,13 +93,13 @@
 	</profile>
       </sender>
     </port>
-    <port_instance name="pub5to6">
+    <port_instance name="pub1to2">
       <port name="pub"/>
-      <group setting="5to6"/>
+      <group setting="1to2"/>
     </port_instance>
-    <port_instance name="sub4to5">
+    <port_instance name="subSto1">
       <port name="sub"/>
-      <group setting="4to5"/>
+      <group setting="Sto1"/>
     </port_instance>
   </component_instance>
 </node>

@@ -4,8 +4,8 @@
   <component_instance name="comm">
     <library name="libcomm.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="7"/>
-    <syncTimeout setting="50.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1"/> 

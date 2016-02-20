@@ -1,7 +1,6 @@
 #
 echo "Image: " $1
-sudo umount BBB-Boot BBB-Root
-rm -rf BBB-Boot
+sudo umount BBB-Root
 rm -rf BBB-Root
 lsblk
 sudo kpartx -d $1

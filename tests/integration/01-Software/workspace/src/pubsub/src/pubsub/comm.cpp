@@ -123,12 +123,12 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
       uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
       pubsub::pubsubTopic msg;
-      msg.uuid = pub_send_mw.get_uuid();
+      msg.uuid = sub_id++;
       msg.bytes.resize(message_len,0);
       try
 	{
 	  // Sleep for 50 ms
-	  usleep(100000);
+	  usleep(5000000);
 	  pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
 	}
       catch ( Network::Exceeded_Production_Profile& ex )
@@ -164,10 +164,9 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
   uint64_t uuid = received_data->uuid;
   uint64_t msgBytes = ros::serialization::Serializer<pubsub::pubsubTopic>::serializedLength(*received_data);
   ros::Time now = ros::Time::now();
-  sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
   Network::Message new_msg;
   new_msg.Bytes(msgBytes);
-  new_msg.Id(sub_id++);
+  new_msg.Id(uuid);
   new_msg.TimeStamp();
   sub_recv_mw.buffer.send(new_msg, msgBytes * 8);
 
@@ -187,7 +186,7 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
 	sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
 
       pubsub::pubsubTopic msg;
-      msg.uuid = pub_send_mw.get_uuid();
+      msg.uuid = sub_id++;
       msg.bytes.resize(message_len,0);
       try
 	{
@@ -211,6 +210,7 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
 // Destructor - Cleanup Ports & Timers
 comm::~comm()
 {
+  pub_send_mw.record();
   pub.shutdown();
   sub.shutdown();
   //# Start Destructor Marker
@@ -316,7 +316,8 @@ void comm::startUp()
 #else
        &this->comp_queue);
 #endif
-//sub_options.transport_hints = NAMESPACE::TransportHints()
+sub_options.transport_hints = NAMESPACE::TransportHints()
+    .tcpNoDelay();
 //    .unreliable();
   this->sub = nh.subscribe(sub_options);
 
