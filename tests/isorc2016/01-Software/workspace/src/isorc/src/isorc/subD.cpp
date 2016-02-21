@@ -187,7 +187,7 @@ void subD::startUp()
   callback_options.alias = "d_sub_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 1000000;
+  callback_options.deadline.nsec = 50000000;
 #endif  
   // Component Subscriber - d_sub
   advertiseName = "messageD";

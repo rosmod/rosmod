@@ -187,7 +187,7 @@ void subE::startUp()
   callback_options.alias = "e_sub_operation";
   callback_options.priority = 50;
   callback_options.deadline.sec = 0;
-  callback_options.deadline.nsec = 1000000;
+  callback_options.deadline.nsec = 50000000;
 #endif  
   // Component Subscriber - e_sub
   advertiseName = "messageE";
