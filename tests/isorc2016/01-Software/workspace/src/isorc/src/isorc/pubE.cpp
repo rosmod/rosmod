@@ -63,7 +63,7 @@ void pubE::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	e_pub_send_mw.set_duration(e_pub_send_mw.profile.period);
       else
 	e_pub_send_mw.set_duration(tg_duration);
-      fName = config.nodeName + "." + config.compName + ".e_pub.network.csv";
+      fName = "/var/log/" + config.nodeName + "." + config.compName + ".e_pub.network.csv";
       e_pub_send_mw.set_output_filename(fName);
     }
   // Stop Init Timer

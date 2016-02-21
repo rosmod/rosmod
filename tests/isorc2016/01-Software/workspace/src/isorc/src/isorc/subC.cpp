@@ -49,7 +49,7 @@ void subC::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	c_sub_recv_mw.set_duration(c_sub_recv_mw.profile.period);
       else
 	c_sub_recv_mw.set_duration(tg_duration);
-      fName = config.nodeName + "." + config.compName + ".c_sub.network.csv";
+      fName = "/var/log/" + config.nodeName + "." + config.compName + ".c_sub.network.csv";
       c_sub_recv_mw.set_output_filename(fName);
       c_sub_recv_mw.set_recv_done_callback(boost::bind(&subC::mw_recv_done_operation, this, &c_sub_recv_mw));
       c_sub_id = 0;

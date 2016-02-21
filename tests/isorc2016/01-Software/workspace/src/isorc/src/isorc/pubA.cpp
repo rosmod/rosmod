@@ -63,7 +63,7 @@ void pubA::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	a_pub_send_mw.set_duration(a_pub_send_mw.profile.period);
       else
 	a_pub_send_mw.set_duration(tg_duration);
-      fName = config.nodeName + "." + config.compName + ".a_pub.network.csv";
+      fName = "/var/log/" + config.nodeName + "." + config.compName + ".a_pub.network.csv";
       a_pub_send_mw.set_output_filename(fName);
     }
   // Stop Init Timer
