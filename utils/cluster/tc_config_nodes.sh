@@ -50,8 +50,8 @@ then
 	rate ${BW}Kbit burst 10kb latency 100000ms peakrate ${BW2}Kbit mtu 1540
 else
     $TC qdisc add dev ${DEV} parent 11:1 handle 2: htb 
-    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit ceil ${BW}Kbit burst 10 # cburst 1000bit
-    $TC class add dev ${DEV} parent 2:1 classid 2:10 htb rate ${BW}Kbit ceil ${BW}Kbit burst 10 # cburst 1000bit
+    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit ceil ${BW}Kbit burst 10 # cburst 10
+    $TC class add dev ${DEV} parent 2:1 classid 2:10 htb rate ${BW}Kbit ceil ${BW}Kbit burst 10 # cburst 10
     $TC qdisc add dev ${DEV} parent 2:10 handle 21: pfifo
 fi
 

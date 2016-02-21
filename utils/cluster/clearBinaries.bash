@@ -1,1 +1,3 @@
-rm -rf /home/debian/node_main /home/debian/*.so /home/debian/*.xml
+rm -rf /home/debian/node_main
+rm -rf /home/debian/*.so
+rm -rf /home/debian/*.xml
