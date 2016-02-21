@@ -147,7 +147,7 @@ void $component_name::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	${pub.properties['name']}_send_mw.set_duration(${pub.properties['name']}_send_mw.profile.period);
       else
 	${pub.properties['name']}_send_mw.set_duration(tg_duration);
-      fName = config.nodeName + "." + config.compName + ".${pub.properties['name']}.network.csv";
+      fName = "/var/log/" + config.nodeName + "." + config.compName + ".${pub.properties['name']}.network.csv";
       ${pub.properties['name']}_send_mw.set_output_filename(fName);
 
 \#ifdef USE_ROSMOD    

@@ -18,3 +18,30 @@ package pubsub
     }       
   }
 }
+// ROSMOD Package - simple
+package simple
+{
+  // ROSMOD Component - sender
+  component sender : Base 
+  {
+    // ROSMOD Publisher - pub
+    publisher <simple/pubsubTopic> pub;
+    // ROSMOD Timer - pub_timer
+    timer pub_timer 
+    {
+	period = 0.1;
+	priority = 50;
+	deadline = 0.01;
+    }       
+  }
+  // ROSMOD Component - receiver
+  component receiver : Base 
+  {
+    // ROSMOD Subscriber - sub
+    subscriber <simple/pubsubTopic> sub 
+    {
+      priority = 50;
+      deadline = 0.01;
+    }       
+  }
+}

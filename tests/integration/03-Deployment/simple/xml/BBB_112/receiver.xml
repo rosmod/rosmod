@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<node name="receiver">
+  <priority setting="80"/>
+  <component_instance name="sub">
+    <library name="libreceiver.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="sub">
+      <uuid>1</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+      <sender uuid="0">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

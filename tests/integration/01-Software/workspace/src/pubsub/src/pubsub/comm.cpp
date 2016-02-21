@@ -4,6 +4,47 @@
 #include <unistd.h>
 bool starter = false;
 double multiplier = 0.3;
+NAMESPACE::Timer pubTimer;
+double publish_period = 0.05;
+bool ender = false;
+
+void comm::pub_timer_operation(const NAMESPACE::TimerEvent& event)
+{
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering comm::pub_timer_operation");
+#endif
+
+  ros::Time now = ros::Time::now();
+  timespec current_time;
+  current_time.tv_sec = now.sec;
+  current_time.tv_nsec = now.nsec;
+  double offset = pub_send_mw.profile.getOffset(current_time);
+  double period = pub_send_mw.profile.period;
+  uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
+
+  pubsub::pubsubTopic msg;
+  msg.uuid = sub_id++;
+  msg.bytes.resize(message_len,0);
+  try
+    {
+      pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
+    }
+  catch ( Network::Exceeded_Production_Profile& ex )
+    {
+      logger->log("DEBUG","Prevented from sending on the network!");
+    }
+  
+  if ( ros::Time::now() >= pub_send_mw.get_end_time() )
+    {
+      logger->log("DEBUG","writing output\n");
+      pub_send_mw.record();
+      pubTimer.stop();
+    }
+
+#ifdef USE_ROSMOD
+  comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting comm::pub_timer_operation");
+#endif
+}
 //# End User Globals Marker
 
 // Initialization Function
@@ -20,9 +61,17 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	{
 	  starter = true;
 	}
+      else if (!strcmp(node_argv[i], "--ender"))
+	{
+	  ender = true;
+	}
       else if (!strcmp(node_argv[i], "--multiplier"))
 	{
 	  multiplier = atof(node_argv[++i]);
+	}
+      else if (!strcmp(node_argv[i], "--publish_period"))
+	{
+	  publish_period = atof(node_argv[++i]);
 	}
     }
 
@@ -107,34 +156,34 @@ void comm::init_timer_operation(const NAMESPACE::TimerEvent& event)
 	pub_send_mw.set_duration(pub_send_mw.profile.period);
       else
 	pub_send_mw.set_duration(tg_duration);
-      fName = config.nodeName + "." + config.compName + ".pub.network.csv";
+      fName = "/var/log/" + config.nodeName + "." + config.compName + ".pub.network.csv";
       pub_send_mw.set_output_filename(fName);
     }
 
   // If required, start the publishing cycle
   if (starter)
     {
-      ros::Time now = ros::Time::now();
-      timespec current_time;
-      current_time.tv_sec = now.sec;
-      current_time.tv_nsec = now.nsec;
-      double offset = pub_send_mw.profile.getOffset(current_time);
-      double period = pub_send_mw.profile.period;
-      uint64_t message_len = max_data_length + sin(offset * 2 * M_PI / period) * max_data_length * multiplier;
-
-      pubsub::pubsubTopic msg;
-      msg.uuid = sub_id++;
-      msg.bytes.resize(message_len,0);
-      try
-	{
-	  // Sleep for 50 ms
-	  usleep(5000000);
-	  pub_send_mw.send<pubsub::pubsubTopic>(pub, msg);
-	}
-      catch ( Network::Exceeded_Production_Profile& ex )
-	{
-	  logger->log("DEBUG","Prevented from sending on the network!");
-	}
+      NAMESPACE::NodeHandle nh;
+#ifdef USE_ROSMOD    
+      rosmod::ROSMOD_Callback_Options callback_options;
+      callback_options.alias = "pub_timer_operation";
+      callback_options.priority = 90;
+      callback_options.deadline.sec = 0;
+      callback_options.deadline.nsec = 2000000;
+#endif
+      NAMESPACE::TimerOptions timer_options;
+      timer_options = 
+	NAMESPACE::TimerOptions
+	(ros::Duration(publish_period),
+	 boost::bind(&comm::pub_timer_operation, this, _1),
+	 &this->comp_queue,
+#ifdef USE_ROSMOD     
+	 callback_options,
+#endif     
+	 false,
+	 false); 
+      pubTimer = nh.createTimer(timer_options);
+      pubTimer.start();
     }
 
   // Stop Init Timer
@@ -175,7 +224,8 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
       logger->log("DEBUG","writing output\n");
       pub_send_mw.record();
     }
-  else
+
+  if (!ender)
     {
       timespec current_time;
       current_time.tv_sec = now.sec;
@@ -199,7 +249,6 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
 	  logger->log("DEBUG","Prevented from sending on the network!");
 	}
     }
-  
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting comm::sub_operation");
 #endif
@@ -210,7 +259,6 @@ void comm::sub_operation(const pubsub::pubsubTopic::ConstPtr& received_data)
 // Destructor - Cleanup Ports & Timers
 comm::~comm()
 {
-  pub_send_mw.record();
   pub.shutdown();
   sub.shutdown();
   //# Start Destructor Marker
@@ -315,10 +363,7 @@ void comm::startUp()
        callback_options);
 #else
        &this->comp_queue);
-#endif
-sub_options.transport_hints = NAMESPACE::TransportHints()
-    .tcpNoDelay();
-//    .unreliable();
+#endif 
   this->sub = nh.subscribe(sub_options);
 
   // Init Timer

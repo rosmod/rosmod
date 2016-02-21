@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<node name="sender">
+  <priority setting="80"/>
+  <component_instance name="pub">
+    <library name="libsender.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="100.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1"/> 
+    </logging>
+    <port name="pub">
+      <uuid>0</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+    </port>
+  </component_instance>
+</node>
+
