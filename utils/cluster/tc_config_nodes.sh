@@ -50,8 +50,9 @@ then
 	rate ${BW}Kbit burst 10kb latency 100000ms peakrate ${BW2}Kbit mtu 1540
 else
     $TC qdisc add dev ${DEV} parent 11:1 handle 2: htb 
-    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit ceil ${BW}Kbit #  burst 500Kbit cburst 1Kbit
-    $TC qdisc add dev ${DEV} parent 2:1 handle 21: pfifo
+    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit ceil ${BW}Kbit burst 10 # cburst 1000bit
+    $TC class add dev ${DEV} parent 2:1 classid 2:10 htb rate ${BW}Kbit ceil ${BW}Kbit burst 10 # cburst 1000bit
+    $TC qdisc add dev ${DEV} parent 2:10 handle 21: pfifo
 fi
 
 echo "set qdiscs up"
@@ -65,7 +66,7 @@ then
     echo ""
 else
     $TC filter add dev ${DEV} protocol ip parent 2: prio 1 u32 \
-	match ip dst 10.1.1.0/24 flowid 2:1
+	match ip dst 10.1.1.0/24 flowid 2:10
 fi
 
 echo "set priority filters up"

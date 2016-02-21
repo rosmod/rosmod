@@ -205,7 +205,8 @@ void receiver::startUp()
        callback_options);
 #else
        &this->comp_queue);
-#endif 
+#endif
+sub_options.transport_hints = NAMESPACE::TransportHints().udp();
   this->sub = nh.subscribe(sub_options);
 
   // Init Timer
