@@ -1,19 +1,22 @@
 <?xml version="1.0"?>
-<node name="pubC3">
+<node name="pubB4">
   <priority setting="80"/>
-  <component_instance name="pub_c">
-    <library name="libpubC.so"/>
+  <component_instance name="pub_b">
+    <library name="libpubB.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="25"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="25.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1000"/> 
     </logging>
-    <port name="c_pub">
-      <uuid>12</uuid>
+    <port name="b_pub">
+      <uuid>16</uuid>
       <profile>
-
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
       </profile>
     </port>
   </component_instance>

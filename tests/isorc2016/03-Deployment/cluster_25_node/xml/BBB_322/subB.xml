@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
-<node name="subA">
+<node name="subB">
   <priority setting="80"/>
-  <component_instance name="sub_a">
-    <library name="libsubA.so"/>
+  <component_instance name="sub_b">
+    <library name="libsubB.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="25"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="25.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1000"/> 
     </logging>
-    <port name="a_sub">
-      <uuid>20</uuid>
+    <port name="b_sub">
+      <uuid>21</uuid>
       <profile>
 # period = 9
 # priority = 1
 # start = 0
 # kind = required
       </profile>
-      <sender uuid="0">
+      <sender uuid="1">
 	<profile>
 # period = 9
 # priority = 1
@@ -26,7 +26,7 @@
 # kind = required
 	</profile>
       </sender>
-      <sender uuid="5">
+      <sender uuid="6">
 	<profile>
 # period = 9
 # priority = 1
@@ -34,7 +34,7 @@
 # kind = required
 	</profile>
       </sender>
-      <sender uuid="10">
+      <sender uuid="11">
 	<profile>
 # period = 9
 # priority = 1
@@ -42,7 +42,7 @@
 # kind = required
 	</profile>
       </sender>
-      <sender uuid="15">
+      <sender uuid="16">
 	<profile>
 # period = 9
 # priority = 1

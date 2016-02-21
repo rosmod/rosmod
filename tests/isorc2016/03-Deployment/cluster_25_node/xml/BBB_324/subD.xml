@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<node name="subD">
+  <priority setting="80"/>
+  <component_instance name="sub_d">
+    <library name="libsubD.so"/>
+    <scheduling_scheme setting="FIFO"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="25.0"/>
+    <logging>
+      <is_periodic_logging setting="True"/>
+      <periodic_log_unit setting="1000"/> 
+    </logging>
+    <port name="d_sub">
+      <uuid>23</uuid>
+      <profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+      </profile>
+      <sender uuid="3">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+      <sender uuid="8">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+      <sender uuid="13">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+      <sender uuid="18">
+	<profile>
+# period = 9
+# priority = 1
+# start = 0
+# kind = required
+	</profile>
+      </sender>
+    </port>
+  </component_instance>
+</node>
+

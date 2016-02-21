@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
-<node name="pubB1">
+<node name="pubE2">
   <priority setting="80"/>
-  <component_instance name="pub_b">
-    <library name="libpubB.so"/>
+  <component_instance name="pub_e">
+    <library name="libpubE.so"/>
     <scheduling_scheme setting="FIFO"/>
-    <numCompsToSync setting="25"/>
-    <syncTimeout setting="100.0"/>
+    <numCompsToSync setting="1"/>
+    <syncTimeout setting="25.0"/>
     <logging>
       <is_periodic_logging setting="True"/>
       <periodic_log_unit setting="1000"/> 
     </logging>
-    <port name="b_pub">
-      <uuid>1</uuid>
+    <port name="e_pub">
+      <uuid>9</uuid>
       <profile>
 # period = 9
 # priority = 1
