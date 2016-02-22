@@ -84,6 +84,8 @@ namespace Network {
       return buffer;
     }
 
+    int NumTimes() const { return times.size(); }
+
     std::vector<double> DoubleTimes() const {
       std::vector<double> retTimes;
       double time = 0;
@@ -108,7 +110,7 @@ namespace Network {
       return retTime;
     }
 
-    std::vector<timespec> EpochTimes() {
+    std::vector<timespec> EpochTimes() const {
       std::vector<timespec> retTimes(times);
       return retTimes;
     }
@@ -133,6 +135,16 @@ namespace Network {
 
     uint64_t Bytes() const { return ceil((double)bits/8.0f); }
     void Bytes(uint64_t B) { bits = B*8; }
+
+    std::string ToString() const {
+      std::string retStr;
+      retStr << Id() << ",";
+      for (int i=0; i < times.size(); i++) {
+	retStr << times[i].tv_sec << "." << times[i].tv_nsec << ",";
+      }
+      retStr << Bits();
+      return retStr;
+    }
   };
 };
 

@@ -396,32 +396,26 @@ namespace Network {
     bool Initialized() const { return initialized; }
     bool HasEntries() const { return resources.size() > 0; }
   };
-  
-  static long precision = 30;// for file output
 
-  static void write_header(std::ofstream& file) {
-    file << "id, time (s), size (bits)\n";
-  }
-
-  static void append_data(std::ofstream& file, const Network::Message data) {
-    file << data.Id() << ",";
-    std::vector<double> dtimes = data.DoubleTimes();
-    for (auto it = dtimes.begin(); it != dtimes.end(); ++it)
-      {
-	file << std::setprecision(precision)
-	     << *it << ",";
-      }
-    file << data.Bits() << "\n";
+  static std::string write_header(numTimes) {
+    std::string retStr;
+    retStr << "ID";
+    for (int i=0; i<numTimes; i++)
+      retStr << ", Time (s)";
+    retStr << ", Size (bits)\n";
+    return retStr;
   }
 
   static int write_data(const char* fname, const std::vector<Network::Message> messages) {
+    std::string fStr;
+    fStr << Network::write_header(messages[0].NumTimes());
+    for (auto it=messages.begin(); it != messages.end(); ++it) {
+      fStr << it->ToString() << "\n";
+    }
     std::ofstream file(fname);
     if ( !file.is_open() )
       return -1;
-    Network::write_header(file);
-    for (auto it=messages.begin(); it != messages.end(); ++it) {
-      Network::append_data(file, *it);
-    }
+    file << fStr;
     file.close();
     return 0;
   }
