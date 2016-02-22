@@ -142,7 +142,7 @@ namespace Network {
       for (int i=0; i < times.size(); i++) {
 	std::string s = "000000000";
 	std::string n = std::to_string(times[i].tv_nsec);
-	n.length() <= 10 ? s.replace(10 - n.length(), n.length(), n) : s = n;
+	n.length() <= 9 ? s.replace(9 - n.length(), n.length(), n) : s = n;
 	retStr += std::to_string(times[i].tv_sec) + "." + s + ",";
       }
       retStr += std::to_string(Bits());
