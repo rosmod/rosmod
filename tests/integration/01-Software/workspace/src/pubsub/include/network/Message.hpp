@@ -140,7 +140,10 @@ namespace Network {
       std::string retStr;
       retStr += std::to_string(Id()) + ",";
       for (int i=0; i < times.size(); i++) {
-	retStr += std::to_string(times[i].tv_sec) + "." + std::to_string(times[i].tv_nsec) + ",";
+	std::string s = "000000000";
+	std::string n = std::to_string(times[i].tv_nsec);
+	n.length() <= 10 ? s.replace(10 - n.length(), n.length(), s) : s = n;
+	retStr += std::to_string(times[i].tv_sec) + "." + s + ",";
       }
       retStr += std::to_string(Bits());
       return retStr;
