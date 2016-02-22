@@ -6,9 +6,9 @@ DEV=eth0
 
 USETBF="true"
 
-BW=60
+BW=70
 
-delay=85
+delay=0
 
 if [[ "$1" = "status" ]]
 then
@@ -28,10 +28,15 @@ fi
 
 if [[ "$1" ]]
 then
-    BW=$1
+    USETBF=$1
 fi
 
 if [[ "$2" ]]
+then
+    BW=$1
+fi
+
+if [[ "$3" ]]
 then
     delay=$2
 fi
