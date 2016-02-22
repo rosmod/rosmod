@@ -93,6 +93,7 @@ void receiver::sub_operation(const simple::pubsubTopic::ConstPtr& received_data)
   uint64_t msgBytes = ros::serialization::Serializer<simple::pubsubTopic>::serializedLength(*received_data);
   msgBytes += Network::ipv4_header_bytes;
   msgBytes += Network::udp_header_bytes;
+  msgBytes += Network::ros_udp_header_bytes;
   ros::Time now = ros::Time::now();
   sub_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
   Network::Message new_msg;
