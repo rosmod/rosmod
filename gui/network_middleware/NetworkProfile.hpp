@@ -397,20 +397,20 @@ namespace Network {
     bool HasEntries() const { return resources.size() > 0; }
   };
 
-  static std::string write_header(numTimes) {
+  static std::string write_header(int numTimes) {
     std::string retStr;
-    retStr << "ID";
+    retStr += "ID";
     for (int i=0; i<numTimes; i++)
-      retStr << ", Time (s)";
-    retStr << ", Size (bits)\n";
+      retStr += ", Time (s)";
+    retStr += ", Size (bits)\n";
     return retStr;
   }
 
   static int write_data(const char* fname, const std::vector<Network::Message> messages) {
     std::string fStr;
-    fStr << Network::write_header(messages[0].NumTimes());
+    fStr += Network::write_header(messages[0].NumTimes());
     for (auto it=messages.begin(); it != messages.end(); ++it) {
-      fStr << it->ToString() << "\n";
+      fStr += (*it).ToString() + "\n";
     }
     std::ofstream file(fname);
     if ( !file.is_open() )

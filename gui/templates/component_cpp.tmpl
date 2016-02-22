@@ -501,6 +501,7 @@ void $component_name::startUp()
 \#else
        &this->comp_queue);
 \#endif 
+  ${sub.properties["name"]}_options.transport_hints = NAMESPACE::TransportHints().udp();
   this->${sub.properties["name"]} = nh.subscribe(${sub.properties["name"]}_options);
 #end for
 #end if		

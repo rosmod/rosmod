@@ -138,11 +138,11 @@ namespace Network {
 
     std::string ToString() const {
       std::string retStr;
-      retStr << Id() << ",";
+      retStr += std::to_string(Id()) + ",";
       for (int i=0; i < times.size(); i++) {
-	retStr << times[i].tv_sec << "." << times[i].tv_nsec << ",";
+	retStr += std::to_string(times[i].tv_sec) + "." + std::to_string(times[i].tv_nsec) + ",";
       }
-      retStr << Bits();
+      retStr += std::to_string(Bits());
       return retStr;
     }
   };
