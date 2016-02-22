@@ -260,6 +260,8 @@ void $component_name::${sub.properties["name"]}_operation(const $sub.properties[
 #if $trafficGen
   uint64_t uuid = received_data->uuid;
   uint64_t msgBytes = ros::serialization::Serializer<$sub.properties["message_reference"].parent.properties["name"]::${sub.properties["message_reference"].properties["name"]}>::serializedLength(*received_data);
+  msgBytes += Network::ipv4_header_bytes;
+  msgBytes += Network::udp_header_bytes;
   ros::Time now = ros::Time::now();
   ${sub.properties['name']}_recv_mw.update_sender_stream(uuid, now, msgBytes * 8);
   Network::Message new_msg;

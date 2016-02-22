@@ -124,6 +124,8 @@ namespace Network
 
       uint64_t msgSizeBytes =
 	ros::serialization::Serializer<T>::serializedLength(msg);
+      msgSizeBytes += Network::ipv4_header_bytes;
+      msgSizeBytes += Network::udp_header_bytes;
       // take a measurement
       Network::Message new_msg;
       new_msg.Bytes(msgSizeBytes);
