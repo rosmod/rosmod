@@ -27,6 +27,18 @@ namespace Network {
   static const int udp_header_bytes = 8;
   static const int tcp_header_bytes = 20;
 
+  /*
+   * UDP ROS TransportUDPHeader:
+   * typedef struct TransportUDPHeader {
+   *   uint32_t connection_id_;
+   *   uint8_t  op_;
+   *   uint8_t  message_id_;
+   *   uint16_t block_;
+   * } TransportUDPHeader;
+   * Bytes: 8 = 4 + 1 + 1 + 2
+   */
+  static const int ros_udp_header_bytes = 8;
+
   class Exceeded_Production_Profile
   {
   };
