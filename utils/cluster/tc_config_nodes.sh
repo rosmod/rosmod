@@ -4,7 +4,7 @@ TC=/sbin/tc
 
 DEV=eth0
 
-USETBF="false"
+USETBF="true"
 
 BW=60
 
