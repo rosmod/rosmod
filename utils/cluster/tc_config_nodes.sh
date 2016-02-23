@@ -1,16 +1,54 @@
 #!/bin/bash
 
 TC=/sbin/tc
-
 DEV=eth0
 
 USETBF="true"
-
 BW=70
+DELAY=0
 
-delay=0
+PRINT_STATUS="false"
+CLEAR="false"
 
-if [[ "$1" = "status" ]]
+for i in "$@"
+do
+    case $i in
+	-p|--print)
+	    PRINT_STATUS="true"
+	    shift # past argument=value
+	    ;;
+	--clear)
+	    CLEAR="true"
+	    shift # past argument=value
+	    ;;
+	-d=*|--delay=*)
+	    DELAY="${i#*=}"
+	    shift # past argument=value
+	    ;;
+	-b=*|--bandwidth=*)
+	    BW="${i#*=}"
+	    shift # past argument=value
+	    ;;
+	--use_tbf)
+	    USETBF="true"
+	    shift # past argument with no value
+	    ;;
+	--use_htb)
+	    USETBF="false"
+	    shift # past argument with no value
+	    ;;
+	*)
+	    # unknown option
+	    ;;
+    esac
+    done
+
+echo "Using options:"
+echo "  use_tbf:   ${USETBF}"
+echo "  bandwidth: ${BW}"
+echo "  delay:     ${DELAY}"
+
+if [[ "$PRINT_STATUS" = "true" ]]
 then
     $TC -s qdisc ls dev $DEV
     $TC -s class ls dev $DEV
@@ -21,24 +59,9 @@ fi
 $TC qdisc del dev $DEV root    2> /dev/null > /dev/null
 $TC qdisc del dev $DEV ingress 2> /dev/null > /dev/null
 
-if [[ "$1" = "stop" ]]
+if [[ "$CLEAR" = "true" ]]
 then
     exit
-fi
-
-if [[ "$1" ]]
-then
-    USETBF=$1
-fi
-
-if [[ "$2" ]]
-then
-    BW=$1
-fi
-
-if [[ "$3" ]]
-then
-    delay=$2
 fi
 
 let "BW2=${BW}+1"
@@ -46,13 +69,13 @@ let "BW2=${BW}+1"
 ###### uplink
 
 $TC qdisc add dev ${DEV} root handle 1: prio
-$TC qdisc add dev ${DEV} parent 1:1 handle 11: netem delay ${delay}ms
+$TC qdisc add dev ${DEV} parent 1:1 handle 11: netem delay ${DELAY}ms
 $TC qdisc add dev ${DEV} parent 1:2 handle 12: pfifo
 
 if [[ "$USETBF" = "true" ]]
 then
     $TC qdisc add dev ${DEV} parent 11:1 handle 2: tbf \
-	rate ${BW}Kbit burst 1kb latency 100000ms peakrate ${BW2}Kbit mtu 10000g # 1540
+	rate ${BW}Kbit burst 1kb latency 100000ms peakrate ${BW2}Kbit mtu 10000b # 1540
 else
     $TC qdisc add dev ${DEV} parent 11:1 handle 2: htb 
     $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit # ceil ${BW}Kbit # burst 10 # cburst 10
