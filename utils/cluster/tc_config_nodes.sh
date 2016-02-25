@@ -4,8 +4,10 @@ TC=/sbin/tc
 DEV=eth0
 
 USETBF="true"
-BW=70
+BW=70000
 DELAY=0
+BUCKET=100
+BUFFER=10000
 
 PRINT_STATUS="false"
 CLEAR="false"
@@ -29,6 +31,14 @@ do
 	    BW="${i#*=}"
 	    shift # past argument=value
 	    ;;
+	-k=*|--bucket=*)
+	    BUCKET="${i#*=}"
+	    shift # past argument=value
+	    ;;
+	-f=*|--buffer=*)
+	    BUFFER="${i#*=}"
+	    shift # past argument=value
+	    ;;
 	--use_tbf)
 	    USETBF="true"
 	    shift # past argument with no value
@@ -47,6 +57,8 @@ echo "Using options:"
 echo "  use_tbf:   ${USETBF}"
 echo "  bandwidth: ${BW}"
 echo "  delay:     ${DELAY}"
+echo "  bucket:    ${BUCKET}"
+echo "  buffer:    ${BUFFER}"
 
 if [[ "$PRINT_STATUS" = "true" ]]
 then
@@ -64,7 +76,8 @@ then
     exit
 fi
 
-let "BW2=${BW}+1"
+let "PEAKBW=${BW}+10"
+let "BW2=${BW}+${BW}"
 
 ###### uplink
 
@@ -75,11 +88,11 @@ $TC qdisc add dev ${DEV} parent 1:2 handle 12: pfifo
 if [[ "$USETBF" = "true" ]]
 then
     $TC qdisc add dev ${DEV} parent 11:1 handle 2: tbf \
-	rate ${BW}Kbit burst 1kb latency 100000ms peakrate ${BW2}Kbit mtu 10000b # 1540
+	rate ${BW}bit limit ${BUFFER}k burst ${BUCKET}
 else
     $TC qdisc add dev ${DEV} parent 11:1 handle 2: htb 
-    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW}Kbit # ceil ${BW}Kbit # burst 10 # cburst 10
-    $TC class add dev ${DEV} parent 2:1 classid 2:10 htb rate ${BW}Kbit # ceil ${BW}Kbit # burst 10 # cburst 10
+    $TC class add dev ${DEV} parent 2: classid 2:1 htb rate ${BW2}bit # ceil ${PEAKBW}bit # burst ${BUCKET # cburst 10
+    $TC class add dev ${DEV} parent 2:1 classid 2:10 htb rate ${BW}bit ceil ${PEAKBW}bit # burst ${BUCKET} # cburst 10
     $TC qdisc add dev ${DEV} parent 2:10 handle 21: pfifo
 fi
 
