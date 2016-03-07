@@ -19,6 +19,8 @@
 
 
 //# Start User Includes Marker
+#include "agse_package/sample_detector.hpp"
+#include "agse_package/payloadbay_detector.hpp"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -72,6 +74,9 @@ private:
   NAMESPACE::ServiceClient captureImage_client;
 
   //# Start User Private Variables Marker
+  bool paused;
+  Sample_Detector sampleDetector;
+  PayloadBay_Detector payloadBayDetector;
   //# End User Private Variables Marker
 };
 

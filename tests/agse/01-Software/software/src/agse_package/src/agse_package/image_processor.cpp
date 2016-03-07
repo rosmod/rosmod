@@ -11,6 +11,44 @@ void image_processor::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_processor::init_timer_operation");
 #endif
   // Initialize Here
+  paused = true;
+  // initialize both the sample detector code
+  // and the payload bay (marker) detector code
+    sampleDetector.init();
+    payloadBayDetector.init( 0.75f, "/home/ubuntu/camera.yml");
+
+    // Command line args for image processor
+    for (int i = 0; i < node_argc; i++)
+      {
+	if (!strcmp(node_argv[i], "-unpaused"))
+	  {
+	    paused = false;
+	  }
+	if (!strcmp(node_argv[i], "-detect"))
+	  {
+	    agse_package::captureImage arg;
+	    if (this->captureImage_client.call(arg)) {
+	      //	      ROS_INFO("Image width: %d, height: %d, size: %d", 
+	      //		       arg.response.width,
+	      //	       arg.response.height,
+	      //       arg.response.imgVector.size());
+	      Mat image = Mat( arg.response.height, 
+			       arg.response.width, 
+			       CV_8UC3, 
+			       arg.response.imgVector.data());
+	      Mat detectedObjectsMask = Mat::zeros(image.size(), CV_8UC3);
+	      DetectedObject sample = 
+		sampleDetector.run( image,
+				    detectedObjectsMask); 
+	      DetectedObject payloadBay =
+		payloadBayDetector.run( image,
+					detectedObjectsMask); 
+	      cv::imwrite("Sample-01-Raw.png", image+detectedObjectsMask);
+	      ROS_INFO("Sample: %d, (%f,%f), %f",sample.state, sample.x, sample.y, sample.angle);
+	      ROS_INFO("PayloadBay: %d, (%f,%f), %f",payloadBay.state, payloadBay.x, payloadBay.y, payloadBay.angle);
+	    }
+	  }
+      }
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,7 +67,8 @@ void image_processor::controlInputs_sub_operation(const agse_package::controlInp
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_processor::controlInputs_sub_operation");
 #endif
   // Business Logic for controlInputs_sub_operation
-
+    paused = received_data->paused;
+    ROS_INFO( paused ? "Image Processor paused!" : "Image Processor Unpaused" );
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting image_processor::controlInputs_sub_operation");
@@ -46,13 +85,50 @@ bool image_processor::sampleStateFromImage_operation(agse_package::sampleStateFr
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_processor::sampleStateFromImage_operation");
 #endif
   // Business Logic for sampleStateFromImage_server_operation
-
+  if (!paused)
+    {
+      agse_package::captureImage arg;
+      if (this->captureImage_client.call(arg)) {
+	//	ROS_INFO("Image width: %d, height: %d, size: %d", 
+	//		 arg.response.width,
+	//		 arg.response.height,
+	//		 arg.response.imgVector.size());
+	Mat image = Mat( arg.response.height, 
+			 arg.response.width, 
+			 CV_8UC3, 
+			 arg.response.imgVector.data());
+	Mat detectedObjectsMask = Mat::zeros(image.size(), CV_8UC3);
+	// NEED TO GET RETURN VALUES ABOUT DETECTED SAMPLE HERE
+	DetectedObject sample =
+	  sampleDetector.run(image,detectedObjectsMask,"autonomous_S"); 
+	//	ROS_INFO("Sample: %d, (%f,%f), %f",sample.state, sample.x, sample.y, sample.angle);
+	cv::imwrite("Sample-01-Raw.png", image+detectedObjectsMask);
+	cv::Mat sample_detected_image = image + detectedObjectsMask; 
+	if ( sample.x >= 0 && sample.x <= arg.response.width &&
+	     sample.y >= 0 && sample.y <= arg.response.height )
+	  {
+	    res.status = sample.state;
+	    res.x = sample.x - arg.response.width / 2;   // convert [0,w] -> [-w/2,w/2]
+	    res.y = sample.y - arg.response.height / 2;  // convert [0,h] -> [-h/2,h/2]
+	    res.angle = sample.angle;
+	  }
+	else
+	  res.status = HIDDEN;
+	return true;
+      }
+      else {
+	ROS_INFO("ERROR: Client call failed; couldn't get image.");
+      }
+    }
+  return false;
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting image_processor::sampleStateFromImage_operation");
 #endif
   return true;
 }
 //# End sampleStateFromImage_operation Marker
+
+
 // Server Operation - payloadBayStateFromImage_server
 //# Start payloadBayStateFromImage_operation Marker
 bool image_processor::payloadBayStateFromImage_operation(agse_package::payloadBayStateFromImage::Request  &req,
@@ -62,7 +138,41 @@ bool image_processor::payloadBayStateFromImage_operation(agse_package::payloadBa
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_processor::payloadBayStateFromImage_operation");
 #endif
   // Business Logic for payloadBayStateFromImage_server_operation
-
+  if (!paused)
+    {
+      agse_package::captureImage arg;
+      if (this->captureImage_client.call(arg)) {
+	//	ROS_INFO("Image width: %d, height: %d, size: %d", 
+	//	 arg.response.width,
+	//	 arg.response.height,
+	//	 arg.response.imgVector.size());
+	Mat image = Mat( arg.response.height, 
+			 arg.response.width, 
+			 CV_8UC3, 
+			 arg.response.imgVector.data());
+	Mat detectedObjectsMask = Mat::zeros(image.size(), CV_8UC3);
+	// NEED TO GET RETURN VALUES ABOUT DETECTED PAYLOAD BAY HERE
+	DetectedObject payloadBay =
+	  payloadBayDetector.run(image,detectedObjectsMask,"autonomous_PB"); 
+	ROS_INFO("PayloadBay: %d, (%f,%f), %f",payloadBay.state, payloadBay.x, payloadBay.y, payloadBay.angle);
+	cv::imwrite("PayloadBay-01-Raw.png", image+detectedObjectsMask);
+	if ( payloadBay.x >= 0 && payloadBay.x <= arg.response.width &&
+	     payloadBay.y >= 0 && payloadBay.y <= arg.response.height )
+	  {
+	    res.status = payloadBay.state;
+	    res.x = payloadBay.x - arg.response.width / 2;   // convert [0,w] -> [-w/2,w/2]
+	    res.y = payloadBay.y - arg.response.height / 2;  // convert [0,h] -> [-h/2,h/2]
+	    res.angle = payloadBay.angle;
+	  }
+	else
+	  res.status = HIDDEN;
+	return true;
+      }
+      else {
+	ROS_INFO("ERROR: Client call failed; couldn't get image.");
+      }
+    }
+  return false;
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting image_processor::payloadBayStateFromImage_operation");
 #endif

@@ -15,6 +15,30 @@
 
 
 //# Start User Includes Marker
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <signal.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/mman.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <jpeglib.h>
+#include <time.h>
+
+#include <linux/videodev2.h>
+#include <libv4l2.h>
+
+#define CLEAR(x) memset(&(x), 0, sizeof(x))
+
+struct buffer {
+        void   *start;
+        size_t length;
+};
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -52,6 +76,12 @@ private:
   NAMESPACE::ServiceServer captureImage_server;
 
   //# Start User Private Variables Marker
+        bool paused;
+        char videoDevice[50];
+        int videoFD;
+        int width;
+        int height;
+        int numFrames;
   //# End User Private Variables Marker
 };
 

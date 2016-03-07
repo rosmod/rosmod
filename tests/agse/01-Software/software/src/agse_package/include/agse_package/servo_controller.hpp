@@ -17,6 +17,8 @@
 
 
 //# Start User Includes Marker
+#include "agse_package/Dynamixel.h"
+#include "agse_package/SerialPort.h"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -74,6 +76,43 @@ private:
   NAMESPACE::ServiceServer gripperRotation_server;
 
   //# Start User Private Variables Marker
+  bool paused;
+
+  // serial port we use on the BBB
+  SerialPort serialPort;
+  char portName[50];
+  // object for reading/writing to AX-12A servos
+  Dynamixel dynamixel;
+
+  // IDs for the servo motors
+  int armServoID;
+  int gripperRotationID;
+  int gripperPositionID;
+
+  // speeds for the servo motors
+  int armServoSpeed;
+  int gripperRotationSpeed;
+  int gripperPositionSpeed;
+
+  // compliance margin
+  int complianceMargin;
+  // compliance slope
+  int complianceSlope;
+
+  // goal Position for the arm servo
+  float armRotationGoal;
+  // current position of the arm servo
+  float armRotationCurrent;
+
+  // goal Position for the gripperRotation servo
+  float gripperRotationGoal;
+  // current position of the gripperRotation servo
+  float gripperRotationCurrent;
+
+  // goal Position for the gripperPos servo
+  float gripperPosGoal;
+  // current position of the gripperPos servo
+  float gripperPosCurrent;
   //# End User Private Variables Marker
 };
 

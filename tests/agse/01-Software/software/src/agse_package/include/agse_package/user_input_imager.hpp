@@ -15,9 +15,10 @@
   #endif
 #endif
 
-
-
 //# Start User Includes Marker
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+using namespace cv;
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -75,6 +76,29 @@ private:
   NAMESPACE::ServiceClient captureImage_client;
 
   //# Start User Private Variables Marker
+  // Received Images
+  Mat pb_rawImage;
+  Mat pb_hsvImage;
+  Mat pb_gsImage;
+  Mat pb_bitwise;
+
+  Mat sample_rawImage;
+  Mat sample_hsvImage;
+  Mat sample_gsImage;
+  Mat sample_bitwise;
+
+  // Four Images to show in UIP
+  IplImage * top_left;
+  IplImage * top_right;
+  IplImage * bottom_left;
+  IplImage * bottom_right;
+
+  // Fullscreen single images
+  IplImage * camera_feed;
+  IplImage * processed_image;
+
+  // Keyboard interrupt
+  int key;
   //# End User Private Variables Marker
 };
 

@@ -1,6 +1,7 @@
 #include "agse_package/servo_controller.hpp"
 
 //# Start User Globals Marker
+#include <stdlib.h>
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +12,88 @@ void servo_controller::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering servo_controller::init_timer_operation");
 #endif
   // Initialize Here
+  paused = true;
+  sprintf(portName,"//dev//ttyO5");
+  armServoID = 10;
+  gripperRotationID = 11;
+  gripperPositionID = 1;
+
+  armServoSpeed = 20; // half speed; full speed is either 0 or 1023
+  gripperRotationSpeed = 0;
+  gripperPositionSpeed = 0;
+
+  complianceMargin = 90;
+  complianceSlope = 5;
+
+  int iGain = 8;
+
+  if (serialPort.connect(portName,9600)!=0)
+    {
+      int pos;
+      // ARM SERVO 
+      pos = dynamixel.getPosition(&serialPort, armServoID);
+      //      ROS_INFO("Arm base servo angle: %f\n",Dynamixel::posToAngle(pos));
+      armRotationGoal = Dynamixel::posToAngle_28T(pos);
+
+      // GRIPPER ROTATION SERVO
+      pos = dynamixel.getPosition(&serialPort, gripperRotationID);
+      //      ROS_INFO("Gripper rotation servo angle: %f\n",Dynamixel::posToAngle(pos));
+      gripperRotationGoal = Dynamixel::posToAngle(pos);
+    
+      // GRIPPER POSITION SERVO
+      pos = dynamixel.getPosition(&serialPort, gripperPositionID);
+      //      ROS_INFO("Gripper position servo angle: %f\n",Dynamixel::posToAngle(pos));
+      gripperPosGoal = Dynamixel::posToAngle(pos);
+
+      // Command line args for servo control
+      for (int i = 0; i < node_argc; i++) 
+	{
+	  if (!strcmp(node_argv[i], "-unpaused"))
+	    paused = false;
+	  else if (!strcmp(node_argv[i], "-theta"))
+	    armRotationGoal = atof(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-gRot"))
+	    gripperRotationGoal = atof(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-gPos"))
+	    gripperPosGoal = atof(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-armSpeed"))
+	    armServoSpeed = atoi(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-margin"))
+	    complianceMargin  = atoi(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-slope"))
+	    complianceSlope = atoi(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-gRotSpeed"))
+	    gripperRotationSpeed = atoi(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-gPosSpeed"))
+	    gripperPositionSpeed = atoi(node_argv[i+1]);
+	  else if (!strcmp(node_argv[i], "-iGain"))
+	    iGain = atoi(node_argv[i+1]);
+	}
+
+      //dynamixel.setSpeed(&serialPort, armServoID, armServoSpeed);
+      //dynamixel.setSpeed(&serialPort, gripperRotationID, gripperRotationSpeed);
+      //dynamixel.setSpeed(&serialPort, gripperPositionID, gripperPositionSpeed);
+
+      // Setting a compliance margin
+      // Min: 0; Max: 254
+      // for MX28T the CWComplianceMargin is the D gain
+      dynamixel.setCWComplianceMargin(&serialPort, armServoID, complianceMargin);
+      dynamixel.setCCWComplianceMargin(&serialPort, armServoID, iGain);
+      dynamixel.setCWAngleLimit(&serialPort, armServoID, 1);
+      dynamixel.setCCWAngleLimit(&serialPort, armServoID, 4095);
+      //dynamixel.setCCWComplianceMargin(&serialPort, armServoID, complianceMargin);
+      //dynamixel.setCWComplianceMargin(&serialPort, gripperRotationID, complianceMargin);
+      //dynamixel.setCCWComplianceMargin(&serialPort, gripperRotationID, complianceMargin);
+      //dynamixel.setCWComplianceMargin(&serialPort, gripperPositionID, complianceMargin);
+      //dynamixel.setCCWComplianceMargin(&serialPort, gripperPositionID, complianceMargin);
+
+      //dynamixel.setCWComplianceSlope(&serialPort, armServoID, complianceSlope);
+      //dynamixel.setCCWComplianceSlope(&serialPort, armServoID, complianceSlope);
+    }
+  else
+    {
+      ROS_INFO ("Can't open serial port %s", portName);
+    } 
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,7 +112,7 @@ void servo_controller::controlInputs_sub_operation(const agse_package::controlIn
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering servo_controller::controlInputs_sub_operation");
 #endif
   // Business Logic for controlInputs_sub_operation
-
+  paused = received_data->paused;
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting servo_controller::controlInputs_sub_operation");
@@ -46,6 +129,12 @@ bool servo_controller::armRotation_operation(agse_package::armRotation::Request 
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering servo_controller::armRotation_operation");
 #endif
   // Business Logic for armRotation_server_operation
+  if (req.update == true)
+    {
+      armRotationGoal = req.goal;
+    }
+  res.current = armRotationCurrent;
+  return true;
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting servo_controller::armRotation_operation");
@@ -62,6 +151,12 @@ bool servo_controller::gripperPos_operation(agse_package::gripperPos::Request  &
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering servo_controller::gripperPos_operation");
 #endif
   // Business Logic for gripperPos_server_operation
+  if (req.update == true)
+    {
+      gripperPosGoal = req.goal;
+    }
+  res.current = gripperPosCurrent;
+  return true;
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting servo_controller::gripperPos_operation");
@@ -69,6 +164,7 @@ bool servo_controller::gripperPos_operation(agse_package::gripperPos::Request  &
   return true;
 }
 //# End gripperPos_operation Marker
+
 // Server Operation - gripperRotation_server
 //# Start gripperRotation_operation Marker
 bool servo_controller::gripperRotation_operation(agse_package::gripperRotation::Request  &req,
@@ -78,6 +174,12 @@ bool servo_controller::gripperRotation_operation(agse_package::gripperRotation::
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering servo_controller::gripperRotation_operation");
 #endif
   // Business Logic for gripperRotation_server_operation
+  if (req.update == true)
+    {
+      gripperRotationGoal = req.goal;
+    }
+  res.current = gripperRotationCurrent;
+  return true;
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting servo_controller::gripperRotation_operation");
@@ -94,7 +196,48 @@ void servo_controller::servoTimer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering servo_controller::servoTimer_operation");
 #endif
   // Business Logic for servoTimer_operation
+  if (!paused) 
+    {
 
+      int pos; // temp value to store position from servo
+    
+      // ARM SERVO 
+      dynamixel.setPosition(&serialPort, armServoID, Dynamixel::angleToPos_28T(armRotationGoal));
+      pos = dynamixel.getPosition(&serialPort, armServoID);
+      //      ROS_INFO("Arm base servo angle: %f\n",Dynamixel::posToAngle(pos));
+      armRotationCurrent = Dynamixel::posToAngle_28T(pos);
+
+      // GRIPPER ROTATION SERVO
+      dynamixel.setPosition(&serialPort, gripperRotationID, Dynamixel::angleToPos(gripperRotationGoal));
+      pos = dynamixel.getPosition(&serialPort, gripperRotationID);
+      //      ROS_INFO("Gripper rotation servo angle: %f\n",Dynamixel::posToAngle(pos));
+      gripperRotationCurrent = Dynamixel::posToAngle(pos);
+    
+      // GRIPPER POSITION SERVO
+      dynamixel.setPosition(&serialPort, gripperPositionID, Dynamixel::angleToPos(gripperPosGoal));
+      pos = dynamixel.getPosition(&serialPort, gripperPositionID);
+      //      ROS_INFO("Gripper position servo angle: %f\n",Dynamixel::posToAngle(pos));
+      gripperPosCurrent = Dynamixel::posToAngle(pos);
+    }
+  else 
+    {
+      int pos; // temp value to store position from servo
+    
+      // ARM SERVO 
+      pos = dynamixel.getPosition(&serialPort, armServoID);
+      //      ROS_INFO("Arm base servo angle: %f\n",Dynamixel::posToAngle(pos));
+      armRotationCurrent = Dynamixel::posToAngle_28T(pos);
+
+      // GRIPPER ROTATION SERVO
+      pos = dynamixel.getPosition(&serialPort, gripperRotationID);
+      //      ROS_INFO("Gripper rotation servo angle: %f\n",Dynamixel::posToAngle(pos));
+      gripperRotationCurrent = Dynamixel::posToAngle(pos);
+    
+      // GRIPPER POSITION SERVO
+      pos = dynamixel.getPosition(&serialPort, gripperPositionID);
+      //      ROS_INFO("Gripper position servo angle: %f\n",Dynamixel::posToAngle(pos));
+      gripperPosCurrent = Dynamixel::posToAngle(pos);
+    }
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting servo_controller::servoTimer_operation");
 #endif

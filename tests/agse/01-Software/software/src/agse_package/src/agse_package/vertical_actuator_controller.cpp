@@ -1,6 +1,7 @@
 #include "agse_package/vertical_actuator_controller.hpp"
 
 //# Start User Globals Marker
+#include <stdlib.h>
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +12,47 @@ void vertical_actuator_controller::init_timer_operation(const NAMESPACE::TimerEv
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering vertical_actuator_controller::init_timer_operation");
 #endif
   // Initialize Here
+  paused = true;
+  lowerLimitReached = false;
+
+  // THESE NEED TO BE UPDATED
+  epsilon = 100;
+  motorForwardPin = 89; //86;  // connected to GPIO2_22, pin P8_27
+  motorBackwardPin = 88; //87; // connected to GPIO2_23, pin P8_29
+  lowerLimitSwitchPin = 65;       // connected to GPIO2_01, pin P8_18
+  
+  adcPin = 1;  // connected to ADC1, pin P9_40
+
+  // set up the pins to control the h-bridge
+  gpio_export(motorForwardPin);
+  gpio_export(motorBackwardPin);
+  gpio_export(lowerLimitSwitchPin);
+  gpio_set_dir(motorForwardPin,OUTPUT_PIN);
+  gpio_set_dir(motorBackwardPin,OUTPUT_PIN);
+  gpio_set_dir(lowerLimitSwitchPin,INPUT_PIN);
+  // set up the encoder module
+  vm_eqep_period = 1000000000L;
+  verticalMotoreQEP.initialize("/sys/devices/ocp.3/48302000.epwmss/48302180.eqep", eQEP::eQEP_Mode_Absolute);
+  verticalMotoreQEP.set_period(vm_eqep_period);
+
+  // Command line args for radial goal
+  for (int i = 0; i < node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "-unpaused"))
+	{
+	  paused = false;
+	}
+      if (!strcmp(node_argv[i], "-v"))
+	{
+	  verticalGoal = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "-e"))
+	{
+	  epsilon = atoi(node_argv[i+1]);
+	}
+    }
+
+  ROS_INFO("VERTICAL GOAL SET TO : %d",verticalGoal);
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,7 +71,7 @@ void vertical_actuator_controller::controlInputs_sub_operation(const agse_packag
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering vertical_actuator_controller::controlInputs_sub_operation");
 #endif
   // Business Logic for controlInputs_sub_operation
-
+  paused = received_data->paused;
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting vertical_actuator_controller::controlInputs_sub_operation");
@@ -46,6 +88,21 @@ bool vertical_actuator_controller::verticalPos_operation(agse_package::verticalP
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering vertical_actuator_controller::verticalPos_operation");
 #endif
   // Business Logic for verticalPos_server_operation
+  if (req.update == true)
+    {
+      //      ROS_INFO("GOT NEW HEIGHT GOAL: %d",(int)req.goal);
+      //      ROS_INFO("CURRENT HEIGHT: %d",verticalCurrent);
+      verticalGoal = req.goal;
+    }
+  if (req.setZeroPosition == true)
+    {
+      ROS_INFO("ZEROED VERTICAL ENCODER");
+      verticalMotoreQEP.set_position(0);
+    }
+  res.lowerLimitReached = lowerLimitReached;
+  res.upperLimitReached = false;
+  res.current = verticalCurrent;
+  return true;
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting vertical_actuator_controller::verticalPos_operation");
@@ -62,6 +119,46 @@ void vertical_actuator_controller::verticalPosTimer_operation(const NAMESPACE::T
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering vertical_actuator_controller::verticalPosTimer_operation");
 #endif
   // Business Logic for verticalPosTimer_operation
+  if (!paused)
+    {
+      // read current value for vertical position (encoder)
+      verticalCurrent = verticalMotoreQEP.get_position();
+      //ROS_INFO("Vertical Actuator Encoder Reading: %d",verticalCurrent);
+
+      unsigned int limitSwitchState = 0;
+      unsigned int backwardPinState = 0;
+      gpio_get_value(lowerLimitSwitchPin,&limitSwitchState);
+      gpio_get_value(motorBackwardPin,&backwardPinState);
+      if (backwardPinState && !limitSwitchState)
+	{
+	  lowerLimitReached = true;
+	}
+      // update motor based on current value
+      if ( abs(verticalGoal-verticalCurrent) > epsilon ) // if there's significant reason to move
+	{
+	  if (verticalGoal > verticalCurrent) 
+	    {
+	      lowerLimitReached = false;
+	      gpio_set_value(motorBackwardPin,LOW);
+	      gpio_set_value(motorForwardPin,HIGH);
+	    }
+	  else
+	    {
+	      gpio_set_value(motorForwardPin,LOW);
+	      gpio_set_value(motorBackwardPin,HIGH);
+	    }
+	}
+      else
+	{
+	  gpio_set_value(motorForwardPin,LOW);
+	  gpio_set_value(motorBackwardPin,LOW);
+	}
+    }
+  else 
+    {
+      gpio_set_value(motorForwardPin,LOW);
+      gpio_set_value(motorBackwardPin,LOW);      
+    }
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting vertical_actuator_controller::verticalPosTimer_operation");

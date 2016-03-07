@@ -15,6 +15,8 @@
 
 
 //# Start User Includes Marker
+#include "agse_package/gpio.h"
+#include "agse_package/eqep.h"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -58,6 +60,27 @@ private:
   NAMESPACE::ServiceServer radialPos_server;
 
   //# Start User Private Variables Marker
+  // paused variable which is controlled by the pause switch
+  bool paused;
+  // epsion value for minimum actionable difference between goal and current
+  int epsilon;
+  // goal position for the radial linear actuator
+  int radialGoal;
+  // current position of the radial linear actuator
+  int radialCurrent;
+  // pin that motor forward is connected to
+  unsigned int motorForwardPin;
+  // pin that motor backward is connected to
+  unsigned int motorBackwardPin;
+  // pin that lowerLimitSwitch is connected to
+  unsigned int lowerLimitSwitchPin;
+  // state variable to keep track of whether we've reached the limit or not
+  bool lowerLimitReached;
+  // ADC the motor potentiometer is connected to (for the prototype)
+  int adcPin;
+  // enhanced quadrature encoder pulse module for the radial actuator
+  eQEP radialMotoreQEP;
+  long rm_eqep_period;
   //# End User Private Variables Marker
 };
 

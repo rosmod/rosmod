@@ -127,6 +127,18 @@ package agse_package
       priority = 50;
       deadline = 0.1;
     }       
+    // ROSMOD Subscriber - sampleState_sub
+    subscriber <agse_package/sampleState> sampleState_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - payloadBayState_sub
+    subscriber <agse_package/payloadBayState> payloadBayState_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
     // ROSMOD Timer - userInputTimer
     timer userInputTimer 
     {

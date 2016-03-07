@@ -12,9 +12,9 @@
   #endif
 #endif
 
-
-
 //# Start User Includes Marker
+#include "agse_package/gpio.h"
+#include "agse_package/eqep.h"
 //# End User Includes Marker
 
 //# Start User Globals Marker
@@ -58,6 +58,26 @@ private:
   NAMESPACE::ServiceServer verticalPos_server;
 
   //# Start User Private Variables Marker
+  bool paused;
+  // epsion value for minimum actionable difference between goal and current
+  int epsilon;
+  // goal position for the vertical linear actuator
+  int verticalGoal;
+  // current position of the vertical linear actuator
+  int verticalCurrent;
+  // pin that motor forward is connected to
+  unsigned int motorForwardPin;
+  // pin that motor backward is connected to
+  unsigned int motorBackwardPin;
+  // pin that lower limit switch is connected to
+  unsigned int lowerLimitSwitchPin;
+  // state variable to keep track of whether we've reached the limit or not
+  bool lowerLimitReached;
+  // ADC the motor potentiometer is connected to (for the prototype)
+  int adcPin;
+  // enhanced Quadrature Encoder Pulse eQEP module for the vertical actuator
+  eQEP verticalMotoreQEP;
+  long vm_eqep_period;
   //# End User Private Variables Marker
 };
 

@@ -1,6 +1,21 @@
 #include "agse_package/image_sensor.hpp"
 
 //# Start User Globals Marker
+struct buffer      *buffers;
+struct v4l2_buffer  buf;
+int                 n_buffers;
+
+static void xioctl(int fh, int request, void *arg)
+{
+  int r;
+  do {
+    r = v4l2_ioctl(fh, request, arg);
+  } while (r == -1 && ((errno == EINTR) || (errno == EAGAIN)));
+  if (r == -1) {
+    fprintf(stderr, "error %d, %s\n", errno, strerror(errno));
+    exit(EXIT_FAILURE);
+  }
+}
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +26,68 @@ void image_sensor::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_sensor::init_timer_operation");
 #endif
   // Initialize Here
+  paused = true;
+  sprintf(videoDevice,"/dev/video0");
+  width = 1920;
+  height = 1080;
+
+  struct v4l2_format              fmt;
+  struct v4l2_requestbuffers      reqBufs;
+
+  videoFD = v4l2_open(videoDevice, O_RDWR | O_NONBLOCK, 0);
+  if (videoFD < 0) {
+    perror("Cannot open device");
+    exit(EXIT_FAILURE);
+  }
+
+  CLEAR(fmt);
+  fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  fmt.fmt.pix.width       = width;
+  fmt.fmt.pix.height      = height;
+  fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
+  fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
+  xioctl(videoFD, VIDIOC_S_FMT, &fmt);
+  if (fmt.fmt.pix.pixelformat != V4L2_PIX_FMT_BGR24) {
+    printf("Libv4l didn't accept BGR24 format. Can't proceed.\n");
+    exit(EXIT_FAILURE);
+  }
+  if ((fmt.fmt.pix.width != width) || (fmt.fmt.pix.height != height))
+    printf("Warning: driver is sending image at %dx%d\n",
+	   fmt.fmt.pix.width, fmt.fmt.pix.height);
+
+  CLEAR(reqBufs);
+  reqBufs.count = 2;
+  reqBufs.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  reqBufs.memory = V4L2_MEMORY_MMAP;
+  xioctl(videoFD, VIDIOC_REQBUFS, &reqBufs);
+
+  buffers = (buffer *)calloc(reqBufs.count, sizeof(*buffers));
+  for (n_buffers = 0; n_buffers < reqBufs.count; ++n_buffers) {
+    CLEAR(buf);
+
+    buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    buf.memory      = V4L2_MEMORY_MMAP;
+    buf.index       = n_buffers;
+
+    xioctl(videoFD, VIDIOC_QUERYBUF, &buf);
+
+    buffers[n_buffers].length = buf.length;
+    buffers[n_buffers].start = v4l2_mmap(NULL, buf.length,
+					 PROT_READ | PROT_WRITE, MAP_SHARED,
+					 videoFD, buf.m.offset);
+
+    if (MAP_FAILED == buffers[n_buffers].start) {
+      perror("mmap");
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  // Command line args for servo control
+  for (int i = 0; i < node_argc; i++) 
+    {
+      if (!strcmp(node_argv[i], "-unpaused"))
+	paused = false;
+    }
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,7 +106,8 @@ void image_sensor::controlInputs_sub_operation(const agse_package::controlInputs
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_sensor::controlInputs_sub_operation");
 #endif
   // Business Logic for controlInputs_sub_operation
-
+  paused = received_data->paused;
+  ROS_INFO( paused ? "Image Sensor paused!" : "Image Sensor Unpaused!" );
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting image_sensor::controlInputs_sub_operation");
@@ -46,7 +124,59 @@ bool image_sensor::captureImage_operation(agse_package::captureImage::Request  &
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering image_sensor::captureImage_operation");
 #endif
   // Business Logic for captureImage_server_operation
+    if (!paused)
+    {
+      // Business Logic for captureImage_server Server providing captureImage Service
+      fd_set                          fds;
+      struct timeval                  tv;
+      enum v4l2_buf_type              type;
+      int                             r;
 
+      for (int i = 0; i < n_buffers; ++i) {
+	CLEAR(buf);
+	buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	buf.memory = V4L2_MEMORY_MMAP;
+	buf.index = i;
+	xioctl(videoFD, VIDIOC_QBUF, &buf);
+      }
+      type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+      xioctl(videoFD, VIDIOC_STREAMON, &type);
+      do {
+	FD_ZERO(&fds);
+	FD_SET(videoFD, &fds);
+
+	/* Timeout. */
+	tv.tv_sec = 2;
+	tv.tv_usec = 0;
+
+	r = select(videoFD + 1, &fds, NULL, NULL, &tv);
+      } while ((r == -1 && (errno = EINTR)));
+      if (r == -1) {
+	perror("select");
+	return false;
+      }
+
+      CLEAR(buf);
+      buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      buf.memory = V4L2_MEMORY_MMAP;
+      xioctl(videoFD, VIDIOC_DQBUF, &buf);
+
+      //fwrite(buffers[buf.index].start, buf.bytesused, 1, fout);
+
+      type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+      xioctl(videoFD, VIDIOC_STREAMOFF, &type);
+
+      res.imgVector.reserve(buf.bytesused);
+      std::copy(&((unsigned char *)buffers[buf.index].start)[0],
+		&((unsigned char *)buffers[buf.index].start)[0] + buf.bytesused,
+		back_inserter(res.imgVector));
+      res.width = width;
+      res.height = height;
+		
+      return true;
+    }
+  return false;
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting image_sensor::captureImage_operation");
 #endif

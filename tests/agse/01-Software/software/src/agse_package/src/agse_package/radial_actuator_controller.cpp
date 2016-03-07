@@ -1,6 +1,7 @@
 #include "agse_package/radial_actuator_controller.hpp"
 
 //# Start User Globals Marker
+#include <stdlib.h>
 //# End User Globals Marker
 
 // Initialization Function
@@ -11,6 +12,48 @@ void radial_actuator_controller::init_timer_operation(const NAMESPACE::TimerEven
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering radial_actuator_controller::init_timer_operation");
 #endif
   // Initialize Here
+  paused = true;
+  lowerLimitReached = false;
+
+  // THESE NEED TO BE UPDATED
+  epsilon = 100;
+  motorForwardPin = 87; //88;     // connected to GPIO2_24, pin P8_28
+  motorBackwardPin = 86; //89;    // connected to GPIO2_25, pin P8_30
+  lowerLimitSwitchPin = 27;       // connected to GPIO0_27, pin P8_17
+  
+  adcPin = 0;  // connected to ADC0, pin P9_39
+
+  // set up the pins to control the h-bridge
+  gpio_export(motorForwardPin);
+  gpio_export(motorBackwardPin);
+  gpio_export(lowerLimitSwitchPin);
+  gpio_set_dir(motorForwardPin,OUTPUT_PIN);
+  gpio_set_dir(motorBackwardPin,OUTPUT_PIN);
+  gpio_set_dir(lowerLimitSwitchPin,INPUT_PIN);
+  // set up the encoder module
+  rm_eqep_period = 1000000000L;
+  radialMotoreQEP.initialize("/sys/devices/ocp.3/48304000.epwmss/48304180.eqep", eQEP::eQEP_Mode_Absolute);
+  radialMotoreQEP.set_period(rm_eqep_period);
+
+  // Command line args for radial goal
+  for (int i = 0; i < node_argc; i++)
+    {
+      if (!strcmp(node_argv[i], "-unpaused"))
+	{
+	  paused = false;
+	}
+      if (!strcmp(node_argv[i], "-r"))
+	{
+	  radialGoal = atoi(node_argv[i+1]);
+	}
+      if (!strcmp(node_argv[i], "-e"))
+	{
+	  epsilon = atoi(node_argv[i+1]);
+	}
+    }
+
+  ROS_INFO("RADIAL GOAL SET TO : %d",radialGoal);
+
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,7 +72,7 @@ void radial_actuator_controller::controlInputs_sub_operation(const agse_package:
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering radial_actuator_controller::controlInputs_sub_operation");
 #endif
   // Business Logic for controlInputs_sub_operation
-
+  paused = received_data->paused;
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting radial_actuator_controller::controlInputs_sub_operation");
@@ -46,6 +89,21 @@ bool radial_actuator_controller::radialPos_operation(agse_package::radialPos::Re
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering radial_actuator_controller::radialPos_operation");
 #endif
   // Business Logic for radialPos_server_operation
+    if (req.update == true)
+    {
+      //      ROS_INFO("GOT NEW RADIAL GOAL: %d",(int)req.goal);
+      //      ROS_INFO("CURRENT RADIUS: %d",radialCurrent);
+      radialGoal = req.goal;
+    }
+  if (req.setZeroPosition == true)
+    {
+      ROS_INFO("ZEROED RADIAL ENCODER");
+      radialMotoreQEP.set_position(0);
+    }
+  res.lowerLimitReached = lowerLimitReached;
+  res.upperLimitReached = false;
+  res.current = radialCurrent;
+  return true;
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting radial_actuator_controller::radialPos_operation");
@@ -62,6 +120,46 @@ void radial_actuator_controller::radialPosTimer_operation(const NAMESPACE::Timer
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering radial_actuator_controller::radialPosTimer_operation");
 #endif
   // Business Logic for radialPosTimer_operation
+  if (!paused)
+    {
+      // read current value for radial position (encoder)
+      radialCurrent = radialMotoreQEP.get_position();
+      //ROS_INFO("Raidal Actuator Encoder Reading: %d",radialCurrent);
+
+      unsigned int limitSwitchState = 0;
+      unsigned int backwardPinState = 0;
+      gpio_get_value(lowerLimitSwitchPin,&limitSwitchState);
+      gpio_get_value(motorBackwardPin,&backwardPinState);
+      if (backwardPinState && !limitSwitchState)
+	{
+	  lowerLimitReached = true;
+	}
+      // update motor based on current value
+      if ( abs(radialGoal-radialCurrent) > epsilon ) // if there's significant reason to move
+	{
+	  if (radialGoal > radialCurrent) 
+	    {
+	      lowerLimitReached = false;
+	      gpio_set_value(motorBackwardPin,LOW);
+	      gpio_set_value(motorForwardPin,HIGH);
+	    }
+	  else
+	    {
+	      gpio_set_value(motorForwardPin,LOW);
+	      gpio_set_value(motorBackwardPin,HIGH);
+	    }
+	}
+      else
+	{
+	  gpio_set_value(motorForwardPin,LOW);
+	  gpio_set_value(motorBackwardPin,LOW);
+	}
+    }
+  else 
+    {
+      gpio_set_value(motorForwardPin,LOW);
+      gpio_set_value(motorBackwardPin,LOW);      
+    }
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting radial_actuator_controller::radialPosTimer_operation");

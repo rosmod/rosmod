@@ -148,6 +148,10 @@ include_directories(
   ../node/include
   ${catkin_INCLUDE_DIRS}
 ## Start Include Directories Marker
+  /usr/include/opencv2
+  ${OpenCV_INCLUDE_DIRS}
+  /usr/include/opencv2
+  ${OpenCV_INCLUDE_DIRS}
 ## End Include Directories Marker
 )
 
@@ -220,7 +224,8 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_library(radial_actuator_controller
             src/agse_package/radial_actuator_controller.cpp
             ## Start radial_actuator_controller CPP Marker
-
+		src/agse_package/gpio.cpp
+		src/agse_package/eqep.cpp
             ## End radial_actuator_controller CPP Marker
            )
 target_link_libraries(radial_actuator_controller
@@ -236,7 +241,8 @@ add_dependencies(radial_actuator_controller
 add_library(vertical_actuator_controller
             src/agse_package/vertical_actuator_controller.cpp
             ## Start vertical_actuator_controller CPP Marker
-
+		src/agse_package/gpio.cpp
+		src/agse_package/eqep.cpp
             ## End vertical_actuator_controller CPP Marker
            )
 target_link_libraries(vertical_actuator_controller
@@ -252,7 +258,7 @@ add_dependencies(vertical_actuator_controller
 add_library(arm_controller
             src/agse_package/arm_controller.cpp
             ## Start arm_controller CPP Marker
-
+            src/agse_package/SerialPort.cpp
             ## End arm_controller CPP Marker
            )
 target_link_libraries(arm_controller
@@ -268,12 +274,35 @@ add_dependencies(arm_controller
 add_library(image_processor
             src/agse_package/image_processor.cpp
             ## Start image_processor CPP Marker
-
+		src/agse_package/sample_detector.cpp
+		src/agse_package/payloadbay_detector.cpp
+		# everything below here is required by either sample detector or PB detector
+		src/agse_package/Object_Tracker.cpp
+		src/aruco/ar_omp.cpp
+		src/aruco/arucofidmarkers.cpp
+		src/aruco/board.cpp
+		src/aruco/boarddetector.cpp
+		src/aruco/cameraparameters.cpp
+		src/aruco/chromaticmask.cpp
+		src/aruco/cvdrawingutils.cpp
+		src/aruco/highlyreliablemarkers.cpp
+		src/aruco/marker.cpp
+		src/aruco/markerdetector.cpp
+		src/aruco/subpixelcorner.cpp
             ## End image_processor CPP Marker
            )
 target_link_libraries(image_processor
                       ## Start image_processor Target Link Libraries Marker
-
+                      opencv_core 
+                      opencv_imgproc 
+                      opencv_highgui 
+                      opencv_contrib
+                      opencv_legacy
+                      opencv_photo
+                      opencv_video
+                      opencv_videostab
+		      opencv_calib3d
+		      opencv_ml
                       ## End image_processor Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )
@@ -284,12 +313,21 @@ add_dependencies(image_processor
 add_library(user_input_controller
             src/agse_package/user_input_controller.cpp
             ## Start user_input_controller CPP Marker
-
+		src/agse_package/gpio.cpp
             ## End user_input_controller CPP Marker
            )
 target_link_libraries(user_input_controller
                       ## Start user_input_controller Target Link Libraries Marker
-
+                      opencv_core 
+                      opencv_imgproc 
+                      opencv_highgui 
+                      opencv_contrib
+                      opencv_legacy
+                      opencv_photo
+                      opencv_video
+                      opencv_videostab
+		      opencv_calib3d
+		      opencv_ml
                       ## End user_input_controller Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )
@@ -300,7 +338,9 @@ add_dependencies(user_input_controller
 add_library(servo_controller
             src/agse_package/servo_controller.cpp
             ## Start servo_controller CPP Marker
-
+		src/agse_package/Dynamixel.cpp
+		src/agse_package/SerialPort.cpp
+		src/agse_package/Utils.cpp
             ## End servo_controller CPP Marker
            )
 target_link_libraries(servo_controller
@@ -321,7 +361,7 @@ add_library(image_sensor
            )
 target_link_libraries(image_sensor
                       ## Start image_sensor Target Link Libraries Marker
-
+		      v4l2
                       ## End image_sensor Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )
@@ -332,12 +372,21 @@ add_dependencies(image_sensor
 add_library(user_input_imager
             src/agse_package/user_input_imager.cpp
             ## Start user_input_imager CPP Marker
-
+		src/agse_package/gpio.cpp
             ## End user_input_imager CPP Marker
            )
 target_link_libraries(user_input_imager
                       ## Start user_input_imager Target Link Libraries Marker
-
+                      opencv_core 
+                      opencv_imgproc 
+                      opencv_highgui 
+                      opencv_contrib
+                      opencv_legacy
+                      opencv_photo
+                      opencv_video
+                      opencv_videostab
+		      opencv_calib3d
+		      opencv_ml
                       ## End user_input_imager Target Link Libraries Marker
                       ${catkin_LIBRARIES}
                       )

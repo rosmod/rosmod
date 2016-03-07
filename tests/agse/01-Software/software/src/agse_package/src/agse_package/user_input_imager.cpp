@@ -11,6 +11,23 @@ void user_input_imager::init_timer_operation(const NAMESPACE::TimerEvent& event)
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering user_input_imager::init_timer_operation");
 #endif
   // Initialize Here
+  ROS_INFO("Initializing User Input Imager");
+
+  //////////////////////////////////////////////
+  // UIP LCD SETUP
+  //////////////////////////////////////////////
+  
+  // The Four Images to show in UIP
+  //  top_right = cvLoadImage("/home/debian/Repositories/agse2015/code/UIP/input/white.png");
+  //  bottom_right = cvLoadImage("/home/debian/Repositories/agse2015/code/UIP/input/white.png");
+
+  key = 0;
+
+  Mode_1 = cvCreateImage( cvSize(800, 480), 8, 3);
+  Mode_2 = cvCreateImage( cvSize(800, 480), 8, 3);
+  Mode_3 = cvCreateImage( cvSize(800, 480), 8, 3);
+  Mode_4 = cvCreateImage( cvSize(800, 480), 8, 3);
+  processed_image = cvCreateImage(cvSize(1920, 1080), 8, 3);
   // Stop Init Timer
   init_timer.stop();
 #ifdef USE_ROSMOD
@@ -29,7 +46,29 @@ void user_input_imager::payloadBayDetectionImages_sub_operation(const agse_packa
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering user_input_imager::payloadBayDetectionImages_sub_operation");
 #endif
   // Business Logic for payloadBayDetectionImages_sub_operation
+  pb_rawImage = Mat(received_data->height, 
+		    received_data->width, 
+		    CV_8UC3, 
+		    const_cast<unsigned char*>(received_data->rawImgVector.data()));
 
+  pb_hsvImage = Mat(received_data->height, 
+		    received_data->width, 
+		    CV_8UC3, 
+		    const_cast<unsigned char*>(received_data->hsvThreshImgVector.data()));
+
+  pb_gsImage = Mat(received_data->height, 
+		   received_data->width, 
+		   CV_8UC3, 
+		   const_cast<unsigned char*>(received_data->gsThreshImgVector.data()));
+  
+  pb_bitwise = Mat(received_data->height, 
+		   received_data->width, 
+		   CV_8UC3, 
+		   const_cast<unsigned char*>(received_data->bitwiseAndImgVector.data()));
+
+  bottom_left = cvCreateImage(cvSize(pb_rawImage.cols, pb_rawImage.rows), 8, 3);
+  IplImage ipltemp = pb_rawImage;
+  cvCopy(&ipltemp, bottom_left);
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting user_input_imager::payloadBayDetectionImages_sub_operation");
@@ -44,7 +83,29 @@ void user_input_imager::sampleDetectionImages_sub_operation(const agse_package::
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering user_input_imager::sampleDetectionImages_sub_operation");
 #endif
   // Business Logic for sampleDetectionImages_sub_operation
+  sample_rawImage = Mat(received_data->height, 
+			received_data->width, 
+			CV_8UC3, 
+			const_cast<unsigned char*>(received_data->rawImgVector.data()));
 
+  sample_hsvImage = Mat(received_data->height, 
+			received_data->width, 
+			CV_8UC3, 
+			const_cast<unsigned char*>(received_data->hsvThreshImgVector.data()));
+
+  sample_gsImage = Mat(received_data->height, 
+		       received_data->width, 
+		       CV_8UC3, 
+		       const_cast<unsigned char*>(received_data->gsThreshImgVector.data()));
+  
+  sample_bitwise = Mat(received_data->height, 
+		       received_data->width, 
+		       CV_8UC3, 
+		       const_cast<unsigned char*>(received_data->bitwiseAndImgVector.data()));
+
+  top_left = cvCreateImage(cvSize(sample_rawImage.cols, sample_rawImage.rows), 8, 3);
+  IplImage ipltemp = sample_rawImage;
+  cvCopy(&ipltemp, top_left);
   
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting user_input_imager::sampleDetectionImages_sub_operation");
@@ -90,6 +151,96 @@ void user_input_imager::uiImage_timer_operation(const NAMESPACE::TimerEvent& eve
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Entering user_input_imager::uiImage_timer_operation");
 #endif
   // Business Logic for uiImage_timer_operation
+  agse_package::captureImage arg;
+  Mat camera_feed;
+
+  if (this->captureImage_client.call(arg)) {
+
+    ROS_INFO("Capture Image Client Call Successful; Height: %d, Width: %d ", arg.response.height, arg.response.width);
+    
+    camera_feed = Mat(arg.response.height, 
+		      arg.response.width, 
+		      CV_8UC3, 
+		      arg.response.imgVector.data());
+
+    // Mat to IplImage *
+    IplImage ipltemp = camera_feed;
+    cvCopy(&ipltemp, processed_image);
+    cvResize(processed_image, Mode_1);
+    cvShowImage( "UIP", Mode_1);
+    cvNamedWindow( "UIP", 1 );
+    cvSetWindowProperty("UIP", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+  }
+
+  key = 0;
+  key = cvWaitKey(1);
+
+  // RAW CAMERA FEED
+  if (key == 65361) {
+    ROS_INFO("Mode 1 Activated");
+    cvShowImage( "UIP", Mode_1);
+  }
+  /*
+  // SAMPLE PROCESSED IMAGE
+  else if (key == 65363) {
+    ROS_INFO("Mode 2 Activated");
+
+    // Mat to IplImage *
+    processed_image = cvCreateImage(cvSize(sample_rawImage.cols, sample_rawImage.rows), 8, 3);
+    IplImage ipltemp = sample_rawImage;
+    cvCopy(&ipltemp, processed_image);
+
+    cvResize(processed_image, Mode_2);
+    cvShowImage( "UIP", Mode_2);
+    cvNamedWindow( "UIP", 1 );
+    cvSetWindowProperty("UIP", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    key = 0;
+
+  }
+
+  else if (key == 65362) {
+
+    ROS_INFO("Mode 3 Activated");
+
+    // Mat to IplImage *
+    processed_image = cvCreateImage(cvSize(pb_rawImage.cols, pb_rawImage.rows), 8, 3);
+    IplImage ipltemp = pb_rawImage;
+    cvCopy(&ipltemp, processed_image);
+
+    cvResize(processed_image, Mode_3);
+    cvShowImage( "UIP", Mode_3);
+    cvNamedWindow( "UIP", 1 );
+    cvSetWindowProperty("UIP", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    key = 0;
+  }
+
+  else if (key == 65364) {
+
+    ROS_INFO("Mode 4 Activated"); 
+
+    // Mat to IplImage *
+    processed_image = cvCreateImage(cvSize(pb_gsImage.cols, pb_gsImage.rows), 8, 3);
+    IplImage ipltemp = pb_gsImage;
+    cvCopy(&ipltemp, processed_image);
+
+    cvResize(processed_image, Mode_4);
+    cvShowImage( "UIP", Mode_4);
+    cvNamedWindow( "UIP", 1 );
+    cvSetWindowProperty("UIP", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    key = 0;
+  }
+
+  else if (key == 13) {
+      
+    ROS_INFO("Mode 5 Activated");
+    cvShowManyImages("UIP", 4, top_left, top_right, bottom_left, bottom_right);
+    key = 0;
+  }
+  */
+  else {
+    ROS_INFO("No Mode Activated");
+    cvShowImage( "UIP", Mode_1);
+  }
 
 #ifdef USE_ROSMOD
   comp_queue.ROSMOD_LOGGER->log("DEBUG", "Exiting user_input_imager::uiImage_timer_operation");
