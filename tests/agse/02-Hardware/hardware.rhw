@@ -1,0 +1,35 @@
+/*
+ * ROSMOD Hardware Model
+ */
+
+// Hardware - Jetson
+hardware Jetson
+{
+  ip_address = "10.1.1.1";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu/";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
+// Hardware - Servos
+hardware Servos
+{
+  ip_address = "10.1.1.2";
+  username = "ubuntu";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/ubuntu/";
+  install_path = "/opt/ros/indigo/";
+  arch = arm;
+}
+// Hardware - UIP
+hardware UIP
+{
+  ip_address = "10.1.1.3";
+  username = "debian";
+  sshkey = "~/.ssh/id_rsa_jetsontk1"; 
+  deployment_path = "/home/debian/";
+  install_path = "/opt/ros/indigo";
+  arch = arm;
+}
+

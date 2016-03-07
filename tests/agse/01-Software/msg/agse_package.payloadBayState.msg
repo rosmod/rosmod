@@ -1,0 +1,2 @@
+agse_package/payloadBayPosition pos
+agse_package/payloadBayOrientation orientation

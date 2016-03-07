@@ -1,0 +1,226 @@
+/*
+ * ROSMOD Software Model
+ */
+
+// ROSMOD Package - agse_package
+package agse_package
+{
+  // ROSMOD Component - radial_actuator_controller
+  component radial_actuator_controller : Base 
+  {
+    // ROSMOD Server - radialPos_server
+    server <agse_package/radialPos> radialPos_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - controlInputs_sub
+    subscriber <agse_package/controlInputs> controlInputs_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - radialPosTimer
+    timer radialPosTimer 
+    {
+	period = 0.01;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - vertical_actuator_controller
+  component vertical_actuator_controller : Base 
+  {
+    // ROSMOD Server - verticalPos_server
+    server <agse_package/verticalPos> verticalPos_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - controlInputs_sub
+    subscriber <agse_package/controlInputs> controlInputs_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - verticalPosTimer
+    timer verticalPosTimer 
+    {
+	period = 0.01;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - arm_controller
+  component arm_controller : Base 
+  {
+    // ROSMOD Client - sampleStateFromImage_client
+    client <agse_package/sampleStateFromImage> sampleStateFromImage_client;
+    // ROSMOD Client - radialPos_client
+    client <agse_package/radialPos> radialPos_client;
+    // ROSMOD Client - armRotation_client
+    client <agse_package/armRotation> armRotation_client;
+    // ROSMOD Client - gripperRotation_client
+    client <agse_package/gripperRotation> gripperRotation_client;
+    // ROSMOD Client - verticalPos_client
+    client <agse_package/verticalPos> verticalPos_client;
+    // ROSMOD Client - gripperPos_client
+    client <agse_package/gripperPos> gripperPos_client;
+    // ROSMOD Client - payloadBayStateFromImage_client
+    client <agse_package/payloadBayStateFromImage> payloadBayStateFromImage_client;
+    // ROSMOD Publisher - sampleState_pub
+    publisher <agse_package/sampleState> sampleState_pub;
+    // ROSMOD Publisher - payloadBayState_pub
+    publisher <agse_package/payloadBayState> payloadBayState_pub;
+    // ROSMOD Publisher - armState_pub
+    publisher <agse_package/armState> armState_pub;
+    // ROSMOD Subscriber - controlInputs_sub
+    subscriber <agse_package/controlInputs> controlInputs_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - armTimer
+    timer armTimer 
+    {
+	period = 0.2;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - image_processor
+  component image_processor : Base 
+  {
+    // ROSMOD Server - sampleStateFromImage_server
+    server <agse_package/sampleStateFromImage> sampleStateFromImage_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - payloadBayStateFromImage_server
+    server <agse_package/payloadBayStateFromImage> payloadBayStateFromImage_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Client - captureImage_client
+    client <agse_package/captureImage> captureImage_client;
+    // ROSMOD Publisher - payloadBayDetectionImages_pub
+    publisher <agse_package/payloadBayDetectionImages> payloadBayDetectionImages_pub;
+    // ROSMOD Publisher - sampleDetectionImages_pub
+    publisher <agse_package/sampleDetectionImages> sampleDetectionImages_pub;
+    // ROSMOD Subscriber - controlInputs_sub
+    subscriber <agse_package/controlInputs> controlInputs_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - user_input_controller
+  component user_input_controller : Base 
+  {
+    // ROSMOD Publisher - controlInputs_pub
+    publisher <agse_package/controlInputs> controlInputs_pub;
+    // ROSMOD Subscriber - armState_sub
+    subscriber <agse_package/armState> armState_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - userInputTimer
+    timer userInputTimer 
+    {
+	period = 0.1;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - servo_controller
+  component servo_controller : Base 
+  {
+    // ROSMOD Server - armRotation_server
+    server <agse_package/armRotation> armRotation_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - gripperPos_server
+    server <agse_package/gripperPos> gripperPos_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Server - gripperRotation_server
+    server <agse_package/gripperRotation> gripperRotation_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - controlInputs_sub
+    subscriber <agse_package/controlInputs> controlInputs_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - servoTimer
+    timer servoTimer 
+    {
+	period = 1.0;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - image_sensor
+  component image_sensor : Base 
+  {
+    // ROSMOD Server - captureImage_server
+    server <agse_package/captureImage> captureImage_server 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - controlInputs_sub
+    subscriber <agse_package/controlInputs> controlInputs_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+  }
+  // ROSMOD Component - user_input_imager
+  component user_input_imager : Base 
+  {
+    // ROSMOD Client - captureImage_client
+    client <agse_package/captureImage> captureImage_client;
+    // ROSMOD Subscriber - payloadBayDetectionImages_sub
+    subscriber <agse_package/payloadBayDetectionImages> payloadBayDetectionImages_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - sampleDetectionImages_sub
+    subscriber <agse_package/sampleDetectionImages> sampleDetectionImages_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - payloadBayState_sub
+    subscriber <agse_package/payloadBayState> payloadBayState_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Subscriber - sampleState_sub
+    subscriber <agse_package/sampleState> sampleState_sub 
+    {
+      priority = 50;
+      deadline = 0.1;
+    }       
+    // ROSMOD Timer - uiImage_timer
+    timer uiImage_timer 
+    {
+	period = 0.5;
+	priority = 50;
+	deadline = 0.1;
+    }       
+  }
+}
