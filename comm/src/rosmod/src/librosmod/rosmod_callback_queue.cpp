@@ -482,7 +482,7 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
 		       info.callback_options.enqueue_time.sec, info.callback_options.enqueue_time.nsec,
 		       info.callback_options.dequeue_time.sec, info.callback_options.dequeue_time.nsec,
 		       info.callback_options.completion_time.sec, info.callback_options.completion_time.nsec,
-		       info.callback_options.enqueue_time.sec, info.callback_options.enqueue_time.nsec,
+		       execution_time.sec, execution_time.nsec,
 		       info.callback_options.deadline.sec, info.callback_options.deadline.nsec);
 
     if (execution_time > info.callback_options.deadline) {
