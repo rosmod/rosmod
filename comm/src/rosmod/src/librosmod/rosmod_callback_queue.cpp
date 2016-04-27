@@ -139,6 +139,7 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
       scheme_string = "PFIFO";
     else if (scheduling_scheme == "EDF")
       scheme_string = "EDF";
+    /*
     ROSMOD_LOGGER->log("DEBUG", 
 		       "CALLBACK %s ENQUEUE::Alias=%s; Priority=%d; Deadline sec=%d, nsec=%d; Enqueue Time sec=%d, nsec=%d",
 			scheme_string.c_str(),
@@ -148,6 +149,7 @@ void CallbackQueue::addCallback(const CallbackInterfacePtr& callback,
 			info.callback_options.deadline.nsec,
 			info.callback_options.enqueue_time.sec,
 			info.callback_options.enqueue_time.nsec); 
+    */
     std::deque<CallbackInfo>::iterator it;
 
     // Check scheduling scheme and enqueue based on choice
@@ -439,6 +441,7 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
 
     uint64_t last_calling = tls->calling_in_this_thread;
     tls->calling_in_this_thread = id_info->id;
+    ros::Duration execution_time;
 
     CallbackInterface::CallResult result = CallbackInterface::Invalid;
     try {
@@ -451,6 +454,9 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
         tls->cb_it = tls->callbacks.erase(tls->cb_it);
 	info.callback_options.dequeue_time = ros::Time::now();
         result = cb->call();
+	info.callback_options.completion_time = ros::Time::now();
+	execution_time = info.callback_options.completion_time
+	  - info.callback_options.enqueue_time;
       }
     }
     catch (std::exception&)
@@ -471,26 +477,15 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
       return TryAgain;
     }
 
-    info.callback_options.completion_time = ros::Time::now();
-    ros::Duration execution_time = info.callback_options.completion_time
-      - info.callback_options.enqueue_time;
-
-    ROSMOD_LOGGER->log("DEBUG", 
-		       "CALLBACK COMPLETED::Alias=%s; Completion Time sec=%d, nsec=%d; Execution Time sec=%d, nsec=%d",
-			info.callback_options.alias.c_str(),
-			info.callback_options.completion_time.sec,
-			info.callback_options.completion_time.nsec,
-			execution_time.sec,
-			execution_time.nsec);    
+    ROSMOD_LOGGER->log("DEBUG", "%s, %d.%09d, %d.%09d, %d.%09d, %d.%09d, %d.%09d",
+		       info.callback_options.alias.c_str(), 
+		       info.callback_options.enqueue_time.sec, info.callback_options.enqueue_time.nsec,
+		       info.callback_options.dequeue_time.sec, info.callback_options.dequeue_time.nsec,
+		       info.callback_options.completion_time.sec, info.callback_options.completion_time.nsec,
+		       info.callback_options.enqueue_time.sec, info.callback_options.enqueue_time.nsec,
+		       info.callback_options.deadline.sec, info.callback_options.deadline.nsec);
 
     if (execution_time > info.callback_options.deadline) {
-      ROSMOD_LOGGER->log("ERROR", 
-			 "DEADLINE VIOLATION::Alias=%s; Execution Time sec=%d nsec=%d; Deadline sec=%d, nsec=%d",
-			  info.callback_options.alias.c_str(),
-			  execution_time.sec,
-			  execution_time.nsec,
-			  info.callback_options.deadline.sec,
-			  info.callback_options.deadline.nsec);
       ROSMOD_Deadline_Violation new_violation;
       new_violation.alias = info.callback_options.alias;
       new_violation.deadline = info.callback_options.deadline;
@@ -512,22 +507,16 @@ CallbackQueue::CallOneResult CallbackQueue::callOneCB(TLS* tls)
   ros::Duration execution_time = info.callback_options.completion_time
     - info.callback_options.enqueue_time;
 
-  ROSMOD_LOGGER->log("DEBUG", 
-		     "CALLBACK COMPLETED::Alias=%s; Completion Time sec=%d, nsec=%d; Execution Time sec=%d, nsec=%d",
-		      info.callback_options.alias.c_str(),
-		      info.callback_options.completion_time.sec,
-		      info.callback_options.completion_time.nsec,
-		      execution_time.sec,
-		      execution_time.nsec);
+  ROSMOD_LOGGER->log("DEBUG", "%s, %d.%09d, %d.%09d, %d.%09d, %d.%09d, %d.%09d",
+		     info.callback_options.alias.c_str(), 
+		     info.callback_options.enqueue_time.sec, info.callback_options.enqueue_time.nsec,
+		     info.callback_options.dequeue_time.sec, info.callback_options.dequeue_time.nsec,
+		     info.callback_options.completion_time.sec, info.callback_options.completion_time.nsec,
+		     info.callback_options.enqueue_time.sec, info.callback_options.enqueue_time.nsec,
+		     info.callback_options.deadline.sec, info.callback_options.deadline.nsec);
+
   
   if (execution_time > info.callback_options.deadline) {
-    ROSMOD_LOGGER->log("ERROR", 
-		       "DEADLINE VIOLATION::Alias=%s; Execution Time sec=%d nsec=%d; Deadline sec=%d, nsec=%d",
-			info.callback_options.alias.c_str(),
-			execution_time.sec,
-			execution_time.nsec,
-			info.callback_options.deadline.sec,
-			info.callback_options.deadline.nsec);
       ROSMOD_Deadline_Violation new_violation;
       new_violation.alias = info.callback_options.alias;
       new_violation.deadline = info.callback_options.deadline;
